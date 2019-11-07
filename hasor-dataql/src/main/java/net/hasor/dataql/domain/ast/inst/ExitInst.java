@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.inst;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.Inst;
 import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
+import java.io.Writer;
 
 /**
  * exit指令
@@ -38,5 +41,10 @@ public class ExitInst extends Inst {
         queue.inst(LDC_D, this.exitCode);
         this.exitData.doCompiler(queue, stackTree);
         queue.inst(EXIT);
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }

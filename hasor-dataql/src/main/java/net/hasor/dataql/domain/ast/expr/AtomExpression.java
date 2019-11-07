@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.expr;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.Expression;
 import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 
+import java.io.Writer;
+
 /**
  * Variable 类型的 Expression 形态
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2019-11-07
  */
 public class AtomExpression extends Expression {
     private Variable variableExpression; // 把值类型转换为表达式
@@ -34,5 +37,10 @@ public class AtomExpression extends Expression {
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         this.variableExpression.doCompiler(queue, stackTree);
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }

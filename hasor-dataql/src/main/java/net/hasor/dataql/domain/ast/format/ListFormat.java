@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.format;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.Format;
 import net.hasor.dataql.domain.ast.RouteVariable;
 import net.hasor.dataql.domain.ast.value.ListVariable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.Opcodes;
+
+import java.io.Writer;
 
 /**
  * 函数调用的返回值处理格式，List格式。
@@ -40,5 +43,10 @@ public class ListFormat extends Format {
         queue.inst(Opcodes.ASA, "");
         //        this.format.doCompiler(queue, stackTree);
         queue.inst(Opcodes.ASE);
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }

@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.value;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.RouteVariable;
 import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
+import java.io.Writer;
 
 /**
  * 函数调用 - 之所以是 Variable 是由于 FunctionCall 的最终结果是 函数调用的返回值。而返回值是属于 Variable 的
@@ -35,6 +38,11 @@ public class NameRouteVariable implements Variable, RouteVariable {
 
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
+        //
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
         //
     }
 }

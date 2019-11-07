@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.value;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.RouteVariable;
 import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +41,7 @@ public class FunCallRouteVariable implements RouteVariable {
     public void addParam(Variable paramVar) {
         this.paramList.add(paramVar);
     }
- 
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         //
@@ -66,5 +68,10 @@ public class FunCallRouteVariable implements RouteVariable {
         //
         // .指向函数的指针
         queue.inst(M_REF, methodAddress);
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }

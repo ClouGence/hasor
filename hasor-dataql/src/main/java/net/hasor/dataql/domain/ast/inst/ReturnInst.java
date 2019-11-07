@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.inst;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.Inst;
 import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 
+import java.io.Writer;
+
 /**
  * return指令
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2019-11-07
  */
 public class ReturnInst extends Inst {
     private int      returnCode;
@@ -37,5 +40,10 @@ public class ReturnInst extends Inst {
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         this.resultData.doCompiler(queue, stackTree);
         queue.inst(END);
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }

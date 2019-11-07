@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.value;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.RouteVariable;
 import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
+import java.io.Writer;
 
 /**
  * 路由的入口，一切路由操作都要有一个入口
@@ -43,6 +46,11 @@ public class EnterRouteVariable implements RouteVariable {
 
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
+        //
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
         //
     }
 }

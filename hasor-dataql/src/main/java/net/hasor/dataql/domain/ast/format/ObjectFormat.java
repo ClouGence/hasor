@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.format;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.Format;
 import net.hasor.dataql.domain.ast.RouteVariable;
 import net.hasor.dataql.domain.ast.value.ObjectVariable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
+import java.io.Writer;
 
 /**
  * 函数调用的返回值处理格式，Object格式。
@@ -39,5 +42,10 @@ public class ObjectFormat extends Format {
         queue.inst(ASM, "");
         //        this.format.doCompiler(queue, stackTree);
         queue.inst(ASE);
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }

@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.value;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
+import java.io.Writer;
 
 /**
  * 基础类型值，用于表示【String、Number、Null、Boolean】四种基本类型
@@ -35,7 +38,7 @@ public class PrimitiveVariable implements Variable {
         this.value = value;
         this.valueType = valueType;
     }
- 
+
     @Override
     public String toString() {
         return "Primitive - '" + this.value + "'";
@@ -55,5 +58,10 @@ public class PrimitiveVariable implements Variable {
         if (this.valueType == ValueType.String) {
             queue.inst(LDC_S, this.value);
         }
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }

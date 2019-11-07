@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.value;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.InstructionInfo;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,5 +58,10 @@ public class ListVariable implements Variable {
             exp.doCompiler(queue, stackTree);
             queue.inst(PUSH);
         }
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }

@@ -17,7 +17,7 @@ package net.hasor.dataql.domain.ast;
 import net.hasor.dataql.domain.InstCompiler;
 
 /**
- * 函数调用的返回值处理格式，基类
+ * 格式处理基类
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */

@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.inst;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.InstCompiler;
+import net.hasor.dataql.domain.InstFormat;
 import net.hasor.dataql.domain.ast.Inst;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 
+import java.io.Writer;
 import java.util.ArrayList;
 
 /**
@@ -26,7 +29,7 @@ import java.util.ArrayList;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class InstSet extends ArrayList<Inst> implements InstCompiler {
+public class InstSet extends ArrayList<Inst> implements InstCompiler, InstFormat {
     /** 批量添加指令集 */
     public void addInstSet(InstSet inst) {
         this.addAll(inst);
@@ -47,5 +50,10 @@ public class InstSet extends ArrayList<Inst> implements InstCompiler {
         for (Inst inst : this) {
             inst.doCompiler(queue, stackTree);
         }
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }

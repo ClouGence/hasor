@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.inst;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.Inst;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
+import java.io.Writer;
 
 /**
  * import 语法
@@ -55,5 +58,10 @@ public class ImportInst extends Inst {
             int storeIndex = stackTree.push(this.asName);
             queue.inst(STORE, storeIndex);
         }
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }

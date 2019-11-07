@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.expr;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.Expression;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.Opcodes;
+
+import java.io.Writer;
 
 /**
  * 一元运算表达式
@@ -37,5 +40,10 @@ public class UnaryExpression extends Expression {
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         this.target.doCompiler(queue, stackTree);
         queue.inst(Opcodes.UO, this.dyadicSymbol);
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }

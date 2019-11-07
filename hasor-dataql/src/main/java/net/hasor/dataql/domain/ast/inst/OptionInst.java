@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.inst;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.Inst;
 import net.hasor.dataql.domain.ast.value.PrimitiveVariable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
+import java.io.Writer;
 
 /**
  * 查询选项
@@ -32,11 +35,16 @@ public class OptionInst extends Inst {
         this.optKey = optKey;
         this.optValue = optValue;
     }
- 
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         //        queue.inst(LDC_S, this.optKey);
         //        this.optValue.doCompiler(queue, stackTree);
         //        queue.inst(OPT);
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }

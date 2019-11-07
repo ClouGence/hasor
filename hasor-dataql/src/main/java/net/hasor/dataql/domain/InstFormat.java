@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain.ast;
-import net.hasor.dataql.domain.InstCompiler;
-import net.hasor.dataql.domain.InstFormat;
+package net.hasor.dataql.domain;
+import net.hasor.dataql.Option;
+
+import java.io.Writer;
 
 /**
- * 指令，基类
+ * 格式化输出
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public abstract class Inst implements InstCompiler, InstFormat {
+public interface InstFormat {
+    /** 格式化 */
+    public void doFormat(int depth, Option formatOption, Writer writer);
 }

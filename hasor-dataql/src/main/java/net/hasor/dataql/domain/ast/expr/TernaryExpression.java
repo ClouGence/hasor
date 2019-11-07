@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.expr;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.Expression;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.Label;
+
+import java.io.Writer;
 
 /**
  * 三元运算表达式
@@ -49,5 +52,10 @@ public class TernaryExpression extends Expression {
         // .第二个表达式
         queue.inst(LABEL, elseEnterIn);
         this.elseExpression.doCompiler(queue, stackTree);
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }

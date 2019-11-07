@@ -17,9 +17,9 @@ package net.hasor.dataql.domain.ast;
 import net.hasor.dataql.domain.InstCompiler;
 
 /**
- * 变量，用于表示一切 QL 中的表达式，可定义序列块（序列块 = BlockSet，可定义 = 使用 var 指令定义 lambda）
+ * 路由变量
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2019-11-07
  */
 public interface RouteVariable extends InstCompiler, Variable {
 }

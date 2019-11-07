@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.expr;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.Expression;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 
+import java.io.Writer;
 import java.util.Stack;
 
 /**
@@ -139,4 +141,9 @@ public class DyadicExpression extends Expression {
             new String[] { "&&", "||" },
             //
     };
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
+    }
 }

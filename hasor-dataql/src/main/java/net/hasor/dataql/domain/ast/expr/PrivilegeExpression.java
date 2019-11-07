@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.expr;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.Expression;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
+import java.io.Writer;
 
 /**
  * 权限提升，用于表示表达式中的括号
@@ -38,5 +41,10 @@ public class PrivilegeExpression extends Expression {
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         this.expression.doCompiler(queue, stackTree);
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }

@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.inst;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.Inst;
 import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
+import java.io.Writer;
 
 /**
  * var指令
@@ -32,7 +35,7 @@ public class VarInst extends Inst {
         this.varName = varName;
         this.value = value;
     }
- 
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         //        // .表达式指令
@@ -46,5 +49,10 @@ public class VarInst extends Inst {
         //            int storeIndex = stackTree.push(this.varName);
         //            queue.inst(STORE, storeIndex);
         //        }
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }

@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.value;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.RouteVariable;
 import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
+import java.io.Writer;
 
 /**
  * 对 RouteVariable 的下标操作
@@ -41,6 +44,11 @@ public class SubscriptRouteVariable implements Variable, RouteVariable {
 
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
+        //
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
         //
     }
 }

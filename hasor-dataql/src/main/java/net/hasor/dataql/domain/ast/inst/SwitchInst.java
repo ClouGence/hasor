@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.ast.inst;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.ast.Expression;
 import net.hasor.dataql.domain.ast.Inst;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.Label;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,5 +124,10 @@ public class SwitchInst extends Inst {
         }
         // .if 的结束点
         queue.inst(LABEL, finalLabel);
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, Writer writer) {
+        //
     }
 }
