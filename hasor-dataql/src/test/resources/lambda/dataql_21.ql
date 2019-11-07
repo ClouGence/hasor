@@ -3,7 +3,7 @@
 
 
 var args = "性别：";
-var sexToStr = lambda: (obj) -> {
+var sexToStr = (obj) -> {
     if (obj == 'F')
         return args + "女";
     else
@@ -11,17 +11,17 @@ var sexToStr = lambda: (obj) -> {
     end
 }
 
-var sexToStrAndOri = lambda : (a) -> {
-    return sexToStr(a)~ + " - " + a
+var sexToStrAndOri = (a) -> {
+    return sexToStr(a) + " - " + a
 }
 
-var convert = lambda : (b) -> {
-    return "~~~~" + sexToStrAndOri(b)~
+var convert =  (b) -> {
+    return "~~~~" + sexToStrAndOri(b)
 }
 
-return findUserByID ({"userID" : 12345, "status" : 2}) {
+return findUserByID ({"userID" : 12345, "status" : 2}) => {
     "name"  : name2,
     "age",
     "nick",
-    "sex"   : convert(sex)~
+    "sex"   : convert(sex)
 }

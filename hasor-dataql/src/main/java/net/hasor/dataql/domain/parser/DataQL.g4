@@ -115,8 +115,8 @@ lambdaDefParameters : IDENTIFIER (COMMA IDENTIFIER)* ;
 
 /* ----------------------------------------------------------------------------------- 带有结构的 */
 /* 可以作为：参数、返回值 并带有 具有结构的 */
-polymericObject : ((funcCall | routeCall) '=>' (objectValue | listValue))   #convertObject   //调用(函数 or 路由)并转换成(列表 or 对象)
-                | (primitiveValue | objectValue | listValue | expr)         #convertRaw
+polymericObject : ((funcCall | routeCall) '=>' (objectValue | listValue))       #convertObject
+                | (primitiveValue | objectValue | listValue | expr | lambdaDef) #convertRaw
                 ;
 
 /* 对象结构 */

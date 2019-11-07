@@ -15,12 +15,12 @@ var basicNumber = [
 
 // double算数运算
 var doubleNumber = [
-    double()~ + 3,
-    double()~ - 3,
-    double()~ * 3,
-    double()~ / 3,
-    double()~ \ 3,
-    double()~ % 3
+    double() + 3,
+    double() - 3,
+    double() * 3,
+    double() / 3,
+    double() \ 3,
+    double() % 3
 ];
 
 // 大数四则运算

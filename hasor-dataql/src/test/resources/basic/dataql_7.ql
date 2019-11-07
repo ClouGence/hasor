@@ -3,7 +3,7 @@
 
 var user_id = 12345;
 
-var fOrder = queryOrder ( user_id ) [
+var fOrder = queryOrder ( user_id ) => [
     {
         "orderID",
         "itemID",
@@ -12,10 +12,10 @@ var fOrder = queryOrder ( user_id ) [
 ];
 
 var fUser = {
-    "userInfo" : findUserByID (user_id) {
+    "userInfo" : findUserByID (user_id) => {
         "userID",
         "status",
-        "addressList" : addressList -> [   // 使用取值的方法来处理属性数据
+        "addressList" : addressList => [
             {
                 "zip",
                 "address"

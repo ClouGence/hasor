@@ -44,7 +44,7 @@ return {
     ],
     "feedColumnValue": [
         {
-            "id": "0",
+            "id": root.user_id,
             "value": "0",
             "name": "top",
             "select": "true"

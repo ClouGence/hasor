@@ -7,7 +7,7 @@
 
 // ------------------------------------------------------------ 演示1：从 UDF 返回值中取值，然后进行处理结果
 
-var addrList_1 = findUserByID (12345) -> "addressList" [
+var addrList_1 = findUserByID (12345).addressList => [
     {
         "code",
         "address"
@@ -16,9 +16,9 @@ var addrList_1 = findUserByID (12345) -> "addressList" [
 
 // ------------------------------------------------------------ 演示2：先执行udf拿到完整的返回值，然后使用取值方式处理结果（相当于把演示1拆成2步）
 
-var dat = findUserByID (12345) ~
+var dat = findUserByID (12345)
 
-var addrList_2 = dat -> "addressList" [
+var addrList_2 = dat.addressList => [
     {
         "code"
     }
@@ -26,16 +26,16 @@ var addrList_2 = dat -> "addressList" [
 
 // ------------------------------------------------------------ 演示3：与演示1、演示2 相同，不同的是取值的结果采用原始类型
 
-var addrList_3 = findUserByID (12345) -> "addressList" ~
+var addrList_3 = findUserByID (12345)["addressList"]
 
-var dat = findUserByID (12345) ~
-var addrList_4 = dat -> "addressList" ~
+var dat = findUserByID (12345)
+var addrList_4 = dat["addressList"]
 
 // ------------------------------------------------------------ 演示4：取值之后直接参与运算
 
-var user = findUserByID (12345) ~
+var user = findUserByID (12345)
 
-var dat = user -> "age" ~ + 31
+var dat = user["age"] + 31
 
 
 return {

@@ -5,7 +5,7 @@
 
 return {
     "userInfo" :  {
-        "info" : findUserByID (12345) {
+        "info" : findUserByID (12345) => {
             "name",
             "age",
             "nick"

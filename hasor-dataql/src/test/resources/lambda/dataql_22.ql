@@ -7,11 +7,11 @@ var sexConse = {
     "F" : "女"
 }
 
-var sexName= lambda: (sex) -> {
+var sexName= (sex) -> {
     if ( sex == 0 )
-        return sexConse -> "W" ~    // 男
+        return sexConse["W"]
     else
-        return sexConse -> "F" ~    // 女
+        return sexConse["W"]
     end
 }
 

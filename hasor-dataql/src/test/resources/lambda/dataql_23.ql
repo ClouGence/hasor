@@ -7,14 +7,14 @@ var sexConse = {
     "F" : "女"
 }
 
-var sexName= lambda: (sex) -> {
+var sexName= (sex) -> {
 
-    var foo = lambda : () -> return "^_^ ：";
+    var foo = () -> return "^_^ ：";
 
     if ( sex == 0 )
-        return sexConse -> "W" ~ + foo()~   // 男
+        return sexConse["W"] + foo()
     else
-        return sexConse -> "F" ~  + foo()~  // 女
+        return sexConse["F"] + foo()
     end
 }
 
