@@ -15,8 +15,10 @@
  */
 package net.hasor.dataql.compiler.ast.expr;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
+import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.Expression;
+import net.hasor.dataql.compiler.ast.FormatWriter;
+import net.hasor.dataql.compiler.ast.InstVisitorContext;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
@@ -28,7 +30,7 @@ import java.util.Stack;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class DyadicExpression extends Expression {
+public class DyadicExpression implements Expression {
     private Expression fstExpression;   //第一个表达式
     private String     dyadicSymbol;    //运算符
     private Expression secExpression;   //第二个表达式
@@ -37,6 +39,17 @@ public class DyadicExpression extends Expression {
         this.fstExpression = fstExpression;
         this.dyadicSymbol = dyadicSymbol;
         this.secExpression = secExpression;
+    }
+
+    @Override
+    public void accept(AstVisitor astVisitor) {
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+                fstExpression.accept(astVisitor);
+                secExpression.accept(astVisitor);
+            }
+        });
     }
 
     @Override

@@ -15,8 +15,10 @@
  */
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
+import net.hasor.dataql.compiler.ast.AstVisitor;
+import net.hasor.dataql.compiler.ast.FormatWriter;
 import net.hasor.dataql.compiler.ast.Inst;
+import net.hasor.dataql.compiler.ast.InstVisitorContext;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
@@ -27,7 +29,7 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ImportInst extends Inst {
+public class ImportInst implements Inst {
     public enum ImportType {
         Resource, ClassType
     }
@@ -43,6 +45,15 @@ public class ImportInst extends Inst {
     }
 
     @Override
+    public void accept(AstVisitor astVisitor) {
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+            }
+        });
+    }
+
+    @Override
     public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
         writer.write("import ");
         if (this.importType == ImportType.Resource) {
@@ -51,8 +62,7 @@ public class ImportInst extends Inst {
             //
         }
         writer.write('"' + this.importName + '"');
-        writer.write(" as " + this.asName + ";");
-        writer.write("\n");
+        writer.write(" as " + this.asName + ";\n");
     }
 
     @Override

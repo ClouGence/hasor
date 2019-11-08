@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.compiler.ast;
+package net.hasor.dataql.compiler.ast.fmt;
+import net.hasor.dataql.compiler.ast.Inst;
+import net.hasor.dataql.compiler.ast.Variable;
+
 /**
- * 变量，用于表示一切 QL 中的表达式，可定义序列块（序列块 = BlockSet，可定义 = 使用 var 指令定义 lambda）
+ * 格式处理基类
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2019-11-07
+ * @version : 2017-03-23
  */
-public interface Variable extends Inst {
+public interface Format extends Inst, Variable {
 }

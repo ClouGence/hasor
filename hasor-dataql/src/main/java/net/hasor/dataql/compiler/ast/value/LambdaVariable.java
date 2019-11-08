@@ -15,12 +15,13 @@
  */
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
-import net.hasor.dataql.compiler.ast.Variable;
+import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.ast.inst.InstSet;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
+import net.hasor.utils.StringUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,33 @@ public class LambdaVariable extends InstSet implements Variable {
             throw new java.lang.IllegalStateException(name + " param existing.");
         }
         this.paramList.add(name);
+    }
+
+    @Override
+    public void accept(AstVisitor astVisitor) {
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+                for (Inst var : LambdaVariable.this) {
+                    var.accept(astVisitor);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
+        writer.write("(");
+        for (int i = 0; i < this.paramList.size(); i++) {
+            if (i > 0) {
+                writer.write(", ");
+            }
+            writer.write(this.paramList.get(i));
+        }
+        writer.write(") -> {\n");
+        super.doFormat(depth + 1, formatOption, writer);
+        String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
+        writer.write(fixedString + "}");
     }
 
     @Override
@@ -66,10 +94,5 @@ public class LambdaVariable extends InstSet implements Variable {
         //
         // .指向函数的指针
         queue.inst(M_REF, methodAddress);
-    }
-
-    @Override
-    public void doFormat(int depth, Option formatOption, FormatWriter writer) {
-        //
     }
 }

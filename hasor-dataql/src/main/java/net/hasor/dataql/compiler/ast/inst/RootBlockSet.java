@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.ast.inst;
-import net.hasor.dataql.compiler.FormatWriter;
 import net.hasor.dataql.compiler.QueryModel;
+import net.hasor.dataql.compiler.ast.AstVisitor;
+import net.hasor.dataql.compiler.ast.FormatWriter;
+import net.hasor.dataql.compiler.ast.Inst;
+import net.hasor.dataql.compiler.ast.InstVisitorContext;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.dataql.runtime.OptionSet;
@@ -43,6 +46,24 @@ public class RootBlockSet extends InstSet implements QueryModel {
     /** 添加导入 */
     public void addImportInst(ImportInst inst) {
         this.importSet.add(Objects.requireNonNull(inst, "import inst npe."));
+    }
+
+    @Override
+    public void accept(AstVisitor astVisitor) {
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+                for (OptionInst inst : optionSet) {
+                    inst.accept(astVisitor);
+                }
+                for (ImportInst inst : importSet) {
+                    inst.accept(astVisitor);
+                }
+                for (Inst inst : RootBlockSet.this) {
+                    inst.accept(astVisitor);
+                }
+            }
+        });
     }
 
     @Override

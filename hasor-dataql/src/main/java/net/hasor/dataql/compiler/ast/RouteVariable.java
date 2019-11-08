@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.ast;
-import net.hasor.dataql.compiler.InstCompiler;
-
 /**
  * 路由变量
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-11-07
  */
-public interface RouteVariable extends InstCompiler, Variable {
+public interface RouteVariable extends Variable {
     public RouteVariable getParent();
 }

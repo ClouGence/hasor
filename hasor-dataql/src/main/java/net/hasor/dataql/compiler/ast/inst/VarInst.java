@@ -15,9 +15,7 @@
  */
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
-import net.hasor.dataql.compiler.ast.Inst;
-import net.hasor.dataql.compiler.ast.Variable;
+import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.utils.StringUtils;
@@ -29,13 +27,23 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class VarInst extends Inst {
+public class VarInst implements Inst {
     private String   varName; //变量名
     private Variable value;   //变量表达式
 
     public VarInst(String varName, Variable value) {
         this.varName = varName;
         this.value = value;
+    }
+
+    @Override
+    public void accept(AstVisitor astVisitor) {
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+                value.accept(astVisitor);
+            }
+        });
     }
 
     @Override

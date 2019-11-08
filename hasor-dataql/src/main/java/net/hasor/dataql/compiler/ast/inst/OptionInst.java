@@ -15,8 +15,10 @@
  */
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
+import net.hasor.dataql.compiler.ast.AstVisitor;
+import net.hasor.dataql.compiler.ast.FormatWriter;
 import net.hasor.dataql.compiler.ast.Inst;
+import net.hasor.dataql.compiler.ast.InstVisitorContext;
 import net.hasor.dataql.compiler.ast.value.PrimitiveVariable;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
@@ -28,13 +30,23 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class OptionInst extends Inst {
+public class OptionInst implements Inst {
     private String            optKey;
     private PrimitiveVariable optValue;
 
     public OptionInst(String optKey, PrimitiveVariable optValue) {
         this.optKey = optKey;
         this.optValue = optValue;
+    }
+
+    @Override
+    public void accept(AstVisitor astVisitor) {
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+                optValue.accept(astVisitor);
+            }
+        });
     }
 
     @Override

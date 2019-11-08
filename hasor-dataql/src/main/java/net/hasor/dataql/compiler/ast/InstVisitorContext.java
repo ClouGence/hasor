@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.ast;
-import net.hasor.dataql.compiler.InstCompiler;
-
 /**
- * 格式处理基类
+ * Visitor
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2019-11-07
  */
-public abstract class Format implements InstCompiler, Variable {
+public abstract class InstVisitorContext {
+    private Inst inst;
+
+    public InstVisitorContext(Inst inst) {
+        this.inst = inst;
+    }
+
+    public Inst getInst() {
+        return this.inst;
+    }
+
+    public abstract void visitChildren(AstVisitor astVisitor);
 }

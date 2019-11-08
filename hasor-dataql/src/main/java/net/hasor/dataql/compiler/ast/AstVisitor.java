@@ -13,23 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain.compiler;
-import net.hasor.dataql.domain.BlockSet;
-import net.hasor.dataql.domain.parser.DataQLParser;
-import net.hasor.dataql.domain.parser.ParseException;
-
+package net.hasor.dataql.compiler.ast;
 /**
- * DataQL 编译器。
+ * Visitor
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-07-03
+ * @version : 2019-11-07
  */
-public class QueryCompiler {
-    public static QIL compilerQuery(String queryString) throws ParseException {
-        BlockSet queryModel = DataQLParser.parserDataQL(queryString);
-        InstQueue queue = new InstQueue();
-        queryModel.doCompiler(queue, new CompilerStack());
-        Instruction[][] queueSet = queue.buildArrays();
-        //
-        return new QIL(queueSet);
-    }
+public interface AstVisitor {
+    public void visitInst(InstVisitorContext inst);
 }

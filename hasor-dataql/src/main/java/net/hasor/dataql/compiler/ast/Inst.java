@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.ast;
-import net.hasor.dataql.compiler.InstCompiler;
-import net.hasor.dataql.compiler.InstFormat;
+import net.hasor.dataql.compiler.qil.InstCompiler;
 
 /**
  * 指令，基类
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public abstract class Inst implements InstCompiler, InstFormat {
+public interface Inst extends InstCompiler, InstFormat, Visitor {
 }

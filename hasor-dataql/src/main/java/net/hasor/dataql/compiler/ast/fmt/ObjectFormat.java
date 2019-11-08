@@ -13,30 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.compiler.ast.format;
+package net.hasor.dataql.compiler.ast.fmt;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
-import net.hasor.dataql.compiler.ast.Format;
+import net.hasor.dataql.compiler.ast.AstVisitor;
+import net.hasor.dataql.compiler.ast.FormatWriter;
+import net.hasor.dataql.compiler.ast.InstVisitorContext;
 import net.hasor.dataql.compiler.ast.RouteVariable;
-import net.hasor.dataql.compiler.ast.value.ListVariable;
+import net.hasor.dataql.compiler.ast.value.ObjectVariable;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
-import net.hasor.dataql.compiler.qil.Opcodes;
 
 import java.io.IOException;
 
 /**
- * 函数调用的返回值处理格式，List格式。
+ * 函数调用的返回值处理格式，Object格式。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ListFormat extends Format {
-    private RouteVariable form;
-    private ListVariable  formatTo;
+public class ObjectFormat implements Format {
+    private RouteVariable  form;
+    private ObjectVariable formatTo;
 
-    public ListFormat(RouteVariable form, ListVariable formatTo) {
+    public ObjectFormat(RouteVariable form, ObjectVariable formatTo) {
         this.form = form;
         this.formatTo = formatTo;
+    }
+
+    @Override
+    public void accept(AstVisitor astVisitor) {
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+                form.accept(astVisitor);
+                formatTo.accept(astVisitor);
+            }
+        });
     }
 
     @Override
@@ -48,8 +59,8 @@ public class ListFormat extends Format {
 
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        queue.inst(Opcodes.ASA, "");
+        queue.inst(ASM, "");
         //        this.format.doCompiler(queue, stackTree);
-        queue.inst(Opcodes.ASE);
+        queue.inst(ASE);
     }
 }

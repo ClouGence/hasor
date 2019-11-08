@@ -15,10 +15,10 @@
  */
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
-import net.hasor.dataql.compiler.InstCompiler;
-import net.hasor.dataql.compiler.InstFormat;
+import net.hasor.dataql.compiler.ast.AstVisitor;
+import net.hasor.dataql.compiler.ast.FormatWriter;
 import net.hasor.dataql.compiler.ast.Inst;
+import net.hasor.dataql.compiler.ast.InstVisitorContext;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
@@ -30,7 +30,7 @@ import java.util.ArrayList;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class InstSet extends ArrayList<Inst> implements InstCompiler, InstFormat {
+public class InstSet extends ArrayList<Inst> implements Inst {
     /** 批量添加指令集 */
     public void addInstSet(InstSet inst) {
         this.addAll(inst);
@@ -44,8 +44,21 @@ public class InstSet extends ArrayList<Inst> implements InstCompiler, InstFormat
     }
 
     @Override
+    public void accept(AstVisitor astVisitor) {
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+                for (Inst inst : InstSet.this) {
+                    inst.accept(astVisitor);
+                }
+            }
+        });
+    }
+
+    @Override
     public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
-        for (Inst inst : this) {
+        for (int i = 0; i < this.size(); i++) {
+            Inst inst = this.get(i);
             inst.doFormat(depth, formatOption, writer);
         }
     }

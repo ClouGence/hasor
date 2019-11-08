@@ -2,9 +2,12 @@ package net.hasor.dataql.compiler.parser;
 import net.hasor.dataql.compiler.ast.Expression;
 import net.hasor.dataql.compiler.ast.RouteVariable;
 import net.hasor.dataql.compiler.ast.Variable;
-import net.hasor.dataql.compiler.ast.expr.*;
-import net.hasor.dataql.compiler.ast.format.ListFormat;
-import net.hasor.dataql.compiler.ast.format.ObjectFormat;
+import net.hasor.dataql.compiler.ast.expr.DyadicExpression;
+import net.hasor.dataql.compiler.ast.expr.PrivilegeExpression;
+import net.hasor.dataql.compiler.ast.expr.TernaryExpression;
+import net.hasor.dataql.compiler.ast.expr.UnaryExpression;
+import net.hasor.dataql.compiler.ast.fmt.ListFormat;
+import net.hasor.dataql.compiler.ast.fmt.ObjectFormat;
 import net.hasor.dataql.compiler.ast.inst.*;
 import net.hasor.dataql.compiler.ast.inst.ImportInst.ImportType;
 import net.hasor.dataql.compiler.ast.value.*;
@@ -127,11 +130,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
                 ifBlocks.get(i).accept(this);
                 InstSet instSet = (InstSet) this.instStack.pop();
                 Variable expr = (Variable) this.instStack.pop();
-                if (expr instanceof Expression) {
-                    switchInst.addElseif((Expression) expr, instSet);
-                } else {
-                    switchInst.addElseif(new AtomExpression(expr), instSet);
-                }
+                switchInst.addElseif(expr, instSet);
             } else {
                 // else
                 ifBlocks.get(i).accept(this);
@@ -558,13 +557,6 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
     @Override
     public T visitAtomExpr(AtomExprContext ctx) {
-        visitChildren(ctx);
-        if (this.instStack.peek() instanceof Expression) {
-            return null;
-        } else {
-            Variable var = (Variable) this.instStack.pop();
-            this.instStack.push(new AtomExpression(var));
-            return null;
-        }
+        return visitChildren(ctx);
     }
 }

@@ -15,8 +15,10 @@
  */
 package net.hasor.dataql.compiler.ast.expr;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
+import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.Expression;
+import net.hasor.dataql.compiler.ast.FormatWriter;
+import net.hasor.dataql.compiler.ast.InstVisitorContext;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.dataql.compiler.qil.Opcodes;
@@ -28,7 +30,7 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class UnaryExpression extends Expression {
+public class UnaryExpression implements Expression {
     private Expression target;      //表达式
     private String     dyadicSymbol;//操作符
 
@@ -38,14 +40,24 @@ public class UnaryExpression extends Expression {
     }
 
     @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        this.target.doCompiler(queue, stackTree);
-        queue.inst(Opcodes.UO, this.dyadicSymbol);
+    public void accept(AstVisitor astVisitor) {
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+                target.accept(astVisitor);
+            }
+        });
     }
 
     @Override
     public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
         writer.write(this.dyadicSymbol);
         this.target.doFormat(depth, formatOption, writer);
+    }
+
+    @Override
+    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
+        this.target.doCompiler(queue, stackTree);
+        queue.inst(Opcodes.UO, this.dyadicSymbol);
     }
 }

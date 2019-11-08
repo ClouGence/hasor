@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.ast;
+import net.hasor.dataql.Option;
+
+import java.io.IOException;
+
 /**
- * 变量，用于表示一切 QL 中的表达式，可定义序列块（序列块 = BlockSet，可定义 = 使用 var 指令定义 lambda）
+ * 格式化输出
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2019-11-07
+ * @version : 2017-03-23
  */
-public interface Variable extends Inst {
+public interface InstFormat {
+    public static int  fixedLength = 4;
+    public static char quoteChar   = '"';
+
+    /** 格式化 */
+    public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException;
 }

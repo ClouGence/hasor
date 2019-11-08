@@ -15,13 +15,13 @@
  */
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
-import net.hasor.dataql.compiler.ast.Variable;
+import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.dataql.compiler.qil.InstructionInfo;
 import net.hasor.utils.StringUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ObjectVariable implements Variable {
+public class ObjectVariable implements Inst, Variable {
     private List<String>          fieldSort;
     private String                objectType;
     private Map<String, Variable> objectData;
@@ -53,11 +53,46 @@ public class ObjectVariable implements Variable {
     }
 
     @Override
-    public void doFormat(int depth, Option formatOption, FormatWriter writer) {
+    public void accept(AstVisitor astVisitor) {
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+                for (Variable var : objectData.values()) {
+                    var.accept(astVisitor);
+                }
+            }
+        });
+    }
 
-
-
+    @Override
+    public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
+        if (this.objectData.isEmpty()) {
+            writer.write("{}");
+            return;
+        }
+        depth = (depth == 0) ? 1 : depth;
+        String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
         //
+        writer.write("{\n");
+        for (int i = 0; i < this.fieldSort.size(); i++) {
+            if (i > 0) {
+                writer.write(",\n");
+            }
+            String key = this.fieldSort.get(i);
+            String newKey = key.replace(String.valueOf(quoteChar), "\\" + quoteChar);
+            writer.write(fixedString + quoteChar + newKey + quoteChar);
+            //
+            Variable variable = this.objectData.get(key);
+            if (variable instanceof NameRouteVariable) {
+                NameRouteVariable nameRouteVariable = (NameRouteVariable) variable;
+                if (nameRouteVariable.getParent() instanceof EnterRouteVariable && !key.equals(nameRouteVariable.getName())) {
+                    writer.write(" : ");
+                    variable.doFormat(depth + 1, formatOption, writer);
+                }
+            }
+        }
+        //
+        writer.write("\n" + StringUtils.fixedString(' ', (depth - 1) * fixedLength) + "}");
     }
 
     @Override

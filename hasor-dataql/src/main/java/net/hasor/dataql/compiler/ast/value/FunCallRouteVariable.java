@@ -15,9 +15,7 @@
  */
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
-import net.hasor.dataql.compiler.ast.RouteVariable;
-import net.hasor.dataql.compiler.ast.Variable;
+import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
@@ -48,6 +46,26 @@ public class FunCallRouteVariable implements RouteVariable {
     }
 
     @Override
+    public void accept(AstVisitor astVisitor) {
+        if (this.enterRoute != null) {
+            this.enterRoute.accept(astVisitor);
+        }
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+                for (Variable param : paramList) {
+                    param.accept(astVisitor);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void doFormat(int depth, Option formatOption, FormatWriter writer) {
+        //
+    }
+
+    @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         //
         int size = this.paramList.size();
@@ -73,10 +91,5 @@ public class FunCallRouteVariable implements RouteVariable {
         //
         // .指向函数的指针
         queue.inst(M_REF, methodAddress);
-    }
-
-    @Override
-    public void doFormat(int depth, Option formatOption, FormatWriter writer) {
-        //
     }
 }

@@ -15,8 +15,10 @@
  */
 package net.hasor.dataql.compiler.ast.expr;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
+import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.Expression;
+import net.hasor.dataql.compiler.ast.FormatWriter;
+import net.hasor.dataql.compiler.ast.InstVisitorContext;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.dataql.compiler.qil.Label;
@@ -28,7 +30,7 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class TernaryExpression extends Expression {
+public class TernaryExpression implements Expression {
     private Expression testExpression;  //三元运算符，条件表达式
     private Expression thenExpression;  //第一个表达式
     private Expression elseExpression;  //第二个表达式
@@ -37,6 +39,18 @@ public class TernaryExpression extends Expression {
         this.testExpression = testExp;
         this.thenExpression = thenExp;
         this.elseExpression = elseExp;
+    }
+
+    @Override
+    public void accept(AstVisitor astVisitor) {
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+                testExpression.accept(astVisitor);
+                thenExpression.accept(astVisitor);
+                elseExpression.accept(astVisitor);
+            }
+        });
     }
 
     @Override

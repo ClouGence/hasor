@@ -15,9 +15,7 @@
  */
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
-import net.hasor.dataql.compiler.ast.Expression;
-import net.hasor.dataql.compiler.ast.Inst;
+import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.dataql.compiler.qil.Label;
@@ -32,7 +30,7 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class SwitchInst extends Inst {
+public class SwitchInst implements Inst {
     public static class SwitchExpression {
         private Expression testExpression;
         private InstSet    instBlockSet;
@@ -52,6 +50,20 @@ public class SwitchInst extends Inst {
     /** 设置默认条件分支 */
     public void setElseBlockSet(InstSet instBlockSet) {
         this.elseBlockSet = instBlockSet;
+    }
+
+    @Override
+    public void accept(AstVisitor astVisitor) {
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+                for (SwitchExpression switchExpr : testBlockSet) {
+                    switchExpr.testExpression.accept(astVisitor);
+                    switchExpr.instBlockSet.accept(astVisitor);
+                }
+                elseBlockSet.accept(astVisitor);
+            }
+        });
     }
 
     @Override

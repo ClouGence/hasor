@@ -15,9 +15,7 @@
  */
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
-import net.hasor.dataql.compiler.ast.RouteVariable;
-import net.hasor.dataql.compiler.ast.Variable;
+import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
@@ -40,6 +38,22 @@ public class NameRouteVariable implements Variable, RouteVariable {
     @Override
     public RouteVariable getParent() {
         return this.parent;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public void accept(AstVisitor astVisitor) {
+        if (this.parent != null) {
+            this.parent.accept(astVisitor);
+        }
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+            }
+        });
     }
     //
     //    protected void doFormat2(int depth, Option formatOption, FormatWriter writer) throws IOException {

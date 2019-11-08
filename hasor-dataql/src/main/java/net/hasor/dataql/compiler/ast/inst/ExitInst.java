@@ -15,9 +15,7 @@
  */
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
-import net.hasor.dataql.compiler.ast.Inst;
-import net.hasor.dataql.compiler.ast.Variable;
+import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.utils.StringUtils;
@@ -29,13 +27,23 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ExitInst extends Inst {
+public class ExitInst implements Inst {
     private int      exitCode;
     private Variable exitData;
 
     public ExitInst(int exitCode, Variable exitData) {
         this.exitCode = exitCode;
         this.exitData = exitData;
+    }
+
+    @Override
+    public void accept(AstVisitor astVisitor) {
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+                exitData.accept(astVisitor);
+            }
+        });
     }
 
     @Override
@@ -48,7 +56,7 @@ public class ExitInst extends Inst {
             writer.write(fixedString + "exit ");
         }
         this.exitData.doFormat(depth + 1, formatOption, writer);
-        writer.write("\n");
+        writer.write(";\n");
     }
 
     @Override

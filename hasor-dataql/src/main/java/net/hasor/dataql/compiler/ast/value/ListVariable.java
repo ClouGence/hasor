@@ -15,7 +15,9 @@
  */
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
+import net.hasor.dataql.compiler.ast.AstVisitor;
+import net.hasor.dataql.compiler.ast.FormatWriter;
+import net.hasor.dataql.compiler.ast.InstVisitorContext;
 import net.hasor.dataql.compiler.ast.Variable;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
@@ -42,9 +44,21 @@ public class ListVariable implements Variable {
     }
 
     @Override
+    public void accept(AstVisitor astVisitor) {
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+                for (Variable var : expressionList) {
+                    var.accept(astVisitor);
+                }
+            }
+        });
+    }
+
+    @Override
     public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
         if (this.expressionList.isEmpty()) {
-            writer.write("[]\n");
+            writer.write("[]");
             return;
         }
         String fixedString = StringUtils.fixedString(' ', depth * fixedLength);

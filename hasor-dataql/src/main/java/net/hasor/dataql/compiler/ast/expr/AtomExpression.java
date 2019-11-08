@@ -15,9 +15,7 @@
  */
 package net.hasor.dataql.compiler.ast.expr;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.FormatWriter;
-import net.hasor.dataql.compiler.ast.Expression;
-import net.hasor.dataql.compiler.ast.Variable;
+import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
@@ -28,11 +26,21 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-11-07
  */
-public class AtomExpression extends Expression {
+public class AtomExpression implements Expression {
     private Variable variableExpression; // 把值类型转换为表达式
 
     public AtomExpression(Variable variableExpression) {
         this.variableExpression = variableExpression;
+    }
+
+    @Override
+    public void accept(AstVisitor astVisitor) {
+        astVisitor.visitInst(new InstVisitorContext(this) {
+            @Override
+            public void visitChildren(AstVisitor astVisitor) {
+                variableExpression.accept(astVisitor);
+            }
+        });
     }
 
     @Override

@@ -13,20 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.compiler;
-import net.hasor.dataql.Option;
-
-import java.io.IOException;
-
+package net.hasor.dataql.compiler.ast;
 /**
- * 格式化输出
+ * Visitor
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2019-11-07
  */
-public interface InstFormat {
-    public static int  fixedLength = 4;
-    public static char quoteChar   = '"';
-
-    /** 格式化 */
-    public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException;
+public interface Visitor {
+    public void accept(AstVisitor astVisitor);
 }
