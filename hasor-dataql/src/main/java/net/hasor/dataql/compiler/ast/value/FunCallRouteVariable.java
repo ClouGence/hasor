@@ -19,6 +19,7 @@ import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,8 +62,16 @@ public class FunCallRouteVariable implements RouteVariable {
     }
 
     @Override
-    public void doFormat(int depth, Option formatOption, FormatWriter writer) {
-        //
+    public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
+        this.enterRoute.doFormat(depth, formatOption, writer);
+        writer.write("(");
+        for (int i = 0; i < this.paramList.size(); i++) {
+            if (i > 0) {
+                writer.write(", ");
+            }
+            this.paramList.get(i).doFormat(depth + 1, formatOption, writer);
+        }
+        writer.write(")");
     }
 
     @Override

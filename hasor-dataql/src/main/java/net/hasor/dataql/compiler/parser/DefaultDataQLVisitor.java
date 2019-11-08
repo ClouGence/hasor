@@ -2,10 +2,7 @@ package net.hasor.dataql.compiler.parser;
 import net.hasor.dataql.compiler.ast.Expression;
 import net.hasor.dataql.compiler.ast.RouteVariable;
 import net.hasor.dataql.compiler.ast.Variable;
-import net.hasor.dataql.compiler.ast.expr.DyadicExpression;
-import net.hasor.dataql.compiler.ast.expr.PrivilegeExpression;
-import net.hasor.dataql.compiler.ast.expr.TernaryExpression;
-import net.hasor.dataql.compiler.ast.expr.UnaryExpression;
+import net.hasor.dataql.compiler.ast.expr.*;
 import net.hasor.dataql.compiler.ast.fmt.ListFormat;
 import net.hasor.dataql.compiler.ast.fmt.ObjectFormat;
 import net.hasor.dataql.compiler.ast.inst.*;
@@ -79,7 +76,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         visitChildren(ctx);
         //
         ImportType importType = ImportType.ClassType;
-        String importResource = ctx.STRING().getText();
+        String importResource = fixString(ctx.STRING());
         String asName = ctx.IDENTIFIER().getText();
         TerminalNode rouNode = ctx.ROU();
         if (rouNode != null) {
@@ -130,7 +127,11 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
                 ifBlocks.get(i).accept(this);
                 InstSet instSet = (InstSet) this.instStack.pop();
                 Variable expr = (Variable) this.instStack.pop();
-                switchInst.addElseif(expr, instSet);
+                if (expr instanceof Expression) {
+                    switchInst.addElseif((Expression) expr, instSet);
+                } else {
+                    switchInst.addElseif(new AtomExpression(expr), instSet);
+                }
             } else {
                 // else
                 ifBlocks.get(i).accept(this);
@@ -243,7 +244,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     @Override
     public T visitObjectKeyValue(ObjectKeyValueContext ctx) {
         ObjectVariable objectVariable = (ObjectVariable) this.instStack.peek();
-        String fieldKey = ctx.STRING().getText();
+        String fieldKey = fixString(ctx.STRING());
         PolymericObjectContext polymericObject = ctx.polymericObject();
         if (polymericObject != null) {
             polymericObject.accept(this);
@@ -274,7 +275,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
     @Override
     public T visitStringValue(StringValueContext ctx) {
-        String text = ctx.STRING().getText();
+        String text = fixString(ctx.STRING());
         this.instStack.push(new PrimitiveVariable(text, ValueType.String));
         return null;
     }
@@ -462,7 +463,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             this.instStack.push(new SubscriptRouteVariable(SubType.Integer, atNode, intNode.getText()));
             return null;
         } else {
-            this.instStack.push(new SubscriptRouteVariable(SubType.String, atNode, stringNode.getText()));
+            this.instStack.push(new SubscriptRouteVariable(SubType.String, atNode, fixString(stringNode)));
             return null;
         }
     }
@@ -541,10 +542,6 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         return null;
     }
 
-    private TerminalNode operSwitch(TerminalNode first, TerminalNode second) {
-        return first != null ? first : second;
-    }
-
     @Override
     public T visitTernaryExpr(TernaryExprContext ctx) {
         ctx.accept(this);
@@ -557,6 +554,22 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
     @Override
     public T visitAtomExpr(AtomExprContext ctx) {
-        return visitChildren(ctx);
+        visitChildren(ctx);
+        if (this.instStack.peek() instanceof Expression) {
+            return null;
+        } else {
+            Variable var = (Variable) this.instStack.pop();
+            this.instStack.push(new AtomExpression(var));
+            return null;
+        }
+    }
+
+    private TerminalNode operSwitch(TerminalNode first, TerminalNode second) {
+        return first != null ? first : second;
+    }
+
+    private String fixString(TerminalNode stringNode) {
+        String nodeText = stringNode.getText();
+        return nodeText.substring(1, nodeText.length() - 1);
     }
 }
