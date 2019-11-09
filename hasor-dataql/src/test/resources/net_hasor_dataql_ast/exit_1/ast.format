@@ -1,0 +1,12 @@
+
+exit 134;
+exit -134;
+exit "ssss";
+exit {
+    "abc"
+};
+exit {
+    "abc"
+};
+exit [];
+exit -1, [123];

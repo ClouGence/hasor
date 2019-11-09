@@ -1,0 +1,16 @@
+exit  134
+exit    -134
+exit    "ssss"
+
+exit {
+"abc"
+:
+aa
+}
+exit {
+"abc"
+}
+
+exit []
+
+exit -1 ,[123]

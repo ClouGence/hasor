@@ -1,0 +1,12 @@
+
+throw 134;
+throw -134;
+throw "ssss";
+throw {
+    "abc"
+};
+throw {
+    "abc"
+};
+throw [];
+throw -1, [123];
