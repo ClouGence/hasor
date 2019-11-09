@@ -20,6 +20,10 @@ import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import static net.hasor.utils.NumberUtils.*;
 
 /**
  * 基础类型值，用于表示【String、Number、Null、Boolean】四种基本类型
@@ -33,10 +37,17 @@ public class PrimitiveVariable implements Variable, Inst {
 
     private Object    value;
     private ValueType valueType;
+    private int       radix;
 
     public PrimitiveVariable(Object value, ValueType valueType) {
         this.value = value;
         this.valueType = valueType;
+    }
+
+    public PrimitiveVariable(Object value, ValueType valueType, int radix) {
+        this.value = value;
+        this.valueType = valueType;
+        this.radix = radix;
     }
 
     @Override
@@ -53,6 +64,22 @@ public class PrimitiveVariable implements Variable, Inst {
         });
     }
 
+    private String radix2String(int radix) {
+        if (radix == 2) {
+            return "0b";
+        }
+        if (radix == 8) {
+            return "0o";
+        }
+        if (radix == 10) {
+            return "";
+        }
+        if (radix == 16) {
+            return "0x";
+        }
+        throw new RuntimeException("radix not support.");
+    }
+
     @Override
     public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
         if (this.valueType == ValueType.Null) {
@@ -60,6 +87,33 @@ public class PrimitiveVariable implements Variable, Inst {
         } else if (this.valueType == ValueType.String) {
             String newValue = this.value.toString().replace(String.valueOf(quoteChar), "\\" + quoteChar);
             writer.write(quoteChar + newValue + quoteChar);
+        } else if (this.value instanceof Number) {
+            Number number = (Number) this.value;
+            if (isByteType(number.getClass()) || isShortType(number.getClass()) || isIntType(number.getClass()) || isLongType(number.getClass())) {
+                long longValue = number.longValue();
+                int beginSub = longValue < 0 ? 1 : 0;
+                String string = radix2String(this.radix) + Long.toString(longValue, this.radix).substring(beginSub);
+                if (beginSub > 0) {
+                    writer.write("-" + string);
+                } else {
+                    writer.write(string);
+                }
+            } else if (number instanceof BigInteger) {
+                BigInteger bigInteger = (BigInteger) number;
+                int beginSub = bigInteger.compareTo(BigInteger.ZERO) < 0 ? 1 : 0;
+                String string = radix2String(this.radix) + ((BigInteger) number).toString(this.radix).substring(beginSub);
+                if (beginSub > 0) {
+                    writer.write("-" + string);
+                } else {
+                    writer.write(string);
+                }
+            } else if (isFloatType(number.getClass()) || isDoubleType(number.getClass())) {
+                writer.write(Double.toString(number.doubleValue()));
+            } else if (number instanceof BigDecimal) {
+                writer.write(number.toString());
+            } else {
+                writer.write(number.toString());
+            }
         } else {
             writer.write(value.toString());
         }

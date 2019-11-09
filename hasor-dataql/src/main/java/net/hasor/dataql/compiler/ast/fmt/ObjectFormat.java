@@ -15,10 +15,7 @@
  */
 package net.hasor.dataql.compiler.ast.fmt;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.ast.AstVisitor;
-import net.hasor.dataql.compiler.ast.FormatWriter;
-import net.hasor.dataql.compiler.ast.InstVisitorContext;
-import net.hasor.dataql.compiler.ast.RouteVariable;
+import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.ast.value.ObjectVariable;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
@@ -30,7 +27,7 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ObjectFormat implements Format {
+public class ObjectFormat implements Inst, Variable {
     private RouteVariable  form;
     private ObjectVariable formatTo;
 

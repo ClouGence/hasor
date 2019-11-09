@@ -326,35 +326,35 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             BigInteger bigInt = new BigInteger(radixNumber, radix);
             int bitLength = bigInt.bitLength();
             if (bitLength < 8) {
-                this.instStack.push(new PrimitiveVariable(bigInt.byteValue(), ValueType.Number));
+                this.instStack.push(new PrimitiveVariable(bigInt.byteValue(), ValueType.Number, radix));
                 return null;
             }
             if (bitLength < 16) {
-                this.instStack.push(new PrimitiveVariable(bigInt.shortValue(), ValueType.Number));
+                this.instStack.push(new PrimitiveVariable(bigInt.shortValue(), ValueType.Number, radix));
                 return null;
             }
             if (bitLength < 32) {
-                this.instStack.push(new PrimitiveVariable(bigInt.intValue(), ValueType.Number));
+                this.instStack.push(new PrimitiveVariable(bigInt.intValue(), ValueType.Number, radix));
                 return null;
             }
             if (bitLength < 64) {
-                this.instStack.push(new PrimitiveVariable(bigInt.longValue(), ValueType.Number));
+                this.instStack.push(new PrimitiveVariable(bigInt.longValue(), ValueType.Number, radix));
                 return null;
             }
-            this.instStack.push(new PrimitiveVariable(bigInt, ValueType.Number));
+            this.instStack.push(new PrimitiveVariable(bigInt, ValueType.Number, radix));
             return null;
         } else {
             BigDecimal bigDec = new BigDecimal(decimalNode.getText());
             int precisionLength = bigDec.precision();
             if (precisionLength < 8 && !Float.isInfinite(bigDec.floatValue())) {
-                this.instStack.push(new PrimitiveVariable(bigDec.floatValue(), ValueType.Number));
+                this.instStack.push(new PrimitiveVariable(bigDec.floatValue(), ValueType.Number, radix));
                 return null;
             }
             if (precisionLength < 16 && !Double.isInfinite(bigDec.doubleValue())) {
-                this.instStack.push(new PrimitiveVariable(bigDec.doubleValue(), ValueType.Number));
+                this.instStack.push(new PrimitiveVariable(bigDec.doubleValue(), ValueType.Number, radix));
                 return null;
             }
-            this.instStack.push(new PrimitiveVariable(bigDec, ValueType.Number));
+            this.instStack.push(new PrimitiveVariable(bigDec, ValueType.Number, radix));
             return null;
         }
     }

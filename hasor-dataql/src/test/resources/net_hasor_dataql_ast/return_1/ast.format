@@ -1,0 +1,12 @@
+
+return 134;
+return -134;
+return "ssss";
+return {
+    "abc"
+};
+return {
+    "abc"
+};
+return [];
+return -1, [123];

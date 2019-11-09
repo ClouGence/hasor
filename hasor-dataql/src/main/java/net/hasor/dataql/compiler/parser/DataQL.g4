@@ -84,10 +84,10 @@ IDENTIFIER      : [_a-zA-Z] [_0-9a-zA-Z]*;
 rootInstSet     : optionInst* importInst* blockSet+ EOF ;
 
 /* 选项指令 */
-optionInst      : OPTION IDENTIFIER ASS primitiveValue;
+optionInst      : OPTION IDENTIFIER ASS primitiveValue ';'?;
 
 /* import指令 */
-importInst      : IMPORT ROU? STRING AS IDENTIFIER;
+importInst      : IMPORT ROU? STRING AS IDENTIFIER ';'?;
 
 /* 语句块 */
 blockSet        : OCBR ((varInst | ifInst | breakInst) (';')?)+ CCBR #multipleInst   // 多行语句
