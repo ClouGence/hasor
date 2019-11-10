@@ -16,8 +16,6 @@
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.compiler.ast.*;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,6 +44,10 @@ public class FunCallRouteVariable implements RouteVariable {
         return this.enterRoute;
     }
 
+    public List<Variable> getParamList() {
+        return paramList;
+    }
+
     @Override
     public void accept(AstVisitor astVisitor) {
         if (this.enterRoute != null) {
@@ -72,33 +74,5 @@ public class FunCallRouteVariable implements RouteVariable {
             this.paramList.get(i).doFormat(depth + 1, formatOption, writer);
         }
         writer.write(")");
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        //
-        int size = this.paramList.size();
-        int methodAddress = 0;
-        stackTree.newFrame();
-        {
-            // .输出 lambda 到一个新的函数中
-            InstQueue instQueue = queue.newMethodInst();
-            methodAddress = instQueue.getName();
-            //
-            // .函数定义
-            instQueue.inst(METHOD, size);
-            //
-            // .声明函数参数的变量位置
-            for (Variable name : this.paramList) {
-                int index = stackTree.push("");//name);//将变量名压栈，并返回栈中的位置
-                instQueue.inst(LOCAL, index, name);  //为栈中某个位置的变量命名
-            }
-            // .函数体
-            //            super.doCompiler(instQueue, stackTree);
-        }
-        stackTree.dropFrame();
-        //
-        // .指向函数的指针
-        queue.inst(M_REF, methodAddress);
     }
 }

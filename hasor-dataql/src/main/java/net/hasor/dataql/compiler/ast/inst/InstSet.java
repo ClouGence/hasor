@@ -19,8 +19,6 @@ import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.FormatWriter;
 import net.hasor.dataql.compiler.ast.Inst;
 import net.hasor.dataql.compiler.ast.InstVisitorContext;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,16 +58,6 @@ public class InstSet extends ArrayList<Inst> implements Inst {
         for (int i = 0; i < this.size(); i++) {
             Inst inst = this.get(i);
             inst.doFormat(depth, formatOption, writer);
-        }
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        if (this.isEmpty()) {
-            return;
-        }
-        for (Inst inst : this) {
-            inst.doCompiler(queue, stackTree);
         }
     }
 }

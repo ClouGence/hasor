@@ -17,8 +17,6 @@ package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.ast.inst.InstSet;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
@@ -39,6 +37,10 @@ public class LambdaVariable extends InstSet implements Variable {
             throw new java.lang.IllegalStateException(name + " param existing.");
         }
         this.paramList.add(name);
+    }
+
+    public List<String> getParamList() {
+        return paramList;
     }
 
     @Override
@@ -66,33 +68,5 @@ public class LambdaVariable extends InstSet implements Variable {
         super.doFormat(depth + 1, formatOption, writer);
         String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
         writer.write(fixedString + "}");
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        //
-        int size = this.paramList.size();
-        int methodAddress = 0;
-        stackTree.newFrame();
-        {
-            // .输出 lambda 到一个新的函数中
-            InstQueue instQueue = queue.newMethodInst();
-            methodAddress = instQueue.getName();
-            //
-            // .函数定义
-            instQueue.inst(METHOD, size);
-            //
-            // .声明函数参数的变量位置
-            for (String name : this.paramList) {
-                int index = stackTree.push(name);//将变量名压栈，并返回栈中的位置
-                instQueue.inst(LOCAL, index, name);  //为栈中某个位置的变量命名
-            }
-            // .函数体
-            super.doCompiler(instQueue, stackTree);
-        }
-        stackTree.dropFrame();
-        //
-        // .指向函数的指针
-        queue.inst(M_REF, methodAddress);
     }
 }

@@ -19,9 +19,6 @@ import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.FormatWriter;
 import net.hasor.dataql.compiler.ast.InstVisitorContext;
 import net.hasor.dataql.compiler.ast.Variable;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
-import net.hasor.dataql.compiler.qil.InstructionInfo;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
@@ -41,6 +38,10 @@ public class ListVariable implements Variable {
         if (valueExp != null) {
             this.expressionList.add(valueExp);
         }
+    }
+
+    public List<Variable> getExpressionList() {
+        return expressionList;
     }
 
     @Override
@@ -82,21 +83,6 @@ public class ListVariable implements Variable {
             writer.write("]");
         } else {
             writer.write("\n" + StringUtils.fixedString(' ', (depth - 1) * fixedLength) + "]");
-        }
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        InstructionInfo instruction = queue.lastInst();
-        if (instruction == null || ASA != instruction.getInstCode() || instruction.isCompilerMark()) {
-            queue.inst(NA, "");
-        } else {
-            instruction.setCompilerMark(true);
-        }
-        //
-        for (Variable exp : this.expressionList) {
-            exp.doCompiler(queue, stackTree);
-            queue.inst(PUSH);
         }
     }
 }

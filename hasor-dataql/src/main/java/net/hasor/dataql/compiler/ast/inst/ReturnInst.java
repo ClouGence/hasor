@@ -16,8 +16,6 @@
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.compiler.ast.*;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
@@ -34,6 +32,14 @@ public class ReturnInst implements Inst {
     public ReturnInst(int returnCode, Variable resultData) {
         this.returnCode = returnCode;
         this.resultData = resultData;
+    }
+
+    public int getReturnCode() {
+        return returnCode;
+    }
+
+    public Variable getResultData() {
+        return resultData;
     }
 
     @Override
@@ -57,11 +63,5 @@ public class ReturnInst implements Inst {
         }
         this.resultData.doFormat(depth + 1, formatOption, writer);
         writer.write(";\n");
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        this.resultData.doCompiler(queue, stackTree);
-        queue.inst(END);
     }
 }

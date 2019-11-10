@@ -17,9 +17,6 @@ package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.ast.expr.AtomExpression;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
-import net.hasor.dataql.compiler.qil.InstructionInfo;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
@@ -51,6 +48,18 @@ public class ObjectVariable implements Inst, Variable {
         }
         this.fieldSort.add(fieldName);
         this.objectData.put(fieldName, valueExp);
+    }
+
+    public List<String> getFieldSort() {
+        return fieldSort;
+    }
+
+    public String getObjectType() {
+        return objectType;
+    }
+
+    public Map<String, Variable> getObjectData() {
+        return objectData;
     }
 
     @Override
@@ -100,27 +109,5 @@ public class ObjectVariable implements Inst, Variable {
         }
         //
         writer.write("\n" + StringUtils.fixedString(' ', (depth - 1) * fixedLength) + "}");
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        InstructionInfo instruction = queue.lastInst();
-        if (instruction == null || ASM != instruction.getInstCode() || instruction.isCompilerMark()) {
-            queue.inst(NO, this.objectType);
-        } else {
-            instruction.setCompilerMark(true);
-        }
-        //
-        for (String fieldName : this.fieldSort) {
-            //
-            Variable expression = this.objectData.get(fieldName);
-            if (expression == null) {
-                continue;
-            }
-            //
-            expression.doCompiler(queue, stackTree);
-            queue.inst(PUT, fieldName);
-            //
-        }
     }
 }

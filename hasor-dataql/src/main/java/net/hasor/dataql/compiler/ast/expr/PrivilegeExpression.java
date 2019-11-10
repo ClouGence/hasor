@@ -19,8 +19,6 @@ import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.Expression;
 import net.hasor.dataql.compiler.ast.FormatWriter;
 import net.hasor.dataql.compiler.ast.InstVisitorContext;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
 
 import java.io.IOException;
 
@@ -34,6 +32,10 @@ public class PrivilegeExpression implements Expression {
 
     public PrivilegeExpression(Expression expression) {
         this.expression = expression;
+    }
+
+    public Expression getExpression() {
+        return expression;
     }
 
     @Override
@@ -56,10 +58,5 @@ public class PrivilegeExpression implements Expression {
         writer.write("(");
         this.expression.doFormat(depth, formatOption, writer);
         writer.write(")");
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        this.expression.doCompiler(queue, stackTree);
     }
 }

@@ -17,9 +17,6 @@ package net.hasor.dataql.compiler.ast.fmt;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.ast.value.ListVariable;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
-import net.hasor.dataql.compiler.qil.Opcodes;
 
 import java.io.IOException;
 
@@ -35,6 +32,14 @@ public class ListFormat implements Inst, Variable {
     public ListFormat(RouteVariable form, ListVariable formatTo) {
         this.form = form;
         this.formatTo = formatTo;
+    }
+
+    public RouteVariable getForm() {
+        return form;
+    }
+
+    public ListVariable getFormatTo() {
+        return formatTo;
     }
 
     @Override
@@ -53,12 +58,5 @@ public class ListFormat implements Inst, Variable {
         this.form.doFormat(depth, formatOption, writer);
         writer.write(" => ");
         this.formatTo.doFormat(depth, formatOption, writer);
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        queue.inst(Opcodes.ASA, "");
-        //        this.format.doCompiler(queue, stackTree);
-        queue.inst(Opcodes.ASE);
     }
 }

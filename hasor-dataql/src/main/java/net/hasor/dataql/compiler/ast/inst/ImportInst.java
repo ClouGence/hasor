@@ -19,8 +19,6 @@ import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.FormatWriter;
 import net.hasor.dataql.compiler.ast.Inst;
 import net.hasor.dataql.compiler.ast.InstVisitorContext;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
 
 import java.io.IOException;
 
@@ -44,6 +42,18 @@ public class ImportInst implements Inst {
         this.asName = asName;
     }
 
+    public ImportType getImportType() {
+        return importType;
+    }
+
+    public String getImportName() {
+        return importName;
+    }
+
+    public String getAsName() {
+        return asName;
+    }
+
     @Override
     public void accept(AstVisitor astVisitor) {
         astVisitor.visitInst(new InstVisitorContext(this) {
@@ -63,24 +73,5 @@ public class ImportInst implements Inst {
         }
         writer.write('"' + this.importName + '"');
         writer.write(" as " + this.asName + ";\n");
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        InstQueue instQueue = queue.newMethodInst();
-        instQueue.inst(LCALL, this.importName);
-        //
-        // .指向函数的指针
-        int methodAddress = instQueue.getName();
-        queue.inst(M_REF, methodAddress);
-        //
-        // .如果当前堆栈中存在该变量的定义，那么直接覆盖
-        int index = stackTree.containsWithCurrent(this.asName);
-        if (index >= 0) {
-            queue.inst(STORE, index);
-        } else {
-            int storeIndex = stackTree.push(this.asName);
-            queue.inst(STORE, storeIndex);
-        }
     }
 }

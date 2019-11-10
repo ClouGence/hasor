@@ -20,8 +20,6 @@ import net.hasor.dataql.compiler.ast.FormatWriter;
 import net.hasor.dataql.compiler.ast.Inst;
 import net.hasor.dataql.compiler.ast.InstVisitorContext;
 import net.hasor.dataql.compiler.ast.value.PrimitiveVariable;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
 
 import java.io.IOException;
 
@@ -37,6 +35,14 @@ public class OptionInst implements Inst {
     public OptionInst(String optKey, PrimitiveVariable optValue) {
         this.optKey = optKey;
         this.optValue = optValue;
+    }
+
+    public String getOptKey() {
+        return optKey;
+    }
+
+    public PrimitiveVariable getOptValue() {
+        return optValue;
     }
 
     @Override
@@ -55,12 +61,5 @@ public class OptionInst implements Inst {
         writer.write(opt);
         this.optValue.doFormat(depth + 1, formatOption, writer);
         writer.write(";\n");
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        //        queue.inst(LDC_S, this.optKey);
-        //        this.optValue.doCompiler(queue, stackTree);
-        //        queue.inst(OPT);
     }
 }

@@ -16,9 +16,6 @@
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.compiler.ast.*;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
-import net.hasor.dataql.compiler.qil.Label;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
@@ -38,6 +35,14 @@ public class SwitchInst implements Inst {
 
     private List<SwitchExpression> testBlockSet = new ArrayList<>();
     private InstSet                elseBlockSet = null;
+
+    public List<SwitchExpression> getTestBlockSet() {
+        return testBlockSet;
+    }
+
+    public InstSet getElseBlockSet() {
+        return elseBlockSet;
+    }
 
     /** 添加条件分支 */
     public void addElseif(Expression testExp, InstSet blockSet) {
@@ -128,79 +133,5 @@ public class SwitchInst implements Inst {
         } else {
             writer.write("\n");
         }
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        if (this.testBlockSet.isEmpty()) {
-            queue.inst(LDC_N, 0);
-            queue.inst(LDC_S, "inst if -> error.");
-            queue.inst(ERR);
-            return;
-        }
-        /*
-            if (a == b)
-                var a = b
-            elseif (a == null)
-                var b = a
-            else
-                var c = a
-            end
-
-            -----               // if (a == b)
-            LABEL   "label_0"
-            LOAD    1
-            LOAD    2
-            DO      "eq"
-            IF      "label_1"
-            ...
-            GOTO    "label_4"
-            -----               // elseif (a == null)
-            LABEL   "label_1"
-            LOAD    1
-            LDC_N
-            DO      "eq"
-            IF      "label_2"
-            ...
-            GOTO    "label_4"
-            -----               // else
-            GOTO    "label_2"
-            ...
-            -----
-            GOTO    "label_4"
-        */
-        //
-        // .if 和 elseif
-        //
-        Label finalLabel = queue.labelDef();  // else出口 Label
-        Label lastEnterIn = queue.labelDef(); // 最后一个入口 Label（随着if分支发生变化）
-        //
-        for (SwitchExpression switchExp : this.testBlockSet) {
-            //
-            // .标记if分支入口
-            queue.inst(LABEL, lastEnterIn);
-            //
-            // .产生新的入口，流给下一个if分支使用
-            lastEnterIn = queue.labelDef();
-            //
-            // .条件判断
-            Expression testExpression = switchExp.testExpression;
-            testExpression.doCompiler(queue, stackTree);
-            queue.inst(IF, lastEnterIn);//如果判断失败，跳转到下一个Label
-            //
-            // .if的body
-            InstSet instBlockSet = switchExp.instBlockSet;
-            instBlockSet.doCompiler(queue, stackTree);
-            queue.inst(GOTO, finalLabel);//执行完毕，跳转到总出口
-            //
-        }
-        // .else
-        queue.inst(LABEL, lastEnterIn);
-        if (this.elseBlockSet != null) {
-            this.elseBlockSet.doCompiler(queue, stackTree);
-            queue.inst(GOTO, finalLabel);
-        }
-        // .if 的结束点
-        queue.inst(LABEL, finalLabel);
     }
 }

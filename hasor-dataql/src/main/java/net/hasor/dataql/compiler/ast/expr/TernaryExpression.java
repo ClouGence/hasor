@@ -19,9 +19,6 @@ import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.Expression;
 import net.hasor.dataql.compiler.ast.FormatWriter;
 import net.hasor.dataql.compiler.ast.InstVisitorContext;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
-import net.hasor.dataql.compiler.qil.Label;
 
 import java.io.IOException;
 
@@ -39,6 +36,18 @@ public class TernaryExpression implements Expression {
         this.testExpression = testExp;
         this.thenExpression = thenExp;
         this.elseExpression = elseExp;
+    }
+
+    public Expression getTestExpression() {
+        return testExpression;
+    }
+
+    public Expression getThenExpression() {
+        return thenExpression;
+    }
+
+    public Expression getElseExpression() {
+        return elseExpression;
     }
 
     @Override
@@ -60,21 +69,5 @@ public class TernaryExpression implements Expression {
         this.thenExpression.doFormat(depth, formatOption, writer);
         writer.write(" : ");
         this.elseExpression.doFormat(depth, formatOption, writer);
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        Label elseEnterIn = queue.labelDef(); //
-        //
-        // .测试表达式
-        this.testExpression.doCompiler(queue, stackTree);
-        queue.inst(IF, elseEnterIn);//如果判断失败，跳转到下一个Label
-        //
-        // .第一个表达式
-        this.thenExpression.doCompiler(queue, stackTree);
-        //
-        // .第二个表达式
-        queue.inst(LABEL, elseEnterIn);
-        this.elseExpression.doCompiler(queue, stackTree);
     }
 }

@@ -16,9 +16,6 @@
 package net.hasor.dataql.compiler.ast.expr;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.compiler.ast.*;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
-import net.hasor.dataql.compiler.qil.Opcodes;
 
 import java.io.IOException;
 
@@ -36,6 +33,14 @@ public class UnaryExpression implements Inst, Variable {
         this.dyadicSymbol = dyadicSymbol;
     }
 
+    public Expression getTarget() {
+        return target;
+    }
+
+    public String getDyadicSymbol() {
+        return dyadicSymbol;
+    }
+
     @Override
     public void accept(AstVisitor astVisitor) {
         astVisitor.visitInst(new InstVisitorContext(this) {
@@ -50,11 +55,5 @@ public class UnaryExpression implements Inst, Variable {
     public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
         writer.write(this.dyadicSymbol);
         this.target.doFormat(depth, formatOption, writer);
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        this.target.doCompiler(queue, stackTree);
-        queue.inst(Opcodes.UO, this.dyadicSymbol);
     }
 }

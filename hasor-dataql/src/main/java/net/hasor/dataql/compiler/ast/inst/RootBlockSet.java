@@ -19,8 +19,6 @@ import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.FormatWriter;
 import net.hasor.dataql.compiler.ast.Inst;
 import net.hasor.dataql.compiler.ast.InstVisitorContext;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.dataql.runtime.OptionSet;
 
 import java.io.IOException;
@@ -46,6 +44,14 @@ public class RootBlockSet extends InstSet implements QueryModel {
     /** 添加导入 */
     public void addImportInst(ImportInst inst) {
         this.importSet.add(Objects.requireNonNull(inst, "import inst npe."));
+    }
+
+    public List<OptionInst> getOptionSet() {
+        return optionSet;
+    }
+
+    public List<ImportInst> getImportSet() {
+        return importSet;
     }
 
     @Override
@@ -79,15 +85,5 @@ public class RootBlockSet extends InstSet implements QueryModel {
         writer.write("\n");
         super.doFormat(0, formatOptions, new FormatWriter(writer));
         writer.flush();
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        //        if (this.instList == null || this.instList.isEmpty()) {
-        //            return;
-        //        }
-        //        for (Inst inst : this.instList) {
-        //            inst.doCompiler(queue, stackTree);
-        //        }
     }
 }

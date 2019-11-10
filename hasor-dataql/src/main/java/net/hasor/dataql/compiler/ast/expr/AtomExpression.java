@@ -16,8 +16,6 @@
 package net.hasor.dataql.compiler.ast.expr;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.compiler.ast.*;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
 
 import java.io.IOException;
 
@@ -50,10 +48,5 @@ public class AtomExpression implements Expression {
     @Override
     public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
         this.variableExpression.doFormat(depth, formatOption, writer);
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        this.variableExpression.doCompiler(queue, stackTree);
     }
 }

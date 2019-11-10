@@ -16,8 +16,6 @@
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.compiler.ast.*;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
@@ -34,6 +32,14 @@ public class ExitInst implements Inst {
     public ExitInst(int exitCode, Variable exitData) {
         this.exitCode = exitCode;
         this.exitData = exitData;
+    }
+
+    public int getExitCode() {
+        return exitCode;
+    }
+
+    public Variable getExitData() {
+        return exitData;
     }
 
     @Override
@@ -57,12 +63,5 @@ public class ExitInst implements Inst {
         }
         this.exitData.doFormat(depth + 1, formatOption, writer);
         writer.write(";\n");
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        queue.inst(LDC_D, this.exitCode);
-        this.exitData.doCompiler(queue, stackTree);
-        queue.inst(EXIT);
     }
 }

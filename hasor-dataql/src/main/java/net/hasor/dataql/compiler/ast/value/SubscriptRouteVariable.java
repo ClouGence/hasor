@@ -16,8 +16,6 @@
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.compiler.ast.*;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
 
 import java.io.IOException;
 
@@ -46,6 +44,14 @@ public class SubscriptRouteVariable implements Variable, RouteVariable {
         return this.parent;
     }
 
+    public SubType getSubType() {
+        return subType;
+    }
+
+    public String getSubValue() {
+        return subValue;
+    }
+
     @Override
     public void accept(AstVisitor astVisitor) {
         if (this.parent != null) {
@@ -67,10 +73,5 @@ public class SubscriptRouteVariable implements Variable, RouteVariable {
         } else {
             writer.write("[" + subValue + "]");
         }
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        //
     }
 }

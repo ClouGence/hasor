@@ -17,8 +17,6 @@ package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
@@ -43,7 +41,7 @@ public class NameRouteVariable implements Variable, RouteVariable {
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     @Override
@@ -79,10 +77,5 @@ public class NameRouteVariable implements Variable, RouteVariable {
         if (StringUtils.isNotBlank(routeType.getCode())) {
             writer.write("}");
         }
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        //
     }
 }

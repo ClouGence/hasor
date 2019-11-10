@@ -16,8 +16,6 @@
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.compiler.ast.*;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
@@ -34,6 +32,14 @@ public class VarInst implements Inst {
     public VarInst(String varName, Variable value) {
         this.varName = varName;
         this.value = value;
+    }
+
+    public String getVarName() {
+        return varName;
+    }
+
+    public Variable getValue() {
+        return value;
     }
 
     @Override
@@ -53,20 +59,5 @@ public class VarInst implements Inst {
         writer.write(fixedString + String.format("var %s = ", this.varName));
         this.value.doFormat(depth, formatOption, writer);
         writer.write(";\n");
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        //        // .表达式指令
-        //        this.value.doCompiler(queue, stackTree);
-        //        //
-        //        // .如果当前堆栈中存在该变量的定义，那么直接覆盖
-        //        int index = stackTree.containsWithCurrent(this.varName);
-        //        if (index >= 0) {
-        //            queue.inst(STORE, index);
-        //        } else {
-        //            int storeIndex = stackTree.push(this.varName);
-        //            queue.inst(STORE, storeIndex);
-        //        }
     }
 }

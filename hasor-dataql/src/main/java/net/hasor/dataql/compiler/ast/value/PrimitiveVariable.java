@@ -16,8 +16,6 @@
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.compiler.ast.*;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstQueue;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -48,6 +46,18 @@ public class PrimitiveVariable implements Variable, Inst {
         this.value = value;
         this.valueType = valueType;
         this.radix = radix;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public ValueType getValueType() {
+        return valueType;
+    }
+
+    public int getRadix() {
+        return radix;
     }
 
     @Override
@@ -116,22 +126,6 @@ public class PrimitiveVariable implements Variable, Inst {
             }
         } else {
             writer.write(value.toString());
-        }
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        if (this.valueType == ValueType.Boolean) {
-            queue.inst(LDC_B, this.value);
-        }
-        if (this.valueType == ValueType.Null) {
-            queue.inst(LDC_N, this.value);
-        }
-        if (this.valueType == ValueType.Number) {
-            queue.inst(LDC_D, this.value);
-        }
-        if (this.valueType == ValueType.String) {
-            queue.inst(LDC_S, this.value);
         }
     }
 }
