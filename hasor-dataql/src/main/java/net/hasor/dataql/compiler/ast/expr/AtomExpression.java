@@ -33,6 +33,10 @@ public class AtomExpression implements Expression {
         this.variableExpression = variableExpression;
     }
 
+    public Variable getVariableExpression() {
+        return variableExpression;
+    }
+
     @Override
     public void accept(AstVisitor astVisitor) {
         astVisitor.visitInst(new InstVisitorContext(this) {

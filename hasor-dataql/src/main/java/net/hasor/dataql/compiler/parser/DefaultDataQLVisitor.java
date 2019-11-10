@@ -83,7 +83,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             if ("@".equals(rouNode.getText())) {
                 importType = ImportType.Resource;
             } else {
-                throw new RuntimeException("paser failed -> visitImportInst.");
+                throw new RuntimeException("parser failed -> visitImportInst.");
             }
         }
         //
@@ -113,6 +113,11 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         VarInst varInst = new VarInst(ctx.IDENTIFIER().getText(), (Variable) this.instStack.pop());
         ((InstSet) this.instStack.peek()).addInst(varInst);
         return null;
+    }
+
+    @Override
+    public T visitAnyObject(AnyObjectContext ctx) {
+        return visitChildren(ctx);
     }
 
     @Override
@@ -153,13 +158,8 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             breakCode = Integer.parseInt(breakCodeNode.getText());
         }
         //
-        PolymericObjectContext polymeric = ctx.polymericObject();
-        LambdaDefContext lambda = ctx.lambdaDef();
-        if (lambda != null) {
-            lambda.accept(this);
-        } else {
-            polymeric.accept(this);
-        }
+        AnyObjectContext anyObject = ctx.anyObject();
+        anyObject.accept(this);
         Variable variable = (Variable) this.instStack.pop();
         //
         if (ctx.EXIT() != null) {
@@ -174,64 +174,25 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             ((InstSet) this.instStack.peek()).addInst(new ReturnInst(breakCode, variable));
             return null;
         }
-        throw new RuntimeException("paser failed -> visitBreakInst.");
+        throw new RuntimeException("parser failed -> visitBreakInst.");
     }
 
     @Override
     public T visitLambdaDef(LambdaDefContext ctx) {
-        this.instStack.push(new LambdaVariable());
-        LambdaDefParametersContext defParameters = ctx.lambdaDefParameters();
-        if (defParameters != null) {
-            defParameters.accept(this);
+        LambdaVariable lambdaVariable = new LambdaVariable();
+        List<TerminalNode> identifierList = ctx.IDENTIFIER();
+        if (identifierList != null) {
+            for (TerminalNode terminalNode : identifierList) {
+                lambdaVariable.addParam(terminalNode.getText());
+            }
         }
+        //
+        this.instStack.push(lambdaVariable);
         //
         ctx.blockSet().accept(this);
         InstSet instSet = (InstSet) this.instStack.pop();
         ((LambdaVariable) this.instStack.peek()).addInstSet(instSet);
         return null;
-    }
-
-    @Override
-    public T visitLambdaDefParameters(LambdaDefParametersContext ctx) {
-        List<TerminalNode> identifierList = ctx.IDENTIFIER();
-        if (identifierList != null) {
-            for (TerminalNode terminalNode : identifierList) {
-                ((LambdaVariable) this.instStack.peek()).addParam(terminalNode.getText());
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public T visitConvertObject(ConvertObjectContext ctx) {
-        FuncCallContext funcCall = ctx.funcCall();
-        RouteCallContext routeCall = ctx.routeCall();
-        if (funcCall != null) {
-            funcCall.accept(this);
-        } else {
-            routeCall.accept(this);
-        }
-        //
-        ListValueContext listValue = ctx.listValue();
-        ObjectValueContext objectValue = ctx.objectValue();
-        //
-        if (listValue != null) {
-            listValue.accept(this);
-            ListVariable listVariable = (ListVariable) this.instStack.pop();
-            RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
-            this.instStack.push(new ListFormat(routeVariable, listVariable));
-        } else {
-            objectValue.accept(this);
-            ObjectVariable objectVariable = (ObjectVariable) this.instStack.pop();
-            RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
-            this.instStack.push(new ObjectFormat(routeVariable, objectVariable));
-        }
-        return null;
-    }
-
-    @Override
-    public T visitConvertRaw(ConvertRawContext ctx) {
-        return visitChildren(ctx);
     }
 
     @Override
@@ -245,7 +206,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     public T visitObjectKeyValue(ObjectKeyValueContext ctx) {
         ObjectVariable objectVariable = (ObjectVariable) this.instStack.peek();
         String fieldKey = fixString(ctx.STRING());
-        PolymericObjectContext polymericObject = ctx.polymericObject();
+        AnyObjectContext polymericObject = ctx.anyObject();
         if (polymericObject != null) {
             polymericObject.accept(this);
             Variable valueExp = (Variable) this.instStack.pop();
@@ -261,9 +222,9 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     @Override
     public T visitListValue(ListValueContext ctx) {
         ListVariable listVariable = new ListVariable();
-        List<PolymericObjectContext> polymericList = ctx.polymericObject();
+        List<AnyObjectContext> polymericList = ctx.anyObject();
         if (polymericList != null) {
-            for (PolymericObjectContext polymeric : polymericList) {
+            for (AnyObjectContext polymeric : polymericList) {
                 polymeric.accept(this);
                 Variable variable = (Variable) this.instStack.pop();
                 listVariable.addItem(variable);
@@ -361,13 +322,13 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
     @Override
     public T visitFuncCall(FuncCallContext ctx) {
-        ctx.routeCall().accept(this);
+        ctx.routeMapping().accept(this);
         //
         RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
         FunCallRouteVariable funCall = new FunCallRouteVariable(routeVariable);
-        List<PolymericObjectContext> paramLists = ctx.polymericObject();
+        List<AnyObjectContext> paramLists = ctx.anyObject();
         if (paramLists != null) {
-            for (PolymericObjectContext param : paramLists) {
+            for (AnyObjectContext param : paramLists) {
                 param.accept(this);
                 Variable paramVar = (Variable) this.instStack.pop();
                 funCall.addParam(paramVar);
@@ -383,24 +344,61 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     }
 
     @Override
-    public T visitFuncCallResult(FuncCallResultContext ctx) {
-        NormalRouteCopyContext normalRoute = ctx.normalRouteCopy();
+    public T visitFuncCallResult_route(FuncCallResult_routeContext ctx) {
         List<RouteSubscriptContext> subscriptList = ctx.routeSubscript();
-        //
-        FunCallRouteVariable funCallRoute = (FunCallRouteVariable) this.instStack.pop();
-        this.instStack.push(new EnterRouteVariable(RouteType.Enter, funCallRoute));
-        //
-        if (normalRoute != null) {
-            normalRoute.accept(this);
-            return null;
-        }
         if (subscriptList != null) {
             for (RouteSubscriptContext context : subscriptList) {
                 context.accept(this);
             }
+        }
+        //
+        ctx.routeNameSet().accept(this);
+        //
+        FuncCallResultContext funcCallResult = ctx.funcCallResult();
+        if (funcCallResult != null) {
+            funcCallResult.accept(this);
             return null;
         }
-        throw new RuntimeException("paser failed -> visitFuncCallResult.");
+        return null;
+    }
+
+    @Override
+    public T visitFuncCallResult_convert(FuncCallResult_convertContext ctx) {
+        ListValueContext listValue = ctx.listValue();
+        ObjectValueContext objectValue = ctx.objectValue();
+        if (listValue != null) {
+            listValue.accept(this);
+            ListVariable listVariable = (ListVariable) this.instStack.pop();
+            RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
+            this.instStack.push(new ListFormat(routeVariable, listVariable));
+        } else {
+            objectValue.accept(this);
+            ObjectVariable objectVariable = (ObjectVariable) this.instStack.pop();
+            RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
+            this.instStack.push(new ObjectFormat(routeVariable, objectVariable));
+        }
+        return null;
+    }
+
+    @Override
+    public T visitFuncCallResult_call(FuncCallResult_callContext ctx) {
+        RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
+        FunCallRouteVariable funCall = new FunCallRouteVariable(routeVariable);
+        List<AnyObjectContext> paramLists = ctx.anyObject();
+        if (paramLists != null) {
+            for (AnyObjectContext param : paramLists) {
+                param.accept(this);
+                Variable paramVar = (Variable) this.instStack.pop();
+                funCall.addParam(paramVar);
+            }
+        }
+        //
+        this.instStack.push(funCall);
+        FuncCallResultContext funcCallResult = ctx.funcCallResult();
+        if (funcCallResult != null) {
+            funcCallResult.accept(this);
+        }
+        return null;
     }
 
     @Override
@@ -417,24 +415,48 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             routeType = RouteType.Special_C;
         }
         //
-        this.instStack.push(new EnterRouteVariable(routeType, null));
-        ctx.normalRouteCopy().accept(this);
+        EnterRouteVariable enter = new EnterRouteVariable(routeType, null);
+        String identifier = ctx.IDENTIFIER().getText();
+        this.instStack.push(new NameRouteVariable(enter, identifier));
         return null;
     }
 
     @Override
     public T visitNormalRoute(NormalRouteContext ctx) {
-        this.instStack.push(new EnterRouteVariable(RouteType.Context, null));
+        RouteVariable parent = null;
+        if (!(this.instStack.peek() instanceof RouteVariable)) {
+            this.instStack.push(new EnterRouteVariable(RouteType.Context, parent));
+        }
         return visitChildren(ctx);
     }
 
     @Override
-    public T visitNormalRouteCopy(NormalRouteCopyContext ctx) {
+    public T visitConvertRoute(ConvertRouteContext ctx) {
+        ctx.routeMapping().accept(this);
+        //
+        ListValueContext listValue = ctx.listValue();
+        ObjectValueContext objectValue = ctx.objectValue();
+        if (listValue != null) {
+            listValue.accept(this);
+            ListVariable listVariable = (ListVariable) this.instStack.pop();
+            RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
+            this.instStack.push(new ListFormat(routeVariable, listVariable));
+        } else {
+            objectValue.accept(this);
+            ObjectVariable objectVariable = (ObjectVariable) this.instStack.pop();
+            RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
+            this.instStack.push(new ObjectFormat(routeVariable, objectVariable));
+        }
+        return null;
+    }
+
+    @Override
+    public T visitRouteNameSet(RouteNameSetContext ctx) {
         return visitChildren(ctx);
     }
 
     @Override
-    public T visitRouteItem(RouteItemContext ctx) {
+    public T visitRouteName(RouteNameContext ctx) {
         Object peek = this.instStack.peek();
         RouteVariable parent = null;
         if (peek instanceof RouteVariable) {

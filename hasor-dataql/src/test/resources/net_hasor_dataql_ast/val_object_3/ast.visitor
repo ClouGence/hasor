@@ -1,0 +1,10 @@
+IN - RootBlockSet
+    IN - ReturnInst
+        IN - ObjectVariable
+            IN - EnterRouteVariable
+            OUT - EnterRouteVariable
+            IN - NameRouteVariable
+            OUT - NameRouteVariable
+        OUT - ObjectVariable
+    OUT - ReturnInst
+OUT - RootBlockSet

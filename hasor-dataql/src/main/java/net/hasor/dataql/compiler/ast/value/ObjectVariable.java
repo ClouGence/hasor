@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.expr.AtomExpression;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.dataql.compiler.qil.InstructionInfo;
@@ -83,12 +84,18 @@ public class ObjectVariable implements Inst, Variable {
             writer.write(fixedString + quoteChar + newKey + quoteChar);
             //
             Variable variable = this.objectData.get(key);
+            if (variable instanceof AtomExpression) {
+                variable = ((AtomExpression) variable).getVariableExpression();
+            }
             if (variable instanceof NameRouteVariable) {
                 NameRouteVariable nameRouteVariable = (NameRouteVariable) variable;
                 if (nameRouteVariable.getParent() instanceof EnterRouteVariable && !key.equals(nameRouteVariable.getName())) {
                     writer.write(" : ");
                     variable.doFormat(depth + 1, formatOption, writer);
                 }
+            } else {
+                writer.write(" : ");
+                variable.doFormat(depth + 1, formatOption, writer);
             }
         }
         //

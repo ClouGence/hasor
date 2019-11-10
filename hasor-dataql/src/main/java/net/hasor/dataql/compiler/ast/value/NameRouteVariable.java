@@ -19,7 +19,6 @@ import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
 import net.hasor.dataql.compiler.qil.CompilerStack;
 import net.hasor.dataql.compiler.qil.InstQueue;
-import net.hasor.dataql.runtime.OptionSet;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
@@ -59,33 +58,18 @@ public class NameRouteVariable implements Variable, RouteVariable {
         });
     }
 
-    private static String ignoreName = NameRouteVariable.class.getName() + "_ignore_routeType";
-
     @Override
     public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
         RouteType routeType = RouteType.Context;
-        String optValue = (String) formatOption.getOption(ignoreName);
-        if (!"true".equals(optValue)) {
-            RouteVariable parent = this;
-            while (true) {
-                if (parent == null) {
-                    break;
-                }
-                if (parent instanceof EnterRouteVariable) {
-                    routeType = ((EnterRouteVariable) parent).getRouteType();
-                    break;
-                }
-                parent = parent.getParent();
-            }
+        if (this.parent instanceof EnterRouteVariable) {
+            routeType = ((EnterRouteVariable) parent).getRouteType();
         }
         //
         if (StringUtils.isNotBlank(routeType.getCode())) {
             writer.write(routeType.getCode() + "{");
         }
         //
-        OptionSet optionSet = new OptionSet(formatOption);
-        optionSet.setOption(ignoreName, "true");
-        this.parent.doFormat(depth, optionSet, writer);
+        this.parent.doFormat(depth, formatOption, writer);
         if (this.parent instanceof EnterRouteVariable) {
             writer.write(this.name);
         } else {

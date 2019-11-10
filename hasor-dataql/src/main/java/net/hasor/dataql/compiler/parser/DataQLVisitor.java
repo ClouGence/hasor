@@ -43,12 +43,6 @@ public interface DataQLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSingleInst(DataQLParser.SingleInstContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DataQLParser#varInst}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVarInst(DataQLParser.VarInstContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link DataQLParser#ifInst}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -67,25 +61,83 @@ public interface DataQLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLambdaDef(DataQLParser.LambdaDefContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DataQLParser#lambdaDefParameters}.
+	 * Visit a parse tree produced by {@link DataQLParser#varInst}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitLambdaDefParameters(DataQLParser.LambdaDefParametersContext ctx);
+	T visitVarInst(DataQLParser.VarInstContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code convertObject}
-	 * labeled alternative in {@link DataQLParser#polymericObject}.
+	 * Visit a parse tree produced by {@link DataQLParser#anyObject}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitConvertObject(DataQLParser.ConvertObjectContext ctx);
+	T visitAnyObject(DataQLParser.AnyObjectContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code convertRaw}
-	 * labeled alternative in {@link DataQLParser#polymericObject}.
+	 * Visit a parse tree produced by the {@code specialRoute}
+	 * labeled alternative in {@link DataQLParser#routeMapping}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitConvertRaw(DataQLParser.ConvertRawContext ctx);
+	T visitSpecialRoute(DataQLParser.SpecialRouteContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code normalRoute}
+	 * labeled alternative in {@link DataQLParser#routeMapping}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNormalRoute(DataQLParser.NormalRouteContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code convertRoute}
+	 * labeled alternative in {@link DataQLParser#routeMapping}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConvertRoute(DataQLParser.ConvertRouteContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DataQLParser#routeNameSet}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRouteNameSet(DataQLParser.RouteNameSetContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DataQLParser#routeName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRouteName(DataQLParser.RouteNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DataQLParser#routeSubscript}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRouteSubscript(DataQLParser.RouteSubscriptContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DataQLParser#funcCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncCall(DataQLParser.FuncCallContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code funcCallResult_route}
+	 * labeled alternative in {@link DataQLParser#funcCallResult}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncCallResult_route(DataQLParser.FuncCallResult_routeContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code funcCallResult_convert}
+	 * labeled alternative in {@link DataQLParser#funcCallResult}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncCallResult_convert(DataQLParser.FuncCallResult_convertContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code funcCallResult_call}
+	 * labeled alternative in {@link DataQLParser#funcCallResult}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncCallResult_call(DataQLParser.FuncCallResult_callContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DataQLParser#objectValue}.
 	 * @param ctx the parse tree
@@ -133,49 +185,12 @@ public interface DataQLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNumberValue(DataQLParser.NumberValueContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DataQLParser#funcCall}.
+	 * Visit a parse tree produced by the {@code unaryExpr}
+	 * labeled alternative in {@link DataQLParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFuncCall(DataQLParser.FuncCallContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link DataQLParser#funcCallResult}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFuncCallResult(DataQLParser.FuncCallResultContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code specialRoute}
-	 * labeled alternative in {@link DataQLParser#routeCall}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSpecialRoute(DataQLParser.SpecialRouteContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code normalRoute}
-	 * labeled alternative in {@link DataQLParser#routeCall}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNormalRoute(DataQLParser.NormalRouteContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link DataQLParser#normalRouteCopy}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNormalRouteCopy(DataQLParser.NormalRouteCopyContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link DataQLParser#routeItem}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRouteItem(DataQLParser.RouteItemContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link DataQLParser#routeSubscript}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRouteSubscript(DataQLParser.RouteSubscriptContext ctx);
+	T visitUnaryExpr(DataQLParser.UnaryExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code privilegeExpr}
 	 * labeled alternative in {@link DataQLParser#expr}.
@@ -183,13 +198,6 @@ public interface DataQLVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPrivilegeExpr(DataQLParser.PrivilegeExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code unaryExpr}
-	 * labeled alternative in {@link DataQLParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitUnaryExpr(DataQLParser.UnaryExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code multipleExpr}
 	 * labeled alternative in {@link DataQLParser#expr}.

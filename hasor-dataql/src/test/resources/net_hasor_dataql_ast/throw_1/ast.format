@@ -3,7 +3,7 @@ throw 134;
 throw -134;
 throw "ssss";
 throw {
-    "abc"
+    "abc" : aa
 };
 throw {
     "abc"

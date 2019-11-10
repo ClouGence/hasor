@@ -78,6 +78,7 @@ public class RootBlockSet extends InstSet implements QueryModel {
         }
         writer.write("\n");
         super.doFormat(0, formatOptions, new FormatWriter(writer));
+        writer.flush();
     }
 
     @Override

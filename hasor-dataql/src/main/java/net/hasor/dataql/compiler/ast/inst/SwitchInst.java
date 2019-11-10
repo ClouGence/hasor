@@ -71,7 +71,10 @@ public class SwitchInst implements Inst {
     @Override
     public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
         String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
-        boolean useMultiple = this.elseBlockSet == null || this.elseBlockSet.size() > 1;
+        boolean useMultiple = false;
+        if (this.elseBlockSet != null && this.elseBlockSet.size() > 1) {
+            useMultiple = true;
+        }
         for (SwitchExpression switchExpr : this.testBlockSet) {
             if (useMultiple) {
                 break;

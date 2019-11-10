@@ -13,12 +13,10 @@ IN - RootBlockSet
     OUT - ExitInst
     IN - ExitInst
         IN - ObjectVariable
-            IN - AtomExpression
-                IN - EnterRouteVariable
-                OUT - EnterRouteVariable
-                IN - NameRouteVariable
-                OUT - NameRouteVariable
-            OUT - AtomExpression
+            IN - EnterRouteVariable
+            OUT - EnterRouteVariable
+            IN - NameRouteVariable
+            OUT - NameRouteVariable
         OUT - ObjectVariable
     OUT - ExitInst
     IN - ExitInst

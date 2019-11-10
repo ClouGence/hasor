@@ -1,0 +1,10 @@
+IN - RootBlockSet
+    IN - ReturnInst
+        IN - LambdaVariable
+            IN - ReturnInst
+                IN - PrimitiveVariable
+                OUT - PrimitiveVariable
+            OUT - ReturnInst
+        OUT - LambdaVariable
+    OUT - ReturnInst
+OUT - RootBlockSet

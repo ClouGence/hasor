@@ -3,7 +3,7 @@ return 134;
 return -134;
 return "ssss";
 return {
-    "abc"
+    "abc" : aa
 };
 return {
     "abc"

@@ -1,0 +1,13 @@
+return a => {}
+
+return b => {
+    "abc"  ,"cde"
+}
+
+return b => {
+    "abc"
+}
+
+return b => {
+    "abc":ccc, 'cde' :dddd
+}

@@ -112,7 +112,7 @@ public class PrimitiveVariable implements Variable, Inst {
             } else if (number instanceof BigDecimal) {
                 writer.write(number.toString());
             } else {
-                writer.write(number.toString());
+                throw new RuntimeException("not support number type.");
             }
         } else {
             writer.write(value.toString());

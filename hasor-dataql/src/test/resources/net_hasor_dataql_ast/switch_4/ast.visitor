@@ -1,0 +1,24 @@
+IN - RootBlockSet
+    IN - SwitchInst
+        IN - DyadicExpression
+            IN - AtomExpression
+                IN - EnterRouteVariable
+                OUT - EnterRouteVariable
+                IN - NameRouteVariable
+                OUT - NameRouteVariable
+            OUT - AtomExpression
+            IN - AtomExpression
+                IN - EnterRouteVariable
+                OUT - EnterRouteVariable
+                IN - NameRouteVariable
+                OUT - NameRouteVariable
+            OUT - AtomExpression
+        OUT - DyadicExpression
+        IN - InstSet
+            IN - VarInst
+                IN - PrimitiveVariable
+                OUT - PrimitiveVariable
+            OUT - VarInst
+        OUT - InstSet
+    OUT - SwitchInst
+OUT - RootBlockSet
