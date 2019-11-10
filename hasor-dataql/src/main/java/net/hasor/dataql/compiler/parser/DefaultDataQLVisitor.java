@@ -544,7 +544,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
     @Override
     public T visitTernaryExpr(TernaryExprContext ctx) {
-        ctx.accept(this);
+        visitChildren(ctx);
         Expression expr3 = (Expression) this.instStack.pop();
         Expression expr2 = (Expression) this.instStack.pop();
         Expression expr1 = (Expression) this.instStack.pop();

@@ -23,6 +23,11 @@
 
     <!-- 引用依赖 -->
     <dependencies>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.7.2</version>
+        </dependency>
         <!-- Commons -->
         <dependency>
             <groupId>net.hasor</groupId>
