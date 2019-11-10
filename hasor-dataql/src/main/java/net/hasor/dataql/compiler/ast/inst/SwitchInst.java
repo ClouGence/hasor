@@ -61,7 +61,9 @@ public class SwitchInst implements Inst {
                     switchExpr.testExpression.accept(astVisitor);
                     switchExpr.instBlockSet.accept(astVisitor);
                 }
-                elseBlockSet.accept(astVisitor);
+                if (elseBlockSet != null) {
+                    elseBlockSet.accept(astVisitor);
+                }
             }
         });
     }

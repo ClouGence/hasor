@@ -1,12 +1,12 @@
 IN - RootBlockSet
-IN - ImportInst
-OUT - ImportInst
-IN - ImportInst
-OUT - ImportInst
-IN - ImportInst
-OUT - ImportInst
-IN - ReturnInst
-IN - PrimitiveVariable
-OUT - PrimitiveVariable
-OUT - ReturnInst
+    IN - ImportInst
+    OUT - ImportInst
+    IN - ImportInst
+    OUT - ImportInst
+    IN - ImportInst
+    OUT - ImportInst
+    IN - ReturnInst
+        IN - PrimitiveVariable
+        OUT - PrimitiveVariable
+    OUT - ReturnInst
 OUT - RootBlockSet
