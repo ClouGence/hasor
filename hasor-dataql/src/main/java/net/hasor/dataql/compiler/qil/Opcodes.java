@@ -42,11 +42,13 @@ public interface Opcodes {
     public static final byte ASE    = 44; // 结果结束（例：ASA）
     //
     // -------------------------------------------------------------- 操作指令
+    public static final byte GET    = 52; // 从对象中获取属性（例：GET,"xxxx"）
+    public static final byte PULL   = 54; // 从 Array 中获取元素（例：PULL sss）
     public static final byte PUT    = 51; // 加到对象结果集中（例：PUT,"xxxx"）
-    public static final byte PUSH   = 52; // 加到 Array 结果集中（例：PUSH）
-    public static final byte ROU    = 53; // 寻值（例：ROU,"xxxxx"）
-    public static final byte UO     = 54; // 一元运算
-    public static final byte DO     = 55; // 二元运算
+    public static final byte PUSH   = 53; // 加到 Array 结果集中（例：PUSH）
+    public static final byte ROU    = 55; // 寻值（例：ROU,"xxxxx"）
+    public static final byte UO     = 56; // 一元运算
+    public static final byte DO     = 57; // 二元运算
     //
     // -------------------------------------------------------------- 调用指令
     public static final byte CALL   = 61; // 发起服务调用（例：CALL,"xxxxx",2）
@@ -60,9 +62,9 @@ public interface Opcodes {
     // -------------------------------------------------------------- 控制指令
     public static final byte IF     = 81; // if（条件判断成功，执行下一条指令。否则执行 GOTO跳转。）
     public static final byte GOTO   = 82; // 执行跳转
-    public static final byte END    = 83; // 结束指令序列并返回值（消耗：1个元素，产出：0个元素）
+    public static final byte RETURN = 83; // 结束指令序列并返回值（消耗：1个元素，产出：0个元素）
     public static final byte EXIT   = 84; // 结束所有指令序列的执行并返回结果（消耗：2个元素，产出：0个元素）
-    public static final byte ERR    = 85; // 结束指令序列并抛出异常（消耗：2个元素，产出：0个元素）
+    public static final byte THROW  = 85; // 结束指令序列并抛出异常（消耗：2个元素，产出：0个元素）
     //
     // -------------------------------------------------------------- 辅助指令
     public static final byte OPT    = 1; // 选项参数（消耗：2个元素，产出：0个元素）

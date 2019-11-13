@@ -1,0 +1,14 @@
+IN - RootBlockSet
+    IN - ReturnInst
+        IN - PrimitiveVariable
+        OUT - PrimitiveVariable
+    OUT - ReturnInst
+    IN - ReturnInst
+        IN - PrimitiveVariable
+        OUT - PrimitiveVariable
+    OUT - ReturnInst
+    IN - ReturnInst
+        IN - PrimitiveVariable
+        OUT - PrimitiveVariable
+    OUT - ReturnInst
+OUT - RootBlockSet

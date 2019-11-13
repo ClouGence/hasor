@@ -1,19 +1,9 @@
 IN - RootBlockSet
     IN - SwitchInst
-        IN - DyadicExpression
-            IN - AtomExpression
-                IN - EnterRouteVariable
-                OUT - EnterRouteVariable
-                IN - NameRouteVariable
-                OUT - NameRouteVariable
-            OUT - AtomExpression
-            IN - AtomExpression
-                IN - EnterRouteVariable
-                OUT - EnterRouteVariable
-                IN - NameRouteVariable
-                OUT - NameRouteVariable
-            OUT - AtomExpression
-        OUT - DyadicExpression
+        IN - AtomExpression
+            IN - PrimitiveVariable
+            OUT - PrimitiveVariable
+        OUT - AtomExpression
         IN - InstSet
             IN - VarInst
                 IN - PrimitiveVariable
@@ -44,28 +34,8 @@ IN - RootBlockSet
                 OUT - PrimitiveVariable
             OUT - VarInst
             IN - ReturnInst
-                IN - ListVariable
-                    IN - PrimitiveVariable
-                    OUT - PrimitiveVariable
-                    IN - PrimitiveVariable
-                    OUT - PrimitiveVariable
-                    IN - PrimitiveVariable
-                    OUT - PrimitiveVariable
-                    IN - PrimitiveVariable
-                    OUT - PrimitiveVariable
-                    IN - PrimitiveVariable
-                    OUT - PrimitiveVariable
-                    IN - ObjectVariable
-                        IN - EnterRouteVariable
-                        OUT - EnterRouteVariable
-                        IN - NameRouteVariable
-                        OUT - NameRouteVariable
-                        IN - EnterRouteVariable
-                        OUT - EnterRouteVariable
-                        IN - NameRouteVariable
-                        OUT - NameRouteVariable
-                    OUT - ObjectVariable
-                OUT - ListVariable
+                IN - PrimitiveVariable
+                OUT - PrimitiveVariable
             OUT - ReturnInst
         OUT - InstSet
     OUT - SwitchInst

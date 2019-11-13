@@ -212,7 +212,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             Variable valueExp = (Variable) this.instStack.pop();
             objectVariable.addField(fieldKey, valueExp);
         } else {
-            EnterRouteVariable enterRoute = new EnterRouteVariable(RouteType.Context, null);
+            EnterRouteVariable enterRoute = new EnterRouteVariable(RouteType.Context);
             NameRouteVariable nameRoute = new NameRouteVariable(enterRoute, fieldKey);
             objectVariable.addField(fieldKey, nameRoute);
         }
@@ -415,7 +415,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             routeType = RouteType.Special_C;
         }
         //
-        EnterRouteVariable enter = new EnterRouteVariable(routeType, null);
+        EnterRouteVariable enter = new EnterRouteVariable(routeType);
         String identifier = ctx.IDENTIFIER().getText();
         this.instStack.push(new NameRouteVariable(enter, identifier));
         return null;
@@ -423,9 +423,8 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
     @Override
     public T visitNormalRoute(NormalRouteContext ctx) {
-        RouteVariable parent = null;
         if (!(this.instStack.peek() instanceof RouteVariable)) {
-            this.instStack.push(new EnterRouteVariable(RouteType.Context, parent));
+            this.instStack.push(new EnterRouteVariable(RouteType.Context));
         }
         return visitChildren(ctx);
     }

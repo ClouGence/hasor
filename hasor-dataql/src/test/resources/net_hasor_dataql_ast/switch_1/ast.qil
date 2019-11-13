@@ -1,0 +1,25 @@
+[0]
+  #00  LDC_B     true
+  #01  IF        7
+  #02  LDC_D     11
+  #03  STORE     0
+  #04  LDC_D     11
+  #05  STORE     1
+  #06  GOTO      22
+  #07  LABEL     7
+  #08  LDC_B     true
+  #09  IF        13
+  #10  LDC_D     22
+  #11  STORE     0
+  #12  GOTO      22
+  #13  LABEL     13
+  #14  LDC_D     33
+  #15  STORE     0
+  #16  LDC_D     3456
+  #17  STORE     1
+  #18  LDC_D     0
+  #19  LDC_S
+  #20  RETURN
+  #21  GOTO      22
+  #22  LABEL     22
+

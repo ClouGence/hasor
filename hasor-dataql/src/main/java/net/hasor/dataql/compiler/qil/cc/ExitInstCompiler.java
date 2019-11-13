@@ -16,7 +16,7 @@
 package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.Variable;
 import net.hasor.dataql.compiler.ast.inst.ExitInst;
-import net.hasor.dataql.compiler.qil.CompilerStack;
+import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
@@ -25,12 +25,12 @@ import net.hasor.dataql.compiler.qil.InstQueue;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ExitInstCompiler extends InstCompiler<ExitInst> {
+public class ExitInstCompiler implements InstCompiler<ExitInst> {
     @Override
-    public void doCompiler(ExitInst inst, InstQueue queue, CompilerStack stackTree) {
-        queue.inst(LDC_D, inst.getExitCode());
-        Variable dataValue = inst.getExitData();
-        findInstCompilerByInst(dataValue).doCompiler(dataValue, queue, stackTree);
+    public void doCompiler(ExitInst astInst, InstQueue queue, CompilerContext compilerContext) {
+        queue.inst(LDC_D, astInst.getExitCode());
+        Variable dataValue = astInst.getExitData();
+        compilerContext.findInstCompilerByInst(dataValue).doCompiler(queue);
         queue.inst(EXIT);
     }
 }

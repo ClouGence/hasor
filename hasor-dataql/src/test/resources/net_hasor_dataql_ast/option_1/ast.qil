@@ -1,0 +1,20 @@
+[0]
+  #00  LDC_S     a
+  #01  LDC_D     134
+  #02  OPT
+  #03  LDC_S     b
+  #04  LDC_S     aa
+  #05  OPT
+  #06  LDC_S     c
+  #07  LDC_B     true
+  #08  OPT
+  #09  LDC_S     d
+  #10  LDC_B     false
+  #11  OPT
+  #12  LDC_S     e
+  #13  LDC_N
+  #14  OPT
+  #15  LDC_D     0
+  #16  LDC_D     1
+  #17  RETURN
+

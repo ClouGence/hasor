@@ -24,7 +24,7 @@ import net.hasor.utils.StringUtils;
 public class QIL {
     private Instruction[][] queueSet;
 
-    QIL(Instruction[][] queueSet) {
+    public QIL(Instruction[][] queueSet) {
         this.queueSet = queueSet;
     }
 

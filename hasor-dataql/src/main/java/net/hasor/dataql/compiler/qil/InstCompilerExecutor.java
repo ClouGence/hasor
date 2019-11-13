@@ -13,26 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.compiler.qil.cc;
-import net.hasor.dataql.compiler.ast.Inst;
-import net.hasor.dataql.compiler.ast.inst.InstSet;
-import net.hasor.dataql.compiler.qil.CompilerContext;
-import net.hasor.dataql.compiler.qil.InstCompiler;
-import net.hasor.dataql.compiler.qil.InstQueue;
-
+package net.hasor.dataql.compiler.qil;
 /**
- * 指令序列
+ * 生成指令序列
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class InstSetInstCompiler implements InstCompiler<InstSet> {
-    @Override
-    public void doCompiler(InstSet astInst, InstQueue queue, CompilerContext compilerContext) {
-        if (astInst.isEmpty()) {
-            return;
-        }
-        for (Inst inst : astInst) {
-            compilerContext.findInstCompilerByInst(inst).doCompiler(queue);
-        }
-    }
+public interface InstCompilerExecutor extends Opcodes {
+    /**生成指令序列*/
+    public void doCompiler(InstQueue queue);
 }

@@ -16,7 +16,7 @@
 package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.Variable;
 import net.hasor.dataql.compiler.ast.inst.ThrowInst;
-import net.hasor.dataql.compiler.qil.CompilerStack;
+import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
@@ -25,12 +25,12 @@ import net.hasor.dataql.compiler.qil.InstQueue;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ThrowInstCompiler extends InstCompiler<ThrowInst> {
+public class ThrowInstCompiler implements InstCompiler<ThrowInst> {
     @Override
-    public void doCompiler(ThrowInst inst, InstQueue queue, CompilerStack stackTree) {
-        queue.inst(LDC_D, inst.getErrorCode());
-        Variable dataValue = inst.getThrowData();
-        findInstCompilerByInst(dataValue).doCompiler(dataValue, queue, stackTree);
+    public void doCompiler(ThrowInst astInst, InstQueue queue, CompilerContext compilerContext) {
+        queue.inst(LDC_D, astInst.getErrorCode());
+        Variable dataValue = astInst.getThrowData();
+        compilerContext.findInstCompilerByInst(dataValue).doCompiler(queue);
         queue.inst(THROW);
     }
 }

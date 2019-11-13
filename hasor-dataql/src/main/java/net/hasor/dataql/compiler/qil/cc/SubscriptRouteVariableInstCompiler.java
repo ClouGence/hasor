@@ -14,32 +14,29 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil.cc;
-import net.hasor.dataql.compiler.ast.value.PrimitiveVariable;
-import net.hasor.dataql.compiler.ast.value.PrimitiveVariable.ValueType;
+import net.hasor.dataql.compiler.ast.value.SubscriptRouteVariable;
+import net.hasor.dataql.compiler.ast.value.SubscriptRouteVariable.SubType;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
 /**
- * 基础类型值，用于表示【String、Number、Null、Boolean】四种基本类型
+ * 对 RouteVariable 的下标操作
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class PrimitiveVariableInstCompiler implements InstCompiler<PrimitiveVariable> {
+public class SubscriptRouteVariableInstCompiler implements InstCompiler<SubscriptRouteVariable> {
     @Override
-    public void doCompiler(PrimitiveVariable astInst, InstQueue queue, CompilerContext compilerContext) {
-        ValueType valueType = astInst.getValueType();
-        if (valueType == ValueType.Boolean) {
-            queue.inst(LDC_B, Boolean.parseBoolean(astInst.getValue().toString()));
+    public void doCompiler(SubscriptRouteVariable astInst, InstQueue queue, CompilerContext compilerContext) {
+        compilerContext.findInstCompilerByInst(astInst.getParent()).doCompiler(queue);
+        //
+        SubType subType = astInst.getSubType();
+        String subValue = astInst.getSubValue();
+        if (subType == SubType.String) {
+            queue.inst(GET, subValue);
         }
-        if (valueType == ValueType.Null) {
-            queue.inst(LDC_N);
-        }
-        if (valueType == ValueType.Number) {
-            queue.inst(LDC_D, (Number) astInst.getValue());
-        }
-        if (valueType == ValueType.String) {
-            queue.inst(LDC_S, astInst.getValue().toString());
+        if (subType == SubType.Integer) {
+            queue.inst(PULL, Integer.parseInt(subValue));
         }
     }
 }

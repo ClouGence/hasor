@@ -1,0 +1,14 @@
+[0]
+  #00  LDC_D     0
+  #01  GET       a
+  #02  PULL      123
+  #03  GET       dd
+  #04  GET       a
+  #05  GET       b
+  #06  GET       c
+  #07  PULL      -1
+  #08  RETURN
+  #09  LDC_D     0
+  #10  GET       ssss
+  #11  RETURN
+

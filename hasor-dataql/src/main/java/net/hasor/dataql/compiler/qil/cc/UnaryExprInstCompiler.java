@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil.cc;
-import net.hasor.dataql.compiler.ast.Expression;
 import net.hasor.dataql.compiler.ast.expr.UnaryExpression;
-import net.hasor.dataql.compiler.qil.CompilerStack;
+import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.dataql.compiler.qil.Opcodes;
@@ -26,12 +25,10 @@ import net.hasor.dataql.compiler.qil.Opcodes;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class UnaryExpressionInstCompiler extends InstCompiler<UnaryExpression> {
+public class UnaryExprInstCompiler implements InstCompiler<UnaryExpression> {
     @Override
-    public void doCompiler(UnaryExpression inst, InstQueue queue, CompilerStack stackTree) {
-        Expression expr = inst.getTarget();
-        //
-        findInstCompilerByInst(expr).doCompiler(expr, queue, stackTree);
-        queue.inst(Opcodes.UO, inst.getDyadicSymbol());
+    public void doCompiler(UnaryExpression astInst, InstQueue queue, CompilerContext compilerContext) {
+        compilerContext.findInstCompilerByInst(astInst.getTarget()).doCompiler(queue);
+        queue.inst(Opcodes.UO, astInst.getDyadicSymbol());
     }
 }

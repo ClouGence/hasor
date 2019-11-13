@@ -1,0 +1,16 @@
+[0]
+  #00  LDC_B     true
+  #01  IF        8
+  #02  LDC_D     3
+  #03  LDC_D     3
+  #04  DO        *
+  #05  LDC_D     3
+  #06  DO        +
+  #07  GOTO      12
+  #08  LABEL     8
+  #09  LDC_D     12345
+  #10  LDC_D     4
+  #11  DO        *
+  #12  LABEL     12
+  #13  STORE     0
+

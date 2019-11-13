@@ -1,0 +1,18 @@
+[0]
+  #00  LDC_D     0
+  #01  LDC_D     1
+  #02  LDC_D     2
+  #03  LDC_D     3
+  #04  DO        *
+  #05  LDC_D     4
+  #06  DO        /
+  #07  DO        +
+  #08  GET       a
+  #09  GET       b
+  #10  DO        -
+  #11  DO        -
+  #12  RETURN
+  #13  LDC_D     -1
+  #14  UO        !
+  #15  STORE     0
+

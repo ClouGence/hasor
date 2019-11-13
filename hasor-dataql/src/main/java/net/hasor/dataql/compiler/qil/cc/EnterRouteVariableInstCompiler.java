@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil.cc;
-import net.hasor.dataql.compiler.ast.Variable;
-import net.hasor.dataql.compiler.ast.inst.ReturnInst;
+import net.hasor.dataql.compiler.ast.value.EnterRouteVariable;
+import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
 /**
- * return指令
+ * 路由的入口，一切路由操作都要有一个入口
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2019-11-07
+ * @version : 2017-03-23
  */
-public class ReturnInstCompiler implements InstCompiler<ReturnInst> {
+public class EnterRouteVariableInstCompiler implements InstCompiler<EnterRouteVariable> {
     @Override
-    public void doCompiler(ReturnInst astInst, InstQueue queue, CompilerContext compilerContext) {
-        queue.inst(LDC_D, astInst.getReturnCode());
-        Variable dataValue = astInst.getResultData();
-        compilerContext.findInstCompilerByInst(dataValue).doCompiler(queue);
-        queue.inst(RETURN);
+    public void doCompiler(EnterRouteVariable astInst, InstQueue queue, CompilerContext compilerContext) {
+        RouteType routeType = astInst.getRouteType();
+        //
     }
 }

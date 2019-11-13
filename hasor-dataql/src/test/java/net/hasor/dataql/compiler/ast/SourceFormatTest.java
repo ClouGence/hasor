@@ -32,22 +32,19 @@ public class SourceFormatTest extends AbstractTestResource {
     private void astTest(String testCase) throws IOException {
         String query1 = getScript("/net_hasor_dataql_ast/" + testCase + "/ast.ql");
         QueryModel queryModel1 = QueryHelper.queryParser(query1);
-        String q1 = queryModel1.buildToString();
+        String q11 = queryModel1.toQueryString();
+        String q12 = QueryHelper.queryParser(q11).toQueryString();
         List<String> list1 = acceptVisitor(queryModel1);
         String visitor1 = StringUtils.join(list1.toArray(), "\n");
         //
         String query2 = getScript("/net_hasor_dataql_ast/" + testCase + "/ast.format");
-        QueryModel queryModel2 = QueryHelper.queryParser(query1);
-        String q2 = queryModel2.buildToString();
-        List<String> list2 = acceptVisitor(queryModel1);
-        String visitor2 = StringUtils.join(list2.toArray(), "\n");
         //
-        assert !query1.equals(query2);
-        assert q1.equals(q2);
+        assert q11.equals(q12);                     // 原始QL 格式化之后再次 parser 应该和第一次 parser 相同。
+        assert q11.trim().equals(query2.trim());    // 格式化之后和 预先格式化的 .format 应该相等
+        assert !query1.trim().equals(query2.trim());// 格式化前后不相等
         //
         String basicVisitor = getScript("/net_hasor_dataql_ast/" + testCase + "/ast.visitor");
         assert visitor1.trim().equals(basicVisitor.trim());
-        assert visitor2.trim().equals(basicVisitor.trim());
     }
 
     @Test
@@ -76,13 +73,28 @@ public class SourceFormatTest extends AbstractTestResource {
     }
 
     @Test
+    public void return2_ast_format_test() throws IOException {
+        astTest("return_2");
+    }
+
+    @Test
     public void exit1_ast_format_test() throws IOException {
         astTest("exit_1");
     }
 
     @Test
+    public void exit2_ast_format_test() throws IOException {
+        astTest("exit_2");
+    }
+
+    @Test
     public void throw1_ast_format_test() throws IOException {
         astTest("throw_1");
+    }
+
+    @Test
+    public void throw2_ast_format_test() throws IOException {
+        astTest("throw_2");
     }
 
     @Test
@@ -101,36 +113,72 @@ public class SourceFormatTest extends AbstractTestResource {
     }
 
     @Test
+    public void switch4_ast_format_test() throws IOException {
+        astTest("switch_4");
+    }
+
+    @Test
     public void expr1_ast_format_test() throws IOException {
         astTest("expr_1");
     }
-    //    InstSet
-    //            SwitchInst
-    //    @Test
-    //    public void ql_basic_test() throws Throwable {
-    //        for (String script : basicQl) {
-    //            QueryHelper.queryParser(getScript(script));
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void ql_eval_test() throws Throwable {
-    //        for (String script : evalQl) {
-    //            QueryHelper.queryParser(getScript(script));
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void ql_import_test() throws Throwable {
-    //        for (String script : importQl) {
-    //            QueryHelper.queryParser(getScript(script));
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void ql_lambda_test() throws Throwable {
-    //        for (String script : lambdaQl) {
-    //            QueryHelper.queryParser(getScript(script));
-    //        }
-    //    }
+
+    @Test
+    public void expr2_ast_format_test() throws IOException {
+        astTest("expr_2");
+    }
+
+    @Test
+    public void object1_ast_format_test() throws IOException {
+        astTest("val_object_1");
+    }
+
+    @Test
+    public void object2_ast_format_test() throws IOException {
+        astTest("val_object_2");
+    }
+
+    @Test
+    public void object3_ast_format_test() throws IOException {
+        astTest("val_object_3");
+    }
+
+    @Test
+    public void fmt1_ast_format_test() throws IOException {
+        astTest("fmt_1");
+    }
+
+    @Test
+    public void fmt2_ast_format_test() throws IOException {
+        astTest("fmt_2");
+    }
+
+    @Test
+    public void fmt3_ast_format_test() throws IOException {
+        astTest("fmt_3");
+    }
+
+    @Test
+    public void route1_ast_format_test() throws IOException {
+        astTest("route_1");
+    }
+
+    @Test
+    public void route2_ast_format_test() throws IOException {
+        astTest("route_2");
+    }
+
+    @Test
+    public void route3_ast_format_test() throws IOException {
+        astTest("route_3");
+    }
+
+    @Test
+    public void lambda1_ast_format_test() throws IOException {
+        astTest("lambda_1");
+    }
+
+    @Test
+    public void lambda2_ast_format_test() throws IOException {
+        astTest("lambda_2");
+    }
 }

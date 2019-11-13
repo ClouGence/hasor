@@ -73,7 +73,7 @@ public class RootBlockSet extends InstSet implements QueryModel {
     }
 
     @Override
-    public void buildToString(OptionSet formatOptions, Writer writer) throws IOException {
+    public void toQueryString(OptionSet formatOptions, Writer writer) throws IOException {
         formatOptions = (formatOptions == null) ? new OptionSet() : formatOptions;
         //
         for (OptionInst opt : this.optionSet) {

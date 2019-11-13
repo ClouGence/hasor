@@ -16,7 +16,7 @@
 package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.Expression;
 import net.hasor.dataql.compiler.ast.expr.DyadicExpression;
-import net.hasor.dataql.compiler.qil.CompilerStack;
+import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
@@ -27,16 +27,16 @@ import java.util.Stack;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class DyadicExprInstCompiler extends InstCompiler<DyadicExpression> {
+public class DyadicExprInstCompiler implements InstCompiler<DyadicExpression> {
     @Override
-    public void doCompiler(DyadicExpression inst, InstQueue queue, CompilerStack stackTree) {
-        this.doCompiler(inst, queue, stackTree, new Stack<>());
+    public void doCompiler(DyadicExpression astInst, InstQueue queue, CompilerContext compilerContext) {
+        this.doCompiler(astInst, queue, compilerContext, new Stack<>());
     }
 
-    protected void doCompiler(DyadicExpression inst, InstQueue queue, CompilerStack stackTree, Stack<String> last) {
-        Expression fstExpression = inst.getFstExpression();
-        String dyadicSymbol = inst.getDyadicSymbol();
-        Expression secExpression = inst.getSecExpression();
+    protected void doCompiler(DyadicExpression astInst, InstQueue queue, CompilerContext compilerContext, Stack<String> last) {
+        Expression fstExpression = astInst.getFstExpression();
+        String dyadicSymbol = astInst.getDyadicSymbol();
+        Expression secExpression = astInst.getSecExpression();
         //
         //  优先级：
         //      0st: ()                            括号
@@ -82,13 +82,13 @@ public class DyadicExprInstCompiler extends InstCompiler<DyadicExpression> {
         //
         //
         // .输出第一个表达式
-        findInstCompilerByInst(fstExpression).doCompiler(fstExpression, queue, stackTree);
+        compilerContext.findInstCompilerByInst(fstExpression).doCompiler(queue);
         //
         int selfPriority = priorityAt(dyadicSymbol);
         if (!last.isEmpty()) {
             while (!last.isEmpty()) {
                 int lastPriority = priorityAt(last.peek());
-                if (selfPriority > lastPriority) {
+                if (selfPriority >= lastPriority) {
                     queue.inst(DO, last.pop());
                 } else {
                     break;
@@ -98,9 +98,9 @@ public class DyadicExprInstCompiler extends InstCompiler<DyadicExpression> {
         last.push(dyadicSymbol);
         //
         if (secExpression instanceof DyadicExpression) {
-            this.doCompiler((DyadicExpression) secExpression, queue, stackTree, last);
+            this.doCompiler((DyadicExpression) secExpression, queue, compilerContext, last);
         } else {
-            findInstCompilerByInst(secExpression).doCompiler(secExpression, queue, stackTree);
+            compilerContext.findInstCompilerByInst(secExpression).doCompiler(queue);
             while (!last.isEmpty()) {
                 queue.inst(DO, last.pop());
             }
@@ -120,18 +120,16 @@ public class DyadicExprInstCompiler extends InstCompiler<DyadicExpression> {
     }
 
     private static final String[][] ComparePriorityKeys = new String[][] {
-            //      0st: ()                            括号
-            //      1st: ->                            取值
-            //      2st: !  , ++ , --                  一元操作
-            //      3st: *  , /  , \  , %              乘除法
+            // 二元运算优先级定义表
+            //      1st: *  , /  , \  , %              乘除法（乘法、除法、整除、求余）
             new String[] { "*", "/", "\\", "%" },
-            //      4st: +  , -                        加减法
+            //      2st: +  , -                        加减法（加法、减法）
             new String[] { "+", "-" },
-            //      5st: &  , |  , ^  , << , >> , >>>  位运算
+            //      3st: &  , |  , ^  , << , >> , >>>  位运算（与运算、或运算、非运算、左移位、有符号右移位、无符号右移位）
             new String[] { "&", "|", "^", "<<", ">>", ">>>" },
-            //      6st: >  , >= , == , != , <= , <    比较运算
+            //      4st: >  , >= , == , != , <= , <    比较运算（大于、大于等于、不等于、等于、小于等于、小于）
             new String[] { ">", ">=", "!=", "==", "<=", "<" },
-            //      7st: && , ||                       逻辑运算
+            //      5st: && , ||                       逻辑运算（逻辑与、逻辑或）
             new String[] { "&&", "||" },
             //
     };

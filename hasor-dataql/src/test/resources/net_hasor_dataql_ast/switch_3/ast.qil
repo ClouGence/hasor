@@ -1,0 +1,18 @@
+[0]
+  #00  GET       a
+  #01  GET       a
+  #02  DO        ==
+  #03  IF        7
+  #04  LDC_D     11
+  #05  STORE     0
+  #06  GOTO      14
+  #07  LABEL     7
+  #08  LDC_B     true
+  #09  IF        13
+  #10  LDC_D     22
+  #11  STORE     0
+  #12  GOTO      14
+  #13  LABEL     13
+  #14  LABEL     14
+
+

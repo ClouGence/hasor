@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.compiler.qil.cc;
-import net.hasor.dataql.compiler.ast.Expression;
-import net.hasor.dataql.compiler.ast.expr.PrivilegeExpression;
-import net.hasor.dataql.compiler.qil.CompilerStack;
-import net.hasor.dataql.compiler.qil.InstCompiler;
-import net.hasor.dataql.compiler.qil.InstQueue;
+package net.hasor.dataql.compiler.qil;
+import net.hasor.dataql.compiler.ast.Inst;
 
 /**
- * 权限提升，用于表示表达式中的括号
+ * 每一个 AST 树都会对应一个 InstCompiler
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class PrivilegeExpressionInstCompiler extends InstCompiler<PrivilegeExpression> {
-    @Override
-    public void doCompiler(PrivilegeExpression inst, InstQueue queue, CompilerStack stackTree) {
-        Expression expr = inst.getExpression();
-        findInstCompilerByInst(expr).doCompiler(expr, queue, stackTree);
-    }
+public interface InstCompiler<T extends Inst> extends Opcodes {
+    /**
+     * 生成指令序列
+     * @param astInst 要编译的 Inst
+     * @param queue 编译输出的指令序列
+     * @param compilerContext 编译上下文
+     */
+    public abstract void doCompiler(T astInst, InstQueue queue, CompilerContext compilerContext);
 }

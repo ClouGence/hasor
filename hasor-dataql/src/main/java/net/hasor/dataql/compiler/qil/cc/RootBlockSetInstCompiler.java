@@ -18,7 +18,7 @@ import net.hasor.dataql.compiler.ast.Inst;
 import net.hasor.dataql.compiler.ast.inst.ImportInst;
 import net.hasor.dataql.compiler.ast.inst.OptionInst;
 import net.hasor.dataql.compiler.ast.inst.RootBlockSet;
-import net.hasor.dataql.compiler.qil.CompilerStack;
+import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
@@ -29,29 +29,24 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-11-07
  */
-public class RootBlockSetInstCompiler extends InstCompiler<RootBlockSet> {
+public class RootBlockSetInstCompiler implements InstCompiler<RootBlockSet> {
     @Override
-    public void doCompiler(RootBlockSet rootBlockSet, InstQueue queue, CompilerStack stackTree) {
-        //
+    public void doCompiler(RootBlockSet rootBlockSet, InstQueue queue, CompilerContext compilerContext) {
         List<OptionInst> optionSet = rootBlockSet.getOptionSet();
         if (optionSet != null) {
-            InstCompiler<OptionInst> compiler = findInstCompilerByInstType(OptionInst.class);
             for (OptionInst optionInst : optionSet) {
-                compiler.doCompiler(optionInst, queue, stackTree);
+                compilerContext.findInstCompilerByInst(optionInst).doCompiler(queue);
             }
         }
-        //
         List<ImportInst> importSet = rootBlockSet.getImportSet();
         if (importSet != null) {
-            InstCompiler<ImportInst> compiler = findInstCompilerByInstType(ImportInst.class);
             for (ImportInst importInst : importSet) {
-                compiler.doCompiler(importInst, queue, stackTree);
+                compilerContext.findInstCompilerByInst(importInst).doCompiler(queue);
             }
         }
-        //
         if (!rootBlockSet.isEmpty()) {
             for (Inst inst : rootBlockSet) {
-                findInstCompilerByInst(inst).doCompiler(inst, queue, stackTree);
+                compilerContext.findInstCompilerByInst(inst).doCompiler(queue);
             }
         }
     }

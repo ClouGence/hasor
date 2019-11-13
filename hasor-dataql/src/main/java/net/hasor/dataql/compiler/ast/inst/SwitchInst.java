@@ -29,8 +29,8 @@ import java.util.List;
  */
 public class SwitchInst implements Inst {
     public static class SwitchExpression {
-        private Expression testExpression;
-        private InstSet    instBlockSet;
+        public Expression testExpression;
+        public InstSet    instBlockSet;
     }
 
     private List<SwitchExpression> testBlockSet = new ArrayList<>();

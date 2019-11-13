@@ -16,7 +16,7 @@
 package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.Expression;
 import net.hasor.dataql.compiler.ast.expr.TernaryExpression;
-import net.hasor.dataql.compiler.qil.CompilerStack;
+import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.dataql.compiler.qil.Label;
@@ -26,23 +26,26 @@ import net.hasor.dataql.compiler.qil.Label;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class TernaryExpressionInstCompiler extends InstCompiler<TernaryExpression> {
+public class TernaryExprInstCompiler implements InstCompiler<TernaryExpression> {
     @Override
-    public void doCompiler(TernaryExpression inst, InstQueue queue, CompilerStack stackTree) {
-        Expression testExpr = inst.getTestExpression();
-        Expression thenExpr = inst.getThenExpression();
-        Expression elseExpr = inst.getElseExpression();
+    public void doCompiler(TernaryExpression astInst, InstQueue queue, CompilerContext compilerContext) {
+        Expression testExpr = astInst.getTestExpression();
+        Expression thenExpr = astInst.getThenExpression();
+        Expression elseExpr = astInst.getElseExpression();
         Label elseLabel = queue.labelDef();
+        Label endLabel = queue.labelDef();
         //
         // .测试表达式
-        findInstCompilerByInst(testExpr).doCompiler(testExpr, queue, stackTree);
-        queue.inst(IF, elseLabel);//如果判断失败，跳转到下一个Label
+        compilerContext.findInstCompilerByInst(testExpr).doCompiler(queue);
+        queue.inst(IF, elseLabel);//如果判断失败，执行第二个表达式
         //
         // .第一个表达式
-        findInstCompilerByInst(thenExpr).doCompiler(thenExpr, queue, stackTree);
+        compilerContext.findInstCompilerByInst(thenExpr).doCompiler(queue);
+        queue.inst(GOTO, endLabel);//第一个表达式执行成功的话就跳转到 end
         //
         // .第二个表达式
         queue.inst(LABEL, elseLabel);
-        findInstCompilerByInst(elseExpr).doCompiler(elseExpr, queue, stackTree);
+        compilerContext.findInstCompilerByInst(elseExpr).doCompiler(queue);
+        queue.inst(LABEL, endLabel);
     }
 }

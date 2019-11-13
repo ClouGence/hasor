@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.compiler.qil;
-import net.hasor.dataql.compiler.QueryModel;
+package net.hasor.dataql.compiler;
 import net.hasor.dataql.compiler.ast.inst.RootBlockSet;
+import net.hasor.dataql.compiler.parser.DataQLLexer;
 import net.hasor.dataql.compiler.parser.DataQLParser;
 import net.hasor.dataql.compiler.parser.DataQLVisitor;
 import net.hasor.dataql.compiler.parser.DefaultDataQLVisitor;
+import net.hasor.dataql.compiler.qil.*;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -70,11 +71,12 @@ public class QueryHelper {
         if (queryModel instanceof RootBlockSet) {
             rootBlockSet = (RootBlockSet) queryModel;
         } else {
-            rootBlockSet = queryParser(CharStreams.fromString(queryModel.buildToString()));
+            rootBlockSet = queryParser(CharStreams.fromString(queryModel.toQueryString()));
         }
         //
         InstQueue queue = new InstQueue();
-        rootBlockSet.doCompiler(queue, new CompilerStack());
+        CompilerContext compilerContext = new CompilerContext(new CompilerEnvironment());
+        compilerContext.findInstCompilerByInst(rootBlockSet).doCompiler(queue);
         Instruction[][] queueSet = queue.buildArrays();
         return new QIL(queueSet);
     }

@@ -1,0 +1,14 @@
+IN - RootBlockSet
+    IN - ThrowInst
+        IN - PrimitiveVariable
+        OUT - PrimitiveVariable
+    OUT - ThrowInst
+    IN - ThrowInst
+        IN - PrimitiveVariable
+        OUT - PrimitiveVariable
+    OUT - ThrowInst
+    IN - ThrowInst
+        IN - PrimitiveVariable
+        OUT - PrimitiveVariable
+    OUT - ThrowInst
+OUT - RootBlockSet

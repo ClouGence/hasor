@@ -49,42 +49,4 @@ IN - RootBlockSet
             OUT - AtomExpression
         OUT - UnaryExpression
     OUT - VarInst
-    IN - VarInst
-        IN - TernaryExpression
-            IN - AtomExpression
-                IN - PrimitiveVariable
-                OUT - PrimitiveVariable
-            OUT - AtomExpression
-            IN - PrivilegeExpression
-                IN - DyadicExpression
-                    IN - AtomExpression
-                        IN - PrimitiveVariable
-                        OUT - PrimitiveVariable
-                    OUT - AtomExpression
-                    IN - DyadicExpression
-                        IN - AtomExpression
-                            IN - PrimitiveVariable
-                            OUT - PrimitiveVariable
-                        OUT - AtomExpression
-                        IN - AtomExpression
-                            IN - PrimitiveVariable
-                            OUT - PrimitiveVariable
-                        OUT - AtomExpression
-                    OUT - DyadicExpression
-                OUT - DyadicExpression
-            OUT - PrivilegeExpression
-            IN - PrivilegeExpression
-                IN - DyadicExpression
-                    IN - AtomExpression
-                        IN - PrimitiveVariable
-                        OUT - PrimitiveVariable
-                    OUT - AtomExpression
-                    IN - AtomExpression
-                        IN - PrimitiveVariable
-                        OUT - PrimitiveVariable
-                    OUT - AtomExpression
-                OUT - DyadicExpression
-            OUT - PrivilegeExpression
-        OUT - TernaryExpression
-    OUT - VarInst
 OUT - RootBlockSet

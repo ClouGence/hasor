@@ -16,7 +16,7 @@
 package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.Variable;
 import net.hasor.dataql.compiler.ast.inst.VarInst;
-import net.hasor.dataql.compiler.qil.CompilerStack;
+import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
@@ -25,21 +25,21 @@ import net.hasor.dataql.compiler.qil.InstQueue;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class VarInstCompiler extends InstCompiler<VarInst> {
+public class VarInstCompiler implements InstCompiler<VarInst> {
     @Override
-    public void doCompiler(VarInst inst, InstQueue queue, CompilerStack stackTree) {
+    public void doCompiler(VarInst astInst, InstQueue queue, CompilerContext compilerContext) {
         // .编译表达式
-        String varName = inst.getVarName();
-        Variable varValue = inst.getValue();
-        findInstCompilerByInst(varValue).doCompiler(varValue, queue, stackTree);
+        String varName = astInst.getVarName();
+        Variable varValue = astInst.getValue();
+        compilerContext.findInstCompilerByInst(varValue).doCompiler(queue);
         //
         // .如果当前堆栈中存在该变量的定义，那么直接覆盖。否则新增一个本地变量
-        int index = stackTree.containsWithCurrent(varName);
+        int index = compilerContext.containsWithCurrent(varName);
         if (index >= 0) {
             queue.inst(STORE, index);
         } else {
-            int storeIndex = stackTree.push(varName);
-            queue.inst(STORE, storeIndex);
+            index = compilerContext.push(varName);
+            queue.inst(STORE, index);
         }
     }
 }

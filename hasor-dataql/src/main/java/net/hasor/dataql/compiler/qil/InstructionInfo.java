@@ -112,7 +112,7 @@ public class InstructionInfo implements Opcodes, Instruction {
             codeName.append(this.instParam[i]);
         }
         //
-        return codeName.toString();
+        return codeName.toString().trim();
     }
 
     /** 判断是否要被编译输出 */

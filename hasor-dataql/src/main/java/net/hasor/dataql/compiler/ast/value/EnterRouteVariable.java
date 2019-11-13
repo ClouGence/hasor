@@ -15,7 +15,10 @@
  */
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.AstVisitor;
+import net.hasor.dataql.compiler.ast.FormatWriter;
+import net.hasor.dataql.compiler.ast.InstVisitorContext;
+import net.hasor.dataql.compiler.ast.RouteVariable;
 
 import java.io.IOException;
 
@@ -29,8 +32,7 @@ public class EnterRouteVariable implements RouteVariable {
         Special_A("#"),  // 特殊路由1，自定义
         Special_B("$"),  // 特殊路由2，自定义
         Special_C("@"),  // 特殊路由3，自定义
-        Context(""),    // 上下文中获取
-        Enter("");      // 当前栈顶上找
+        Context("");     // 上下文中获取
         private String code;
 
         RouteType(String code) {
@@ -43,11 +45,9 @@ public class EnterRouteVariable implements RouteVariable {
     }
 
     private RouteType routeType;
-    private Variable  context;
 
-    public EnterRouteVariable(RouteType routeType, Variable context) {
+    public EnterRouteVariable(RouteType routeType) {
         this.routeType = routeType;
-        this.context = context;
     }
 
     @Override
@@ -59,15 +59,8 @@ public class EnterRouteVariable implements RouteVariable {
         return routeType;
     }
 
-    public Variable getContext() {
-        return context;
-    }
-
     @Override
     public void accept(AstVisitor astVisitor) {
-        if (this.context != null) {
-            this.context.accept(astVisitor);
-        }
         astVisitor.visitInst(new InstVisitorContext(this) {
             @Override
             public void visitChildren(AstVisitor astVisitor) {
@@ -77,8 +70,5 @@ public class EnterRouteVariable implements RouteVariable {
 
     @Override
     public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
-        if (this.context != null) {
-            this.context.doFormat(depth, formatOption, writer);
-        }
     }
 }

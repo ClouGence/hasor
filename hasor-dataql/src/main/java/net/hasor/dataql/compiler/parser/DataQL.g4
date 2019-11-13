@@ -2,9 +2,9 @@
 grammar DataQL;
 
 /* skip spaces */
-WS      : [ \t\n\r\f]+ -> skip ; // skip spaces, (空格\水平制表符\换行\回车\换页)
-COMMENT1: '//' (~[\n\r])* EOL? -> skip ;
-COMMENT2: '/*' .*? '*/' -> skip ;
+WS      : [ \t\n\r\f]+          -> skip ; // skip spaces, (空格\水平制表符\换行\回车\换页)
+COMMENT1: '//' (~[\n\r])* EOL?  -> skip ;
+COMMENT2: '/*' .*? '*/'         -> skip ;
 EOL     : [\n\r\f];
 
 /* key words */
@@ -58,9 +58,8 @@ RSBT    : ']';      // 数组 or 下标
 OCBR    : '{';      // 表示为一个对象
 CCBR    : '}';      // 表示为一个对象
 ROU     : [@#$];     // 路由限定符
+
 /* 字符串 */
-
-
 STRING          : '"' (~["\r\n] | '""' | TRANS)* '"'
                 | '\'' (~['\r\n] | '\'\'' | TRANS)* '\''
                 ;
@@ -154,16 +153,16 @@ primitiveValue  : STRING                                                    #str
 
 /* ----------------------------------------------------------------------------------- 表达式 */
 
-expr        : (PLUS | MINUS | NOT) expr                     #unaryExpr      // 一元运算
-            | LBT expr RBT ( dyadicExpr | ternaryExpr )?    #privilegeExpr  // 优先级(后面可以有多元运算)
-            | atomExpr ( dyadicExpr | ternaryExpr )?        #multipleExpr   // 基本算项 or 多元运算
-            ;
+expr            : (PLUS | MINUS | NOT) expr                     #unaryExpr      // 一元运算
+                | LBT expr RBT ( dyadicExpr | ternaryExpr )?    #privilegeExpr  // 优先级(后面可以有多元运算)
+                | atomExpr ( dyadicExpr | ternaryExpr )?        #multipleExpr   // 基本算项 or 多元运算
+                ;
 
 /* 二元运算 */
-dyadicExpr  : (PLUS | MINUS | MUL | DIV | DIV2 | MOD | LBT | RBT | AND | OR | NOT | XOR | LSHIFT | RSHIFT | RSHIFT2 | GT | GE | LT | LE | EQ | NE | SC_OR | SC_AND) expr;
+dyadicExpr      : (PLUS | MINUS | MUL | DIV | DIV2 | MOD | LBT | RBT | AND | OR | NOT | XOR | LSHIFT | RSHIFT | RSHIFT2 | GT | GE | LT | LE | EQ | NE | SC_OR | SC_AND) expr;
 
 /* 三元运算 */
-ternaryExpr : '?' expr COLON expr;
+ternaryExpr     : '?' expr COLON expr;
 
 /* 可以作为表达式项的有：基本类型 or 发起函数调用 or 路由映射 */
-atomExpr    : primitiveValue | funcCall | routeMapping;
+atomExpr        : primitiveValue | funcCall | routeMapping;

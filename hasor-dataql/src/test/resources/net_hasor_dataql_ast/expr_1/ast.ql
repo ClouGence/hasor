@@ -7,4 +7,3 @@ return
 
 
 var a = !-1
-var b = true ? (3*3+3) : (23*4)
