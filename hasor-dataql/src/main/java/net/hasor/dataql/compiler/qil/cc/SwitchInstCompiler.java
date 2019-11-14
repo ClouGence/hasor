@@ -37,10 +37,7 @@ public class SwitchInstCompiler implements InstCompiler<SwitchInst> {
         InstSet elseBlockSet = astInst.getElseBlockSet();
         //
         if (testBlockSet.isEmpty()) {
-            queue.inst(LDC_N, 0);
-            queue.inst(LDC_S, "inst if -> error.");
-            queue.inst(THROW);
-            return;
+            throw new RuntimeException("if testBlockSet is empty.");
         }
         /*
             if (a == b)
@@ -77,8 +74,7 @@ public class SwitchInstCompiler implements InstCompiler<SwitchInst> {
         // .if 和 elseif
         //
         Label finalLabel = queue.labelDef();    // if 的总出口 Label
-        for (int i = 0; i < testBlockSet.size(); i++) {
-            SwitchExpression switchExp = testBlockSet.get(i);
+        for (SwitchExpression switchExp : testBlockSet) {
             //
             // .产生新的入口，流给下一个if分支使用
             Label lastEnterIn = queue.labelDef();

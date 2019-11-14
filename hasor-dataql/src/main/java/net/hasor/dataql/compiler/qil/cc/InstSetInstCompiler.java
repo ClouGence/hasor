@@ -28,9 +28,6 @@ import net.hasor.dataql.compiler.qil.InstQueue;
 public class InstSetInstCompiler implements InstCompiler<InstSet> {
     @Override
     public void doCompiler(InstSet astInst, InstQueue queue, CompilerContext compilerContext) {
-        if (astInst.isEmpty()) {
-            return;
-        }
         for (Inst inst : astInst) {
             compilerContext.findInstCompilerByInst(inst).doCompiler(queue);
         }
