@@ -1,10 +1,7 @@
 [0]
-  #0  LDC_D     0
-  #1  LDC_D     134
-  #2  THROW
-  #3  LDC_D     0
-  #4  LDC_D     -134
-  #5  THROW
-  #6  LDC_D     234
-  #7  LDC_S     ssss
-  #8  THROW
+  #0  LDC_D     134
+  #1  THROW     0
+  #2  LDC_D     -134
+  #3  THROW     0
+  #4  LDC_S     ssss
+  #5  THROW     234

@@ -1,0 +1,45 @@
+[0]
+  #00  LOAD_C
+  #01  GET       a
+  #02  PULL      123
+  #03  M_DEF
+  #04  CALL      0
+  #05  GET       dd
+  #06  GET       b
+  #07  M_DEF
+  #08  LDC_D     1
+  #09  LDC_D     2
+  #10  LDC_D     3
+  #11  LDC_D     4
+  #12  CALL      4
+  #13  GET       c
+  #14  GET       d
+  #15  PULL      -1
+  #16  RETURN    0
+  #17  LOAD_S    $
+  #18  GET       sssss
+  #19  M_DEF
+  #20  LDC_D     1
+  #21  LDC_D     2
+  #22  LDC_D     3
+  #23  LDC_D     4
+  #24  CALL      4
+  #25  GET       e
+  #26  GET       f
+  #27  RETURN    0
+  #28  LOAD_C
+  #29  GET       a
+  #30  M_DEF
+  #31  LOAD_C
+  #32  GET       f1
+  #33  CALL      1
+  #34  M_DEF
+  #35  LOAD_C
+  #36  GET       f2
+  #37  CALL      1
+  #38  M_DEF
+  #39  LOAD_C
+  #40  GET       f3
+  #41  CALL      1
+  #42  RETURN    0
+

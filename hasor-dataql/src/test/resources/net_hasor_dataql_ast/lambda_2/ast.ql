@@ -1,2 +1,2 @@
 
-return (a,b) -> return false
+return (a,b) -> return a == 1

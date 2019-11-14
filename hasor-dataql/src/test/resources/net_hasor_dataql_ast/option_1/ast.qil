@@ -14,7 +14,6 @@
   #12  LDC_S     e
   #13  LDC_N
   #14  OPT
-  #15  LDC_D     0
-  #16  LDC_D     1
-  #17  RETURN
+  #15  LDC_D     1
+  #16  RETURN    0
 

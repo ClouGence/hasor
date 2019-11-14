@@ -1,10 +1,12 @@
 
-import @'aaaa' as b
-
-import 'bbbb' as a
+import 'aaaa' as b
 
 import @
+    "/net_hasor_dataql_ast/route_2/ast.ql"
+        as imp1
+
+import
 'cccc'
     as d
 
-return 1;
+return 11;

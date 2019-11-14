@@ -14,22 +14,36 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil.cc;
+import net.hasor.dataql.compiler.ast.RouteVariable;
 import net.hasor.dataql.compiler.ast.Variable;
-import net.hasor.dataql.compiler.ast.inst.ExitInst;
+import net.hasor.dataql.compiler.ast.value.FunCallRouteVariable;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
 
+import java.util.List;
+
 /**
- * exit指令
+ * 函数调用
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ExitInstCompiler implements InstCompiler<ExitInst> {
+public class FunCallRouteVariableInstCompiler implements InstCompiler<FunCallRouteVariable> {
     @Override
-    public void doCompiler(ExitInst astInst, InstQueue queue, CompilerContext compilerContext) {
-        Variable dataValue = astInst.getExitData();
-        compilerContext.findInstCompilerByInst(dataValue).doCompiler(queue);
-        queue.inst(EXIT, astInst.getExitCode());
+    public void doCompiler(FunCallRouteVariable astInst, InstQueue queue, CompilerContext compilerContext) {
+        //
+        RouteVariable enter = astInst.getParent();
+        compilerContext.findInstCompilerByInst(enter).doCompiler(queue);
+        //
+        // .声明当前栈顶元素为函数入口
+        queue.inst(M_DEF);
+        //
+        // .输出参数
+        List<Variable> paramList = astInst.getParamList();
+        for (Variable var : paramList) {
+            compilerContext.findInstCompilerByInst(var).doCompiler(queue);
+        }
+        // .执行函数调用
+        queue.inst(CALL, paramList.size());
     }
 }

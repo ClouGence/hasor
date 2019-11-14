@@ -1,13 +1,12 @@
 package net.hasor.dataql.compiler.qil;
 import net.hasor.dataql.compiler.ast.Inst;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class CompilerContext {
-    private CompilerEnvironment compilerEnvironment;
-    private Stack<List<String>> dataStack = new Stack<List<String>>() {{
+    private Map<String, Integer> loadedImport = new HashMap<>();
+    private CompilerEnvironment  compilerEnvironment;
+    private Stack<List<String>>  dataStack    = new Stack<List<String>>() {{
         push(new ArrayList<>());
     }};
 
@@ -17,8 +16,21 @@ public class CompilerContext {
 
     public <T extends Inst> InstCompilerExecutor findInstCompilerByInst(T instObject) {
         Class<T> instClass = (Class<T>) instObject.getClass();
+        return findInstCompilerByInst(instObject, instClass);
+    }
+
+    public <T extends Inst> InstCompilerExecutor findInstCompilerByInst(T instObject, Class<T> instClass) {
         InstCompiler<T> instCompiler = this.compilerEnvironment.findInstCompilerByType(instClass);
         return queue -> instCompiler.doCompiler(instObject, queue, CompilerContext.this);
+    }
+
+    public int findImport(String importResource) {
+        Integer integer = this.loadedImport.get(importResource);
+        return integer == null ? -1 : integer;
+    }
+
+    public void putImport(String importResource, int address) {
+        this.loadedImport.put(importResource, address);
     }
 
     public void newFrame() {
@@ -41,14 +53,11 @@ public class CompilerContext {
     /** 当前栈中是否存在该元素，如果存在返回位置 */
     public ContainsIndex containsWithTree(String target) {
         ContainsIndex index = new ContainsIndex();
-        index.depth = -1; // <-无效值
-        index.index = -1; // <-无效值
         //
         int stackSize = this.dataStack.size();
         for (int i = 0; i < this.dataStack.size(); i++) {
-            index.current = i == 0;
             index.depth = stackSize - i - 1;
-            List<String> stringList = this.dataStack.get(index.depth);
+            List<String> stringList = this.dataStack.get(i);
             int indexOf = stringList.indexOf(target);
             if (indexOf >= 0) {
                 index.index = indexOf;
@@ -71,13 +80,17 @@ public class CompilerContext {
     public int getDepth() {
         return this.dataStack.size() - 1;
     }
+ 
+    public CompilerContext createSegregate() {
+        CompilerContext compilerContext = new CompilerContext(this.compilerEnvironment);
+        compilerContext.loadedImport = this.loadedImport;
+        return compilerContext;
+    }
 
     public static class ContainsIndex {
-        public int     depth   = 0;
-        public int     index   = 0;
-        public boolean current = false;
+        public int depth = -1;// <- 预先设置为无效值
+        public int index = -1;// <- 预先设置为无效值
 
-        //
         public boolean isValid() {
             return this.depth >= 0 && this.index >= 0;
         }

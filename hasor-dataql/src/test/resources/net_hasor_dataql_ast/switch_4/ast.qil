@@ -7,13 +7,7 @@
   #05  IF        9
   #06  LDC_D     11
   #07  STORE     0
-  #08  GOTO      16
+  #08  GOTO      10
   #09  LABEL     9
-  #10  LDC_B     true
-  #11  IF        15
-  #12  LDC_D     22
-  #13  STORE     0
-  #14  GOTO      16
-  #15  LABEL     15
-  #16  LABEL     16
+  #10  LABEL     10
 

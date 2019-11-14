@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler;
+import net.hasor.dataql.compiler.ast.Visitor;
 import net.hasor.dataql.runtime.OptionSet;
 
 import java.io.IOException;
@@ -25,16 +26,16 @@ import java.io.Writer;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface QueryModel {
-    public default String buildToString() throws IOException {
+public interface QueryModel extends Visitor {
+    public default String toQueryString() throws IOException {
         StringWriter stringWriter = new StringWriter();
-        this.buildToString(stringWriter);
+        this.toQueryString(stringWriter);
         return stringWriter.toString();
     }
 
-    public default void buildToString(Writer writer) throws IOException {
-        this.buildToString(new OptionSet(), writer);
+    public default void toQueryString(Writer writer) throws IOException {
+        this.toQueryString(new OptionSet(), writer);
     }
 
-    public void buildToString(OptionSet formatOptions, Writer writer) throws IOException;
+    public void toQueryString(OptionSet formatOptions, Writer writer) throws IOException;
 }

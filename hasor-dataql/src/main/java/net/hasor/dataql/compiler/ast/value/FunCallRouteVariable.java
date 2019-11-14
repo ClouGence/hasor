@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 函数调用 - 之所以是 Variable 是由于 FunctionCall 的最终结果是 函数调用的返回值。而返回值是属于 Variable 的
+ * 函数调用
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */

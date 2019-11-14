@@ -28,9 +28,8 @@ import net.hasor.dataql.compiler.qil.InstQueue;
 public class ThrowInstCompiler implements InstCompiler<ThrowInst> {
     @Override
     public void doCompiler(ThrowInst astInst, InstQueue queue, CompilerContext compilerContext) {
-        queue.inst(LDC_D, astInst.getErrorCode());
         Variable dataValue = astInst.getThrowData();
         compilerContext.findInstCompilerByInst(dataValue).doCompiler(queue);
-        queue.inst(THROW);
+        queue.inst(THROW, astInst.getErrorCode());
     }
 }

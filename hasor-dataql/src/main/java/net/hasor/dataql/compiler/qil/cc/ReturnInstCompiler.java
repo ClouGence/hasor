@@ -28,9 +28,8 @@ import net.hasor.dataql.compiler.qil.InstQueue;
 public class ReturnInstCompiler implements InstCompiler<ReturnInst> {
     @Override
     public void doCompiler(ReturnInst astInst, InstQueue queue, CompilerContext compilerContext) {
-        queue.inst(LDC_D, astInst.getReturnCode());
         Variable dataValue = astInst.getResultData();
         compilerContext.findInstCompilerByInst(dataValue).doCompiler(queue);
-        queue.inst(RETURN);
+        queue.inst(RETURN, astInst.getReturnCode());
     }
 }

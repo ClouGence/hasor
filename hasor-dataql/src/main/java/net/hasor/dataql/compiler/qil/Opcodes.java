@@ -35,6 +35,8 @@ public interface Opcodes {
     public static final byte LOAD   = 31; // 从堆中加载数据到栈（例：LOAD，1）
     public static final byte STORE  = 32; // 将栈中的数据存储到堆（例：STORE，2）
     //
+    public static final byte LOAD_C = 33; // 将环境数据Map加载到栈顶（例：LOAD，1）
+    public static final byte LOAD_S = 34; // 环境（例：LOAD，1）Special
     // -------------------------------------------------------------- 结果指令
     public static final byte ASM    = 41; // 结果作为对象（例：ASM，"type"）
     public static final byte ASO    = 42; // 结果作为原始对象（例：ASO）
@@ -56,11 +58,12 @@ public interface Opcodes {
     public static final byte LCALL  = 63; // 调用外部QL，或者UDF类来完成函数调用
     //
     // -------------------------------------------------------------- 函数指令
-    public static final byte METHOD = 71; // 函数定义
+    public static final byte M_DEF  = 71; // 函数定义
     public static final byte M_REF  = 72; // 函数引用
+    public static final byte M_TYP  = 73; // 引用一个类型
     //
     // -------------------------------------------------------------- 控制指令
-    public static final byte IF     = 81; // if（条件判断成功，执行下一条指令。否则执行 GOTO跳转。）
+    public static final byte IF     = 81; // if 条件判断，如果条件判断失败那么 GOTO 到指定位置，否则继续往下执行
     public static final byte GOTO   = 82; // 执行跳转
     public static final byte RETURN = 83; // 结束指令序列并返回值（消耗：1个元素，产出：0个元素）
     public static final byte EXIT   = 84; // 结束所有指令序列的执行并返回结果（消耗：2个元素，产出：0个元素）

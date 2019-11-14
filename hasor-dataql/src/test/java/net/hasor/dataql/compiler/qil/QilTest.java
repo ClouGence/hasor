@@ -46,10 +46,16 @@ public class QilTest extends AbstractTestResource {
     public void option2_ast_format_test() throws IOException {
         astTest("option_2");
     }
-    //    @Test
-    //    public void import_ast_format_test() throws IOException {
-    //        astTest("import_1");
-    //    }
+
+    @Test
+    public void import1_ast_format_test() throws IOException {
+        astTest("import_1");
+    }
+
+    @Test
+    public void import2_ast_format_test() throws IOException {
+        astTest("import_2");
+    }
 
     @Test
     public void basictype1_ast_format_test() throws IOException {
@@ -99,12 +105,11 @@ public class QilTest extends AbstractTestResource {
         astTest("switch_3");
     }
 
-    //
-    //    @Test
-    //    public void switch4_ast_format_test() throws IOException {
-    //        astTest("switch_4");
-    //    }
-    //
+    @Test
+    public void switch4_ast_format_test() throws IOException {
+        astTest("switch_4");
+    }
+
     @Test
     public void expr1_ast_format_test() throws IOException {
         astTest("expr_1");
@@ -154,19 +159,19 @@ public class QilTest extends AbstractTestResource {
     public void route2_ast_format_test() throws IOException {
         astTest("route_2");
     }
-    //
-    //    @Test
-    //    public void route3_ast_format_test() throws IOException {
-    //        astTest("route_3");
-    //    }
-    //
-    //    @Test
-    //    public void lambda1_ast_format_test() throws IOException {
-    //        astTest("lambda_1");
-    //    }
-    //
-    //    @Test
-    //    public void lambda2_ast_format_test() throws IOException {
-    //        astTest("lambda_2");
-    //    }
+
+    @Test
+    public void route3_ast_format_test() throws IOException {
+        astTest("route_3");
+    }
+
+    @Test
+    public void lambda1_ast_format_test() throws IOException {
+        astTest("lambda_1");
+    }
+
+    @Test
+    public void lambda2_ast_format_test() throws IOException {
+        astTest("lambda_2");
+    }
 }

@@ -58,8 +58,13 @@ public class SourceFormatTest extends AbstractTestResource {
     }
 
     @Test
-    public void import_ast_format_test() throws IOException {
+    public void import1_ast_format_test() throws IOException {
         astTest("import_1");
+    }
+
+    @Test
+    public void import2_ast_format_test() throws IOException {
+        astTest("import_2");
     }
 
     @Test

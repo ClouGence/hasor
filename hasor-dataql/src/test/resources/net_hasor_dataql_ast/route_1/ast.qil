@@ -1,20 +1,20 @@
 [0]
-  #00  LDC_D     0
+  #00  LOAD_C
   #01  GET       a
-  #02  RETURN
-  #03  LDC_D     0
+  #02  RETURN    0
+  #03  LOAD_C
   #04  GET       a
   #05  GET       b
   #06  GET       c
   #07  GET       d
   #08  GET       e
-  #09  RETURN
-  #10  LDC_D     0
+  #09  RETURN    0
+  #10  LOAD_C
   #11  GET       a
   #12  PULL      12
-  #13  RETURN
-  #14  LDC_D     0
+  #13  RETURN    0
+  #14  LOAD_C
   #15  GET       b
   #16  GET       23
-  #17  RETURN
+  #17  RETURN    0
 

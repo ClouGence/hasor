@@ -1,4 +1,4 @@
 
 return (a, b) -> {
-        return false;
+        return a == 1;
     };

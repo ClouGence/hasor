@@ -29,6 +29,10 @@ public class EnterRouteVariableInstCompiler implements InstCompiler<EnterRouteVa
     @Override
     public void doCompiler(EnterRouteVariable astInst, InstQueue queue, CompilerContext compilerContext) {
         RouteType routeType = astInst.getRouteType();
-        //
+        if (routeType == RouteType.Context) {
+            queue.inst(LOAD_C);
+        } else {
+            queue.inst(LOAD_S, routeType.getCode());
+        }
     }
 }
