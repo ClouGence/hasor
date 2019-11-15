@@ -31,6 +31,8 @@ public class CompilerEnvironment {
         //
         put(PrimitiveVariable.class, new PrimitiveVariableInstCompiler());
         put(LambdaVariable.class, new LambdaVariableInstCompiler());
+        put(ListVariable.class, new ListVariableInstCompiler());
+        put(ObjectVariable.class, new ObjectVariableInstCompiler());
         //
         put(SubscriptRouteVariable.class, new SubscriptRouteVariableInstCompiler());
         put(NameRouteVariable.class, new NameRouteVariableInstCompiler());

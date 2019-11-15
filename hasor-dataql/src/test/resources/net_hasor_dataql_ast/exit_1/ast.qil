@@ -1,0 +1,25 @@
+
+[0]
+  #00  LDC_D     134
+  #01  EXIT      0
+  #02  LDC_D     -134
+  #03  EXIT      0
+  #04  LDC_S     ssss
+  #05  EXIT      0
+  #06  NEW_O
+  #07  LOAD_C
+  #08  GET       aa
+  #09  PUT       abc
+  #10  EXIT      0
+  #11  NEW_O
+  #12  LOAD_C
+  #13  GET       abc
+  #14  PUT       abc
+  #15  EXIT      0
+  #16  NEW_A
+  #17  EXIT      0
+  #18  NEW_A
+  #19  LDC_D     123
+  #20  PUSH
+  #21  EXIT      -1
+

@@ -54,10 +54,6 @@ public class ObjectVariable implements Inst, Variable {
         return fieldSort;
     }
 
-    public String getObjectType() {
-        return objectType;
-    }
-
     public Map<String, Variable> getObjectData() {
         return objectData;
     }

@@ -1,0 +1,24 @@
+[0]
+  #00  LDC_D     134
+  #01  RETURN    0
+  #02  LDC_D     -134
+  #03  RETURN    0
+  #04  LDC_S     ssss
+  #05  RETURN    0
+  #06  NEW_O
+  #07  LOAD_C
+  #08  GET       aa
+  #09  PUT       abc
+  #10  RETURN    0
+  #11  NEW_O
+  #12  LOAD_C
+  #13  GET       abc
+  #14  PUT       abc
+  #15  RETURN    0
+  #16  NEW_A
+  #17  RETURN    0
+  #18  NEW_A
+  #19  LDC_D     123
+  #20  PUSH
+  #21  RETURN    -1
+

@@ -1,0 +1,25 @@
+[0]
+  #00  NEW_O
+  #01  RETURN    0
+  #02  NEW_O
+  #03  LOAD_C
+  #04  GET       abc
+  #05  PUT       abc
+  #06  LOAD_C
+  #07  GET       cde
+  #08  PUT       cde
+  #09  RETURN    0
+  #10  NEW_O
+  #11  LOAD_C
+  #12  GET       abc
+  #13  PUT       abc
+  #14  RETURN    0
+  #15  NEW_O
+  #16  LOAD_C
+  #17  GET       ccc
+  #18  PUT       abc
+  #19  LOAD_C
+  #20  GET       dddd
+  #21  PUT       cde
+  #22  RETURN    0
+

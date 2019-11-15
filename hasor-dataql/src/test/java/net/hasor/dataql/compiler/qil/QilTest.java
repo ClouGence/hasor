@@ -61,29 +61,31 @@ public class QilTest extends AbstractTestResource {
     public void basictype1_ast_format_test() throws IOException {
         astTest("basictype_1");
     }
-    //    @Test
-    //    public void return1_ast_format_test() throws IOException {
-    //        astTest("return_1");
-    //    }
+
+    @Test
+    public void return1_ast_format_test() throws IOException {
+        astTest("return_1");
+    }
 
     @Test
     public void return2_ast_format_test() throws IOException {
         astTest("return_2");
     }
-    //
-    //    @Test
-    //    public void exit1_ast_format_test() throws IOException {
-    //        astTest("exit_1");
-    //    }
+
+    @Test
+    public void exit1_ast_format_test() throws IOException {
+        astTest("exit_1");
+    }
 
     @Test
     public void exit2_ast_format_test() throws IOException {
         astTest("exit_2");
     }
-    //    @Test
-    //    public void throw1_ast_format_test() throws IOException {
-    //        astTest("throw_1");
-    //    }
+
+    @Test
+    public void throw1_ast_format_test() throws IOException {
+        astTest("throw_1");
+    }
 
     @Test
     public void throw2_ast_format_test() throws IOException {
@@ -94,11 +96,11 @@ public class QilTest extends AbstractTestResource {
     public void switch1_ast_format_test() throws IOException {
         astTest("switch_1");
     }
-    //
-    //    @Test
-    //    public void switch2_ast_format_test() throws IOException {
-    //        astTest("switch_2");
-    //    }
+
+    @Test
+    public void switch2_ast_format_test() throws IOException {
+        astTest("switch_2");
+    }
 
     @Test
     public void switch3_ast_format_test() throws IOException {
@@ -119,21 +121,21 @@ public class QilTest extends AbstractTestResource {
     public void expr2_ast_format_test() throws IOException {
         astTest("expr_2");
     }
-    //
-    //    @Test
-    //    public void object1_ast_format_test() throws IOException {
-    //        astTest("val_object_1");
-    //    }
-    //
-    //    @Test
-    //    public void object2_ast_format_test() throws IOException {
-    //        astTest("val_object_2");
-    //    }
-    //
-    //    @Test
-    //    public void object3_ast_format_test() throws IOException {
-    //        astTest("val_object_3");
-    //    }
+
+    @Test
+    public void object1_ast_format_test() throws IOException {
+        astTest("val_object_1");
+    }
+
+    @Test
+    public void object2_ast_format_test() throws IOException {
+        astTest("val_object_2");
+    }
+
+    @Test
+    public void object3_ast_format_test() throws IOException {
+        astTest("val_object_3");
+    }
     //
     //    @Test
     //    public void fmt1_ast_format_test() throws IOException {

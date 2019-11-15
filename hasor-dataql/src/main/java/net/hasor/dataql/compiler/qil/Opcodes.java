@@ -22,8 +22,8 @@ package net.hasor.dataql.compiler.qil;
 public interface Opcodes {
     //
     // -------------------------------------------------------------- 构造指令
-    public static final byte NO     = 11; // new Object
-    public static final byte NA     = 12; // new Array
+    public static final byte NEW_O     = 11; // new Object
+    public static final byte NEW_A     = 12; // new Array
     //
     // -------------------------------------------------------------- 数据指令
     public static final byte LDC_D  = 21; // 数字（例：INSN_D 1234）

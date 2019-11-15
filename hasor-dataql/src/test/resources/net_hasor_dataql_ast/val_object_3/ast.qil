@@ -1,0 +1,7 @@
+[0]
+  #0  NEW_O
+  #1  LOAD_C
+  #2  GET       abc
+  #3  PUT       abc
+  #4  RETURN    0
+
