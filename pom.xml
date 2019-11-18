@@ -3,7 +3,7 @@
 
     <groupId>net.hasor</groupId>
     <artifactId>hasor-parent</artifactId>
-    <version>3.2.3-SNAPSHOT</version>
+    <version>3.2.2-fix20191118</version>
     <packaging>pom</packaging>
 
     <!-- 配置属性 -->
@@ -199,7 +199,7 @@
                 <jdk>1.8</jdk>
             </activation>
             <properties>
-                <java_doc_additionalparam>-Xdoclint:none</java_doc_additionalparam>
+                <java_doc_additionalparam>-Xdoclint:none --allow-script-in-comments</java_doc_additionalparam>
             </properties>
         </profile>
         <profile>

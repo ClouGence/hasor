@@ -3,7 +3,7 @@
     <parent>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
-        <version>3.2.3-SNAPSHOT</version>
+        <version>3.2.2-fix20191118</version>
     </parent>
 
     <!-- Maven Info -->

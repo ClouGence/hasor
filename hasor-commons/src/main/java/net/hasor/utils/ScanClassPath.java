@@ -118,7 +118,7 @@ public class ScanClassPath {
                     }
                 });
             } catch (Throwable e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
         //3.缓存
