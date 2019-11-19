@@ -47,9 +47,14 @@ public class RsfBeanContainer {
     private final        Object                                               filterLock   = new Object();
     private final        ConcurrentMap<String, Supplier<RsfFilter>[]>         filterCache  = new ConcurrentHashMap<>();
     private final        AddressPool                                          addressPool;
+    private              AppContext                                           appContext;
 
     public RsfBeanContainer(AddressPool addressPool) {
         this.addressPool = addressPool;
+    }
+
+    public AppContext getAppContext() {
+        return appContext;
     }
 
     /**
@@ -182,7 +187,7 @@ public class RsfBeanContainer {
 
     /**获取所有已经注册的服务名称。*/
     public List<String> getServiceIDs() {
-        return new ArrayList<String>(this.serviceMap.keySet());
+        return new ArrayList<>(this.serviceMap.keySet());
     }
 
     /**根据别名系统获取所有已经注册的服务名称。*/
@@ -198,7 +203,7 @@ public class RsfBeanContainer {
     public RsfEnvironment getEnvironment() {
         return this.addressPool.getRsfEnvironment();
     }
-    
+
     /* ----------------------------------------------------------------------------------------- */
 
     /**创建{@link RsfApiBinder}。*/
@@ -346,6 +351,7 @@ public class RsfBeanContainer {
      * @param appContext 用于查找服务的容器上下文。
      */
     public void lookUp(AppContext appContext) {
+        this.appContext = appContext;
         List<BindInfo<FilterDefine>> filterList = appContext.findBindingRegister(FilterDefine.class);
         for (BindInfo<FilterDefine> defile : filterList) {
             FilterDefine fd = appContext.getInstance(defile);

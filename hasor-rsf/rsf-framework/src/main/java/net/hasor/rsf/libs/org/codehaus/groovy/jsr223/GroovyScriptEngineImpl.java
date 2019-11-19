@@ -45,6 +45,7 @@
  *  under the License.
  */
 package net.hasor.rsf.libs.org.codehaus.groovy.jsr223;
+import groovy.lang.*;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.runtime.InvokerHelper;

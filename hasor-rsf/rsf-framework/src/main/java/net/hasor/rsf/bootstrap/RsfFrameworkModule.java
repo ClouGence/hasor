@@ -50,7 +50,6 @@ public final class RsfFrameworkModule implements RsfModule {
         //
         //3.将重要的接口注册到 Hasor 提供依赖注入
         apiBinder.bindType(RsfSettings.class).toInstance(environment.getSettings());
-        //apiBinder.bindType(RsfEnvironment.class).toInstance(environment);//避免重复注册（注册是在RsfModule类中）
         apiBinder.bindType(RsfContext.class).toInstance(rsfContext);
         apiBinder.bindType(OnlineStatus.class).toInstance(rsfContext);
         apiBinder.bindType(RsfUpdater.class).toInstance(rsfContext.getUpdater());

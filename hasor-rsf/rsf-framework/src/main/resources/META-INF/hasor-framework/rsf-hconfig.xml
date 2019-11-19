@@ -17,9 +17,6 @@
         <!-- RSF对外提供服务的IP -->
         <RSF_SERVICE_IP>local</RSF_SERVICE_IP>
 
-        <!-- RSF对外提供命令行服务的端口（可以配置 0 用来关闭 RSF连接器） -->
-        <RSF_CONSOLE_PORT>2180</RSF_CONSOLE_PORT>
-
         <!-- RSF对外提供服务的服务端口（可以配置 0 用来关闭 RSF连接器） -->
         <RSF_SERVICE_PORT>2181</RSF_SERVICE_PORT>
         <!-- Hprose对外提供服务的服务端口（可以配置 0 用来关闭 Hprose连接器） -->
@@ -41,7 +38,7 @@
             <!-- Hprose：AutoSetAliasName支持插件 -->
             <module>net.hasor.rsf.protocol.http_hprose.AutoSetAliasName</module>
             <!-- Web：AutoSetAliasName支持插件 -->
-            <module>net.hasor.rsf.protocol.http_web.AutoSetAliasName</module>
+            <!-- <module>net.hasor.rsf.protocol.http_web.AutoSetAliasName</module>-->
         </modules>
 
         <!-- Binder扩展 -->

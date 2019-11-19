@@ -24,14 +24,12 @@ import net.hasor.rsf.utils.IOUtils;
 import net.hasor.utils.ResourcesUtils;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
+
 /**
  *
  * @version : 2014年9月12日
@@ -39,14 +37,14 @@ import java.util.Set;
  */
 public class AddressPoolTest {
     protected void configService(AddressPool pool, String service) throws URISyntaxException, IOException {
-        ArrayList<InterAddress> dynamicList = new ArrayList<InterAddress>();
+        ArrayList<InterAddress> dynamicList = new ArrayList<>();
         dynamicList.add(new InterAddress("127.0.0.1", 8000, "etc2"));
         dynamicList.add(new InterAddress("127.0.0.2", 8000, "etc2"));
         dynamicList.add(new InterAddress("127.0.0.3", 8000, "etc2"));
         dynamicList.add(new InterAddress("127.0.0.4", 8000, "etc2"));
         pool.appendAddress(service, dynamicList);
         //
-        ArrayList<InterAddress> staticList = new ArrayList<InterAddress>();
+        ArrayList<InterAddress> staticList = new ArrayList<>();
         staticList.add(new InterAddress("127.0.1.1", 8000, "etc2"));
         staticList.add(new InterAddress("127.0.2.2", 8000, "etc2"));
         staticList.add(new InterAddress("127.0.3.3", 8000, "etc2"));
@@ -65,10 +63,11 @@ public class AddressPoolTest {
         String scriptBody3 = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/args-level.groovy"), "utf-8");
         pool.updateArgsRoute(service, scriptBody3);
     }
+
     //
     @Test
     public void saveToZipTest() throws URISyntaxException, IOException {
-        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.createAppContext().getEnvironment());
+        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.create().build().getEnvironment());
         AddressPool pool = new AddressPool(rsfEnv);
         String serviceID = "HelloWord_";
         //
@@ -77,18 +76,19 @@ public class AddressPoolTest {
             configService(pool, service);
         }
         //
-//        File outFile = new File(rsfEnv.getPluginDir(AddressPoolTest.class), "pool.zip");
-//        outFile.getParentFile().mkdirs();
-//        FileOutputStream out = new FileOutputStream(outFile, false);
-//        pool.storeConfig(out);
-//        out.flush();
-//        out.close();
+        //        File outFile = new File(rsfEnv.getPluginDir(AddressPoolTest.class), "pool.zip");
+        //        outFile.getParentFile().mkdirs();
+        //        FileOutputStream out = new FileOutputStream(outFile, false);
+        //        pool.storeConfig(out);
+        //        out.flush();
+        //        out.close();
     }
+
     @Test
     public void readFormZipTest() throws IOException, URISyntaxException {
         this.saveToZipTest();
         //
-        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.createAppContext().getEnvironment());
+        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.create().build().getEnvironment());
         AddressPool pool = new AddressPool(rsfEnv);
         String serviceID = "HelloWord_";
         //
@@ -96,10 +96,10 @@ public class AddressPoolTest {
             pool.appendAddress(serviceID + i, new InterAddress("192.168.1.1", 8000, "etc2"));
         }
         //
-//        File inFile = new File(rsfEnv.getPluginDir(AddressPoolTest.class), "pool.zip");
-//        FileInputStream in = new FileInputStream(inFile);
-//        pool.restoreConfig(in);
-//        in.close();
+        //        File inFile = new File(rsfEnv.getPluginDir(AddressPoolTest.class), "pool.zip");
+        //        FileInputStream in = new FileInputStream(inFile);
+        //        pool.restoreConfig(in);
+        //        in.close();
         //
         Set<String> names = pool.getBucketNames();
         for (String service : names) {
@@ -107,11 +107,12 @@ public class AddressPoolTest {
             System.out.println(bucket.getServiceID() + " - address size = " + bucket.getAllAddresses().size());
         }
     }
+
     @Test
     public void localDiskCacheTest() throws IOException, URISyntaxException, InterruptedException {
         //
         // 1.修改默认配置
-        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.createAppContext().getEnvironment());
+        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.create().build().getEnvironment());
         rsfEnv.getSettings().setSetting("hasor.rsfConfig.addressPool.refreshCacheTime", "1000");
         rsfEnv.getSettings().setSetting("hasor.rsfConfig.addressPool.diskCacheTimeInterval", "3000");
         rsfEnv.getSettings().setSetting("hasor.rsfConfig.addressPool.invalidWaitTime", "500");
@@ -132,10 +133,11 @@ public class AddressPoolTest {
         }
         pool.restoreConfig();
     }
+
     //
     @Test
     public void nextAddressTest() throws IOException, URISyntaxException, InterruptedException {
-        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.createAppContext().getEnvironment());
+        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.create().build().getEnvironment());
         final AddressPool pool = new AddressPool(rsfEnv);
         final String serviceID = "[RSF]test.net.hasor.rsf.services.EchoService-1.0.0";
         //

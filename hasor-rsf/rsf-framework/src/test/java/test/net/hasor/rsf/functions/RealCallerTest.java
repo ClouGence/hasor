@@ -25,6 +25,7 @@ import test.net.hasor.rsf.services.MessageService;
 import test.net.hasor.rsf.services.MessageServiceImpl;
 
 import java.lang.reflect.Method;
+
 /**
  *
  * @version : 2014年9月12日
@@ -34,25 +35,19 @@ public class RealCallerTest {
     @Test
     public void realCallOnce() throws Throwable {
         //Server
-        AppContext serverAppContext = Hasor.createAppContext("alone/provider-config.xml", new RsfModule() {
-            @Override
-            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-                apiBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
-                apiBinder.rsfService(MessageService.class).toInstance(new MessageServiceImpl()).register();
-            }
+        AppContext serverAppContext = Hasor.create().mainSettingWith("alone/provider-config.xml").build((RsfModule) apiBinder -> {
+            apiBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
+            apiBinder.rsfService(MessageService.class).toInstance(new MessageServiceImpl()).register();
         });
         System.out.println("server start.");
         Thread.sleep(2000);
         //
         //
         //Client
-        AppContext clientContext = Hasor.createAppContext("alone/customer-config.xml", new RsfModule() {
-            @Override
-            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-                InterAddress local = new InterAddress("rsf://127.0.0.1:2180/default");
-                apiBinder.rsfService(EchoService.class).bindAddress(local).register();
-                apiBinder.rsfService(MessageService.class).bindAddress(local).register();
-            }
+        AppContext clientContext = Hasor.create().mainSettingWith("alone/customer-config.xml").build((RsfModule) apiBinder -> {
+            InterAddress local = new InterAddress("rsf://127.0.0.1:2180/default");
+            apiBinder.rsfService(EchoService.class).bindAddress(local).register();
+            apiBinder.rsfService(MessageService.class).bindAddress(local).register();
         });
         System.out.println("client start.");
         Thread.sleep(2000);
@@ -62,28 +57,23 @@ public class RealCallerTest {
         String res = echoService.sayHello("Hello Word for Invoker");
         System.out.println("invoker -> " + res);
     }
+
     @Test
     public void realCallerTest() throws Throwable {
         //Server
-        AppContext serverAppContext = Hasor.createAppContext("alone/provider-config.xml", new RsfModule() {
-            @Override
-            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-                apiBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
-                apiBinder.rsfService(MessageService.class).toInstance(new MessageServiceImpl()).register();
-            }
+        AppContext serverAppContext = Hasor.create().mainSettingWith("alone/provider-config.xml").build((RsfModule) apiBinder -> {
+            apiBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
+            apiBinder.rsfService(MessageService.class).toInstance(new MessageServiceImpl()).register();
         });
         System.out.println("server start.");
         Thread.sleep(2000);
         //
         //
         //Client
-        AppContext clientContext = Hasor.createAppContext("alone/customer-config.xml", new RsfModule() {
-            @Override
-            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-                InterAddress local = new InterAddress("rsf://127.0.0.1:2180/default");
-                apiBinder.rsfService(EchoService.class).bindAddress(local).register();
-                apiBinder.rsfService(MessageService.class).bindAddress(local).register();
-            }
+        AppContext clientContext = Hasor.create().mainSettingWith("alone/customer-config.xml").build((RsfModule) apiBinder -> {
+            InterAddress local = new InterAddress("rsf://127.0.0.1:2180/default");
+            apiBinder.rsfService(EchoService.class).bindAddress(local).register();
+            apiBinder.rsfService(MessageService.class).bindAddress(local).register();
         });
         System.out.println("client start.");
         RsfClient client = clientContext.getInstance(RsfClient.class);
@@ -122,6 +112,7 @@ public class RealCallerTest {
             public void completed(Object result) {
                 System.out.println("callBackInvoke -> result :" + result);
             }
+
             @Override
             public void failed(Throwable ex) {
                 System.out.println("callBackInvoke -> exception :" + ex.getMessage());
@@ -135,6 +126,7 @@ public class RealCallerTest {
                 System.out.println("callBackRequest -> status :" + result.getStatus());
                 System.out.println("callBackRequest -> result :" + result.getData());
             }
+
             @Override
             public void failed(Throwable ex) {
                 System.out.println("callBackRequest -> exception :" + ex.getMessage());

@@ -15,7 +15,6 @@
  */
 package net.hasor.registry.client.support;
 import net.hasor.core.EventContext;
-import net.hasor.core.Hasor;
 import net.hasor.core.Inject;
 import net.hasor.registry.client.RsfCenterListener;
 import net.hasor.registry.common.RegistryConstants;
@@ -25,6 +24,8 @@ import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.domain.RsfCenterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 /**
  * 注册中心数据接收器，负责更新注册中心推送过来的配置信息。
@@ -52,7 +53,7 @@ public class RegistryClientReceiver implements RsfCenterListener {
 
     @Override
     public boolean onEvent(String group, String name, String version, String eventType, String eventBody) throws Throwable {
-        RsfUpdater rsfUpdater = Hasor.assertIsNotNull(this.rsfContext, " rsfContext is null.").getUpdater();
+        RsfUpdater rsfUpdater = Objects.requireNonNull(this.rsfContext, " rsfContext is null.").getUpdater();
         EventProcess process = EventProcessMapping.findEventProcess(eventType);
         if (process == null) {
             throw new RsfCenterException(eventType + " eventType is undefined.");

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
-import net.hasor.core.Hasor;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +22,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,9 +67,9 @@ public class InterAddress {
     }
 
     public InterAddress(String sechma, String hostAddress, int hostPort, String formUnit) {
-        this.sechma = Hasor.assertIsNotNull(sechma, "sechma is null.").toLowerCase();
-        this.formUnit = Hasor.assertIsNotNull(formUnit, "formUnit is null.");
-        this.hostAddress = Hasor.assertIsNotNull(hostAddress, "hostAddress is null.");
+        this.sechma = Objects.requireNonNull(sechma, "sechma is null.").toLowerCase();
+        this.formUnit = Objects.requireNonNull(formUnit, "formUnit is null.");
+        this.hostAddress = Objects.requireNonNull(hostAddress, "hostAddress is null.");
         this.hostAddressData = this.initIP(this.hostAddress);
         this.hostPort = hostPort;
         this.hostSchema = String.format("%s://%s:%s/%s", this.sechma, this.hostAddress, this.hostPort, this.formUnit);

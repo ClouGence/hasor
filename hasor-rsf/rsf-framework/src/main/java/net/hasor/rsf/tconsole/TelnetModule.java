@@ -17,6 +17,7 @@ package net.hasor.rsf.tconsole;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
 import net.hasor.tconsole.binder.ConsoleApiBinder;
+import net.hasor.tconsole.binder.ConsoleApiBinder.TelnetBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,18 +30,19 @@ public final class TelnetModule implements RsfModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public final void loadModule(RsfApiBinder apiBinder) throws Throwable {
+    public final void loadModule(RsfApiBinder apiBinder) {
         ConsoleApiBinder consoleApiBinder = apiBinder.tryCast(ConsoleApiBinder.class);
-        if (consoleApiBinder == null || !consoleApiBinder.isEnable()) {
+        if (consoleApiBinder == null) {
             return;
         }
         //
         logger.info("rsf Command registered to tConsole.");
-        consoleApiBinder.addCommand(new String[] { "detail" }, DetailRsfInstruct.class);
-        consoleApiBinder.addCommand(new String[] { "flow" }, FlowRsfInstruct.class);
-        consoleApiBinder.addCommand(new String[] { "info" }, InfoRsfInstruct.class);
-        consoleApiBinder.addCommand(new String[] { "list" }, ListRsfInstruct.class);
-        consoleApiBinder.addCommand(new String[] { "rule" }, RuleRsfInstruct.class);
-        consoleApiBinder.addCommand(new String[] { "status" }, StatusRsfInstruct.class);
+        TelnetBuilder builder = consoleApiBinder.asHostWithEnv();
+        builder.addExecutor("detail").to(DetailRsfInstruct.class);
+        builder.addExecutor("flow").to(FlowRsfInstruct.class);
+        builder.addExecutor("info").to(InfoRsfInstruct.class);
+        builder.addExecutor("list").to(ListRsfInstruct.class);
+        builder.addExecutor("rule").to(RuleRsfInstruct.class);
+        builder.addExecutor("status").to(StatusRsfInstruct.class);
     }
 }

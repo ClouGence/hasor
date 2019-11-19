@@ -40,6 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 接口授权查询。
@@ -52,7 +53,7 @@ public class FileAuthQuery implements AuthQuery {
     private AppContext            appContext;
     @Inject
     private ServerSettings        rsfCenterSettings;
-    private Map<String, AuthBean> keyPool = new HashMap<String, AuthBean>();
+    private Map<String, AuthBean> keyPool = new HashMap<>();
 
     //
     @Init
@@ -61,7 +62,7 @@ public class FileAuthQuery implements AuthQuery {
         // .获取输入流
         Environment env = appContext.getEnvironment();
         String authKeysFileName = env.evalString("%RSF_CENTER_AUTH_FILE_NAME%");
-        File authKeysPath = null;//new File(env.getWorkSpaceDir(), authKeysFileName);
+        File authKeysPath = new File(env.getVariable("WORK_HOME"), authKeysFileName);
         InputStream inStream = null;
         if (authKeysPath.canRead() && authKeysPath.exists()) {
             inStream = new AutoCloseInputStream(new FileInputStream(authKeysPath));
@@ -109,8 +110,8 @@ public class FileAuthQuery implements AuthQuery {
     //
     @Override
     public Result<Boolean> checkKeySecret(AuthBean authInfo) {
-        authInfo = Hasor.assertIsNotNull(authInfo);
-        ResultDO<Boolean> result = new ResultDO<Boolean>();
+        authInfo = Objects.requireNonNull(authInfo);
+        ResultDO<Boolean> result = new ResultDO<>();
         result.setSuccess(true);
         // .匿名应用策略
         if (StringUtils.isBlank(authInfo.getAppKey()) && StringUtils.isBlank(authInfo.getAppKeySecret()) && this.rsfCenterSettings.isAllowAnonymous()) {

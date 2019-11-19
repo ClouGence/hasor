@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.registry.boot.launcher;
-import net.hasor.core.AppContext;
-import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.launcher.CmdRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Telnet扩展指令,只有通过 start.sh 形式启动时才可以使用这个指令。
  * @version : 2016年3月29日
  * @author 赵永春 (zyc@hasor.net)
- */
+ *//*
 public class CenterAppShutdownInstruct implements CommandExecutor {
     protected static Logger logger = LoggerFactory.getLogger(CenterAppShutdownInstruct.class);
 
@@ -53,7 +47,7 @@ public class CenterAppShutdownInstruct implements CommandExecutor {
             request.writeMessageLine("after " + i + " seconds to kill self.");
             try {
                 Thread.sleep(1000);
-            } catch (Exception e) { /**/ }
+            } catch (Exception e) { /** / }
             i--;
             if (i == 0) {
                 break;
@@ -65,7 +59,7 @@ public class CenterAppShutdownInstruct implements CommandExecutor {
             public void run() {
                 try {
                     Thread.sleep(1000);
-                } catch (Exception e) {/**/}
+                } catch (Exception e) {/** /}
                 appContext.shutdown();
                 System.exit(1);
             }
@@ -79,4 +73,4 @@ public class CenterAppShutdownInstruct implements CommandExecutor {
         thread.start();
         return "do shutdown center.";
     }
-}
+}*/

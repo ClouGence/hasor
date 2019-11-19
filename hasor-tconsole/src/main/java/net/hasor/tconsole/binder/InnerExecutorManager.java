@@ -98,6 +98,11 @@ class InnerExecutorManager extends AbstractContainer implements AppContextAware,
             this.service = new TelnetTelService(this.telnetSocket, this.telnetInBoundMatcher, this.appContext);
         }
         //
+        if (this.service == null) {
+            logger.info("tConsole -> unstart.");
+            return;
+        }
+        //
         // .加载命令
         AbstractTelService finalService = Objects.requireNonNull(this.service);
         this.telExecutors.forEach(finalService::addCommand);
@@ -128,7 +133,7 @@ class InnerExecutorManager extends AbstractContainer implements AppContextAware,
         if (this.triggerOnStopToContext != null) {
             this.triggerOnStopToContext.disable();
         }
-        if (this.service.isInit()) {
+        if (this.service != null && this.service.isInit()) {
             this.service.close();
         }
         this.service = null;

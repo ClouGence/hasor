@@ -15,8 +15,7 @@
  */
 package net.hasor.registry.client.support;
 import net.hasor.core.EventContext;
-import net.hasor.core.Hasor;
-import net.hasor.core.context.ContextStartListener;
+import net.hasor.core.spi.ContextStartListener;
 import net.hasor.registry.client.RsfCenterListener;
 import net.hasor.registry.client.RsfCenterRegister;
 import net.hasor.registry.client.commands.PullRsfInstruct;
@@ -26,9 +25,11 @@ import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.domain.RsfEvent;
-import net.hasor.tconsole.ConsoleApiBinder;
+import net.hasor.tconsole.binder.ConsoleApiBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 /**
  * Client模式
@@ -41,7 +42,7 @@ public class RegistryClientModule implements RsfModule {
 
     //
     public RegistryClientModule(RsfCenterSettings centerSettings) {
-        this.centerSettings = Hasor.assertIsNotNull(centerSettings);
+        this.centerSettings = Objects.requireNonNull(centerSettings);
     }
 
     //
@@ -57,10 +58,9 @@ public class RegistryClientModule implements RsfModule {
         eventContext.addListener(RsfEvent.Rsf_DeleteService, transport);
         eventContext.addListener(RsfEvent.Rsf_Online, transport);
         eventContext.addListener(RsfEvent.Rsf_Offline, transport);
-        apiBinder.bindType(ContextStartListener.class).toInstance(transport);
+        apiBinder.bindSpiListener(ContextStartListener.class, transport);
         //
         // 2.接受来自注册中心的消息
-        apiBinder.bindType(ContextStartListener.class).toInstance(transport);
         apiBinder.rsfService(RsfCenterListener.class)//服务类型
                 .toInfo(apiBinder.bindType(RegistryClientReceiver.class).uniqueName().asEagerSingleton().toInfo())//服务实现
                 .bindFilter("AuthFilter", RegistryClientVerifyFilter.class)//服务安全过滤器
@@ -77,7 +77,7 @@ public class RegistryClientModule implements RsfModule {
                 .asShadow().register();//注册服务
         //
         // 4.tConsole指令
-        apiBinder.tryCast(ConsoleApiBinder.class).addCommand(new String[] { "pull", "request" }, PullRsfInstruct.class);
+        apiBinder.tryCast(ConsoleApiBinder.class).asHostWithEnv().addExecutor("pull", "request").to(PullRsfInstruct.class);
         logger.info("rsf center-client started.");
     }
 

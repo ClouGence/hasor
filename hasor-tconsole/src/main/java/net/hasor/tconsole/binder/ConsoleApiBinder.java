@@ -47,6 +47,11 @@ public interface ConsoleApiBinder extends ApiBinder {
     }
 
     /**
+     * 跟随环境，启动 Telnet 的模式交给其它地方决定。这里只负责注册命令。
+     */
+    public TelnetBuilder asHostWithEnv();
+
+    /**
      * 创建一个 Host 模式的 Tel 命令交互界面。
      */
     public HostBuilder asHost(Reader reader, Writer writer);

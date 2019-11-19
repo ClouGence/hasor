@@ -17,7 +17,6 @@ package test.net.hasor.rsf.functions;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.Module;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.OptionInfo;
 import net.hasor.rsf.domain.RequestInfo;
@@ -31,6 +30,7 @@ import org.junit.Test;
 
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
+
 /**
  *  在 Connector 层面上测试，启动本地监听服务，并且连接到远程连接器上进行数据发送和接收。
  * @version : 2014年9月12日
@@ -38,13 +38,15 @@ import java.util.function.Supplier;
  */
 public class ConnectorTest extends ChannelInboundHandlerAdapter implements Supplier<RsfEnvironment>, ReceivedListener {
     private RsfEnvironment rsfEnv;
+
     @Override
     public RsfEnvironment get() {
         return this.rsfEnv;
     }
+
     @Test
     public void sendPack() throws Throwable {
-        AppContext appContext = Hasor.create().putData("RSF_ENABLE", "false").build((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().addVariable("RSF_ENABLE", "false").build(apiBinder -> {
             apiBinder.bindType(RsfEnvironment.class).toProvider(ConnectorTest.this);
         });
         this.rsfEnv = new DefaultRsfEnvironment(appContext.getEnvironment());
@@ -78,6 +80,7 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Suppl
         rsfChannel.close();
         connector.shutdown();
     }
+
     //
     @Override
     public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) {

@@ -33,23 +33,24 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 abstract class AbstractRsfBindBuilder implements RsfPublisher {
+    protected abstract <T> Supplier<? extends T> toProvider(BindInfo<T> bindInfo);
+
+    protected abstract <T> Supplier<? extends T> toProvider(Class<T> bindInfo);
+
     protected abstract <T> RsfBindInfo<T> addService(ServiceDefine<T> serviceDefine);
 
     protected abstract void addShareFilter(FilterDefine filterDefine);
 
     public RsfPublisher bindFilter(String filterID, RsfFilter instance) {
-        InstanceProvider<RsfFilter> provider = new InstanceProvider<>(Objects.requireNonNull(instance));
-        return this.bindFilter(filterID, provider);
+        return this.bindFilter(filterID, InstanceProvider.of(instance));
     }
 
     public RsfPublisher bindFilter(String filterID, BindInfo<RsfFilter> filterBindInfo) {
-        InfoAwareProvider<RsfFilter> provider = makeSureAware(new InfoAwareProvider<>(filterBindInfo));
-        return this.bindFilter(filterID, );
+        return this.bindFilter(filterID, toProvider(filterBindInfo));
     }
 
     public RsfPublisher bindFilter(String filterID, Class<? extends RsfFilter> rsfFilterType) {
-        ClassAwareProvider<RsfFilter> provider = makeSureAware(new ClassAwareProvider<>(rsfFilterType));
-        return this.bindFilter(filterID, provider);
+        return this.bindFilter(filterID, toProvider(rsfFilterType));
     }
 
     public RsfPublisher bindFilter(String filterID, Supplier<? extends RsfFilter> provider) {
@@ -57,7 +58,6 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         return this;
     }
 
-    //
     public <T> LinkedBuilder<T> rsfService(Class<T> type) {
         return new LinkedBuilderImpl<T>(type);
     }
@@ -179,26 +179,26 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
 
         @Override
         public FilterBindBuilder<T> bindFilter(String filterID, Class<? extends RsfFilter> rsfFilterType) {
-            ClassAwareProvider<RsfFilter> provider = makeSureAware(new ClassAwareProvider<>(rsfFilterType));
+            Supplier<? extends RsfFilter> provider = AbstractRsfBindBuilder.this.toProvider(rsfFilterType);
             this.serviceDefine.addRsfFilter(new FilterDefine(filterID, provider));
             return this;
         }
 
         @Override
         public FilterBindBuilder<T> bindFilter(String filterID, BindInfo<RsfFilter> rsfFilterInfo) {
-            InfoAwareProvider<RsfFilter> provider = makeSureAware(new InfoAwareProvider<>(rsfFilterInfo));
+            Supplier<? extends RsfFilter> provider = AbstractRsfBindBuilder.this.toProvider(rsfFilterInfo);
             this.serviceDefine.addRsfFilter(new FilterDefine(filterID, provider));
             return this;
         }
 
         @Override
         public ConfigurationBuilder<T> to(final Class<? extends T> implementation) {
-            return this.toProvider(makeSureAware(new ClassAwareProvider<T>(implementation)));
+            return this.toProvider(AbstractRsfBindBuilder.this.toProvider(implementation));
         }
 
         @Override
         public ConfigurationBuilder<T> toInfo(final BindInfo<? extends T> bindInfo) {
-            return this.toProvider(makeSureAware(new InfoAwareProvider<T>(bindInfo)));
+            return this.toProvider(AbstractRsfBindBuilder.this.toProvider(bindInfo));
         }
 
         @Override
@@ -214,7 +214,7 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         }
 
         @Override
-        public RegisterBuilder<T> bindAddress(String rsfHost, int port) throws URISyntaxException {
+        public RegisterBuilder<T> bindAddress(String rsfHost, int port) {
             String unitName = getEnvironment().getSettings().getUnitName();
             return this.bindAddress(new InterAddress(rsfHost, port, unitName));
         }

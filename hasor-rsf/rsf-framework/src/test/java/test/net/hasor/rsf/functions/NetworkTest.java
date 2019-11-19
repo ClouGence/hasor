@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.functions;
-import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.Module;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.RequestInfo;
@@ -31,6 +29,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
+
 /**
  *
  * @version : 2014年9月12日
@@ -38,13 +37,15 @@ import java.util.function.Supplier;
  */
 public class NetworkTest extends ReceivedAdapter implements Supplier<RsfEnvironment> {
     private RsfEnvironment rsfEnv;
+
     @Override
     public RsfEnvironment get() {
         return this.rsfEnv;
     }
+
     @Test
     public void sendPack() throws IOException, InterruptedException, ExecutionException {
-        AppContext appContext = Hasor.create().putData("RSF_ENABLE", "false").build((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().addVariable("RSF_ENABLE", "false").build(apiBinder -> {
             apiBinder.bindType(RsfEnvironment.class).toProvider(NetworkTest.this);//
         });
         this.rsfEnv = new DefaultRsfEnvironment(appContext.getEnvironment());
@@ -74,11 +75,13 @@ public class NetworkTest extends ReceivedAdapter implements Supplier<RsfEnvironm
         Thread.sleep(2000);
         rsfNetManager.shutdown();
     }
+
     @Override
     public void receivedMessage(InterAddress form, ResponseInfo response) {
         //
         System.out.println("receivedMessage[Response] >>>>>>>>> " + response.getRequestID());
     }
+
     @Override
     public void receivedMessage(InterAddress form, RequestInfo request) {
         //

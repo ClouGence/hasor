@@ -23,11 +23,9 @@ import net.hasor.rsf.utils.IOUtils;
 import net.hasor.utils.ResourcesUtils;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+
 /**
  *
  * @version : 2014年9月12日
@@ -36,7 +34,7 @@ import java.net.URISyntaxException;
 public class BucketTest {
     @Test
     public void saveToZipTest() throws URISyntaxException, IOException {
-        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.createAppContext().getEnvironment());
+        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.create().build().getEnvironment());
         String serviceID = "tttt";
         BuildBucketBuild buildBucket = new BuildBucketBuild(serviceID, rsfEnv).invoke();
         AddressBucket bucket = buildBucket.getBucket();
@@ -53,48 +51,47 @@ public class BucketTest {
         String scriptBody3 = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/args-level.groovy"), "utf-8");
         bucket.updateRoute(RouteTypeEnum.ArgsLevel, scriptBody3);
         //
-//        File outFile = new File(rsfEnv.getPluginDir(BucketTest.class), serviceID + ".zip");
-//        outFile.getParentFile().mkdirs();
-//        FileOutputStream out = new FileOutputStream(outFile, false);
-//        bucket.saveToZip(out);
-//        out.flush();
-//        out.close();
+        //        File outFile = new File(rsfEnv.getPluginDir(BucketTest.class), serviceID + ".zip");
+        //        outFile.getParentFile().mkdirs();
+        //        FileOutputStream out = new FileOutputStream(outFile, false);
+        //        bucket.saveToZip(out);
+        //        out.flush();
+        //        out.close();
     }
+
     @Test
     public void readFormZipTest() throws IOException, URISyntaxException {
         this.saveToZipTest();
         //
-        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.createAppContext().getEnvironment());
+        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.create().build().getEnvironment());
         String serviceID = "tttt";
         BuildBucketBuild buildBucket = new BuildBucketBuild(serviceID, rsfEnv).invoke();
         AddressBucket bucket = buildBucket.getBucket();
         //
-//        File inFile = new File(rsfEnv.getPluginDir(BucketTest.class), serviceID + ".zip");
-//        FileInputStream in = new FileInputStream(inFile);
-//        bucket.readFromZip(in);
-//        in.close();
+        //        File inFile = new File(rsfEnv.getPluginDir(BucketTest.class), serviceID + ".zip");
+        //        FileInputStream in = new FileInputStream(inFile);
+        //        bucket.readFromZip(in);
+        //        in.close();
     }
+
     //
     @Test
     public void invalidAddressTest() throws IOException, InterruptedException, URISyntaxException {
-        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.createAppContext().getEnvironment());
+        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.create().build().getEnvironment());
         String serviceID = "tttt";
         BuildBucketBuild buildBucket = new BuildBucketBuild(serviceID, rsfEnv).invoke();
         final AddressBucket bucket = buildBucket.getBucket();
         //
-        Thread watcher = new Thread() {
-            @Override
-            public void run() {
-                while (true) {
-                    bucket.refreshAddress();
-                    System.out.println(bucket.getAvailableAddresses().size());
-                    try {
-                        Thread.sleep(250);
-                    } catch (InterruptedException e) {
-                    }
+        Thread watcher = new Thread(() -> {
+            while (true) {
+                bucket.refreshAddress();
+                System.out.println(bucket.getAvailableAddresses().size());
+                try {
+                    Thread.sleep(250);
+                } catch (InterruptedException e) {
                 }
             }
-        };
+        });
         watcher.setDaemon(true);
         watcher.start();
         //

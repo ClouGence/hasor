@@ -14,33 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.registry.boot.launcher;
-import net.hasor.core.*;
-import net.hasor.core.environment.StandardEnvironment;
-import net.hasor.rsf.RsfEnvironment;
-import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
-import net.hasor.rsf.utils.IOUtils;
-import net.hasor.rsf.utils.NetworkUtils;
-import net.hasor.tconsole.ConsoleApiBinder;
-import net.hasor.tconsole.client.TelnetClient;
-import net.hasor.utils.ResourcesUtils;
-import net.hasor.utils.future.BasicFuture;
-import org.codehaus.plexus.classworlds.ClassWorld;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  *
  * @version : 2016年3月29日
  * @author 赵永春 (zyc@hasor.net)
- */
+ *//*
 public class MainLauncher {
     protected static Logger logger = LoggerFactory.getLogger(MainLauncher.class);
 
@@ -48,7 +26,6 @@ public class MainLauncher {
     public static void main(String[] args, ClassWorld world) throws Throwable {
         logger.info(">>>>>>>>>>>>>>>>> MainLauncher <<<<<<<<<<<<<<<<<");
         String action = args[0];
-        /*   */
         if ("start".equalsIgnoreCase(action)) {
             doStart(args);
         } else if ("stop".equalsIgnoreCase(action)) {
@@ -64,7 +41,7 @@ public class MainLauncher {
         final String config = args[1];
         AppContext app = Hasor.createAppContext(new File(config), null, new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
-                /* 特殊 RSF 指令 */
+                // 特殊 RSF 指令
                 apiBinder.tryCast(ConsoleApiBinder.class).addCommand(//
                         new String[] { "center_app_shutdown_command" }, CenterAppShutdownInstruct.class//
                 );
@@ -91,7 +68,7 @@ public class MainLauncher {
         addressHost = NetworkUtils.finalBindAddress(addressHost).getHostAddress();
         int consolePort = rsfSettings.getInteger("hasor.tConsole.bindPort"); // 控制台工作端口
         //
-        Map<String, String> envMap = new HashMap<String, String>();
+        Map<String, String> envMap = new HashMap<>();
         envMap.put("open_kill_self", "true");//设置 open_kill_self 环境变量,该环境变量在执行 center_app_shutdown_command 命令时候可以让应用程序退出。
         TelnetClient.execCommand(addressHost, consolePort, "center_app_shutdown_command", envMap);
     }
@@ -106,4 +83,4 @@ public class MainLauncher {
             System.out.println("undefined");
         }
     }
-}
+}*/

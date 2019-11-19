@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.center;
-import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.rsf.RsfModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import test.net.hasor.rsf.services.EchoService;
 
 import java.io.IOException;
+
 /**
  * 单机模式
  * @version : 2015年8月13日
@@ -27,9 +29,10 @@ import java.io.IOException;
  */
 public class TestServerAlone {
     protected Logger logger = LoggerFactory.getLogger(getClass());
+
     public static void main(String[] args) throws IOException {
-        AppContext appContext = Hasor.createAppContext("/center/rsf-server-alone.xml");
-        String string = appContext.getEnvironment().getSettings().getString("hasor.modules.loadModule");
-        System.in.read();
+        Hasor.create().mainSettingWith("/center/rsf-server-alone.xml").build((RsfModule) apiBinder -> {
+            apiBinder.rsfService(EchoService.class).register();
+        }).joinSignal();
     }
 }

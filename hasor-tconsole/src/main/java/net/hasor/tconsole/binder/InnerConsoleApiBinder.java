@@ -41,6 +41,11 @@ class InnerConsoleApiBinder extends ApiBinderWrap implements ConsoleApiBinder {
     }
 
     @Override
+    public TelnetBuilder asHostWithEnv() {
+        return new TelnetBuilderImpl();
+    }
+
+    @Override
     public HostBuilder asHost(Reader reader, Writer writer) {
         this.executorManager.setTelMode(InnerTelMode.Host);
         this.executorManager.setHostReader(reader);
@@ -108,7 +113,7 @@ class InnerConsoleApiBinder extends ApiBinderWrap implements ConsoleApiBinder {
 
         @Override
         public <T extends TelExecutor> void to(Class<? extends T> executorKey) {
-            toInfo(bindType(TelExecutor.class).to(executorKey).toInfo());
+            toInfo(bindType(TelExecutor.class).uniqueName().to(executorKey).toInfo());
         }
 
         @Override

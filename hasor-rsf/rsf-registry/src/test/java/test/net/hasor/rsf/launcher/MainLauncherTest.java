@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.launcher;
-import net.hasor.registry.boot.launcher.MainLauncher;
-import net.hasor.utils.ResourcesUtils;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  *
  * @version : 2016年3月29日
  * @author 赵永春 (zyc@hasor.net)
- */
+ *//*
 public class MainLauncherTest {
     protected static Logger logger = LoggerFactory.getLogger(MainLauncherTest.class);
     //
@@ -41,4 +36,4 @@ public class MainLauncherTest {
         config[1] = ResourcesUtils.getResource("/center/rsf-server-alone.xml").getFile();
         MainLauncher.doStop(config);
     }
-}
+}*/

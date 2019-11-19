@@ -23,6 +23,7 @@ import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.protocol.rsf.v1.CodecAdapterForV1;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import org.junit.Test;
+
 /**
  *
  * @version : 2014年9月12日
@@ -31,7 +32,7 @@ import org.junit.Test;
 public class ProtocolTest {
     @Test
     public void requestPack() throws Throwable {
-        AppContext appContext = Hasor.createAppContext();
+        AppContext appContext = Hasor.create().build();
         DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(appContext.getEnvironment());
         CodecAdapterForV1 codecAdapter = new CodecAdapterForV1(rsfEnv, appContext.getClassLoader());
         //
@@ -59,10 +60,10 @@ public class ProtocolTest {
         //
         System.out.println(inRequest);
     }
-    //
+
     @Test
     public void responsePack() throws Throwable {
-        AppContext appContext = Hasor.createAppContext();
+        AppContext appContext = Hasor.create().build();
         DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(appContext.getEnvironment());
         CodecAdapterForV1 codecAdapter = new CodecAdapterForV1(rsfEnv, appContext.getClassLoader());
         //

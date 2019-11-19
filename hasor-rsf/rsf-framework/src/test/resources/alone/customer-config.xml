@@ -11,8 +11,6 @@
         <RSF_SERVICE_PORT>2171</RSF_SERVICE_PORT>
         <!-- Hprose 服务端口 -->
         <HPROSE_SERVICE_PORT>2172</HPROSE_SERVICE_PORT>
-        <!-- Hprose 服务端口 -->
-        <HTTP_SERVICE_PORT>2173</HTTP_SERVICE_PORT>
     </hasor.environmentVar>
 
 </config>

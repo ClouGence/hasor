@@ -44,6 +44,16 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
     }
 
     @Override
+    protected <T> Supplier<? extends T> toProvider(BindInfo<T> bindInfo) {
+        return this.apiBinder.getProvider(bindInfo);
+    }
+
+    @Override
+    protected <T> Supplier<? extends T> toProvider(Class<T> bindInfo) {
+        return this.apiBinder.getProvider(bindInfo);
+    }
+
+    @Override
     protected <T> RsfBindInfo<T> addService(ServiceDefine<T> serviceDefine) {
         this.bindType(ServiceDefine.class).uniqueName().toInstance(serviceDefine);
         return serviceDefine;

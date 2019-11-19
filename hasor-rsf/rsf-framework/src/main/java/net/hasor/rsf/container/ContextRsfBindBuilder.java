@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.container;
+import net.hasor.core.BindInfo;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
+
+import java.util.function.Supplier;
 
 /**
  * 服务注册器
@@ -27,6 +30,16 @@ abstract class ContextRsfBindBuilder extends AbstractRsfBindBuilder {
     protected abstract RsfBeanContainer getContainer();
 
     protected abstract RsfContext getRsfContext();
+
+    @Override
+    protected <T> Supplier<? extends T> toProvider(BindInfo<T> bindInfo) {
+        return getContainer().getAppContext().getProvider(bindInfo);
+    }
+
+    @Override
+    protected <T> Supplier<? extends T> toProvider(Class<T> bindInfo) {
+        return getContainer().getAppContext().getProvider(bindInfo);
+    }
 
     public RsfEnvironment getEnvironment() {
         return this.getRsfContext().getEnvironment();

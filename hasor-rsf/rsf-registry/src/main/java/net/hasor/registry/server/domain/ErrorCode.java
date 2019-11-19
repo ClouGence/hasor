@@ -25,23 +25,23 @@ import java.util.Set;
  */
 public enum ErrorCode {
     OK(0, "Success"),//
-    Undefined(0, "undefined"),//
-    ServiceUndefined(0, "undefined"),//
-    ParamError(0, "参数错误"),//
-    Exception(1, "Center 出现内部错误。"),//
-    EmptyResult(2, "结果集为空。"),//
+    Undefined(1, "undefined"),//
+    ServiceUndefined(2, "undefined"),//
+    ParamError(3, "参数错误"),//
+    Exception(4, "Center 出现内部错误。"),//
+    EmptyResult(5, "结果集为空。"),//
     //    ServiceTypeFailed_Null(3, "服务类型不清楚。"),//
     //    BuildRegisterIDFailed_Null(4, "registerID计算失败。"), //
-    AuthCheckFailed_ResultEmpty(5, "授权检查失败,检测结果为空。"),//
+    AuthCheckFailed_ResultEmpty(6, "授权检查失败,检测结果为空。"),//
     //    RegisterCheckInvalid(8, "RegisterID验证错误。"),//
     //    BeatFailed_RefreshResultNull(9, "心跳失败,刷新对象无返回值。"), //
     //    TargetListEmpty(11, "目标地址为空。"),//
     //
-    RemoveRegister_Failed(6, "服务解除注册失败。"),//
-    SystemTooBusy(7, "地址推送失败,服务器繁忙。"),//
-    Storage_Service_Failed(8, "保存服务信息失败。"),//
+    RemoveRegister_Failed(7, "服务解除注册失败。"),//
+    SystemTooBusy(8, "地址推送失败,服务器繁忙。"),//
+    Storage_Service_Failed(9, "保存服务信息失败。"),//
     Storage_Consumer_Failed(10, "订阅服务失败,服务未定义。"), //
-    Storage_Provider_Failed(9, "发布服务失败,保存服务信息错误。"),//
+    Storage_Provider_Failed(11, "发布服务失败,保存服务信息错误。"),//
     //    PPF_AlreadyAsConsumer(6, "发布服务失败,保存服务信息错误-PublishProviderFailed_AlreadyAsConsumer。"),//
     //    CPF_AlreadyAsProvider(6, "发布服务失败,保存服务信息错误-ConsumerPublishFailed_AlreadyAsProvider。"),//
     //
@@ -67,7 +67,7 @@ public enum ErrorCode {
     }
 
     public static void checkErrorCode() {
-        Set<Integer> values = new HashSet<Integer>();
+        Set<Integer> values = new HashSet<>();
         for (ErrorCode a : ErrorCode.values()) {
             if (values.contains(a.codeType)) {
                 throw new RuntimeException(a.codeType + " duplicate ");

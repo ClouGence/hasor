@@ -27,9 +27,9 @@
 
     <hasor>
         <!-- 框架配置，包扫描范围 -->
-        <loadPackages>net.hasor.tconsole.registry.*</loadPackages>
+        <loadPackages>net.hasor.registry.*</loadPackages>
         <!-- 启动入口 -->
-        <modules.module>net.hasor.registry.server.boot.boot.RegistryBootModule</modules.module>
+        <modules.module>net.hasor.registry.boot.RegistryBootModule</modules.module>
     </hasor>
     <!--
         Hasor-RSF ( 分布式服务框架的注册中心 )

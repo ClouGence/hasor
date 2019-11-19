@@ -14,25 +14,31 @@
  * limitations under the License.
  */
 package net.hasor.registry.server.commonds;
+import net.hasor.core.AppContext;
 import net.hasor.registry.RegistryCenter;
 import net.hasor.registry.common.InstanceInfo;
-import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.launcher.CmdRequest;
+import net.hasor.tconsole.TelCommand;
+import net.hasor.tconsole.TelExecutor;
+
+import javax.inject.Inject;
 
 /**
  * center 命令基类。
  * @version : 2016年4月3日
  * @author 赵永春(zyc @ hasor.net)
  */
-public abstract class AbstractCenterInstruct implements CommandExecutor {
+public abstract class AbstractCenterInstruct implements TelExecutor {
+    @Inject
+    protected AppContext appContext;
+
     @Override
-    public final String doCommand(CmdRequest request) throws Throwable {
-        RegistryCenter center = request.getFinder().getAppContext().getInstance(RegistryCenter.class);
+    public String doCommand(TelCommand telCommand) throws Throwable {
+        RegistryCenter center = appContext.getInstance(RegistryCenter.class);
         if (center == null) {
             return "[ERROR] the service 'RegistryCenter' is Undefined.";
         }
-        return this.doCommand(center.getInstanceInfo(), request);
+        return this.doCommand(center.getInstanceInfo(), telCommand);
     }
 
-    public abstract String doCommand(InstanceInfo instance, CmdRequest request) throws Throwable;
+    public abstract String doCommand(InstanceInfo instance, TelCommand telCommand) throws Throwable;
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
-import net.hasor.core.Hasor;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.address.route.rule.ArgsKey;
 import org.slf4j.Logger;
@@ -37,7 +36,7 @@ class AddressCacheResult {
 
     //
     public AddressCacheResult(AddressPool addressPool) {
-        this.addressPool = Hasor.assertIsNotNull(addressPool);
+        this.addressPool = Objects.requireNonNull(addressPool);
     }
     //
 

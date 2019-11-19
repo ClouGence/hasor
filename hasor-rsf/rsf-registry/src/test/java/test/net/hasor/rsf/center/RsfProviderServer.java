@@ -15,10 +15,10 @@
  */
 package test.net.hasor.rsf.center;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
 import test.net.hasor.rsf.services.EchoService;
 import test.net.hasor.rsf.services.EchoServiceImpl;
+
 /**
  * 启动服务端
  * @version : 2014年9月12日
@@ -26,14 +26,8 @@ import test.net.hasor.rsf.services.EchoServiceImpl;
  */
 public class RsfProviderServer {
     public static void main(String[] args) throws Throwable {
-        //Server
-        Hasor.createAppContext("/center/server-config.xml", new RsfModule() {
-            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-                apiBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
-            }
-        });
-        //
-        System.out.println("server start.");
-        System.in.read();
+        Hasor.create().mainSettingWith("/center/server-config.xml").build((RsfModule) apiBinder -> {
+            apiBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
+        }).joinSignal();
     }
 }

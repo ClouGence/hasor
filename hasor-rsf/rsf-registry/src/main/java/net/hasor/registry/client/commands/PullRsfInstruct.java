@@ -24,12 +24,11 @@ import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.domain.RsfServiceType;
-import net.hasor.tconsole.launcher.CmdRequest;
+import net.hasor.tconsole.TelCommand;
 import net.hasor.utils.StringUtils;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,25 +49,20 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
     }
 
     @Override
-    public boolean inputMultiLine(CmdRequest request) {
-        return false;
-    }
-
-    @Override
-    public String doCommand(InstanceInfo instance, CmdRequest request) throws Throwable {
+    public String doCommand(InstanceInfo instance, TelCommand telCommand) throws Throwable {
         StringWriter sw = new StringWriter();
-        String[] args = request.getRequestArgs();
+        String[] args = telCommand.getCommandArgs();
         if (args != null && args.length > 0) {
             //
             // .准备参数
             String doArg = args[0];
-            RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
+            RsfContext rsfContext = appContext.getInstance(RsfContext.class);
             List<String> servicesList = Collections.emptyList();
             //
             // .确定拉取地址的服务列表
             if ("-all".equalsIgnoreCase(doArg)) {
                 //
-                request.writeMessageLine("detail Message:");
+                telCommand.writeMessageLine("detail Message:");
                 servicesList = rsfContext.getServiceIDs();
             } else {
                 //
@@ -79,7 +73,7 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
                     if (info.getServiceType() == RsfServiceType.Provider) {
                         return "[FAILED] the service '" + doArg + "' is Provider.";
                     }
-                    servicesList = Arrays.asList(info.getBindID());
+                    servicesList = Collections.singletonList(info.getBindID());
                 }
             }
             //
@@ -89,54 +83,54 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
                 return "[FAILED] no service on this application is registered.";
             }
             for (String serviceID : servicesList) {
-                request.writeMessageLine(" ->");
-                request.writeMessageLine(" ->ServiceID : " + serviceID);
+                telCommand.writeMessageLine(" ->");
+                telCommand.writeMessageLine(" ->ServiceID : " + serviceID);
                 //
                 RsfBindInfo<?> info = rsfContext.getServiceInfo(serviceID);
                 if (info == null) {
-                    request.writeMessageLine(" ->  [IGNORE] service is Undefined.");
+                    telCommand.writeMessageLine(" ->  [IGNORE] service is Undefined.");
                     continue;
                 }
                 if (info.getServiceType() == RsfServiceType.Provider) {
-                    request.writeMessageLine(" ->  [IGNORE] service is Provider.");
+                    telCommand.writeMessageLine(" ->  [IGNORE] service is Provider.");
                     continue;
                 }
                 //
-                if ("request".equalsIgnoreCase(request.getCommandString())) {
+                if ("request".equalsIgnoreCase(telCommand.getCommandBody())) {
                     // -request
-                    processRequest(request, register, info, instance, rsfContext);
+                    processRequest(telCommand, register, info, instance, rsfContext);
                 } else {
                     // -pull
-                    processPull(request, register, info, instance, rsfContext);
+                    processPull(telCommand, register, info, instance, rsfContext);
                 }
             }
         } else {
             //
-            sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + request.getCommandString() + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
+            sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + telCommand.getCommandName() + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
             sw.write(helpInfo());
         }
         return sw.toString();
     }
 
     //
-    private void processPull(CmdRequest request, RsfCenterRegister register, RsfBindInfo<?> serviceInfo, InstanceInfo instance, RsfContext rsfContext) {
+    private void processPull(TelCommand telCommand, RsfCenterRegister register, RsfBindInfo<?> serviceInfo, InstanceInfo instance, RsfContext rsfContext) {
         // .1of4
         String protocol = rsfContext.getDefaultProtocol();
-        request.writeMessageLine(" ->  this machine is the default protocol is " + protocol);
-        request.writeMessageLine(" ->  (1of4) pull address form rsfCenter ...");
-        List<String> runProtocol = new ArrayList<String>(serviceInfo.getBindProtocols());
+        telCommand.writeMessageLine(" ->  this machine is the default protocol is " + protocol);
+        telCommand.writeMessageLine(" ->  (1of4) pull address form rsfCenter ...");
+        List<String> runProtocol = new ArrayList<>(serviceInfo.getBindProtocols());
         RsfCenterResult<List<String>> result = register.pullProviders(instance, ServiceID.of(serviceInfo), runProtocol);
         if (result == null || !result.isSuccess() || result.getResult() == null) {
             String failedInfo = (result == null || result.getResult() == null) ?//
                     "EmptyResult." ://
                     "MESSAGE[" + result.getMessageID() + "] - (" + result.getErrorCode() + ")" + result.getErrorMessage();
-            request.writeMessageLine(" ->  (4of4) [FAILED] " + failedInfo);
+            telCommand.writeMessageLine(" ->  (4of4) [FAILED] " + failedInfo);
             return;
         }
         // .2of4
         List<String> addressSet = result.getResult();
-        List<InterAddress> finalAddressList = new ArrayList<InterAddress>();
-        List<String> finalAddressStrList = new ArrayList<String>();
+        List<InterAddress> finalAddressList = new ArrayList<>();
+        List<String> finalAddressStrList = new ArrayList<>();
         for (String address : addressSet) {
             try {
                 InterAddress inter = new InterAddress(address);
@@ -144,33 +138,33 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
                 finalAddressStrList.add(inter.toHostSchema());
             } catch (Exception e) { /**/ }
         }
-        request.writeMessageLine(" ->  (2of4) pull addressSet is " + StringUtils.join(finalAddressStrList.toArray(), ", "));
+        telCommand.writeMessageLine(" ->  (2of4) pull addressSet is " + StringUtils.join(finalAddressStrList.toArray(), ", "));
         // .3of4
-        request.writeMessageLine(" ->  (3of4) prepare refreshAddress addressSet.");
+        telCommand.writeMessageLine(" ->  (3of4) prepare refreshAddress addressSet.");
         // .4of4
         rsfContext.getUpdater().refreshAddress(serviceInfo.getBindID(), finalAddressList);
-        request.writeMessageLine(" ->  (4of4) done.");
+        telCommand.writeMessageLine(" ->  (4of4) done.");
     }
 
-    private void processRequest(CmdRequest request, RsfCenterRegister register, RsfBindInfo<?> serviceInfo, InstanceInfo instance, RsfContext rsfContext) {
+    private void processRequest(TelCommand telCommand, RsfCenterRegister register, RsfBindInfo<?> serviceInfo, InstanceInfo instance, RsfContext rsfContext) {
         // .1of2
         String protocol = rsfContext.getDefaultProtocol();
         InterAddress callBackAddress = rsfContext.bindAddress(protocol);
         String callBackTo = callBackAddress.toHostSchema();
-        request.writeMessageLine(" ->  this machine is the default protocol is " + protocol);
-        request.writeMessageLine(" ->  (1of2) request data form rsfCenter ,callBack is " + callBackTo);
+        telCommand.writeMessageLine(" ->  this machine is the default protocol is " + protocol);
+        telCommand.writeMessageLine(" ->  (1of2) request data form rsfCenter ,callBack is " + callBackTo);
         List<String> runProtocol = new ArrayList<String>(serviceInfo.getBindProtocols());
         RsfCenterResult<Boolean> result = register.requestPushProviders(instance, ServiceID.of(serviceInfo), runProtocol);
         if (result == null || !result.isSuccess() || result.getResult() == null) {
             String failedInfo = (result == null || result.getResult() == null) ?//
                     "EmptyResult." ://
                     "MESSAGE[" + result.getMessageID() + "] - (" + result.getErrorCode() + ")" + result.getErrorMessage();
-            request.writeMessageLine(" ->  (2of2) [FAILED] " + failedInfo);
+            telCommand.writeMessageLine(" ->  (2of2) [FAILED] " + failedInfo);
             return;
         }
         // .2of2
         boolean requestResult = result.getResult();
         String mark = requestResult ? "SUCCEED" : "FAILED";
-        request.writeMessageLine(String.format(" ->  (2of2) [%s] results is %s.", mark, mark.toLowerCase()));
+        telCommand.writeMessageLine(String.format(" ->  (2of2) [%s] results is %s.", mark, mark.toLowerCase()));
     }
 }

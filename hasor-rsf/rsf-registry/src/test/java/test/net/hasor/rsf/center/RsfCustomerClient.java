@@ -1,10 +1,10 @@
 package test.net.hasor.rsf.center;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfModule;
 import test.net.hasor.rsf.services.EchoService;
+
 /**
  *
  * @version : 2014年9月12日
@@ -13,10 +13,8 @@ import test.net.hasor.rsf.services.EchoService;
 public class RsfCustomerClient {
     public static void main(String[] args) throws Throwable {
         //Client
-        AppContext clientContext = Hasor.createAppContext("/center/client-config.xml", new RsfModule() {
-            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-                apiBinder.rsfService(EchoService.class).register();
-            }
+        AppContext clientContext = Hasor.create().mainSettingWith("/center/client-config.xml").build((RsfModule) apiBinder -> {
+            apiBinder.rsfService(EchoService.class).register();
         });
         System.out.println("server start.");
         //
