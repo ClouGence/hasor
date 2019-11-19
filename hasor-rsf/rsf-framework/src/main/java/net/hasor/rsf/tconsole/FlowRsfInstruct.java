@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.tconsole;
-import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
-import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.CommandRequest;
+import net.hasor.tconsole.TelCommand;
+import net.hasor.tconsole.TelExecutor;
+import net.hasor.tconsole.TelReader;
 import net.hasor.utils.StringUtils;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -31,7 +33,10 @@ import java.io.StringWriter;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-public class FlowRsfInstruct implements CommandExecutor {
+public class FlowRsfInstruct implements TelExecutor {
+    @Inject
+    private RsfContext rsfContext;
+
     @Override
     public String helpInfo() {
         return "service flowControl show/update.\r\n"//
@@ -42,26 +47,26 @@ public class FlowRsfInstruct implements CommandExecutor {
     }
 
     @Override
-    public boolean inputMultiLine(CommandRequest request) {
-        String[] args = request.getRequestArgs();
+    public boolean readCommand(TelCommand telCommand, TelReader telReader) {
+        String[] args = telCommand.getCommandArgs();
         if (args != null && args.length > 0) {
-            String mode = args[0];
-            return mode.startsWith("-u");
+            if (args[0].startsWith("-u")) {
+                return telReader.expectDoubleBlankLines();
+            }
         }
-        return false;
+        return true;
     }
 
     @Override
-    public String doCommand(CommandRequest request) throws Throwable {
-        RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
+    public String doCommand(TelCommand telCommand) throws Throwable {
         StringWriter sw = new StringWriter();
-        String[] args = request.getRequestArgs();
+        String[] args = telCommand.getCommandArgs();
         if (args != null && args.length > 1) {
             String mode = args[0];
             String nameArg = args[1];
             /*如果是 -u 系列指令检查一下内容是不是为空。*/
             if (mode != null && mode.startsWith("-u")) {
-                String scriptBody = request.getRequestBody();
+                String scriptBody = telCommand.getCommandBody();
                 if (StringUtils.isBlank(scriptBody)) {
                     return "[ERROR] updated content is empty, ignore.";
                 }
@@ -71,9 +76,9 @@ public class FlowRsfInstruct implements CommandExecutor {
             if ("-s".equalsIgnoreCase(mode)) {
                 this.showFlowControl(sw, nameArg, rsfContext);//显示流控规则
             } else if ("-u".equalsIgnoreCase(mode)) {
-                this.updateFlowControl(sw, nameArg, request, rsfContext);//更新流控规则
+                this.updateFlowControl(sw, nameArg, telCommand, rsfContext);//更新流控规则
             } else if ("-c".equalsIgnoreCase(mode)) {
-                this.cleanFlowControl(sw, nameArg, request, rsfContext);//清空流控规则
+                this.cleanFlowControl(sw, nameArg, telCommand, rsfContext);//清空流控规则
             } else {
                 sw.write("[ERROR] bad args.");
             }
@@ -103,26 +108,22 @@ public class FlowRsfInstruct implements CommandExecutor {
         }
     }
 
-    private void updateFlowControl(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
-        String scriptBody = request.getRequestBody();
+    private void updateFlowControl(StringWriter sw, String nameArg, TelCommand telCommand, RsfContext rsfContext) {
+        String scriptBody = telCommand.getCommandBody();
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
-            return;
         } else {
             boolean result = rsfContext.getUpdater().updateFlowControl(nameArg, scriptBody);
             sw.write("[" + (result ? "SUCCEED" : "FAILED") + "] update FlowControl of serviceID = " + nameArg);
-            return;
         }
     }
 
-    private void cleanFlowControl(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
+    private void cleanFlowControl(StringWriter sw, String nameArg, TelCommand telCommand, RsfContext rsfContext) {
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
-            return;
         } else {
             boolean result = rsfContext.getUpdater().updateFlowControl(nameArg, null);
             sw.write("[" + (result ? "SUCCEED" : "FAILED") + "] clean FlowControl of serviceID = " + nameArg);
-            return;
         }
     }
 }

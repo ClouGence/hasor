@@ -25,7 +25,7 @@ public interface TelExecutor {
     public String helpInfo();
 
     /** 用于确定读取一个完整的命令 */
-    public default boolean readCommand(TelReader telReader) {
+    public default boolean readCommand(TelCommand telCommand, TelReader telReader) {
         return true;
     }
 

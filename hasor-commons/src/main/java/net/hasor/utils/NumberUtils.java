@@ -17,6 +17,7 @@
 package net.hasor.utils;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
 /**
  * <p>Provides extra functionality for Java Number classes.</p>
  *
@@ -30,6 +31,7 @@ import java.math.BigInteger;
  */
 public final class NumberUtils {
     // DEPRECATED CLASS !!!
+
     /**
      * <p><code>NumberUtils</code> instances should NOT be constructed in standard programming.
      * Instead, the class should be used as <code>NumberUtils.stringToInt("6");</code>.</p>
@@ -41,6 +43,7 @@ public final class NumberUtils {
         super();
     }
     //--------------------------------------------------------------------
+
     /**
      * <p>Convert a <code>String</code> to an <code>int</code>, returning
      * <code>zero</code> if the conversion fails.</p>
@@ -52,6 +55,7 @@ public final class NumberUtils {
     public static int stringToInt(String str) {
         return stringToInt(str, 0);
     }
+
     /**
      * <p>Convert a <code>String</code> to an <code>int</code>, returning a
      * default value if the conversion fails.</p>
@@ -102,6 +106,7 @@ public final class NumberUtils {
     // Possible inputs:
     // 45 45.5 45E7 4.5E7 Hex Oct Binary xxxF xxxD xxxf xxxd
     // plus minus everything. Prolly more. A lot are not separable.
+
     /**
      * <p>Turns a string value into a java.lang.Number.</p>
      *
@@ -264,6 +269,7 @@ public final class NumberUtils {
             }
         }
     }
+
     /**
      * <p>Utility method for {@link #createNumber(String)}.</p>
      *
@@ -284,6 +290,7 @@ public final class NumberUtils {
         return s.length() > 0;
     }
     //--------------------------------------------------------------------
+
     /**
      * <p>Convert a <code>String</code> to a <code>Float</code>.</p>
      *
@@ -294,6 +301,7 @@ public final class NumberUtils {
     public static Float createFloat(String val) {
         return Float.valueOf(val);
     }
+
     /**
      * <p>Convert a <code>String</code> to a <code>Double</code>.</p>
      *
@@ -304,6 +312,7 @@ public final class NumberUtils {
     public static Double createDouble(String val) {
         return Double.valueOf(val);
     }
+
     /**
      * <p>Convert a <code>String</code> to a <code>Integer</code>, handling
      * hex and octal notations.</p>
@@ -316,6 +325,7 @@ public final class NumberUtils {
         // decode() handles 0xAABD and 0777 (hex and octal) as well.
         return Integer.decode(val);
     }
+
     /**
      * <p>Convert a <code>String</code> to a <code>Long</code>.</p>
      *
@@ -326,6 +336,7 @@ public final class NumberUtils {
     public static Long createLong(String val) {
         return Long.valueOf(val);
     }
+
     /**
      * <p>Convert a <code>String</code> to a <code>BigInteger</code>.</p>
      *
@@ -337,6 +348,7 @@ public final class NumberUtils {
         BigInteger bi = new BigInteger(val);
         return bi;
     }
+
     /**
      * <p>Convert a <code>String</code> to a <code>BigDecimal</code>.</p>
      *
@@ -349,6 +361,7 @@ public final class NumberUtils {
         return bd;
     }
     //--------------------------------------------------------------------
+
     /**
      * <p>Gets the minimum of three <code>long</code> values.</p>
      *
@@ -366,6 +379,7 @@ public final class NumberUtils {
         }
         return a;
     }
+
     /**
      * <p>Gets the minimum of three <code>int</code> values.</p>
      *
@@ -383,6 +397,7 @@ public final class NumberUtils {
         }
         return a;
     }
+
     /**
      * <p>Gets the maximum of three <code>long</code> values.</p>
      *
@@ -400,6 +415,7 @@ public final class NumberUtils {
         }
         return a;
     }
+
     /**
      * <p>Gets the maximum of three <code>int</code> values.</p>
      *
@@ -418,6 +434,7 @@ public final class NumberUtils {
         return a;
     }
     //--------------------------------------------------------------------
+
     /**
      * <p>Compares two <code>doubles</code> for order.</p>
      *
@@ -480,6 +497,7 @@ public final class NumberUtils {
             return +1;
         }
     }
+
     /**
      * <p>Compares two floats for order.</p>
      *
@@ -541,6 +559,7 @@ public final class NumberUtils {
         }
     }
     //--------------------------------------------------------------------
+
     /**
      * <p>Checks whether the <code>String</code> contains only
      * digit characters.</p>
@@ -562,6 +581,7 @@ public final class NumberUtils {
         }
         return true;
     }
+
     /**
      * <p>Checks whether the String a valid Java number.</p>
      *
@@ -662,23 +682,27 @@ public final class NumberUtils {
         // found digit it to make sure weird stuff like '.' and '1E-' doesn't pass
         return !allowSigns && foundDigit;
     }
-    //
+
+    public static boolean isByteType(Class targetType) {
+        return targetType.equals(Byte.class) || targetType.equals(Byte.TYPE);
+    }
+
     public static boolean isShortType(Class targetType) {
         return targetType.equals(Short.class) || targetType.equals(Short.TYPE);
     }
-    //
+
     public static boolean isIntType(Class targetType) {
         return targetType.equals(Integer.class) || targetType.equals(Integer.TYPE);
     }
-    //
+
     public static boolean isLongType(Class targetType) {
         return targetType.equals(Long.class) || targetType.equals(Long.TYPE);
     }
-    //
+
     public static boolean isFloatType(Class targetType) {
         return targetType.equals(Float.class) || targetType.equals(Float.TYPE);
     }
-    //
+
     public static boolean isDoubleType(Class targetType) {
         return targetType.equals(Double.class) || targetType.equals(Double.TYPE);
     }

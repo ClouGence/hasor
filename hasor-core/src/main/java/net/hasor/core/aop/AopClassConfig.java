@@ -326,7 +326,7 @@ public class AopClassConfig {
             String[] throwStrArray = AsmTools.replaceClassName(aopMethod.getExceptionTypes());
             //
             AtomicInteger variableIndexCounters = new AtomicInteger(0);
-            Map<String, Integer> paramIndexMap = new LinkedHashMap<String, Integer>();
+            Map<String, Integer> paramIndexMap = new LinkedHashMap<>();
             paramIndexMap.put("this", 0);
             for (int i = 0; i < asmParams.length; i++) {
                 paramIndexMap.put("args" + i, variableIndexCounters.incrementAndGet());

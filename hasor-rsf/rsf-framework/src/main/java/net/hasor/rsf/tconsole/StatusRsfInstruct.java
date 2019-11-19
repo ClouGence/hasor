@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.tconsole;
-import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
-import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.CommandRequest;
+import net.hasor.tconsole.TelCommand;
+import net.hasor.tconsole.TelExecutor;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.StringWriter;
 
 /**
@@ -27,7 +28,10 @@ import java.io.StringWriter;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-public class StatusRsfInstruct implements CommandExecutor {
+public class StatusRsfInstruct implements TelExecutor {
+    @Inject
+    private RsfContext rsfContext;
+
     @Override
     public String helpInfo() {
         return "switching application service online/offline.\r\n"//
@@ -38,15 +42,9 @@ public class StatusRsfInstruct implements CommandExecutor {
     }
 
     @Override
-    public boolean inputMultiLine(CommandRequest request) {
-        return false;
-    }
-
-    @Override
-    public String doCommand(CommandRequest request) throws Throwable {
-        RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
+    public String doCommand(TelCommand telCommand) throws Throwable {
         StringWriter sw = new StringWriter();
-        String[] args = request.getRequestArgs();
+        String[] args = telCommand.getCommandArgs();
         if (args != null && args.length > 0) {
             String doArg = args[0];
             if ("on".equalsIgnoreCase(doArg)) {

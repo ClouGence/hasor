@@ -17,6 +17,9 @@
         <!-- RSF对外提供服务的IP -->
         <RSF_SERVICE_IP>local</RSF_SERVICE_IP>
 
+        <!-- RSF对外提供命令行服务的端口（可以配置 0 用来关闭 RSF连接器） -->
+        <RSF_CONSOLE_PORT>2180</RSF_CONSOLE_PORT>
+
         <!-- RSF对外提供服务的服务端口（可以配置 0 用来关闭 RSF连接器） -->
         <RSF_SERVICE_PORT>2181</RSF_SERVICE_PORT>
         <!-- Hprose对外提供服务的服务端口（可以配置 0 用来关闭 Hprose连接器） -->
@@ -125,14 +128,14 @@
 
             <!-- Web 请求连接器 -->
             <!--<http_web name="Http/Web" protocol="http" localPort="${HTTP_SERVICE_PORT}" factory="net.hasor.rsf.rpc.net.http.HttpConnectorFactory">-->
-                <!--&lt;!&ndash; 处理网络IO数据包的线程数 &ndash;&gt;-->
-                <!--<workerThread>8</workerThread>-->
-                <!--&lt;!&ndash; 处理网络监听请求的线程数 &ndash;&gt;-->
-                <!--<listenThread>1</listenThread>-->
-                <!--&lt;!&ndash; BasePath &ndash;&gt;-->
-                <!--<contextPath>/rsf</contextPath>-->
-                <!--&lt;!&ndash; Rsf Handler &ndash;&gt;-->
-                <!--<httpHandlerFactory>net.hasor.rsf.protocol.http_web.WebHttpHandler</httpHandlerFactory>-->
+            <!--&lt;!&ndash; 处理网络IO数据包的线程数 &ndash;&gt;-->
+            <!--<workerThread>8</workerThread>-->
+            <!--&lt;!&ndash; 处理网络监听请求的线程数 &ndash;&gt;-->
+            <!--<listenThread>1</listenThread>-->
+            <!--&lt;!&ndash; BasePath &ndash;&gt;-->
+            <!--<contextPath>/rsf</contextPath>-->
+            <!--&lt;!&ndash; Rsf Handler &ndash;&gt;-->
+            <!--<httpHandlerFactory>net.hasor.rsf.protocol.http_web.WebHttpHandler</httpHandlerFactory>-->
             <!--</http_web>-->
         </connectorSet>
 

@@ -16,7 +16,7 @@
 package net.hasor.rsf.tconsole;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
-import net.hasor.tconsole.ConsoleApiBinder;
+import net.hasor.tconsole.binder.ConsoleApiBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

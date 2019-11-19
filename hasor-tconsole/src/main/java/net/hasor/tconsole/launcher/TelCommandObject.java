@@ -77,7 +77,7 @@ final class TelCommandObject extends AttributeObject implements TelCommand, TelC
     }
 
     boolean testReadly(TelReaderObject inputQueue) {
-        return this.executor.readCommand(inputQueue);
+        return this.executor.readCommand(this, inputQueue);
     }
 
     void setCommandBody(String commandBody) {

@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.rsf.tconsole;
-import net.hasor.core.Singleton;
+import net.hasor.core.AppContext;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfUpdater;
-import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.CommandRequest;
+import net.hasor.tconsole.TelCommand;
+import net.hasor.tconsole.TelExecutor;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.StringWriter;
 import java.util.List;
 
@@ -31,7 +33,10 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-public class DetailRsfInstruct implements CommandExecutor {
+public class DetailRsfInstruct implements TelExecutor {
+    @Inject
+    private AppContext appContext;
+
     @Override
     public String helpInfo() {
         return "show service info.\r\n"//
@@ -42,25 +47,20 @@ public class DetailRsfInstruct implements CommandExecutor {
     }
 
     @Override
-    public boolean inputMultiLine(CommandRequest request) {
-        return false;
-    }
-
-    @Override
-    public String doCommand(CommandRequest request) throws Throwable {
+    public String doCommand(TelCommand telCommand) throws Throwable {
         StringWriter sw = new StringWriter();
-        String[] args = request.getRequestArgs();
+        String[] args = telCommand.getCommandArgs();
         // .help
         if (args == null || args.length == 0 || "-h".equalsIgnoreCase(args[0])) {
             //
-            sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + request.getCommandString() + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
+            sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + telCommand.getCommandName() + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
             sw.write(helpInfo());
             return sw.toString();
         }
         //
         // .准备参数
         String serviceID = args[args.length - 1].trim();
-        RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
+        RsfContext rsfContext = appContext.getInstance(RsfContext.class);
         RsfBindInfo<Object> info = rsfContext.getServiceInfo(serviceID);
         boolean isProvider = rsfContext.getServiceProvider(info) != null;
         if (info == null) {
@@ -95,8 +95,8 @@ public class DetailRsfInstruct implements CommandExecutor {
         return sw.toString();
     }
 
-    private static final String evalAddress(List<InterAddress> addressSet) {
-        StringBuffer addrList = new StringBuffer("");
+    private static String evalAddress(List<InterAddress> addressSet) {
+        StringBuilder addrList = new StringBuilder("");
         for (InterAddress inter : addressSet) {
             if (inter == null)
                 continue;

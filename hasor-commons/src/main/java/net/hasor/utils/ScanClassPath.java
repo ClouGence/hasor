@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.utils;
-import net.hasor.utils.ResourcesUtils.ScanEvent;
 import net.hasor.utils.asm.AnnotationVisitor;
 import net.hasor.utils.asm.ClassReader;
 import net.hasor.utils.asm.ClassVisitor;
 import net.hasor.utils.asm.Opcodes;
-import net.hasor.utils.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
 /**
  *
  * @version : 2013-8-13
@@ -34,23 +33,28 @@ public class ScanClassPath {
     private ClassLoader                  classLoader  = null;
     private String[]                     scanPackages = null;
     private Map<Class<?>, Set<Class<?>>> cacheMap     = new WeakHashMap<>();
+
     //
     private ScanClassPath(final String[] scanPackages) {
         this(scanPackages, null);
     }
+
     private ScanClassPath(final String[] scanPackages, final ClassLoader classLoader) {
         this.scanPackages = scanPackages;
         this.classLoader = classLoader == null ? Thread.currentThread().getContextClassLoader() : classLoader;
     }
+
     //
     public static ScanClassPath newInstance(final String[] scanPackages) {
         return new ScanClassPath(scanPackages) {
         };
     }
+
     public static ScanClassPath newInstance(final String scanPackages) {
         return new ScanClassPath(new String[] { scanPackages }) {
         };
     }
+
     /**
      * 扫描jar包中凡是匹配compareType参数的类均被返回。（对执行结果不缓存）
      * @param packagePath 要扫描的包名。
@@ -60,6 +64,7 @@ public class ScanClassPath {
     public static Set<Class<?>> getClassSet(final String packagePath, final Class<?> compareType) {
         return ScanClassPath.getClassSet(new String[] { packagePath }, compareType);
     }
+
     /**
      * 扫描jar包中凡是匹配compareType参数的类均被返回。（对执行结果不缓存）
      * @param loadPackages 要扫描的包名。
@@ -69,6 +74,7 @@ public class ScanClassPath {
     public static Set<Class<?>> getClassSet(final String[] loadPackages, final Class<?> featureType) {
         return ScanClassPath.newInstance(loadPackages).getClassSet(featureType);
     }
+
     /**
      * 扫描jar包中凡是匹配compareType参数的类均被返回。（对执行结果不缓存）
      * @param compareType 要查找的特征。
@@ -131,8 +137,10 @@ public class ScanClassPath {
         this.cacheMap.put(compareType, returnData);
         return returnData;
     }
+
     //
     private Map<String, ClassInfo> classInfoMap = new ConcurrentHashMap<>();
+
     /**分析类的字节码，分析过程中会递归解析父类和实现的接口*/
     private ClassInfo loadClassInfo(String className, final InputStream inStream, final ClassLoader loader) throws IOException {
         /*一、检查类是否已经被加载过，避免重复扫描同一个类*/
@@ -167,6 +175,7 @@ public class ScanClassPath {
                 }
                 super.visit(version, access, name, signature, superName, interfaces);
             }
+
             @Override
             public AnnotationVisitor visitAnnotation(final String desc, final boolean visible) {
                 //3.扫描类信息，获取标记的注解
@@ -219,6 +228,7 @@ public class ScanClassPath {
         this.classInfoMap.put(info.className, info);
         return info;
     }
+
     private void addCastTypeList(final ClassInfo info, final Set<String> addTo) {
         if (info == null) {
             return;
@@ -235,6 +245,7 @@ public class ScanClassPath {
         }
     }
     //
+
     /**类信息结构*/
     private static class ClassInfo {
         /*类名*/

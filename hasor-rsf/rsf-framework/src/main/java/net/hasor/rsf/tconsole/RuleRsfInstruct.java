@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.tconsole;
-import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
-import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.CommandRequest;
+import net.hasor.tconsole.TelCommand;
+import net.hasor.tconsole.TelExecutor;
+import net.hasor.tconsole.TelReader;
 import net.hasor.utils.StringUtils;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -31,7 +33,10 @@ import java.io.StringWriter;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-public class RuleRsfInstruct implements CommandExecutor {
+public class RuleRsfInstruct implements TelExecutor {
+    @Inject
+    private RsfContext rsfContext;
+
     @Override
     public String helpInfo() {
         return "service rule script show/update.\r\n"//
@@ -50,26 +55,26 @@ public class RuleRsfInstruct implements CommandExecutor {
     }
 
     @Override
-    public boolean inputMultiLine(CommandRequest request) {
-        String[] args = request.getRequestArgs();
+    public boolean readCommand(TelCommand telCommand, TelReader telReader) {
+        String[] args = telCommand.getCommandArgs();
         if (args != null && args.length > 0) {
-            String mode = args[0];
-            return mode.startsWith("-u");
+            if (args[0].startsWith("-u")) {
+                return telReader.expectDoubleBlankLines();
+            }
         }
-        return false;
+        return true;
     }
 
     @Override
-    public String doCommand(CommandRequest request) throws Throwable {
-        RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
+    public String doCommand(TelCommand telCommand) throws Throwable {
         StringWriter sw = new StringWriter();
-        String[] args = request.getRequestArgs();
+        String[] args = telCommand.getCommandArgs();
         if (args != null && args.length > 1) {
             String mode = args[0];
             String nameArg = args[1];
             /*如果是 -u 系列指令检查一下内容是不是为空。*/
             if (mode != null && mode.startsWith("-u")) {
-                String scriptBody = request.getRequestBody();
+                String scriptBody = telCommand.getCommandBody();
                 if (StringUtils.isBlank(scriptBody)) {
                     return "[ERROR] updated content is empty, ignore.";
                 }
@@ -82,17 +87,17 @@ public class RuleRsfInstruct implements CommandExecutor {
             } else if ("-a".equalsIgnoreCase(mode)) {
                 this.showArgsRule(sw, nameArg, rsfContext);                 //显示参数级路由脚本
             } else if ("-us".equalsIgnoreCase(mode)) {
-                this.updateServiceRule(sw, nameArg, request, rsfContext);   //更新服务级路由脚本
+                this.updateServiceRule(sw, nameArg, telCommand, rsfContext);//更新服务级路由脚本
             } else if ("-um".equalsIgnoreCase(mode)) {
-                this.updateMethodRule(sw, nameArg, request, rsfContext);    //更新方法级路由脚本
+                this.updateMethodRule(sw, nameArg, telCommand, rsfContext); //更新方法级路由脚本
             } else if ("-ua".equalsIgnoreCase(mode)) {
-                this.updateArgsRule(sw, nameArg, request, rsfContext);      //更新参数级路由脚本
+                this.updateArgsRule(sw, nameArg, telCommand, rsfContext);   //更新参数级路由脚本
             } else if ("-cs".equalsIgnoreCase(mode)) {
-                this.cleanServiceRule(sw, nameArg, request, rsfContext);    //清空服务级路由脚本
+                this.cleanServiceRule(sw, nameArg, telCommand, rsfContext); //清空服务级路由脚本
             } else if ("-cm".equalsIgnoreCase(mode)) {
-                this.cleanMethodRule(sw, nameArg, request, rsfContext);     //清空方法级路由脚本
+                this.cleanMethodRule(sw, nameArg, telCommand, rsfContext);  //清空方法级路由脚本
             } else if ("-ca".equalsIgnoreCase(mode)) {
-                this.cleanArgsRule(sw, nameArg, request, rsfContext);       //清空参数级别路由脚本
+                this.cleanArgsRule(sw, nameArg, telCommand, rsfContext);    //清空参数级别路由脚本
             } else {
                 sw.write("[ERROR] bad args.");
             }
@@ -151,8 +156,8 @@ public class RuleRsfInstruct implements CommandExecutor {
     }
 
     //
-    private void updateArgsRule(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
-        String scriptBody = request.getRequestBody();
+    private void updateArgsRule(StringWriter sw, String nameArg, TelCommand telCommand, RsfContext rsfContext) {
+        String scriptBody = telCommand.getCommandBody();
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
             return;
@@ -163,8 +168,8 @@ public class RuleRsfInstruct implements CommandExecutor {
         }
     }
 
-    private void updateMethodRule(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
-        String scriptBody = request.getRequestBody();
+    private void updateMethodRule(StringWriter sw, String nameArg, TelCommand telCommand, RsfContext rsfContext) {
+        String scriptBody = telCommand.getCommandBody();
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
             return;
@@ -175,8 +180,8 @@ public class RuleRsfInstruct implements CommandExecutor {
         }
     }
 
-    private void updateServiceRule(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
-        String scriptBody = request.getRequestBody();
+    private void updateServiceRule(StringWriter sw, String nameArg, TelCommand telCommand, RsfContext rsfContext) {
+        String scriptBody = telCommand.getCommandBody();
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
             return;
@@ -188,7 +193,7 @@ public class RuleRsfInstruct implements CommandExecutor {
     }
 
     //
-    private void cleanArgsRule(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
+    private void cleanArgsRule(StringWriter sw, String nameArg, TelCommand telCommand, RsfContext rsfContext) {
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
             return;
@@ -199,7 +204,7 @@ public class RuleRsfInstruct implements CommandExecutor {
         }
     }
 
-    private void cleanMethodRule(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
+    private void cleanMethodRule(StringWriter sw, String nameArg, TelCommand telCommand, RsfContext rsfContext) {
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
             return;
@@ -210,7 +215,7 @@ public class RuleRsfInstruct implements CommandExecutor {
         }
     }
 
-    private void cleanServiceRule(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
+    private void cleanServiceRule(StringWriter sw, String nameArg, TelCommand telCommand, RsfContext rsfContext) {
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
             return;

@@ -37,18 +37,20 @@
             <version>1.2.58</version>
         </dependency>
 
+        <!-- 存储 -->
         <dependency>
-            <groupId>org.mapdb</groupId>
-            <artifactId>mapdb</artifactId>
-            <version>3.0.7</version>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-db</artifactId>
         </dependency>
-
-        <!-- center打包为独立应用 -->
         <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-classworlds</artifactId>
-            <version>2.5.2</version>
-            <scope>provided</scope>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.5.0</version>
         </dependency>
     </dependencies>
 

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.tconsole;
-import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
-import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.CommandRequest;
+import net.hasor.tconsole.TelCommand;
+import net.hasor.tconsole.TelExecutor;
 import net.hasor.utils.StringUtils;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.StringWriter;
 import java.util.List;
 
@@ -30,8 +31,10 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-public class ListRsfInstruct implements CommandExecutor {
-    //
+public class ListRsfInstruct implements TelExecutor {
+    @Inject
+    private RsfContext rsfContext;
+
     @Override
     public String helpInfo() {
         return "show service list.\r\n"//
@@ -40,15 +43,9 @@ public class ListRsfInstruct implements CommandExecutor {
     }
 
     @Override
-    public boolean inputMultiLine(CommandRequest request) {
-        return false;
-    }
-
-    @Override
-    public String doCommand(CommandRequest request) throws Throwable {
-        RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
+    public String doCommand(TelCommand telCommand) throws Throwable {
         StringWriter sw = new StringWriter();
-        String[] args = request.getRequestArgs();
+        String[] args = telCommand.getCommandArgs();
         if (args != null && args.length > 0) {
             if ("-h".equalsIgnoreCase(args[0])) {
                 sw.write(helpInfo());
