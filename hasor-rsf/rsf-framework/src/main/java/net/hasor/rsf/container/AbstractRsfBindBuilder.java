@@ -24,6 +24,7 @@ import net.hasor.utils.StringUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -214,13 +215,13 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         }
 
         @Override
-        public RegisterBuilder<T> bindAddress(String rsfHost, int port) {
+        public RegisterBuilder<T> bindAddress(String rsfHost, int port) throws UnknownHostException {
             String unitName = getEnvironment().getSettings().getUnitName();
             return this.bindAddress(new InterAddress(rsfHost, port, unitName));
         }
 
         @Override
-        public RegisterBuilder<T> bindAddress(String rsfURI, String... array) throws URISyntaxException {
+        public RegisterBuilder<T> bindAddress(String rsfURI, String... array) throws URISyntaxException, UnknownHostException {
             if (!StringUtils.isBlank(rsfURI)) {
                 this.bindAddress(new InterAddress(rsfURI));
             }
@@ -233,7 +234,7 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         }
 
         @Override
-        public RegisterBuilder<T> bindAddress(URI rsfURI, URI... array) {
+        public RegisterBuilder<T> bindAddress(URI rsfURI, URI... array) throws UnknownHostException {
             if (rsfURI != null && InterAddress.checkFormat(rsfURI)) {
                 this.bindAddress(new InterAddress(rsfURI));
             }

@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -202,11 +203,11 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         return new RpcRsfClient(this.poolProvider, this.rsfCaller);
     }
 
-    public RsfClient getRsfClient(String targetStr) throws URISyntaxException {
+    public RsfClient getRsfClient(String targetStr) throws URISyntaxException, UnknownHostException {
         return this.getRsfClient(new InterAddress(targetStr));
     }
 
-    public RsfClient getRsfClient(URI targetURL) {
+    public RsfClient getRsfClient(URI targetURL) throws UnknownHostException {
         return this.getRsfClient(new InterAddress(targetURL));
     }
 

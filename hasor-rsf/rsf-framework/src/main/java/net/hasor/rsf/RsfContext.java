@@ -19,6 +19,7 @@ import net.hasor.core.Environment;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -36,10 +37,10 @@ public interface RsfContext extends OnlineStatus {
     public RsfClient getRsfClient();
 
     /** @return 发起远程调用的客户端接口*/
-    public RsfClient getRsfClient(String targetStr) throws URISyntaxException;
+    public RsfClient getRsfClient(String targetStr) throws URISyntaxException, UnknownHostException;
 
     /** @return 发起远程调用的客户端接口*/
-    public RsfClient getRsfClient(URI targetURL);
+    public RsfClient getRsfClient(URI targetURL) throws UnknownHostException;
 
     /** @return 发起远程调用的客户端接口*/
     public RsfClient getRsfClient(InterAddress target);

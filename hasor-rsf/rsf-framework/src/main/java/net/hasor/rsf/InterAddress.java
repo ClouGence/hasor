@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import net.hasor.rsf.utils.NetworkUtils;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.*;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,11 +40,11 @@ public class InterAddress {
     private final       String hostSchema;
 
     //
-    public InterAddress(String newAddressURL) throws URISyntaxException {
+    public InterAddress(String newAddressURL) throws URISyntaxException, UnknownHostException {
         this(new URI(newAddressURL));
     }
 
-    public InterAddress(URI newAddressURL) {
+    public InterAddress(URI newAddressURL) throws UnknownHostException {
         if (!checkFormat(newAddressURL)) {
             throw new IllegalStateException(newAddressURL + " format error.");
         }
@@ -56,26 +54,30 @@ public class InterAddress {
         }
         this.sechma = newAddressURL.getScheme().toLowerCase();
         this.formUnit = formPath.split("/")[0];
-        this.hostAddress = newAddressURL.getHost();
-        this.hostAddressData = this.initIP(this.hostAddress);
+        this.hostAddressData = this.initIP(newAddressURL.getHost());
+        this.hostAddress = NetworkUtils.ipDataToString(this.hostAddressData);
         this.hostPort = newAddressURL.getPort();
         this.hostSchema = String.format("%s://%s:%s/%s", this.sechma, this.hostAddress, this.hostPort, this.formUnit);
     }
 
-    public InterAddress(String hostAddress, int hostPort, String formUnit) {
+    public InterAddress(String hostAddress, int hostPort, String formUnit) throws UnknownHostException {
         this(DEFAULT_SECHMA, hostAddress, hostPort, formUnit);
     }
 
-    public InterAddress(String sechma, String hostAddress, int hostPort, String formUnit) {
+    public InterAddress(String sechma, String hostAddress, int hostPort, String formUnit) throws UnknownHostException {
         this.sechma = Objects.requireNonNull(sechma, "sechma is null.").toLowerCase();
         this.formUnit = Objects.requireNonNull(formUnit, "formUnit is null.");
-        this.hostAddress = Objects.requireNonNull(hostAddress, "hostAddress is null.");
-        this.hostAddressData = this.initIP(this.hostAddress);
+        this.hostAddressData = this.initIP(Objects.requireNonNull(hostAddress, "hostAddress is null."));
+        this.hostAddress = NetworkUtils.ipDataToString(this.hostAddressData);
         this.hostPort = hostPort;
         this.hostSchema = String.format("%s://%s:%s/%s", this.sechma, this.hostAddress, this.hostPort, this.formUnit);
     }
 
-    private int initIP(String hostIP) {
+    private int initIP(String hostIP) throws UnknownHostException {
+        if (!hostIP.matches("\\d+(\\.\\d+){3}")) {
+            hostIP = NetworkUtils.finalBindAddress(hostIP).getHostAddress();
+        }
+        //
         int ipInt = 0;
         String[] ipParts = hostIP.split("\\.");
         for (int i = 0; i < ipParts.length; i++) {

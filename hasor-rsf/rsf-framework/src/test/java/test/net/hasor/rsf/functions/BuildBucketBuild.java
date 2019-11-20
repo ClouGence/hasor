@@ -19,8 +19,9 @@ import net.hasor.rsf.address.AddressBucket;
 import net.hasor.rsf.address.AddressTypeEnum;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 
-import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+
 /**
  *
  * @version : 2016年09月09日
@@ -30,24 +31,27 @@ public class BuildBucketBuild {
     private DefaultRsfEnvironment rsfEnv;
     private String                serviceID;
     private AddressBucket         bucket;
+
     public BuildBucketBuild(String serviceID, DefaultRsfEnvironment rsfEnv) {
         this.serviceID = serviceID;
         this.rsfEnv = rsfEnv;
     }
+
     public AddressBucket getBucket() {
         return bucket;
     }
-    public BuildBucketBuild invoke() throws URISyntaxException {
+
+    public BuildBucketBuild invoke() throws UnknownHostException {
         bucket = new AddressBucket(serviceID, rsfEnv);
         //
-        ArrayList<InterAddress> dynamicList = new ArrayList<InterAddress>();
+        ArrayList<InterAddress> dynamicList = new ArrayList<>();
         dynamicList.add(new InterAddress("127.0.0.1", 8000, "etc2"));
         dynamicList.add(new InterAddress("127.0.0.2", 8000, "etc2"));
         dynamicList.add(new InterAddress("127.0.0.3", 8000, "etc2"));
         dynamicList.add(new InterAddress("127.0.0.4", 8000, "etc2"));
         bucket.newAddress(dynamicList, AddressTypeEnum.Dynamic);
         //
-        ArrayList<InterAddress> staticList = new ArrayList<InterAddress>();
+        ArrayList<InterAddress> staticList = new ArrayList<>();
         staticList.add(new InterAddress("127.0.1.1", 8000, "etc2"));
         staticList.add(new InterAddress("127.0.2.2", 8000, "etc2"));
         staticList.add(new InterAddress("127.0.3.3", 8000, "etc2"));

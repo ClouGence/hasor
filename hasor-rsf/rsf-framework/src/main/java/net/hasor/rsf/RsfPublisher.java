@@ -18,6 +18,7 @@ import net.hasor.core.BindInfo;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.function.Supplier;
 
 /**
@@ -244,19 +245,19 @@ public interface RsfPublisher {
          * @param rsfHost 远程服务地址
          * @param port 远程服务端口
          */
-        public RegisterBuilder<T> bindAddress(String rsfHost, int port);
+        public RegisterBuilder<T> bindAddress(String rsfHost, int port) throws UnknownHostException;
 
         /**
          * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
          * @param rsfURI 远程服务地址
          */
-        public RegisterBuilder<T> bindAddress(String rsfURI, String... array) throws URISyntaxException;
+        public RegisterBuilder<T> bindAddress(String rsfURI, String... array) throws URISyntaxException, UnknownHostException;
 
         /**
          * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
          * @param rsfURI 远程服务地址
          */
-        public RegisterBuilder<T> bindAddress(URI rsfURI, URI... array);
+        public RegisterBuilder<T> bindAddress(URI rsfURI, URI... array) throws UnknownHostException;
 
         /**
          * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
