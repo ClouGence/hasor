@@ -59,7 +59,7 @@ public class AddressPool implements RsfUpdater {
         //
         this.rsfEnvironment = rsfEnvironment;
         RsfSettings rsfSettings = rsfEnvironment.getSettings();
-        this.addressPool = new ConcurrentHashMap<String, AddressBucket>();
+        this.addressPool = new ConcurrentHashMap<>();
         this.unitName = unitName;
         this.rulerCache = new AddressCacheResult(this);
         this.poolLock = new Object();
@@ -75,14 +75,11 @@ public class AddressPool implements RsfUpdater {
         }
         //
         // .接受删除事件,把对应的地址本清除掉。
-        rsfEnvironment.getEventContext().addListener(RsfEvent.Rsf_DeleteService, new EventListener<RsfBindInfo<?>>() {
-            @Override
-            public void onEvent(String event, RsfBindInfo<?> eventData) throws Throwable {
-                if (eventData == null) {
-                    return;
-                }
-                removeBucket(eventData.getBindID());
+        rsfEnvironment.getEventContext().addListener(RsfEvent.Rsf_DeleteService, (EventListener<RsfBindInfo<?>>) (event, eventData) -> {
+            if (eventData == null) {
+                return;
             }
+            removeBucket(eventData.getBindID());
         });
     }
 
@@ -116,7 +113,7 @@ public class AddressPool implements RsfUpdater {
      * 并不是单元化的列表中是单元化规则计算的结果,规则如果失效单元化列表中讲等同于 all
      */
     public Map<String, List<InterAddress>> allServiceAddressToSnapshot() {
-        Map<String, List<InterAddress>> snapshot = new HashMap<String, List<InterAddress>>();
+        Map<String, List<InterAddress>> snapshot = new HashMap<>();
         synchronized (this.poolLock) {
             for (String key : this.addressPool.keySet()) {
                 AddressBucket bucket = this.addressPool.get(key);

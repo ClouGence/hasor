@@ -81,11 +81,11 @@ public class AddressBucket extends Observable {
         this.ruleRef = new RuleRef(null);
         this.serviceID = serviceID;
         this.unitName = rsfSettings.getUnitName();
-        this.allAddressList = new CopyOnWriteArrayList<InterAddress>();
-        this.staticAddressList = new CopyOnWriteArrayList<InterAddress>();
-        this.invalidAddresses = new ConcurrentHashMap<InterAddress, InnerInvalidInfo>();
-        this.localUnitAddresses = new ArrayList<InterAddress>();
-        this.availableAddresses = new ArrayList<InterAddress>();
+        this.allAddressList = new CopyOnWriteArrayList<>();
+        this.staticAddressList = new CopyOnWriteArrayList<>();
+        this.invalidAddresses = new ConcurrentHashMap<>();
+        this.localUnitAddresses = new ArrayList<>();
+        this.availableAddresses = new ArrayList<>();
         this.refreshAddress();
     }
 
@@ -94,28 +94,28 @@ public class AddressBucket extends Observable {
         return serviceID;
     }
 
-    FlowControlRef getFlowControlRef() {
+    public FlowControlRef getFlowControlRef() {
         return this.flowControlRef;
     }
 
-    RuleRef getRuleRef() {
+    public RuleRef getRuleRef() {
         return this.ruleRef;
     }
     //
 
     /**获取所有地址（包括本地的和无效的）。*/
     public synchronized List<InterAddress> getAllAddresses() {
-        return new ArrayList<InterAddress>(this.allAddressList);
+        return new ArrayList<>(this.allAddressList);
     }
 
     /**获取计算之后可用的地址。*/
     public synchronized List<InterAddress> getAvailableAddresses() {
-        return new ArrayList<InterAddress>(this.availableAddresses);
+        return new ArrayList<>(this.availableAddresses);
     }
 
     /**失效地址。*/
     public synchronized List<InterAddress> getInvalidAddresses() {
-        return new ArrayList<InterAddress>(this.invalidAddresses.keySet());
+        return new ArrayList<>(this.invalidAddresses.keySet());
     }
 
     /**获取计算之后同一单元地址。*/
@@ -140,9 +140,9 @@ public class AddressBucket extends Observable {
             return;
         }
         //
-        List<InterAddress> newAddress = new ArrayList<InterAddress>();
-        List<InterAddress> newStaticAddress = new ArrayList<InterAddress>();
-        List<InterAddress> toAvailable = new ArrayList<InterAddress>();
+        List<InterAddress> newAddress = new ArrayList<>();
+        List<InterAddress> newStaticAddress = new ArrayList<>();
+        List<InterAddress> toAvailable = new ArrayList<>();
         for (InterAddress newHost : newHostSet) {
             if (newHost == null) {
                 continue;
@@ -261,7 +261,7 @@ public class AddressBucket extends Observable {
     private void refreshAvailableAddress() {
         //
         //1.计算出有效的地址。
-        List<InterAddress> availableList = new ArrayList<InterAddress>();
+        List<InterAddress> availableList = new ArrayList<>();
         for (InterAddress addressInfo : this.allAddressList) {
             boolean doAdd = true;
             for (InterAddress invalid : this.invalidAddresses.keySet()) {
