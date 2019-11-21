@@ -17,7 +17,7 @@ package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
-import net.hasor.utils.StringUtils;
+import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
 
 import java.io.IOException;
 
@@ -58,13 +58,18 @@ public class NameRouteVariable implements Variable, RouteVariable {
 
     @Override
     public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
-        RouteType routeType = RouteType.Context;
+        RouteType routeType = null;
+        SpecialType specialType = null;
         if (this.parent instanceof EnterRouteVariable) {
             routeType = ((EnterRouteVariable) parent).getRouteType();
+            specialType = ((EnterRouteVariable) parent).getSpecialType();
         }
         //
-        if (StringUtils.isNotBlank(routeType.getCode())) {
-            writer.write(routeType.getCode() + "{");
+        if (RouteType.Context == routeType) {
+            writer.write(specialType.getCode() + "{");
+        }
+        if (RouteType.Special == routeType) {
+            writer.write(specialType.getCode());
         }
         //
         this.parent.doFormat(depth, formatOption, writer);
@@ -74,7 +79,7 @@ public class NameRouteVariable implements Variable, RouteVariable {
             writer.write("." + this.name);
         }
         //
-        if (StringUtils.isNotBlank(routeType.getCode())) {
+        if (RouteType.Context == routeType) {
             writer.write("}");
         }
     }

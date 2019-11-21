@@ -33,7 +33,7 @@ public class NameRouteVariableInstCompiler implements InstCompiler<NameRouteVari
         String astInstName = astInst.getName();
         if (astInst.getParent() instanceof EnterRouteVariable) {
             EnterRouteVariable parent = (EnterRouteVariable) astInst.getParent();
-            if (parent.getRouteType() == RouteType.Context) {
+            if (parent.getRouteType() == RouteType.Normal) {
                 ContainsIndex withTree = compilerContext.containsWithTree(astInstName);
                 if (withTree.isValid()) {
                     queue.inst(LOAD, withTree.depth, withTree.index);

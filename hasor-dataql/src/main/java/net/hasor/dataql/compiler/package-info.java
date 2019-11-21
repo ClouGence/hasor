@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 /**
- * DataQL，各类模型和查询编译。
- * 其中模型包含了：查询模型、指令序列模型、编译器、DSL解析器。
+ * DataQL，语言编译和代码格式化。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */

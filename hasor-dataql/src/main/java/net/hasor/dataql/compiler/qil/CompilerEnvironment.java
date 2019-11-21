@@ -1,6 +1,8 @@
 package net.hasor.dataql.compiler.qil;
 import net.hasor.dataql.compiler.ast.Inst;
 import net.hasor.dataql.compiler.ast.expr.*;
+import net.hasor.dataql.compiler.ast.fmt.ListFormat;
+import net.hasor.dataql.compiler.ast.fmt.ObjectFormat;
 import net.hasor.dataql.compiler.ast.inst.*;
 import net.hasor.dataql.compiler.ast.value.*;
 import net.hasor.dataql.compiler.qil.cc.*;
@@ -33,6 +35,9 @@ public class CompilerEnvironment {
         put(LambdaVariable.class, new LambdaVariableInstCompiler());
         put(ListVariable.class, new ListVariableInstCompiler());
         put(ObjectVariable.class, new ObjectVariableInstCompiler());
+        //
+        put(ObjectFormat.class, new ObjectFormatInstCompiler());
+        put(ListFormat.class, new ListFormatInstCompiler());
         //
         put(SubscriptRouteVariable.class, new SubscriptRouteVariableInstCompiler());
         put(NameRouteVariable.class, new NameRouteVariableInstCompiler());

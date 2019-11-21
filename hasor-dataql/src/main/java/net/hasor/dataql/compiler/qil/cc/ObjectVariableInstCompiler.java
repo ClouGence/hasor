@@ -40,23 +40,5 @@ public class ObjectVariableInstCompiler implements InstCompiler<ObjectVariable> 
             compilerContext.findInstCompilerByInst(variable).doCompiler(queue);
             queue.inst(PUT, fieldKey);
         }
-        //        InstructionInfo instruction = queue.lastInst();
-        //        if (instruction == null || ASM != instruction.getInstCode() || instruction.isCompilerMark()) {
-        //            queue.inst(NO, this.objectType);
-        //        } else {
-        //            instruction.setCompilerMark(true);
-        //        }
-        //        //
-        //        for (String fieldName : this.fieldSort) {
-        //            //
-        //            Variable expression = this.objectData.get(fieldName);
-        //            if (expression == null) {
-        //                continue;
-        //            }
-        //            //
-        //            expression.doCompiler(queue, stackTree);
-        //            queue.inst(PUT, fieldName);
-        //            //
-        //        }
     }
 }

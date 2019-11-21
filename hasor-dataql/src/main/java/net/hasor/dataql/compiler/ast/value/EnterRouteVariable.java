@@ -29,13 +29,23 @@ import java.io.IOException;
  */
 public class EnterRouteVariable implements RouteVariable {
     public static enum RouteType {
+        /** 一般路由，从环境栈顶上获取数据 */
+        Normal(),
+        /** 参数路由，从入参Map里面获取数据 */
+        Context(),
+        /** 特殊路由，自定义 */
+        Special(),
+        ;
+    }
+
+    public static enum SpecialType {
         Special_A("#"),  // 特殊路由1，自定义
         Special_B("$"),  // 特殊路由2，自定义
         Special_C("@"),  // 特殊路由3，自定义
-        Context("");     // 上下文中获取
+        ;
         private String code;
 
-        RouteType(String code) {
+        SpecialType(String code) {
             this.code = code;
         }
 
@@ -44,10 +54,12 @@ public class EnterRouteVariable implements RouteVariable {
         }
     }
 
-    private RouteType routeType;
+    private RouteType   routeType;
+    private SpecialType specialType;
 
-    public EnterRouteVariable(RouteType routeType) {
+    public EnterRouteVariable(RouteType routeType, SpecialType specialType) {
         this.routeType = routeType;
+        this.specialType = specialType;
     }
 
     @Override
@@ -57,6 +69,10 @@ public class EnterRouteVariable implements RouteVariable {
 
     public RouteType getRouteType() {
         return routeType;
+    }
+
+    public SpecialType getSpecialType() {
+        return this.specialType;
     }
 
     @Override

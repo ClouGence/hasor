@@ -9,6 +9,7 @@ import net.hasor.dataql.compiler.ast.inst.*;
 import net.hasor.dataql.compiler.ast.inst.ImportInst.ImportType;
 import net.hasor.dataql.compiler.ast.value.*;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
+import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
 import net.hasor.dataql.compiler.ast.value.PrimitiveVariable.ValueType;
 import net.hasor.dataql.compiler.ast.value.SubscriptRouteVariable.SubType;
 import net.hasor.dataql.compiler.parser.DataQLParser.*;
@@ -212,7 +213,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             Variable valueExp = (Variable) this.instStack.pop();
             objectVariable.addField(fieldKey, valueExp);
         } else {
-            EnterRouteVariable enterRoute = new EnterRouteVariable(RouteType.Context);
+            EnterRouteVariable enterRoute = new EnterRouteVariable(RouteType.Normal, null);
             NameRouteVariable nameRoute = new NameRouteVariable(enterRoute, fieldKey);
             objectVariable.addField(fieldKey, nameRoute);
         }
@@ -364,17 +365,17 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
     @Override
     public T visitFuncCallResult_convert(FuncCallResult_convertContext ctx) {
+        RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
+        //
         ListValueContext listValue = ctx.listValue();
         ObjectValueContext objectValue = ctx.objectValue();
         if (listValue != null) {
             listValue.accept(this);
             ListVariable listVariable = (ListVariable) this.instStack.pop();
-            RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
             this.instStack.push(new ListFormat(routeVariable, listVariable));
         } else {
             objectValue.accept(this);
             ObjectVariable objectVariable = (ObjectVariable) this.instStack.pop();
-            RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
             this.instStack.push(new ObjectFormat(routeVariable, objectVariable));
         }
         return null;
@@ -404,27 +405,43 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     @Override
     public T visitSpecialRoute(SpecialRouteContext ctx) {
         String rouType = ctx.ROU().getText();
-        RouteType routeType = RouteType.Context;
+        SpecialType specialType = null;
         if ("#".equals(rouType)) {
-            routeType = RouteType.Special_A;
+            specialType = SpecialType.Special_A;
         }
         if ("$".equals(rouType)) {
-            routeType = RouteType.Special_B;
+            specialType = SpecialType.Special_B;
         }
         if ("@".equals(rouType)) {
-            routeType = RouteType.Special_C;
+            specialType = SpecialType.Special_C;
         }
         //
-        EnterRouteVariable enter = new EnterRouteVariable(routeType);
-        String identifier = ctx.IDENTIFIER().getText();
-        this.instStack.push(new NameRouteVariable(enter, identifier));
+        // 方式1
+        RouteNameSetContext routeNameSetContext = ctx.routeNameSet();
+        if (routeNameSetContext != null) {
+            EnterRouteVariable enter = new EnterRouteVariable(RouteType.Special, specialType);
+            this.instStack.push(enter);
+            routeNameSetContext.accept(this);
+            return null;
+        }
+        // 方式2
+        TerminalNode identifier = ctx.IDENTIFIER();
+        TerminalNode string = ctx.STRING();
+        String rouName = null;
+        EnterRouteVariable enter = new EnterRouteVariable(RouteType.Context, specialType);
+        if (identifier != null) {
+            rouName = identifier.getText();
+        } else {
+            rouName = string.getText();
+        }
+        this.instStack.push(new NameRouteVariable(enter, rouName));
         return null;
     }
 
     @Override
     public T visitNormalRoute(NormalRouteContext ctx) {
         if (!(this.instStack.peek() instanceof RouteVariable)) {
-            this.instStack.push(new EnterRouteVariable(RouteType.Context));
+            this.instStack.push(new EnterRouteVariable(RouteType.Normal, null));
         }
         return visitChildren(ctx);
     }
@@ -432,18 +449,17 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     @Override
     public T visitConvertRoute(ConvertRouteContext ctx) {
         ctx.routeMapping().accept(this);
+        RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
         //
         ListValueContext listValue = ctx.listValue();
         ObjectValueContext objectValue = ctx.objectValue();
         if (listValue != null) {
             listValue.accept(this);
             ListVariable listVariable = (ListVariable) this.instStack.pop();
-            RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
             this.instStack.push(new ListFormat(routeVariable, listVariable));
         } else {
             objectValue.accept(this);
             ObjectVariable objectVariable = (ObjectVariable) this.instStack.pop();
-            RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
             this.instStack.push(new ObjectFormat(routeVariable, objectVariable));
         }
         return null;

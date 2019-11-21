@@ -22,8 +22,10 @@ package net.hasor.dataql.compiler.qil;
 public interface Opcodes {
     //
     // -------------------------------------------------------------- 构造指令
-    public static final byte NEW_O     = 11; // new Object
-    public static final byte NEW_A     = 12; // new Array
+    public static final byte NEW_O  = 11; // new Object
+    public static final byte NEW_A  = 12; // new Array
+    public static final byte E_PUSH = 13; // 结果作为对象（例：CAST_O）
+    public static final byte E_POP  = 14; // 结果作为数组（例：CAST_I）
     //
     // -------------------------------------------------------------- 数据指令
     public static final byte LDC_D  = 21; // 数字（例：INSN_D 1234）
@@ -39,7 +41,6 @@ public interface Opcodes {
     public static final byte LOAD_S = 34; // 环境（例：LOAD，1）Special
     // -------------------------------------------------------------- 结果指令
     public static final byte ASM    = 41; // 结果作为对象（例：ASM，"type"）
-    public static final byte ASO    = 42; // 结果作为原始对象（例：ASO）
     public static final byte ASA    = 43; // 结果作为数组（例：ASA，"type"）
     public static final byte ASE    = 44; // 结果结束（例：ASA）
     //
@@ -51,6 +52,8 @@ public interface Opcodes {
     public static final byte ROU    = 55; // 寻值（例：ROU,"xxxxx"）
     public static final byte UO     = 56; // 一元运算
     public static final byte DO     = 57; // 二元运算
+    public static final byte CAST_I = 58; // 二元运算
+    public static final byte E_LOAD = 59; // 二元运算
     //
     // -------------------------------------------------------------- 调用指令
     public static final byte CALL   = 61; // 发起服务调用（例：CALL,"xxxxx",2）
@@ -74,4 +77,5 @@ public interface Opcodes {
     public static final byte LINE   = 2; // 行号
     public static final byte LABEL  = 3; // 协助GOTO定位用，无实际作用
     public static final byte LOCAL  = 4; // 本地变量表名称
+    public static final byte POP    = 5; // 强制丢弃栈顶数据
 }

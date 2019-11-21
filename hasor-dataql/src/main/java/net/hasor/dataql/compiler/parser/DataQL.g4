@@ -57,7 +57,7 @@ LSBT    : '[';      // 数组 or 下标
 RSBT    : ']';      // 数组 or 下标
 OCBR    : '{';      // 表示为一个对象
 CCBR    : '}';      // 表示为一个对象
-ROU     : [@#$];     // 路由限定符
+ROU     : [@#$];    // 路由限定符
 
 /* 字符串 */
 STRING          : '"' (~["\r\n] | '""' | TRANS)* '"'
@@ -111,9 +111,9 @@ varInst         : VAR IDENTIFIER ASS anyObject;
 anyObject       : lambdaDef | primitiveValue | objectValue | listValue | funcCall | routeMapping | expr;
 
 /* 路由 */
-routeMapping    : ROU OCBR (IDENTIFIER | STRING) CCBR           #specialRoute  // 特殊路由
-                | routeNameSet                                  #normalRoute   // 一般路由
-                | routeMapping '=>' (objectValue | listValue)   #convertRoute  // 路由并转换结果
+routeMapping    : ROU ((OCBR (IDENTIFIER | STRING) CCBR) | routeNameSet)    #specialRoute  // 特殊路由
+                | routeNameSet                                              #normalRoute   // 一般路由
+                | routeMapping '=>' (objectValue | listValue)               #convertRoute  // 路由并转换结果
                 ;
 
 /* 一般路由的规则 */
