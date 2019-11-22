@@ -4,11 +4,11 @@
 
 var args = "性别：";
 var sexToStr = (obj) -> {
-    if (obj == 'F')
+    if (obj == 'F') {
         return args + "女";
-    else
+    } else{
         return args + "男";
-    end
+    }
 }
 
 var sexToStrAndOri = (a) -> {

@@ -8,7 +8,6 @@ var sexToStr = (obj) -> {
         return args + "女";
     else
         return args + "男";
-    end
 }
 
 return findUserByID ({"userID" : 12345, "status" : 2}) => {

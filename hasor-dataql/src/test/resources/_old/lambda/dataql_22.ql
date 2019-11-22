@@ -12,7 +12,6 @@ var sexName= (sex) -> {
         return sexConse["W"]
     else
         return sexConse["W"]
-    end
 }
 
 return sexName

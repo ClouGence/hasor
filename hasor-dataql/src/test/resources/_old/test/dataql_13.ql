@@ -31,7 +31,7 @@ var a = "cn lang";
 var a = 'sas as ';
 var a = ""
 var a =''
-var a ="\uffc7\uffc7\uffc7\uffc7\uffc7\uffc7\uffc7\uffc7\uffc7";
+var a = "\uffc7\uffc7\uffc7\uffc7\uffc7\uffc7\uffc7\uffc7\uffc7";
 var a = "\t\f\\'adsfasf'\r\b\n\r\t\b\\'\n\r\t\f"
 var a = '\n\t\f\\"adsfasf"\r\b\n\r\t\b\\"\n\r\t\f'
 var a = "var a = \"sdf\""
@@ -52,14 +52,14 @@ var a = abc
 var a = abccccccccccccccccccccccccccccccccccccccccccccccccc
 var a = abccccccccccccccccccccccccccccccccccccccccccccccccc.cccc
 var a = abc.cc.cccc.xx
-var a = ${abc.cc.cccc.xx}
-var a = @{abc.cc.cccc.xx}
+var a = ${abcccccccxx}
+var a = #{abcccccccxx}
 var a = ${aaa}
-var a = @{aaa}
-var a = @{aaa.cc}
-var a = ${aaa.cc}
+var a = #{aaa}
+var a = #{aaacc}
+var a = ${aaacc}
 
-var a = @{aaaa}
+var a = #{aaaa}
 var a = ${s.a1.a2}
 
 var a = this[0].sss.a1.a2.a3_1qw
@@ -92,8 +92,8 @@ var b = {
     "aaaa" : "ffff",
     'cc'   : abc,
     'vvvv' : abc,
-    'cc'   : %{abc},
-    'vvvv' : %{abc}
+    'cc'   : ${abc},
+    'vvvv' : #{abc}
 }
 var b = {
     "aaaa" : ffff,
@@ -107,12 +107,12 @@ var b = {
             {
                 'cc'   : abc,
                 'vvvv' : abc,
-                'cc'   : %{abc},
-                'vvvv' : %{abc}
+                'cc'   : ${abc},
+                'vvvv' : #{abc}
             }
         ]
     },
-    "eee"  : filter ("aaa" , bbbb ,true ,12345 , 1.2345 , -1)~
+    "eee"  : filter ("aaa" , bbbb ,true ,12345 , 1.2345 , -1)
 };
 var b = [
     123,123,123
@@ -132,53 +132,52 @@ var b = [
             "aaaa" : "ffff",
             'vvvv' : true,
             'vvvv' : 1.234E-2345,
-            'vvvv' : $abc,
+            'vvvv' : abc,
             "dddd" : [
                 {
-                    'cc'   : $.abc,
-                    'cc'   : %{$.abc}
+                    'cc'   : abc,
+                    'cc'   : #{abc}
                 }
             ]
         },
-        "eee"  : filter ("aaa" , bbbb ,true ,12345 , 1.2345 , -1)~
+        "eee"  : filter ("aaa" , bbbb ,true ,12345 , 1.2345 , -1)
     },
     123
 ]
 
-
-var f = filter()~
-var f = filter()[]
-var f = filter(){}
-var f = filter()~ ;
-var f = filter()[];
-var f = filter(){};
-var f = filter({})~
-var f = filter([])~
-var f = filter(a)~
+var f = filter()
+var f = filter() => []
+var f = filter() => {}
+var f = filter() ;
+var f = filter() => [];
+var f = filter() => {};
+var f = filter({})
+var f = filter([])
+var f = filter(a)
 var f = filter("abc"    ,'abc'      ,true       ,false,
                1234     ,-1234      ,1.234      ,-1.234,
                1.2e12   ,-1.2e12    ,1.2E12     ,-1.2E12,
                1.2e-12  ,-1.2e-12   ,1.2E+12    ,-1.2E+12,
                {}       ,[]
-         )~;
+         );
 var f = filter("abc"    ,'abc'      ,true       ,false,
                1234     ,-1234      ,1.234      ,-1.234,
                1.2e12   ,-1.2e12    ,1.2E12     ,-1.2E12,
                1.2e-12  ,-1.2e-12   ,1.2E+12    ,-1.2E+12,
                {}       ,[]
-         )[];
+         ) => [];
 var f = filter("abc"    ,'abc'      ,true       ,false,
                1234     ,-1234      ,1.234      ,-1.234,
                1.2e12   ,-1.2e12    ,1.2E12     ,-1.2E12,
                1.2e-12  ,-1.2e-12   ,1.2E+12    ,-1.2E+12,
                {}       ,[]
-         ){};
+         ) => {};
 var f = filter("abc"    ,'abc'      ,true       ,false,
                1234     ,-1234      ,1.234      ,-1.234,
                1.2e12   ,-1.2e12    ,1.2E12     ,-1.2E12,
                1.2e-12  ,-1.2e-12   ,1.2E+12    ,-1.2E+12,
                {}       ,[]
-         )[
+         ) => [
     123,
     {
         "aaaa" : ffff,
@@ -187,75 +186,73 @@ var f = filter("abc"    ,'abc'      ,true       ,false,
             "aaaa" : "ffff",
             'vvvv' : true,
             'vvvv' : 1.234E-2345,
-            'vvvv' : $abc,
+            'vvvv' : abc,
             "dddd" : [
                 {
                     'cc'   : abc,
                     'vvvv' : abc,
-                    'cc'   : %{abc},
-                    'vvvv' : %{abc}
+                    'cc'   : ${abc},
+                    'vvvv' : #{abc}
                 }
             ]
         },
-        "eee"  : filter ("aaa" , bbbb ,true ,12345 , 1.2345 , -1)~
+        "eee"  : filter ("aaa" , bbbb ,true ,12345 , 1.2345 , -1)
     },
     123
 ]
-
 var f = filter("abc"    ,'abc'      ,true       ,false,
                1234     ,-1234      ,1.234      ,-1.234,
                1.2e12   ,-1.2e12    ,1.2E12     ,-1.2E12,
                1.2e-12  ,-1.2e-12   ,1.2E+12    ,-1.2E+12,
                {"aa" : bbb , 'bbb' , 'cc' : true , "ee" : 123},
                [{},{},{}]
-         ){
+         ) => {
             "aaaa" : ffff,
             'vvvv',
             'ccc'  : {
                 "aaaa" : "ffff",
                 'vvvv' : true,
                 'vvvv' : 1.234E-2345,
-                'vvvv' : $abc,
+                'vvvv' : abc,
                 "dddd" : [
                     {
-                        'cc'   : $.abc,
-                        'vvvv' : #.abc,
-                        'cc'   : %{$.abc},
-                        'vvvv' : %{#.abc}
+                        'cc'   : abc,
+                        'vvvv' : abc,
+                        'cc'   : ${abc},
+                        'vvvv' : #{abc}
                     }
                 ]
             },
-            "eee"  : filter ("aaa" , bbbb ,true ,12345 , 1.2345 , -1)~
+            "eee"  : filter ("aaa" , bbbb ,true ,12345 , 1.2345 , -1)
         };
 
-var f = fun(fun1()~     ,fun2()~    )~
-var f = fun(fun1(){}    ,fun2()[]   ){}
-var f = fun(fun1(){}    ,fun2()[]   )[]
+var f = fun(fun1()       ,fun2()       )
+var f = fun(fun1() => {} ,fun2() => [] ) => {}
+var f = fun(fun1() => {} ,fun2() => [] ) => []
+var f = fun(fun1()       ,fun2()       );
+var f = fun(fun1() => {} ,fun2() => [] ) => {};
+var f = fun(fun1() => {} ,fun2() => [] ) => [];
 
-var f = fun(fun1()~     ,fun2()~    )~ ;
-var f = fun(fun1(){}    ,fun2()[]   ){};
-var f = fun(fun1(){}    ,fun2()[]   )[];
-
-var f = lambda : () -> return ""
-var f = lambda : () -> return true;
-var f = lambda : () -> { return true }
-var f = lambda : () -> { return true };
-var f = lambda : () -> {
+var f = () -> return ""
+var f = () -> return true;
+var f = () -> { return true }
+var f = () -> { return true };
+var f = () -> {
     var a = true;
     return a;
 }
-var f = lambda : (obj) -> {
+var f = (obj) -> {
     var a = true;
     return a;
 };
-var f = f("")~;
+var f = f("");
 
 throw 1;
 throw 1,1;
 throw 1,"ssss";
-throw 0xffff,"ssss";
-throw 0b1001001, 1 + -2;
-throw 0b1001001, ["",""]
+throw -23,"ssss";
+throw 222, 1 + -2;
+throw 000, ["",""]
 
 // 一元表达式
 var a = -10
@@ -298,59 +295,17 @@ var f = a & b | c ^ d
 var f = a << b >> c >>> d
 var f = a && b || c
 
-var f = a({"abc":cc})~ && b([1,2,3,4])~ || c(d()~)~
+var f = a({"abc":cc}) && b([1,2,3,4]) || c(d())
 var f = (obj.amount > markAmount) && (markAmount > 0)
 
 return f
-var a = lambda : (agr) -> { return 2};
-var b = lambda : (agr) -> { return 1};
+var a = (agr) -> { return 2};
+var b = (agr) -> { return 1};
 
-var f = lambda: (arg) -> {
+var f = (arg) -> {
     var b = false;
-    var a = lambda : (arg) -> {
-        return count(arg)~;
+    var a = (arg) -> {
+        return count(arg);
     };
     return a;
 };
-
-
-
-/*
-NO      // new Object
-NA      // new Array
-
-LDC_D   // 数字（例：INSN_D 1234）
-LDC_B   // 布尔（例：INSN_B true）
-LDC_S   // 字符串
-LDC_N   // Null（例：INSN_N）
-
-LOAD    // 从本地变量表加载（例：LOAD，1）
-STORE   // 存储到本地变量表（例：STORE，2）
-
-ASM     // 结果作为对象（例：ASA，"type"）
-ASO     // 结果作为原始对象（例：ASO）
-ASA     // 结果作为数组（例：ASA，"type"）
-ASE     // 结果结束（例：ASA）
-
-PUT     // 加到对象结果集中（例：PUT,"xxxx"）
-PUSH    // 加到 Array 结果集中（例：PUSH）
-ROU     // 寻值（例：ROU,"xxxxx"）
-UO      // 一元运算
-DO      // 二元运算
-
-CALL    // 发起服务调用（例：CALL,"xxxxx",2）
-LCALL   // 执行函数指针调用（例：LCALL,2）
-
-METHOD  // 函数定义
-M_REF   // 函数引用
-
-IF      // if（条件判断失败，执行GOTO，否则执行下一条指令）
-GOTO    // 执行跳转
-END     // 结束指令序列并返回值
-ERR     // 结束指令序列并抛出异常
-
-OPT     // 环境配置
-LINE    // 行号
-LABEL   // 协助GOTO定位用，无实际作用
-LOCAL   // 用在 LAMBDA 指令后面，用来标明变量名称。
-*/

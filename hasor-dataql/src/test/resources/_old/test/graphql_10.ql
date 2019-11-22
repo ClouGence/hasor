@@ -27,7 +27,7 @@ var merageData = mapJoin( dat1, dat2, [ "clientID", "id" ] ) [
 ]
 
 // 过滤 1998 年的数据
-var meraged = filter( merageData , lambda : (obj) -> return obj.year == 1998 )~
+var meraged = filter( merageData , (obj) -> return obj.year == 1998 )~
 /*
     LOAD    3
     LAMBDA  1
