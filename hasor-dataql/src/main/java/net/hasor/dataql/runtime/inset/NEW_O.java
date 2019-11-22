@@ -22,24 +22,25 @@ import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
 
+import java.util.LinkedHashMap;
+
 /**
- * LDC_D   // 将数字压入栈（例：LDC_D 12345）
- *         - 参数说明：共1参数；参数1：数据；
+ * NEW_O   // 构造一个键值对对象并压入栈
+ *         - 参数说明：共0参数；
  *         - 栈行为：消费0，产出1
  *         - 堆行为：无
  *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
-class LDC_D implements InsetProcess {
+class NEW_O implements InsetProcess {
     @Override
     public int getOpcode() {
-        return LDC_D;
+        return NEW_O;
     }
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
-        Number number = sequence.currentInst().getNumber(0);
-        dataStack.push(number);
+        dataStack.push(new LinkedHashMap<>());
     }
 }

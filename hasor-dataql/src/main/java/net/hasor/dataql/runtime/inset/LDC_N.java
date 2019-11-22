@@ -18,11 +18,16 @@ import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
 
 /**
- * LDC_N，输出一个 null 到栈。
+ * LDC_N   // 将null压入栈（例：INSN_N）
+ *         - 参数说明：共0参数；
+ *         - 栈行为：消费0，产出1
+ *         - 堆行为：无
+ *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
@@ -33,7 +38,7 @@ class LDC_N implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
-        memStack.push(null);
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
+        dataStack.push(null);
     }
 }

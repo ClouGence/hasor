@@ -18,11 +18,16 @@ import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
 
 /**
- * LDC_B，输出一个 boolean 到栈。
+ * LDC_B   // 将布尔数据压入栈（例：INSN_B true）
+ *         - 参数说明：共1参数；参数1：数据；
+ *         - 栈行为：消费0，产出1
+ *         - 堆行为：无
+ *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
@@ -33,8 +38,8 @@ class LDC_B implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
         Boolean value = sequence.currentInst().getBoolean(0);
-        memStack.push(value);
+        dataStack.push(value);
     }
 }
