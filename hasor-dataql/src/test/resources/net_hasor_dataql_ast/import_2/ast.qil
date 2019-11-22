@@ -3,12 +3,12 @@
   #01  STORE     0
   #02  M_REF     2
   #03  STORE     1
-  #04  LOAD_C
+  #04  E_LOAD    #
   #05  GET       foo
   #06  M_DEF
   #07  LOAD      0, 0
   #08  CALL      1
-  #09  LOAD_C
+  #09  E_LOAD    #
   #10  GET       abc
   #11  DO        +
   #12  RETURN    0
@@ -22,7 +22,7 @@
   #01  STORE     0
   #02  M_REF     3
   #03  STORE     1
-  #04  LOAD_C
+  #04  E_LOAD    #
   #05  GET       abc
   #06  LOAD      0, 0
   #07  GET       abc

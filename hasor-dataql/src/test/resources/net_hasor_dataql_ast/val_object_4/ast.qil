@@ -1,7 +1,7 @@
 [0]
-  #0  NEW_O
+  #0  NEW_A
   #1  E_LOAD    #
   #2  GET       abc
-  #3  PUT       abc
+  #3  PUSH
   #4  RETURN    0
 

@@ -1,19 +1,19 @@
 [0]
-  #00  LOAD_C
+  #00  E_LOAD    #
   #01  GET       a
   #02  RETURN    0
-  #03  LOAD_C
+  #03  E_LOAD    #
   #04  GET       a
   #05  GET       b
   #06  GET       c
   #07  GET       d
   #08  GET       e
   #09  RETURN    0
-  #10  LOAD_C
+  #10  E_LOAD    #
   #11  GET       a
   #12  PULL      12
   #13  RETURN    0
-  #14  LOAD_C
+  #14  E_LOAD    #
   #15  GET       b
   #16  GET       23
   #17  RETURN    0

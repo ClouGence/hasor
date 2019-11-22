@@ -6,12 +6,12 @@
   #04  LDC_S     ssss
   #05  THROW     0
   #06  NEW_O
-  #07  LOAD_C
+  #07  E_LOAD    #
   #08  GET       aa
   #09  PUT       abc
   #10  THROW     0
   #11  NEW_O
-  #12  LOAD_C
+  #12  E_LOAD    #
   #13  GET       abc
   #14  PUT       abc
   #15  THROW     0

@@ -419,7 +419,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         // 方式1
         RouteNameSetContext routeNameSetContext = ctx.routeNameSet();
         if (routeNameSetContext != null) {
-            EnterRouteVariable enter = new EnterRouteVariable(RouteType.Special, specialType);
+            EnterRouteVariable enter = new EnterRouteVariable(RouteType.Normal, specialType);
             this.instStack.push(enter);
             routeNameSetContext.accept(this);
             return null;
@@ -428,7 +428,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         TerminalNode identifier = ctx.IDENTIFIER();
         TerminalNode string = ctx.STRING();
         String rouName = null;
-        EnterRouteVariable enter = new EnterRouteVariable(RouteType.Context, specialType);
+        EnterRouteVariable enter = new EnterRouteVariable(RouteType.Special, specialType);
         if (identifier != null) {
             rouName = identifier.getText();
         } else {

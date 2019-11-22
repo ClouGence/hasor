@@ -1,5 +1,5 @@
 [0]
-  #00  LOAD_C
+  #00  E_LOAD    #
   #01  GET       a
   #02  PULL      123
   #03  M_DEF
@@ -16,7 +16,7 @@
   #14  GET       d
   #15  PULL      -1
   #16  RETURN    0
-  #17  LOAD_S    $
+  #17  LOAD_C    $
   #18  GET       sssss
   #19  M_DEF
   #20  LDC_D     1
@@ -27,18 +27,18 @@
   #25  GET       e
   #26  GET       f
   #27  RETURN    0
-  #28  LOAD_C
+  #28  E_LOAD    #
   #29  GET       a
   #30  M_DEF
-  #31  LOAD_C
+  #31  E_LOAD    #
   #32  GET       f1
   #33  CALL      1
   #34  M_DEF
-  #35  LOAD_C
+  #35  E_LOAD    #
   #36  GET       f2
   #37  CALL      1
   #38  M_DEF
-  #39  LOAD_C
+  #39  E_LOAD    #
   #40  GET       f3
   #41  CALL      1
   #42  RETURN    0

@@ -29,11 +29,9 @@ import java.io.IOException;
  */
 public class EnterRouteVariable implements RouteVariable {
     public static enum RouteType {
-        /** 一般路由，从环境栈顶上获取数据 */
+        /** 一般路由(含升级的一般路由)，只从环境栈顶上获取数据 */
         Normal(),
-        /** 参数路由，从入参Map里面获取数据 */
-        Context(),
-        /** 特殊路由，自定义 */
+        /** 自定义取值 */
         Special(),
         ;
     }

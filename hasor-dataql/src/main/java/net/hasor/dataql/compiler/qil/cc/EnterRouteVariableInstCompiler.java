@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
+import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
@@ -29,12 +30,18 @@ public class EnterRouteVariableInstCompiler implements InstCompiler<EnterRouteVa
     @Override
     public void doCompiler(EnterRouteVariable astInst, InstQueue queue, CompilerContext compilerContext) {
         RouteType routeType = astInst.getRouteType();
+        SpecialType specialType = astInst.getSpecialType();
         if (routeType == RouteType.Normal) {
-            queue.inst(E_LOAD);
-        } else if (routeType == RouteType.Context) {
-            queue.inst(LOAD_C);
-        } else {
-            queue.inst(LOAD_C, astInst.getSpecialType().getCode());
+            if (SpecialType.Special_A == specialType || specialType == null) {
+                queue.inst(E_LOAD, SpecialType.Special_A.getCode());// 一般路由
+            } else {
+                queue.inst(E_LOAD, specialType.getCode());          // 一般路由升级形式
+            }
+            return;
+        } else if (routeType == RouteType.Special) {
+            queue.inst(LOAD_C, specialType.getCode());              // 自定义路由
+            return;
         }
+        throw new RuntimeException("routeType is null.");
     }
 }

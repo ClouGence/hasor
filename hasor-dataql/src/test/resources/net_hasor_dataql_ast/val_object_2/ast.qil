@@ -13,10 +13,10 @@
   #11  RETURN    0
   #12  NEW_A
   #13  NEW_O
-  #14  LOAD_C
+  #14  E_LOAD    #
   #15  GET       ccc
   #16  PUT       abc
-  #17  LOAD_C
+  #17  E_LOAD    #
   #18  GET       dddd
   #19  PUT       cde
   #20  PUSH

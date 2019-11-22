@@ -27,7 +27,7 @@
   #07  RETURN    0
   #08  GOTO      9
   #09  LABEL     9
-  #10  LOAD_C
+  #10  E_LOAD    #
   #11  GET       aaa
   #12  THROW     0
 

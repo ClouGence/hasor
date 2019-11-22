@@ -1,7 +1,9 @@
 
 return a => [];
 return b => ["abc","cde"];
-return b => ["abc"];
+return b => [
+    abc
+];
 return b => [
     [
         {

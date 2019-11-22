@@ -148,6 +148,11 @@ public class SourceFormatTest extends AbstractTestResource {
     }
 
     @Test
+    public void object4_ast_format_test() throws IOException {
+        astTest("val_object_4");
+    }
+
+    @Test
     public void fmt1_ast_format_test() throws IOException {
         astTest("fmt_1");
     }
@@ -175,6 +180,11 @@ public class SourceFormatTest extends AbstractTestResource {
     @Test
     public void route3_ast_format_test() throws IOException {
         astTest("route_3");
+    }
+
+    @Test
+    public void route4_ast_format_test() throws IOException {
+        astTest("route_4");
     }
 
     @Test

@@ -1,5 +1,5 @@
 [0]
-  #00  LOAD_C
+  #00  E_LOAD    #
   #01  GET       a
   #02  PULL      123
   #03  GET       dd
@@ -8,7 +8,7 @@
   #06  GET       c
   #07  PULL      -1
   #08  RETURN    0
-  #09  LOAD_S    $
+  #09  LOAD_C    $
   #10  GET       ssss
   #11  RETURN    0
 

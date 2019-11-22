@@ -59,16 +59,19 @@ public class NameRouteVariable implements Variable, RouteVariable {
     @Override
     public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
         RouteType routeType = null;
-        SpecialType specialType = null;
+        SpecialType specialType = SpecialType.Special_A;
         if (this.parent instanceof EnterRouteVariable) {
             routeType = ((EnterRouteVariable) parent).getRouteType();
             specialType = ((EnterRouteVariable) parent).getSpecialType();
+            if (specialType == null) {
+                specialType = SpecialType.Special_A;
+            }
         }
         //
-        if (RouteType.Context == routeType) {
+        if (RouteType.Special == routeType) {
             writer.write(specialType.getCode() + "{");
         }
-        if (RouteType.Special == routeType) {
+        if (RouteType.Special != routeType && SpecialType.Special_A != specialType) {
             writer.write(specialType.getCode());
         }
         //
@@ -79,7 +82,7 @@ public class NameRouteVariable implements Variable, RouteVariable {
             writer.write("." + this.name);
         }
         //
-        if (RouteType.Context == routeType) {
+        if (RouteType.Special == routeType) {
             writer.write("}");
         }
     }

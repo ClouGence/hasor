@@ -30,8 +30,10 @@ IN - RootBlockSet
             IN - NameRouteVariable
             OUT - NameRouteVariable
             IN - ListVariable
-                IN - PrimitiveVariable
-                OUT - PrimitiveVariable
+                IN - EnterRouteVariable
+                OUT - EnterRouteVariable
+                IN - NameRouteVariable
+                OUT - NameRouteVariable
             OUT - ListVariable
         OUT - ListFormat
     OUT - ReturnInst

@@ -1,0 +1,99 @@
+[0]
+  #00  E_LOAD    #
+  #01  GET       a
+  #02  POP
+  #03  NEW_A
+  #04  RETURN    0
+  #05  E_LOAD    #
+  #06  GET       b
+  #07  CAST_I
+  #08  E_PUSH
+  #09  NEW_A
+  #10  LABEL     10
+  #11  E_LOAD
+  #12  GET       next
+  #13  IF        19
+  #14  LDC_S     abc
+  #15  PUSH
+  #16  LDC_S     cde
+  #17  PUSH
+  #18  GOTO      10
+  #19  LABEL     19
+  #20  E_POP
+  #21  RETURN    0
+  #22  E_LOAD    #
+  #23  GET       b
+  #24  CAST_I
+  #25  E_PUSH
+  #26  NEW_A
+  #27  LABEL     27
+  #28  E_LOAD
+  #29  GET       next
+  #30  IF        39
+  #31  E_LOAD
+  #32  GET       data
+  #33  E_PUSH
+  #34  E_LOAD    #
+  #35  GET       abc
+  #36  E_POP
+  #37  PUSH
+  #38  GOTO      27
+  #39  LABEL     39
+  #40  E_POP
+  #41  RETURN    0
+  #42  E_LOAD    #
+  #43  GET       b
+  #44  CAST_I
+  #45  E_PUSH
+  #46  NEW_A
+  #47  LABEL     47
+  #48  E_LOAD
+  #49  GET       next
+  #50  IF        94
+  #51  E_LOAD
+  #52  GET       data
+  #53  E_PUSH
+  #54  NEW_A
+  #55  NEW_O
+  #56  E_LOAD    #
+  #57  GET       ccc
+  #58  PUT       abc
+  #59  PUSH
+  #60  E_POP
+  #61  PUSH
+  #62  E_LOAD
+  #63  GET       data
+  #64  E_PUSH
+  #65  NEW_O
+  #66  NEW_A
+  #67  E_LOAD    #
+  #68  GET       a
+  #69  PUSH
+  #70  E_LOAD    #
+  #71  GET       b
+  #72  PUSH
+  #73  E_LOAD    #
+  #74  GET       c
+  #75  PUSH
+  #76  NEW_A
+  #77  LDC_S     ss
+  #78  PUSH
+  #79  E_LOAD    #
+  #80  GET       df
+  #81  PUSH
+  #82  PUSH
+  #83  NEW_O
+  #84  E_LOAD    #
+  #85  GET       abc
+  #86  PUT       abc
+  #87  LDC_B     true
+  #88  PUT       aacc
+  #89  PUSH
+  #90  PUT       cde
+  #91  E_POP
+  #92  PUSH
+  #93  GOTO      47
+  #94  LABEL     94
+  #95  E_POP
+  #96  RETURN    0
+

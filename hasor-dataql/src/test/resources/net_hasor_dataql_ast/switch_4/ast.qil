@@ -1,7 +1,7 @@
 [0]
-  #00  LOAD_C
+  #00  E_LOAD    #
   #01  GET       a
-  #02  LOAD_C
+  #02  E_LOAD    #
   #03  GET       a
   #04  DO        ==
   #05  IF        9
