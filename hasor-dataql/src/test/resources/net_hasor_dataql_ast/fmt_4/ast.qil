@@ -1,0 +1,32 @@
+[0]
+  #00  E_LOAD    #
+  #01  GET       merge
+  #02  M_DEF
+  #03  NEW_A
+  #04  LDC_S     begin
+  #05  PUSH
+  #06  E_LOAD    #
+  #07  GET       b
+  #08  CAST_I
+  #09  E_PUSH
+  #10  NEW_A
+  #11  LABEL     11
+  #12  E_LOAD
+  #13  GET       next
+  #14  IF        23
+  #15  E_LOAD
+  #16  GET       data
+  #17  E_PUSH
+  #18  E_LOAD    #
+  #19  GET       item
+  #20  E_POP
+  #21  PUSH
+  #22  GOTO      11
+  #23  LABEL     23
+  #24  E_POP
+  #25  NEW_A
+  #26  LDC_S     end
+  #27  PUSH
+  #28  CALL      3
+  #29  RETURN    0
+
