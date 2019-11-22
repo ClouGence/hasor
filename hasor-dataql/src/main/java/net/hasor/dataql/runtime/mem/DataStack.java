@@ -22,8 +22,9 @@ import java.util.Stack;
  * @version : 2019-11-22
  */
 public class DataStack extends Stack<Object> {
-    private int    resultCode = 0;
-    private Object result     = null;
+    private int      resultCode = 0;
+    private Object   result     = null;
+    private ExitType exitType   = null;
 
     public int getResultCode() {
         return resultCode;
@@ -39,5 +40,13 @@ public class DataStack extends Stack<Object> {
 
     public void setResult(Object result) {
         this.result = result;
+    }
+
+    public ExitType getExitType() {
+        return exitType;
+    }
+
+    public void setExitType(ExitType exitType) {
+        this.exitType = exitType;
     }
 }

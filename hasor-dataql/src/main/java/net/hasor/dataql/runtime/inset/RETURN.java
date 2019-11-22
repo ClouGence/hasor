@@ -18,29 +18,35 @@ import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
+import net.hasor.dataql.runtime.mem.ExitType;
 
 /**
- * END，正常结束指令，当执行该指令时，会将栈顶的元素作为 result。
- * 并且将执行指针设置到执行序列的末尾。
- * @see net.hasor.dataql.runtime.inset.ERR
+ * RETURN  // 结束当前指令序列的执行，并返回数据和状态给上一个指令序列。如果没有上一个指令序列那么结束整个查询
+ *         - 参数说明：共1参数；参数1：返回码
+ *         - 栈行为：消费1，产出0
+ *         - 堆行为：无
+ *
+ * @see net.hasor.dataql.runtime.inset.THROW
  * @see net.hasor.dataql.runtime.inset.EXIT
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
-class END extends AbstractReturn implements InsetProcess {
+class RETURN implements InsetProcess {
     @Override
     public int getOpcode() {
-        return END;
+        return RETURN;
     }
 
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
-        Object result = memStack.pop();
-        //
-        result = specialProcess(sequence, memStack, local, context, result);
-        memStack.setResult(result);
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
+        int resultCode = sequence.currentInst().getInt(0);
+        Object result = dataStack.pop();
+        dataStack.setResultCode(resultCode);
+        dataStack.setResult(result);
+        dataStack.setExitType(ExitType.Return);
         sequence.jumpTo(sequence.exitPosition());
     }
 }
