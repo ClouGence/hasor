@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql;
+package net.hasor.dataql.runtime.operator;
+import net.hasor.dataql.InvokerProcessException;
+import net.hasor.dataql.Option;
 import net.hasor.utils.StringUtils;
 
 /**
@@ -21,11 +23,11 @@ import net.hasor.utils.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public abstract class OperatorProcess {
+public interface OperatorProcess {
     /**执行运算*/
-    public abstract Object doProcess(int opcode, String operator, Object[] args, Option option) throws InvokerProcessException;
+    public Object doProcess(int opcode, String operator, Object[] args, Option option) throws InvokerProcessException;
 
-    protected static boolean testIn(String[] dataSet, String test) {
+    public default boolean testIn(String[] dataSet, String test) {
         if (dataSet == null || dataSet.length == 0 || StringUtils.isBlank(test)) {
             return false;
         }

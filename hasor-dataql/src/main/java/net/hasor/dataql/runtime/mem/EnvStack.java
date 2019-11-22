@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.struts;
+package net.hasor.dataql.runtime.mem;
+import java.util.Stack;
+
 /**
- * 标记为 self 数据源，用于 ROU 指令路由数据使用。
+ * 栈数据
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-07-19
+ * @version : 2019-11-22
  */
-public interface SelfData {
+public class EnvStack extends Stack<Object> {
 }

@@ -13,21 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.struts;
-/**
- * 用于 ASO 指令在处理方法返回值时。对数据的封装。
- * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-07-19
- */
-public class OriResultStruts implements ResultStruts {
-    private Object resultData;
+package net.hasor.dataql.runtime.mem;
+import java.util.Stack;
 
-    public OriResultStruts(Object resultData) {
-        this.resultData = resultData;
+/**
+ * 栈数据
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2019-11-22
+ */
+public class DataStack extends Stack<Object> {
+    private int    resultCode = 0;
+    private Object result     = null;
+
+    public int getResultCode() {
+        return resultCode;
     }
 
-    @Override
+    public void setResultCode(int resultCode) {
+        this.resultCode = resultCode;
+    }
+
     public Object getResult() {
-        return this.resultData;
+        return result;
+    }
+
+    public void setResult(Object result) {
+        this.result = result;
     }
 }
