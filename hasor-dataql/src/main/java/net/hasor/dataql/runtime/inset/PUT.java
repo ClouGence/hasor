@@ -17,19 +17,22 @@ package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.ProcessException;
-import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
-import net.hasor.dataql.runtime.struts.ObjectResultStruts;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
 import net.hasor.utils.BeanUtils;
 
 import java.util.Map;
 
 /**
- * PUT，将栈顶的数据 set 到结果集中。
+ * PUT     // 将栈顶对象元素放入对象元素中（例：PUT,"xxxx"）
+ *         - 参数说明：共1参数；参数1：属性名称（Map的Key 或 对象的属性名）
+ *         - 栈行为：消费1，产出0
+ *         - 堆行为：无
+ *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
@@ -40,31 +43,35 @@ class PUT implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
-        String filedName = sequence.currentInst().getString(0);
-        Object data = memStack.pop();
-        //
-        Object ors = memStack.peek();
-        if (ors instanceof ObjectResultStruts) {
-            ((ObjectResultStruts) ors).addResultField(filedName, data);
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
+        try {
+            String nodeName = sequence.currentInst().getString(0);
+            Object useData = dataStack.pop();
+            Object containerData = dataStack.peek();
+            writeProperty(containerData, nodeName, useData, context);
+        } catch (Exception e) {
+            if (e instanceof InvokerProcessException) {
+                throw (InvokerProcessException) e;
+            }
+            throw new InvokerProcessException(getOpcode(), e.getMessage(), e);
+        }
+    }
+
+    private void writeProperty(Object containerData, String fieldName, Object useData, ProcessContet context) throws Exception {
+        if (containerData == null) {
             return;
         }
-        if (ors instanceof ObjectModel) {
-            ((ObjectModel) ors).addField(filedName);
-            ((ObjectModel) ors).put(filedName, data);
-            return;
-        }
-        if (ors instanceof Map) {
-            ((Map) ors).put(filedName, data);
+        if (containerData instanceof Map) {
+            ((Map) containerData).put(fieldName, useData);
             return;
         }
         //
-        Object optionValue = context.getOption(Option.SAFE_PUT);
-        boolean safeput = Boolean.TRUE.equals(optionValue);
-        if (!safeput && !BeanUtils.canWriteProperty(filedName, ors.getClass())) {
-            throw new InvokerProcessException(getOpcode(), "output data eror, unable to write property");
+        Object safetyVal = context.getOption(Option.SAFE_PUT);
+        boolean safetyBool = Boolean.TRUE.equals(safetyVal);
+        if (!safetyBool && !BeanUtils.canWriteProperty(fieldName, containerData.getClass())) {
+            throw new InvokerProcessException(getOpcode(), "output data error, unable to write property");
         }
         //
-        BeanUtils.writePropertyOrField(ors, filedName, data);
+        BeanUtils.writePropertyOrField(containerData, fieldName, useData);
     }
 }

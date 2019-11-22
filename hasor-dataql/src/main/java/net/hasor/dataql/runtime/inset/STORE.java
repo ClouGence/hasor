@@ -18,11 +18,16 @@ import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
 
 /**
- * STORE，将栈顶的数据保存到堆。与其对应的指令为 LOAD
+ * STORE   // 栈顶数据存储到堆（例：STORE，2）
+ *         - 参数说明：共1参数；参数1：存入堆的位置；
+ *         - 栈行为：消费1，产出0
+ *         - 堆行为：存入数据
+ *
  * @see net.hasor.dataql.runtime.inset.LOAD
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
@@ -34,9 +39,9 @@ class STORE implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
         int index = sequence.currentInst().getInt(0);
-        Object data = memStack.pop();
-        memStack.storeData(index, data);
+        Object data = dataStack.pop();
+        dataHeap.saveData(index, data);
     }
 }

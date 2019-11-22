@@ -21,28 +21,41 @@ import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
+import net.hasor.utils.BeanUtils;
+
+import java.util.Map;
 
 /**
- * LOAD    // 从指定深度的堆中加载n号元素到栈（例：LOAD 1 ,1 ）
- *         - 参数说明：共2参数；参数1：堆深度；参数2：元素序号；
- *         - 栈行为：消费0，产出1
- *         - 堆行为：取出数据（不删除）
+ * GET     // 获取栈顶对象元素的属性（例：GET,"xxxx"）
+ *         - 参数说明：共1参数；参数1：属性名称（Map的Key 或 对象的属性名）
+ *         - 栈行为：消费1，产出1
+ *         - 堆行为：无
  *
- * @see net.hasor.dataql.runtime.inset.STORE
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
-class LOAD implements InsetProcess {
+class GET implements InsetProcess {
     @Override
     public int getOpcode() {
-        return LOAD;
+        return GET;
     }
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
-        int depth = sequence.currentInst().getInt(0);
-        int index = sequence.currentInst().getInt(1);
-        Object data = dataHeap.loadData(depth, index);
-        dataStack.push(data);
+        String nodeName = sequence.currentInst().getString(0);
+        Object useData = dataStack.pop();
+        useData = readProperty(useData, nodeName);
+        dataStack.push(useData);
+    }
+
+    private static Object readProperty(Object object, String fieldName) {
+        if (object == null) {
+            return null;
+        }
+        if (object instanceof Map) {
+            return ((Map) object).get(fieldName);
+        }
+        //
+        return BeanUtils.readPropertyOrField(object, fieldName);
     }
 }

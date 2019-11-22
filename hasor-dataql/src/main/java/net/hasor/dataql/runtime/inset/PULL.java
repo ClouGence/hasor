@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
@@ -22,27 +23,50 @@ import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
- * LOAD    // 从指定深度的堆中加载n号元素到栈（例：LOAD 1 ,1 ）
- *         - 参数说明：共2参数；参数1：堆深度；参数2：元素序号；
- *         - 栈行为：消费0，产出1
- *         - 堆行为：取出数据（不删除）
+ * PULL    // 栈顶元素是一个集合类型，获取集合的指定索引元素。（例：PULL 123）
+ *         - 参数说明：共1参数；参数1：元素位置(负数表示从后向前，正数表示从前向后)
+ *         - 栈行为：消费1，产出1
+ *         - 堆行为：无
  *
- * @see net.hasor.dataql.runtime.inset.STORE
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
-class LOAD implements InsetProcess {
+class PULL implements InsetProcess {
     @Override
     public int getOpcode() {
-        return LOAD;
+        return PULL;
     }
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
-        int depth = sequence.currentInst().getInt(0);
-        int index = sequence.currentInst().getInt(1);
-        Object data = dataHeap.loadData(depth, index);
-        dataStack.push(data);
+        Object data = dataStack.pop();
+        //
+        if (!(data instanceof Collection)) {
+            throw new InvokerProcessException(getOpcode(), "output data error, target type must be Collection.");
+        }
+        //
+        int point = sequence.currentInst().getInt(0);
+        int size = ((Collection) data).size();
+        if (point < 0) {
+            point = size - point;
+            if (point <= 0) {
+                point = 0;
+            }
+        } else if (point >= size) {
+            point = size - 1;
+        }
+        //
+        Object pullData = null;
+        if (data instanceof List) {
+            pullData = ((List) data).get(point);
+        } else {
+            pullData = ((Collection) data).toArray()[point];
+        }
+        //
+        dataStack.push(pullData);
     }
 }

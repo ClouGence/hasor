@@ -16,18 +16,21 @@
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.ProcessException;
-import net.hasor.dataql.result.ListModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
-import net.hasor.dataql.runtime.struts.ListResultStruts;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
 
 import java.util.Collection;
 
 /**
- * PUSH，将栈顶的数据 put 到结果集中。
+ * PUSH    // 将栈顶元素压入集合（例：PUSH）
+ *         - 参数说明：共0参数；
+ *         - 栈行为：消费1，产出0
+ *         - 堆行为：无
+ *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
@@ -38,23 +41,14 @@ class PUSH implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
-        Object data = memStack.pop();
-        Object ors = memStack.peek();
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
+        Object data = dataStack.pop();
+        Object ors = dataStack.peek();
         //
-        if (ors instanceof ListResultStruts) {
-            ((ListResultStruts) ors).addResult(data);
-            return;
-        }
-        if (ors instanceof ListModel) {
-            ((ListModel) ors).add(data);
-            return;
-        }
         if (ors instanceof Collection) {
             ((Collection) ors).add(data);
             return;
         }
-        //
-        throw new InvokerProcessException(getOpcode(), "output data eror, target type must be 'ListResultStruts or ListModel or Collection.'");
+        throw new InvokerProcessException(getOpcode(), "output data error, target type must be Collection.");
     }
 }
