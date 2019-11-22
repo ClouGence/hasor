@@ -17,7 +17,7 @@ package net.hasor.dataql.runtime.operator;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.domain.compiler.Opcodes;
+import net.hasor.dataql.compiler.qil.Opcodes;
 import net.hasor.utils.StringUtils;
 
 /**
