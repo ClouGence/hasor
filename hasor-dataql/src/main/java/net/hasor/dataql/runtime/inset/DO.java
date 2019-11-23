@@ -15,18 +15,22 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.InvokerProcessException;
-import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.Symbol;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
+import net.hasor.dataql.runtime.operator.OperatorProcess;
 
 /**
- * DO 指令是用于进行 二元运算。
- * 该指令会通过运算符和被计算的表达式来寻找 OperatorProcess 运算实现类，进行运算。
+ * DO      // 二元运算，堆栈【第一个操作数，第二个操作数】  第一操作数 * 第二操作数
+ *         - 参数说明：共1参数；参数1：二元操作符
+ *         - 栈行为：消费2，产出1
+ *         - 堆行为：无
+ *
  * 开发者可以通过实现 OperatorProcess 接口，覆盖某个运算符实现 运算符重载功能。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
@@ -38,10 +42,10 @@ class DO implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
         String dyadicSymbol = sequence.currentInst().getString(0);
-        Object secExpData = memStack.pop();
-        Object fstExpData = memStack.pop();
+        Object secExpData = dataStack.pop();
+        Object fstExpData = dataStack.pop();
         //
         Class<?> fstType = (fstExpData == null) ? Void.class : fstExpData.getClass();
         Class<?> secType = (secExpData == null) ? Void.class : secExpData.getClass();
@@ -53,6 +57,6 @@ class DO implements InsetProcess {
         }
         //
         Object result = process.doProcess(DO, dyadicSymbol, new Object[] { fstExpData, secExpData }, context);
-        memStack.push(result);
+        dataStack.push(result);
     }
 }
