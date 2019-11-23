@@ -18,11 +18,16 @@ import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
 
 /**
- * IF，当前栈顶的表达式如果为 false，则跳转到 IF 指令上指定的位置上去。
+ * IF      // if 条件判断，如果条件判断失败那么 GOTO 到指定位置，否则继续往下执行
+ *         - 参数说明：共1参数；参数1：GOTO 的位置
+ *         - 栈行为：消费1，产出0
+ *         - 堆行为：无
+ *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
@@ -33,8 +38,8 @@ class IF implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
-        Object test = memStack.pop();
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
+        Object test = dataStack.pop();
         int jumpLabel = sequence.currentInst().getInt(0);
         //
         boolean testFailed = (test == null || Boolean.FALSE.equals(test));

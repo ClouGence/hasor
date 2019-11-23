@@ -23,23 +23,24 @@ import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
 
 /**
- * GOTO    // 执行跳转
- *         - 参数说明：共1参数；参数1：GOTO 的位置
- *         - 栈行为：消费0，产出0
+ * E_PUSH  // 取出当前栈顶数据，并压入环境栈
+ *         - 参数说明：共0参数；
+ *         - 栈行为：消费1，产出0
+ *         - 环境栈行为：消费0，产出1
  *         - 堆行为：无
  *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
-class GOTO implements InsetProcess {
+class E_PUSH implements InsetProcess {
     @Override
     public int getOpcode() {
-        return GOTO;
+        return E_PUSH;
     }
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
-        int jumpTo = sequence.currentInst().getInt(0);
-        sequence.jumpTo(jumpTo);
+        Object test = dataStack.pop();
+        envStack.push(test);
     }
 }

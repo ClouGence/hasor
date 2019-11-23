@@ -18,11 +18,16 @@ import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
 
 /**
- * OPT，更新选项参数。
+ * OPT     // 环境配置，影响执行引擎的参数选项。
+ *         - 参数说明：共2参数；参数1：选项Key；参数2：选项Value
+ *         - 栈行为：消费2，产出0
+ *         - 堆行为：无
+ *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
@@ -33,9 +38,9 @@ class OPT implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
-        Object value = memStack.pop();
-        String key = (String) memStack.pop();
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
+        Object value = dataStack.pop();
+        String key = (String) dataStack.pop();
         //
         if (value == null) {
             context.removeOption(key);

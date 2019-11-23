@@ -22,4 +22,14 @@ import java.util.Stack;
  * @version : 2019-11-22
  */
 public class EnvStack extends Stack<Object> {
+    /** 从栈顶乡下获取指定深度位置的数据 */
+    public Object peekOfDepth(int depth) {
+        if (depth < 0) {
+            throw new ArrayIndexOutOfBoundsException(depth);
+        }
+        if (depth >= elementCount) {
+            throw new ArrayIndexOutOfBoundsException(depth);
+        }
+        return this.get(elementCount - depth - 1);
+    }
 }

@@ -19,27 +19,45 @@ import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataIterator;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+
 /**
- * GOTO    // 执行跳转
- *         - 参数说明：共1参数；参数1：GOTO 的位置
- *         - 栈行为：消费0，产出0
+ * CAST_I  // 将栈顶元素转换为迭代器，作为迭代器有三个特殊操作：data(数据)、next(移动到下一个，如果成功返回true)
+ *         - 参数说明：共0参数
+ *         - 栈行为：消费1，产出1
  *         - 堆行为：无
  *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
-class GOTO implements InsetProcess {
+class CAST_I implements InsetProcess {
     @Override
     public int getOpcode() {
-        return GOTO;
+        return CAST_I;
     }
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
-        int jumpTo = sequence.currentInst().getInt(0);
-        sequence.jumpTo(jumpTo);
+        Object data = dataStack.pop();
+        Iterator iterator = null;
+        //
+        if (data == null) {
+            iterator = Collections.EMPTY_LIST.iterator();
+        } else if (data instanceof Collection) {
+            iterator = ((Collection) data).iterator();
+        } else if (data.getClass().isArray()) {
+            iterator = Arrays.asList((Object[]) data).iterator();
+        } else {
+            iterator = Collections.singletonList(data).iterator();
+        }
+        //
+        dataStack.push(new DataIterator(iterator));
     }
 }

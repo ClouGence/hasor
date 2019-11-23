@@ -15,16 +15,23 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.InvokerProcessException;
-import net.hasor.dataql.LoadType;
 import net.hasor.dataql.ProcessException;
-import net.hasor.dataql.UDF;
-import net.hasor.dataql.domain.compiler.Instruction;
-import net.hasor.dataql.runtime.*;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
+import net.hasor.dataql.compiler.qil.Instruction;
+import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InstSequence;
+import net.hasor.dataql.runtime.OptionReadOnly;
+import net.hasor.dataql.runtime.ProcessContet;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
+import net.hasor.dataql.runtime.mem.RefCall;
 
 /**
- * CALL，指令是用于发起对 UDF 的调用。
+ * CALL    // 发起服务调用（例：CALL,2）
+ *         - 参数说明：共1参数；参数1：发起调用时需要用到的调用参数个数 n
+ *         - 栈行为：消费：n + 1（n是参数，1是函数入口），产出1
+ *         - 堆行为：无
+ *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
@@ -35,35 +42,31 @@ class CALL implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
         Instruction instruction = sequence.currentInst();
-        String udfName = instruction.getString(0);
-        int paramCount = instruction.getInt(1);
+        int paramCount = instruction.getInt(0);
         //
         Object[] paramArrays = new Object[paramCount];
         for (int i = 0; i < paramCount; i++) {
             int paramIndex = paramCount - 1 - i;
-            Object paramObj = memStack.pop();
-            //
-            if (paramObj instanceof LambdaCallProxy) {
-                paramArrays[paramIndex] = paramObj;
-                continue;
-            }
-            //
+            Object paramObj = dataStack.pop();
             paramArrays[paramIndex] = paramObj;
         }
         //
+        Object refCallObj = dataStack.pop();
+        if (!(refCallObj instanceof RefCall)) {
+            throw new InvokerProcessException(getOpcode(), "target is not RefCall.");
+        }
+        //
         try {
-            UDF udf = context.findUDF(udfName, LoadType.ByName);
-            if (udf == null) {
-                throw new InvokerProcessException(getOpcode(), "CALL -> udf '" + udfName + "' is not found");
-            }
-            Object result = udf.call(paramArrays, new OptionReadOnly(context));
-            memStack.push(result);
-        } catch (ProcessException e) {
-            throw e;
+            RefCall refCall = (RefCall) refCallObj;
+            Object result = refCall.invokeMethod(paramArrays, new OptionReadOnly(context));
+            dataStack.push(result);
         } catch (Throwable e) {
-            throw new InvokerProcessException(getOpcode(), "call '" + udfName + "' error.", e);
+            if (e instanceof ProcessException) {
+                throw (ProcessException) e;
+            }
+            throw new InvokerProcessException(getOpcode(), e.getMessage(), e);
         }
     }
 }

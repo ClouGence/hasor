@@ -23,23 +23,37 @@ import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
 
 /**
- * GOTO    // 执行跳转
- *         - 参数说明：共1参数；参数1：GOTO 的位置
- *         - 栈行为：消费0，产出0
+ * E_LOAD  // 加载环境栈顶的数据到数据栈
+ *         - 参数说明：共1参数；参数1：操作符号@#$
+ *         - 栈行为：消费0，产出1
+ *         - 环境栈行为：消费0，产出0
  *         - 堆行为：无
  *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
-class GOTO implements InsetProcess {
+class E_LOAD implements InsetProcess {
     @Override
     public int getOpcode() {
-        return GOTO;
+        return E_LOAD;
     }
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
-        int jumpTo = sequence.currentInst().getInt(0);
-        sequence.jumpTo(jumpTo);
+        String symbol = sequence.currentInst().getString(0);
+        //
+        // # 表示环境栈顶(同一般路由)
+        if ("#".equalsIgnoreCase(symbol)) {
+            dataStack.push(envStack.peek());
+        }
+        // @ 表示第二层环境栈元素
+        if ("#".equalsIgnoreCase(symbol)) {
+            dataStack.push(envStack.peekOfDepth(1));
+        }
+        // $ 根环境栈元素（每一个结果转换都会产生一层环境栈）
+        if ("#".equalsIgnoreCase(symbol)) {
+            dataStack.push(envStack.firstElement());
+        }
+        throw new RuntimeException("symbol '" + symbol + "' is not define.");
     }
 }

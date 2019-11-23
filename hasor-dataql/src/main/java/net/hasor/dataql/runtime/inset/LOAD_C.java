@@ -22,24 +22,31 @@ import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
- * GOTO    // 执行跳转
- *         - 参数说明：共1参数；参数1：GOTO 的位置
- *         - 栈行为：消费0，产出0
+ * LOAD_C  // 加载自定义路由
+ *         - 参数说明：共1参数；参数1：@#$符号之一
+ *         - 栈行为：消费0，产出1
  *         - 堆行为：无
  *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
-class GOTO implements InsetProcess {
+class LOAD_C implements InsetProcess {
     @Override
     public int getOpcode() {
-        return GOTO;
+        return LOAD_C;
     }
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
-        int jumpTo = sequence.currentInst().getInt(0);
-        sequence.jumpTo(jumpTo);
+        String symbol = sequence.currentInst().getString(0);
+        Map<String, Object> envMap = context.findCustomizeEnvironment(symbol);
+        if (envMap == null) {
+            envMap = Collections.emptyMap();
+        }
+        dataStack.push(envMap);
     }
 }
