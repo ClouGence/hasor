@@ -78,7 +78,7 @@ public class InstQueue {
         return instList.isEmpty() ? null : instList.getLast();
     }
 
-    /**新函数指令集*/
+    /** 新函数指令集 */
     public InstQueue newMethodInst() {
         LinkedList<InstructionInfo> instList = new LinkedList<>();
         this.instSet.add(instList);

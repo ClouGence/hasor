@@ -43,6 +43,7 @@ public class ImportInstCompiler implements InstCompiler<ImportInst> {
             int importAddress = compilerContext.findImport(importResource);
             if (importAddress < 0) {
                 InstQueue newMethodInst = queue.newMethodInst();
+                newMethodInst.inst(M_STAR, 0);
                 compilerContext.putImport(importResource, newMethodInst.getName());
                 this.loadResource(importResource, newMethodInst, compilerContext.createSegregate());
                 importAddress = newMethodInst.getName();
