@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.result.LambdaModel;
+import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.LambdaCallProxy;
-import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
+
 /**
- * 特殊处理结果，兼容 return 、throw、exit 时返回一个 lambda 的情况。
- * @see net.hasor.dataql.runtime.inset.ERR
- * @see net.hasor.dataql.runtime.inset.EXIT
+ * LINE    // 行号，无实际作用
+ *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
-abstract class AbstractReturn implements InsetProcess {
-    protected Object specialProcess(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context, Object result) {
-        if (result instanceof LambdaCallProxy) {
-            result = new LambdaModel((LambdaCallProxy) result);
-        }
-        return result;
+class LINE implements InsetProcess {
+    @Override
+    public int getOpcode() {
+        return LINE;
+    }
+
+    @Override
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
     }
 }

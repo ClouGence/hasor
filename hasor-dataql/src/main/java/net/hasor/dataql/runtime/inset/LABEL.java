@@ -16,31 +16,25 @@
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
-import net.hasor.dataql.runtime.struts.OriResultStruts;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
 
 /**
- * ASO，指令处理器。用于将结果作为原封不动的进行返回。
- *
- * 与 ASO 指令配对的还有一个对应的 ASE，在这一对 ASO -> ASE 范围内的指令。
- *
- * ASO 指令后续通常紧跟着一个 ASE。
+ * LABEL   // 协助GOTO定位用，无实际作用
  *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
-class ASO implements InsetProcess {
+class LABEL implements InsetProcess {
     @Override
     public int getOpcode() {
-        return ASO;
+        return LABEL;
     }
 
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
-        Object result = memStack.pop();
-        memStack.push(new OriResultStruts(result));
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
     }
 }

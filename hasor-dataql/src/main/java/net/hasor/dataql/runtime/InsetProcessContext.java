@@ -13,28 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.mem;
-import java.util.Stack;
+package net.hasor.dataql.runtime;
+import net.hasor.dataql.Option;
+import net.hasor.dataql.runtime.operator.OperatorProcess;
+
+import java.util.Map;
 
 /**
- * 栈数据
+ * 指令执行器接口
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2019-11-22
+ * @version : 2017-07-14
  */
-public class EnvStack extends Stack<Object> {
-    /** 从栈顶乡下获取指定深度位置的数据 */
-    public Object peekOfDepth(int depth) {
-        if (depth < 0) {
-            throw new ArrayIndexOutOfBoundsException(depth);
-        }
-        if (depth >= elementCount) {
-            throw new ArrayIndexOutOfBoundsException(depth);
-        }
-        return this.get(elementCount - depth - 1);
-    }
+public interface InsetProcessContext extends Option {
+    public OperatorProcess findOperator(Symbol unary, String dyadicSymbol, Class<?> fstType, Class<?> secType);
 
-    @Override
-    public EnvStack clone() {
-        return (EnvStack) super.clone();
-    }
+    public Map<String, Object> findCustomizeEnvironment(String symbol);
 }

@@ -14,27 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.mem;
-import java.util.Stack;
-
 /**
- * 栈数据
+ * 代理 Lambda 使其成为 UDF.
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2019-11-22
+ * @version : 2017-03-23
  */
-public class EnvStack extends Stack<Object> {
-    /** 从栈顶乡下获取指定深度位置的数据 */
-    public Object peekOfDepth(int depth) {
-        if (depth < 0) {
-            throw new ArrayIndexOutOfBoundsException(depth);
-        }
-        if (depth >= elementCount) {
-            throw new ArrayIndexOutOfBoundsException(depth);
-        }
-        return this.get(elementCount - depth - 1);
+public class RefLambdaCallStruts {
+    private Object[] params;
+
+    public RefLambdaCallStruts(Object[] params) {
+        this.params = params;
     }
 
-    @Override
-    public EnvStack clone() {
-        return (EnvStack) super.clone();
+    public Object[] getParams() {
+        return params;
     }
 }

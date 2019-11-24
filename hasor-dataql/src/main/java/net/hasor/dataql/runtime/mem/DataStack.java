@@ -49,4 +49,14 @@ public class DataStack extends Stack<Object> {
     public void setExitType(ExitType exitType) {
         this.exitType = exitType;
     }
+
+    @Override
+    public DataStack clone() {
+        DataStack dataStack = new DataStack();
+        dataStack.addAll(this);
+        dataStack.resultCode = this.resultCode;
+        dataStack.result = this.result;
+        dataStack.exitType = this.exitType;
+        return dataStack;
+    }
 }

@@ -16,8 +16,8 @@
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -39,7 +39,7 @@ class M_REF implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
         //
         int callAddress = sequence.currentInst().getInt(0);
         InstSequence methodSeq = sequence.methodSet(callAddress);

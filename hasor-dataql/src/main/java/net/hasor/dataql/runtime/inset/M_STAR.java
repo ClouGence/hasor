@@ -16,11 +16,12 @@
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
-import net.hasor.dataql.runtime.struts.LambdaCall;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
+import net.hasor.dataql.runtime.mem.RefLambdaCallStruts;
 
 /**
  * METHOD，位于定义 lambda 函数的执行序列头部。该指令的目的是对发起调用的入参参数个数进行规整化。
@@ -35,28 +36,22 @@ import net.hasor.dataql.runtime.struts.LambdaCall;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
-class METHOD implements InsetProcess {
+class M_STAR implements InsetProcess {
     @Override
     public int getOpcode() {
-        return METHOD;
+        return M_STAR;
     }
 
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
+        RefLambdaCallStruts lambdaCall = (RefLambdaCallStruts) dataStack.peek();
         int paramCount = sequence.currentInst().getInt(0);
-        LambdaCall result = (LambdaCall) memStack.peek();
-        //
-        if (result.getArrays() == null || paramCount != result.getArrays().length) {
-            Object[] finalParamArray = new Object[paramCount];
-            Object[] inParams = result.getArrays();
-            for (int i = 0; i < paramCount; i++) {
-                if (i > (inParams.length - 1)) {
-                    break;
-                }
-                finalParamArray[i] = inParams[i];
+        Object[] callParams = lambdaCall.getParams();
+        for (int i = 0; i < paramCount; i++) {
+            if (i > callParams.length) {
+                break;
             }
-            result.updateArrays(finalParamArray);
+            dataHeap.saveData(i, callParams[i]);
         }
-        //
     }
 }

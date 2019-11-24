@@ -15,9 +15,10 @@
  */
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.ProcessException;
-import net.hasor.dataql.domain.compiler.Opcodes;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
+import net.hasor.dataql.compiler.qil.Opcodes;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
 
 /**
  * 指令执行器接口
@@ -25,9 +26,15 @@ import net.hasor.dataql.runtime.mem.StackStruts;
  * @version : 2017-07-14
  */
 public interface InsetProcess extends Opcodes {
-    /**执行器，用于处理的指令 Code */
+    /** 执行器，用于处理的指令 Code */
     public int getOpcode();
 
-    /**执行指令*/
-    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException;
+    /** 执行指令 */
+    public void doWork(             //
+            InstSequence sequence,  // 指令序列
+            DataHeap dataHeap,      // 数据堆
+            DataStack dataStack,    // 数据栈
+            EnvStack envStack,      // 环境栈
+            InsetProcessContext context   // 执行器上下文
+    ) throws ProcessException;
 }

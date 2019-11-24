@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.dataql.domain.compiler.Instruction;
+import net.hasor.dataql.compiler.qil.Instruction;
 
 /**
  * 用于圈定执行序列，当isExit返回 true 之后。表示圈定结束。

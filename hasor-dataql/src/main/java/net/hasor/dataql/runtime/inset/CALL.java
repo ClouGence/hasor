@@ -18,9 +18,9 @@ import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.compiler.qil.Instruction;
 import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.OptionReadOnly;
-import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -42,7 +42,7 @@ class CALL implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
         Instruction instruction = sequence.currentInst();
         int paramCount = instruction.getInt(0);
         //
@@ -58,15 +58,8 @@ class CALL implements InsetProcess {
             throw new InvokerProcessException(getOpcode(), "target is not RefCall.");
         }
         //
-        try {
-            RefCall refCall = (RefCall) refCallObj;
-            Object result = refCall.invokeMethod(paramArrays, new OptionReadOnly(context));
-            dataStack.push(result);
-        } catch (Throwable e) {
-            if (e instanceof ProcessException) {
-                throw (ProcessException) e;
-            }
-            throw new InvokerProcessException(getOpcode(), e.getMessage(), e);
-        }
+        RefCall refCall = (RefCall) refCallObj;
+        Object result = refCall.invokeMethod(paramArrays, new OptionReadOnly(context));
+        dataStack.push(result);
     }
 }

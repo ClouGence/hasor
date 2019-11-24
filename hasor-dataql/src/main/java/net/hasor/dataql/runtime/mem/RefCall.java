@@ -13,22 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime;
-import net.hasor.dataql.*;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
+package net.hasor.dataql.runtime.mem;
+import net.hasor.dataql.Option;
+import net.hasor.dataql.UDF;
+import net.hasor.dataql.UdfResult;
+import net.hasor.utils.ExceptionUtils;
 
 /**
- * 指令执行器接口
+ * 栈数据
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-07-14
+ * @version : 2019-11-22
  */
-public interface ProcessContet extends Option {
-    public Class<?> loadType(String type) throws ClassNotFoundException;
+public class RefCall {
+    private UDF refCall;
 
-    public void processInset(InstSequence sequence, MemStack memStack, StackStruts local) throws ProcessException;
+    public RefCall(UDF refCall) {
+        this.refCall = refCall;
+    }
 
-    public OperatorProcess findOperator(Symbol unary, String dyadicSymbol, Class<?> fstType, Class<?> secType);
-
-    public UDF findUDF(String udfName, LoadType loadType) throws Throwable;
+    public UdfResult invokeMethod(Object[] paramArrays, Option optionSet) {
+        try {
+            return this.refCall.call(paramArrays, optionSet);
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+    }
 }

@@ -19,7 +19,7 @@ package net.hasor.dataql.runtime.mem;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-11-22
  */
-public class DataHeap {
+public class DataHeap implements Cloneable {
     private DataHeap parent       = null;
     private int      depth        = 0;
     private Object[] heapDataPool = new Object[10];
@@ -56,5 +56,13 @@ public class DataHeap {
 
     public DataHeap createHeap() {
         return new DataHeap(this);
+    }
+
+    @Override
+    public DataHeap clone() {
+        DataHeap dataHeap = new DataHeap(this.parent.clone());
+        dataHeap.depth = this.depth;
+        dataHeap.heapDataPool = this.heapDataPool.clone();
+        return dataHeap;
     }
 }

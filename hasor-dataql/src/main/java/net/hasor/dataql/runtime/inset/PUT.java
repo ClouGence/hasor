@@ -18,8 +18,8 @@ import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -43,7 +43,7 @@ class PUT implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
         try {
             String nodeName = sequence.currentInst().getString(0);
             Object useData = dataStack.pop();
@@ -57,7 +57,7 @@ class PUT implements InsetProcess {
         }
     }
 
-    private void writeProperty(Object containerData, String fieldName, Object useData, ProcessContet context) throws Exception {
+    private void writeProperty(Object containerData, String fieldName, Object useData, InsetProcessContext context) throws Exception {
         if (containerData == null) {
             return;
         }

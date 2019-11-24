@@ -15,8 +15,8 @@
  */
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.InvokerProcessException;
-import net.hasor.dataql.domain.compiler.Instruction;
-import net.hasor.dataql.domain.compiler.QIL;
+import net.hasor.dataql.compiler.qil.Instruction;
+import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.utils.StringUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,11 +27,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version : 2017-07-14
  */
 public class InstSequence {
-    private final int           address;         // 指令集中的序列地址
-    private final QIL           queueSet;     // 指令集
-    private final int           startPosition;// 有效的起始位置
-    private final int           endPosition;  // 有效的终止位置
-    private final AtomicInteger sequenceIndex;// 当前指令指针指向的序列位置
+    private final int           address;        // 指令集中的序列地址
+    private final QIL           queueSet;       // 指令集
+    private final int           startPosition;  // 有效的起始位置
+    private final int           endPosition;    // 有效的终止位置
+    private final AtomicInteger sequenceIndex;  // 当前指令指针指向的序列位置
     private       boolean       jumpMark = false;
 
     InstSequence(int address, QIL queueSet) {

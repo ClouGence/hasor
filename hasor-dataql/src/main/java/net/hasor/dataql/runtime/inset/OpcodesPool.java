@@ -16,10 +16,11 @@
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
 
 /**
  * 指令池
@@ -32,43 +33,45 @@ public class OpcodesPool {
     public static OpcodesPool newPool() {
         OpcodesPool pool = new OpcodesPool();
         {
-            pool.addInsetProcess(new NO());
-            pool.addInsetProcess(new NA());
-            //
             pool.addInsetProcess(new LDC_B());
             pool.addInsetProcess(new LDC_D());
             pool.addInsetProcess(new LDC_S());
             pool.addInsetProcess(new LDC_N());
+            pool.addInsetProcess(new NEW_O());
+            pool.addInsetProcess(new NEW_A());
             //
             pool.addInsetProcess(new LOAD());
             pool.addInsetProcess(new STORE());
-            //
-            pool.addInsetProcess(new ASM());
-            pool.addInsetProcess(new ASO());
-            pool.addInsetProcess(new ASA());
-            pool.addInsetProcess(new ASE());
-            //
+            pool.addInsetProcess(new GET());
             pool.addInsetProcess(new PUT());
+            pool.addInsetProcess(new PULL());
             pool.addInsetProcess(new PUSH());
-            pool.addInsetProcess(new ROU());
+            //
+            pool.addInsetProcess(new RETURN());
+            pool.addInsetProcess(new EXIT());
+            pool.addInsetProcess(new THROW());
+            //
             pool.addInsetProcess(new UO());
             pool.addInsetProcess(new DO());
             //
-            pool.addInsetProcess(new CALL());
-            pool.addInsetProcess(new RCALL());
-            //
-            pool.addInsetProcess(new METHOD());
-            pool.addInsetProcess(new M_REF());
-            //
             pool.addInsetProcess(new IF());
             pool.addInsetProcess(new GOTO());
-            pool.addInsetProcess(new END());
-            pool.addInsetProcess(new EXIT());
-            pool.addInsetProcess(new ERR());
-            //
             pool.addInsetProcess(new OPT());
+            pool.addInsetProcess(new POP());
+            pool.addInsetProcess(new LOAD_C());
+            pool.addInsetProcess(new E_PUSH());
+            pool.addInsetProcess(new E_POP());
+            pool.addInsetProcess(new E_LOAD());
+            pool.addInsetProcess(new CAST_I());
+            //
+            pool.addInsetProcess(new CALL());
+            pool.addInsetProcess(new M_REF());
+            pool.addInsetProcess(new M_STAR());
+            pool.addInsetProcess(new M_DEF());
             pool.addInsetProcess(new LOCAL());
-            pool.addInsetProcess(new LCALL());
+            //
+            pool.addInsetProcess(new LABEL());
+            pool.addInsetProcess(new LINE());
         }
         return pool;
     }
@@ -77,12 +80,11 @@ public class OpcodesPool {
         this.processes[inst.getOpcode()] = inst;
     }
 
-    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
-        //
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
         InsetProcess process = this.processes[sequence.currentInst().getInstCode()];
         if (process == null) {
             return;
         }
-        process.doWork(sequence, memStack, local, context);
+        process.doWork(sequence, dataHeap, dataStack, envStack, context);
     }
 }
