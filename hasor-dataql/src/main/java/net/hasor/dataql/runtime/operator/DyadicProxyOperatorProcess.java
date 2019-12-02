@@ -16,26 +16,36 @@
 package net.hasor.dataql.runtime.operator;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
-import net.hasor.utils.StringUtils;
 
 /**
- * 一元或二元运算，用于运算符重载。
+ * 二元运算代理。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface OperatorProcess {
-    /**执行运算*/
-    public Object doProcess(String operator, Object[] args, Option option) throws InvokerProcessException;
+class DyadicProxyOperatorProcess implements OperatorMatch {
+    private Class<?>        fstType;
+    private Class<?>        secType;
+    private OperatorProcess process;
 
-    public default boolean testIn(String[] dataSet, String test) {
-        if (dataSet == null || dataSet.length == 0 || StringUtils.isBlank(test)) {
+    public DyadicProxyOperatorProcess(Class<?> fstType, Class<?> secType, OperatorProcess process) {
+        this.fstType = fstType;
+        this.secType = secType;
+        this.process = process;
+    }
+
+    @Override
+    public Object doProcess(String operator, Object[] args, Option option) throws InvokerProcessException {
+        return this.process.doProcess(operator, args, option);
+    }
+
+    @Override
+    public boolean testMatch(Class<?>... fstType) {
+        if (!this.fstType.isAssignableFrom(fstType[0])) {
             return false;
         }
-        for (String str : dataSet) {
-            if (test.equalsIgnoreCase(str)) {
-                return true;
-            }
+        if (!this.secType.isAssignableFrom(fstType[1])) {
+            return false;
         }
-        return false;
+        return true;
     }
 }

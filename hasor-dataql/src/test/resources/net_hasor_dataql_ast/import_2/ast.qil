@@ -14,22 +14,24 @@
   #12  RETURN    0
 
 [1]
-  #0  LDC_D     123
-  #1  STORE     0
+  #0  M_STAR    0
+  #1  LDC_D     123
+  #2  STORE     0
 
 [2]
-  #00  M_REF     1
-  #01  STORE     0
-  #02  M_REF     3
-  #03  STORE     1
-  #04  E_LOAD    #
-  #05  GET       abc
-  #06  LOAD      0, 0
-  #07  GET       abc
-  #08  DO        +
-  #09  RETURN    0
+  #00  M_STAR    0
+  #01  M_REF     1
+  #02  STORE     0
+  #03  M_REF     3
+  #04  STORE     1
+  #05  E_LOAD    #
+  #06  GET       abc
+  #07  LOAD      0, 0
+  #08  GET       abc
+  #09  DO        +
+  #10  RETURN    0
 
 [3]
-  #0  LDC_D     1
-  #1  RETURN    0
-
+  #0  M_STAR    0
+  #1  LDC_D     1
+  #2  RETURN    0

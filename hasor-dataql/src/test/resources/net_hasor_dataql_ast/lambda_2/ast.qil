@@ -3,9 +3,10 @@
   #1  RETURN    0
 
 [1]
-  #0  LOCAL     0, a
-  #1  LOCAL     1, b
-  #2  LOAD      0, 0
-  #3  LDC_D     1
-  #4  DO        ==
-  #5  RETURN    0
+  #0  M_STAR    2
+  #1  LOCAL     0, a
+  #2  LOCAL     1, b
+  #3  LOAD      0, 0
+  #4  LDC_D     1
+  #5  DO        ==
+  #6  RETURN    0

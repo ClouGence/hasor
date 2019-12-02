@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.operator;
+package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
 
+import java.util.Objects;
+
 /**
- * 一元运算，boolean类型的只处理：取反
+ * 字符串拼接
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class BooleanUOP extends UnaryOperatorProcess {
+public class ObjectEqDOP extends AbstractDOP {
     @Override
-    public Object doUnaryProcess(int opcode, String operator, Object object, Option option) throws InvokerProcessException {
-        if ("!".equals(operator) && OperatorUtils.isBoolean(object)) {
-            return !((Boolean) object);
+    public Object doDyadicProcess(String operator, Object fstObject, Object secObject, Option option) throws InvokerProcessException {
+        if ("==".equals(operator)) {
+            return Objects.equals(fstObject, secObject);
         }
-        String dataType = object == null ? "null" : object.getClass().getName();
-        throw new InvokerProcessException(opcode, dataType + " , Cannot be used as '" + operator + "'.");
+        if ("!=".equals(operator)) {
+            return !Objects.equals(fstObject, secObject);
+        }
+        throw throwError(operator, fstObject, secObject, "symbol unsupported.");
     }
 }

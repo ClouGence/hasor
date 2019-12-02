@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.operator;
+package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.compiler.qil.Opcodes;
+import net.hasor.dataql.runtime.operator.OperatorProcess;
 import net.hasor.utils.StringUtils;
 
 /**
@@ -24,29 +24,29 @@ import net.hasor.utils.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public abstract class DyadicOperatorProcess implements OperatorProcess {
+abstract class AbstractDOP implements OperatorProcess {
     /**执行运算*/
-    public Object doProcess(int opcode, String operator, Object[] args, Option option) throws InvokerProcessException {
+    public Object doProcess(String operator, Object[] args, Option option) throws InvokerProcessException {
         if (args == null) {
-            throw new InvokerProcessException(opcode, "dyadic operator error, args is null.");
+            throw new InvokerProcessException("dyadic operator error, args is null.");
         }
         if (args.length != 2) {
-            throw new InvokerProcessException(opcode, "dyadic operator error, args count expect 2 , but " + args.length);
+            throw new InvokerProcessException("dyadic operator error, args count expect 2 , but " + args.length);
         }
         if (!testIn(new String[] { "+", "-", "*", "/", "%", "\\", ">", ">=", "<", "<=", "==", "!=", "&", "|", "^", "<<", ">>", ">>>", "||", "&&" }, operator)) {
-            throw new InvokerProcessException(opcode, "does not support dyadic Operator -> " + operator);
+            throw new InvokerProcessException("does not support dyadic Operator -> " + operator);
         }
         //
-        return this.doDyadicProcess(opcode, operator, args[0], args[1], option);
+        return this.doDyadicProcess(operator, args[0], args[1], option);
     }
 
     protected static InvokerProcessException throwError(String operator, Object realFstObject, Object realSecObject, String message) {
         String fstDataType = realFstObject == null ? "null" : realFstObject.getClass().getName();
         String secDataType = realSecObject == null ? "null" : realSecObject.getClass().getName();
         message = StringUtils.isBlank(message) ? "no message." : message;
-        return new InvokerProcessException(Opcodes.DO, fstDataType + " and " + secDataType + " , Cannot be used as '" + operator + "' -> " + message);
+        return new InvokerProcessException(fstDataType + " and " + secDataType + " , Cannot be used as '" + operator + "' -> " + message);
     }
 
     /**执行运算*/
-    public abstract Object doDyadicProcess(int opcode, String operator, Object fstObject, Object secObject, Option option) throws InvokerProcessException;
+    public abstract Object doDyadicProcess(String operator, Object fstObject, Object secObject, Option option) throws InvokerProcessException;
 }

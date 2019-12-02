@@ -7,27 +7,30 @@
   #5  THROW     123
 
 [1]
-  #0  LDC_B     true
-  #1  RETURN    0
+  #0  M_STAR    0
+  #1  LDC_B     true
+  #2  RETURN    0
 
 [2]
-  #0  LOCAL     0, a
-  #1  LOCAL     1, b
-  #2  LDC_B     false
-  #3  RETURN    0
+  #0  M_STAR    2
+  #1  LOCAL     0, a
+  #2  LOCAL     1, b
+  #3  LDC_B     false
+  #4  RETURN    0
 
 [3]
-  #00  LDC_B     true
-  #01  IF        5
-  #02  LDC_B     true
-  #03  RETURN    0
-  #04  GOTO      9
-  #05  LABEL     5
-  #06  LDC_B     false
-  #07  RETURN    0
-  #08  GOTO      9
-  #09  LABEL     9
-  #10  E_LOAD    #
-  #11  GET       aaa
-  #12  THROW     0
+  #00  M_STAR    0
+  #01  LDC_B     true
+  #02  IF        6
+  #03  LDC_B     true
+  #04  RETURN    0
+  #05  GOTO      10
+  #06  LABEL     6
+  #07  LDC_B     false
+  #08  RETURN    0
+  #09  GOTO      10
+  #10  LABEL     10
+  #11  E_LOAD    #
+  #12  GET       aaa
+  #13  THROW     0
 

@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.operator;
+package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
+import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 /**
  * 二元比较运算，负责处理：">", ">=", "<", "<=", "==", "!=", "&&", "||"
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class CompareDOP extends DyadicOperatorProcess {
+public class CompareDOP extends AbstractDOP {
     private static final Integer BOOL_FASLE = 0;
     private static final Integer BOOL_TRUE  = 1;
 
     @Override
-    public Object doDyadicProcess(int opcode, String operator, Object fstObject, Object secObject, Option option) throws InvokerProcessException {
+    public Object doDyadicProcess(String operator, Object fstObject, Object secObject, Option option) throws InvokerProcessException {
         //
         // .Boolean 和 Number 混杂模式下，先统一成为 number 在做判断
         if (OperatorUtils.isBoolean(fstObject) && OperatorUtils.isBoolean(secObject)) {

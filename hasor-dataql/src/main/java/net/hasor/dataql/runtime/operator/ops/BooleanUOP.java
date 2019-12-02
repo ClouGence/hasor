@@ -13,26 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.operator;
+package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
-
-import java.util.Objects;
+import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 /**
- * 字符串拼接
+ * 一元运算，boolean类型的只处理：取反
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ObjectEqDOP extends DyadicOperatorProcess {
+public class BooleanUOP extends AbstractUOP {
     @Override
-    public Object doDyadicProcess(int opcode, String operator, Object fstObject, Object secObject, Option option) throws InvokerProcessException {
-        if ("==".equals(operator)) {
-            return Objects.equals(fstObject, secObject);
+    public Object doUnaryProcess(String operator, Object object, Option option) throws InvokerProcessException {
+        if ("!".equals(operator) && OperatorUtils.isBoolean(object)) {
+            return !((Boolean) object);
         }
-        if ("!=".equals(operator)) {
-            return !Objects.equals(fstObject, secObject);
-        }
-        throw throwError(operator, fstObject, secObject, "requirements must be numerical.");
+        String dataType = object == null ? "null" : object.getClass().getName();
+        throw new InvokerProcessException(dataType + " , Cannot be used as '" + operator + "'.");
     }
 }

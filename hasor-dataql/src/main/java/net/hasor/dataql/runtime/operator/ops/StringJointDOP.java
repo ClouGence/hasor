@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.operator;
+package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.Option;
+import net.hasor.dataql.runtime.operator.OperatorProcess;
 
 /**
  * 字符串拼接
@@ -23,7 +24,7 @@ import net.hasor.dataql.Option;
  */
 public class StringJointDOP implements OperatorProcess {
     @Override
-    public Object doProcess(int opcode, String operator, Object[] args, Option option) {
+    public Object doProcess(String operator, Object[] args, Option option) {
         String str1 = args[0] == null ? "null" : args[0].toString();
         String str2 = args[1] == null ? "null" : args[1].toString();
         return str1 + str2;

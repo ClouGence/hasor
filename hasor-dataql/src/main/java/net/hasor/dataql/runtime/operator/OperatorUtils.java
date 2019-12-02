@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.operator;
+import net.hasor.dataql.runtime.operator.ops.RoundingEnum;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -317,11 +319,33 @@ public class OperatorUtils {
         }
         return new BigDecimal(value.toString().trim());
     }
+
     //
     // ============================================================================================
+    private static Number toDecimal(boolean useDecimal, Number number) {
+        if (!useDecimal) {
+            return number;
+        }
+        //
+        boolean bigInt = number instanceof BigInteger;
+        boolean bigDec = number instanceof BigDecimal;
+        if (bigInt || bigDec) {
+            return number;
+        }
+        //
+        if (OperatorUtils.isFloatNumber(number)) {
+            return new BigDecimal(Float.toString((Float) number));
+        }
+        if (OperatorUtils.isDoubleNumber(number)) {
+            return new BigDecimal(Double.toString((Double) number));
+        }
+        return BigInteger.valueOf(number.longValue());
+    }
 
     /** 加 */
-    public static Number add(Number obj1, Number obj2) {
+    public static Number add(boolean useDecimal, Number obj1, Number obj2) {
+        obj1 = toDecimal(useDecimal, obj1);
+        obj2 = toDecimal(useDecimal, obj2);
         if (testDecimal(obj1) || testDecimal(obj2)) {
             return decimalAdd(obj1, obj2);
         } else {
@@ -330,7 +354,9 @@ public class OperatorUtils {
     }
 
     /** 减 */
-    public static Number subtract(Number obj1, Number obj2) {
+    public static Number subtract(boolean useDecimal, Number obj1, Number obj2) {
+        obj1 = toDecimal(useDecimal, obj1);
+        obj2 = toDecimal(useDecimal, obj2);
         if (testDecimal(obj1) || testDecimal(obj2)) {
             return decimalSubtract(obj1, obj2);
         } else {
@@ -339,7 +365,9 @@ public class OperatorUtils {
     }
 
     /** 乘 */
-    public static Number multiply(Number obj1, Number obj2) {
+    public static Number multiply(boolean useDecimal, Number obj1, Number obj2) {
+        obj1 = toDecimal(useDecimal, obj1);
+        obj2 = toDecimal(useDecimal, obj2);
         if (testDecimal(obj1) || testDecimal(obj2)) {
             return decimalMultiply(obj1, obj2);
         } else {
@@ -348,7 +376,9 @@ public class OperatorUtils {
     }
 
     /** 除 */
-    public static Number divide(Number obj1, Number obj2, int precision, RoundingEnum roundingEnum) {
+    public static Number divide(boolean useDecimal, Number obj1, Number obj2, int precision, RoundingEnum roundingEnum) {
+        obj1 = toDecimal(useDecimal, obj1);
+        obj2 = toDecimal(useDecimal, obj2);
         if (testDecimal(obj1) || testDecimal(obj2)) {
             if (roundingEnum == null) {
                 roundingEnum = RoundingEnum.HALF_UP;
@@ -363,7 +393,9 @@ public class OperatorUtils {
     }
 
     /** 整除 */
-    public static Number aliquot(Number obj1, Number obj2) {
+    public static Number aliquot(boolean useDecimal, Number obj1, Number obj2) {
+        obj1 = toDecimal(useDecimal, obj1);
+        obj2 = toDecimal(useDecimal, obj2);
         if (testDecimal(obj1) || testDecimal(obj2)) {
             return decimalAliquot(obj1, obj2);
         } else {
@@ -372,7 +404,9 @@ public class OperatorUtils {
     }
 
     /** 求余 */
-    public static Number mod(Number obj1, Number obj2) {
+    public static Number mod(boolean useDecimal, Number obj1, Number obj2) {
+        obj1 = toDecimal(useDecimal, obj1);
+        obj2 = toDecimal(useDecimal, obj2);
         if (testDecimal(obj1) || testDecimal(obj2)) {
             return decimalMod(obj1, obj2);
         } else {
@@ -439,19 +473,21 @@ public class OperatorUtils {
     }
 
     private static Number newReal(int realType, double value) {
-        if (realType == FLOAT)
+        if (realType == FLOAT) {
             return (float) value;
+        }
         return value;
     }
 
     private static Number newReal(int realType, BigDecimal value) {
-        if (realType == FLOAT)
+        if (realType == FLOAT) {
             return value.floatValue();
-        if (realType == DOUBLE)
+        }
+        if (realType == DOUBLE) {
             return value.doubleValue();
+        }
         return value;
     }
-    //
 
     /** 整数，加 */
     private static Number integerAdd(Number obj1, Number obj2) {
@@ -554,7 +590,6 @@ public class OperatorUtils {
             return newReal(maxType, bigIntValue(obj).negate());
         }
     }
-    //
 
     /** 小数，加 */
     private static Number decimalAdd(Number obj1, Number obj2) {
@@ -613,9 +648,9 @@ public class OperatorUtils {
         int maxType = getNumericType(obj1, obj2);
         switch (maxType) {
         case FLOAT:
-            return newReal(maxType, (int) (floatValue(obj1) / floatValue(obj2)));
+            return newReal(INT, (int) (floatValue(obj1) / floatValue(obj2)));
         case DOUBLE:
-            return newReal(maxType, (long) (doubleValue(obj1) / doubleValue(obj2)));
+            return newReal(LONG, (long) (doubleValue(obj1) / doubleValue(obj2)));
         default:
             return newReal(maxType, bigDecimalValue(obj1).divideToIntegralValue(bigDecimalValue(obj2)));
         }
@@ -661,6 +696,9 @@ public class OperatorUtils {
     /** 相等 */
     public static boolean eq(Number obj1, Number obj2) {
         int numericType = getNumericTypeWithCompare(obj1, obj2);
+        if (numericType <= INT) {
+            return intValue(obj1) == intValue(obj2);
+        }
         if (numericType <= LONG) {
             return longValue(obj1) == longValue(obj2);
         }
@@ -673,12 +711,15 @@ public class OperatorUtils {
         if (numericType == BIGDEC) {
             return bigDecimalValue(obj1).compareTo(bigDecimalValue(obj2)) == 0;
         }
-        return obj1.doubleValue() == obj2.doubleValue();
+        return obj1.doubleValue() == obj2.doubleValue(); // 永远不会走到这一步的
     }
 
     /** 大于 */
     public static boolean gt(Number obj1, Number obj2) {
         int numericType = getNumericTypeWithCompare(obj1, obj2);
+        if (numericType <= INT) {
+            return intValue(obj1) > intValue(obj2);
+        }
         if (numericType <= LONG) {
             return longValue(obj1) > longValue(obj2);
         }
@@ -691,12 +732,15 @@ public class OperatorUtils {
         if (numericType == BIGDEC) {
             return bigDecimalValue(obj1).compareTo(bigDecimalValue(obj2)) > 0;
         }
-        return obj1.doubleValue() > obj2.doubleValue();
+        return obj1.doubleValue() > obj2.doubleValue(); // 永远不会走到这一步的
     }
 
     /** 大于等于 */
     public static boolean gteq(Number obj1, Number obj2) {
         int numericType = getNumericTypeWithCompare(obj1, obj2);
+        if (numericType <= INT) {
+            return intValue(obj1) >= intValue(obj2);
+        }
         if (numericType <= LONG) {
             return longValue(obj1) >= longValue(obj2);
         }
@@ -709,12 +753,15 @@ public class OperatorUtils {
         if (numericType == BIGDEC) {
             return bigDecimalValue(obj1).compareTo(bigDecimalValue(obj2)) >= 0;
         }
-        return obj1.doubleValue() >= obj2.doubleValue();
+        return obj1.doubleValue() >= obj2.doubleValue(); // 永远不会走到这一步的
     }
 
     /** 小于 */
     public static boolean lt(Number obj1, Number obj2) {
         int numericType = getNumericTypeWithCompare(obj1, obj2);
+        if (numericType <= INT) {
+            return intValue(obj1) < intValue(obj2);
+        }
         if (numericType <= LONG) {
             return longValue(obj1) < longValue(obj2);
         }
@@ -727,12 +774,15 @@ public class OperatorUtils {
         if (numericType == BIGDEC) {
             return bigDecimalValue(obj1).compareTo(bigDecimalValue(obj2)) < 0;
         }
-        return obj1.doubleValue() < obj2.doubleValue();
+        return obj1.doubleValue() < obj2.doubleValue(); // 永远不会走到这一步的
     }
 
     /** 小于等于 */
     public static boolean lteq(Number obj1, Number obj2) {
         int numericType = getNumericTypeWithCompare(obj1, obj2);
+        if (numericType <= INT) {
+            return intValue(obj1) <= intValue(obj2);
+        }
         if (numericType <= LONG) {
             return longValue(obj1) <= longValue(obj2);
         }
@@ -745,7 +795,7 @@ public class OperatorUtils {
         if (numericType == BIGDEC) {
             return bigDecimalValue(obj1).compareTo(bigDecimalValue(obj2)) <= 0;
         }
-        return obj1.doubleValue() <= obj2.doubleValue();
+        return obj1.doubleValue() <= obj2.doubleValue(); // 永远不会走到这一步的
     }
 
     //
@@ -761,7 +811,9 @@ public class OperatorUtils {
     public static Number and(Number obj1, Number obj2) {
         checkDecimal(obj1, obj2);
         int numericType = getNumericType(obj1, obj2);
-        if (numericType <= LONG) {
+        if (numericType <= INT) {
+            return intValue(obj1) & intValue(obj2);
+        } else if (numericType <= LONG) {
             return longValue(obj1) & longValue(obj2);
         } else {
             return bigIntValue(obj1).and(bigIntValue(obj2));
@@ -772,7 +824,9 @@ public class OperatorUtils {
     public static Number or(Number obj1, Number obj2) {
         checkDecimal(obj1, obj2);
         int numericType = getNumericType(obj1, obj2);
-        if (numericType <= LONG) {
+        if (numericType <= INT) {
+            return intValue(obj1) | intValue(obj2);
+        } else if (numericType <= LONG) {
             return longValue(obj1) | longValue(obj2);
         } else {
             return bigIntValue(obj1).or(bigIntValue(obj2));
@@ -783,7 +837,9 @@ public class OperatorUtils {
     public static Number xor(Number obj1, Number obj2) {
         checkDecimal(obj1, obj2);
         int numericType = getNumericType(obj1, obj2);
-        if (numericType <= LONG) {
+        if (numericType <= INT) {
+            return intValue(obj1) ^ intValue(obj2);
+        } else if (numericType <= LONG) {
             return longValue(obj1) ^ longValue(obj2);
         } else {
             return bigIntValue(obj1).xor(bigIntValue(obj2));
@@ -794,8 +850,10 @@ public class OperatorUtils {
     public static Number shiftLeft(Number obj1, Number obj2) {
         checkDecimal(obj1, obj2);
         int numericType = getNumericType(obj1, obj2);
-        if (numericType <= LONG) {
-            return longValue(obj1) << intValue(obj2);
+        if (numericType <= INT) {
+            return intValue(obj1) << intValue(obj2);
+        } else if (numericType <= LONG) {
+            return longValue(obj1) << longValue(obj2);
         } else {
             return bigIntValue(obj1).shiftLeft(intValue(obj2));
         }
@@ -805,8 +863,10 @@ public class OperatorUtils {
     public static Number shiftRight(Number obj1, Number obj2) {
         checkDecimal(obj1, obj2);
         int numericType = getNumericType(obj1, obj2);
-        if (numericType <= LONG) {
-            return longValue(obj1) >> intValue(obj2);
+        if (numericType <= INT) {
+            return intValue(obj1) >> intValue(obj2);
+        } else if (numericType <= LONG) {
+            return longValue(obj1) >> longValue(obj2);
         } else {
             return bigIntValue(obj1).shiftRight(intValue(obj2));
         }
@@ -816,8 +876,10 @@ public class OperatorUtils {
     public static Number shiftRightWithUnsigned(Number obj1, Number obj2) {
         checkDecimal(obj1, obj2);
         int numericType = getNumericType(obj1, obj2);
-        if (numericType <= LONG) {
-            return longValue(obj1) >>> intValue(obj2);
+        if (numericType <= INT) {
+            return intValue(obj1) >>> intValue(obj2);
+        } else if (numericType <= LONG) {
+            return longValue(obj1) >>> longValue(obj2);
         } else {
             //忽略无符号的右位移运算符（>>>），因为该操作与由此类提供的“无穷大的词大小”抽象结合使用时毫无意义。
             // - 无穷大的词大小 -> BigInteger 理论上可以表示无穷大。

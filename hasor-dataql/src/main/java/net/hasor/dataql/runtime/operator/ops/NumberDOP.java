@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.operator;
+package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
+import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 import java.math.BigDecimal;
 
@@ -24,9 +25,9 @@ import java.math.BigDecimal;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class NumberDOP extends DyadicOperatorProcess {
+public class NumberDOP extends AbstractDOP {
     @Override
-    public Object doDyadicProcess(int opcode, String operator, Object fstObject, Object secObject, Option option) throws InvokerProcessException {
+    public Object doDyadicProcess(String operator, Object fstObject, Object secObject, Option option) throws InvokerProcessException {
         if (!(fstObject instanceof Number) || !(secObject instanceof Number)) {
             throw throwError(operator, fstObject, secObject, "requirements must be numerical.");
         }
@@ -36,28 +37,29 @@ public class NumberDOP extends DyadicOperatorProcess {
         if (maxDecimalNum == null) {
             maxDecimalNum = 20;
         }
+        boolean useDecimal = Boolean.TRUE.equals(option.getOption(Option.USE_DECIMAL));
         int maxDecimal = maxDecimalNum.intValue();// 要保留的小数
         //
         // .数值计算
         Number result = null;
         switch (operator.charAt(0)) {
         case '+':
-            result = OperatorUtils.add((Number) fstObject, (Number) secObject);
+            result = OperatorUtils.add(useDecimal, (Number) fstObject, (Number) secObject);
             break;
         case '-':
-            result = OperatorUtils.subtract((Number) fstObject, (Number) secObject);
+            result = OperatorUtils.subtract(useDecimal, (Number) fstObject, (Number) secObject);
             break;
         case '*':
-            result = OperatorUtils.multiply((Number) fstObject, (Number) secObject);
+            result = OperatorUtils.multiply(useDecimal, (Number) fstObject, (Number) secObject);
             break;
         case '/':
-            result = OperatorUtils.divide((Number) fstObject, (Number) secObject, maxDecimal, roundingMode);
+            result = OperatorUtils.divide(useDecimal, (Number) fstObject, (Number) secObject, maxDecimal, roundingMode);
             break;
         case '\\':
-            result = OperatorUtils.aliquot((Number) fstObject, (Number) secObject);
+            result = OperatorUtils.aliquot(useDecimal, (Number) fstObject, (Number) secObject);
             break;
         case '%':
-            result = OperatorUtils.mod((Number) fstObject, (Number) secObject);
+            result = OperatorUtils.mod(useDecimal, (Number) fstObject, (Number) secObject);
             break;
         default:
             throw throwError(operator, fstObject, secObject, "this operator nonsupport.");

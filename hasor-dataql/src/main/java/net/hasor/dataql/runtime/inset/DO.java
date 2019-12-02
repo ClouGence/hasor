@@ -56,7 +56,7 @@ class DO implements InsetProcess {
                     "DO -> type '" + fstType + "' and type '" + fstType + "' operation '" + dyadicSymbol + "' is not supported.");
         }
         //
-        Object result = process.doProcess(DO, dyadicSymbol, new Object[] { fstExpData, secExpData }, context);
+        Object result = process.doProcess(dyadicSymbol, new Object[] { fstExpData, secExpData }, context);
         dataStack.push(result);
     }
 }

@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.operator;
+package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
+import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 /**
  * 一元运算。number类型的只处理：负号
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class NumberUOP extends UnaryOperatorProcess {
+public class NumberUOP extends AbstractUOP {
     @Override
-    public Object doUnaryProcess(int opcode, String operator, Object object, Option option) throws InvokerProcessException {
+    public Object doUnaryProcess(String operator, Object object, Option option) throws InvokerProcessException {
         if ("-".equals(operator) && object instanceof Number) {
             return OperatorUtils.negate((Number) object);
         }
         String dataType = object == null ? "null" : object.getClass().getName();
-        throw new InvokerProcessException(opcode, dataType + " , Cannot be used as '" + operator + "'.");
+        throw new InvokerProcessException(dataType + " , Cannot be used as '" + operator + "'.");
     }
 }
