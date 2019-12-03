@@ -13,11 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.result;
+package net.hasor.dataql.domain;
+import net.hasor.dataql.Option;
+import net.hasor.dataql.UDF;
+import net.hasor.dataql.UdfResult;
+
 /**
- * 结果集
+ * 函数调用
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface DataModel {
+public class UdfModel implements DataModel, UDF {
+    private UDF udf = null;
+
+    UdfModel(UDF udf) {
+        this.udf = udf;
+    }
+
+    @Override
+    public UdfResult call(Object[] values, Option option) throws Throwable {
+        return this.udf.call(values, option);
+    }
 }

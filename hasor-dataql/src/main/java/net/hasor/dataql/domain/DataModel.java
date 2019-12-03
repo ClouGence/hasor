@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.dataql.domain;
 /**
- * DataQL，结果模型。
+ * 结果集
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-package net.hasor.dataql.result;
+public interface DataModel {
+}
