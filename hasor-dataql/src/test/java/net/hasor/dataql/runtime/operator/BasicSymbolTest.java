@@ -359,6 +359,33 @@ public class BasicSymbolTest extends AbstractTestResource {
     }
 
     @Test
+    public void or_test() throws Exception {
+        OperatorProcess process = null;
+        process = om.findDyadicProcess("|", Boolean.class, Boolean.class);
+        assert process.doProcess("|", new Object[] { true, true }, optionSet).equals(1);
+        //
+        process = om.findDyadicProcess("|", Boolean.class, Boolean.class);
+        assert process.doProcess("|", new Object[] { true, false }, optionSet).equals(1);
+        //
+        process = om.findDyadicProcess("|", Boolean.class, Boolean.class);
+        assert process.doProcess("|", new Object[] { false, false }, optionSet).equals(0);
+        process = om.findDyadicProcess("|", Boolean.class, Boolean.TYPE);
+        assert process.doProcess("|", new Object[] { false, true }, optionSet).equals(1);
+        //
+        process = om.findDyadicProcess("|", Integer.class, Integer.class);
+        assert process.doProcess("|", new Object[] { 8, 1 }, optionSet).equals(9);
+        //
+        process = om.findDyadicProcess("|", Integer.class, Integer.class);
+        assert process.doProcess("|", new Object[] { 8, 9 }, optionSet).equals(9);
+        //
+        process = om.findDyadicProcess("|", Long.class, Integer.class);
+        assert process.doProcess("|", new Object[] { 8L, 9 }, optionSet).equals(9L);
+        //
+        process = om.findDyadicProcess("|", Long.class, Integer.class);
+        assert process.doProcess("|", new Object[] { BigInteger.valueOf(8), 9 }, optionSet).equals(BigInteger.valueOf(9));
+    }
+
+    @Test
     public void gt_test() throws Exception {
         OperatorProcess process = null;
         process = om.findDyadicProcess(">", Integer.class, Integer.class);
@@ -477,13 +504,93 @@ public class BasicSymbolTest extends AbstractTestResource {
         process = om.findDyadicProcess("<=", BigDecimal.class, BigDecimal.class);
         assert process.doProcess("<=", bigDecs, optionSet).equals(true);
     }
+
+    @Test
+    public void xor_test() throws Exception {
+        OperatorProcess process = null;
+        process = om.findDyadicProcess("^", Integer.class, Integer.class);
+        assert process.doProcess("^", new Object[] { 1, 1 }, optionSet).equals(0);
+        //
+        process = om.findDyadicProcess("^", Long.class, Integer.class);
+        assert ((Long) process.doProcess("^", new Object[] { 12L, 1 }, optionSet)) == (12 ^ 1);
+        assert ((Long) process.doProcess("^", new Object[] { 12L, 4 }, optionSet)) == (12 ^ 4);
+        //
+        try {
+            process = om.findDyadicProcess("^", Float.class, Float.class);
+            process.doProcess("^", new Object[] { 2.2f, 2.2f }, optionSet);
+            assert false;
+        } catch (NumberFormatException e) {
+            assert e.getMessage().equals("value mast not be Decimal.");
+        }
+        //
+        BigInteger[] bigInts = new BigInteger[] {//
+                new BigInteger("124"),      //
+                new BigInteger("124")       //
+        };
+        process = om.findDyadicProcess("^", BigInteger.class, BigInteger.class);
+        assert process.doProcess("^", bigInts, optionSet).equals(BigInteger.valueOf(0));
+    }
+
+    @Test
+    public void shiftLeft_test() throws Exception {
+        OperatorProcess process = null;
+        process = om.findDyadicProcess("<<", Integer.class, Integer.class);
+        assert process.doProcess("<<", new Object[] { 1, 1 }, optionSet).equals(2);
+        //
+        process = om.findDyadicProcess("<<", Long.class, Integer.class);
+        assert process.doProcess("<<", new Object[] { 12L, 1 }, optionSet).equals(24L);
+        //
+        process = om.findDyadicProcess("<<", Integer.class, Integer.class);
+        assert process.doProcess("<<", new Object[] { 12, 2 }, optionSet).equals(48);
+        //
+        BigInteger[] bigInts = new BigInteger[] {//
+                new BigInteger("124"),      //
+                new BigInteger("4")         //
+        };
+        process = om.findDyadicProcess("<<", BigInteger.class, BigInteger.class);
+        assert process.doProcess("<<", bigInts, optionSet).equals(new BigInteger("1984"));
+    }
+
+    @Test
+    public void shiftRight_test() throws Exception {
+        OperatorProcess process = null;
+        process = om.findDyadicProcess(">>", Integer.class, Integer.class);
+        assert process.doProcess(">>", new Object[] { 1, 1 }, optionSet).equals(0);
+        //
+        process = om.findDyadicProcess(">>", Long.class, Integer.class);
+        assert process.doProcess(">>", new Object[] { 12L, 1 }, optionSet).equals(6L);
+        //
+        process = om.findDyadicProcess(">>", Integer.class, Integer.class);
+        assert process.doProcess(">>", new Object[] { 12, 2 }, optionSet).equals(3);
+        //
+        BigInteger[] bigInts = new BigInteger[] {//
+                new BigInteger("124"),      //
+                new BigInteger("4")         //
+        };
+        process = om.findDyadicProcess(">>", BigInteger.class, BigInteger.class);
+        assert process.doProcess(">>", bigInts, optionSet).equals(new BigInteger("7"));
+        //
+        process = om.findDyadicProcess(">>", Integer.class, Integer.class);
+        assert process.doProcess(">>", new Object[] { -1234, 2 }, optionSet).equals(-309);
+    }
+
+    @Test
+    public void shiftRightWithUnsigned_test() throws Exception {
+        OperatorProcess process = null;
+        process = om.findDyadicProcess(">>>", Integer.class, Integer.class);
+        assert process.doProcess(">>>", new Object[] { 1, 1 }, optionSet).equals(0);
+        //
+        process = om.findDyadicProcess(">>>", Long.class, Integer.class);
+        assert process.doProcess(">>>", new Object[] { 12L, 1 }, optionSet).equals(12L >>> 1);
+        //
+        process = om.findDyadicProcess(">>>", Integer.class, Integer.class);
+        assert process.doProcess(">>>", new Object[] { 12, 2 }, optionSet).equals(12 >>> 2);
+        assert process.doProcess(">>>", new Object[] { -1234, 2 }, optionSet).equals(-1234 >>> 2);
+        //
+        process = om.findDyadicProcess(">>>", BigInteger.class, BigInteger.class);
+        BigInteger[] bigInts1 = new BigInteger[] { new BigInteger("-124"), new BigInteger("4") };
+        BigInteger[] bigInts2 = new BigInteger[] { new BigInteger("124"), new BigInteger("4") };
+        assert process.doProcess(">>>", bigInts1, optionSet).equals(new BigInteger("-8"));
+        assert process.doProcess(">>>", bigInts2, optionSet).equals(new BigInteger("7"));
+    }
 }
-//        // .二元，位运算
-//        om.registryOperator("|", classSet, classSet, new BinaryDOP());
-//        om.registryOperator("^", classSet, classSet, new BinaryDOP());
-//        om.registryOperator("<<", classSet, classSet, new BinaryDOP());
-//        om.registryOperator(">>", classSet, classSet, new BinaryDOP());
-//        om.registryOperator(">>>", classSet, classSet, new BinaryDOP());
-//        // .二元，数值比较运算
-//        om.registryOperator("==", classSet, classSet, new CompareDOP());
-//        om.registryOperator("!=", classSet, classSet, new CompareDOP());

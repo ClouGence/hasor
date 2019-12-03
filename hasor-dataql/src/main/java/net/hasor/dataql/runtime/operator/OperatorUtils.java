@@ -803,7 +803,7 @@ public class OperatorUtils {
     //
     private static void checkDecimal(Number obj1, Number obj2) {
         if (testDecimal(obj1) || testDecimal(obj2)) {
-            throw new NumberFormatException("value mast be int.");
+            throw new NumberFormatException("value mast not be Decimal.");
         }
     }
 
