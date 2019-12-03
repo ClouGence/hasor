@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.hasor.dataql.result;
+package net.hasor.utils.ref;
 import java.util.Map;
 
 /**
@@ -67,6 +67,6 @@ abstract class AbstractMapEntry<T, V> implements Map.Entry<T, V> {
      * @return a String view of the entry
      */
     public String toString() {
-        return new StringBuffer().append(getKey()).append('=').append(getValue()).toString();
+        return String.valueOf(getKey()) + '=' + getValue();
     }
 }

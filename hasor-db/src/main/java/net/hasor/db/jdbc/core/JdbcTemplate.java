@@ -19,7 +19,7 @@ import net.hasor.db.jdbc.mapper.BeanPropertyRowMapper;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
 import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
-import net.hasor.db.jdbc.result.LinkedCaseInsensitiveMap;
+import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.io.IOUtils;
 import org.slf4j.Logger;

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.result;
+package net.hasor.utils.ref;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -36,11 +36,11 @@ import java.util.*;
  * @author James Strachan
  * @author Stephen Colebourne
  */
-class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
+public class BeanMap extends AbstractMap<String, Object> implements Cloneable {
     private transient    Object                     bean;
-    private transient    HashMap<String, Method>    readMethods      = new HashMap<String, Method>();
-    private transient    HashMap<String, Method>    writeMethods     = new HashMap<String, Method>();
-    private transient    HashMap<String, Class<?>>  types            = new HashMap<String, Class<?>>();
+    private transient    HashMap<String, Method>    readMethods      = new HashMap<>();
+    private transient    HashMap<String, Method>    writeMethods     = new HashMap<>();
+    private transient    HashMap<String, Class<?>>  types            = new HashMap<>();
     /** An empty array.  Used to invoke accessors via reflection. */
     public static final  Object[]                   NULL_ARGUMENTS   = {};
     /**
@@ -66,7 +66,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     //-------------------------------------------------------------------------
 
     /** Constructs a new empty <code>BeanMap</code>. */
-    public InterBeanMap() {
+    public BeanMap() {
     }
 
     /**
@@ -74,7 +74,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
      * If the given bean is <code>null</code>, then this map will be empty.
      * @param bean  the bean for this map to operate on
      */
-    public InterBeanMap(Object bean) {
+    public BeanMap(Object bean) {
         this.bean = bean;
         initialise();
     }
@@ -112,7 +112,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
      * @throws CloneNotSupportedException if the underlying bean cannot be cloned
      */
     public Object clone() throws CloneNotSupportedException {
-        InterBeanMap newMap = (InterBeanMap) super.clone();
+        BeanMap newMap = (BeanMap) super.clone();
         if (bean == null) {
             // no bean, just an empty bean map at the moment.  return a newly
             // cloned and empty bean map.
@@ -153,7 +153,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
      * BeanMap. Read-only and Write-only properties will be ignored.
      * @param map  the BeanMap whose properties to put
      */
-    public void putAllWriteable(InterBeanMap map) {
+    public void putAllWriteable(BeanMap map) {
         Iterator<String> readableKeys = map.readMethods.keySet().iterator();
         while (readableKeys.hasNext()) {
             String key = readableKeys.next();
@@ -305,7 +305,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
             }
 
             public int size() {
-                return InterBeanMap.this.readMethods.size();
+                return BeanMap.this.readMethods.size();
             }
         });
     }
@@ -315,7 +315,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
      * @return values for the BeanMap. The returned collection is not modifiable.
      */
     public Collection<Object> values() {
-        ArrayList<Object> answer = new ArrayList<Object>(readMethods.size());
+        ArrayList<Object> answer = new ArrayList<>(readMethods.size());
         for (Iterator<Object> iter = valueIterator(); iter.hasNext(); ) {
             answer.add(iter.next());
         }
@@ -378,7 +378,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
             public Map.Entry<String, Object> next() {
                 String key = iter.next();
                 Object value = get(key);
-                return new Entry(InterBeanMap.this, key, value);
+                return new Entry(BeanMap.this, key, value);
             }
 
             public void remove() {
@@ -412,7 +412,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
      * @return the accessor method for the property, or null
      */
     public Method getReadMethod(String name) {
-        return (Method) readMethods.get(name);
+        return readMethods.get(name);
     }
 
     /**
@@ -421,7 +421,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
      * @return the mutator method for the property, or null
      */
     public Method getWriteMethod(String name) {
-        return (Method) writeMethods.get(name);
+        return writeMethods.get(name);
     }
     // Implementation methods
     //-------------------------------------------------------------------------
@@ -433,7 +433,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
      *      null if no such property exists; or the accessor method for that property
      */
     protected Method getReadMethod(Object name) {
-        return (Method) readMethods.get(name);
+        return readMethods.get(name);
     }
 
     /**
@@ -443,7 +443,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
      *      null if no such property exists; null if the property is read-only; or the mutator method for that property
      */
     protected Method getWriteMethod(Object name) {
-        return (Method) writeMethods.get(name);
+        return writeMethods.get(name);
     }
 
     /** Reinitializes this bean.  Called during {@link #setBean(Object)}. Does introspection to find properties. */
@@ -500,9 +500,9 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     // Implementation classes
     //-------------------------------------------------------------------------
 
-    /** Map entry used by {@link InterBeanMap}. */
+    /** Map entry used by {@link BeanMap}. */
     protected static class Entry extends AbstractMapEntry<String, Object> {
-        private InterBeanMap owner;
+        private BeanMap owner;
 
         /**
          * Constructs a new <code>Entry</code>.
@@ -510,7 +510,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
          * @param key  the key for this entry
          * @param value  the value for this entry
          */
-        protected Entry(InterBeanMap owner, String key, Object value) {
+        protected Entry(BeanMap owner, String key, Object value) {
             super(key, value);
             this.owner = owner;
         }
