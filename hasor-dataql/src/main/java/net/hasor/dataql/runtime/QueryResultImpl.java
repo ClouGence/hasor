@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
+import net.hasor.dataql.DataModel;
 import net.hasor.dataql.QueryResult;
-import net.hasor.dataql.result.DataModel;
 
 /**
  * 结果
@@ -24,22 +24,15 @@ import net.hasor.dataql.result.DataModel;
  */
 class QueryResultImpl implements QueryResult {
     private boolean   isThrow;
-    private int       errorCode;
+    private int       exitCode;
     private DataModel dataModel;
     private long      executionTime;
 
-    public QueryResultImpl(int errorCode, long executionTime, DataModel dataModel) {
-        this.isThrow = false;
-        this.errorCode = errorCode;
-        this.executionTime = executionTime;
-        this.dataModel = dataModel;
-    }
-
-    public QueryResultImpl(boolean isThrow, int errorCode, long executionTime, DataModel dataModel) {
+    public QueryResultImpl(boolean isThrow, int exitCode, DataModel dataModel, long executionTime) {
         this.isThrow = isThrow;
-        this.errorCode = errorCode;
-        this.executionTime = executionTime;
+        this.exitCode = exitCode;
         this.dataModel = dataModel;
+        this.executionTime = executionTime;
     }
 
     public boolean isThrow() {
@@ -48,7 +41,7 @@ class QueryResultImpl implements QueryResult {
 
     @Override
     public int getCode() {
-        return this.errorCode;
+        return this.exitCode;
     }
 
     @Override

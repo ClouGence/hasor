@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain;
+import net.hasor.dataql.DataModel;
+
 import java.util.LinkedHashMap;
 
 /**
@@ -22,6 +24,11 @@ import java.util.LinkedHashMap;
  * @version : 2017-03-23
  */
 class ObjectModel extends LinkedHashMap<String, DataModel> implements DataModel {
+    /** 判断是否为 ObjectModel 类型值 */
+    public boolean isObjectModel() {
+        return true;
+    }
+
     /** 判断是否为 ValueModel 类型值 */
     public boolean isValueModel(String fieldName) {
         return super.get(fieldName) instanceof ValueModel;

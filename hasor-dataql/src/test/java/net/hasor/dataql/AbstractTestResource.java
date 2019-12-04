@@ -15,9 +15,12 @@
  */
 package net.hasor.dataql;
 import net.hasor.core.Settings;
+import net.hasor.dataql.compiler.QueryHelper;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.InstVisitorContext;
+import net.hasor.dataql.compiler.qil.QIL;
+import net.hasor.dataql.runtime.QueryEngineImpl;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
@@ -40,7 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class AbstractTestResource {
     protected static Logger logger = LoggerFactory.getLogger(AbstractTestResource.class);
-   
+
     protected String getScript(String queryResource) throws IOException {
         InputStream inStream = ResourcesUtils.getResourceAsStream(queryResource);
         if (inStream == null) {
@@ -56,6 +59,13 @@ public class AbstractTestResource {
         logger.info("\n" + buildQuery);
         logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         return buildQuery;
+    }
+
+    protected Query compilerQL(String qlString) throws IOException {
+        QueryModel queryModel = QueryHelper.queryParser(qlString);
+        QIL qil = QueryHelper.queryCompiler(queryModel);
+        QueryEngineImpl queryEngine = new QueryEngineImpl(qil);
+        return queryEngine.newQuery();
     }
 
     protected List<String> acceptVisitor(QueryModel queryModel) {

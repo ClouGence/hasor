@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
+import net.hasor.dataql.extend.udfs.UdfResult;
+
 /**
  * UDF
  * @author 赵永春 (zyc@hasor.net)
@@ -21,6 +23,6 @@ package net.hasor.dataql;
  */
 @FunctionalInterface
 public interface UDF {
-    /** 执行服务调用 */
-    public Object call(Object[] values, Option readOnly) throws Throwable;
+    /** UDF 的返回值必须是一个 对象或者数组 */
+    public UdfResult call(Object[] values, Option readOnly) throws Throwable;
 }

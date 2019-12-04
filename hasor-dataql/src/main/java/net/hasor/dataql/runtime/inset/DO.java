@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.InvokerProcessException;
-import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.Symbol;
+import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -42,18 +40,17 @@ class DO implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
         String dyadicSymbol = sequence.currentInst().getString(0);
         Object secExpData = dataStack.pop();
         Object fstExpData = dataStack.pop();
         //
         Class<?> fstType = (fstExpData == null) ? Void.class : fstExpData.getClass();
         Class<?> secType = (secExpData == null) ? Void.class : secExpData.getClass();
-        OperatorProcess process = context.findOperator(Symbol.Dyadic, dyadicSymbol, fstType, secType);
+        OperatorProcess process = context.findDyadicOperator(dyadicSymbol, fstType, secType);
         //
         if (process == null) {
-            throw new InvokerProcessException(getOpcode(), //
-                    "DO -> type '" + fstType + "' and type '" + fstType + "' operation '" + dyadicSymbol + "' is not supported.");
+            throw new InstructRuntimeException("DO -> type '" + fstType + "' and type '" + fstType + "' operation '" + dyadicSymbol + "' is not supported.");
         }
         //
         Object result = process.doProcess(dyadicSymbol, new Object[] { fstExpData, secExpData }, context);

@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.dataql.*;
-import net.hasor.dataql.domain.compiler.QIL;
+import net.hasor.dataql.CustomizeScope;
+import net.hasor.dataql.Option;
+import net.hasor.dataql.OptionKeys;
+import net.hasor.dataql.QueryEngine;
+import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.inset.OpcodesPool;
-import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.mem.StackStruts;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
 
 import java.util.Objects;
 
@@ -27,86 +31,44 @@ import java.util.Objects;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class QueryEngineImpl extends OptionSet implements QueryEngine, ProcessContet {
-    protected final static OpcodesPool     opcodesPool = OpcodesPool.newPool();
-    private                ClassLoader     classLoader;
-    private final          OperatorManager opeManager;
-    private final          UdfManager      udfManager;
-    private                UdfFinder       udfFinder;
-    private final          QIL             queryType;
+public class QueryEngineImpl extends OptionSet implements QueryEngine {
+    private final static OpcodesPool opcodesPool = OpcodesPool.defaultOpcodesPool();
+    private final        QIL         qil;
 
-    public QueryEngineImpl(UdfManager udfManager, QIL queryType) {
-        Objects.requireNonNull(udfManager, "udfManager is null.");
-        Objects.requireNonNull(queryType, "qil is null.");
-        //
-        this.classLoader = Thread.currentThread().getContextClassLoader();
-        this.opeManager = OperatorManager.DEFAULT;
-        this.udfManager = udfManager;
-        this.udfFinder = new UdfFinder(udfManager);
-        this.queryType = queryType;
+    public QueryEngineImpl(QIL qil) {
+        this.qil = Objects.requireNonNull(qil, "qil is null.");
     }
 
-    //
     @Override
     public QIL getQil() {
-        return this.queryType;
-    }
-
-    @Override
-    public ClassLoader getClassLoader() {
-        return this.classLoader;
-    }
-
-    @Override
-    public UdfManager getUdfManager() {
-        return this.udfManager;
-    }
-
-    @Override
-    public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = (classLoader == null) ? Thread.currentThread().getContextClassLoader() : classLoader;
-    }
-
-    @Override
-    public UDF findUDF(String udfName, LoadType loadType) throws Throwable {
-        if (LoadType.ByName == loadType) {
-            return this.udfFinder.get(udfName);
-        }
-        if (LoadType.ByType == loadType) {
-            Class<?> aClass = this.loadType(udfName);
-            return this.udfFinder.loadUdf(aClass);
-        }
-        if (LoadType.ByResource == loadType) {
-            return this.udfFinder.loadResource(udfName, this);
-        }
-        return null;
-    }
-
-    @Override
-    public OperatorProcess findOperator(Symbol symbolType, String symbolName, Class<?> fstType, Class<?> secType) {
-        return this.opeManager.findOperator(symbolType, symbolName, fstType, secType);
-    }
-
-    @Override
-    public Class<?> loadType(String type) throws ClassNotFoundException {
-        return this.classLoader.loadClass(type);
+        return this.qil;
     }
 
     /** 创建一个新查询实例。 */
-    public Query newQuery() {
-        return new QueryInstance(this, this.queryType);
+    public QueryImpl newQuery() {
+        return new QueryImpl(this);
     }
 
-    @Override
-    public void refreshUDF() {
-        this.udfFinder = new UdfFinder(this.udfManager);
-    }
-
-    @Override
-    public void processInset(InstSequence sequence, MemStack memStack, StackStruts local) throws ProcessException {
+    DataStack processInset(         //
+            InstSequence sequence,  // 指令序列
+            DataHeap dataHeap,      // 数据堆
+            DataStack dataStack,    // 数据栈
+            EnvStack envStack,      // 环境栈
+            Option optionSet,       //
+            CustomizeScope customize) throws InstructRuntimeException {
+        //
+        // .默认Option
+        InsetProcessContext processContext = new InsetProcessContext(customize);
+        processContext.setOptionSet(this);
+        processContext.setOptionSet(optionSet);
+        for (OptionKeys optionKey : OptionKeys.values()) {
+            processContext.putIfAbsent(optionKey.name(), optionKey.getDefaultVal());
+        }
+        //
         while (sequence.hasNext()) {
-            opcodesPool.doWork(sequence, memStack, local, this);
+            opcodesPool.doWork(sequence, dataHeap, dataStack, envStack, processContext);
             sequence.doNext(1);
         }
+        return dataStack;
     }
 }

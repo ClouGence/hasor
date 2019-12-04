@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.operator.ops;
-import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
+import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.operator.OperatorProcess;
 
 /**
@@ -25,20 +25,20 @@ import net.hasor.dataql.runtime.operator.OperatorProcess;
  */
 abstract class AbstractUOP implements OperatorProcess {
     /**执行运算*/
-    public Object doProcess(String operator, Object[] args, Option option) throws InvokerProcessException {
+    public Object doProcess(String operator, Object[] args, Option option) throws InstructRuntimeException {
         if (args == null) {
-            throw new InvokerProcessException("unary operator error, args is null.");
+            throw new InstructRuntimeException("unary operator error, args is null.");
         }
         if (args.length != 1) {
-            throw new InvokerProcessException("unary operator error, args count expect 1 , but " + args.length);
+            throw new InstructRuntimeException("unary operator error, args count expect 1 , but " + args.length);
         }
         if (!testIn(new String[] { "!", "-" }, operator)) {
-            throw new InvokerProcessException("does not support unary Operator -> " + operator);
+            throw new InstructRuntimeException("does not support unary Operator -> " + operator);
         }
         //
         return this.doUnaryProcess(operator, args[0], option);
     }
 
     /**执行运算*/
-    public abstract Object doUnaryProcess(String operator, Object object, Option option) throws InvokerProcessException;
+    public abstract Object doUnaryProcess(String operator, Object object, Option option) throws InstructRuntimeException;
 }

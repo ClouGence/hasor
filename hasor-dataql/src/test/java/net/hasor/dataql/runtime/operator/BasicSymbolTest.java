@@ -12,7 +12,7 @@ public class BasicSymbolTest extends AbstractTestResource {
     private OperatorManager om         = OperatorManager.defaultManager();
     private Option          optionSet  = new OptionSet();
     private Option          decimalSet = new OptionSet() {{
-        setOption(Option.USE_DECIMAL, true);
+        setOption(Option.MIN_DECIMAL_WIDTH, "big");
     }};
 
     @Test
@@ -211,7 +211,7 @@ public class BasicSymbolTest extends AbstractTestResource {
         assert process.doProcess("\\", bigInts, optionSet).equals(finalInt);
         //
         process = om.findDyadicProcess("\\", Float.class, Float.class);
-        assert process.doProcess("\\", new Object[] { 6f, 3f }, optionSet).equals(2);
+        assert process.doProcess("\\", new Object[] { 6f, 3f }, optionSet).equals(2L);
         //
         BigDecimal[] bigDecs = new BigDecimal[] {//
                 new BigDecimal("6"),        //

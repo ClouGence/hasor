@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
+import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -39,7 +39,7 @@ class E_LOAD implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
         String symbol = sequence.currentInst().getString(0);
         //
         // # 表示环境栈顶(同一般路由)
@@ -54,6 +54,6 @@ class E_LOAD implements InsetProcess {
         if ("#".equalsIgnoreCase(symbol)) {
             dataStack.push(envStack.firstElement());
         }
-        throw new RuntimeException("symbol '" + symbol + "' is not define.");
+        throw new InstructRuntimeException("symbol '" + symbol + "' is not define.");
     }
 }

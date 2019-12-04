@@ -1,6 +1,7 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.AbstractTestResource;
 import net.hasor.dataql.UDF;
+import net.hasor.test.dataql.udfs.DataBean;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 

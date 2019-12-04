@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.ProcessException;
+import net.hasor.core.provider.SingleProvider;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
+import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
+
+import java.util.function.Supplier;
 
 /**
  * 指令池
@@ -30,61 +33,67 @@ import net.hasor.dataql.runtime.mem.EnvStack;
 public class OpcodesPool {
     private InsetProcess[] processes = new InsetProcess[255];
 
-    public static OpcodesPool newPool() {
-        OpcodesPool pool = new OpcodesPool();
-        {
-            pool.addInsetProcess(new LDC_B());
-            pool.addInsetProcess(new LDC_D());
-            pool.addInsetProcess(new LDC_S());
-            pool.addInsetProcess(new LDC_N());
-            pool.addInsetProcess(new NEW_O());
-            pool.addInsetProcess(new NEW_A());
-            //
-            pool.addInsetProcess(new LOAD());
-            pool.addInsetProcess(new STORE());
-            pool.addInsetProcess(new GET());
-            pool.addInsetProcess(new PUT());
-            pool.addInsetProcess(new PULL());
-            pool.addInsetProcess(new PUSH());
-            //
-            pool.addInsetProcess(new RETURN());
-            pool.addInsetProcess(new EXIT());
-            pool.addInsetProcess(new THROW());
-            //
-            pool.addInsetProcess(new UO());
-            pool.addInsetProcess(new DO());
-            //
-            pool.addInsetProcess(new IF());
-            pool.addInsetProcess(new GOTO());
-            pool.addInsetProcess(new OPT());
-            pool.addInsetProcess(new POP());
-            pool.addInsetProcess(new LOAD_C());
-            pool.addInsetProcess(new E_PUSH());
-            pool.addInsetProcess(new E_POP());
-            pool.addInsetProcess(new E_LOAD());
-            pool.addInsetProcess(new CAST_I());
-            //
-            pool.addInsetProcess(new CALL());
-            pool.addInsetProcess(new M_REF());
-            pool.addInsetProcess(new M_STAR());
-            pool.addInsetProcess(new M_DEF());
-            pool.addInsetProcess(new LOCAL());
-            //
-            pool.addInsetProcess(new LABEL());
-            pool.addInsetProcess(new LINE());
-        }
-        return pool;
-    }
-
     private void addInsetProcess(InsetProcess inst) {
         this.processes[inst.getOpcode()] = inst;
     }
 
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
         InsetProcess process = this.processes[sequence.currentInst().getInstCode()];
         if (process == null) {
             return;
         }
         process.doWork(sequence, dataHeap, dataStack, envStack, context);
+    }
+
+    private static Supplier<OpcodesPool> operatorManager = new SingleProvider<>(OpcodesPool::initPool);
+
+    public static OpcodesPool defaultOpcodesPool() {
+        return operatorManager.get();
+    }
+
+    private static OpcodesPool initPool() {
+        OpcodesPool pool = new OpcodesPool();
+        //
+        pool.addInsetProcess(new LDC_B());
+        pool.addInsetProcess(new LDC_D());
+        pool.addInsetProcess(new LDC_S());
+        pool.addInsetProcess(new LDC_N());
+        pool.addInsetProcess(new NEW_O());
+        pool.addInsetProcess(new NEW_A());
+        //
+        pool.addInsetProcess(new LOAD());
+        pool.addInsetProcess(new STORE());
+        pool.addInsetProcess(new GET());
+        pool.addInsetProcess(new PUT());
+        pool.addInsetProcess(new PULL());
+        pool.addInsetProcess(new PUSH());
+        //
+        pool.addInsetProcess(new RETURN());
+        pool.addInsetProcess(new EXIT());
+        pool.addInsetProcess(new THROW());
+        //
+        pool.addInsetProcess(new UO());
+        pool.addInsetProcess(new DO());
+        //
+        pool.addInsetProcess(new IF());
+        pool.addInsetProcess(new GOTO());
+        pool.addInsetProcess(new OPT());
+        pool.addInsetProcess(new POP());
+        pool.addInsetProcess(new LOAD_C());
+        pool.addInsetProcess(new E_PUSH());
+        pool.addInsetProcess(new E_POP());
+        pool.addInsetProcess(new E_LOAD());
+        pool.addInsetProcess(new CAST_I());
+        //
+        pool.addInsetProcess(new CALL());
+        pool.addInsetProcess(new M_REF());
+        pool.addInsetProcess(new M_STAR());
+        pool.addInsetProcess(new M_DEF());
+        pool.addInsetProcess(new M_TYP());
+        pool.addInsetProcess(new LOCAL());
+        //
+        pool.addInsetProcess(new LABEL());
+        pool.addInsetProcess(new LINE());
+        return pool;
     }
 }

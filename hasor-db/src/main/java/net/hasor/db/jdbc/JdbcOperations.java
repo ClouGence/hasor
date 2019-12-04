@@ -61,7 +61,7 @@ public interface JdbcOperations {
     /**执行一个静态 SQL 语句。并通过 ResultSetExtractor 转换结果集。*/
     public <T> T query(String sql, ResultSetExtractor<T> rse) throws SQLException;
 
-    /**执行一个动态查询 SQL 语句。SQL 语句会被编译成 PreparedStatement 类型通过回调接口 PreparedStatementSetter 为动态 SQL 设置属性。返回的结果集使用 ResultSetExtractor 转换。*/
+    /**执行一个动态查询 SQL 语句。SQL 语句会被编译成 PreparedStatement 类型通过回调接口 PreparedStatementSetter 为动态 SQL 设置属性。返回的结果集使用 ResultSetExtractor 转换。 */
     public <T> T query(String sql, PreparedStatementSetter pss, ResultSetExtractor<T> rse) throws SQLException;
 
     /**查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作，并且将 SQL 查询结果集使用 ResultSetExtractor 转换。*/

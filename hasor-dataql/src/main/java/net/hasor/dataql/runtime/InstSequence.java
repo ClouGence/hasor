@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.compiler.qil.Instruction;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.utils.StringUtils;
@@ -97,13 +96,13 @@ public class InstSequence {
     }
 
     /** 移动指令序列指针，到下一个位置。 */
-    public boolean doNext(int nextSkip) throws InvokerProcessException {
+    public boolean doNext(int nextSkip) throws InstructRuntimeException {
         if (this.jumpMark) {
             this.jumpMark = false;
             return true;
         }
         if (nextSkip < 0) {
-            throw new InvokerProcessException(0, "nextSkip must be > 0");
+            throw new InstructRuntimeException("nextSkip must be > 0");
         }
         int newPosition = this.sequenceIndex.get() + nextSkip;
         if (newPosition > this.endPosition) {

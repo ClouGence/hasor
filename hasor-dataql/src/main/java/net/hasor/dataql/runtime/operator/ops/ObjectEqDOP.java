@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.operator.ops;
-import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
+import net.hasor.dataql.runtime.InstructRuntimeException;
 
 import java.util.Objects;
 
@@ -26,7 +26,7 @@ import java.util.Objects;
  */
 public class ObjectEqDOP extends AbstractDOP {
     @Override
-    public Object doDyadicProcess(String operator, Object fstObject, Object secObject, Option option) throws InvokerProcessException {
+    public Object doDyadicProcess(String operator, Object fstObject, Object secObject, Option option) throws InstructRuntimeException {
         if ("==".equals(operator)) {
             return Objects.equals(fstObject, secObject);
         }

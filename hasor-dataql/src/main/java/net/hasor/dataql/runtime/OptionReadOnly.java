@@ -44,11 +44,6 @@ public class OptionReadOnly implements Option {
     }
 
     @Override
-    public void setOptionSet(Option optionSet) {
-        throw new UnsupportedOperationException("readOnly.");
-    }
-
-    @Override
     public void setOption(String optionKey, String value) {
         throw new UnsupportedOperationException("readOnly.");
     }

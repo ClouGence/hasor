@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.InvokerProcessException;
-import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
+import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -41,7 +40,7 @@ class PUSH implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
         Object data = dataStack.pop();
         Object ors = dataStack.peek();
         //
@@ -49,6 +48,6 @@ class PUSH implements InsetProcess {
             ((Collection) ors).add(data);
             return;
         }
-        throw new InvokerProcessException(getOpcode(), "output data error, target type must be Collection.");
+        throw new InstructRuntimeException("output data error, target type must be Collection.");
     }
 }

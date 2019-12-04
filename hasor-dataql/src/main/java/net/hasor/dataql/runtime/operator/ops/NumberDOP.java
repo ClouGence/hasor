@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.operator.ops;
-import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
+import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 import java.math.BigDecimal;
+
+import static net.hasor.dataql.Option.MIN_DECIMAL_WIDTH;
+import static net.hasor.dataql.Option.MIN_INTEGER_WIDTH;
 
 /**
  * 二元数值运算，负责处理数值的："+"、"-"、"*"、"/"、"\"、"%"
@@ -27,39 +30,44 @@ import java.math.BigDecimal;
  */
 public class NumberDOP extends AbstractDOP {
     @Override
-    public Object doDyadicProcess(String operator, Object fstObject, Object secObject, Option option) throws InvokerProcessException {
+    public Object doDyadicProcess(String operator, Object fstObject, Object secObject, Option option) throws InstructRuntimeException {
         if (!(fstObject instanceof Number) || !(secObject instanceof Number)) {
             throw throwError(operator, fstObject, secObject, "requirements must be numerical.");
         }
         // .数值计算的选项参数
-        RoundingEnum roundingMode = RoundingEnum.find((String) option.getOption(Option.NUMBER_ROUNDING));       // 舍入模式
-        Number maxDecimalNum = (Number) option.getOption(Option.MAX_DECIMAL_DIGITS);                            // 小数位数(默认20位)
+        RoundingEnum roundingMode = RoundingEnum.find((String) option.getOption(Option.NUMBER_ROUNDING));   // 舍入模式
+        Number maxDecimalNum = (Number) option.getOption(Option.MAX_DECIMAL_DIGITS);                        // 小数位数(默认20位)
         if (maxDecimalNum == null) {
             maxDecimalNum = 20;
         }
-        boolean useDecimal = Boolean.TRUE.equals(option.getOption(Option.USE_DECIMAL));
         int maxDecimal = maxDecimalNum.intValue();// 要保留的小数
+        //
+        // .调整最小精度宽度
+        String decimalWidth = (String) option.getOption(MIN_DECIMAL_WIDTH);
+        String integerWidth = (String) option.getOption(MIN_INTEGER_WIDTH);
+        fstObject = OperatorUtils.fixNumberWidth((Number) fstObject, decimalWidth, integerWidth);
+        secObject = OperatorUtils.fixNumberWidth((Number) secObject, decimalWidth, integerWidth);
         //
         // .数值计算
         Number result = null;
         switch (operator.charAt(0)) {
         case '+':
-            result = OperatorUtils.add(useDecimal, (Number) fstObject, (Number) secObject);
+            result = OperatorUtils.add((Number) fstObject, (Number) secObject);
             break;
         case '-':
-            result = OperatorUtils.subtract(useDecimal, (Number) fstObject, (Number) secObject);
+            result = OperatorUtils.subtract((Number) fstObject, (Number) secObject);
             break;
         case '*':
-            result = OperatorUtils.multiply(useDecimal, (Number) fstObject, (Number) secObject);
+            result = OperatorUtils.multiply((Number) fstObject, (Number) secObject);
             break;
         case '/':
-            result = OperatorUtils.divide(useDecimal, (Number) fstObject, (Number) secObject, maxDecimal, roundingMode);
+            result = OperatorUtils.divide((Number) fstObject, (Number) secObject, maxDecimal, roundingMode);
             break;
         case '\\':
-            result = OperatorUtils.aliquot(useDecimal, (Number) fstObject, (Number) secObject);
+            result = OperatorUtils.aliquot((Number) fstObject, (Number) secObject);
             break;
         case '%':
-            result = OperatorUtils.mod(useDecimal, (Number) fstObject, (Number) secObject);
+            result = OperatorUtils.mod((Number) fstObject, (Number) secObject);
             break;
         default:
             throw throwError(operator, fstObject, secObject, "this operator nonsupport.");

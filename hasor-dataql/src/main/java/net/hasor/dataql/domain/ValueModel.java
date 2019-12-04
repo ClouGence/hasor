@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain;
+import net.hasor.dataql.DataModel;
 import net.hasor.dataql.runtime.operator.OperatorUtils;
 import net.hasor.utils.NumberUtils;
 
@@ -33,6 +34,11 @@ public class ValueModel implements DataModel {
 
     ValueModel(Object value) {
         this.value = value;
+    }
+
+    /** 判断是否为 ValueModel 类型值 */
+    public boolean isValueModel() {
+        return true;
     }
 
     /** 判断是否为 Null */

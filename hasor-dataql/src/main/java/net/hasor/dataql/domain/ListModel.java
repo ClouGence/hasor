@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain;
+import net.hasor.dataql.DataModel;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -37,6 +39,11 @@ class ListModel extends ArrayList<DataModel> implements DataModel {
         for (Object object : dataItem) {
             add(DomainHelper.convertTo(object));
         }
+    }
+
+    /** 判断是否为 ListModel 类型值 */
+    public boolean isListModel() {
+        return true;
     }
 
     /** 判断是否为 ValueModel 类型值 */

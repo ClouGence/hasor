@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.operator;
-import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
+import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.utils.StringUtils;
 
 /**
@@ -25,7 +25,7 @@ import net.hasor.utils.StringUtils;
  */
 public interface OperatorProcess {
     /**执行运算*/
-    public Object doProcess(String operator, Object[] args, Option option) throws InvokerProcessException;
+    public Object doProcess(String operator, Object[] args, Option option) throws InstructRuntimeException;
 
     public default boolean testIn(String[] dataSet, String test) {
         if (dataSet == null || dataSet.length == 0 || StringUtils.isBlank(test)) {

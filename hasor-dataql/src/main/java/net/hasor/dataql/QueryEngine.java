@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-import net.hasor.dataql.domain.compiler.QIL;
+import net.hasor.dataql.compiler.qil.QIL;
 
 /**
  * 引擎
@@ -22,17 +22,9 @@ import net.hasor.dataql.domain.compiler.QIL;
  * @version : 2017-03-23
  */
 public interface QueryEngine extends Option {
+    /** 获得编译之后的指令集 */
     public QIL getQil();
 
-    public ClassLoader getClassLoader();
-
-    public UdfManager getUdfManager();
-
-    public void setClassLoader(ClassLoader classLoader);
-
-    /** 创建一个新查询实例。 */
+    /** 创建一个新查询实例 */
     public Query newQuery();
-
-    /** 刷新UDF */
-    public void refreshUDF();
 }

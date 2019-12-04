@@ -16,7 +16,8 @@
 package net.hasor.dataql.runtime.mem;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
-import net.hasor.dataql.UdfResult;
+import net.hasor.dataql.extend.udfs.UdfResult;
+import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.utils.ExceptionUtils;
 
 /**
@@ -31,10 +32,13 @@ public class RefCall {
         this.refCall = refCall;
     }
 
-    public UdfResult invokeMethod(Object[] paramArrays, Option optionSet) {
+    public UdfResult invokeMethod(Object[] paramArrays, Option optionSet) throws InstructRuntimeException {
         try {
             return this.refCall.call(paramArrays, optionSet);
         } catch (Throwable e) {
+            if (e instanceof InstructRuntimeException) {
+                throw (InstructRuntimeException) e;
+            }
             throw ExceptionUtils.toRuntimeException(e);
         }
     }

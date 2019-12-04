@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.ProcessException;
+import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -42,11 +42,11 @@ class THROW implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
         int resultCode = sequence.currentInst().getInt(0);
         Object result = dataStack.pop();
         dataStack.setResultCode(resultCode);
-        dataStack.setResult(result);
+        dataStack.setResult(DomainHelper.convertTo(result));
         dataStack.setExitType(ExitType.Throw);
         sequence.jumpTo(sequence.exitPosition());
     }

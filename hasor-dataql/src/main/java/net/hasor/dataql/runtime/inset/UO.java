@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.InvokerProcessException;
-import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.Symbol;
+import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -42,15 +40,15 @@ class UO implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
         String dyadicSymbol = sequence.currentInst().getString(0);
         Object expData = dataStack.pop();
         //
         Class<?> expType = (expData == null) ? Void.class : expData.getClass();
-        OperatorProcess process = context.findOperator(Symbol.Unary, dyadicSymbol, expType, null);
+        OperatorProcess process = context.findUnaryOperator(dyadicSymbol, expType);
         //
         if (process == null) {
-            throw new InvokerProcessException(getOpcode(), "UO -> " + dyadicSymbol + " OperatorProcess is Undefined");
+            throw new InstructRuntimeException("UO -> " + dyadicSymbol + " OperatorProcess is Undefined");
         }
         //
         Object result = process.doProcess(dyadicSymbol, new Object[] { expData }, context);

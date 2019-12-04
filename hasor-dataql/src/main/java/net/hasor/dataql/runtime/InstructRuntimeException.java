@@ -13,7 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.dataql.runtime;
 /**
- * Runtime 执行用到的一些数据结构。
+ * DataQL 运行时异常
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2017-07-14
  */
-package net.hasor.dataql.runtime.struts;
+public class InstructRuntimeException extends Exception {
+    public InstructRuntimeException(String errorMessage) {
+        super(errorMessage);
+    }
+
+    public InstructRuntimeException(String errorMessage, Throwable e) {
+        super(errorMessage, e);
+    }
+}

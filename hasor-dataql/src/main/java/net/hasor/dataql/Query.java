@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
+import net.hasor.dataql.runtime.InstructRuntimeException;
+
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -22,12 +25,16 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 public interface Query extends Option {
-    /**添加参数*/
-    public void addParameter(String key, Object value);
+    /** 执行查询 */
+    public default QueryResult execute() throws InstructRuntimeException {
+        return this.execute(symbol -> Collections.emptyMap());
+    }
 
-    /**添加参数*/
-    public void addParameterMap(Map<String, Object> queryData);
+    /** 执行查询 */
+    public default QueryResult execute(Map<String, Object> envData) throws InstructRuntimeException {
+        return this.execute(symbol -> envData);
+    }
 
-    /**执行查询*/
-    public QueryResult execute() throws InvokerProcessException;
+    /** 执行查询 */
+    public QueryResult execute(CustomizeScope customizeScope) throws InstructRuntimeException;
 }

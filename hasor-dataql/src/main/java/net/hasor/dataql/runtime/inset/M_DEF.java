@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.InvokerProcessException;
-import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
+import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -41,13 +40,13 @@ class M_DEF implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
         Object refCall = dataStack.pop();
         if (refCall instanceof UDF) {
             refCall = new RefCall((UDF) refCall);
             dataStack.push(refCall);
         } else {
-            throw new InvokerProcessException(getOpcode(), "target or Property is not UDF.");
+            throw new InstructRuntimeException("target or Property is not UDF.");
         }
     }
 }

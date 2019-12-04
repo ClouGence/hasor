@@ -19,6 +19,8 @@ import net.hasor.dataql.runtime.operator.ops.RoundingEnum;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import static net.hasor.dataql.OptionValue.*;
+
 /**
  * 数学计算处理工具，提供：加、减、乘、除、整除、求余
  * 尽量考虑在保证性能的前提下不产生精度丢失问题。
@@ -27,74 +29,76 @@ import java.math.BigInteger;
  */
 public class OperatorUtils {
     public static boolean isNumber(Object object) {
-        if (object == null) {
-            return false;
-        }
         return object instanceof Number;
     }
 
     public static boolean isBoolean(Object object) {
-        if (object == null) {
-            return false;
-        }
-        Class<?> numberClass = object.getClass();
-        return numberClass == Boolean.class || numberClass == Boolean.TYPE;
+        return object instanceof Boolean;
     }
 
     public static boolean isByteNumber(Object number) {
-        if (number == null) {
-            return false;
-        }
-        Class<?> numberClass = number.getClass();
-        return numberClass == Byte.class || numberClass == Byte.TYPE;
+        return number instanceof Byte;
     }
 
     public static boolean isShortNumber(Object number) {
-        if (number == null) {
-            return false;
-        }
-        Class<?> numberClass = number.getClass();
-        return numberClass == Short.class || numberClass == Short.TYPE;
+        return number instanceof Short;
     }
 
     public static boolean isIntegerNumber(Object number) {
-        if (number == null) {
-            return false;
-        }
-        Class<?> numberClass = number.getClass();
-        return numberClass == Integer.class || numberClass == Integer.TYPE;
+        return number instanceof Integer;
     }
 
     public static boolean isCharacter(Object number) {
-        if (number == null) {
-            return false;
-        }
-        Class<?> numberClass = number.getClass();
-        return numberClass == Character.class || numberClass == Character.TYPE;
+        return number instanceof Character;
     }
 
     public static boolean isLongNumber(Object number) {
-        if (number == null) {
-            return false;
-        }
-        Class<?> numberClass = number.getClass();
-        return numberClass == Long.class || numberClass == Long.TYPE;
+        return number instanceof Long;
     }
 
     public static boolean isFloatNumber(Object number) {
-        if (number == null) {
-            return false;
-        }
-        Class<?> numberClass = number.getClass();
-        return numberClass == Float.class || numberClass == Float.TYPE;
+        return number instanceof Float;
     }
 
     public static boolean isDoubleNumber(Object number) {
-        if (number == null) {
-            return false;
+        return number instanceof Double;
+    }
+
+    public static Number fixNumberWidth(Number valNumber, String decimalWidth, String integerWidth) {
+        if (OperatorUtils.isDecimal(valNumber)) {
+            if (MIN_DECIMAL_WIDTH_FLOAT.equalsIgnoreCase(decimalWidth)) {
+                //
+            } else if (MIN_DECIMAL_WIDTH_DOUBLE.equalsIgnoreCase(decimalWidth)) {
+                if (OperatorUtils.isFloatNumber(valNumber)) {
+                    valNumber = valNumber.doubleValue();
+                }
+            } else if (MIN_DECIMAL_WIDTH_BIG.equalsIgnoreCase(decimalWidth)) {
+                if (OperatorUtils.isFloatNumber(valNumber) || OperatorUtils.isDoubleNumber(valNumber)) {
+                    valNumber = new BigDecimal(valNumber.toString());
+                }
+            }
+        } else {
+            if (MIN_INTEGER_WIDTH_BYTE.equalsIgnoreCase(integerWidth)) {
+                //
+            } else if (MIN_INTEGER_WIDTH_SHORT.equalsIgnoreCase(integerWidth)) {
+                if (OperatorUtils.isByteNumber(valNumber)) {
+                    valNumber = valNumber.shortValue();
+                }
+            } else if (MIN_INTEGER_WIDTH_INT.equalsIgnoreCase(integerWidth)) {
+                if (OperatorUtils.isByteNumber(valNumber) || OperatorUtils.isShortNumber(valNumber)) {
+                    valNumber = valNumber.intValue();
+                }
+            } else if (MIN_INTEGER_WIDTH_LONG.equalsIgnoreCase(integerWidth)) {
+                if (OperatorUtils.isByteNumber(valNumber) || OperatorUtils.isShortNumber(valNumber) || OperatorUtils.isIntegerNumber(valNumber)) {
+                    valNumber = valNumber.longValue();
+                }
+            } else if (MIN_INTEGER_WIDTH_BIG.equalsIgnoreCase(integerWidth)) {
+                if (OperatorUtils.isByteNumber(valNumber) || OperatorUtils.isShortNumber(valNumber) || OperatorUtils.isIntegerNumber(valNumber) || OperatorUtils.isLongNumber(valNumber)) {
+                    valNumber = new BigInteger(valNumber.toString());
+                }
+            }
         }
-        Class<?> numberClass = number.getClass();
-        return numberClass == Double.class || numberClass == Double.TYPE;
+        return valNumber;
     }
 
     //
@@ -117,7 +121,7 @@ public class OperatorUtils {
     //
 
     /** 对比两个数据类型，返回交大的那个类型作为载体。 */
-    protected static int getNumericType(Number v1, Number v2) {
+    private static int getNumericType(Number v1, Number v2) {
         int v1Type = getNumericType(v1);
         int v2Type = getNumericType(v2);
         //
@@ -144,7 +148,7 @@ public class OperatorUtils {
         return useDec ? BIGDEC : BIGINT;
     }
 
-    protected static int getNumericType(Object value) {
+    public static int getNumericType(Object value) {
         if (OperatorUtils.isBoolean(value)) {
             return BOOL;
         }
@@ -179,24 +183,6 @@ public class OperatorUtils {
     }
     //
     //
-
-    /** 转换为：boolean */
-    public static boolean booleanValue(Object value) {
-        if (value == null) {
-            return false;
-        }
-        Class c = value.getClass();
-        if (c == Boolean.class) {
-            return (Boolean) value;
-        }
-        if (c == Character.class) {
-            return (Character) value != 0;
-        }
-        if (value instanceof Number) {
-            return ((Number) value).doubleValue() != 0;
-        }
-        return true;
-    }
 
     /** 转换为：int */
     private static int intValue(Object value) {
@@ -319,34 +305,13 @@ public class OperatorUtils {
         }
         return new BigDecimal(value.toString().trim());
     }
-
     //
     // ============================================================================================
-    private static Number toDecimal(boolean useDecimal, Number number) {
-        if (!useDecimal) {
-            return number;
-        }
-        //
-        boolean bigInt = number instanceof BigInteger;
-        boolean bigDec = number instanceof BigDecimal;
-        if (bigInt || bigDec) {
-            return number;
-        }
-        //
-        if (OperatorUtils.isFloatNumber(number)) {
-            return new BigDecimal(Float.toString((Float) number));
-        }
-        if (OperatorUtils.isDoubleNumber(number)) {
-            return new BigDecimal(Double.toString((Double) number));
-        }
-        return BigInteger.valueOf(number.longValue());
-    }
+    //
 
     /** 加 */
-    public static Number add(boolean useDecimal, Number obj1, Number obj2) {
-        obj1 = toDecimal(useDecimal, obj1);
-        obj2 = toDecimal(useDecimal, obj2);
-        if (testDecimal(obj1) || testDecimal(obj2)) {
+    public static Number add(Number obj1, Number obj2) {
+        if (isDecimal(obj1) || isDecimal(obj2)) {
             return decimalAdd(obj1, obj2);
         } else {
             return integerAdd(obj1, obj2);
@@ -354,10 +319,8 @@ public class OperatorUtils {
     }
 
     /** 减 */
-    public static Number subtract(boolean useDecimal, Number obj1, Number obj2) {
-        obj1 = toDecimal(useDecimal, obj1);
-        obj2 = toDecimal(useDecimal, obj2);
-        if (testDecimal(obj1) || testDecimal(obj2)) {
+    public static Number subtract(Number obj1, Number obj2) {
+        if (isDecimal(obj1) || isDecimal(obj2)) {
             return decimalSubtract(obj1, obj2);
         } else {
             return integerSubtract(obj1, obj2);
@@ -365,10 +328,8 @@ public class OperatorUtils {
     }
 
     /** 乘 */
-    public static Number multiply(boolean useDecimal, Number obj1, Number obj2) {
-        obj1 = toDecimal(useDecimal, obj1);
-        obj2 = toDecimal(useDecimal, obj2);
-        if (testDecimal(obj1) || testDecimal(obj2)) {
+    public static Number multiply(Number obj1, Number obj2) {
+        if (isDecimal(obj1) || isDecimal(obj2)) {
             return decimalMultiply(obj1, obj2);
         } else {
             return integerMultiply(obj1, obj2);
@@ -376,10 +337,8 @@ public class OperatorUtils {
     }
 
     /** 除 */
-    public static Number divide(boolean useDecimal, Number obj1, Number obj2, int precision, RoundingEnum roundingEnum) {
-        obj1 = toDecimal(useDecimal, obj1);
-        obj2 = toDecimal(useDecimal, obj2);
-        if (testDecimal(obj1) || testDecimal(obj2)) {
+    public static Number divide(Number obj1, Number obj2, int precision, RoundingEnum roundingEnum) {
+        if (isDecimal(obj1) || isDecimal(obj2)) {
             if (roundingEnum == null) {
                 roundingEnum = RoundingEnum.HALF_UP;
             }
@@ -393,10 +352,8 @@ public class OperatorUtils {
     }
 
     /** 整除 */
-    public static Number aliquot(boolean useDecimal, Number obj1, Number obj2) {
-        obj1 = toDecimal(useDecimal, obj1);
-        obj2 = toDecimal(useDecimal, obj2);
-        if (testDecimal(obj1) || testDecimal(obj2)) {
+    public static Number aliquot(Number obj1, Number obj2) {
+        if (isDecimal(obj1) || isDecimal(obj2)) {
             return decimalAliquot(obj1, obj2);
         } else {
             return integerDivide(obj1, obj2);
@@ -404,10 +361,8 @@ public class OperatorUtils {
     }
 
     /** 求余 */
-    public static Number mod(boolean useDecimal, Number obj1, Number obj2) {
-        obj1 = toDecimal(useDecimal, obj1);
-        obj2 = toDecimal(useDecimal, obj2);
-        if (testDecimal(obj1) || testDecimal(obj2)) {
+    public static Number mod(Number obj1, Number obj2) {
+        if (isDecimal(obj1) || isDecimal(obj2)) {
             return decimalMod(obj1, obj2);
         } else {
             return integerMod(obj1, obj2);
@@ -416,7 +371,7 @@ public class OperatorUtils {
 
     /** 取反，相当于：value * -1 */
     public static Number negate(Number obj) {
-        if (testDecimal(obj)) {
+        if (isDecimal(obj)) {
             return decimalNegate(obj);
         } else {
             return integerNegate(obj);
@@ -425,7 +380,7 @@ public class OperatorUtils {
 
     //
     /* 测试是否为一个小数 */
-    private static boolean testDecimal(Number tester) {
+    public static boolean isDecimal(Number tester) {
         if (tester instanceof BigDecimal) {
             return true;
         }
@@ -648,9 +603,9 @@ public class OperatorUtils {
         int maxType = getNumericType(obj1, obj2);
         switch (maxType) {
         case FLOAT:
-            return newReal(INT, (int) (floatValue(obj1) / floatValue(obj2)));
+            return newReal(maxType, (int) (floatValue(obj1) / floatValue(obj2)));
         case DOUBLE:
-            return newReal(LONG, (long) (doubleValue(obj1) / doubleValue(obj2)));
+            return newReal(maxType, (long) (doubleValue(obj1) / doubleValue(obj2)));
         default:
             return newReal(maxType, bigDecimalValue(obj1).divideToIntegralValue(bigDecimalValue(obj2)));
         }
@@ -688,7 +643,7 @@ public class OperatorUtils {
     private static int getNumericTypeWithCompare(Number v1, Number v2) {
         int numericType = getNumericType(v1, v2);
         if (numericType == NONE) {
-            numericType = (testDecimal(v1) || testDecimal(v2)) ? BIGDEC : BIGINT;
+            numericType = (isDecimal(v1) || isDecimal(v2)) ? BIGDEC : BIGINT;
         }
         return numericType;
     }
@@ -802,7 +757,7 @@ public class OperatorUtils {
     // ============================================================================================
     //
     private static void checkDecimal(Number obj1, Number obj2) {
-        if (testDecimal(obj1) || testDecimal(obj2)) {
+        if (isDecimal(obj1) || isDecimal(obj2)) {
             throw new NumberFormatException("value mast not be Decimal.");
         }
     }

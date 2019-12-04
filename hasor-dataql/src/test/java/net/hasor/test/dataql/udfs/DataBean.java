@@ -1,4 +1,4 @@
-package net.hasor.dataql.domain;
+package net.hasor.test.dataql.udfs;
 import java.util.Date;
 
 public class DataBean {

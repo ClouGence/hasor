@@ -36,7 +36,7 @@ public class PrimitiveVariableInstCompiler implements InstCompiler<PrimitiveVari
             queue.inst(LDC_N);
         }
         if (valueType == ValueType.Number) {
-            queue.inst(LDC_D, (Number) astInst.getValue());
+            queue.inst(LDC_D, astInst.getValue());
         }
         if (valueType == ValueType.String) {
             queue.inst(LDC_S, astInst.getValue().toString());

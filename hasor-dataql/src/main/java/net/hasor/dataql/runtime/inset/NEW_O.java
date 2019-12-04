@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.ProcessException;
+import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
-
-import java.util.LinkedHashMap;
 
 /**
  * NEW_O   // 构造一个键值对对象并压入栈
@@ -40,7 +38,7 @@ class NEW_O implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
-        dataStack.push(new LinkedHashMap<>());
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
+        dataStack.push(DomainHelper.newObject());
     }
 }

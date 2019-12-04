@@ -55,7 +55,7 @@ public class PrimitiveVariable implements Variable, Inst {
     public ValueType getValueType() {
         return valueType;
     }
-    
+
     @Override
     public String toString() {
         return "Primitive - '" + this.value + "'";

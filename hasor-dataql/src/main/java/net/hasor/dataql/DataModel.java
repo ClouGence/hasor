@@ -13,29 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.struts;
-import java.util.ArrayList;
-import java.util.List;
-
+package net.hasor.dataql;
 /**
- * 用于 ASA 指令在处理方法返回值时。对数据的封装。
+ * 结果集
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-07-19
+ * @version : 2017-03-23
  */
-public class ListResultStruts implements ResultStruts {
-    private List<Object> dataResult = null;
-
-    public ListResultStruts(Object toType) {
-        this.dataResult = new ArrayList<>();
+public interface DataModel {
+    /** 判断是否为 ValueModel 类型值 */
+    public default boolean isValueModel() {
+        return false;
     }
 
-    /**添加结果*/
-    public void addResult(Object data) {
-        this.dataResult.add(data);
+    /** 判断是否为 ListModel 类型值 */
+    public default boolean isListModel() {
+        return false;
     }
 
-    @Override
-    public Object getResult() {
-        return this.dataResult;
+    /** 判断是否为 ObjectModel 类型值 */
+    public default boolean isObjectModel() {
+        return false;
+    }
+
+    /** 判断是否为 UdfModel 类型值 */
+    public default boolean isUdfModel() {
+        return false;
     }
 }

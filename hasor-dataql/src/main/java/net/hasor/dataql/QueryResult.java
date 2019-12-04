@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-import net.hasor.dataql.result.DataModel;
-
 /**
  * 结果集
  * @author 赵永春 (zyc@hasor.net)
@@ -25,9 +23,12 @@ public interface QueryResult {
     /** 执行结果是否通过 ERR 形式返回的 */
     public boolean isThrow();
 
+    /** 获得退出码。如果未指定退出码，则默认值为 0 */
     public int getCode();
 
+    /** 获得返回值 */
     public DataModel getData();
 
+    /** 获得本次执行耗时 */
     public long executionTime();
 }

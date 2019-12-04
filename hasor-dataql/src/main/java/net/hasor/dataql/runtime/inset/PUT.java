@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
+import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -43,21 +42,14 @@ class PUT implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
-        try {
-            String nodeName = sequence.currentInst().getString(0);
-            Object useData = dataStack.pop();
-            Object containerData = dataStack.peek();
-            writeProperty(containerData, nodeName, useData, context);
-        } catch (Exception e) {
-            if (e instanceof InvokerProcessException) {
-                throw (InvokerProcessException) e;
-            }
-            throw new InvokerProcessException(getOpcode(), e.getMessage(), e);
-        }
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
+        String nodeName = sequence.currentInst().getString(0);
+        Object useData = dataStack.pop();
+        Object containerData = dataStack.peek();
+        writeProperty(containerData, nodeName, useData, context);
     }
 
-    private void writeProperty(Object containerData, String fieldName, Object useData, InsetProcessContext context) throws Exception {
+    private void writeProperty(Object containerData, String fieldName, Object useData, InsetProcessContext context) throws InstructRuntimeException {
         if (containerData == null) {
             return;
         }
@@ -69,7 +61,7 @@ class PUT implements InsetProcess {
         Object safetyVal = context.getOption(Option.SAFE_PUT);
         boolean safetyBool = Boolean.TRUE.equals(safetyVal);
         if (!safetyBool && !BeanUtils.canWriteProperty(fieldName, containerData.getClass())) {
-            throw new InvokerProcessException(getOpcode(), "output data error, unable to write property");
+            throw new InstructRuntimeException("output data error, unable to write property");
         }
         //
         BeanUtils.writePropertyOrField(containerData, fieldName, useData);

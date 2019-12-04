@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.InvokerProcessException;
-import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.compiler.qil.Instruction;
-import net.hasor.dataql.runtime.InsetProcess;
-import net.hasor.dataql.runtime.InsetProcessContext;
-import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.OptionReadOnly;
+import net.hasor.dataql.runtime.*;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -42,7 +37,7 @@ class CALL implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws ProcessException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
         Instruction instruction = sequence.currentInst();
         int paramCount = instruction.getInt(0);
         //
@@ -55,7 +50,7 @@ class CALL implements InsetProcess {
         //
         Object refCallObj = dataStack.pop();
         if (!(refCallObj instanceof RefCall)) {
-            throw new InvokerProcessException(getOpcode(), "target is not RefCall.");
+            throw new InstructRuntimeException("target is not RefCall.");
         }
         //
         RefCall refCall = (RefCall) refCallObj;

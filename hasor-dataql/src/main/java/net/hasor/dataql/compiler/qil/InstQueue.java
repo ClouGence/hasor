@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil;
-import net.hasor.dataql.ParseException;
+import net.hasor.dataql.compiler.ParseException;
 import net.hasor.utils.StringUtils;
 
 import java.util.ArrayList;

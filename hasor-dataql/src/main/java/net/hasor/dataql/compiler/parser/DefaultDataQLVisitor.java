@@ -13,6 +13,7 @@ import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
 import net.hasor.dataql.compiler.ast.value.PrimitiveVariable.ValueType;
 import net.hasor.dataql.compiler.ast.value.SubscriptRouteVariable.SubType;
 import net.hasor.dataql.compiler.parser.DataQLParser.*;
+import net.hasor.dataql.runtime.OptionSet;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -30,6 +31,7 @@ import java.util.Stack;
  */
 public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> implements DataQLVisitor<T> {
     private Stack<Object> instStack = new Stack<>();
+    private OptionSet     optionSet = new OptionSet();
 
     @Override
     public T visitRootInstSet(RootInstSetContext ctx) {

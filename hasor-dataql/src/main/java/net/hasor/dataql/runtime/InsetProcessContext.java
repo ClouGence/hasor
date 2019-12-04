@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.CustomizeScope;
+import net.hasor.dataql.runtime.operator.OperatorManager;
 import net.hasor.dataql.runtime.operator.OperatorProcess;
 
 import java.util.Map;
@@ -24,8 +25,26 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-14
  */
-public interface InsetProcessContext extends Option {
-    public OperatorProcess findOperator(Symbol unary, String dyadicSymbol, Class<?> fstType, Class<?> secType);
+public class InsetProcessContext extends OptionSet implements CustomizeScope {
+    private final static OperatorManager opeManager = OperatorManager.defaultManager();
+    private              CustomizeScope  customizeScope;
 
-    public Map<String, Object> findCustomizeEnvironment(String symbol);
+    InsetProcessContext(CustomizeScope customizeScope) {
+        this.customizeScope = customizeScope;
+    }
+
+    /** 查找一元运算执行器 */
+    public OperatorProcess findUnaryOperator(String unarySymbol, Class<?> fstType) {
+        return opeManager.findUnaryProcess(unarySymbol, fstType);
+    }
+
+    /** 查找二元运算执行器 */
+    public OperatorProcess findDyadicOperator(String dyadicSymbol, Class<?> fstType, Class<?> secType) {
+        return opeManager.findDyadicProcess(dyadicSymbol, fstType, secType);
+    }
+
+    /** 获取环境数据，symbol 可能的值有：@、#、$。其中 # 为默认 */
+    public Map<String, Object> findCustomizeEnvironment(String symbol) {
+        return this.customizeScope.findCustomizeEnvironment(symbol);
+    }
 }

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.mem;
+import net.hasor.dataql.DataModel;
+
 import java.util.Stack;
 
 /**
@@ -22,9 +24,9 @@ import java.util.Stack;
  * @version : 2019-11-22
  */
 public class DataStack extends Stack<Object> {
-    private int      resultCode = 0;
-    private Object   result     = null;
-    private ExitType exitType   = null;
+    private int       resultCode = 0;
+    private DataModel result     = null;
+    private ExitType  exitType   = null;
 
     public int getResultCode() {
         return resultCode;
@@ -34,11 +36,11 @@ public class DataStack extends Stack<Object> {
         this.resultCode = resultCode;
     }
 
-    public Object getResult() {
+    public DataModel getResult() {
         return result;
     }
 
-    public void setResult(Object result) {
+    public void setResult(DataModel result) {
         this.result = result;
     }
 

@@ -15,11 +15,11 @@
  */
 package net.hasor.dataql.runtime.mem;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.UDF;
-import net.hasor.dataql.UdfResult;
+import net.hasor.dataql.extend.udfs.UdfResult;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
+import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.inset.OpcodesPool;
 
 /**
@@ -28,7 +28,6 @@ import net.hasor.dataql.runtime.inset.OpcodesPool;
  * @version : 2017-03-23
  */
 public class RefLambdaCall implements UDF {
-    private int                 methodAddress;
     private InstSequence        instSequence;
     private DataHeap            dataHeap;
     private DataStack           dataStack;
@@ -37,7 +36,6 @@ public class RefLambdaCall implements UDF {
 
     public RefLambdaCall(InstSequence instSequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
         this.instSequence = instSequence.clone();
-        this.methodAddress = this.instSequence.getAddress();
         this.dataHeap = dataHeap.clone();
         this.dataStack = dataStack.clone();
         this.envStack = envStack.clone();
@@ -45,14 +43,14 @@ public class RefLambdaCall implements UDF {
     }
 
     @Override
-    public UdfResult call(Object[] values, Option readOnly) throws ProcessException {
+    public UdfResult call(Object[] values, Option readOnly) throws InstructRuntimeException {
         //
         RefLambdaCallStruts callStruts = new RefLambdaCallStruts(values);
         this.dataStack.push(callStruts);
         //
         OpcodesPool opcodesPool = new OpcodesPool();
         while (this.instSequence.hasNext()) {
-            opcodesPool.doWork(//
+            opcodesPool.doWork(         //
                     this.instSequence,  //
                     this.dataHeap,      //
                     this.dataStack,     //

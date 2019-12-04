@@ -80,7 +80,7 @@ public class CompilerContext {
     public int getDepth() {
         return this.dataStack.size() - 1;
     }
- 
+
     public CompilerContext createSegregate() {
         CompilerContext compilerContext = new CompilerContext(this.compilerEnvironment);
         compilerContext.loadedImport = this.loadedImport;

@@ -24,6 +24,10 @@ public class DataHeap implements Cloneable {
     private int      depth        = 0;
     private Object[] heapDataPool = new Object[10];
 
+    public DataHeap() {
+        this(null);
+    }
+
     public DataHeap(DataHeap parent) {
         if (parent != null) {
             this.parent = parent;

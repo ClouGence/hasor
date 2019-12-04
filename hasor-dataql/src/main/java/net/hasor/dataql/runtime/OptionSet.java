@@ -15,7 +15,6 @@
  */
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,9 +33,9 @@ public class OptionSet implements Option {
 
     public OptionSet(Option optionSet) {
         this.optionMap = new HashMap<>();
-        for (String name : optionSet.getOptionNames()) {
-            this.optionMap.put(name, optionSet.getOption(name));
-        }
+        optionSet.forEach((optName, optValue) -> {
+            this.optionMap.put(optName, optValue);
+        });
     }
 
     @Override
@@ -52,31 +51,6 @@ public class OptionSet implements Option {
     /** 删除选项参数 */
     public void removeOption(String key) {
         this.optionMap.remove(key);
-    }
-
-    @Override
-    public void setOptionSet(Option optionSet) {
-        if (optionSet == null) {
-            return;
-        }
-        String[] optKeySet = optionSet.getOptionNames();
-        if (optKeySet == null) {
-            return;
-        }
-        for (String optKey : optKeySet) {
-            Object value = optionSet.getOption(optKey);
-            if (OperatorUtils.isNumber(value)) {
-                this.setOption(optKey, (Number) value);
-                continue;
-            }
-            if (OperatorUtils.isBoolean(value)) {
-                this.setOption(optKey, (Boolean) value);
-                continue;
-            }
-            if (value != null) {
-                this.setOption(optKey, value.toString());
-            }
-        }
     }
 
     /** 设置选项参数 */

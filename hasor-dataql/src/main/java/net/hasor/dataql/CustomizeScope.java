@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-/**
- * DataQL 异常
- * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-07-14
- */
-public class ProcessException extends Exception {
-    public ProcessException(String msg) {
-        super(msg);
-    }
+import java.util.Map;
 
-    public ProcessException(String msg, Throwable e) {
-        super(msg, e);
-    }
+/**
+ * 引擎
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2017-03-23
+ */
+public interface CustomizeScope {
+    /** 自定义取值，操作符将下面下之一：#、@、$ */
+    public Map<String, Object> findCustomizeEnvironment(String symbol);
 }

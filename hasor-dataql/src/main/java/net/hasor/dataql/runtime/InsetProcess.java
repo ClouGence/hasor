@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.compiler.qil.Opcodes;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
@@ -36,5 +35,5 @@ public interface InsetProcess extends Opcodes {
             DataStack dataStack,    // 数据栈
             EnvStack envStack,      // 环境栈
             InsetProcessContext context   // 执行器上下文
-    ) throws ProcessException;
+    ) throws InstructRuntimeException;
 }
