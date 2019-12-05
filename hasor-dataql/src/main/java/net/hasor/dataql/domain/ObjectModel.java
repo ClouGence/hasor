@@ -14,16 +14,39 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain;
-import net.hasor.dataql.DataModel;
-
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 对象结果
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-class ObjectModel extends LinkedHashMap<String, DataModel> implements DataModel {
+public class ObjectModel implements DataModel {
+    private Map<String, DataModel> dataModel = new LinkedHashMap<>();
+
+    public ObjectModel() {
+    }
+
+    public void put(String key, Object value) {
+        this.dataModel.put(key, DomainHelper.convertTo(value));
+    }
+
+    public <K, V> void putAll(Map<? extends K, ? extends V> m) {
+        for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) {
+            this.put(e.getKey().toString(), e.getValue());
+        }
+    }
+
+    public int size() {
+        return this.dataModel.size();
+    }
+
+    @Override
+    public Map<String, DataModel> asOri() {
+        return this.dataModel;
+    }
+
     /** 判断是否为 ObjectModel 类型值 */
     public boolean isObjectModel() {
         return true;
@@ -31,12 +54,12 @@ class ObjectModel extends LinkedHashMap<String, DataModel> implements DataModel 
 
     /** 判断是否为 ValueModel 类型值 */
     public boolean isValueModel(String fieldName) {
-        return super.get(fieldName) instanceof ValueModel;
+        return this.dataModel.get(fieldName) instanceof ValueModel;
     }
 
     /** 将某一个元素转换为 ValueModel */
     public ValueModel asValueModel(String fieldName) {
-        DataModel dataItem = super.get(fieldName);
+        DataModel dataItem = this.dataModel.get(fieldName);
         if (dataItem instanceof ValueModel) {
             return (ValueModel) dataItem;
         }
@@ -45,12 +68,12 @@ class ObjectModel extends LinkedHashMap<String, DataModel> implements DataModel 
 
     /** 判断是否为 ListModel 类型值 */
     public boolean isListModel(String fieldName) {
-        return super.get(fieldName) instanceof ListModel;
+        return this.dataModel.get(fieldName) instanceof ListModel;
     }
 
     /** 将某一个元素转换为 ListModel */
     public ListModel asListModel(String fieldName) {
-        DataModel dataItem = super.get(fieldName);
+        DataModel dataItem = this.dataModel.get(fieldName);
         if (dataItem instanceof ListModel) {
             return (ListModel) dataItem;
         }
@@ -59,12 +82,12 @@ class ObjectModel extends LinkedHashMap<String, DataModel> implements DataModel 
 
     /** 判断是否为 ObjectModel 类型值 */
     public boolean isObjectModel(String fieldName) {
-        return super.get(fieldName) instanceof ObjectModel;
+        return this.dataModel.get(fieldName) instanceof ObjectModel;
     }
 
     /** 将某一个元素转换为 ObjectModel */
     public ObjectModel asObjectModel(String fieldName) {
-        DataModel dataItem = super.get(fieldName);
+        DataModel dataItem = this.dataModel.get(fieldName);
         if (dataItem instanceof ObjectModel) {
             return (ObjectModel) dataItem;
         }
@@ -73,12 +96,12 @@ class ObjectModel extends LinkedHashMap<String, DataModel> implements DataModel 
 
     /** 判断是否为 UdfModel 类型值 */
     public boolean isUdfModel(String fieldName) {
-        return super.get(fieldName) instanceof UdfModel;
+        return this.dataModel.get(fieldName) instanceof UdfModel;
     }
 
     /** 将某一个元素转换为 UdfModel */
     public UdfModel asUdfModel(String fieldName) {
-        DataModel dataItem = super.get(fieldName);
+        DataModel dataItem = this.dataModel.get(fieldName);
         if (dataItem instanceof UdfModel) {
             return (UdfModel) dataItem;
         }

@@ -22,8 +22,6 @@ import static net.hasor.dataql.OptionValue.*;
  * @version : 2017-03-23
  */
 public enum OptionKeys {
-    /** 在执行 put 时，如果不能 put 是否引发异常（默认为 true：安全的，不引发异常） */
-    SAFE_PUT(SAFE_PUT_TRUE),
     /** 最大保留的小数位数，默认为：20。超出该范围将会根据 NUMBER_ROUNDING 选项指定的舍入模式进行舍入，默认是四舍五入。 */
     MAX_DECIMAL_DIGITS("20"),
     /** 小数的舍入模式，参考 RoundingEnum 定义的舍入模式(一共八种)，默认为：四舍五入。详细配置参考：RoundingEnum 枚举。 */

@@ -36,11 +36,15 @@ public class NumberDOP extends AbstractDOP {
         }
         // .数值计算的选项参数
         RoundingEnum roundingMode = RoundingEnum.find((String) option.getOption(Option.NUMBER_ROUNDING));   // 舍入模式
-        Number maxDecimalNum = (Number) option.getOption(Option.MAX_DECIMAL_DIGITS);                        // 小数位数(默认20位)
-        if (maxDecimalNum == null) {
-            maxDecimalNum = 20;
-        }
-        int maxDecimal = maxDecimalNum.intValue();// 要保留的小数
+        int maxDecimal = option.getOrMap(Option.MAX_DECIMAL_DIGITS, val -> {                                // 小数位数(默认20位)
+            if (val == null) {
+                return 20;
+            }
+            if (val instanceof Number) {
+                return ((Number) val).intValue();
+            }
+            return Integer.parseInt(val.toString());
+        });
         //
         // .调整最小精度宽度
         String decimalWidth = (String) option.getOption(MIN_DECIMAL_WIDTH);

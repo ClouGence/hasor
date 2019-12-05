@@ -418,15 +418,6 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             specialType = SpecialType.Special_C;
         }
         //
-        // 方式1
-        RouteNameSetContext routeNameSetContext = ctx.routeNameSet();
-        if (routeNameSetContext != null) {
-            EnterRouteVariable enter = new EnterRouteVariable(RouteType.Normal, specialType);
-            this.instStack.push(enter);
-            routeNameSetContext.accept(this);
-            return null;
-        }
-        // 方式2
         TerminalNode identifier = ctx.IDENTIFIER();
         TerminalNode string = ctx.STRING();
         String rouName = null;
@@ -437,15 +428,35 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             rouName = string.getText();
         }
         this.instStack.push(new NameRouteVariable(enter, rouName));
+        //
+        RouteNameSetContext routeNameSetContext = ctx.routeNameSet();
+        if (routeNameSetContext != null) {
+            routeNameSetContext.accept(this);
+        }
         return null;
     }
 
     @Override
     public T visitNormalRoute(NormalRouteContext ctx) {
-        if (!(this.instStack.peek() instanceof RouteVariable)) {
-            this.instStack.push(new EnterRouteVariable(RouteType.Normal, null));
+        SpecialType specialType = SpecialType.Special_A;
+        if (ctx.ROU() != null) {
+            String rouType = ctx.ROU().getText();
+            if ("#".equals(rouType)) {
+                specialType = SpecialType.Special_A;
+            }
+            if ("$".equals(rouType)) {
+                specialType = SpecialType.Special_B;
+            }
+            if ("@".equals(rouType)) {
+                specialType = SpecialType.Special_C;
+            }
         }
-        return visitChildren(ctx);
+        //
+        EnterRouteVariable enter = new EnterRouteVariable(RouteType.Normal, specialType);
+        this.instStack.push(enter);
+        //
+        ctx.routeNameSet().accept(this);
+        return null;
     }
 
     @Override

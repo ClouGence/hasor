@@ -15,8 +15,8 @@
  */
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.CustomizeScope;
-import net.hasor.dataql.DataModel;
 import net.hasor.dataql.Query;
+import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;

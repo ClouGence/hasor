@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
+import net.hasor.dataql.domain.DataModel;
+
 /**
  * 结果集
  * @author 赵永春 (zyc@hasor.net)

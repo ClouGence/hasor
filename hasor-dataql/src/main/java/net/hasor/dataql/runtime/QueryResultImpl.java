@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.dataql.DataModel;
 import net.hasor.dataql.QueryResult;
+import net.hasor.dataql.domain.DataModel;
 
 /**
  * 结果
@@ -28,7 +28,7 @@ class QueryResultImpl implements QueryResult {
     private DataModel dataModel;
     private long      executionTime;
 
-    public QueryResultImpl(boolean isThrow, int exitCode, DataModel dataModel, long executionTime) {
+    QueryResultImpl(boolean isThrow, int exitCode, DataModel dataModel, long executionTime) {
         this.isThrow = isThrow;
         this.exitCode = exitCode;
         this.dataModel = dataModel;

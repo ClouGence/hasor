@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -43,6 +44,10 @@ class UO implements InsetProcess {
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
         String dyadicSymbol = sequence.currentInst().getString(0);
         Object expData = dataStack.pop();
+        //
+        if (expData instanceof DataModel) {
+            expData = ((DataModel) expData).asOri();
+        }
         //
         Class<?> expType = (expData == null) ? Void.class : expData.getClass();
         OperatorProcess process = context.findUnaryOperator(dyadicSymbol, expType);

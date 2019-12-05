@@ -20,8 +20,6 @@ package net.hasor.dataql;
  * @version : 2017-03-23
  */
 public interface OptionValue {
-    /** 在执行 put 时，如果不能 put 是否引发异常（默认为 true：安全的，不引发异常） */
-    public static final String SAFE_PUT                    = "SAFE_PUT";
     /** 最大保留的小数位数，默认为：20。超出该范围将会根据 NUMBER_ROUNDING 选项指定的舍入模式进行舍入，默认是四舍五入。 */
     public static final String MAX_DECIMAL_DIGITS          = "MAX_DECIMAL_DIGITS";
     /** 小数的舍入模式，参考 RoundingEnum 定义的舍入模式(一共八种)，默认为：四舍五入。详细配置参考：RoundingEnum 枚举。 */
@@ -37,8 +35,6 @@ public interface OptionValue {
     //
     //
     //
-    public static final String SAFE_PUT_TRUE               = "true";
-    public static final String SAFE_PUT_FALSE              = "false";
     //
     //
     //

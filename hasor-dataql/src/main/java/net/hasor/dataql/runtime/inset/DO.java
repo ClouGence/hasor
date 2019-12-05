@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -44,6 +45,13 @@ class DO implements InsetProcess {
         String dyadicSymbol = sequence.currentInst().getString(0);
         Object secExpData = dataStack.pop();
         Object fstExpData = dataStack.pop();
+        //
+        if (fstExpData instanceof DataModel) {
+            fstExpData = ((DataModel) fstExpData).asOri();
+        }
+        if (secExpData instanceof DataModel) {
+            secExpData = ((DataModel) secExpData).asOri();
+        }
         //
         Class<?> fstType = (fstExpData == null) ? Void.class : fstExpData.getClass();
         Class<?> secType = (secExpData == null) ? Void.class : secExpData.getClass();

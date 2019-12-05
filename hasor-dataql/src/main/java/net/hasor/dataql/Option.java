@@ -101,6 +101,45 @@ public interface Option extends OptionValue {
     }
 
     /**
+     * Returns the value to which the specified key is mapped, or
+     * {@code defaultValue} if this map contains no mapping for the key.
+     *
+     * @implSpec
+     * The default implementation makes no guarantees about synchronization
+     * or atomicity properties of this method. Any implementation providing
+     * atomicity guarantees must override this method and document its
+     * concurrency properties.
+     *
+     * @param optKey the key whose associated value is to be returned
+     * @param defaultValue the default mapping of the key
+     * @return the value to which the specified key is mapped, or {@code defaultValue} if this map contains no mapping for the key
+     * @since 1.8
+     */
+    public default Object getOrDefault(String optKey, Object defaultValue) {
+        Object v = null;
+        return (((v = getOption(optKey)) != null)) ? v : defaultValue;
+    }
+
+    /**
+     * Returns the value to which the specified key is mapped, or
+     * {@code defaultValue} if this map contains no mapping for the key.
+     *
+     * @implSpec
+     * The default implementation makes no guarantees about synchronization
+     * or atomicity properties of this method. Any implementation providing
+     * atomicity guarantees must override this method and document its
+     * concurrency properties.
+     *
+     * @param optKey the key whose associated value is to be returned
+     * @param defaultValue the default mapping of the key
+     * @return the value to which the specified key is mapped, or {@code defaultValue} if this map contains no mapping for the key
+     * @since 1.8
+     */
+    public default <V> V getOrMap(String optKey, Function<Object, V> defaultValue) {
+        return defaultValue.apply(getOption(optKey));
+    }
+
+    /**
      * If the specified key is not already associated with a value (or is mapped
      * to {@code null}), attempts to compute its value using the given mapping
      * function and enters it into this map unless {@code null}.

@@ -45,6 +45,9 @@ public class InsetProcessContext extends OptionSet implements CustomizeScope {
 
     /** 获取环境数据，symbol 可能的值有：@、#、$。其中 # 为默认 */
     public Map<String, Object> findCustomizeEnvironment(String symbol) {
+        if (this.customizeScope == null) {
+            return null;
+        }
         return this.customizeScope.findCustomizeEnvironment(symbol);
     }
 }

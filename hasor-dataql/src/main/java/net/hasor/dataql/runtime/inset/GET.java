@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -50,6 +51,9 @@ class GET implements InsetProcess {
     private static Object readProperty(Object object, String fieldName) {
         if (object == null) {
             return null;
+        }
+        if (object instanceof ObjectModel) {
+            return ((ObjectModel) object).asOri().get(fieldName);
         }
         if (object instanceof Map) {
             return ((Map) object).get(fieldName);

@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql;
+package net.hasor.dataql.domain;
 /**
  * 结果集
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public interface DataModel {
+    /** 得到本来面目 */
+    public Object asOri();
+
     /** 判断是否为 ValueModel 类型值 */
     public default boolean isValueModel() {
         return false;

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain;
-import net.hasor.dataql.DataModel;
 import net.hasor.dataql.runtime.operator.OperatorUtils;
 import net.hasor.utils.NumberUtils;
 
@@ -34,6 +33,11 @@ public class ValueModel implements DataModel {
 
     ValueModel(Object value) {
         this.value = value;
+    }
+
+    @Override
+    public Object asOri() {
+        return this.value;
     }
 
     /** 判断是否为 ValueModel 类型值 */
@@ -63,17 +67,17 @@ public class ValueModel implements DataModel {
 
     /** 转换为 boolean 值，如果为空值，那么返回false。任何整数非0值都为true */
     public boolean asBoolean() {
-        if (value == null) {
+        if (this.value == null) {
             return false;
         }
-        if (value instanceof Boolean) {
-            return (Boolean) value;
+        if (this.value instanceof Boolean) {
+            return (Boolean) this.value;
         }
-        if (value instanceof Number) {
-            return ((Number) value).intValue() != 0;
+        if (this.value instanceof Number) {
+            return ((Number) this.value).intValue() != 0;
         }
-        if (value instanceof String) {
-            String strVal = (String) value;
+        if (this.value instanceof String) {
+            String strVal = (String) this.value;
             if (strVal.length() == 0 //
                     || "null".equals(strVal) //
                     || "NULL".equals(strVal)) {
@@ -88,7 +92,7 @@ public class ValueModel implements DataModel {
                 return Boolean.FALSE;
             }
         }
-        throw new ClassCastException("can not cast to boolean, value : " + value);
+        throw new ClassCastException("can not cast to boolean, value : " + this.value);
     }
 
     /** 判断是否为 byte 类型值 */
@@ -98,14 +102,14 @@ public class ValueModel implements DataModel {
 
     /** 转换为 byte 值，如果为空值，那么返回 0 */
     public byte asByte() {
-        if (value == null) {
+        if (this.value == null) {
             return 0;
         }
-        if (value instanceof Number) {
-            return ((Number) value).byteValue();
+        if (this.value instanceof Number) {
+            return ((Number) this.value).byteValue();
         }
-        if (value instanceof String) {
-            String strVal = (String) value;
+        if (this.value instanceof String) {
+            String strVal = (String) this.value;
             if (strVal.length() == 0 //
                     || "null".equals(strVal) //
                     || "NULL".equals(strVal)) {
@@ -115,10 +119,10 @@ public class ValueModel implements DataModel {
                 return Byte.parseByte(strVal);
             }
         }
-        if (value instanceof Boolean) {
-            return (byte) ((Boolean) value ? 1 : 0);
+        if (this.value instanceof Boolean) {
+            return (byte) ((Boolean) this.value ? 1 : 0);
         }
-        throw new ClassCastException("can not cast to byte, value : " + value);
+        throw new ClassCastException("can not cast to byte, value : " + this.value);
     }
 
     /** 判断是否为 short 类型值 */
@@ -128,14 +132,14 @@ public class ValueModel implements DataModel {
 
     /** 转换为 short 值，如果为空值，那么返回 0 */
     public short asShort() {
-        if (value == null) {
+        if (this.value == null) {
             return 0;
         }
-        if (value instanceof Number) {
-            return ((Number) value).shortValue();
+        if (this.value instanceof Number) {
+            return ((Number) this.value).shortValue();
         }
-        if (value instanceof String) {
-            String strVal = (String) value;
+        if (this.value instanceof String) {
+            String strVal = (String) this.value;
             if (strVal.length() == 0 //
                     || "null".equals(strVal) //
                     || "NULL".equals(strVal)) {
@@ -145,10 +149,10 @@ public class ValueModel implements DataModel {
                 return Short.parseShort(strVal);
             }
         }
-        if (value instanceof Boolean) {
-            return (short) ((Boolean) value ? 1 : 0);
+        if (this.value instanceof Boolean) {
+            return (short) ((Boolean) this.value ? 1 : 0);
         }
-        throw new ClassCastException("can not cast to short, value : " + value);
+        throw new ClassCastException("can not cast to short, value : " + this.value);
     }
 
     /** 判断是否为 short 类型值 */
@@ -158,17 +162,17 @@ public class ValueModel implements DataModel {
 
     /** 转换为 int 值，如果为空值，那么返回 0 */
     public int asInt() {
-        if (value == null) {
+        if (this.value == null) {
             return 0;
         }
-        if (value instanceof Integer) {
-            return (Integer) value;
+        if (this.value instanceof Integer) {
+            return (Integer) this.value;
         }
-        if (value instanceof Number) {
-            return ((Number) value).intValue();
+        if (this.value instanceof Number) {
+            return ((Number) this.value).intValue();
         }
-        if (value instanceof String) {
-            String strVal = (String) value;
+        if (this.value instanceof String) {
+            String strVal = (String) this.value;
             if (strVal.length() == 0 //
                     || "null".equals(strVal) //
                     || "NULL".equals(strVal)) {
@@ -181,10 +185,10 @@ public class ValueModel implements DataModel {
                 return Integer.parseInt(strVal);
             }
         }
-        if (value instanceof Boolean) {
-            return (Boolean) value ? 1 : 0;
+        if (this.value instanceof Boolean) {
+            return (Boolean) this.value ? 1 : 0;
         }
-        throw new ClassCastException("can not cast to int, value : " + value);
+        throw new ClassCastException("can not cast to int, value : " + this.value);
     }
 
     /** 判断是否为 long 类型值 */
@@ -194,14 +198,14 @@ public class ValueModel implements DataModel {
 
     /** 转换为 long 值，如果为空值，那么返回 0 */
     public long asLong() {
-        if (value == null) {
+        if (this.value == null) {
             return 0;
         }
-        if (value instanceof Number) {
-            return ((Number) value).longValue();
+        if (this.value instanceof Number) {
+            return ((Number) this.value).longValue();
         }
-        if (value instanceof String) {
-            String strVal = (String) value;
+        if (this.value instanceof String) {
+            String strVal = (String) this.value;
             if (strVal.length() == 0 //
                     || "null".equals(strVal) //
                     || "NULL".equals(strVal)) {
@@ -214,10 +218,10 @@ public class ValueModel implements DataModel {
                 return Long.parseLong(strVal);
             }
         }
-        if (value instanceof Boolean) {
-            return (Boolean) value ? 1 : 0;
+        if (this.value instanceof Boolean) {
+            return (Boolean) this.value ? 1 : 0;
         }
-        throw new ClassCastException("can not cast to long, value : " + value);
+        throw new ClassCastException("can not cast to long, value : " + this.value);
     }
 
     /** 判断是否为 float 类型值 */
@@ -227,14 +231,14 @@ public class ValueModel implements DataModel {
 
     /** 转换为 float 值，如果为空值，那么返回 0.0 */
     public float asFloat() {
-        if (value == null) {
+        if (this.value == null) {
             return 0.0f;
         }
-        if (value instanceof Number) {
-            return ((Number) value).floatValue();
+        if (this.value instanceof Number) {
+            return ((Number) this.value).floatValue();
         }
-        if (value instanceof String) {
-            String strVal = value.toString();
+        if (this.value instanceof String) {
+            String strVal = this.value.toString();
             if (strVal.length() == 0 //
                     || "null".equals(strVal) //
                     || "NULL".equals(strVal)) {
@@ -247,10 +251,10 @@ public class ValueModel implements DataModel {
                 return Float.parseFloat(strVal);
             }
         }
-        if (value instanceof Boolean) {
-            return (Boolean) value ? 1 : 0;
+        if (this.value instanceof Boolean) {
+            return (Boolean) this.value ? 1 : 0;
         }
-        throw new ClassCastException("can not cast to float, value : " + value);
+        throw new ClassCastException("can not cast to float, value : " + this.value);
     }
 
     /** 判断是否为 double 类型值 */
@@ -260,14 +264,14 @@ public class ValueModel implements DataModel {
 
     /** 转换为 double 值，如果为空值，那么返回 0.0 */
     public double asDouble() {
-        if (value == null) {
+        if (this.value == null) {
             return 0.0d;
         }
-        if (value instanceof Number) {
-            return ((Number) value).doubleValue();
+        if (this.value instanceof Number) {
+            return ((Number) this.value).doubleValue();
         }
-        if (value instanceof String) {
-            String strVal = value.toString();
+        if (this.value instanceof String) {
+            String strVal = this.value.toString();
             if (strVal.length() == 0 //
                     || "null".equals(strVal) //
                     || "NULL".equals(strVal)) {
@@ -280,10 +284,10 @@ public class ValueModel implements DataModel {
                 return Double.parseDouble(strVal);
             }
         }
-        if (value instanceof Boolean) {
-            return (Boolean) value ? 1 : 0;
+        if (this.value instanceof Boolean) {
+            return (Boolean) this.value ? 1 : 0;
         }
-        throw new ClassCastException("can not cast to double, value : " + value);
+        throw new ClassCastException("can not cast to double, value : " + this.value);
     }
 
     /** 判断是否为 BigDecimal 类型值 */
@@ -293,26 +297,26 @@ public class ValueModel implements DataModel {
 
     /** 转换为 BigDecimal 值，如果为空值，那么返回 BigDecimal.ZERO */
     public BigDecimal asBigDecimal() {
-        if (value == null) {
+        if (this.value == null) {
             return BigDecimal.ZERO;
         }
-        if (value instanceof BigDecimal) {
-            return (BigDecimal) value;
+        if (this.value instanceof BigDecimal) {
+            return (BigDecimal) this.value;
         }
-        if (value instanceof BigInteger) {
-            return new BigDecimal((BigInteger) value);
+        if (this.value instanceof BigInteger) {
+            return new BigDecimal((BigInteger) this.value);
         }
-        if (value instanceof Boolean) {
-            return (Boolean) value ? BigDecimal.ONE : BigDecimal.ZERO;
+        if (this.value instanceof Boolean) {
+            return (Boolean) this.value ? BigDecimal.ONE : BigDecimal.ZERO;
         }
-        String strVal = value.toString();
+        String strVal = this.value.toString();
         if (strVal.length() == 0) {
             return BigDecimal.ZERO;
         }
         try {
             return new BigDecimal(strVal);
         } catch (NumberFormatException e) {
-            throw new ClassCastException("can not cast to BigDecimal, value : " + value);
+            throw new ClassCastException("can not cast to BigDecimal, value : " + this.value);
         }
     }
 
@@ -323,28 +327,28 @@ public class ValueModel implements DataModel {
 
     /** 转换为 BigDecimal 值，如果为空值，那么返回 BigDecimal.ZERO */
     public BigInteger asBigInteger() {
-        if (value == null) {
+        if (this.value == null) {
             return BigInteger.ZERO;
         }
-        if (value instanceof BigInteger) {
-            return (BigInteger) value;
+        if (this.value instanceof BigInteger) {
+            return (BigInteger) this.value;
         }
-        if (value instanceof Float || value instanceof Double) {
-            return BigInteger.valueOf(((Number) value).longValue());
+        if (this.value instanceof Float || this.value instanceof Double) {
+            return BigInteger.valueOf(((Number) this.value).longValue());
         }
-        String strVal = value.toString();
+        String strVal = this.value.toString();
         if (strVal.length() == 0 //
                 || "null".equals(strVal) //
                 || "NULL".equals(strVal)) {
             return BigInteger.ZERO;
         }
-        if (value instanceof Boolean) {
-            return (Boolean) value ? BigInteger.ONE : BigInteger.ZERO;
+        if (this.value instanceof Boolean) {
+            return (Boolean) this.value ? BigInteger.ONE : BigInteger.ZERO;
         }
         try {
             return new BigInteger(strVal);
         } catch (NumberFormatException e) {
-            throw new ClassCastException("can not cast to BigInteger, value : " + value);
+            throw new ClassCastException("can not cast to BigInteger, value : " + this.value);
         }
     }
 

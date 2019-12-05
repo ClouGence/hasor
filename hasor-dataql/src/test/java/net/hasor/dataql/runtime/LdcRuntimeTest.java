@@ -1,6 +1,6 @@
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.DataModel;
+import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.OptionValue;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.domain.ValueModel;
@@ -153,12 +153,4 @@ public class LdcRuntimeTest extends AbstractTestResource implements OptionValue 
         assert !((ValueModel) dataModel).isString();
         assert ((ValueModel) dataModel).isNull();
     }
-    //    @Test
-    //    public void a_test() throws Exception {
-    //        QueryModel queryModel = QueryHelper.queryParser(" return (10 + 2 * 3) / 4 + 100 + 100 +  100");
-    //        QIL qil = QueryHelper.queryCompiler(queryModel);
-    //        QueryEngineImpl queryEngine = new QueryEngineImpl(qil);
-    //        QueryImpl query = queryEngine.newQuery();
-    //        query.execute();
-    //    }
 }

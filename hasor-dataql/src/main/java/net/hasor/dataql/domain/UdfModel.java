@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain;
-import net.hasor.dataql.DataModel;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.extend.udfs.UdfResult;
@@ -29,6 +28,11 @@ public class UdfModel implements DataModel, UDF {
 
     UdfModel(UDF udf) {
         this.udf = udf;
+    }
+
+    @Override
+    public UDF asOri() {
+        return this.udf;
     }
 
     /** 判断是否为 UdfModel 类型值 */

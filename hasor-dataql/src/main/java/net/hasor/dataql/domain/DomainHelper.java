@@ -1,5 +1,4 @@
 package net.hasor.dataql.domain;
-import net.hasor.dataql.DataModel;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.runtime.operator.OperatorUtils;
 import net.hasor.utils.ref.BeanMap;

@@ -111,8 +111,8 @@ varInst         : VAR IDENTIFIER ASS anyObject;
 anyObject       : lambdaDef | primitiveValue | objectValue | listValue | funcCall | routeMapping | expr;
 
 /* 路由 */
-routeMapping    : ROU ((OCBR (IDENTIFIER | STRING) CCBR) | routeNameSet)    #specialRoute  // 特殊路由
-                | routeNameSet                                              #normalRoute   // 一般路由
+routeMapping    : ROU OCBR (IDENTIFIER | STRING) CCBR (DOT routeNameSet)?   #specialRoute  // 特殊路由
+                | ROU? routeNameSet                                         #normalRoute   // 一般路由
                 | routeMapping '=>' (objectValue | listValue)               #convertRoute  // 路由并转换结果
                 ;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -22,9 +22,6 @@ import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
-import net.hasor.utils.BeanUtils;
-
-import java.util.Map;
 
 /**
  * PUT     // 将栈顶对象元素放入对象元素中（例：PUT,"xxxx"）
@@ -43,27 +40,14 @@ class PUT implements InsetProcess {
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
-        String nodeName = sequence.currentInst().getString(0);
+        String fieldName = sequence.currentInst().getString(0);
         Object useData = dataStack.pop();
         Object containerData = dataStack.peek();
-        writeProperty(containerData, nodeName, useData, context);
-    }
-
-    private void writeProperty(Object containerData, String fieldName, Object useData, InsetProcessContext context) throws InstructRuntimeException {
-        if (containerData == null) {
+        //
+        if (containerData instanceof ObjectModel) {
+            ((ObjectModel) containerData).put(fieldName, useData);
             return;
         }
-        if (containerData instanceof Map) {
-            ((Map) containerData).put(fieldName, useData);
-            return;
-        }
-        //
-        Object safetyVal = context.getOption(Option.SAFE_PUT);
-        boolean safetyBool = Boolean.TRUE.equals(safetyVal);
-        if (!safetyBool && !BeanUtils.canWriteProperty(fieldName, containerData.getClass())) {
-            throw new InstructRuntimeException("output data error, unable to write property");
-        }
-        //
-        BeanUtils.writePropertyOrField(containerData, fieldName, useData);
+        throw new InstructRuntimeException("output data error, target type must be ObjectModel.");
     }
 }

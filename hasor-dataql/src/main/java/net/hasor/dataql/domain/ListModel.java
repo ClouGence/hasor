@@ -14,31 +14,36 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain;
-import net.hasor.dataql.DataModel;
-
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * 集合类型结果集
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-class ListModel extends ArrayList<DataModel> implements DataModel {
+public class ListModel implements DataModel {
+    private List<DataModel> dataModel = new ArrayList<>();
+
     public ListModel() {
     }
 
     public ListModel(Collection<?> dataItem) {
-        this.initCollection(dataItem);
+        if (dataItem != null) {
+            for (Object object : dataItem) {
+                this.add(DomainHelper.convertTo(object));
+            }
+        }
     }
 
-    private void initCollection(Collection<?> dataItem) {
-        if (dataItem == null || dataItem.isEmpty()) {
-            return;
-        }
-        for (Object object : dataItem) {
-            add(DomainHelper.convertTo(object));
-        }
+    public void add(Object object) {
+        this.dataModel.add(DomainHelper.convertTo(object));
+    }
+
+    @Override
+    public List<DataModel> asOri() {
+        return this.dataModel;
     }
 
     /** 判断是否为 ListModel 类型值 */
@@ -48,12 +53,12 @@ class ListModel extends ArrayList<DataModel> implements DataModel {
 
     /** 判断是否为 ValueModel 类型值 */
     public boolean isValueModel(int index) {
-        return super.get(index) instanceof ValueModel;
+        return this.dataModel.get(index) instanceof ValueModel;
     }
 
     /** 将某一个元素转换为 ValueModel */
     public ValueModel asValueModel(int index) {
-        Object dataItem = super.get(index);
+        Object dataItem = this.dataModel.get(index);
         if (dataItem instanceof ValueModel) {
             return (ValueModel) dataItem;
         }
@@ -62,12 +67,12 @@ class ListModel extends ArrayList<DataModel> implements DataModel {
 
     /** 判断是否为 ListModel 类型值 */
     public boolean isListModel(int index) {
-        return super.get(index) instanceof ListModel;
+        return this.dataModel.get(index) instanceof ListModel;
     }
 
     /** 将某一个元素转换为 ListModel */
     public ListModel asListModel(int index) {
-        Object dataItem = super.get(index);
+        Object dataItem = this.dataModel.get(index);
         if (dataItem instanceof ListModel) {
             return (ListModel) dataItem;
         }
@@ -76,12 +81,12 @@ class ListModel extends ArrayList<DataModel> implements DataModel {
 
     /** 判断是否为 ObjectModel 类型值 */
     public boolean isObjectModel(int index) {
-        return super.get(index) instanceof ObjectModel;
+        return this.dataModel.get(index) instanceof ObjectModel;
     }
 
     /** 将某一个元素转换为 ObjectModel */
     public ObjectModel asObjectModel(int index) {
-        Object dataItem = super.get(index);
+        Object dataItem = this.dataModel.get(index);
         if (dataItem instanceof ObjectModel) {
             return (ObjectModel) dataItem;
         }
@@ -90,12 +95,12 @@ class ListModel extends ArrayList<DataModel> implements DataModel {
 
     /** 判断是否为 UdfModel 类型值 */
     public boolean isUdfModel(int index) {
-        return super.get(index) instanceof UdfModel;
+        return this.dataModel.get(index) instanceof UdfModel;
     }
 
     /** 将某一个元素转换为 UdfModel */
     public UdfModel asUdfModel(int index) {
-        Object dataItem = super.get(index);
+        Object dataItem = this.dataModel.get(index);
         if (dataItem instanceof UdfModel) {
             return (UdfModel) dataItem;
         }

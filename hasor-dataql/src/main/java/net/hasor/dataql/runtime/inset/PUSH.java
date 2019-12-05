@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -21,8 +22,6 @@ import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
-
-import java.util.Collection;
 
 /**
  * PUSH    // 将栈顶元素压入集合（例：PUSH）
@@ -44,10 +43,10 @@ class PUSH implements InsetProcess {
         Object data = dataStack.pop();
         Object ors = dataStack.peek();
         //
-        if (ors instanceof Collection) {
-            ((Collection) ors).add(data);
+        if (ors instanceof ListModel) {
+            ((ListModel) ors).add(data);
             return;
         }
-        throw new InstructRuntimeException("output data error, target type must be Collection.");
+        throw new InstructRuntimeException("output data error, target type must be ListModel.");
     }
 }

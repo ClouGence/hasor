@@ -35,5 +35,6 @@ class LABEL implements InsetProcess {
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
+        System.out.println();
     }
 }

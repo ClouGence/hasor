@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.mem;
-import net.hasor.dataql.DataModel;
+import net.hasor.dataql.domain.DataModel;
 
 import java.util.Stack;
 
