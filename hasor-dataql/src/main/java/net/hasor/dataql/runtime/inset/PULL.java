@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -44,6 +45,9 @@ class PULL implements InsetProcess {
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
         Object data = dataStack.pop();
         //
+        if (data instanceof ListModel) {
+            data = ((ListModel) data).asOri();
+        }
         if (!(data instanceof Collection)) {
             throw new InstructRuntimeException("output data error, target type must be Collection.");
         }
@@ -51,7 +55,7 @@ class PULL implements InsetProcess {
         int point = sequence.currentInst().getInt(0);
         int size = ((Collection) data).size();
         if (point < 0) {
-            point = size - point;
+            point = size + point;
             if (point <= 0) {
                 point = 0;
             }

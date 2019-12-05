@@ -16,8 +16,7 @@
 package net.hasor.dataql;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 查询
@@ -33,6 +32,20 @@ public interface Query extends Option {
     /** 执行查询 */
     public default QueryResult execute(Map<String, Object> envData) throws InstructRuntimeException {
         return this.execute(symbol -> envData);
+    }
+
+    /** 执行查询 */
+    public default QueryResult execute(Object... envData) throws InstructRuntimeException {
+        return execute(Arrays.asList(envData));
+    }
+
+    /** 执行查询 */
+    public default QueryResult execute(List<?> envData) throws InstructRuntimeException {
+        Map<String, Object> objectMap = new HashMap<>();
+        for (int i = 0; i < envData.size(); i++) {
+            objectMap.put("_" + i, envData.get(i));
+        }
+        return this.execute(objectMap);
     }
 
     /** 执行查询 */

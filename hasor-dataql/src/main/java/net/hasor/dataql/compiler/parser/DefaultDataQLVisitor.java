@@ -417,7 +417,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         if ("@".equals(rouType)) {
             specialType = SpecialType.Special_C;
         }
-        //
+        // .根
         TerminalNode identifier = ctx.IDENTIFIER();
         TerminalNode string = ctx.STRING();
         String rouName = null;
@@ -429,9 +429,14 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         }
         this.instStack.push(new NameRouteVariable(enter, rouName));
         //
-        RouteNameSetContext routeNameSetContext = ctx.routeNameSet();
-        if (routeNameSetContext != null) {
-            routeNameSetContext.accept(this);
+        // .x{} 后面的继续路由
+        RouteSubscriptContext routeSubscript = ctx.routeSubscript();
+        if (routeSubscript != null) {
+            routeSubscript.accept(this);
+        }
+        RouteNameSetContext routeNameSet = ctx.routeNameSet();
+        if (routeNameSet != null) {
+            routeNameSet.accept(this);
         }
         return null;
     }
