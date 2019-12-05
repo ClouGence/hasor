@@ -112,7 +112,7 @@ anyObject       : lambdaDef | primitiveValue | objectValue | listValue | funcCal
 
 /* 路由 */
 routeMapping    : ROU OCBR (IDENTIFIER | STRING) CCBR routeSubscript? (DOT routeNameSet)?   #specialRoute  // 特殊路由
-                | ROU? routeNameSet                                                         #normalRoute   // 一般路由
+                | ((ROU? routeNameSet) | (ROU (DOT routeNameSet)?) )                        #normalRoute   // 一般路由
                 | routeMapping '=>' (objectValue | listValue)                               #convertRoute  // 路由并转换结果
                 ;
 
@@ -130,7 +130,8 @@ routeSubscript  : LSBT ( STRING | INTEGER_NUM ) RSBT;
 funcCall        : routeMapping LBT ( anyObject (COMMA anyObject)* )? RBT funcCallResult?;
 
 /** 函数调用返回值处理 */
-funcCallResult  : (routeSubscript+)? DOT routeNameSet funcCallResult?       #funcCallResult_route   // 对结果在进行路由，并处理结果
+funcCallResult  : (routeSubscript+)? DOT routeNameSet funcCallResult?       #funcCallResult_route1  // 对结果在进行路由，并处理结果
+                | routeSubscript+ (DOT routeNameSet)? funcCallResult?       #funcCallResult_route2  // 对结果在进行路由，并处理结果
                 | '=>' (objectValue | listValue)                            #funcCallResult_convert // 结果转换
                 | LBT ( anyObject (COMMA anyObject)* )? RBT funcCallResult? #funcCallResult_call    // 调用函数返回的函数，并处理结果
                 ;

@@ -39,6 +39,6 @@ class E_POP implements InsetProcess {
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
-        Object test = envStack.pop();
+        envStack.pop();
     }
 }

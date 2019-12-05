@@ -118,12 +118,19 @@ public interface DataQLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFuncCall(DataQLParser.FuncCallContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code funcCallResult_route}
+	 * Visit a parse tree produced by the {@code funcCallResult_route1}
 	 * labeled alternative in {@link DataQLParser#funcCallResult}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFuncCallResult_route(DataQLParser.FuncCallResult_routeContext ctx);
+	T visitFuncCallResult_route1(DataQLParser.FuncCallResult_route1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code funcCallResult_route2}
+	 * labeled alternative in {@link DataQLParser#funcCallResult}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncCallResult_route2(DataQLParser.FuncCallResult_route2Context ctx);
 	/**
 	 * Visit a parse tree produced by the {@code funcCallResult_convert}
 	 * labeled alternative in {@link DataQLParser#funcCallResult}.

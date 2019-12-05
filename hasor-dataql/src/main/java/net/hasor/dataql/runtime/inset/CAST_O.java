@@ -14,38 +14,53 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.UDF;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
-import net.hasor.dataql.runtime.mem.RefCall;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
- * M_DEF   // 函数定义，将栈顶元素转换为 UDF
- *         - 参数说明：共0参数；
+ * CAST_O  // 将栈顶元素转换为一个对象，如果是集合那么取第一条记录（可以通过CAST_I方式解决，但会多消耗大约8条左右的指令）
+ *         - 参数说明：共0参数
  *         - 栈行为：消费1，产出1
  *         - 堆行为：无
  *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
-class M_DEF implements InsetProcess {
+class CAST_O implements InsetProcess {
     @Override
     public int getOpcode() {
-        return M_DEF;
+        return CAST_O;
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
-        Object refCall = dataStack.pop();
-        if (!(refCall instanceof UDF)) {
-            throw new InstructRuntimeException("target or Property is not UDF.");
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
+        Object data = dataStack.pop();
+        //
+        if (data == null) {
+            //
+        } else if (data instanceof Collection) {
+            Iterator dataSet = ((Collection) data).iterator();
+            if (dataSet.hasNext()) {
+                data = dataSet.next();
+            } else {
+                data = null;
+            }
+        } else if (data.getClass().isArray()) {
+            Object[] dataSet = (Object[]) data;
+            if (dataSet.length != 0) {
+                data = dataSet[0];
+            } else {
+                data = null;
+            }
         }
-        refCall = new RefCall((UDF) refCall);
-        dataStack.push(refCall);
+        //
+        dataStack.push(data);
     }
 }

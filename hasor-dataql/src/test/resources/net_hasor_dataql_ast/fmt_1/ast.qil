@@ -6,35 +6,38 @@
   #04  RETURN    0
   #05  E_LOAD    #
   #06  GET       b
-  #07  E_PUSH
-  #08  NEW_O
-  #09  E_LOAD    #
-  #10  GET       abc
-  #11  PUT       abc
-  #12  E_LOAD    #
-  #13  GET       cde
-  #14  PUT       cde
-  #15  E_POP
-  #16  RETURN    0
-  #17  E_LOAD    #
-  #18  GET       b
-  #19  E_PUSH
-  #20  NEW_O
-  #21  E_LOAD    #
-  #22  GET       abc
-  #23  PUT       abc
-  #24  E_POP
-  #25  RETURN    0
-  #26  E_LOAD    #
-  #27  GET       b
-  #28  E_PUSH
-  #29  NEW_O
-  #30  E_LOAD    #
-  #31  GET       ccc
-  #32  PUT       abc
+  #07  CAST_O
+  #08  E_PUSH
+  #09  NEW_O
+  #10  E_LOAD    #
+  #11  GET       abc
+  #12  PUT       abc
+  #13  E_LOAD    #
+  #14  GET       cde
+  #15  PUT       cde
+  #16  E_POP
+  #17  RETURN    0
+  #18  E_LOAD    #
+  #19  GET       b
+  #20  CAST_O
+  #21  E_PUSH
+  #22  NEW_O
+  #23  E_LOAD    #
+  #24  GET       abc
+  #25  PUT       abc
+  #26  E_POP
+  #27  RETURN    0
+  #28  E_LOAD    #
+  #29  GET       b
+  #30  CAST_O
+  #31  E_PUSH
+  #32  NEW_O
   #33  E_LOAD    #
-  #34  GET       dddd
-  #35  PUT       cde
-  #36  E_POP
-  #37  RETURN    0
+  #34  GET       ccc
+  #35  PUT       abc
+  #36  E_LOAD    #
+  #37  GET       dddd
+  #38  PUT       cde
+  #39  E_POP
+  #40  RETURN    0
 

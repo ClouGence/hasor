@@ -41,19 +41,22 @@ class E_LOAD implements InsetProcess {
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
         String symbol = sequence.currentInst().getString(0);
+        if (envStack.isEmpty()) {
+            dataStack.push(null);
+            return;
+        }
         //
-        // # 表示环境栈顶(同一般路由)
         if ("#".equalsIgnoreCase(symbol)) {
+            // # 表示环境栈顶(同一般路由)
             dataStack.push(envStack.peek());
-        }
-        // @ 表示第二层环境栈元素
-        if ("#".equalsIgnoreCase(symbol)) {
+        } else if ("@".equalsIgnoreCase(symbol)) {
+            // @ 表示第二层环境栈元素
             dataStack.push(envStack.peekOfDepth(1));
-        }
-        // $ 根环境栈元素（每一个结果转换都会产生一层环境栈）
-        if ("#".equalsIgnoreCase(symbol)) {
+        } else if ("$".equalsIgnoreCase(symbol)) {
+            // $ 根环境栈元素（每一个结果转换都会产生一层环境栈）
             dataStack.push(envStack.firstElement());
+        } else {
+            throw new InstructRuntimeException("symbol '" + symbol + "' is not define.");
         }
-        throw new InstructRuntimeException("symbol '" + symbol + "' is not define.");
     }
 }

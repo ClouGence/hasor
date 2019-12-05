@@ -41,6 +41,10 @@ public class ListModel implements DataModel {
         this.dataModel.add(DomainHelper.convertTo(object));
     }
 
+    public int size() {
+        return this.dataModel.size();
+    }
+
     @Override
     public List<DataModel> asOri() {
         return this.dataModel;

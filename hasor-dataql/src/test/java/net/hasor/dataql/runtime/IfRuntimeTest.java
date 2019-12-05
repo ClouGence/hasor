@@ -61,4 +61,17 @@ public class IfRuntimeTest extends AbstractTestResource implements OptionValue {
         assert ((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).asInt() == 123;
     }
+
+    @Test
+    public void if_5_Test() throws Exception {
+        Map<String, Object> objectMap = new HashMap<String, Object>() {{
+            put("a", 2);
+        }};
+        //
+        Query compilerQL = compilerQL("if (${a} == 1) return 'a1' else if ( ${a} ==2 ) return 'a2' else return 'a3'");
+        DataModel dataModel = compilerQL.execute(objectMap).getData();
+        assert dataModel.isValueModel();
+        assert ((ValueModel) dataModel).isString();
+        assert ((ValueModel) dataModel).asString().equals("a2");
+    }
 }

@@ -10,7 +10,7 @@
   #08  E_PUSH
   #09  NEW_A
   #10  LABEL     10
-  #11  E_LOAD
+  #11  E_LOAD    #
   #12  GET       next
   #13  IF        19
   #14  LDC_S     abc
@@ -27,10 +27,10 @@
   #25  E_PUSH
   #26  NEW_A
   #27  LABEL     27
-  #28  E_LOAD
+  #28  E_LOAD    #
   #29  GET       next
   #30  IF        39
-  #31  E_LOAD
+  #31  E_LOAD    #
   #32  GET       data
   #33  E_PUSH
   #34  E_LOAD    #
@@ -47,10 +47,10 @@
   #45  E_PUSH
   #46  NEW_A
   #47  LABEL     47
-  #48  E_LOAD
+  #48  E_LOAD    #
   #49  GET       next
   #50  IF        94
-  #51  E_LOAD
+  #51  E_LOAD    #
   #52  GET       data
   #53  E_PUSH
   #54  NEW_A
@@ -61,7 +61,7 @@
   #59  PUSH
   #60  E_POP
   #61  PUSH
-  #62  E_LOAD
+  #62  E_LOAD    #
   #63  GET       data
   #64  E_PUSH
   #65  NEW_O

@@ -45,7 +45,8 @@ public class ObjectFormatInstCompiler implements InstCompiler<ObjectFormat> {
         // .编译表达式
         RouteVariable formVariable = astInst.getForm();
         compilerContext.findInstCompilerByInst(formVariable).doCompiler(queue);
-        queue.inst(E_PUSH);// 将数据压入环境栈
+        queue.inst(CAST_O);
+        queue.inst(E_PUSH);
         {
             queue.inst(NEW_O);
             ObjectVariable formatTo = astInst.getFormatTo();
@@ -57,6 +58,6 @@ public class ObjectFormatInstCompiler implements InstCompiler<ObjectFormat> {
                 queue.inst(PUT, fieldKey);
             }
         }
-        queue.inst(E_POP);// 丢弃环境栈顶元素
+        queue.inst(E_POP);
     }
 }

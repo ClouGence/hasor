@@ -7,6 +7,13 @@ public class DataBean {
     private Date         time  = new Date();
     private Thread.State state = Thread.State.TIMED_WAITING;
 
+    public DataBean() {
+    }
+
+    public DataBean(int i) {
+        name = name + "_" + i;
+    }
+
     public String getName() {
         return name;
     }

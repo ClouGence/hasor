@@ -347,7 +347,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     }
 
     @Override
-    public T visitFuncCallResult_route(FuncCallResult_routeContext ctx) {
+    public T visitFuncCallResult_route1(FuncCallResult_route1Context ctx) {
         List<RouteSubscriptContext> subscriptList = ctx.routeSubscript();
         if (subscriptList != null) {
             for (RouteSubscriptContext context : subscriptList) {
@@ -360,7 +360,25 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         FuncCallResultContext funcCallResult = ctx.funcCallResult();
         if (funcCallResult != null) {
             funcCallResult.accept(this);
-            return null;
+        }
+        return null;
+    }
+
+    @Override
+    public T visitFuncCallResult_route2(FuncCallResult_route2Context ctx) {
+        List<RouteSubscriptContext> subscriptList = ctx.routeSubscript();
+        for (RouteSubscriptContext context : subscriptList) {
+            context.accept(this);
+        }
+        //
+        RouteNameSetContext routeNameSet = ctx.routeNameSet();
+        if (routeNameSet != null) {
+            ctx.routeNameSet().accept(this);
+        }
+        //
+        FuncCallResultContext funcCallResult = ctx.funcCallResult();
+        if (funcCallResult != null) {
+            funcCallResult.accept(this);
         }
         return null;
     }
@@ -460,7 +478,10 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         EnterRouteVariable enter = new EnterRouteVariable(RouteType.Normal, specialType);
         this.instStack.push(enter);
         //
-        ctx.routeNameSet().accept(this);
+        RouteNameSetContext routeNameSet = ctx.routeNameSet();
+        if (routeNameSet != null) {
+            routeNameSet.accept(this);
+        }
         return null;
     }
 

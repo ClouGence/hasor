@@ -39,9 +39,6 @@ public class OpcodesPool {
 
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
         InsetProcess process = this.processes[sequence.currentInst().getInstCode()];
-        if (process == null) {
-            return;
-        }
         process.doWork(sequence, dataHeap, dataStack, envStack, context);
     }
 
@@ -84,6 +81,7 @@ public class OpcodesPool {
         pool.addInsetProcess(new E_POP());
         pool.addInsetProcess(new E_LOAD());
         pool.addInsetProcess(new CAST_I());
+        pool.addInsetProcess(new CAST_O());
         //
         pool.addInsetProcess(new CALL());
         pool.addInsetProcess(new M_REF());

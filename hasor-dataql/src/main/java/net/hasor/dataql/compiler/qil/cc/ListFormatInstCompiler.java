@@ -23,6 +23,8 @@ import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.dataql.compiler.qil.Label;
 
+import static net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType.Special_A;
+
 /**
  * 函数调用的返回值处理格式，List格式。
  * @author 赵永春 (zyc@hasor.net)
@@ -53,14 +55,14 @@ public class ListFormatInstCompiler implements InstCompiler<ListFormat> {
                 // .声明循环起点
                 queue.inst(LABEL, enterLoop);
                 // .加载迭代器并尝试获取下一条数据，如果数据获取失败就跳出迭代器结束遍历
-                queue.inst(E_LOAD);
+                queue.inst(E_LOAD, Special_A.getCode());
                 queue.inst(GET, "next");
                 queue.inst(IF, breakLoop);
                 //
                 for (Variable variable : astInst.getFormatTo().getExpressionList()) {
                     if (!(variable instanceof PrimitiveVariable)) {
                         // 从环境栈上取得迭代器并拿到数据，然后在放到环境栈顶。等待后面 路由表达式使用
-                        queue.inst(E_LOAD);
+                        queue.inst(E_LOAD, Special_A.getCode());
                         queue.inst(GET, "data");
                         queue.inst(E_PUSH);
                         compilerContext.findInstCompilerByInst(variable).doCompiler(queue);

@@ -15,7 +15,7 @@
  */
 package net.hasor.dataql.compiler.qil;
 /**
- * QL 指令集，共计 33 条指令
+ * QL 指令集，共计 35 条指令
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-03
  */
@@ -44,8 +44,8 @@ public interface Opcodes {
     // -------------------------------------------------------------------------- 控制指令
     public static final byte IF     = 51;   // if 条件判断，如果条件判断失败那么 GOTO 到指定位置，否则继续往下执行
     public static final byte GOTO   = 52;   // 执行跳转
-    public static final byte OPT    = 53;   // 环境配置，影响执行引擎的参数选项。
-    public static final byte CAST_I = 54;   // 将栈顶元素转换为迭代器，作为迭代器有三个特殊操作：data(数据)、next(移动到下一个，如果成功返回true)
+    public static final byte CAST_I = 53;   // 将栈顶元素转换为迭代器，作为迭代器有三个特殊操作：data(数据)、next(移动到下一个，如果成功返回true)
+    public static final byte CAST_O = 54;   // 将栈顶元素转换为一个对象，如果是集合那么取第一条记录（可以通过CAST_I方式解决，但会多消耗大约8条左右的指令）
     public static final byte E_PUSH = 55;   // 取出当前栈顶数据，并压入环境栈
     public static final byte E_POP  = 56;   // 丢弃环境栈顶的元素
     public static final byte E_LOAD = 57;   // 加载环境栈顶的数据到数据栈
@@ -59,6 +59,7 @@ public interface Opcodes {
     public static final byte M_TYP  = 65;   // 加载一个类型对象到栈顶，该类型是一个有效的 UDF。这相当于引用 java 类型UDF 函数
     public static final byte LOCAL  = 66;   // 将入参存入堆，也用于标记变量名称
     // -------------------------------------------------------------------------- 辅助指令
-    public static final byte LABEL  = 71;   // 协助GOTO定位用，无实际作用
-    public static final byte LINE   = 72;   // 行号，无实际作用
+    public static final byte OPT    = 71;   // 环境配置，影响执行引擎的参数选项。
+    public static final byte LABEL  = 72;   // 协助GOTO定位用，无实际作用
+    public static final byte LINE   = 73;   // 行号，无实际作用
 }

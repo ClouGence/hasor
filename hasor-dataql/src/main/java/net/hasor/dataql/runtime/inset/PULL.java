@@ -23,6 +23,7 @@ import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -45,13 +46,18 @@ class PULL implements InsetProcess {
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
         Object data = dataStack.pop();
         //
-        if (data instanceof ListModel) {
+        if (data == null) {
+            dataStack.push(null);
+            return;
+        } else if (data instanceof ListModel) {
             data = ((ListModel) data).asOri();
+        } else if (data.getClass().isArray()) {
+            data = Arrays.asList((Object[]) data);
         }
+        //
         if (!(data instanceof Collection)) {
             throw new InstructRuntimeException("output data error, target type must be Collection.");
         }
-        //
         int point = sequence.currentInst().getInt(0);
         int size = ((Collection) data).size();
         if (point < 0) {

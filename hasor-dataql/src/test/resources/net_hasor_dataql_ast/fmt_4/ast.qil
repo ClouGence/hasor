@@ -11,10 +11,10 @@
   #09  E_PUSH
   #10  NEW_A
   #11  LABEL     11
-  #12  E_LOAD
+  #12  E_LOAD    #
   #13  GET       next
   #14  IF        23
-  #15  E_LOAD
+  #15  E_LOAD    #
   #16  GET       data
   #17  E_PUSH
   #18  E_LOAD    #

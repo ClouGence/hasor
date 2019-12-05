@@ -16,7 +16,6 @@
 package net.hasor.dataql.runtime.mem;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
-import net.hasor.dataql.extend.udfs.UdfResult;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.InstructRuntimeException;
@@ -43,7 +42,7 @@ public class RefLambdaCall implements UDF {
     }
 
     @Override
-    public UdfResult call(Object[] values, Option readOnly) throws InstructRuntimeException {
+    public Object call(Object[] values, Option readOnly) throws InstructRuntimeException {
         //
         RefLambdaCallStruts callStruts = new RefLambdaCallStruts(values);
         this.dataStack.push(callStruts);
@@ -59,6 +58,6 @@ public class RefLambdaCall implements UDF {
             );
             this.instSequence.doNext(1);
         }
-        return UdfResult.of(dataStack.getResultCode(), dataStack.getResult());
+        return dataStack.getResult();// 针对 Lambda 的函数调用，调用入口是无法拿到函数执行完毕的退出码。 退出码的设计目标是为了宿主机在调用的时使用。
     }
 }

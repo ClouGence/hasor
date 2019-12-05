@@ -16,7 +16,6 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
-import net.hasor.dataql.extend.udfs.UdfResult;
 
 /**
  * 函数调用
@@ -41,7 +40,7 @@ public class UdfModel implements DataModel, UDF {
     }
 
     @Override
-    public UdfResult call(Object[] values, Option option) throws Throwable {
+    public Object call(Object[] values, Option option) throws Throwable {
         return this.udf.call(values, option);
     }
 }

@@ -163,4 +163,17 @@ public class RouRuntimeTest extends AbstractTestResource implements OptionValue 
         assert dataModel.isValueModel();
         assert ((ValueModel) dataModel).asString().equals("1");
     }
+
+    @Test
+    public void self_1_Test() throws Exception {
+        Map<String, Object> objectMap1 = new HashMap<String, Object>() {{
+            put("a", true);
+        }};
+        //
+        Query compilerQL = compilerQL("return #");
+        DataModel dataModel = compilerQL.execute(objectMap1).getData();
+        //
+        assert dataModel.isValueModel();
+        assert ((ValueModel) dataModel).isNull();
+    }
 }
