@@ -1,5 +1,8 @@
-package net.hasor.dataql.runtime;
-import net.hasor.dataql.*;
+package net.hasor.dataql.runtime.basic;
+import net.hasor.dataql.AbstractTestResource;
+import net.hasor.dataql.OptionValue;
+import net.hasor.dataql.Query;
+import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataql.domain.ValueModel;
