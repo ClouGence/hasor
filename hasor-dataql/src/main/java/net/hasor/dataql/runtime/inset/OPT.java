@@ -43,19 +43,12 @@ class OPT implements InsetProcess {
         //
         if (value == null) {
             context.removeOption(key);
-            return;
-        }
-        if (value instanceof Boolean) {
+        } else if (value instanceof Boolean) {
             context.setOption(key, (Boolean) value);
-            return;
-        }
-        if (value instanceof Number) {
+        } else if (value instanceof Number) {
             context.setOption(key, (Number) value);
-            return;
-        }
-        if (value instanceof String) {
-            context.setOption(key, (String) value);
-            return;
+        } else {
+            context.setOption(key, value.toString());
         }
     }
 }

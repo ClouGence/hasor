@@ -29,35 +29,35 @@ import net.hasor.dataql.runtime.inset.OpcodesPool;
 public class RefLambdaCall implements UDF {
     private InstSequence        instSequence;
     private DataHeap            dataHeap;
-    private DataStack           dataStack;
-    private EnvStack            envStack;
     private InsetProcessContext context;
 
-    public RefLambdaCall(InstSequence instSequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
-        this.instSequence = instSequence.clone();
-        this.dataHeap = dataHeap.clone();
-        this.dataStack = dataStack.clone();
-        this.envStack = envStack.clone();
+    public RefLambdaCall(InstSequence instSequence, DataHeap dataHeap, InsetProcessContext context) {
+        this.instSequence = instSequence;
+        this.dataHeap = dataHeap;
         this.context = context;
     }
 
     @Override
     public Object call(Object[] values, Option readOnly) throws InstructRuntimeException {
         //
-        RefLambdaCallStruts callStruts = new RefLambdaCallStruts(values);
-        this.dataStack.push(callStruts);
+        DataStack cloneStack = new DataStack() {{
+            push(new RefLambdaCallStruts(values));
+        }};
         //
-        OpcodesPool opcodesPool = new OpcodesPool();
-        while (this.instSequence.hasNext()) {
-            opcodesPool.doWork(         //
-                    this.instSequence,  //
-                    this.dataHeap,      //
-                    this.dataStack,     //
-                    this.envStack,      //
-                    this.context        //
+        InstSequence instSequence = this.instSequence.clone();
+        OpcodesPool opcodesPool = OpcodesPool.defaultOpcodesPool();
+        DataHeap dataHeap = new DataHeap(this.dataHeap);
+        EnvStack envStack = new EnvStack();
+        while (instSequence.hasNext()) {
+            opcodesPool.doWork(     //
+                    instSequence,   //
+                    dataHeap,       //
+                    cloneStack,     //
+                    envStack,       //
+                    this.context    //
             );
-            this.instSequence.doNext(1);
+            instSequence.doNext(1);
         }
-        return dataStack.getResult();// 针对 Lambda 的函数调用，调用入口是无法拿到函数执行完毕的退出码。 退出码的设计目标是为了宿主机在调用的时使用。
+        return cloneStack.getResult();// 针对 Lambda 的函数调用，调用入口是无法拿到函数执行完毕的退出码。 退出码的设计目标是为了宿主机在调用的时使用。
     }
 }

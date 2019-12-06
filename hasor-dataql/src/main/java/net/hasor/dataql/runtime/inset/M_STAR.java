@@ -43,9 +43,10 @@ class M_STAR implements InsetProcess {
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
-        RefLambdaCallStruts lambdaCall = (RefLambdaCallStruts) dataStack.peek();
+        RefLambdaCallStruts lambdaCall = (RefLambdaCallStruts) dataStack.pop();
         int paramCount = sequence.currentInst().getInt(0);
         Object[] callParams = lambdaCall.getParams();
+        //
         for (int i = 0; i < paramCount; i++) {
             if (i > callParams.length) {
                 break;

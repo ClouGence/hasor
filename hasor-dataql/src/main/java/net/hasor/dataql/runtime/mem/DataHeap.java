@@ -47,7 +47,7 @@ public class DataHeap implements Cloneable {
     public Object loadData(int depth, int position) {
         DataHeap heapData = this;
         for (int i = 0; i <= depth; i++) {
-            if (heapData.depth == depth) {
+            if (i == depth) {
                 return heapData.heapDataPool[position];
             }
             heapData = heapData.parent;
@@ -58,13 +58,13 @@ public class DataHeap implements Cloneable {
         return null;
     }
 
-    public DataHeap createHeap() {
-        return new DataHeap(this);
-    }
-
     @Override
     public DataHeap clone() {
-        DataHeap dataHeap = new DataHeap(this.parent.clone());
+        DataHeap parent = null;
+        if (this.parent != null) {
+            parent = this.parent.clone();
+        }
+        DataHeap dataHeap = new DataHeap(parent);
         dataHeap.depth = this.depth;
         dataHeap.heapDataPool = this.heapDataPool.clone();
         return dataHeap;

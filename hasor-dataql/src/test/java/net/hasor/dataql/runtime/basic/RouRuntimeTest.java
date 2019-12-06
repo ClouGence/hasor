@@ -8,6 +8,7 @@ import net.hasor.test.dataql.udfs.DataBean;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -171,6 +172,19 @@ public class RouRuntimeTest extends AbstractTestResource implements OptionValue 
         }};
         //
         Query compilerQL = compilerQL("return #");
+        DataModel dataModel = compilerQL.execute(objectMap1).getData();
+        //
+        assert dataModel.isValueModel();
+        assert ((ValueModel) dataModel).isNull();
+    }
+
+    @Test
+    public void list_1_Test() throws Exception {
+        Map<String, Object> objectMap1 = new HashMap<String, Object>() {{
+            put("a", Arrays.asList(null, null, null, null));
+        }};
+        //
+        Query compilerQL = compilerQL("return ${_0}[1]");
         DataModel dataModel = compilerQL.execute(objectMap1).getData();
         //
         assert dataModel.isValueModel();
