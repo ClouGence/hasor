@@ -29,17 +29,18 @@ import java.util.Objects;
  * @version : 2017-03-23
  */
 public class QueryEngineImpl extends OptionSet implements QueryEngine {
-    private final static OpcodesPool   opcodesPool   = OpcodesPool.defaultOpcodesPool();
-    private              BeanContainer beanContainer = null;
-    private final        QIL           qil;
+    private final static OpcodesPool opcodesPool = OpcodesPool.defaultOpcodesPool();
+    private final        Finder      finder;
+    private final        QIL         qil;
 
     public QueryEngineImpl(QIL qil) {
-        this(qil, string -> null);
+        this(qil, new Finder() {
+        });
     }
 
-    public QueryEngineImpl(QIL qil, BeanContainer beanContainer) {
+    public QueryEngineImpl(QIL qil, Finder finder) {
         this.qil = Objects.requireNonNull(qil, "qil is null.");
-        this.beanContainer = Objects.requireNonNull(beanContainer, "beanContainer is null.");
+        this.finder = Objects.requireNonNull(finder, "beanFinder is null.");
     }
 
     @Override
@@ -61,7 +62,7 @@ public class QueryEngineImpl extends OptionSet implements QueryEngine {
             CustomizeScope customize) throws InstructRuntimeException {
         //
         // .默认Option
-        InsetProcessContext processContext = new InsetProcessContext(customize, this.beanContainer);
+        InsetProcessContext processContext = new InsetProcessContext(customize, this.finder);
         processContext.setOptionSet(this);
         processContext.setOptionSet(optionSet);
         for (OptionKeys optionKey : OptionKeys.values()) {

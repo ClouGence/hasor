@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.compiler;
+package net.hasor.dataql;
+import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.ast.inst.RootBlockSet;
 import net.hasor.dataql.compiler.parser.DataQLLexer;
 import net.hasor.dataql.compiler.parser.DataQLParser;
@@ -48,15 +49,27 @@ public class QueryHelper {
     }
 
     public static QIL queryCompiler(String queryString) throws IOException {
-        return queryCompiler(queryParser(queryString));
+        return queryCompiler(queryParser(queryString), Finder.DEFAULT);
+    }
+
+    public static QIL queryCompiler(String queryString, Finder finder) throws IOException {
+        return queryCompiler(queryParser(queryString), finder);
     }
 
     public static QIL queryCompiler(Reader queryReader) throws IOException {
-        return queryCompiler(queryParser(queryReader));
+        return queryCompiler(queryParser(queryReader), Finder.DEFAULT);
+    }
+
+    public static QIL queryCompiler(Reader queryReader, Finder finder) throws IOException {
+        return queryCompiler(queryParser(queryReader), finder);
     }
 
     public static QIL queryCompiler(InputStream queryInput) throws IOException {
-        return queryCompiler(queryParser(queryInput));
+        return queryCompiler(queryParser(queryInput), Finder.DEFAULT);
+    }
+
+    public static QIL queryCompiler(InputStream queryInput, Finder finder) throws IOException {
+        return queryCompiler(queryParser(queryInput), finder);
     }
 
     private static RootBlockSet queryParser(CharStream charStream) {
@@ -67,6 +80,10 @@ public class QueryHelper {
     }
 
     public static QIL queryCompiler(QueryModel queryModel) throws IOException {
+        return queryCompiler(queryModel, Finder.DEFAULT);
+    }
+
+    public static QIL queryCompiler(QueryModel queryModel, Finder finder) throws IOException {
         RootBlockSet rootBlockSet = null;
         if (queryModel instanceof RootBlockSet) {
             rootBlockSet = (RootBlockSet) queryModel;
@@ -75,7 +92,7 @@ public class QueryHelper {
         }
         //
         InstQueue queue = new InstQueue();
-        CompilerContext compilerContext = new CompilerContext(new CompilerEnvironment());
+        CompilerContext compilerContext = new CompilerContext(new CompilerEnvironment(finder));
         compilerContext.findInstCompilerByInst(rootBlockSet).doCompiler(queue);
         Instruction[][] queueSet = queue.buildArrays();
         return new QIL(queueSet);

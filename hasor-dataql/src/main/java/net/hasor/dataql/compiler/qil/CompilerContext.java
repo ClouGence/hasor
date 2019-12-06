@@ -1,6 +1,7 @@
 package net.hasor.dataql.compiler.qil;
 import net.hasor.dataql.compiler.ast.Inst;
 
+import java.io.InputStream;
 import java.util.*;
 
 public class CompilerContext {
@@ -12,6 +13,10 @@ public class CompilerContext {
 
     public CompilerContext(CompilerEnvironment compilerEnvironment) {
         this.compilerEnvironment = compilerEnvironment;
+    }
+
+    public InputStream findResource(String resourceName) {
+        return this.compilerEnvironment.findResource(resourceName);
     }
 
     public <T extends Inst> InstCompilerExecutor findInstCompilerByInst(T instObject) {

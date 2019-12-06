@@ -15,7 +15,6 @@
  */
 package net.hasor.dataql;
 import net.hasor.core.Settings;
-import net.hasor.dataql.compiler.QueryHelper;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.InstVisitorContext;
@@ -68,10 +67,10 @@ public class AbstractTestResource {
         return queryEngine.newQuery();
     }
 
-    protected Query compilerQL(String qlString, BeanContainer beanContainer) throws IOException {
+    protected Query compilerQL(String qlString, Finder finder) throws IOException {
         QueryModel queryModel = QueryHelper.queryParser(qlString);
         QIL qil = QueryHelper.queryCompiler(queryModel);
-        QueryEngineImpl queryEngine = new QueryEngineImpl(qil, beanContainer);
+        QueryEngineImpl queryEngine = new QueryEngineImpl(qil, finder);
         return queryEngine.newQuery();
     }
 

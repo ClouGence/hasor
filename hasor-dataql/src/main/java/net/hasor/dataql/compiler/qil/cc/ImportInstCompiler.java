@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil.cc;
-import net.hasor.dataql.compiler.QueryHelper;
+import net.hasor.dataql.QueryHelper;
 import net.hasor.dataql.compiler.ast.inst.ImportInst;
 import net.hasor.dataql.compiler.ast.inst.ImportInst.ImportType;
 import net.hasor.dataql.compiler.ast.inst.RootBlockSet;
@@ -22,9 +22,9 @@ import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.utils.ExceptionUtils;
-import net.hasor.utils.ResourcesUtils;
 
 import java.io.InputStream;
+import java.util.Objects;
 
 /**
  * import 语法
@@ -66,16 +66,10 @@ public class ImportInstCompiler implements InstCompiler<ImportInst> {
     }
 
     private void loadResource(String importName, InstQueue queue, CompilerContext compilerContext) {
-        // .加载资源
-        InputStream inputStream = null;
-        try {
-            inputStream = ResourcesUtils.getResourceAsStream(importName);
-        } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e, throwable -> new RuntimeException("import compiler failed -> '" + importName + "' not found.", throwable));
-        }
         // .parser资源
         RootBlockSet queryModel = null;
         try {
+            InputStream inputStream = Objects.requireNonNull(compilerContext.findResource(importName), "import resource '" + importName + "' not found.");
             queryModel = (RootBlockSet) QueryHelper.queryParser(inputStream);
         } catch (Exception e) {
             throw ExceptionUtils.toRuntimeException(e, throwable -> new RuntimeException("import compiler failed -> parser failed.", throwable));

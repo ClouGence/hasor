@@ -2,7 +2,7 @@ package net.hasor.dataql.runtime.basic;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.BeanContainer;
+import net.hasor.dataql.Finder;
 import net.hasor.dataql.OptionValue;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.domain.DataModel;
@@ -50,9 +50,14 @@ public class LambdaRuntimeTest extends AbstractTestResource implements OptionVal
         AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.bindType(DemoUdf.class).idWith(DemoUdf.class.getName());
         });
-        BeanContainer beanContainer = appContext::getInstance;
+        Finder finder = new Finder() {
+            @Override
+            public Object findBean(String beanName) {
+                return appContext.getInstance(beanName);
+            }
+        };
         //
-        Query compilerQL = compilerQL("import 'net.hasor.test.dataql.udfs.DemoUdf' as foo; return foo().name", beanContainer);
+        Query compilerQL = compilerQL("import 'net.hasor.test.dataql.udfs.DemoUdf' as foo; return foo().name", finder);
         DataModel dataModel = compilerQL.execute().getData();
         assert dataModel.isValueModel();
         assert ((ValueModel) dataModel).asString().equals("马三");

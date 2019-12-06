@@ -1,4 +1,5 @@
 package net.hasor.dataql.compiler.qil;
+import net.hasor.dataql.Finder;
 import net.hasor.dataql.compiler.ast.Inst;
 import net.hasor.dataql.compiler.ast.expr.*;
 import net.hasor.dataql.compiler.ast.fmt.ListFormat;
@@ -7,11 +8,32 @@ import net.hasor.dataql.compiler.ast.inst.*;
 import net.hasor.dataql.compiler.ast.value.*;
 import net.hasor.dataql.compiler.qil.cc.*;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class CompilerEnvironment {
+public class CompilerEnvironment implements Finder {
+    private Finder finder;
+
+    public CompilerEnvironment(Finder finder) {
+        this.finder = Objects.requireNonNull(finder, "finder is null.");
+    }
+
+    @Override
+    public InputStream findResource(String resourceName) {
+        return this.finder.findResource(resourceName);
+    }
+
+    @Override
+    public Object findBean(String beanName) {
+        return this.finder.findBean(beanName);
+    }
+
+    public <T extends Inst> InstCompiler<T> findInstCompilerByType(Class<T> instType) {
+        return (InstCompiler<T>) Objects.requireNonNull(typeMappingToInstCompiler.get(instType), "not found " + instType.getName() + " InstCompiler.");
+    }
+
     private static Map<Class<?>, InstCompiler<?>> typeMappingToInstCompiler = new HashMap<Class<?>, InstCompiler<?>>() {{
         //
         put(RootBlockSet.class, new RootBlockSetInstCompiler());
@@ -44,8 +66,4 @@ public class CompilerEnvironment {
         put(EnterRouteVariable.class, new EnterRouteVariableInstCompiler());
         put(FunCallRouteVariable.class, new FunCallRouteVariableInstCompiler());
     }};
-
-    public <T extends Inst> InstCompiler<T> findInstCompilerByType(Class<T> instType) {
-        return (InstCompiler<T>) Objects.requireNonNull(typeMappingToInstCompiler.get(instType), "not found " + instType.getName() + " InstCompiler.");
-    }
 }
