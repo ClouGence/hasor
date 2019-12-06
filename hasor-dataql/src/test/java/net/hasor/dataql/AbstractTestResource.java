@@ -68,6 +68,13 @@ public class AbstractTestResource {
         return queryEngine.newQuery();
     }
 
+    protected Query compilerQL(String qlString, BeanContainer beanContainer) throws IOException {
+        QueryModel queryModel = QueryHelper.queryParser(qlString);
+        QIL qil = QueryHelper.queryCompiler(queryModel);
+        QueryEngineImpl queryEngine = new QueryEngineImpl(qil, beanContainer);
+        return queryEngine.newQuery();
+    }
+
     protected List<String> acceptVisitor(QueryModel queryModel) {
         List<String> astVisitor = new ArrayList<>();
         AtomicInteger atomicInteger = new AtomicInteger(0);

@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.dataql.CustomizeScope;
-import net.hasor.dataql.Option;
-import net.hasor.dataql.OptionKeys;
-import net.hasor.dataql.QueryEngine;
+import net.hasor.dataql.*;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.inset.OpcodesPool;
 import net.hasor.dataql.runtime.mem.DataHeap;
@@ -32,11 +29,17 @@ import java.util.Objects;
  * @version : 2017-03-23
  */
 public class QueryEngineImpl extends OptionSet implements QueryEngine {
-    private final static OpcodesPool opcodesPool = OpcodesPool.defaultOpcodesPool();
-    private final        QIL         qil;
+    private final static OpcodesPool   opcodesPool   = OpcodesPool.defaultOpcodesPool();
+    private              BeanContainer beanContainer = null;
+    private final        QIL           qil;
 
     public QueryEngineImpl(QIL qil) {
+        this(qil, string -> null);
+    }
+
+    public QueryEngineImpl(QIL qil, BeanContainer beanContainer) {
         this.qil = Objects.requireNonNull(qil, "qil is null.");
+        this.beanContainer = Objects.requireNonNull(beanContainer, "beanContainer is null.");
     }
 
     @Override
@@ -58,7 +61,7 @@ public class QueryEngineImpl extends OptionSet implements QueryEngine {
             CustomizeScope customize) throws InstructRuntimeException {
         //
         // .默认Option
-        InsetProcessContext processContext = new InsetProcessContext(customize);
+        InsetProcessContext processContext = new InsetProcessContext(customize, this.beanContainer);
         processContext.setOptionSet(this);
         processContext.setOptionSet(optionSet);
         for (OptionKeys optionKey : OptionKeys.values()) {

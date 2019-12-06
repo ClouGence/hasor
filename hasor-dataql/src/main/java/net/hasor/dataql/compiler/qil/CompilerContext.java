@@ -55,14 +55,16 @@ public class CompilerContext {
         ContainsIndex index = new ContainsIndex();
         //
         int stackSize = this.dataStack.size();
-        for (int i = 0; i < this.dataStack.size(); i++) {
-            index.depth = stackSize - i - 1;
+        int idx = 0;
+        for (int i = stackSize - 1; i >= 0; i--) {
+            index.depth = idx;
             List<String> stringList = this.dataStack.get(i);
             int indexOf = stringList.indexOf(target);
             if (indexOf >= 0) {
                 index.index = indexOf;
                 return index;
             }
+            idx++;
         }
         //
         index.depth = 0;

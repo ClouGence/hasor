@@ -1,10 +1,14 @@
 package net.hasor.dataql.runtime.basic;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.dataql.AbstractTestResource;
+import net.hasor.dataql.BeanContainer;
 import net.hasor.dataql.OptionValue;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataql.domain.ValueModel;
+import net.hasor.test.dataql.udfs.DemoUdf;
 import org.junit.Test;
 
 public class LambdaRuntimeTest extends AbstractTestResource implements OptionValue {
@@ -39,5 +43,18 @@ public class LambdaRuntimeTest extends AbstractTestResource implements OptionVal
         DataModel dataModel = compilerQL.execute().getData();
         assert dataModel.isValueModel();
         assert ((ValueModel) dataModel).asInt() == 12;
+    }
+
+    @Test
+    public void lambda_5_Test() throws Exception {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            apiBinder.bindType(DemoUdf.class).idWith(DemoUdf.class.getName());
+        });
+        BeanContainer beanContainer = appContext::getInstance;
+        //
+        Query compilerQL = compilerQL("import 'net.hasor.test.dataql.udfs.DemoUdf' as foo; return foo().name", beanContainer);
+        DataModel dataModel = compilerQL.execute().getData();
+        assert dataModel.isValueModel();
+        assert ((ValueModel) dataModel).asString().equals("马三");
     }
 }

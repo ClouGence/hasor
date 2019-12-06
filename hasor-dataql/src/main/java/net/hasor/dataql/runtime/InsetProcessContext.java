@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
+import net.hasor.dataql.BeanContainer;
 import net.hasor.dataql.CustomizeScope;
 import net.hasor.dataql.runtime.operator.OperatorManager;
 import net.hasor.dataql.runtime.operator.OperatorProcess;
@@ -26,11 +27,16 @@ import java.util.Map;
  * @version : 2017-07-14
  */
 public class InsetProcessContext extends OptionSet implements CustomizeScope {
-    private final static OperatorManager opeManager = OperatorManager.defaultManager();
-    private              CustomizeScope  customizeScope;
+    private final static OperatorManager opeManager     = OperatorManager.defaultManager();
+    private              CustomizeScope  customizeScope = null;
+    private              BeanContainer   beanContainer  = null;
 
-    InsetProcessContext(CustomizeScope customizeScope) {
+    InsetProcessContext(CustomizeScope customizeScope, BeanContainer beanContainer) {
+        if (beanContainer == null) {
+            beanContainer = string -> null;
+        }
         this.customizeScope = customizeScope;
+        this.beanContainer = beanContainer;
     }
 
     /** 查找一元运算执行器 */
@@ -49,5 +55,9 @@ public class InsetProcessContext extends OptionSet implements CustomizeScope {
             return null;
         }
         return this.customizeScope.findCustomizeEnvironment(symbol);
+    }
+
+    public Object loadObject(String udfType) {
+        return this.beanContainer.getBeanByString(udfType);
     }
 }

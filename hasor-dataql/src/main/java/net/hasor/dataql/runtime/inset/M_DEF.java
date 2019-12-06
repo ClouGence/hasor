@@ -42,6 +42,9 @@ class M_DEF implements InsetProcess {
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
         Object refCall = dataStack.pop();
+        if (refCall == null) {
+            throw new InstructRuntimeException("target is null.");
+        }
         if (!(refCall instanceof UDF)) {
             throw new InstructRuntimeException("target or Property is not UDF.");
         }
