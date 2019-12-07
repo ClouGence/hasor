@@ -17,6 +17,7 @@ package net.hasor.utils.resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
 /**
  *
  * @version : 2013-6-6
@@ -29,5 +30,7 @@ public interface ResourceLoader {
     public InputStream getResourceAsStream(String resourcePath) throws IOException;
 
     /**测试资源是否存在。*/
-    public boolean exist(String resourcePath) throws IOException;
+    public default boolean exist(String resourcePath) throws IOException {
+        return getResource(resourcePath) != null;
+    }
 }

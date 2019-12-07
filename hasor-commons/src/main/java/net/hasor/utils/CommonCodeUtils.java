@@ -15,6 +15,7 @@
  */
 package net.hasor.utils;
 import java.security.NoSuchAlgorithmException;
+
 /**
  *
  * @version : 2012-6-21
@@ -33,6 +34,7 @@ public class CommonCodeUtils {
         //    public static Reader getJSReader() throws UnsupportedEncodingException {
         //        return new InputStreamReader(Base64.class.getResourceAsStream("/META-INF/resource/util/base64.js"), "utf-8");
         //    };
+
         /**
          * 使用UTF-8编码进行Base64编码
          * @param s 要编码的原始数据
@@ -51,6 +53,7 @@ public class CommonCodeUtils {
             }
             return Base64.base64EncodeFoArray(b);
         }
+
         /** Encoding a byte array to a string follow the Base64 regular. */
         public static String base64EncodeFoArray(final byte[] s) {
             if (s == null) {
@@ -88,6 +91,7 @@ public class CommonCodeUtils {
             }
             return buf.toString();
         }
+
         /** Decoding a string to a string follow the Base64 regular. */
         public static String base64Decode(final String s) {
             byte[] b = Base64.base64DecodeToArray(s);
@@ -104,6 +108,7 @@ public class CommonCodeUtils {
                 return null;
             }
         }
+
         /** Decoding a string to a byte array follow the Base64 regular */
         public static byte[] base64DecodeToArray(final String s) {
             if (s == null) {
@@ -152,6 +157,7 @@ public class CommonCodeUtils {
             return b;
         }
     }
+
     /**
      * MD5算法提供
      * @version : 2011-11-7
@@ -175,9 +181,11 @@ public class CommonCodeUtils {
             s = new String(str); // 换后的结果转换为字符串
             return s;
         }
+
         public static String getMD5(final String source) throws NoSuchAlgorithmException {
             return MD5.getMD5(source.getBytes());
         }
+
         public static String getMD5(final byte[] source) throws NoSuchAlgorithmException {
             String s = null;
             // 用来将字节转换成 16 进制表示的字符
@@ -196,6 +204,7 @@ public class CommonCodeUtils {
             return s;
         }
     }
+
     /**
      * 基于十六进制的字符转换
      * @version : 2013-8-13
@@ -216,6 +225,7 @@ public class CommonCodeUtils {
             }
             return sb.toString();
         }
+
         /** 十六进制转换字符串 */
         public static String hexStr2Str(final String hexStr) {
             String str = "0123456789ABCDEF";
@@ -229,6 +239,7 @@ public class CommonCodeUtils {
             }
             return new String(bytes);
         }
+
         /** bytes转换成十六进制字符串 */
         public static String byte2HexStr(final byte[] b) {
             String hs = "";
@@ -244,6 +255,7 @@ public class CommonCodeUtils {
             }
             return hs.toUpperCase();
         }
+
         /** bytes转换成十六进制字符串 */
         public static byte[] hexStr2Bytes(final String src) {
             int m = 0, n = 0;
@@ -257,6 +269,7 @@ public class CommonCodeUtils {
             }
             return ret;
         }
+
         /** String的字符串转换成unicode的String */
         public static String stringToUnicode(final String strText) throws Exception {
             char c;
@@ -276,6 +289,7 @@ public class CommonCodeUtils {
             }
             return strRet;
         }
+
         /** unicode的String转换成String的字符串 */
         public static String unicodeToString(final String hex) {
             int t = hex.length() / 6;
@@ -294,6 +308,7 @@ public class CommonCodeUtils {
             }
             return str.toString();
         }
+
         private static byte uniteBytes(final String src0, final String src1) {
             byte b0 = Byte.decode("0x" + src0).byteValue();
             b0 = (byte) (b0 << 4);
