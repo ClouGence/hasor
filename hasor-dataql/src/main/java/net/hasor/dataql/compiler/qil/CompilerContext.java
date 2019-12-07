@@ -1,6 +1,7 @@
 package net.hasor.dataql.compiler.qil;
 import net.hasor.dataql.compiler.ast.Inst;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -15,7 +16,7 @@ public class CompilerContext {
         this.compilerEnvironment = compilerEnvironment;
     }
 
-    public InputStream findResource(String resourceName) {
+    public InputStream findResource(String resourceName) throws IOException {
         return this.compilerEnvironment.findResource(resourceName);
     }
 

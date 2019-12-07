@@ -13,34 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
-import net.hasor.dataql.Option;
-import net.hasor.dataql.UDF;
+package net.hasor.dataql.extend.binder;
+import net.hasor.dataql.runtime.VarSupplier;
+
+import java.util.function.Supplier;
 
 /**
- * 函数调用
+ * UDF 函数定义
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class UdfModel implements DataModel, UDF {
-    private UDF udf = null;
+class ShareVar implements VarSupplier {
+    private String      varName;
+    private Supplier<?> varSupplier;
 
-    UdfModel(UDF udf) {
-        this.udf = udf;
+    public ShareVar(String varName, Supplier<?> varSupplier) {
+        this.varName = varName;
+        this.varSupplier = varSupplier;
+    }
+
+    public String getName() {
+        return this.varName;
     }
 
     @Override
-    public UDF asOri() {
-        return this.udf;
-    }
-
-    /** 判断是否为 UdfModel 类型值 */
-    public boolean isUdfModel() {
-        return true;
-    }
-
-    @Override
-    public DataModel call(Object[] values, Option option) throws Throwable {
-        return DomainHelper.convertTo(this.udf.call(values, option));
+    public Object get() {
+        if (this.varSupplier != null) {
+            return this.varSupplier.get();
+        }
+        return null;
     }
 }

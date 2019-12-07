@@ -7,6 +7,7 @@ import net.hasor.dataql.OptionValue;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ListModel;
+import net.hasor.dataql.domain.UdfModel;
 import net.hasor.dataql.domain.ValueModel;
 import net.hasor.test.dataql.udfs.DemoUdf;
 import org.junit.Test;
@@ -61,5 +62,15 @@ public class LambdaRuntimeTest extends AbstractTestResource implements OptionVal
         DataModel dataModel = compilerQL.execute().getData();
         assert dataModel.isValueModel();
         assert ((ValueModel) dataModel).asString().equals("马三");
+    }
+
+    @Test
+    public void lambda_6_Test() throws Throwable {
+        Query compilerQL = compilerQL("var a = 10 ; var foo = () -> { return a; } ; return foo");
+        DataModel dataModel = compilerQL.execute().getData();
+        assert dataModel.isUdfModel();
+        DataModel dat = ((UdfModel) dataModel).call(null, null);
+        assert dat.isValueModel();
+        assert ((ValueModel) dat).asInt() == 10;
     }
 }

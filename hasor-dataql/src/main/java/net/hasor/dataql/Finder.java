@@ -2,13 +2,14 @@ package net.hasor.dataql;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 public interface Finder {
     public static final Finder DEFAULT = new Finder() {
     };
 
-    public default InputStream findResource(String resourceName) {
+    public default InputStream findResource(String resourceName) throws IOException {
         // .加载资源
         InputStream inputStream = null;
         try {

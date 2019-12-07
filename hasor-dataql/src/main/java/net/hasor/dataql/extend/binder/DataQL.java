@@ -13,34 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
-import net.hasor.dataql.Option;
-import net.hasor.dataql.UDF;
+package net.hasor.dataql.extend.binder;
+import net.hasor.dataql.Query;
+
+import java.io.IOException;
 
 /**
- * 函数调用
+ * DataQL 上下文。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class UdfModel implements DataModel, UDF {
-    private UDF udf = null;
-
-    UdfModel(UDF udf) {
-        this.udf = udf;
-    }
-
-    @Override
-    public UDF asOri() {
-        return this.udf;
-    }
-
-    /** 判断是否为 UdfModel 类型值 */
-    public boolean isUdfModel() {
-        return true;
-    }
-
-    @Override
-    public DataModel call(Object[] values, Option option) throws Throwable {
-        return DomainHelper.convertTo(this.udf.call(values, option));
-    }
+public interface DataQL {
+    public Query createQuery(String queryString) throws IOException;
 }

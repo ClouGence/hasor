@@ -8,6 +8,7 @@ import net.hasor.dataql.compiler.ast.inst.*;
 import net.hasor.dataql.compiler.ast.value.*;
 import net.hasor.dataql.compiler.qil.cc.*;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class CompilerEnvironment implements Finder {
     }
 
     @Override
-    public InputStream findResource(String resourceName) {
+    public InputStream findResource(String resourceName) throws IOException {
         return this.finder.findResource(resourceName);
     }
 

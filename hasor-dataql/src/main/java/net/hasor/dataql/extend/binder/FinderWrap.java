@@ -13,7 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.dataql.extend.binder;
+import net.hasor.core.AppContext;
+import net.hasor.dataql.Finder;
+
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
- * DataQL，函数库。
+ * UDF 函数定义
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2017-03-23
  */
-package net.hasor.dataql.udf.funs;
+abstract class FinderWrap implements Finder {
+    private AppContext appContext;
+
+    public FinderWrap(AppContext appContext) {
+        this.appContext = appContext;
+    }
+
+    public abstract InputStream findResource(String resourceName) throws IOException;
+}

@@ -13,15 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.binder;
-import net.hasor.dataql.Query;
-import net.hasor.dataql.domain.parser.ParseException;
+package net.hasor.dataql.extend.binder;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.Module;
 
 /**
- * DataQL 上下文。
- * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-03-23
+ * 提供 <code>DataQL</code> 初始化功能。
+ * @version : 2017-6-08
+ * @author 赵永春 (zyc@byshell.org)
  */
-public interface DataQL {
-    public Query createQuery(String qlString) throws ParseException;
+public class DataQLModule implements Module {
+    @Override
+    public void loadModule(ApiBinder apiBinder) {
+    }
+
+    @Override
+    public void onStart(AppContext appContext) {
+        appContext.getInstance(InnerDqlConfig.class).initConfig(appContext);
+    }
 }

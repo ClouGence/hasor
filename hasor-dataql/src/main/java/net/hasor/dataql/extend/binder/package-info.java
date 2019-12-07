@@ -16,4 +16,4 @@
 /**
  * DataQL，Hasor 专用扩展。
  */
-package net.hasor.dataql.binder;
+package net.hasor.dataql.extend.binder;
