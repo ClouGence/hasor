@@ -27,6 +27,8 @@ import net.hasor.dataql.runtime.mem.EnvStack;
 import net.hasor.dataql.runtime.mem.ExitType;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 用于封装和引发 QL 查询执行。
@@ -34,12 +36,18 @@ import java.util.Collections;
  * @version : 2017-03-23
  */
 class QueryImpl extends OptionSet implements Query {
-    private QIL    qil;
-    private Finder finder;
+    private QIL                 qil;
+    private Finder              finder;
+    private Map<String, Object> compilerVar;
 
     QueryImpl(QIL qil, Finder finder) {
         this.qil = qil;
         this.finder = finder;
+        this.compilerVar = new HashMap<>();
+    }
+
+    public void setCompilerVar(String compilerVar, Object object) {
+        this.compilerVar.put(compilerVar, object);
     }
 
     private static long executionTime(long startTime) {
@@ -61,11 +69,17 @@ class QueryImpl extends OptionSet implements Query {
         for (OptionKeys optionKey : OptionKeys.values()) {
             processContext.putIfAbsent(optionKey.name(), optionKey.getDefaultVal());
         }
-        // .执行指令序列
-        OpcodesPool opcodesPool = OpcodesPool.defaultOpcodesPool();
+        // .创建堆栈
         DataStack dataStack = new DataStack();  // 指令执行 - 栈
         DataHeap dataHeap = new DataHeap();     // 指令执行 - 堆
         EnvStack envStack = new EnvStack();     // 环境数据 - 栈
+        this.qil.getCompilerVar().forEach((varName, varLocalIdx) -> {
+            Object varVal = compilerVar.get(varName);
+            dataHeap.saveData(varLocalIdx, varVal);
+        });
+        //
+        // .执行指令序列
+        OpcodesPool opcodesPool = OpcodesPool.defaultOpcodesPool();
         while (instSequence.hasNext()) {
             opcodesPool.doWork(instSequence, dataHeap, dataStack, envStack, processContext);
             instSequence.doNext(1);

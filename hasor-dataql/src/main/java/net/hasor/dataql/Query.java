@@ -24,6 +24,9 @@ import java.util.*;
  * @version : 2017-03-23
  */
 public interface Query extends Option {
+    /** 初始化编译变量 */
+    public void setCompilerVar(String compilerVar, Object object);
+
     /** 执行查询 */
     public default QueryResult execute() throws InstructRuntimeException {
         return this.execute(symbol -> Collections.emptyMap());

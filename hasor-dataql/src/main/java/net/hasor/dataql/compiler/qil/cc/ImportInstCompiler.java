@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil.cc;
-import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.dataql.compiler.ast.inst.ImportInst;
 import net.hasor.dataql.compiler.ast.inst.ImportInst.ImportType;
 import net.hasor.dataql.compiler.ast.inst.RootBlockSet;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
+import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.utils.ExceptionUtils;
 
 import java.io.InputStream;

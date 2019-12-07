@@ -16,16 +16,25 @@
 package net.hasor.dataql.compiler.qil;
 import net.hasor.utils.StringUtils;
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * Query intermediate language 中间查询语言
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-03
  */
 public class QIL {
-    private Instruction[][] queueSet;
+    private Instruction[][]      queueSet;
+    private Map<String, Integer> compilerVar;
 
-    public QIL(Instruction[][] queueSet) {
+    public QIL(Instruction[][] queueSet, Map<String, Integer> compilerVar) {
         this.queueSet = queueSet;
+        this.compilerVar = compilerVar;
+    }
+
+    public Map<String, Integer> getCompilerVar() {
+        return Collections.unmodifiableMap(this.compilerVar);
     }
 
     @Override

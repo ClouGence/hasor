@@ -16,6 +16,7 @@
 package net.hasor.dataql.extend.jsr223;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.Option;
+import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.OptionSet;
 import net.hasor.dataql.runtime.QueryHelper;
@@ -104,7 +105,10 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
     @Override
     public CompiledScript compile(String queryString) throws ScriptException {
         try {
-            QIL compilerQIL = QueryHelper.queryCompiler(queryString, getFinder());
+            Bindings global = this.getBindings(ScriptContext.GLOBAL_SCOPE);
+            //
+            QueryModel queryModel = QueryHelper.queryParser(queryString);
+            QIL compilerQIL = QueryHelper.queryCompiler(queryModel, global.keySet(), this.getFinder());
             return new DataQLCompiledScript(compilerQIL, this);
         } catch (IOException e) {
             throw new ScriptException(e);
@@ -129,7 +133,8 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
 
     @Override
     public Object eval(String queryString, ScriptContext context) throws ScriptException {
-        return compile(queryString).eval(context);
+        this.setContext(context);
+        return compile(queryString).eval();
     }
 
     @Override

@@ -1,16 +1,13 @@
 package net.hasor.dataql.runtime.basic;
-import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.CustomizeScope;
-import net.hasor.dataql.OptionValue;
-import net.hasor.dataql.Query;
+import net.hasor.dataql.*;
+import net.hasor.dataql.compiler.QueryModel;
+import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.domain.*;
+import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.test.dataql.udfs.DataBean;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class RouRuntimeTest extends AbstractTestResource implements OptionValue {
     @Test
@@ -189,5 +186,21 @@ public class RouRuntimeTest extends AbstractTestResource implements OptionValue 
         //
         assert dataModel.isValueModel();
         assert ((ValueModel) dataModel).isNull();
+    }
+
+    @Test
+    public void compilerVar_1_Test() throws Exception {
+        Set<String> compilerVar = new HashSet<String>() {{
+            add("list");
+        }};
+        QueryModel queryModel = QueryHelper.queryParser("return list[2]");
+        QIL qil = QueryHelper.queryCompiler(queryModel, compilerVar, Finder.DEFAULT);
+        Query query = QueryHelper.createQuery(qil, Finder.DEFAULT);
+        //
+        query.setCompilerVar("list", Arrays.asList("a", "b", "c", "d"));
+        DataModel dataModel = query.execute().getData();
+        //
+        assert dataModel.isValueModel();
+        assert ((ValueModel) dataModel).asString().equals("c");
     }
 }

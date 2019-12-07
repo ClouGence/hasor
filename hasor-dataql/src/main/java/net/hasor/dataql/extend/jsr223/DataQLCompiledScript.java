@@ -20,6 +20,7 @@ import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.OptionSet;
 import net.hasor.dataql.runtime.QueryHelper;
 
 import javax.script.*;
@@ -32,44 +33,45 @@ import java.util.Map;
  * @version : 2017-10-19
  */
 class DataQLCompiledScript extends CompiledScript implements Option {
-    private Query              query;
+    private QIL                compilerQIL;
+    private OptionSet          optionSet;
     private DataQLScriptEngine engine;
 
     public DataQLCompiledScript(QIL compilerQIL, DataQLScriptEngine engine) {
-        this.query = QueryHelper.createQuery(compilerQIL, engine.getFinder());
-        this.query.setOptionSet(engine);
+        this.compilerQIL = compilerQIL;
+        this.optionSet = new OptionSet();
+        this.optionSet.setOptionSet(engine);
         this.engine = engine;
     }
 
-    // -------------------------------------------------------------------------------------------- Option
     @Override
     public String[] getOptionNames() {
-        return this.query.getOptionNames();
+        return this.optionSet.getOptionNames();
     }
 
     @Override
     public Object getOption(String optionKey) {
-        return this.query.getOption(optionKey);
+        return this.optionSet.getOption(optionKey);
     }
 
     @Override
     public void removeOption(String optionKey) {
-        this.query.removeOption(optionKey);
+        this.optionSet.removeOption(optionKey);
     }
 
     @Override
     public void setOption(String optionKey, String value) {
-        this.query.setOption(optionKey, value);
+        this.optionSet.setOption(optionKey, value);
     }
 
     @Override
     public void setOption(String optionKey, Number value) {
-        this.query.setOption(optionKey, value);
+        this.optionSet.setOption(optionKey, value);
     }
 
     @Override
     public void setOption(String optionKey, boolean value) {
-        this.query.setOption(optionKey, value);
+        this.optionSet.setOption(optionKey, value);
     }
     // -------------------------------------------------------------------------------------------- Option
 
@@ -80,9 +82,14 @@ class DataQLCompiledScript extends CompiledScript implements Option {
 
     @Override
     public QueryResult eval(ScriptContext context) throws ScriptException {
+        Query query = QueryHelper.createQuery(this.compilerQIL, this.engine.getFinder());
+        Bindings globalBindings = context.getBindings(ScriptContext.GLOBAL_SCOPE);
+        if (globalBindings != null) {
+            globalBindings.forEach(query::setCompilerVar);
+        }
+        //
         CustomizeScope customizeScope = this.engine.getCustomizeScopeCreater().create();
         if (customizeScope == null) {
-            Bindings globalBindings = context.getBindings(ScriptContext.GLOBAL_SCOPE);
             Bindings engineBindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
             //
             Map<String, Object> dataMap = new HashMap<>();
@@ -96,9 +103,9 @@ class DataQLCompiledScript extends CompiledScript implements Option {
                 return dataMap;
             };
         }
-        //
         try {
-            return this.query.execute(customizeScope);
+            query.setOptionSet(this);
+            return query.execute(customizeScope);
         } catch (InstructRuntimeException e) {
             throw new ScriptException(e);
         }
