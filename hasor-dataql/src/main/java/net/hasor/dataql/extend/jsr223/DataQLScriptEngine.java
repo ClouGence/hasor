@@ -13,47 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.jsr223;
+package net.hasor.dataql.extend.jsr223;
+import net.hasor.dataql.Finder;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.Query;
-import net.hasor.dataql.UdfManager;
-import net.hasor.dataql.UdfSource;
-import net.hasor.dataql.domain.compiler.QIL;
-import net.hasor.dataql.domain.compiler.QueryCompiler;
-import net.hasor.dataql.domain.parser.ParseException;
+import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.OptionSet;
-import net.hasor.dataql.udf.SimpleUdfManager;
+import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.utils.io.IOUtils;
 
 import javax.script.*;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * JSR223 引擎机制的实现。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-10-19
  */
-public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEngine, Compilable, UdfManager, Option {
-    private final OptionSet                 optionSet = new OptionSet();
-    private final DataQLScriptEngineFactory engineFactory;
-    private       ClassLoader               loader;
-    private final UdfManager                udfManager;
+public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEngine, Compilable, Option {
+    private OptionSet                 optionSet             = new OptionSet();
+    private DataQLScriptEngineFactory engineFactory;
+    private CustomizeScopeCreater     customizeScopeCreater = () -> null;
+    private Finder                    finder                = Finder.DEFAULT;
 
-    public DataQLScriptEngine(DataQLScriptEngineFactory engineFactory) {
+    DataQLScriptEngine(DataQLScriptEngineFactory engineFactory) {
         this.engineFactory = engineFactory;
-        this.loader = getParentLoader();
-        this.udfManager = new SimpleUdfManager();
-    }
-
-    public ClassLoader getLoader() {
-        return loader;
-    }
-
-    public void setLoader(ClassLoader loader) {
-        this.loader = loader;
     }
 
     // -------------------------------------------------------------------------------------------- Option
@@ -73,11 +59,6 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
     }
 
     @Override
-    public void setOptionSet(Option optionSet) {
-        this.optionSet.setOptionSet(optionSet);
-    }
-
-    @Override
     public void setOption(String optionKey, String value) {
         this.optionSet.setOption(optionKey, value);
     }
@@ -92,23 +73,23 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
         this.optionSet.setOption(optionKey, value);
     }
 
-    // -------------------------------------------------------------------------------------------- UdfManager
-    @Override
-    public List<UdfSource> getSourceByName(String sourceName) {
-        return this.udfManager.getSourceByName(sourceName);
+    public Finder getFinder() {
+        return finder;
     }
 
-    @Override
-    public List<String> getSourceNames() {
-        return this.udfManager.getSourceNames();
+    public void setFinder(Finder finder) {
+        this.finder = Objects.requireNonNull(finder, "finder is null.");
     }
 
-    @Override
-    public void addSource(UdfSource udfSource) {
-        this.udfManager.addSource(udfSource);
+    public CustomizeScopeCreater getCustomizeScopeCreater() {
+        return customizeScopeCreater;
     }
 
+    public void setCustomizeScopeCreater(CustomizeScopeCreater customizeScopeCreater) {
+        this.customizeScopeCreater = Objects.requireNonNull(customizeScopeCreater, "customizeScopeCreater is null.");
+    }
     // -------------------------------------------------------------------------------------------- ScriptEngine
+
     @Override
     public CompiledScript compile(Reader queryString) throws ScriptException {
         try {
@@ -123,14 +104,13 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
     @Override
     public CompiledScript compile(String queryString) throws ScriptException {
         try {
-            QIL compilerQIL = QueryCompiler.compilerQuery(queryString);
+            QIL compilerQIL = QueryHelper.queryCompiler(queryString, getFinder());
             return new DataQLCompiledScript(compilerQIL, this);
-        } catch (ParseException e) {
+        } catch (IOException e) {
             throw new ScriptException(e);
         }
     }
 
-    // -------------------------------------------------------------------------------------------- ScriptEngine
     @Override
     public Object eval(Reader queryString, ScriptContext context) throws ScriptException {
         try {
@@ -145,21 +125,6 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
     @Override
     public ScriptEngineFactory getFactory() {
         return this.engineFactory;
-    }
-
-    private static ClassLoader getParentLoader() {
-        // check whether thread context loader can "see" Groovy Script class
-        ClassLoader ctxtLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            Class c = ctxtLoader.loadClass(Query.class.getName());
-            if (c == Query.class) {
-                return ctxtLoader;
-            }
-        } catch (ClassNotFoundException cnfe) {
-            /* ignore */
-        }
-        // exception was thrown or we get wrong class
-        return Query.class.getClassLoader();
     }
 
     @Override

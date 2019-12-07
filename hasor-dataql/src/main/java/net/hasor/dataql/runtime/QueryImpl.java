@@ -15,8 +15,12 @@
  */
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.CustomizeScope;
+import net.hasor.dataql.Finder;
+import net.hasor.dataql.OptionKeys;
 import net.hasor.dataql.Query;
+import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.domain.DataModel;
+import net.hasor.dataql.runtime.inset.OpcodesPool;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -30,36 +34,47 @@ import java.util.Collections;
  * @version : 2017-03-23
  */
 class QueryImpl extends OptionSet implements Query {
-    private QueryEngineImpl queryEngine;
+    private QIL    qil;
+    private Finder finder;
 
-    QueryImpl(QueryEngineImpl queryEngine) {
-        super(queryEngine);
-        this.queryEngine = queryEngine;
+    QueryImpl(QIL qil, Finder finder) {
+        this.qil = qil;
+        this.finder = finder;
+    }
+
+    private static long executionTime(long startTime) {
+        return System.currentTimeMillis() - startTime;
     }
 
     @Override
     public QueryResultImpl execute(CustomizeScope customize) throws InstructRuntimeException {
+        long startTime = System.currentTimeMillis();
+        InstSequence instSequence = new InstSequence(0, this.qil);
+        //
+        // .创建指令执行环境
         if (customize == null) {
             customize = symbol -> Collections.emptyMap();
         }
-        //
-        long startTime = System.currentTimeMillis();
-        InstSequence instSequence = new InstSequence(0, this.queryEngine.getQil());
-        DataStack dataStack = this.queryEngine.processInset(//
-                instSequence,   // 指令序列
-                new DataHeap(), // 数据堆
-                new DataStack(),// 数据栈
-                new EnvStack(), // 环境栈
-                this, //
-                customize       //
-        );
-        //
-        // .结果
+        InsetProcessContext processContext = new InsetProcessContext(customize, this.finder);
+        // .汇总Option
+        processContext.setOptionSet(this);
+        for (OptionKeys optionKey : OptionKeys.values()) {
+            processContext.putIfAbsent(optionKey.name(), optionKey.getDefaultVal());
+        }
+        // .执行指令序列
+        OpcodesPool opcodesPool = OpcodesPool.defaultOpcodesPool();
+        DataStack dataStack = new DataStack();  // 指令执行 - 栈
+        DataHeap dataHeap = new DataHeap();     // 指令执行 - 堆
+        EnvStack envStack = new EnvStack();     // 环境数据 - 栈
+        while (instSequence.hasNext()) {
+            opcodesPool.doWork(instSequence, dataHeap, dataStack, envStack, processContext);
+            instSequence.doNext(1);
+        }
+        // .结果处理
         ExitType exitType = dataStack.getExitType();
         long executionTime = executionTime(startTime);
         int resultCode = dataStack.getResultCode();
         DataModel result = dataStack.getResult();
-        //
         if (ExitType.Exit == exitType) {
             return new QueryResultImpl(false, resultCode, result, executionTime);
         } else if (ExitType.Throw == exitType) {
@@ -69,9 +84,5 @@ class QueryImpl extends OptionSet implements Query {
         } else {
             throw new InstructRuntimeException(exitType + " ExitType undefined.");
         }
-    }
-
-    private static long executionTime(long startTime) {
-        return System.currentTimeMillis() - startTime;
     }
 }

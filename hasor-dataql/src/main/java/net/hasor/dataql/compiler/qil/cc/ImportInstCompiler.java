@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil.cc;
-import net.hasor.dataql.QueryHelper;
+import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.dataql.compiler.ast.inst.ImportInst;
 import net.hasor.dataql.compiler.ast.inst.ImportInst.ImportType;
 import net.hasor.dataql.compiler.ast.inst.RootBlockSet;

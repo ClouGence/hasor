@@ -15,7 +15,7 @@
  */
 package net.hasor.dataql.compiler.ast;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.QueryHelper;
+import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.utils.StringUtils;
 import org.junit.Test;

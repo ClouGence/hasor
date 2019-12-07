@@ -15,9 +15,27 @@
  */
 /**
  * DataQL 的 jsr223 支持。
+ *
+ * 获取参数变量操作符：@、#、$ 的实际效果如下：
+ * <pre>
+ * Bindings globalBindings = this.engine.getBindings(ScriptContext.GLOBAL_SCOPE);
+ * Bindings engineBindings = this.engine.getBindings(ScriptContext.ENGINE_SCOPE);
+ * Map dataMap = new HashMap<>(){{
+ *   dataMap.putAll(globalBindings);
+ *   dataMap.putAll(engineBindings);
+ * };
+ * CustomizeScope customizeScope = symbol -> {
+ * if ("#".equals(symbol)) {
+ *   return engineBindings;
+ * } else if ("@".equals(symbol)) {
+ *   return globalBindings;
+ * } else {
+ *   return dataMap;
+ * }<pre/>
+ *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 @AopIgnore
-package net.hasor.dataql.jsr223;
+package net.hasor.dataql.extend.jsr223;
 import net.hasor.core.AopIgnore;

@@ -15,8 +15,9 @@
  */
 package net.hasor.dataql.compiler.qil;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.QueryHelper;
+import net.hasor.dataql.Finder;
 import net.hasor.dataql.compiler.QueryModel;
+import net.hasor.dataql.runtime.QueryHelper;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class QilTest extends AbstractTestResource {
     private void astTest(String testCase) throws IOException {
         String query1 = getScript("/net_hasor_dataql_ast/" + testCase + "/ast.ql");
         QueryModel queryModel = QueryHelper.queryParser(query1);
-        QIL qil = QueryHelper.queryCompiler(queryModel);
+        QIL qil = QueryHelper.queryCompiler(queryModel, Finder.DEFAULT);
         //
         String qilString1 = qil.toString();
         String qilString2 = getScript("/net_hasor_dataql_ast/" + testCase + "/ast.qil");

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.jsr223;
+package net.hasor.dataql.extend.jsr223;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.List;
  * @version : 2017-10-19
  */
 public class DataQLScriptEngineFactory implements ScriptEngineFactory {
-    private static final String VERSION       = "1.0";
+    private static final String VERSION       = "2.0";
     private static final String SHORT_NAME    = "dataql";
     private static final String LANGUAGE_NAME = "DataQL";
 
@@ -83,53 +83,15 @@ public class DataQLScriptEngineFactory implements ScriptEngineFactory {
     }
 
     public String getMethodCallSyntax(String obj, String method, String... args) {
-        String ret = obj + "." + method + "(";
-        int len = args.length;
-        if (len == 0) {
-            ret += ")";
-            return ret;
-        }
-        for (int i = 0; i < len; i++) {
-            ret += args[i];
-            if (i != len - 1) {
-                ret += ",";
-            } else {
-                ret += ")";
-            }
-        }
-        return ret;
+        throw new UnsupportedOperationException();
     }
 
     public String getOutputStatement(String toDisplay) {
-        StringBuilder buf = new StringBuilder();
-        buf.append("println(\"");
-        int len = toDisplay.length();
-        for (int i = 0; i < len; i++) {
-            char ch = toDisplay.charAt(i);
-            switch (ch) {
-            case '"':
-                buf.append("\\\"");
-                break;
-            case '\\':
-                buf.append("\\\\");
-                break;
-            default:
-                buf.append(ch);
-                break;
-            }
-        }
-        buf.append("\")");
-        return buf.toString();
+        throw new UnsupportedOperationException();
     }
 
     public String getProgram(String... statements) {
-        StringBuilder ret = new StringBuilder();
-        int len = statements.length;
-        for (int i = 0; i < len; i++) {
-            ret.append(statements[i]);
-            ret.append('\n');
-        }
-        return ret.toString();
+        throw new UnsupportedOperationException();
     }
 
     public Object getParameter(String key) {
