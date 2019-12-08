@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -49,6 +50,8 @@ class CAST_I implements InsetProcess {
         //
         if (data == null) {
             iterator = Collections.EMPTY_LIST.iterator();
+        } else if (data instanceof ListModel) {
+            iterator = ((ListModel) data).asOri().iterator();
         } else if (data instanceof Collection) {
             iterator = ((Collection) data).iterator();
         } else if (data.getClass().isArray()) {

@@ -12,7 +12,7 @@
   #10  LDC_B     true
   #11  IF        15
   #12  LDC_D     22
-  #13  STORE     0
+  #13  STORE     1
   #14  GOTO      29
   #15  LABEL     15
   #16  NEW_A

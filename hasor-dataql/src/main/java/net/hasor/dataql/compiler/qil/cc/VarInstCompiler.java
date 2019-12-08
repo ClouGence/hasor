@@ -28,18 +28,16 @@ import net.hasor.dataql.compiler.qil.InstQueue;
 public class VarInstCompiler implements InstCompiler<VarInst> {
     @Override
     public void doCompiler(VarInst astInst, InstQueue queue, CompilerContext compilerContext) {
-        // .编译表达式
+        // .如果当前堆栈中存在该变量的定义，那么直接覆盖。否则新增一个本地变量
         String varName = astInst.getVarName();
+        int index = compilerContext.containsWithCurrent(varName);
+        if (index < 0) {
+            index = compilerContext.push(varName);
+        }
+        //
+        // .编译表达式
         Variable varValue = astInst.getValue();
         compilerContext.findInstCompilerByInst(varValue).doCompiler(queue);
-        //
-        // .如果当前堆栈中存在该变量的定义，那么直接覆盖。否则新增一个本地变量
-        int index = compilerContext.containsWithCurrent(varName);
-        if (index >= 0) {
-            queue.inst(STORE, index);
-        } else {
-            index = compilerContext.push(varName);
-            queue.inst(STORE, index);
-        }
+        queue.inst(STORE, index);
     }
 }

@@ -48,7 +48,7 @@ class M_STAR implements InsetProcess {
         Object[] callParams = lambdaCall.getParams();
         //
         for (int i = 0; i < paramCount; i++) {
-            if (i > callParams.length) {
+            if (i >= callParams.length) {
                 break;
             }
             dataHeap.saveData(i, callParams[i]);

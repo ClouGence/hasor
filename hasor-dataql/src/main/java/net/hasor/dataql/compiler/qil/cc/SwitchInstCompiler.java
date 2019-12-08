@@ -86,17 +86,13 @@ public class SwitchInstCompiler implements InstCompiler<SwitchInst> {
             //
             // .if的body
             InstSet instBlockSet = switchExp.instBlockSet;
-            compilerContext.newFrame();
             compilerContext.findInstCompilerByInst(instBlockSet).doCompiler(queue);
-            compilerContext.dropFrame();
             queue.inst(GOTO, finalLabel);//执行完毕，跳转到总出口
             queue.inst(LABEL, lastEnterIn);
         }
         // .else
         if (elseBlockSet != null) {
-            compilerContext.newFrame();
             compilerContext.findInstCompilerByInst(elseBlockSet).doCompiler(queue);
-            compilerContext.dropFrame();
             queue.inst(GOTO, finalLabel);
         }
         // .if 的结束点
