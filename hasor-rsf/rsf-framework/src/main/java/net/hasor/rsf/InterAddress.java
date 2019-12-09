@@ -35,16 +35,16 @@ public class InterAddress {
     private final       String sechma;                                              //协议
     private final       String formUnit;                                            //所属单元
     private final       String hostAddress;                                         //地址
-    private final       int    hostAddressData;                                     //地址数值表现形式
+    //    private final       int    hostAddressData;                                     //地址数值表现形式
     private final       int    hostPort;                                            //端口
     private final       String hostSchema;
 
     //
-    public InterAddress(String newAddressURL) throws URISyntaxException, UnknownHostException {
+    public InterAddress(String newAddressURL) throws URISyntaxException {
         this(new URI(newAddressURL));
     }
 
-    public InterAddress(URI newAddressURL) throws UnknownHostException {
+    public InterAddress(URI newAddressURL) {
         if (!checkFormat(newAddressURL)) {
             throw new IllegalStateException(newAddressURL + " format error.");
         }
@@ -54,8 +54,7 @@ public class InterAddress {
         }
         this.sechma = newAddressURL.getScheme().toLowerCase();
         this.formUnit = formPath.split("/")[0];
-        this.hostAddressData = this.initIP(newAddressURL.getHost());
-        this.hostAddress = NetworkUtils.ipDataToString(this.hostAddressData);
+        this.hostAddress = newAddressURL.getHost();//
         this.hostPort = newAddressURL.getPort();
         this.hostSchema = String.format("%s://%s:%s/%s", this.sechma, this.hostAddress, this.hostPort, this.formUnit);
     }
@@ -67,8 +66,7 @@ public class InterAddress {
     public InterAddress(String sechma, String hostAddress, int hostPort, String formUnit) throws UnknownHostException {
         this.sechma = Objects.requireNonNull(sechma, "sechma is null.").toLowerCase();
         this.formUnit = Objects.requireNonNull(formUnit, "formUnit is null.");
-        this.hostAddressData = this.initIP(Objects.requireNonNull(hostAddress, "hostAddress is null."));
-        this.hostAddress = NetworkUtils.ipDataToString(this.hostAddressData);
+        this.hostAddress = Objects.requireNonNull(hostAddress, "hostAddress is null.");
         this.hostPort = hostPort;
         this.hostSchema = String.format("%s://%s:%s/%s", this.sechma, this.hostAddress, this.hostPort, this.formUnit);
     }
@@ -108,6 +106,11 @@ public class InterAddress {
         return this.hostAddress + ":" + this.hostPort;
     }
 
+    /** 返回IP地址和端口，格式为：192.168.25.33:8000*/
+    public String getIpPort() throws UnknownHostException {
+        return NetworkUtils.ipDataToString(getHostIPValue()) + ":" + this.hostPort;
+    }
+
     /** 返回地址所属单元*/
     public String getFormUnit() {
         return this.formUnit;
@@ -115,8 +118,8 @@ public class InterAddress {
 
     /** 返回IPv4地址的int表达形式。转换方法：字符串表达形式下可以分为4个字节对象，在由于int数据占有4个字节，彼此一一对应。
      * <p>例如：192.168.34.22 -&nbsp;&gt;&nbsp; 11000000.10101000.00100010.00010110 -&nbsp;&gt;&nbsp; 11000000101010000010001000010110 -&nbsp;&gt;&nbsp; -1062723050*/
-    public int getHostIPValue() {
-        return this.hostAddressData;
+    public int getHostIPValue() throws UnknownHostException {
+        return this.initIP(Objects.requireNonNull(hostAddress, "hostAddress is null."));
     }
 
     /**转换地址为URL形式*/
@@ -167,7 +170,7 @@ public class InterAddress {
         result = prime * result + ((formUnit == null) ? 0 : formUnit.hashCode());
         result = prime * result + ((formUnit == null) ? 0 : formUnit.hashCode());
         result = prime * result + ((hostAddress == null) ? 0 : hostAddress.hashCode());
-        result = prime * result + hostAddressData;
+        result = prime * result + this.hostAddress.hashCode();
         result = prime * result + hostPort;
         return result;
     }

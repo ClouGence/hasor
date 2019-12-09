@@ -37,6 +37,9 @@ import java.util.Set;
  */
 public class AddressPoolTest {
     protected void configService(AddressPool pool, String service) throws URISyntaxException, IOException {
+        new InterAddress("localhost", 8000, "etc2");
+
+        //
         ArrayList<InterAddress> dynamicList = new ArrayList<>();
         dynamicList.add(new InterAddress("127.0.0.1", 8000, "etc2"));
         dynamicList.add(new InterAddress("127.0.0.2", 8000, "etc2"));
