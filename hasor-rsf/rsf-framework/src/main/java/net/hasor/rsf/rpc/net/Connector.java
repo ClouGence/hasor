@@ -25,6 +25,7 @@ import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.UnknownHostException;
 import java.util.concurrent.Future;
 
 /**
@@ -89,14 +90,14 @@ public abstract class Connector {
     }
 
     /** 建立或获取和远程的连接(异步+回调) */
-    public Future<RsfChannel> getOrConnectionTo(InterAddress target) throws InterruptedException {
+    public Future<RsfChannel> getOrConnectionTo(InterAddress target) throws UnknownHostException {
         String protocol = target.getSechma();
         if (!this.sechma.equalsIgnoreCase(protocol)) {
             throw new RsfException(ProtocolStatus.ProtocolError, "sechma not match.");
         }
         //
         // .查找连接，并确定已有连接是否有效
-        String hostPort = target.getHostPort();
+        String hostPort = target.getIpPort();
         BasicFuture<RsfChannel> channelFuture = this.linkPool.findChannel(hostPort);
         if (channelFuture != null && channelFuture.isDone()) {
             RsfChannel channel = null;
@@ -158,7 +159,7 @@ public abstract class Connector {
             return false;
         }
     }
- 
+
     /**停止监听器*/
     public final void shutdown() {
         this.shutdownListener();

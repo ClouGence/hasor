@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -118,7 +119,7 @@ public class NettyConnector extends Connector {
         handlers.addAll(Arrays.asList(this.handlerFactory.channelHandler(this, this.appContext)));
         // 3st,转发RequestInfo、ResponseInfo到RSF
         handlers.add(new NettySocketReader(this));
-        return handlers.toArray(new ChannelHandler[handlers.size()]);
+        return handlers.toArray(new ChannelHandler[0]);
     }
 
     /**停止监听器*/
@@ -135,6 +136,16 @@ public class NettyConnector extends Connector {
     /** 连接到远程机器 */
     public void connectionTo(final InterAddress hostAddress, final BasicFuture<RsfChannel> result) {
         //
+        InetSocketAddress inetSocketAddress = null;
+        try {
+            inetSocketAddress = hostAddress.toSocketAddress();
+        } catch (UnknownHostException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            if (inetSocketAddress == null) {
+                throw new RuntimeException("SocketAddress is null.");
+            }
+        }
         logger.info("connect to {} ...", hostAddress.toHostSchema());
         Bootstrap boot = new Bootstrap();
         boot.group(this.threadGroup.getWorkLoopGroup());
@@ -144,20 +155,19 @@ public class NettyConnector extends Connector {
                 ch.pipeline().addLast(channelHandlerList());
             }
         });
-        ChannelFuture future = configBoot(boot).connect(hostAddress.toSocketAddress());
         //
-        future.addListener(new ChannelFutureListener() {
-            public void operationComplete(ChannelFuture future) throws Exception {
-                if (!future.isSuccess()) {
-                    future.channel().close();
-                    logger.error("connect to {} error.", hostAddress, future.cause());
-                    result.failed(future.cause());
-                } else {
-                    Channel channel = future.channel();
-                    logger.info("connect to {} Success.", hostAddress);
-                    RsfChannelOnNetty onNetty = new RsfChannelOnNetty(getBindAddress(), channel, LinkType.Out);
-                    result.completed(configListener(onNetty));
-                }
+        ChannelFuture future = configBoot(boot).connect(inetSocketAddress);
+        //
+        future.addListener((ChannelFutureListener) channelFuture -> {
+            if (!future.isSuccess()) {
+                channelFuture.channel().close();
+                logger.error("connect to {} error.", hostAddress, channelFuture.cause());
+                result.failed(channelFuture.cause());
+            } else {
+                Channel channel = channelFuture.channel();
+                logger.info("connect to {} Success.", hostAddress);
+                RsfChannelOnNetty onNetty = new RsfChannelOnNetty(getBindAddress(), channel, LinkType.Out);
+                result.completed(configListener(onNetty));
             }
         });
     }

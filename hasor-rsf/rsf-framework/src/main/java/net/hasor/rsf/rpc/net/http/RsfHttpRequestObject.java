@@ -23,6 +23,7 @@ import net.hasor.utils.Iterators;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -156,7 +157,7 @@ class RsfHttpRequestObject extends HashMap<String, Object> implements RsfHttpReq
     }
 
     @Override
-    public String getRemoteAddr() {
+    public String getRemoteAddr() throws UnknownHostException {
         return this.remoteAddress.getHost();
     }
 
@@ -166,7 +167,7 @@ class RsfHttpRequestObject extends HashMap<String, Object> implements RsfHttpReq
     }
 
     @Override
-    public String getLocalAddr() {
+    public String getLocalAddr() throws UnknownHostException {
         return this.localAddress.getHost();
     }
 

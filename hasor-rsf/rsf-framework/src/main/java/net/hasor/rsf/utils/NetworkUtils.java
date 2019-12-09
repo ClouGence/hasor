@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.*;
+import java.util.*;
 
 /**
  *
@@ -25,6 +26,8 @@ import java.net.UnknownHostException;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class NetworkUtils {
+    protected static Logger logger = LoggerFactory.getLogger(NetworkUtils.class);
+
     private static void isPortAvailable(String host, int port) throws Exception {
         Socket s = new Socket();
         s.bind(new InetSocketAddress(host, port));
@@ -54,7 +57,16 @@ public class NetworkUtils {
 
     /**根据名字获取地址，local代表本机（如果本机有多网卡那么请明确指定ip）*/
     public static InetAddress finalBindAddress(String hostString) throws UnknownHostException {
-        return "local".equalsIgnoreCase(hostString) ? InetAddress.getLocalHost() : InetAddress.getByName(hostString);
+        if ("local".equalsIgnoreCase(hostString)) {
+            List<String> localAddr = localIpAddr();
+            if (localAddr.isEmpty()) {
+                return InetAddress.getLocalHost();
+            } else {
+                return InetAddress.getByName(localAddr.get(0));
+            }
+        } else {
+            return InetAddress.getByName(hostString);
+        }
     }
 
     /**根据掩码长度获取掩码字符串形式.*/
@@ -93,7 +105,7 @@ public class NetworkUtils {
         }
         return intIP;
     }
- 
+
     /**将分解的IP数据转换为字符串*/
     public static String ipDataToString(int ipData) {
         return ipDataToString(ipDataByInt(ipData));
@@ -111,5 +123,43 @@ public class NetworkUtils {
 
     private static String tostr(byte byteData) {
         return "" + ((byteData < 0) ? 256 + byteData : byteData);
+    }
+
+    /** 获取本机地址 */
+    public static List<String> localIpAddr() {
+        List<String> ipList = new ArrayList<>();
+        try {
+            Enumeration interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface ni = (NetworkInterface) interfaces.nextElement();
+                Enumeration ipAddrEnum = ni.getInetAddresses();
+                while (ipAddrEnum.hasMoreElements()) {
+                    InetAddress addr = (InetAddress) ipAddrEnum.nextElement();
+                    if (addr.isLoopbackAddress()) {
+                        continue;
+                    }
+                    String ip = addr.getHostAddress();
+                    if (ip.contains(":")) {
+                        //skip the IPv6 addr
+                        continue;
+                    }
+                    logger.debug("Interface: " + ni.getName() + ", IP: " + ip);
+                    ipList.add(ip);
+                }
+            }
+            Collections.sort(ipList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("Failed to get local ip list. " + e.getMessage());
+            throw new RuntimeException("Failed to get local ip list");
+        }
+        return ipList;
+    }
+
+    /** 获取本机IP */
+    public static void localIpAddr(Set<String> set) {
+        List<String> addrList = localIpAddr();
+        set.clear();
+        set.addAll(addrList);
     }
 }

@@ -158,12 +158,7 @@ public class HproseHttpHandler implements HttpHandler, HttpHandlerFactory {
         }
         //
         RequestObject httpObject = requestBuilder.buildObject();
-        builder.sendRequest(httpObject, new ResponseDecoder() {
-            @Override
-            public ResponseInfo complete(long requestID, RsfHttpResponseData httpResponse) throws IOException {
-                return decodeResponseInfo(requestID, httpResponse);
-            }
-        });
+        builder.sendRequest(httpObject, this::decodeResponseInfo);
     }
 
     private ResponseInfo decodeResponseInfo(long requestID, RsfHttpResponseData httpResponse) throws IOException {

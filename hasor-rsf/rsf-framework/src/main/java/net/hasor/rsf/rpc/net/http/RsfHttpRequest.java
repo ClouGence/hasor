@@ -16,6 +16,7 @@
 package net.hasor.rsf.rpc.net.http;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.UnknownHostException;
 import java.util.Enumeration;
 
 /**
@@ -246,7 +247,7 @@ public interface RsfHttpRequest {
      * For HTTP servlets, same as the value of the CGI variable <code>REMOTE_ADDR</code>.
      * @return a <code>String</code> containing the IP address of the client that sent the request
      */
-    public String getRemoteAddr();
+    public String getRemoteAddr() throws UnknownHostException;
 
     /**
      * Returns the Internet Protocol (IP) source port of the client or last proxy that sent the request.
@@ -258,7 +259,7 @@ public interface RsfHttpRequest {
      * Returns the Internet Protocol (IP) address of the interface on which the request  was received.
      * @return a <code>String</code> containing the IP address on which the request was received.
      */
-    public String getLocalAddr();
+    public String getLocalAddr() throws UnknownHostException;
 
     /**
      * Returns the Internet Protocol (IP) port number of the interface on which the request was received.

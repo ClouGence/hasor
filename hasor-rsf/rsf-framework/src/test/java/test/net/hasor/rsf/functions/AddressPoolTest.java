@@ -21,6 +21,7 @@ import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.DiskCacheAddressPool;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.utils.IOUtils;
+import net.hasor.rsf.utils.NetworkUtils;
 import net.hasor.utils.ResourcesUtils;
 import org.junit.Test;
 
@@ -37,8 +38,7 @@ import java.util.Set;
  */
 public class AddressPoolTest {
     protected void configService(AddressPool pool, String service) throws URISyntaxException, IOException {
-        new InterAddress("localhost", 8000, "etc2");
-
+        NetworkUtils.finalBindAddress("local");
         //
         ArrayList<InterAddress> dynamicList = new ArrayList<>();
         dynamicList.add(new InterAddress("127.0.0.1", 8000, "etc2"));

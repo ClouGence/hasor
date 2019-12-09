@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.*;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,11 +36,9 @@ public class InterAddress {
     private final       String sechma;                                              //协议
     private final       String formUnit;                                            //所属单元
     private final       String hostAddress;                                         //地址
-    //    private final       int    hostAddressData;                                     //地址数值表现形式
     private final       int    hostPort;                                            //端口
     private final       String hostSchema;
 
-    //
     public InterAddress(String newAddressURL) throws URISyntaxException {
         this(new URI(newAddressURL));
     }
@@ -59,11 +58,11 @@ public class InterAddress {
         this.hostSchema = String.format("%s://%s:%s/%s", this.sechma, this.hostAddress, this.hostPort, this.formUnit);
     }
 
-    public InterAddress(String hostAddress, int hostPort, String formUnit) throws UnknownHostException {
+    public InterAddress(String hostAddress, int hostPort, String formUnit) {
         this(DEFAULT_SECHMA, hostAddress, hostPort, formUnit);
     }
 
-    public InterAddress(String sechma, String hostAddress, int hostPort, String formUnit) throws UnknownHostException {
+    public InterAddress(String sechma, String hostAddress, int hostPort, String formUnit) {
         this.sechma = Objects.requireNonNull(sechma, "sechma is null.").toLowerCase();
         this.formUnit = Objects.requireNonNull(formUnit, "formUnit is null.");
         this.hostAddress = Objects.requireNonNull(hostAddress, "hostAddress is null.");
@@ -71,72 +70,67 @@ public class InterAddress {
         this.hostSchema = String.format("%s://%s:%s/%s", this.sechma, this.hostAddress, this.hostPort, this.formUnit);
     }
 
-    private int initIP(String hostIP) throws UnknownHostException {
-        if (!hostIP.matches("\\d+(\\.\\d+){3}")) {
-            hostIP = NetworkUtils.finalBindAddress(hostIP).getHostAddress();
-        }
-        //
-        int ipInt = 0;
-        String[] ipParts = hostIP.split("\\.");
-        for (int i = 0; i < ipParts.length; i++) {
-            int ipPartData = Integer.parseInt(ipParts[i]);
-            ipInt = ipInt | (ipPartData << ((3 - i) * 8));
-        }
-        return ipInt;
-    }
-    //
-
-    /** 返回协议头*/
+    /** 返回协议头 */
     public String getSechma() {
         return this.sechma;
     }
 
-    /** 返回目标IP地址*/
-    public String getHost() {
-        return this.hostAddress;
-    }
-
-    /** 返回目标地址的端口号*/
-    public int getPort() {
-        return this.hostPort;
-    }
-
-    /** 返回IP地址和端口，格式为：192.168.25.33:8000*/
-    public String getHostPort() {
-        return this.hostAddress + ":" + this.hostPort;
-    }
-
-    /** 返回IP地址和端口，格式为：192.168.25.33:8000*/
-    public String getIpPort() throws UnknownHostException {
-        return NetworkUtils.ipDataToString(getHostIPValue()) + ":" + this.hostPort;
-    }
-
-    /** 返回地址所属单元*/
+    /** 返回地址所属单元 */
     public String getFormUnit() {
         return this.formUnit;
     }
 
-    /** 返回IPv4地址的int表达形式。转换方法：字符串表达形式下可以分为4个字节对象，在由于int数据占有4个字节，彼此一一对应。
-     * <p>例如：192.168.34.22 -&nbsp;&gt;&nbsp; 11000000.10101000.00100010.00010110 -&nbsp;&gt;&nbsp; 11000000101010000010001000010110 -&nbsp;&gt;&nbsp; -1062723050*/
-    public int getHostIPValue() throws UnknownHostException {
-        return this.initIP(Objects.requireNonNull(hostAddress, "hostAddress is null."));
+    /** 返回目标IP地址 */
+    public String getHost() {
+        if ("local".equalsIgnoreCase(this.hostAddress)) {
+            List<String> localIpAddr = NetworkUtils.localIpAddr();
+            if (localIpAddr.isEmpty()) {
+                try {
+                    return InetAddress.getLocalHost().getHostName();
+                } catch (Exception e) {
+                    return "localhost";
+                }
+            } else {
+                return localIpAddr.get(0);
+            }
+        }
+        return this.hostAddress;
     }
 
-    /**转换地址为URL形式*/
+    /** 返回IPv4地址 */
+    public String getIp() throws UnknownHostException {
+        return InetAddress.getByName(getHost()).getHostAddress();
+    }
+
+    /** 返回目标地址的端口号 */
+    public int getPort() {
+        return this.hostPort;
+    }
+
+    /** 返回IP地址和端口，格式为：192.168.25.33:8000 */
+    public String getHostPort() {
+        return this.getHost() + ":" + this.getPort();
+    }
+
+    /** 返回IP地址和端口，格式为：192.168.25.33:8000 */
+    public String getIpPort() throws UnknownHostException {
+        return getIp() + ":" + this.getPort();
+    }
+
+    /** 转换地址为URL形式 */
     public URI toURI() throws URISyntaxException {
         return new URI(this.getSechma(), null, this.getHost(), this.getPort(), "/" + this.formUnit, null, null);
     }
 
-    /**返回RSF协议形式表述的主机地址。格式为：“rsf://127.0.0.1:8000/unit”*/
+    /** 返回RSF协议形式表述的主机地址。格式为：“rsf://127.0.0.1:8000/unit” */
     public String toHostSchema() {
         return this.hostSchema;
     }
 
-    /**转换成{@link SocketAddress}类型对象。*/
-    public InetSocketAddress toSocketAddress() {
-        return new InetSocketAddress(getHost(), getPort());
+    /** 转换成{@link SocketAddress}类型对象 */
+    public InetSocketAddress toSocketAddress() throws UnknownHostException {
+        return new InetSocketAddress(getIp(), getPort());
     }
-    //
 
     /**
      * 两个 Address 可以比较是否相等
@@ -153,14 +147,14 @@ public class InterAddress {
         }
     }
 
-    /**判断连接地址是否是同一个。判断依据是参数的{@link #getHostPort()}返回值和该对象的{@link #getHostPort()}返回值做比较。*/
-    public boolean equalsHost(InterAddress evalResult) {
-        return evalResult != null && equalsHost(evalResult.getHostPort());
+    /** 判断连接地址是否是同一个。判断依据是参数的{@link #getHostPort()}返回值和该对象的{@link #getHostPort()}返回值做比较 */
+    public boolean equalsHost(InterAddress evalResult) throws UnknownHostException {
+        return evalResult != null && equalsHost(evalResult.getIpPort());
     }
 
-    /**判断连接地址是否是同一个。判断依据是参数值和{@link #getHostPort()}返回值做比较。*/
-    public boolean equalsHost(String evalResult) {
-        return evalResult != null && this.getHostPort().equals(evalResult);
+    /** 判断连接地址是否是同一个。判断依据是参数值和{@link #getHostPort()}返回值做比较 */
+    public boolean equalsHost(String evalResult) throws UnknownHostException {
+        return evalResult != null && this.getIpPort().equals(evalResult);
     }
 
     @Override
@@ -175,7 +169,6 @@ public class InterAddress {
         return result;
     }
 
-    //
     public String toString() {
         return toHostSchema();
     }

@@ -29,8 +29,7 @@ import java.util.Map.Entry;
  * @author 赵永春 (zyc@hasor.net)
  */
 class AddressCacheResult {
-    protected        Logger      logger = LoggerFactory.getLogger(getClass());
-    //做引用切换
+    protected static Logger      logger = LoggerFactory.getLogger(AddressCacheResult.class);
     private volatile CacheResult cacheResultRef;
     private final    AddressPool addressPool;
 
@@ -141,7 +140,7 @@ class AddressCacheResult {
     //
     //
     private static Map<String, Map<String, List<InterAddress>>> convertToAddressArgs(List<InterAddress> all, Map<String, Map<String, List<String>>> argsLevelResult) {
-        Map<String, Map<String, List<InterAddress>>> result = new HashMap<String, Map<String, List<InterAddress>>>();
+        Map<String, Map<String, List<InterAddress>>> result = new HashMap<>();
         for (Entry<String, Map<String, List<String>>> ent : argsLevelResult.entrySet()) {
             String key = ent.getKey();
             Map<String, List<InterAddress>> val = convertToAddressMethod(all, ent.getValue());
@@ -153,7 +152,7 @@ class AddressCacheResult {
     }
 
     private static Map<String, List<InterAddress>> convertToAddressMethod(List<InterAddress> all, Map<String, List<String>> methodLevelResult) {
-        Map<String, List<InterAddress>> result = new HashMap<String, List<InterAddress>>();
+        Map<String, List<InterAddress>> result = new HashMap<>();
         for (Entry<String, List<String>> ent : methodLevelResult.entrySet()) {
             String key = ent.getKey();
             List<InterAddress> val = convertToAddress(all, ent.getValue());
@@ -165,11 +164,15 @@ class AddressCacheResult {
     }
 
     private static List<InterAddress> convertToAddress(List<InterAddress> all, List<String> serviceLevelResult) {
-        List<InterAddress> result = new ArrayList<InterAddress>(serviceLevelResult.size());
+        List<InterAddress> result = new ArrayList<>(serviceLevelResult.size());
         for (String evalResult : serviceLevelResult) {
             for (InterAddress address : all) {
-                if (address.equalsHost(evalResult)) {
-                    result.add(address);
+                try {
+                    if (address.equalsHost(evalResult)) {
+                        result.add(address);
+                    }
+                } catch (Exception e) {
+                    logger.info(e.getMessage(), e);
                 }
             }
         }
@@ -177,15 +180,16 @@ class AddressCacheResult {
     }
 
     private static List<String> convertToStr(List<InterAddress> all) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (InterAddress address : all) {
-            result.add(address.getHostPort());
+            try {
+                result.add(address.getHostPort());
+            } catch (Exception e) {
+                logger.info(e.getMessage(), e);
+            }
         }
         return result;
     }
-    //
-    //
-    //
 
     /** 脚本说明：
      * <pre>入参：
