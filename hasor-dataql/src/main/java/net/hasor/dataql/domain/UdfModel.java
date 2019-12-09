@@ -34,6 +34,11 @@ public class UdfModel implements DataModel, UDF {
         return this.udf;
     }
 
+    @Override
+    public UDF unwrap() {
+        return this.udf;
+    }
+
     /** 判断是否为 UdfModel 类型值 */
     public boolean isUdfModel() {
         return true;

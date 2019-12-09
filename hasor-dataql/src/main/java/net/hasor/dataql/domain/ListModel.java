@@ -50,6 +50,15 @@ public class ListModel implements DataModel {
         return this.dataModel;
     }
 
+    @Override
+    public List<Object> unwrap() {
+        List<Object> unwrap = new ArrayList<>(this.dataModel.size());
+        this.dataModel.forEach(dataModel -> {
+            unwrap.add(dataModel.unwrap());
+        });
+        return unwrap;
+    }
+
     /** 判断是否为 ListModel 类型值 */
     public boolean isListModel() {
         return true;

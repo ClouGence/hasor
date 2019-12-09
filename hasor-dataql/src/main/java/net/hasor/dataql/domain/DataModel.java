@@ -23,6 +23,9 @@ public interface DataModel {
     /** 得到本来面目 */
     public Object asOri();
 
+    /** 解开 DataModel 包裹，采用 Map 和 List 封装。 */
+    public Object unwrap();
+
     /** 判断是否为 ValueModel 类型值 */
     public default boolean isValueModel() {
         return false;

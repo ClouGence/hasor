@@ -125,10 +125,10 @@ public interface Environment {
      * @throws NullPointerException if the specified action is null
      * @since 1.8
      */
-    public default void forEach(BiConsumer<String, Object> action) {
+    public default void forEach(BiConsumer<String, String> action) {
         Objects.requireNonNull(action);
         for (String varName : getVariableNames()) {
-            Object varValue = getVariable(varName);
+            String varValue = getVariable(varName);
             action.accept(varName, varValue);
         }
     }
@@ -183,7 +183,7 @@ public interface Environment {
      * @return the value to which the specified key is mapped, or {@code defaultValue} if this map contains no mapping for the key
      * @since 1.8
      */
-    public default <V> V getOrMap(String varName, Function<Object, V> defaultValue) {
+    public default <V> V getOrMap(String varName, Function<String, V> defaultValue) {
         return defaultValue.apply(getVariable(varName));
     }
 

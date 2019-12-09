@@ -47,6 +47,15 @@ public class ObjectModel implements DataModel {
         return this.dataModel;
     }
 
+    @Override
+    public Map<String, Object> unwrap() {
+        Map<String, Object> unwrap = new LinkedHashMap<>();
+        this.dataModel.forEach((key, dataModel) -> {
+            unwrap.put(key, dataModel.unwrap());
+        });
+        return unwrap;
+    }
+
     /** 判断是否为 ObjectModel 类型值 */
     public boolean isObjectModel() {
         return true;

@@ -40,6 +40,11 @@ public class ValueModel implements DataModel {
         return this.value;
     }
 
+    @Override
+    public Object unwrap() {
+        return this.value;
+    }
+
     /** 判断是否为 ValueModel 类型值 */
     public boolean isValueModel() {
         return true;
