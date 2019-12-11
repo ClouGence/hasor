@@ -1,24 +1,24 @@
 IN - RootBlockSet
-    IN - OptionInst
+    IN - HintInst
         IN - PrimitiveVariable
         OUT - PrimitiveVariable
-    OUT - OptionInst
-    IN - OptionInst
+    OUT - HintInst
+    IN - HintInst
         IN - PrimitiveVariable
         OUT - PrimitiveVariable
-    OUT - OptionInst
-    IN - OptionInst
+    OUT - HintInst
+    IN - HintInst
         IN - PrimitiveVariable
         OUT - PrimitiveVariable
-    OUT - OptionInst
-    IN - OptionInst
+    OUT - HintInst
+    IN - HintInst
         IN - PrimitiveVariable
         OUT - PrimitiveVariable
-    OUT - OptionInst
-    IN - OptionInst
+    OUT - HintInst
+    IN - HintInst
         IN - PrimitiveVariable
         OUT - PrimitiveVariable
-    OUT - OptionInst
+    OUT - HintInst
     IN - ReturnInst
         IN - PrimitiveVariable
         OUT - PrimitiveVariable

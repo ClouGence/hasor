@@ -20,7 +20,5 @@ package net.hasor.dataql.compiler.ast;
  * @version : 2019-11-07
  */
 public interface RouteVariable extends Variable {
-    public static String ignoreName = RouteVariable.class.getName() + "_ignore_routeType";
-
     public RouteVariable getParent();
 }

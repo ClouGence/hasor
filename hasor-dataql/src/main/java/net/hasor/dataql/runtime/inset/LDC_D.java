@@ -22,8 +22,8 @@ import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
 import net.hasor.dataql.runtime.operator.OperatorUtils;
 
-import static net.hasor.dataql.OptionValue.MIN_DECIMAL_WIDTH;
-import static net.hasor.dataql.OptionValue.MIN_INTEGER_WIDTH;
+import static net.hasor.dataql.HintValue.MIN_DECIMAL_WIDTH;
+import static net.hasor.dataql.HintValue.MIN_INTEGER_WIDTH;
 
 /**
  * LDC_D   // 将数字压入栈（例：LDC_D 12345）
@@ -43,8 +43,8 @@ class LDC_D implements InsetProcess {
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
         Number number = sequence.currentInst().getNumber(0);
-        String decimalWidth = (String) context.getOption(MIN_DECIMAL_WIDTH);
-        String integerWidth = (String) context.getOption(MIN_INTEGER_WIDTH);
+        String decimalWidth = (String) context.getHint(MIN_DECIMAL_WIDTH);
+        String integerWidth = (String) context.getHint(MIN_INTEGER_WIDTH);
         dataStack.push(OperatorUtils.fixNumberWidth(number, decimalWidth, integerWidth));
     }
 }

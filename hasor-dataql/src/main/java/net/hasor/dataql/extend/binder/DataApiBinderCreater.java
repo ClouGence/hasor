@@ -40,33 +40,33 @@ public class DataApiBinderCreater implements ApiBinderCreater {
         }
 
         @Override
-        public String[] getOptionNames() {
-            return this.innerDqlConfig.getOptionNames();
+        public String[] getHints() {
+            return this.innerDqlConfig.getHints();
         }
 
         @Override
-        public Object getOption(String optionKey) {
-            return this.innerDqlConfig.getOption(optionKey);
+        public Object getHint(String optionKey) {
+            return this.innerDqlConfig.getHint(optionKey);
         }
 
         @Override
-        public void removeOption(String optionKey) {
-            this.innerDqlConfig.removeOption(optionKey);
+        public void removeHint(String optionKey) {
+            this.innerDqlConfig.removeHint(optionKey);
         }
 
         @Override
-        public void setOption(String optionKey, String value) {
-            this.innerDqlConfig.setOption(optionKey, value);
+        public void setHint(String hintName, String value) {
+            this.innerDqlConfig.setHint(hintName, value);
         }
 
         @Override
-        public void setOption(String optionKey, Number value) {
-            this.innerDqlConfig.setOption(optionKey, value);
+        public void setHint(String hintName, Number value) {
+            this.innerDqlConfig.setHint(hintName, value);
         }
 
         @Override
-        public void setOption(String optionKey, boolean value) {
-            this.innerDqlConfig.setOption(optionKey, value);
+        public void setHint(String hintName, boolean value) {
+            this.innerDqlConfig.setHint(hintName, value);
         }
 
         @Override

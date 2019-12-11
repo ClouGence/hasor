@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.mem;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.utils.ExceptionUtils;
@@ -31,7 +31,7 @@ public class RefCall {
         this.refCall = refCall;
     }
 
-    public Object invokeMethod(Object[] paramArrays, Option optionSet) throws InstructRuntimeException {
+    public Object invokeMethod(Object[] paramArrays, Hints optionSet) throws InstructRuntimeException {
         try {
             return this.refCall.call(paramArrays, optionSet);
         } catch (Throwable e) {

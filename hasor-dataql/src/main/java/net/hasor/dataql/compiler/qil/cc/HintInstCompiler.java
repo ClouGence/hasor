@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil.cc;
-import net.hasor.dataql.compiler.ast.inst.OptionInst;
+import net.hasor.dataql.compiler.ast.inst.HintInst;
 import net.hasor.dataql.compiler.ast.value.PrimitiveVariable;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
@@ -25,12 +25,12 @@ import net.hasor.dataql.compiler.qil.InstQueue;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class OptionInstCompiler implements InstCompiler<OptionInst> {
+public class HintInstCompiler implements InstCompiler<HintInst> {
     @Override
-    public void doCompiler(OptionInst astInst, InstQueue queue, CompilerContext compilerContext) {
-        queue.inst(LDC_S, astInst.getOptKey());
-        PrimitiveVariable optValue = astInst.getOptValue();
-        compilerContext.findInstCompilerByInst(optValue).doCompiler(queue);
-        queue.inst(OPT);
+    public void doCompiler(HintInst astInst, InstQueue queue, CompilerContext compilerContext) {
+        queue.inst(LDC_S, astInst.getHint());
+        PrimitiveVariable hintValue = astInst.getValue();
+        compilerContext.findInstCompilerByInst(hintValue).doCompiler(queue);
+        queue.inst(HINT);
     }
 }

@@ -13,7 +13,6 @@ import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
 import net.hasor.dataql.compiler.ast.value.PrimitiveVariable.ValueType;
 import net.hasor.dataql.compiler.ast.value.SubscriptRouteVariable.SubType;
 import net.hasor.dataql.compiler.parser.DataQLParser.*;
-import net.hasor.dataql.runtime.OptionSet;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -31,17 +30,16 @@ import java.util.Stack;
  */
 public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> implements DataQLVisitor<T> {
     private Stack<Object> instStack = new Stack<>();
-    private OptionSet     optionSet = new OptionSet();
 
     @Override
     public T visitRootInstSet(RootInstSetContext ctx) {
         this.instStack.push(new RootBlockSet());
-        List<OptionInstContext> optionList = ctx.optionInst();
+        List<HintInstContext> optionList = ctx.hintInst();
         List<ImportInstContext> importList = ctx.importInst();
         List<BlockSetContext> blockSetList = ctx.blockSet();
         //
         if (optionList != null) {
-            for (OptionInstContext option : optionList) {
+            for (HintInstContext option : optionList) {
                 option.accept(this);
             }
         }
@@ -63,14 +61,14 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     }
 
     @Override
-    public T visitOptionInst(OptionInstContext ctx) {
+    public T visitHintInst(HintInstContext ctx) {
         this.instStack.push(ctx.IDENTIFIER().getText());
         visitChildren(ctx);
         //
         PrimitiveVariable optValue = (PrimitiveVariable) this.instStack.pop();
         String optKey = (String) this.instStack.pop();
-        OptionInst optionInst = new OptionInst(optKey, optValue);
-        ((RootBlockSet) this.instStack.peek()).addOptionInst(optionInst);
+        HintInst hintInst = new HintInst(optKey, optValue);
+        ((RootBlockSet) this.instStack.peek()).addOptionInst(hintInst);
         return null;
     }
 

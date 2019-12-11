@@ -17,9 +17,9 @@ package net.hasor.dataql;
 import java.util.Map;
 
 /**
- * 引擎
+ * 用户自定义数据取值作用域
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2019-12-11
  */
 public interface CustomizeScope {
     /** 自定义取值，操作符将下面下之一：#、@、$(常用) */

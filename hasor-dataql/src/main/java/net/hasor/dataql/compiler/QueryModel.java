@@ -15,7 +15,7 @@
  */
 package net.hasor.dataql.compiler;
 import net.hasor.dataql.compiler.ast.Visitor;
-import net.hasor.dataql.runtime.OptionSet;
+import net.hasor.dataql.runtime.HintsSet;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -34,8 +34,8 @@ public interface QueryModel extends Visitor {
     }
 
     public default void toQueryString(Writer writer) throws IOException {
-        this.toQueryString(new OptionSet(), writer);
+        this.toQueryString(new HintsSet(), writer);
     }
 
-    public void toQueryString(OptionSet formatOptions, Writer writer) throws IOException;
+    public void toQueryString(HintsSet formatOptions, Writer writer) throws IOException;
 }

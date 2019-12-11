@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.ast.inst;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
 import net.hasor.utils.StringUtils;
 
@@ -53,7 +53,7 @@ public class ReturnInst implements Inst {
     }
 
     @Override
-    public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
+    public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
         String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
         //
         if (this.returnCode != 0) {

@@ -1,22 +1,22 @@
 [0]
   #00  LDC_S     a
   #01  LDC_D     134
-  #02  OPT
+  #02  HINT
   #03  LDC_S     a
   #04  LDC_D     -134
-  #05  OPT
+  #05  HINT
   #06  LDC_S     e
   #07  LDC_D     1322
-  #08  OPT
+  #08  HINT
   #09  LDC_S     f
   #10  LDC_D     342391
-  #11  OPT
+  #11  HINT
   #12  LDC_S     g
   #13  LDC_D     1311768467294899695
-  #14  OPT
+  #14  HINT
   #15  LDC_S     h
   #16  LDC_D     999999999999999999999999999999999999999999999999999999999999
-  #17  OPT
+  #17  HINT
   #18  LDC_D     1
   #19  RETURN    0
 

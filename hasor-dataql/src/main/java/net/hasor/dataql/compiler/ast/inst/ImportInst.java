@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.ast.inst;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.FormatWriter;
 import net.hasor.dataql.compiler.ast.Inst;
@@ -64,7 +64,7 @@ public class ImportInst implements Inst {
     }
 
     @Override
-    public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
+    public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
         writer.write("import ");
         if (this.importType == ImportType.Resource) {
             writer.write("@");

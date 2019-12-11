@@ -1,6 +1,6 @@
 package net.hasor.dataql.runtime.basic;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.OptionValue;
+import net.hasor.dataql.HintValue;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ListModel;
@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FmtObjRuntimeTest extends AbstractTestResource implements OptionValue {
+public class FmtObjRuntimeTest extends AbstractTestResource implements HintValue {
     private Map<String, Object> object_list_map0 = new HashMap<String, Object>() {{
         put("dataList", new ArrayList<>());
     }};

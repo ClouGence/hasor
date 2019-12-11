@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.operator.ops;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.operator.OperatorProcess;
 import net.hasor.utils.StringUtils;
@@ -26,7 +26,7 @@ import net.hasor.utils.StringUtils;
  */
 abstract class AbstractDOP implements OperatorProcess {
     /**执行运算*/
-    public Object doProcess(String operator, Object[] args, Option option) throws InstructRuntimeException {
+    public Object doProcess(String operator, Object[] args, Hints option) throws InstructRuntimeException {
         if (args == null) {
             throw new InstructRuntimeException("dyadic operator error, args is null.");
         }
@@ -47,5 +47,5 @@ abstract class AbstractDOP implements OperatorProcess {
     }
 
     /**执行运算*/
-    public abstract Object doDyadicProcess(String operator, Object fstObject, Object secObject, Option option) throws InstructRuntimeException;
+    public abstract Object doDyadicProcess(String operator, Object fstObject, Object secObject, Hints option) throws InstructRuntimeException;
 }

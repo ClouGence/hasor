@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.ast.fmt;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.ast.value.ObjectVariable;
 
@@ -54,7 +54,7 @@ public class ObjectFormat implements Inst, Variable {
     }
 
     @Override
-    public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
+    public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
         this.form.doFormat(depth, formatOption, writer);
         writer.write(" => ");
         this.formatTo.doFormat(depth, formatOption, writer);

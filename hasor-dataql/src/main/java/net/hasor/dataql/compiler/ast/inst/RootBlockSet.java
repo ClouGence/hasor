@@ -19,7 +19,7 @@ import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.FormatWriter;
 import net.hasor.dataql.compiler.ast.Inst;
 import net.hasor.dataql.compiler.ast.InstVisitorContext;
-import net.hasor.dataql.runtime.OptionSet;
+import net.hasor.dataql.runtime.HintsSet;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -33,11 +33,11 @@ import java.util.Objects;
  * @version : 2019-11-07
  */
 public class RootBlockSet extends InstSet implements QueryModel {
-    private List<OptionInst> optionSet = new ArrayList<>();
+    private List<HintInst>   optionSet = new ArrayList<>();
     private List<ImportInst> importSet = new ArrayList<>();
 
     /** 添加选项 */
-    public void addOptionInst(OptionInst inst) {
+    public void addOptionInst(HintInst inst) {
         this.optionSet.add(Objects.requireNonNull(inst, "option inst npe."));
     }
 
@@ -46,7 +46,7 @@ public class RootBlockSet extends InstSet implements QueryModel {
         this.importSet.add(Objects.requireNonNull(inst, "import inst npe."));
     }
 
-    public List<OptionInst> getOptionSet() {
+    public List<HintInst> getOptionSet() {
         return optionSet;
     }
 
@@ -59,7 +59,7 @@ public class RootBlockSet extends InstSet implements QueryModel {
         astVisitor.visitInst(new InstVisitorContext(this) {
             @Override
             public void visitChildren(AstVisitor astVisitor) {
-                for (OptionInst inst : optionSet) {
+                for (HintInst inst : optionSet) {
                     inst.accept(astVisitor);
                 }
                 for (ImportInst inst : importSet) {
@@ -73,10 +73,10 @@ public class RootBlockSet extends InstSet implements QueryModel {
     }
 
     @Override
-    public void toQueryString(OptionSet formatOptions, Writer writer) throws IOException {
-        formatOptions = (formatOptions == null) ? new OptionSet() : formatOptions;
+    public void toQueryString(HintsSet formatOptions, Writer writer) throws IOException {
+        formatOptions = (formatOptions == null) ? new HintsSet() : formatOptions;
         //
-        for (OptionInst opt : this.optionSet) {
+        for (HintInst opt : this.optionSet) {
             opt.doFormat(0, formatOptions, new FormatWriter(writer));
         }
         for (ImportInst opt : this.importSet) {

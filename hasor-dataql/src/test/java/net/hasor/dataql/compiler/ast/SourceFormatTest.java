@@ -48,13 +48,13 @@ public class SourceFormatTest extends AbstractTestResource {
     }
 
     @Test
-    public void option1_ast_format_test() throws IOException {
-        astTest("option_1");
+    public void hint1_ast_format_test() throws IOException {
+        astTest("hint_1");
     }
 
     @Test
-    public void option2_ast_format_test() throws IOException {
-        astTest("option_2");
+    public void hint2_ast_format_test() throws IOException {
+        astTest("hint_2");
     }
 
     @Test

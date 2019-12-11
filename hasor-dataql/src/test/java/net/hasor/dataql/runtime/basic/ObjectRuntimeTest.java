@@ -1,13 +1,13 @@
 package net.hasor.dataql.runtime.basic;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.OptionValue;
+import net.hasor.dataql.HintValue;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataql.domain.ObjectModel;
 import org.junit.Test;
 
-public class ObjectRuntimeTest extends AbstractTestResource implements OptionValue {
+public class ObjectRuntimeTest extends AbstractTestResource implements HintValue {
     @Test
     public void obj_1_Test() throws Exception {
         Query compilerQL = compilerQL("return {'a':'abc-true','b':'bcd-false'}");

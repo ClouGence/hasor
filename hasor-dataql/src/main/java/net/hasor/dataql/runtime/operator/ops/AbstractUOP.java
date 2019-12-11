@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.operator.ops;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.operator.OperatorProcess;
 
@@ -25,7 +25,7 @@ import net.hasor.dataql.runtime.operator.OperatorProcess;
  */
 abstract class AbstractUOP implements OperatorProcess {
     /**执行运算*/
-    public Object doProcess(String operator, Object[] args, Option option) throws InstructRuntimeException {
+    public Object doProcess(String operator, Object[] args, Hints option) throws InstructRuntimeException {
         if (args == null) {
             throw new InstructRuntimeException("unary operator error, args is null.");
         }
@@ -40,5 +40,5 @@ abstract class AbstractUOP implements OperatorProcess {
     }
 
     /**执行运算*/
-    public abstract Object doUnaryProcess(String operator, Object object, Option option) throws InstructRuntimeException;
+    public abstract Object doUnaryProcess(String operator, Object object, Hints option) throws InstructRuntimeException;
 }

@@ -21,43 +21,43 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
- * 用于封装 Option。
+ * 用于封装 Hint。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface Option extends OptionValue {
+public interface Hints extends HintValue {
     /** 获取选项参数 */
-    public String[] getOptionNames();
+    public String[] getHints();
 
     /** 获取选项参数 */
-    public Object getOption(String optionKey);
+    public Object getHint(String optionKey);
 
     /** 删除选项参数 */
-    public void removeOption(String optionKey);
+    public void removeHint(String optionKey);
 
     /** 设置选项参数 */
-    public default void setOptionSet(Option optionSet) {
-        if (optionSet != null) {
-            optionSet.forEach((optKey, value) -> {
+    public default void setHints(Hints hints) {
+        if (hints != null) {
+            hints.forEach((optKey, value) -> {
                 /**  */if (OperatorUtils.isNumber(value)) {
-                    this.setOption(optKey, (Number) value);
+                    this.setHint(optKey, (Number) value);
                 } else if (OperatorUtils.isBoolean(value)) {
-                    this.setOption(optKey, (Boolean) value);
+                    this.setHint(optKey, (Boolean) value);
                 } else if (value != null) {
-                    this.setOption(optKey, value.toString());
+                    this.setHint(optKey, value.toString());
                 }
             });
         }
     }
 
     /** 设置选项参数 */
-    public void setOption(String optionKey, String value);
+    public void setHint(String hintName, String value);
 
     /** 设置选项参数 */
-    public void setOption(String optionKey, Number value);
+    public void setHint(String hintName, Number value);
 
     /** 设置选项参数 */
-    public void setOption(String optionKey, boolean value);
+    public void setHint(String hintName, boolean value);
 
     /**
      * Performs the given action for each entry in this map until all entries
@@ -72,9 +72,9 @@ public interface Option extends OptionValue {
      */
     public default void forEach(BiConsumer<String, Object> action) {
         Objects.requireNonNull(action);
-        for (String optionKey : getOptionNames()) {
-            Object optionValue = getOption(optionKey);
-            action.accept(optionKey, optionValue);
+        for (String hintName : getHints()) {
+            Object optionValue = getHint(hintName);
+            action.accept(hintName, optionValue);
         }
     }
 
@@ -83,19 +83,19 @@ public interface Option extends OptionValue {
      * to {@code null}) associates it with the given value and returns
      * {@code null}, else returns the current value.
      *
-     * @param optKey key with which the specified value is to be associated
+     * @param hintName key with which the specified value is to be associated
      * @param value value to be associated with the specified key
      * @throws UnsupportedOperationException if the {@code put} operation is not supported by this map
      * @since 1.8
      */
-    public default void putIfAbsent(String optKey, Object value) {
-        if (getOption(optKey) == null) {
+    public default void putIfAbsent(String hintName, Object value) {
+        if (getHint(hintName) == null) {
             /**  */if (OperatorUtils.isNumber(value)) {
-                this.setOption(optKey, (Number) value);
+                this.setHint(hintName, (Number) value);
             } else if (OperatorUtils.isBoolean(value)) {
-                this.setOption(optKey, (Boolean) value);
+                this.setHint(hintName, (Boolean) value);
             } else if (value != null) {
-                this.setOption(optKey, value.toString());
+                this.setHint(hintName, value.toString());
             }
         }
     }
@@ -110,14 +110,14 @@ public interface Option extends OptionValue {
      * atomicity guarantees must override this method and document its
      * concurrency properties.
      *
-     * @param optKey the key whose associated value is to be returned
+     * @param hintName the key whose associated value is to be returned
      * @param defaultValue the default mapping of the key
      * @return the value to which the specified key is mapped, or {@code defaultValue} if this map contains no mapping for the key
      * @since 1.8
      */
-    public default Object getOrDefault(String optKey, Object defaultValue) {
+    public default Object getOrDefault(String hintName, Object defaultValue) {
         Object v = null;
-        return (((v = getOption(optKey)) != null)) ? v : defaultValue;
+        return (((v = getHint(hintName)) != null)) ? v : defaultValue;
     }
 
     /**
@@ -130,13 +130,13 @@ public interface Option extends OptionValue {
      * atomicity guarantees must override this method and document its
      * concurrency properties.
      *
-     * @param optKey the key whose associated value is to be returned
+     * @param hintName the key whose associated value is to be returned
      * @param defaultValue the default mapping of the key
      * @return the value to which the specified key is mapped, or {@code defaultValue} if this map contains no mapping for the key
      * @since 1.8
      */
-    public default <V> V getOrMap(String optKey, Function<Object, V> defaultValue) {
-        return defaultValue.apply(getOption(optKey));
+    public default <V> V getOrMap(String hintName, Function<Object, V> defaultValue) {
+        return defaultValue.apply(getHint(hintName));
     }
 
     /**
@@ -150,22 +150,22 @@ public interface Option extends OptionValue {
      * common usage is to construct a new object serving as an initial
      * mapped value or memoized result.
      *
-     * @param optKey key with which the specified value is to be associated
+     * @param hintName key with which the specified value is to be associated
      * @param mappingFunction the function to compute a value
      * @throws UnsupportedOperationException if the {@code put} operation is not supported by this map
      * @since 1.8
      */
-    public default void computeIfAbsent(String optKey, Function<String, Object> mappingFunction) {
+    public default void computeIfAbsent(String hintName, Function<String, Object> mappingFunction) {
         Objects.requireNonNull(mappingFunction);
-        if (getOption(optKey) == null) {
+        if (getHint(hintName) == null) {
             Object newValue;
-            if ((newValue = mappingFunction.apply(optKey)) != null) {
+            if ((newValue = mappingFunction.apply(hintName)) != null) {
                 /**  */if (OperatorUtils.isNumber(newValue)) {
-                    this.setOption(optKey, (Number) newValue);
+                    this.setHint(hintName, (Number) newValue);
                 } else if (OperatorUtils.isBoolean(newValue)) {
-                    this.setOption(optKey, (Boolean) newValue);
+                    this.setHint(hintName, (Boolean) newValue);
                 } else {
-                    this.setOption(optKey, newValue.toString());
+                    this.setHint(hintName, newValue.toString());
                 }
             }
         }

@@ -15,12 +15,12 @@
  */
 package net.hasor.dataql.extend.jsr223;
 import net.hasor.dataql.CustomizeScope;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.compiler.qil.QIL;
+import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataql.runtime.InstructRuntimeException;
-import net.hasor.dataql.runtime.OptionSet;
 import net.hasor.dataql.runtime.QueryHelper;
 
 import javax.script.*;
@@ -32,46 +32,46 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-10-19
  */
-class DataQLCompiledScript extends CompiledScript implements Option {
+class DataQLCompiledScript extends CompiledScript implements Hints {
     private QIL                compilerQIL;
-    private OptionSet          optionSet;
+    private HintsSet           optionSet;
     private DataQLScriptEngine engine;
 
     public DataQLCompiledScript(QIL compilerQIL, DataQLScriptEngine engine) {
         this.compilerQIL = compilerQIL;
-        this.optionSet = new OptionSet();
-        this.optionSet.setOptionSet(engine);
+        this.optionSet = new HintsSet();
+        this.optionSet.setHints(engine);
         this.engine = engine;
     }
 
     @Override
-    public String[] getOptionNames() {
-        return this.optionSet.getOptionNames();
+    public String[] getHints() {
+        return this.optionSet.getHints();
     }
 
     @Override
-    public Object getOption(String optionKey) {
-        return this.optionSet.getOption(optionKey);
+    public Object getHint(String optionKey) {
+        return this.optionSet.getHint(optionKey);
     }
 
     @Override
-    public void removeOption(String optionKey) {
-        this.optionSet.removeOption(optionKey);
+    public void removeHint(String optionKey) {
+        this.optionSet.removeHint(optionKey);
     }
 
     @Override
-    public void setOption(String optionKey, String value) {
-        this.optionSet.setOption(optionKey, value);
+    public void setHint(String hintName, String value) {
+        this.optionSet.setHint(hintName, value);
     }
 
     @Override
-    public void setOption(String optionKey, Number value) {
-        this.optionSet.setOption(optionKey, value);
+    public void setHint(String hintName, Number value) {
+        this.optionSet.setHint(hintName, value);
     }
 
     @Override
-    public void setOption(String optionKey, boolean value) {
-        this.optionSet.setOption(optionKey, value);
+    public void setHint(String hintName, boolean value) {
+        this.optionSet.setHint(hintName, value);
     }
     // -------------------------------------------------------------------------------------------- Option
 
@@ -104,7 +104,7 @@ class DataQLCompiledScript extends CompiledScript implements Option {
             };
         }
         try {
-            query.setOptionSet(this);
+            query.setHints(this);
             return query.execute(customizeScope);
         } catch (InstructRuntimeException e) {
             throw new ScriptException(e);

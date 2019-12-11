@@ -1,6 +1,6 @@
 package net.hasor.dataql.runtime.basic;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.OptionValue;
+import net.hasor.dataql.HintValue;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.DomainHelper;
@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DoUoRuntimeTest extends AbstractTestResource implements OptionValue {
+public class DoUoRuntimeTest extends AbstractTestResource implements HintValue {
     @Test
     public void do_plus_1_Test() throws Exception {
         Query compilerQL = compilerQL("return true + false;");
@@ -35,7 +35,7 @@ public class DoUoRuntimeTest extends AbstractTestResource implements OptionValue
     @Test
     public void do_plus_3_Test() throws Exception {
         Query compilerQL = compilerQL("return 2 + 3 * 4;");
-        compilerQL.setOption(MIN_INTEGER_WIDTH, MIN_INTEGER_WIDTH_BYTE);
+        compilerQL.setHint(MIN_INTEGER_WIDTH, MIN_INTEGER_WIDTH_BYTE);
         DataModel dataModel = compilerQL.execute().getData();
         //
         assert dataModel.isValueModel();

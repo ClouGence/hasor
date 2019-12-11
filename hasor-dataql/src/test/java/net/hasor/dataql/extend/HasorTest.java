@@ -47,11 +47,11 @@ public class HasorTest {
     @Test
     public void hasor_3() throws IOException, InstructRuntimeException {
         AppContext appContext = Hasor.create().build(apiBinder -> {
-            UDF testUdf = (params, readOnly) -> readOnly.getOption("abc");
+            UDF testUdf = (params, readOnly) -> readOnly.getHint("abc");
             DataApiBinder dataApiBinder = apiBinder.tryCast(DataApiBinder.class);
             //
             dataApiBinder.addShareVar("foo", () -> testUdf);
-            dataApiBinder.setOption("abc", "aaaa");
+            dataApiBinder.setHint("abc", "aaaa");
         });
         DataQL dataQL = appContext.getInstance(DataQL.class);
         //
@@ -62,7 +62,7 @@ public class HasorTest {
         assert ((ValueModel) dataModel).asString().equals("aaaa");
         //
         //
-        query.setOption("abc", "bbb");
+        query.setHint("abc", "bbb");
         queryResult = query.execute();
         dataModel = queryResult.getData();
         assert dataModel.isValueModel();

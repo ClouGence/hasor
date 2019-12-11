@@ -14,47 +14,47 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 
 /**
- * 用于封装 Option。
+ * 用于封装 Hint。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class OptionReadOnly implements Option {
-    private Option option;
+public class HintsReadOnly implements Hints {
+    private Hints option;
 
-    public OptionReadOnly(Option option) {
+    public HintsReadOnly(Hints option) {
         this.option = option;
     }
 
     @Override
-    public String[] getOptionNames() {
-        return this.option.getOptionNames();
+    public String[] getHints() {
+        return this.option.getHints();
     }
 
     @Override
-    public Object getOption(String optionKey) {
-        return this.option.getOption(optionKey);
+    public Object getHint(String optionKey) {
+        return this.option.getHint(optionKey);
     }
 
     @Override
-    public void removeOption(String optionKey) {
+    public void removeHint(String optionKey) {
         throw new UnsupportedOperationException("readOnly.");
     }
 
     @Override
-    public void setOption(String optionKey, String value) {
+    public void setHint(String hintName, String value) {
         throw new UnsupportedOperationException("readOnly.");
     }
 
     @Override
-    public void setOption(String optionKey, Number value) {
+    public void setHint(String hintName, Number value) {
         throw new UnsupportedOperationException("readOnly.");
     }
 
     @Override
-    public void setOption(String optionKey, boolean value) {
+    public void setHint(String hintName, boolean value) {
         throw new UnsupportedOperationException("readOnly.");
     }
 }

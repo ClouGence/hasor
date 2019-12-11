@@ -16,7 +16,7 @@
 package net.hasor.dataql.extend.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.utils.resource.ResourceLoader;
 
 import java.util.function.Supplier;
@@ -30,7 +30,7 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface DataApiBinder extends ApiBinder, Option {
+public interface DataApiBinder extends ApiBinder, Hints {
     /** 添加全局变量（等同于 compilerVar） */
     public default DataApiBinder addShareVarInstance(String name, Object instance) {
         return this.addShareVar(name, () -> instance);
@@ -38,16 +38,12 @@ public interface DataApiBinder extends ApiBinder, Option {
 
     /** 添加全局变量（等同于 compilerVar） */
     public default <T> DataApiBinder addShareVar(String name, Class<? extends T> implementation) {
-        ShareVar shareVar = new ShareVar(name, getProvider(implementation));
-        bindType(ShareVar.class).nameWith(name).toInstance(shareVar);
-        return this;
+        return this.addShareVar(name, getProvider(implementation));
     }
 
     /** 添加全局变量（等同于 compilerVar） */
-    public default <T> DataApiBinder addShareVar(String name, BindInfo<T> implementation) {
-        ShareVar shareVar = new ShareVar(name, getProvider(implementation));
-        bindType(ShareVar.class).nameWith(name).toInstance(shareVar);
-        return this;
+    public default <T> DataApiBinder addShareVar(String name, BindInfo<T> bindInfo) {
+        return this.addShareVar(name, getProvider(bindInfo));
     }
 
     /** 添加全局变量（等同于 compilerVar） */

@@ -16,15 +16,12 @@
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.CustomizeScope;
 import net.hasor.dataql.Finder;
-import net.hasor.dataql.OptionKeys;
+import net.hasor.dataql.HintNames;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.inset.OpcodesPool;
-import net.hasor.dataql.runtime.mem.DataHeap;
-import net.hasor.dataql.runtime.mem.DataStack;
-import net.hasor.dataql.runtime.mem.EnvStack;
-import net.hasor.dataql.runtime.mem.ExitType;
+import net.hasor.dataql.runtime.mem.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,7 +32,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-class QueryImpl extends OptionSet implements Query {
+class QueryImpl extends HintsSet implements Query {
     private QIL                 qil;
     private Finder              finder;
     private Map<String, Object> compilerVar;
@@ -65,8 +62,8 @@ class QueryImpl extends OptionSet implements Query {
         }
         InsetProcessContext processContext = new InsetProcessContext(customize, this.finder);
         // .汇总Option
-        processContext.setOptionSet(this);
-        for (OptionKeys optionKey : OptionKeys.values()) {
+        processContext.setHints(this);
+        for (HintNames optionKey : HintNames.values()) {
             processContext.putIfAbsent(optionKey.name(), optionKey.getDefaultVal());
         }
         // .创建堆栈
@@ -79,10 +76,16 @@ class QueryImpl extends OptionSet implements Query {
         });
         //
         // .执行指令序列
-        OpcodesPool opcodesPool = OpcodesPool.defaultOpcodesPool();
-        while (instSequence.hasNext()) {
-            opcodesPool.doWork(instSequence, dataHeap, dataStack, envStack, processContext);
-            instSequence.doNext(1);
+        try {
+            OpcodesPool opcodesPool = OpcodesPool.defaultOpcodesPool();
+            while (instSequence.hasNext()) {
+                opcodesPool.doWork(instSequence, dataHeap, dataStack, envStack, processContext);
+                instSequence.doNext(1);
+            }
+        } catch (RefLambdaCallException e) {
+            dataStack.setExitType(ExitType.Throw);
+            dataStack.setResultCode(e.getResultCode());
+            dataStack.setResult(e.getResult());
         }
         // .结果处理
         ExitType exitType = dataStack.getExitType();

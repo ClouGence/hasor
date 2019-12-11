@@ -1,6 +1,6 @@
 package net.hasor.dataql.runtime.basic;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.OptionValue;
+import net.hasor.dataql.HintValue;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ListModel;
@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FmtListRuntimeTest extends AbstractTestResource implements OptionValue {
+public class FmtListRuntimeTest extends AbstractTestResource implements HintValue {
     @Test
     public void fmt_1_Test() throws Exception {
         Query compilerQL = compilerQL("return ${data} => [a]");

@@ -15,8 +15,8 @@
  */
 package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.Inst;
+import net.hasor.dataql.compiler.ast.inst.HintInst;
 import net.hasor.dataql.compiler.ast.inst.ImportInst;
-import net.hasor.dataql.compiler.ast.inst.OptionInst;
 import net.hasor.dataql.compiler.ast.inst.RootBlockSet;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
@@ -32,10 +32,10 @@ import java.util.List;
 public class RootBlockSetInstCompiler implements InstCompiler<RootBlockSet> {
     @Override
     public void doCompiler(RootBlockSet rootBlockSet, InstQueue queue, CompilerContext compilerContext) {
-        List<OptionInst> optionSet = rootBlockSet.getOptionSet();
+        List<HintInst> optionSet = rootBlockSet.getOptionSet();
         if (optionSet != null) {
-            for (OptionInst optionInst : optionSet) {
-                compilerContext.findInstCompilerByInst(optionInst).doCompiler(queue);
+            for (HintInst hintInst : optionSet) {
+                compilerContext.findInstCompilerByInst(hintInst).doCompiler(queue);
             }
         }
         List<ImportInst> importSet = rootBlockSet.getImportSet();

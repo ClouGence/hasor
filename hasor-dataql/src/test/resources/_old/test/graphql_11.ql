@@ -36,21 +36,6 @@ var evalChagre = lambda : (dat) -> {
     throw "没有匹配到邮费规则";
 }
 
-/*
-    LAMBDA  1
-    LOCAL   1,"dat"
-    FRAME_S
-    ...
-    LDC_S   "没有匹配到邮费规则"
-    ERR
-    FRAME_E
-    STORE   3
-    ...
-    LDC_D   1998
-    LDC_D   1998
-    LCALL   3,2
-    ...
-*/
 
 // 循环订单并计算运费，新的运费结果在循环数据时输出
 return readTxt("orderSet.txt") [

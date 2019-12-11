@@ -1,10 +1,10 @@
 package net.hasor.test.dataql.udfs;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.UDF;
 
 public class DemoUdf implements UDF {
     @Override
-    public Object call(Object[] params, Option readOnly) {
+    public Object call(Object[] params, Hints readOnly) {
         return new DataBean();
     }
 }

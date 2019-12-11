@@ -114,7 +114,6 @@ public class ObjectDomainTest extends AbstractTestResource {
             assert e.getMessage().endsWith(" not Cast to UdfModel.");
         }
         //
-        //
         try {
             objectModel.asListModel("data_list").asObjectModel(0);
             assert false;

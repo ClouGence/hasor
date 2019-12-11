@@ -66,14 +66,14 @@ public class Jsr223Test {
 
     @Test
     public void jar223_4() throws ScriptException {
-        UDF testUdf = (params, readOnly) -> readOnly.getOption("abc");
+        UDF testUdf = (params, readOnly) -> readOnly.getHint("abc");
         //
         DataQLScriptEngine scriptEngine = (DataQLScriptEngine) new ScriptEngineManager().getEngineByName("dataql");
         SimpleScriptContext params = new SimpleScriptContext();
         params.setBindings(scriptEngine.createBindings(), ScriptContext.GLOBAL_SCOPE);// GLOBAL is CompilerVar
         params.setAttribute("foo", testUdf, ScriptContext.GLOBAL_SCOPE);
         //
-        scriptEngine.setOption("abc", 10);
+        scriptEngine.setHint("abc", 10);
         Object eval = scriptEngine.eval("return foo()", params);
         assert eval instanceof QueryResult;
         DataModel dataModel = ((QueryResult) eval).getData();

@@ -1,0 +1,13 @@
+hint a=  134
+hint  b = 'aa'
+
+hint   c
+= true
+
+
+hint   d
+= false
+
+    hint e = null;
+
+return 1;

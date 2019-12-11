@@ -19,7 +19,7 @@ import net.hasor.dataql.Finder;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
-import net.hasor.dataql.runtime.OptionSet;
+import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.dataql.runtime.VarSupplier;
 import net.hasor.utils.StringUtils;
@@ -38,7 +38,7 @@ import static net.hasor.utils.CommonCodeUtils.MD5;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-class InnerDqlConfig extends OptionSet implements DataQL {
+class InnerDqlConfig extends HintsSet implements DataQL {
     private Map<String, VarSupplier> compilerVarMap = new HashMap<>();
     private Map<String, QIL>         cacheQIL       = new HashMap<>();
     private ResourceLoader           resourceLoader;
@@ -81,7 +81,7 @@ class InnerDqlConfig extends OptionSet implements DataQL {
         //
         Query query = QueryHelper.createQuery(compilerQIL, this.finderObject);
         this.compilerVarMap.forEach(query::setCompilerVar);
-        query.setOptionSet(this);
+        query.setHints(this);
         return query;
     }
 }

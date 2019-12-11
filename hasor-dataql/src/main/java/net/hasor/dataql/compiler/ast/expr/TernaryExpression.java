@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.ast.expr;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.Expression;
 import net.hasor.dataql.compiler.ast.FormatWriter;
@@ -63,7 +63,7 @@ public class TernaryExpression implements Expression {
     }
 
     @Override
-    public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
+    public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
         this.testExpression.doFormat(depth, formatOption, writer);
         writer.write(" ? ");
         this.thenExpression.doFormat(depth, formatOption, writer);

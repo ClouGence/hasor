@@ -14,7 +14,7 @@ RETURN  : 'return';
 THROW   : 'throw';
 EXIT    : 'exit';
 VAR     : 'var';
-OPTION  : 'option';
+HINT    : 'hint';
 IMPORT  : 'import';
 TRUE    : 'true';
 FALSE   : 'false';
@@ -80,10 +80,10 @@ IDENTIFIER      : [_a-zA-Z] [_0-9a-zA-Z]*;
 
 /* ----------------------------------------------------------------------------------- 语句 & 命令 */
 /* 入口 */
-rootInstSet     : optionInst* importInst* blockSet+ EOF ;
+rootInstSet     : hintInst* importInst* blockSet+ EOF ;
 
 /* 选项指令 */
-optionInst      : OPTION IDENTIFIER ASS primitiveValue ';'?;
+hintInst        : HINT IDENTIFIER ASS primitiveValue ';'?;
 
 /* import指令 */
 importInst      : IMPORT ROU? STRING AS IDENTIFIER ';'?;

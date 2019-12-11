@@ -3,7 +3,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.dataql.AbstractTestResource;
 import net.hasor.dataql.Finder;
-import net.hasor.dataql.OptionValue;
+import net.hasor.dataql.HintValue;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ListModel;
@@ -12,7 +12,7 @@ import net.hasor.dataql.domain.ValueModel;
 import net.hasor.test.dataql.udfs.DemoUdf;
 import org.junit.Test;
 
-public class LambdaRuntimeTest extends AbstractTestResource implements OptionValue {
+public class LambdaRuntimeTest extends AbstractTestResource implements HintValue {
     @Test
     public void lambda_1_Test() throws Exception {
         Query compilerQL = compilerQL("var sex_str = (sex) -> return (sex == 'F') ? '男' : '女' ; return [sex_str(${_0}),sex_str(${_1})]");

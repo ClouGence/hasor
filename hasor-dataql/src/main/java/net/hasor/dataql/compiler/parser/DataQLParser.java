@@ -18,7 +18,7 @@ public class DataQLParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, WS=5, COMMENT1=6, COMMENT2=7, EOL=8, IF=9, 
-		ELSE=10, RETURN=11, THROW=12, EXIT=13, VAR=14, OPTION=15, IMPORT=16, TRUE=17, 
+		ELSE=10, RETURN=11, THROW=12, EXIT=13, VAR=14, HINT=15, IMPORT=16, TRUE=17, 
 		FALSE=18, NULL=19, AS=20, PLUS=21, MINUS=22, MUL=23, DIV=24, DIV2=25, 
 		MOD=26, LBT=27, RBT=28, AND=29, OR=30, NOT=31, XOR=32, LSHIFT=33, RSHIFT=34, 
 		RSHIFT2=35, GT=36, GE=37, LT=38, LE=39, EQ=40, NE=41, SC_OR=42, SC_AND=43, 
@@ -26,7 +26,7 @@ public class DataQLParser extends Parser {
 		ROU=52, STRING=53, HEX_NUM=54, OCT_NUM=55, BIT_NUM=56, INTEGER_NUM=57, 
 		DECIMAL_NUM=58, IDENTIFIER=59;
 	public static final int
-		RULE_rootInstSet = 0, RULE_optionInst = 1, RULE_importInst = 2, RULE_blockSet = 3, 
+		RULE_rootInstSet = 0, RULE_hintInst = 1, RULE_importInst = 2, RULE_blockSet = 3, 
 		RULE_ifInst = 4, RULE_breakInst = 5, RULE_lambdaDef = 6, RULE_varInst = 7, 
 		RULE_anyObject = 8, RULE_routeMapping = 9, RULE_routeNameSet = 10, RULE_routeName = 11, 
 		RULE_routeSubscript = 12, RULE_funcCall = 13, RULE_funcCallResult = 14, 
@@ -35,7 +35,7 @@ public class DataQLParser extends Parser {
 		RULE_atomExpr = 22;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"rootInstSet", "optionInst", "importInst", "blockSet", "ifInst", "breakInst", 
+			"rootInstSet", "hintInst", "importInst", "blockSet", "ifInst", "breakInst", 
 			"lambdaDef", "varInst", "anyObject", "routeMapping", "routeNameSet", 
 			"routeName", "routeSubscript", "funcCall", "funcCallResult", "objectValue", 
 			"objectKeyValue", "listValue", "primitiveValue", "expr", "dyadicExpr", 
@@ -47,7 +47,7 @@ public class DataQLParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, "';'", "'->'", "'=>'", "'?'", null, null, null, null, "'if'", "'else'", 
-			"'return'", "'throw'", "'exit'", "'var'", "'option'", "'import'", "'true'", 
+			"'return'", "'throw'", "'exit'", "'var'", "'hint'", "'import'", "'true'", 
 			"'false'", "'null'", "'as'", "'+'", "'-'", "'*'", "'/'", "'\\'", "'%'", 
 			"'('", "')'", "'&'", "'|'", "'!'", "'^'", "'<<'", "'>>'", "'>>>'", "'>'", 
 			"'>='", "'<'", "'<='", "'=='", "'!='", "'||'", "'&&'", "','", "':'", 
@@ -58,12 +58,12 @@ public class DataQLParser extends Parser {
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, null, null, null, null, "WS", "COMMENT1", "COMMENT2", "EOL", "IF", 
-			"ELSE", "RETURN", "THROW", "EXIT", "VAR", "OPTION", "IMPORT", "TRUE", 
-			"FALSE", "NULL", "AS", "PLUS", "MINUS", "MUL", "DIV", "DIV2", "MOD", 
-			"LBT", "RBT", "AND", "OR", "NOT", "XOR", "LSHIFT", "RSHIFT", "RSHIFT2", 
-			"GT", "GE", "LT", "LE", "EQ", "NE", "SC_OR", "SC_AND", "COMMA", "COLON", 
-			"ASS", "DOT", "LSBT", "RSBT", "OCBR", "CCBR", "ROU", "STRING", "HEX_NUM", 
-			"OCT_NUM", "BIT_NUM", "INTEGER_NUM", "DECIMAL_NUM", "IDENTIFIER"
+			"ELSE", "RETURN", "THROW", "EXIT", "VAR", "HINT", "IMPORT", "TRUE", "FALSE", 
+			"NULL", "AS", "PLUS", "MINUS", "MUL", "DIV", "DIV2", "MOD", "LBT", "RBT", 
+			"AND", "OR", "NOT", "XOR", "LSHIFT", "RSHIFT", "RSHIFT2", "GT", "GE", 
+			"LT", "LE", "EQ", "NE", "SC_OR", "SC_AND", "COMMA", "COLON", "ASS", "DOT", 
+			"LSBT", "RSBT", "OCBR", "CCBR", "ROU", "STRING", "HEX_NUM", "OCT_NUM", 
+			"BIT_NUM", "INTEGER_NUM", "DECIMAL_NUM", "IDENTIFIER"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -119,11 +119,11 @@ public class DataQLParser extends Parser {
 
 	public static class RootInstSetContext extends ParserRuleContext {
 		public TerminalNode EOF() { return getToken(DataQLParser.EOF, 0); }
-		public List<OptionInstContext> optionInst() {
-			return getRuleContexts(OptionInstContext.class);
+		public List<HintInstContext> hintInst() {
+			return getRuleContexts(HintInstContext.class);
 		}
-		public OptionInstContext optionInst(int i) {
-			return getRuleContext(OptionInstContext.class,i);
+		public HintInstContext hintInst(int i) {
+			return getRuleContext(HintInstContext.class,i);
 		}
 		public List<ImportInstContext> importInst() {
 			return getRuleContexts(ImportInstContext.class);
@@ -158,11 +158,11 @@ public class DataQLParser extends Parser {
 			setState(49);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==OPTION) {
+			while (_la==HINT) {
 				{
 				{
 				setState(46);
-				optionInst();
+				hintInst();
 				}
 				}
 				setState(51);
@@ -212,33 +212,33 @@ public class DataQLParser extends Parser {
 		return _localctx;
 	}
 
-	public static class OptionInstContext extends ParserRuleContext {
-		public TerminalNode OPTION() { return getToken(DataQLParser.OPTION, 0); }
+	public static class HintInstContext extends ParserRuleContext {
+		public TerminalNode HINT() { return getToken(DataQLParser.HINT, 0); }
 		public TerminalNode IDENTIFIER() { return getToken(DataQLParser.IDENTIFIER, 0); }
 		public TerminalNode ASS() { return getToken(DataQLParser.ASS, 0); }
 		public PrimitiveValueContext primitiveValue() {
 			return getRuleContext(PrimitiveValueContext.class,0);
 		}
-		public OptionInstContext(ParserRuleContext parent, int invokingState) {
+		public HintInstContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_optionInst; }
+		@Override public int getRuleIndex() { return RULE_hintInst; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof DataQLVisitor ) return ((DataQLVisitor<? extends T>)visitor).visitOptionInst(this);
+			if ( visitor instanceof DataQLVisitor ) return ((DataQLVisitor<? extends T>)visitor).visitHintInst(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final OptionInstContext optionInst() throws RecognitionException {
-		OptionInstContext _localctx = new OptionInstContext(_ctx, getState());
-		enterRule(_localctx, 2, RULE_optionInst);
+	public final HintInstContext hintInst() throws RecognitionException {
+		HintInstContext _localctx = new HintInstContext(_ctx, getState());
+		enterRule(_localctx, 2, RULE_hintInst);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(65);
-			match(OPTION);
+			match(HINT);
 			setState(66);
 			match(IDENTIFIER);
 			setState(67);

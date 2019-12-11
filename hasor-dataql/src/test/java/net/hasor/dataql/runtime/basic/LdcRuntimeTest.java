@@ -1,12 +1,12 @@
 package net.hasor.dataql.runtime.basic;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.OptionValue;
+import net.hasor.dataql.HintValue;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ValueModel;
 import org.junit.Test;
 
-public class LdcRuntimeTest extends AbstractTestResource implements OptionValue {
+public class LdcRuntimeTest extends AbstractTestResource implements HintValue {
     @Test
     public void LDC_B_1_Test() throws Exception {
         Query compilerQL = compilerQL("return true;");
@@ -50,7 +50,7 @@ public class LdcRuntimeTest extends AbstractTestResource implements OptionValue 
     @Test
     public void LDC_D_1_Test() throws Exception {
         Query compilerQL = compilerQL("var a = 123 ;return a"); // 指定数据宽度
-        compilerQL.setOption(MIN_INTEGER_WIDTH, MIN_INTEGER_WIDTH_BYTE);
+        compilerQL.setHint(MIN_INTEGER_WIDTH, MIN_INTEGER_WIDTH_BYTE);
         DataModel dataModel = compilerQL.execute().getData();
         //
         assert dataModel.isValueModel();

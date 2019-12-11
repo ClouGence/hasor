@@ -9,17 +9,16 @@
   #7  RETURN    0
 
 [1]
-  #00  M_STAR    0
-  #01  E_LOAD    #
-  #02  GET       a
-  #03  PULL      123
-  #04  GET       dd
-  #05  GET       a
-  #06  GET       b
-  #07  GET       c
-  #08  PULL      -1
-  #09  RETURN    0
-  #10  LOAD_C    $
-  #11  GET       ssss
-  #12  RETURN    0
+  #00  E_LOAD    #
+  #01  GET       a
+  #02  PULL      123
+  #03  GET       dd
+  #04  GET       a
+  #05  GET       b
+  #06  GET       c
+  #07  PULL      -1
+  #08  RETURN    0
+  #09  LOAD_C    $
+  #10  GET       ssss
+  #11  RETURN    0
 

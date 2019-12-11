@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.operator.ops;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.operator.OperatorUtils;
 
@@ -25,7 +25,7 @@ import net.hasor.dataql.runtime.operator.OperatorUtils;
  */
 public class NumberUOP extends AbstractUOP {
     @Override
-    public Object doUnaryProcess(String operator, Object object, Option option) throws InstructRuntimeException {
+    public Object doUnaryProcess(String operator, Object object, Hints option) throws InstructRuntimeException {
         if ("-".equals(operator) && object instanceof Number) {
             return OperatorUtils.negate((Number) object);
         }

@@ -26,7 +26,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-14
  */
-public class InsetProcessContext extends OptionSet implements CustomizeScope {
+public class InsetProcessContext extends HintsSet implements CustomizeScope {
     private final static OperatorManager opeManager = OperatorManager.defaultManager();
     private final        CustomizeScope  customizeScope;
     private final        Finder          finder;

@@ -23,7 +23,7 @@ import java.util.*;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface Query extends Option {
+public interface Query extends Hints {
     /** 初始化编译变量 */
     public void setCompilerVar(String compilerVar, Object object);
 

@@ -1,18 +1,18 @@
 package net.hasor.dataql.runtime.basic;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.OptionValue;
+import net.hasor.dataql.HintValue;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ValueModel;
 import org.junit.Test;
 
-public class OptRuntimeTest extends AbstractTestResource implements OptionValue {
+public class OptRuntimeTest extends AbstractTestResource implements HintValue {
     @Test
     public void opt_bool_1_Test() throws Exception {
-        Query compilerQL = compilerQL("option abc = true; return ${_0}()");
+        Query compilerQL = compilerQL("hint abc = true; return ${_0}()");
         DataModel dataModel = compilerQL.execute((UDF) (params, readOnly) -> {
-            return readOnly.getOption("abc");
+            return readOnly.getHint("abc");
         }).getData();
         //
         assert dataModel.isValueModel();
@@ -21,9 +21,9 @@ public class OptRuntimeTest extends AbstractTestResource implements OptionValue 
 
     @Test
     public void opt_bool_2_Test() throws Exception {
-        Query compilerQL = compilerQL("option abc = false; return ${_0}()");
+        Query compilerQL = compilerQL("hint abc = false; return ${_0}()");
         DataModel dataModel = compilerQL.execute((UDF) (params, readOnly) -> {
-            return readOnly.getOption("abc");
+            return readOnly.getHint("abc");
         }).getData();
         //
         assert dataModel.isValueModel();
@@ -32,9 +32,9 @@ public class OptRuntimeTest extends AbstractTestResource implements OptionValue 
 
     @Test
     public void opt_num_1_Test() throws Exception {
-        Query compilerQL = compilerQL("option abc = 123; return ${_0}()");
+        Query compilerQL = compilerQL("hint abc = 123; return ${_0}()");
         DataModel dataModel = compilerQL.execute((UDF) (params, readOnly) -> {
-            return readOnly.getOption("abc");
+            return readOnly.getHint("abc");
         }).getData();
         //
         assert dataModel.isValueModel();
@@ -44,9 +44,9 @@ public class OptRuntimeTest extends AbstractTestResource implements OptionValue 
 
     @Test
     public void opt_num_2_Test() throws Exception {
-        Query compilerQL = compilerQL("option MIN_INTEGER_WIDTH = 'byte'; option abc = 123; return ${_0}()");
+        Query compilerQL = compilerQL("hint MIN_INTEGER_WIDTH = 'byte'; hint abc = 123; return ${_0}()");
         DataModel dataModel = compilerQL.execute((UDF) (params, readOnly) -> {
-            return readOnly.getOption("abc");
+            return readOnly.getHint("abc");
         }).getData();
         //
         assert dataModel.isValueModel();
@@ -56,9 +56,9 @@ public class OptRuntimeTest extends AbstractTestResource implements OptionValue 
 
     @Test
     public void opt_num_3_Test() throws Exception {
-        Query compilerQL = compilerQL("option MIN_INTEGER_WIDTH = 'byte'; option abc = 1234; return ${_0}()");
+        Query compilerQL = compilerQL("hint MIN_INTEGER_WIDTH = 'byte'; hint abc = 1234; return ${_0}()");
         DataModel dataModel = compilerQL.execute((UDF) (params, readOnly) -> {
-            return readOnly.getOption("abc");
+            return readOnly.getHint("abc");
         }).getData();
         //
         assert dataModel.isValueModel();
@@ -68,9 +68,9 @@ public class OptRuntimeTest extends AbstractTestResource implements OptionValue 
 
     @Test
     public void opt_num_4_Test() throws Exception {
-        Query compilerQL = compilerQL("option abc = 0xabcdef; return ${_0}()");
+        Query compilerQL = compilerQL("hint abc = 0xabcdef; return ${_0}()");
         DataModel dataModel = compilerQL.execute((UDF) (params, readOnly) -> {
-            return readOnly.getOption("abc");
+            return readOnly.getHint("abc");
         }).getData();
         //
         assert dataModel.isValueModel();
@@ -80,9 +80,9 @@ public class OptRuntimeTest extends AbstractTestResource implements OptionValue 
 
     @Test
     public void opt_str_1_Test() throws Exception {
-        Query compilerQL = compilerQL("option abc = 'abc'; return ${_0}()");
+        Query compilerQL = compilerQL("hint abc = 'abc'; return ${_0}()");
         DataModel dataModel = compilerQL.execute((UDF) (params, readOnly) -> {
-            return readOnly.getOption("abc");
+            return readOnly.getHint("abc");
         }).getData();
         //
         assert dataModel.isValueModel();
@@ -92,9 +92,9 @@ public class OptRuntimeTest extends AbstractTestResource implements OptionValue 
 
     @Test
     public void opt_null_1_Test() throws Exception {
-        Query compilerQL = compilerQL("option abc = null; return ${_0}()");
+        Query compilerQL = compilerQL("hint abc = null; return ${_0}()");
         DataModel dataModel = compilerQL.execute((UDF) (params, readOnly) -> {
-            return readOnly.getOption("abc");
+            return readOnly.getHint("abc");
         }).getData();
         //
         assert dataModel.isValueModel();

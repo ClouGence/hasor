@@ -14,7 +14,7 @@ null
 'throw'
 'exit'
 'var'
-'option'
+'hint'
 'import'
 'true'
 'false'
@@ -76,7 +76,7 @@ RETURN
 THROW
 EXIT
 VAR
-OPTION
+HINT
 IMPORT
 TRUE
 FALSE
@@ -124,7 +124,7 @@ IDENTIFIER
 
 rule names:
 rootInstSet
-optionInst
+hintInst
 importInst
 blockSet
 ifInst

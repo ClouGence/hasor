@@ -1,7 +1,7 @@
 package net.hasor.dataql.runtime.operator;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.Option;
-import net.hasor.dataql.runtime.OptionSet;
+import net.hasor.dataql.Hints;
+import net.hasor.dataql.runtime.HintsSet;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -10,9 +10,9 @@ import java.util.HashMap;
 
 public class BasicSymbolTest extends AbstractTestResource {
     private OperatorManager om         = OperatorManager.defaultManager();
-    private Option          optionSet  = new OptionSet();
-    private Option          decimalSet = new OptionSet() {{
-        setOption(Option.MIN_DECIMAL_WIDTH, "big");
+    private Hints           optionSet  = new HintsSet();
+    private Hints           decimalSet = new HintsSet() {{
+        setHint(Hints.MIN_DECIMAL_WIDTH, "big");
     }};
 
     @Test

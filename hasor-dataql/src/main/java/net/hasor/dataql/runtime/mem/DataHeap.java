@@ -20,9 +20,10 @@ package net.hasor.dataql.runtime.mem;
  * @version : 2019-11-22
  */
 public class DataHeap implements Cloneable {
-    private DataHeap parent       = null;
-    private int      depth        = 0;
-    private Object[] heapDataPool = new Object[10];
+    private DataHeap parent        = null;
+    private int      depth         = 0;
+    private Object[] heapDataPool  = new Object[10];
+    private String[] heapDataNames = new String[10];
 
     public DataHeap() {
         this(null);
@@ -33,6 +34,15 @@ public class DataHeap implements Cloneable {
             this.parent = parent;
             this.depth = parent.depth + 1;
         }
+    }
+
+    public void defineName(int position, String name) {
+        if (position >= this.heapDataNames.length) {
+            String[] newHeapDataPool = new String[heapDataNames.length + 5];
+            System.arraycopy(this.heapDataNames, 0, newHeapDataPool, 0, heapDataNames.length);
+            this.heapDataNames = newHeapDataPool;
+        }
+        this.heapDataNames[position] = name;
     }
 
     public void saveData(int position, Object data) {

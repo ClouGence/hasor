@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.operator.ops;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 import java.math.BigDecimal;
 
-import static net.hasor.dataql.Option.MIN_DECIMAL_WIDTH;
-import static net.hasor.dataql.Option.MIN_INTEGER_WIDTH;
+import static net.hasor.dataql.Hints.MIN_DECIMAL_WIDTH;
+import static net.hasor.dataql.Hints.MIN_INTEGER_WIDTH;
 
 /**
  * 二元数值运算，负责处理数值的："+"、"-"、"*"、"/"、"\"、"%"
@@ -30,13 +30,13 @@ import static net.hasor.dataql.Option.MIN_INTEGER_WIDTH;
  */
 public class NumberDOP extends AbstractDOP {
     @Override
-    public Object doDyadicProcess(String operator, Object fstObject, Object secObject, Option option) throws InstructRuntimeException {
+    public Object doDyadicProcess(String operator, Object fstObject, Object secObject, Hints option) throws InstructRuntimeException {
         if (!(fstObject instanceof Number) || !(secObject instanceof Number)) {
             throw throwError(operator, fstObject, secObject, "requirements must be numerical.");
         }
         // .数值计算的选项参数
-        RoundingEnum roundingMode = RoundingEnum.find((String) option.getOption(Option.NUMBER_ROUNDING));   // 舍入模式
-        int maxDecimal = option.getOrMap(Option.MAX_DECIMAL_DIGITS, val -> {                                // 小数位数(默认20位)
+        RoundingEnum roundingMode = RoundingEnum.find((String) option.getHint(Hints.NUMBER_ROUNDING));   // 舍入模式
+        int maxDecimal = option.getOrMap(Hints.MAX_DECIMAL_DIGITS, val -> {                                // 小数位数(默认20位)
             if (val == null) {
                 return 20;
             }
@@ -47,8 +47,8 @@ public class NumberDOP extends AbstractDOP {
         });
         //
         // .调整最小精度宽度
-        String decimalWidth = (String) option.getOption(MIN_DECIMAL_WIDTH);
-        String integerWidth = (String) option.getOption(MIN_INTEGER_WIDTH);
+        String decimalWidth = (String) option.getHint(MIN_DECIMAL_WIDTH);
+        String integerWidth = (String) option.getHint(MIN_INTEGER_WIDTH);
         fstObject = OperatorUtils.fixNumberWidth((Number) fstObject, decimalWidth, integerWidth);
         secObject = OperatorUtils.fixNumberWidth((Number) secObject, decimalWidth, integerWidth);
         //

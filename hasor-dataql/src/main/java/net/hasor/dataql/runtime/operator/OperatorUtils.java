@@ -19,7 +19,7 @@ import net.hasor.dataql.runtime.operator.ops.RoundingEnum;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static net.hasor.dataql.OptionValue.*;
+import static net.hasor.dataql.HintValue.*;
 
 /**
  * 数学计算处理工具，提供：加、减、乘、除、整除、求余
@@ -378,7 +378,6 @@ public class OperatorUtils {
         }
     }
 
-    //
     /* 测试是否为一个小数 */
     public static boolean isDecimal(Number tester) {
         if (tester instanceof BigDecimal) {

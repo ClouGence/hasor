@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 用于封装 Option。
+ * 用于封装 Hint。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class OptionSet implements Option {
+public class HintsSet implements Hints {
     private Map<String, Object> optionMap;
 
-    public OptionSet() {
+    public HintsSet() {
         this.optionMap = new HashMap<>();
     }
 
-    public OptionSet(Option optionSet) {
+    public HintsSet(Hints optionSet) {
         this.optionMap = new HashMap<>();
         optionSet.forEach((optName, optValue) -> {
             this.optionMap.put(optName, optValue);
@@ -39,32 +39,32 @@ public class OptionSet implements Option {
     }
 
     @Override
-    public String[] getOptionNames() {
+    public String[] getHints() {
         return this.optionMap.keySet().toArray(new String[0]);
     }
 
     /** 获取选项参数 */
-    public Object getOption(String optionKey) {
+    public Object getHint(String optionKey) {
         return this.optionMap.get(optionKey);
     }
 
     /** 删除选项参数 */
-    public void removeOption(String key) {
+    public void removeHint(String key) {
         this.optionMap.remove(key);
     }
 
     /** 设置选项参数 */
-    public void setOption(String key, String value) {
-        this.optionMap.put(key, value);
+    public void setHint(String hintName, String value) {
+        this.optionMap.put(hintName, value);
     }
 
     /** 设置选项参数 */
-    public void setOption(String key, Number value) {
-        this.optionMap.put(key, value);
+    public void setHint(String hintName, Number value) {
+        this.optionMap.put(hintName, value);
     }
 
     /** 设置选项参数 */
-    public void setOption(String key, boolean value) {
-        this.optionMap.put(key, value);
+    public void setHint(String hintName, boolean value) {
+        this.optionMap.put(hintName, value);
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.ast.value;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.FormatWriter;
 import net.hasor.dataql.compiler.ast.InstVisitorContext;
@@ -83,6 +83,6 @@ public class EnterRouteVariable implements RouteVariable {
     }
 
     @Override
-    public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
+    public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
     }
 }

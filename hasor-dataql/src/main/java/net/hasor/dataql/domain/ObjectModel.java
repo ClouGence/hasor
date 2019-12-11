@@ -49,7 +49,7 @@ public class ObjectModel implements DataModel {
 
     @Override
     public Map<String, Object> unwrap() {
-        Map<String, Object> unwrap = new LinkedHashMap<>();
+        Map<String, Object> unwrap = new LinkedHashMap<>(this.dataModel.size());
         this.dataModel.forEach((key, dataModel) -> {
             unwrap.put(key, dataModel.unwrap());
         });

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.ast;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 
 import java.io.IOException;
 
@@ -28,5 +28,5 @@ public interface InstFormat {
     public static char quoteChar   = '"';
 
     /** 格式化 */
-    public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException;
+    public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException;
 }

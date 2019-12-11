@@ -34,11 +34,11 @@ public class LambdaVariableInstCompiler implements InstCompiler<LambdaVariable> 
         // .声明函数参数的变量位置
         List<String> paramList = astInst.getParamList();
         InstQueue newMethodInst = queue.newMethodInst();
-        newMethodInst.inst(M_STAR, paramList.size());
         compilerContext.newFrame();
-        for (String name : paramList) {
+        for (int i = 0; i < paramList.size(); i++) {
+            String name = paramList.get(i);
             int index = compilerContext.push(name);//将变量名压栈，并返回栈中的位置
-            newMethodInst.inst(LOCAL, index, name);  //为栈中某个位置的变量命名
+            newMethodInst.inst(LOCAL, i, index, name);  //为栈中某个位置的变量命名
         }
         compilerContext.findInstCompilerByInst(astInst, InstSet.class).doCompiler(newMethodInst);
         compilerContext.dropFrame();

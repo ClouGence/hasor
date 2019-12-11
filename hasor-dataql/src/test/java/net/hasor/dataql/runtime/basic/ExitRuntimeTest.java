@@ -1,6 +1,6 @@
 package net.hasor.dataql.runtime.basic;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.OptionValue;
+import net.hasor.dataql.HintValue;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.DataModel;
@@ -8,7 +8,7 @@ import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataql.domain.ValueModel;
 import org.junit.Test;
 
-public class ExitRuntimeTest extends AbstractTestResource implements OptionValue {
+public class ExitRuntimeTest extends AbstractTestResource implements HintValue {
     @Test
     public void return_1_Test() throws Exception {
         Query compilerQL = compilerQL("return 12 ,true + false;");

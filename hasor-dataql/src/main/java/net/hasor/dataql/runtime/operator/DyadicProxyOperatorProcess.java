@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.operator;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 
 /**
@@ -34,7 +34,7 @@ class DyadicProxyOperatorProcess implements OperatorMatch {
     }
 
     @Override
-    public Object doProcess(String operator, Object[] args, Option option) throws InstructRuntimeException {
+    public Object doProcess(String operator, Object[] args, Hints option) throws InstructRuntimeException {
         return this.process.doProcess(operator, args, option);
     }
 

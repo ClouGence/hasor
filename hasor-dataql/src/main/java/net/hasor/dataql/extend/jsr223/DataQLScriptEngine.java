@@ -15,10 +15,10 @@
  */
 package net.hasor.dataql.extend.jsr223;
 import net.hasor.dataql.Finder;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
-import net.hasor.dataql.runtime.OptionSet;
+import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.utils.io.IOUtils;
 
@@ -33,8 +33,8 @@ import java.util.Objects;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-10-19
  */
-public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEngine, Compilable, Option {
-    private OptionSet                 optionSet             = new OptionSet();
+public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEngine, Compilable, Hints {
+    private HintsSet                  optionSet             = new HintsSet();
     private DataQLScriptEngineFactory engineFactory;
     private CustomizeScopeCreater     customizeScopeCreater = () -> null;
     private Finder                    finder                = Finder.DEFAULT;
@@ -45,33 +45,33 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
 
     // -------------------------------------------------------------------------------------------- Option
     @Override
-    public String[] getOptionNames() {
-        return this.optionSet.getOptionNames();
+    public String[] getHints() {
+        return this.optionSet.getHints();
     }
 
     @Override
-    public Object getOption(String optionKey) {
-        return this.optionSet.getOption(optionKey);
+    public Object getHint(String optionKey) {
+        return this.optionSet.getHint(optionKey);
     }
 
     @Override
-    public void removeOption(String optionKey) {
-        this.optionSet.removeOption(optionKey);
+    public void removeHint(String optionKey) {
+        this.optionSet.removeHint(optionKey);
     }
 
     @Override
-    public void setOption(String optionKey, String value) {
-        this.optionSet.setOption(optionKey, value);
+    public void setHint(String hintName, String value) {
+        this.optionSet.setHint(hintName, value);
     }
 
     @Override
-    public void setOption(String optionKey, Number value) {
-        this.optionSet.setOption(optionKey, value);
+    public void setHint(String hintName, Number value) {
+        this.optionSet.setHint(hintName, value);
     }
 
     @Override
-    public void setOption(String optionKey, boolean value) {
-        this.optionSet.setOption(optionKey, value);
+    public void setHint(String hintName, boolean value) {
+        this.optionSet.setHint(hintName, value);
     }
 
     public Finder getFinder() {

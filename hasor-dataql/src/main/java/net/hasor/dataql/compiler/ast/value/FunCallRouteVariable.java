@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.ast.value;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
 
 import java.io.IOException;
@@ -64,7 +64,7 @@ public class FunCallRouteVariable implements RouteVariable {
     }
 
     @Override
-    public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
+    public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
         this.enterRoute.doFormat(depth, formatOption, writer);
         writer.write("(");
         for (int i = 0; i < this.paramList.size(); i++) {

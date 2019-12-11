@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
+import net.hasor.dataql.runtime.HintsSet;
+
 /**
  * UDF
  * @author 赵永春 (zyc@hasor.net)
@@ -22,5 +24,10 @@ package net.hasor.dataql;
 @FunctionalInterface
 public interface UDF {
     /** UDF 的返回值必须是一个 对象或者数组 */
-    public Object call(Object[] params, Option readOnly) throws Throwable;
+    public default Object call(Object[] params) throws Throwable {
+        return call(params, new HintsSet());
+    }
+
+    /** UDF 的返回值必须是一个 对象或者数组 */
+    public Object call(Object[] params, Hints readOnly) throws Throwable;
 }

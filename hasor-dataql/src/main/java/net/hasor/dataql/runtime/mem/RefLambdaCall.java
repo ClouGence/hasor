@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.mem;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.UDF;
+import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.InstructRuntimeException;
@@ -38,7 +39,7 @@ public class RefLambdaCall implements UDF {
     }
 
     @Override
-    public Object call(Object[] values, Option readOnly) throws InstructRuntimeException {
+    public Object call(Object[] values, Hints readOnly) throws InstructRuntimeException {
         //
         DataStack cloneStack = new DataStack() {{
             push(new RefLambdaCallStruts(values));
@@ -58,6 +59,11 @@ public class RefLambdaCall implements UDF {
             );
             instSequence.doNext(1);
         }
-        return cloneStack.getResult();// 针对 Lambda 的函数调用，调用入口是无法拿到函数执行完毕的退出码。 退出码的设计目标是为了宿主机在调用的时使用。
+        DataModel result = cloneStack.getResult();
+        if (cloneStack.getExitType() != ExitType.Throw) {
+            return result.unwrap();
+        } else {
+            throw new RefLambdaCallException(this.instSequence.getAddress(), cloneStack.getResultCode(), cloneStack.getResult());
+        }
     }
 }

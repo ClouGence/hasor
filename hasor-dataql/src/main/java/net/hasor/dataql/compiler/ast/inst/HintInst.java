@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.ast.inst;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.FormatWriter;
 import net.hasor.dataql.compiler.ast.Inst;
@@ -28,21 +28,21 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class OptionInst implements Inst {
-    private String            optKey;
-    private PrimitiveVariable optValue;
+public class HintInst implements Inst {
+    private String            hint;
+    private PrimitiveVariable value;
 
-    public OptionInst(String optKey, PrimitiveVariable optValue) {
-        this.optKey = optKey;
-        this.optValue = optValue;
+    public HintInst(String hint, PrimitiveVariable value) {
+        this.hint = hint;
+        this.value = value;
     }
 
-    public String getOptKey() {
-        return optKey;
+    public String getHint() {
+        return hint;
     }
 
-    public PrimitiveVariable getOptValue() {
-        return optValue;
+    public PrimitiveVariable getValue() {
+        return value;
     }
 
     @Override
@@ -50,16 +50,16 @@ public class OptionInst implements Inst {
         astVisitor.visitInst(new InstVisitorContext(this) {
             @Override
             public void visitChildren(AstVisitor astVisitor) {
-                optValue.accept(astVisitor);
+                value.accept(astVisitor);
             }
         });
     }
 
     @Override
-    public void doFormat(int depth, Option formatOption, FormatWriter writer) throws IOException {
-        String opt = "option " + this.optKey + " = ";
+    public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
+        String opt = "hint " + this.hint + " = ";
         writer.write(opt);
-        this.optValue.doFormat(depth + 1, formatOption, writer);
+        this.value.doFormat(depth + 1, formatOption, writer);
         writer.write(";\n");
     }
 }

@@ -17,11 +17,11 @@ public interface DataQLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRootInstSet(DataQLParser.RootInstSetContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DataQLParser#optionInst}.
+	 * Visit a parse tree produced by {@link DataQLParser#hintInst}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitOptionInst(DataQLParser.OptionInstContext ctx);
+	T visitHintInst(DataQLParser.HintInstContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DataQLParser#importInst}.
 	 * @param ctx the parse tree

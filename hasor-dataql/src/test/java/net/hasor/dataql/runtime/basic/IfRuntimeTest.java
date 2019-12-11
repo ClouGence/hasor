@@ -1,6 +1,6 @@
 package net.hasor.dataql.runtime.basic;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.OptionValue;
+import net.hasor.dataql.HintValue;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ValueModel;
@@ -9,7 +9,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-public class IfRuntimeTest extends AbstractTestResource implements OptionValue {
+public class IfRuntimeTest extends AbstractTestResource implements HintValue {
     @Test
     public void if_1_Test() throws Exception {
         Map<String, Object> objectMap = new HashMap<String, Object>() {{

@@ -74,7 +74,7 @@ public class OpcodesPool {
         //
         pool.addInsetProcess(new IF());
         pool.addInsetProcess(new GOTO());
-        pool.addInsetProcess(new OPT());
+        pool.addInsetProcess(new HINT());
         pool.addInsetProcess(new POP());
         pool.addInsetProcess(new LOAD_C());
         pool.addInsetProcess(new E_PUSH());
@@ -85,7 +85,6 @@ public class OpcodesPool {
         //
         pool.addInsetProcess(new CALL());
         pool.addInsetProcess(new M_REF());
-        pool.addInsetProcess(new M_STAR());
         pool.addInsetProcess(new M_DEF());
         pool.addInsetProcess(new M_TYP());
         pool.addInsetProcess(new LOCAL());

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain;
-import net.hasor.dataql.Option;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.UDF;
+import net.hasor.dataql.runtime.HintsSet;
 
 /**
  * 函数调用
@@ -44,8 +45,13 @@ public class UdfModel implements DataModel, UDF {
         return true;
     }
 
+    /** UDF 的返回值必须是一个 对象或者数组 */
+    public DataModel call(Object[] params) throws Throwable {
+        return call(params, new HintsSet());
+    }
+
     @Override
-    public DataModel call(Object[] values, Option option) throws Throwable {
+    public DataModel call(Object[] values, Hints option) throws Throwable {
         return DomainHelper.convertTo(this.udf.call(values, option));
     }
 }

@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import java.util.*;
 
-public class RouRuntimeTest extends AbstractTestResource implements OptionValue {
+public class RouRuntimeTest extends AbstractTestResource implements HintValue {
     @Test
     public void rou_1_Test() throws Exception {
         Map<String, Object> objectMap1 = new HashMap<String, Object>() {{
