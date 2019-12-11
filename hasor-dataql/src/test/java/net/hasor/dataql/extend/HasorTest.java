@@ -3,7 +3,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
-import net.hasor.dataql.UDF;
+import net.hasor.dataql.Udf;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataql.domain.ValueModel;
@@ -47,7 +47,7 @@ public class HasorTest {
     @Test
     public void hasor_3() throws IOException, InstructRuntimeException {
         AppContext appContext = Hasor.create().build(apiBinder -> {
-            UDF testUdf = (params, readOnly) -> readOnly.getHint("abc");
+            Udf testUdf = (readOnly, params) -> readOnly.getHint("abc");
             DataApiBinder dataApiBinder = apiBinder.tryCast(DataApiBinder.class);
             //
             dataApiBinder.addShareVar("foo", () -> testUdf);

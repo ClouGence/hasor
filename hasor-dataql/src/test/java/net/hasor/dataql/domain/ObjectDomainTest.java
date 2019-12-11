@@ -1,6 +1,6 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.UDF;
+import net.hasor.dataql.Udf;
 import net.hasor.test.dataql.udfs.DataBean;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
@@ -17,7 +17,7 @@ public class ObjectDomainTest extends AbstractTestResource {
         put("data_int", 1234);
         put("data_null", null);
         put("data_big", new BigInteger("1234"));
-        put("data_udf", PowerMockito.mock(UDF.class));
+        put("data_udf", PowerMockito.mock(Udf.class));
         put("data_list", new ArrayList<Object>() {{
             add("abc0");
             add("abc1");
@@ -28,7 +28,7 @@ public class ObjectDomainTest extends AbstractTestResource {
                 add("bcd2");
                 add("bcd3");
             }});
-            add(PowerMockito.mock(UDF.class));
+            add(PowerMockito.mock(Udf.class));
         }});
         put("data_array", Arrays.asList(1, 2, 3, 4, 5, 6, 7));
         put("data_bean", new DataBean());

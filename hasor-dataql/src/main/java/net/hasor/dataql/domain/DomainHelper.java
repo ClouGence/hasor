@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain;
-import net.hasor.dataql.UDF;
+import net.hasor.dataql.Udf;
 import net.hasor.dataql.runtime.operator.OperatorUtils;
 import net.hasor.utils.ref.BeanMap;
 
@@ -74,9 +74,9 @@ public class DomainHelper {
         } else if (object instanceof Collection) {
             // 外部类型：集合 -> ListModel
             return new ListModel((Collection<?>) object);
-        } else if (object instanceof UDF) {
+        } else if (object instanceof Udf) {
             // 外部类型：UDF -> CallModel
-            return new UdfModel((UDF) object);
+            return new UdfModel((Udf) object);
         } else {
             // 外部类型：Bean -> ObjectModel
             BeanMap beanMap = new BeanMap(object);

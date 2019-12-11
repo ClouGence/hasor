@@ -2,7 +2,7 @@ package net.hasor.dataql.runtime.basic;
 import net.hasor.dataql.AbstractTestResource;
 import net.hasor.dataql.HintValue;
 import net.hasor.dataql.Query;
-import net.hasor.dataql.UDF;
+import net.hasor.dataql.Udf;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataql.domain.ValueModel;
@@ -25,7 +25,7 @@ public class FunRuntimeTest extends AbstractTestResource implements HintValue {
     @Test
     public void foo_1_Test() throws Exception {
         Map<String, Object> objectMap1 = new HashMap<String, Object>() {{
-            put("udf", (UDF) (values, readOnly) -> object_list_map);
+            put("udf", (Udf) (readOnly, values) -> object_list_map);
         }};
         //
         Query compilerQL = compilerQL("return ${udf}().list[0];");
@@ -39,7 +39,7 @@ public class FunRuntimeTest extends AbstractTestResource implements HintValue {
     @Test
     public void foo_2_Test() throws Exception {
         //
-        UDF udf = (params, readOnly) -> params;
+        Udf udf = (readOnly, params) -> params;
         Query compilerQL = compilerQL("return ${_0}(1,2,3,4)[2];");
         DataModel dataModel = compilerQL.execute(udf).getData();
         //

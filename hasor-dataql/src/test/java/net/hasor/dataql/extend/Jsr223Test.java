@@ -1,6 +1,6 @@
 package net.hasor.dataql.extend;
 import net.hasor.dataql.QueryResult;
-import net.hasor.dataql.UDF;
+import net.hasor.dataql.Udf;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataql.domain.ValueModel;
@@ -66,7 +66,7 @@ public class Jsr223Test {
 
     @Test
     public void jar223_4() throws ScriptException {
-        UDF testUdf = (params, readOnly) -> readOnly.getHint("abc");
+        Udf testUdf = (readOnly, params) -> readOnly.getHint("abc");
         //
         DataQLScriptEngine scriptEngine = (DataQLScriptEngine) new ScriptEngineManager().getEngineByName("dataql");
         SimpleScriptContext params = new SimpleScriptContext();

@@ -15,11 +15,10 @@
  */
 package net.hasor.dataql.runtime.mem;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.UDF;
+import net.hasor.dataql.Udf;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.inset.OpcodesPool;
 
 /**
@@ -27,7 +26,7 @@ import net.hasor.dataql.runtime.inset.OpcodesPool;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class RefLambdaCall implements UDF {
+public class RefLambdaCall implements Udf {
     private InstSequence        instSequence;
     private DataHeap            dataHeap;
     private InsetProcessContext context;
@@ -39,10 +38,10 @@ public class RefLambdaCall implements UDF {
     }
 
     @Override
-    public Object call(Object[] values, Hints readOnly) throws InstructRuntimeException {
+    public Object call(Hints readOnly, Object... params) throws Throwable {
         //
         DataStack cloneStack = new DataStack() {{
-            push(new RefLambdaCallStruts(values));
+            push(new RefLambdaCallStruts(params));
         }};
         //
         InstSequence instSequence = this.instSequence.clone();

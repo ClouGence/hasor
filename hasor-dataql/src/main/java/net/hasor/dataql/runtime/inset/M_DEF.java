@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.UDF;
+import net.hasor.dataql.Udf;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -45,10 +45,10 @@ class M_DEF implements InsetProcess {
         if (refCall == null) {
             throw new InstructRuntimeException("target is null.");
         }
-        if (!(refCall instanceof UDF)) {
+        if (!(refCall instanceof Udf)) {
             throw new InstructRuntimeException("target or Property is not UDF.");
         }
-        refCall = new RefCall((UDF) refCall);
+        refCall = new RefCall((Udf) refCall);
         dataStack.push(refCall);
     }
 }

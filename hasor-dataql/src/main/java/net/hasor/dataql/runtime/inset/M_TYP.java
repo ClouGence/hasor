@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.UdfSource;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -44,6 +45,11 @@ class M_TYP implements InsetProcess {
         if (loadObject == null) {
             throw new InstructRuntimeException("loadObject is null.");
         }
+        //
+        if (loadObject instanceof UdfSource) {
+            loadObject = ((UdfSource) loadObject).getUdfResource();
+        }
+        //
         dataStack.push(loadObject);
     }
 }

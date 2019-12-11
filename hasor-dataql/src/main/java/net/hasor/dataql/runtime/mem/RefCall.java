@@ -15,7 +15,7 @@
  */
 package net.hasor.dataql.runtime.mem;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.UDF;
+import net.hasor.dataql.Udf;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.utils.ExceptionUtils;
 
@@ -25,15 +25,15 @@ import net.hasor.utils.ExceptionUtils;
  * @version : 2019-11-22
  */
 public class RefCall {
-    private UDF refCall;
+    private Udf refCall;
 
-    public RefCall(UDF refCall) {
+    public RefCall(Udf refCall) {
         this.refCall = refCall;
     }
 
     public Object invokeMethod(Object[] paramArrays, Hints optionSet) throws InstructRuntimeException {
         try {
-            return this.refCall.call(paramArrays, optionSet);
+            return this.refCall.call(optionSet, paramArrays);
         } catch (Throwable e) {
             if (e instanceof InstructRuntimeException) {
                 throw (InstructRuntimeException) e;

@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-import net.hasor.dataql.runtime.HintsSet;
+import java.util.Map;
 
 /**
- * UDF
+ * UDF 源
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2019-12-11
  */
 @FunctionalInterface
-public interface UDF {
-    /** UDF 的返回值必须是一个 对象或者数组 */
-    public default Object call(Object[] params) throws Throwable {
-        return call(params, new HintsSet());
-    }
-
-    /** UDF 的返回值必须是一个 对象或者数组 */
-    public Object call(Object[] params, Hints readOnly) throws Throwable;
+public interface UdfSource {
+    public Map<String, Udf> getUdfResource();
 }

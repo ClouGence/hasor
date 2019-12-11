@@ -13,45 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
-import net.hasor.dataql.Hints;
-import net.hasor.dataql.Udf;
+package net.hasor.dataql;
 import net.hasor.dataql.runtime.HintsSet;
 
 /**
- * 函数调用
+ * UDF
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class UdfModel implements DataModel, Udf {
-    private Udf udf = null;
-
-    UdfModel(Udf udf) {
-        this.udf = udf;
-    }
-
-    @Override
-    public Udf asOri() {
-        return this.udf;
-    }
-
-    @Override
-    public Udf unwrap() {
-        return this.udf;
-    }
-
-    /** 判断是否为 UdfModel 类型值 */
-    public boolean isUdfModel() {
-        return true;
-    }
-
+@FunctionalInterface
+public interface Udf {
     /** UDF 的返回值必须是一个 对象或者数组 */
-    public DataModel call(Object[] params) throws Throwable {
+    public default Object call(Object... params) throws Throwable {
         return call(new HintsSet(), params);
     }
 
-    @Override
-    public DataModel call(Hints readOnly, Object... params) throws Throwable {
-        return DomainHelper.convertTo(this.udf.call(readOnly, params));
-    }
+    /** UDF 的返回值必须是一个 对象或者数组 */
+    public Object call(Hints readOnly, Object... params) throws Throwable;
 }

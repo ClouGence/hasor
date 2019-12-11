@@ -20,12 +20,11 @@ import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataql.runtime.QueryHelper;
-import net.hasor.utils.io.IOUtils;
 
 import javax.script.*;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringWriter;
+import java.io.StringReader;
 import java.util.Objects;
 
 /**
@@ -92,20 +91,24 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
     // -------------------------------------------------------------------------------------------- ScriptEngine
 
     @Override
-    public CompiledScript compile(Reader queryString) throws ScriptException {
-        try {
-            StringWriter outWriter = new StringWriter();
-            IOUtils.copy(queryString, outWriter);
-            return this.compile(outWriter.toString());
-        } catch (IOException e) {
-            throw new ScriptException(e);
-        }
+    public ScriptEngineFactory getFactory() {
+        return this.engineFactory;
     }
 
     @Override
-    public CompiledScript compile(String queryString) throws ScriptException {
+    public Bindings createBindings() {
+        return new SimpleBindings();
+    }
+    // -------------------------------------------------------------------------------------------- ScriptEngine
+
+    @Override
+    public CompiledScript compile(Reader queryString) throws ScriptException {
         try {
             Bindings global = this.getBindings(ScriptContext.GLOBAL_SCOPE);
+            if (global == null) {
+                global = createBindings();
+                this.setBindings(createBindings(), ScriptContext.GLOBAL_SCOPE);
+            }
             //
             QueryModel queryModel = QueryHelper.queryParser(queryString);
             QIL compilerQIL = QueryHelper.queryCompiler(queryModel, global.keySet(), this.getFinder());
@@ -116,29 +119,19 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
     }
 
     @Override
-    public Object eval(Reader queryString, ScriptContext context) throws ScriptException {
-        try {
-            StringWriter outWriter = new StringWriter();
-            IOUtils.copy(queryString, outWriter);
-            return this.eval(outWriter.toString(), context);
-        } catch (IOException e) {
-            throw new ScriptException(e);
-        }
+    public CompiledScript compile(String queryString) throws ScriptException {
+        return this.compile(new StringReader(queryString));
     }
 
     @Override
-    public ScriptEngineFactory getFactory() {
-        return this.engineFactory;
+    public Object eval(Reader queryString, ScriptContext context) throws ScriptException {
+        this.setContext(context);
+        return compile(queryString).eval();
     }
 
     @Override
     public Object eval(String queryString, ScriptContext context) throws ScriptException {
         this.setContext(context);
         return compile(queryString).eval();
-    }
-
-    @Override
-    public Bindings createBindings() {
-        return new SimpleBindings();
     }
 }
