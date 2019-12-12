@@ -95,7 +95,11 @@ class QueryImpl extends HintsSet implements Query {
         if (ExitType.Exit == exitType) {
             return new QueryResultImpl(false, resultCode, result, executionTime);
         } else if (ExitType.Throw == exitType) {
-            return new QueryResultImpl(true, resultCode, result, executionTime);
+            if (1 == 2) {
+                return new QueryResultImpl(true, resultCode, result, executionTime);
+            } else {
+                throw new ThrowRuntimeException("udf or lambda failed.", resultCode, executionTime, result);
+            }
         } else if (ExitType.Return == exitType) {
             return new QueryResultImpl(false, resultCode, result, executionTime);
         } else {

@@ -14,17 +14,42 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
+import net.hasor.dataql.domain.DataModel;
+
 /**
  * DataQL 运行时异常
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-14
  */
-public class InstructRuntimeException extends RuntimeException {
-    public InstructRuntimeException(String errorMessage) {
+public class ThrowRuntimeException extends InstructRuntimeException {
+    private int       throwCode;
+    private long      executionTime;
+    private DataModel result;
+
+    public ThrowRuntimeException(String errorMessage) {
         super(errorMessage);
     }
 
-    public InstructRuntimeException(String errorMessage, Throwable e) {
+    public ThrowRuntimeException(String errorMessage, Throwable e) {
         super(errorMessage, e);
+    }
+
+    public ThrowRuntimeException(String errorMessage, int throwCode, long executionTime, DataModel result) {
+        this(errorMessage);
+        this.throwCode = throwCode;
+        this.executionTime = executionTime;
+        this.result = result;
+    }
+
+    public int getThrowCode() {
+        return throwCode;
+    }
+ 
+    public long getExecutionTime() {
+        return executionTime;
+    }
+
+    public DataModel getResult() {
+        return result;
     }
 }

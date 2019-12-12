@@ -38,7 +38,7 @@ public class RefCall {
             if (e instanceof InstructRuntimeException) {
                 throw (InstructRuntimeException) e;
             }
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntimeException(e, throwable -> new InstructRuntimeException(throwable.getMessage(), throwable));
         }
     }
 }

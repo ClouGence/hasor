@@ -29,8 +29,8 @@ public enum HintNames {
     /** 浮点数计算使用的最小数值宽度，可选值有：float,double,big。默认为：double */
     MIN_DECIMAL_WIDTH(MIN_DECIMAL_WIDTH_DOUBLE),
     /** 整数计算使用的最小数值宽度，可选值有：byte,short,int,long,big。默认为：int */
-    MIN_INTEGER_WIDTH(MIN_INTEGER_WIDTH_INT),
-    ;
+    MIN_INTEGER_WIDTH(MIN_INTEGER_WIDTH_INT);
+    //
     private String defaultVal;
 
     public String getDefaultVal() {
