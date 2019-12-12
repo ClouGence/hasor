@@ -1,44 +1,55 @@
 package net.hasor.dataql.runtime.ads;
+import com.alibaba.fastjson.JSON;
 import net.hasor.core.Hasor;
 import net.hasor.dataql.AbstractTestResource;
 import net.hasor.dataql.Query;
-import net.hasor.dataql.Udf;
 import net.hasor.dataql.domain.UdfModel;
 import net.hasor.dataql.extend.binder.DataQL;
-import net.hasor.dataql.runtime.InstructRuntimeException;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class RecursionTest extends AbstractTestResource {
-    @Test
-    public void recursion() throws IOException, InstructRuntimeException {
-        ArrayList<Object> finalData = new ArrayList<>();
-        Udf addToArray = (readOnly, params) -> {
-            finalData.add(params[0]);
-            return null;
-        };
+    private DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
+
+    private void queryTest1(String testCase) throws IOException {
+        Query query = this.dataQL.createQuery(getScript("/net_hasor_dataql_adv/" + testCase + ".ql"));
+        String queryResult = getScript("/net_hasor_dataql_adv/" + testCase + ".result");
         //
-        DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
-        String recursionScript = getScript("/net_hasor_dataql_adv/recursion.ql");
-        Query query = dataQL.createQuery(recursionScript);
-        query.execute(new HashMap<String, Object>() {{
-            put("addToArray", addToArray);
-        }});
+        Object unwrap = query.execute().getData().unwrap();
+        String queryJsonData1 = JSON.toJSONString(unwrap);
+        String queryJsonData2 = JSON.toJSONString(JSON.parseObject(queryResult, LinkedHashMap.class));
+        assert queryJsonData1.trim().equals(queryJsonData2.trim());
+    }
+
+    private void queryTest2(String testCase) throws IOException {
+        Query query = this.dataQL.createQuery(getScript("/net_hasor_dataql_adv/" + testCase + ".ql"));
+        String queryResult = getScript("/net_hasor_dataql_adv/" + testCase + ".result");
         //
-        assert finalData.size() == 10;
+        Object unwrap = query.execute().getData().unwrap();
+        String queryJsonData1 = JSON.toJSONString(unwrap);
+        String queryJsonData2 = JSON.toJSONString(JSON.parseObject(queryResult, ArrayList.class));
+        assert queryJsonData1.trim().equals(queryJsonData2.trim());
     }
 
     @Test
     public void returnLambda() throws Throwable {
-        DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
-        String recursionScript = getScript("/net_hasor_dataql_adv/return_lambda.ql");
-        Query query = dataQL.createQuery(recursionScript);
+        Query query = this.dataQL.createQuery(getScript("/net_hasor_dataql_adv/return_lambda.ql"));
         UdfModel testUdf = (UdfModel) query.execute().getData();
         //
         assert testUdf.call(new Object[] { 1 }).unwrap().equals("性别：男");
         assert testUdf.call(new Object[] { 0 }).unwrap().equals("性别：女");
+    }
+
+    @Test
+    public void basic_fmt_test() throws IOException {
+        queryTest1("basic_fmt");
+    }
+
+    @Test
+    public void recursion_test() throws IOException {
+        queryTest2("recursion");
     }
 }

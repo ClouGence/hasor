@@ -1,17 +1,20 @@
-// 递归：把一个多维数组打平成为一维数组
+// 递归：利用有状态集合，把一个多维数组打平成为一维数组
+
+import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;
 
 var data = [
     [1,2,3,[4,5]],
     [6,7,8,9,0]
 ]
 
-var foo = (dat, fun) -> {
+var foo = (dat, arrayObj) -> {
     var tmpArray = dat => [ # ];    // 符号 '#' 相当于在循环 dat 数组期间的，当前元素。
     if (tmpArray[0] == dat) {
-        return fun(dat);
+        run arrayObj.add(dat);
     } else {
-        return tmpArray => [ foo(#,fun) ];
+        run tmpArray => [ foo(#,arrayObj) ];
     }
+    return arrayObj;
 }
 
-return foo(data,${addToArray})
+return foo(data,collect.new()).data();
