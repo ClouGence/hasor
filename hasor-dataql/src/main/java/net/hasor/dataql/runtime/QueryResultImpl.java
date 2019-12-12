@@ -23,20 +23,20 @@ import net.hasor.dataql.domain.DataModel;
  * @version : 2017-03-23
  */
 class QueryResultImpl implements QueryResult {
-    private boolean   isThrow;
+    private boolean   isExit;
     private int       exitCode;
     private DataModel dataModel;
     private long      executionTime;
 
-    QueryResultImpl(boolean isThrow, int exitCode, DataModel dataModel, long executionTime) {
-        this.isThrow = isThrow;
+    QueryResultImpl(boolean isExit, int exitCode, DataModel dataModel, long executionTime) {
+        this.isExit = isExit;
         this.exitCode = exitCode;
         this.dataModel = dataModel;
         this.executionTime = executionTime;
     }
 
-    public boolean isThrow() {
-        return isThrow;
+    public boolean isExit() {
+        return isExit;
     }
 
     @Override

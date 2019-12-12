@@ -93,13 +93,9 @@ class QueryImpl extends HintsSet implements Query {
         int resultCode = dataStack.getResultCode();
         DataModel result = dataStack.getResult();
         if (ExitType.Exit == exitType) {
-            return new QueryResultImpl(false, resultCode, result, executionTime);
+            return new QueryResultImpl(true, resultCode, result, executionTime);
         } else if (ExitType.Throw == exitType) {
-            if (1 == 2) {
-                return new QueryResultImpl(true, resultCode, result, executionTime);
-            } else {
-                throw new ThrowRuntimeException("udf or lambda failed.", resultCode, executionTime, result);
-            }
+            throw new ThrowRuntimeException("udf or lambda failed.", resultCode, executionTime, result);
         } else if (ExitType.Return == exitType) {
             return new QueryResultImpl(false, resultCode, result, executionTime);
         } else {

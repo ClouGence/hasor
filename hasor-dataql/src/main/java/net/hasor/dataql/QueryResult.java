@@ -22,8 +22,8 @@ import net.hasor.dataql.domain.DataModel;
  * @version : 2017-03-23
  */
 public interface QueryResult {
-    /** 执行结果是否通过 ERR 形式返回的 */
-    public boolean isThrow();
+    /** 执行结果是否通过 EXIT 形式返回的 */
+    public boolean isExit();
 
     /** 获得退出码。如果未指定退出码，则默认值为 0 */
     public int getCode();
