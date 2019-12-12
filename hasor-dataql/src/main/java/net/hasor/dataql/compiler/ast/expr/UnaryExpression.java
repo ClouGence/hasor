@@ -15,7 +15,10 @@
  */
 package net.hasor.dataql.compiler.ast.expr;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.AstVisitor;
+import net.hasor.dataql.compiler.ast.Expression;
+import net.hasor.dataql.compiler.ast.FormatWriter;
+import net.hasor.dataql.compiler.ast.InstVisitorContext;
 
 import java.io.IOException;
 
@@ -24,7 +27,7 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class UnaryExpression implements Inst, Variable {
+public class UnaryExpression implements Expression {
     private Expression target;      //表达式
     private String     dyadicSymbol;//操作符
 

@@ -1,8 +1,6 @@
 package net.hasor.dataql.sdk;
 import net.hasor.core.Hasor;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.Query;
-import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataql.extend.binder.DataQL;
@@ -14,13 +12,12 @@ import java.io.IOException;
 public class CollectionTest extends AbstractTestResource {
     @Test
     public void merge() throws IOException, InstructRuntimeException {
-        String collect = "import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;";
+        String qlString = "";
+        qlString = qlString + "import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;";
+        qlString = qlString + "return collect.merge(0,[1,2],[3,4],5,6,[7,8],[9])";
         //
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
-        String qlString = collect + "return collect.merge(0,[1,2],[3,4],5,6,[7,8],[9])";
-        Query query = dataQL.createQuery(qlString);
-        QueryResult queryResult = query.execute();
-        DataModel dataModel = queryResult.getData();
+        DataModel dataModel = dataQL.createQuery(qlString).execute().getData();
         //
         assert dataModel.isListModel();
         assert ((ListModel) dataModel).size() == 10;
@@ -29,13 +26,12 @@ public class CollectionTest extends AbstractTestResource {
 
     @Test
     public void filter() throws IOException, InstructRuntimeException {
-        String collect = "import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;";
+        String qlString = "";
+        qlString = qlString + "import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;";
+        qlString = qlString + "var dat = [0,1,2,3,4,5,6,7,8,9]; return collect.filter(dat,(obj) -> { return (obj >5) ? true : false })";
         //
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
-        String qlString = collect + "var dat = [0,1,2,3,4,5,6,7,8,9]; return collect.filter(dat,(obj) -> { return (obj >5) ? true : false })";
-        Query query = dataQL.createQuery(qlString);
-        QueryResult queryResult = query.execute();
-        DataModel dataModel = queryResult.getData();
+        DataModel dataModel = dataQL.createQuery(qlString).execute().getData();
         //
         assert dataModel.isListModel();
         assert ((ListModel) dataModel).size() == 4;
@@ -47,13 +43,12 @@ public class CollectionTest extends AbstractTestResource {
 
     @Test
     public void limit() throws IOException, InstructRuntimeException {
-        String collect = "import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;";
+        String qlString = "";
+        qlString = qlString + "import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;";
+        qlString = qlString + "var dat = [0,1,2,3,4,5,6,7,8,9]; return collect.limit(dat,3,3)";
         //
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
-        String qlString = collect + "var dat = [0,1,2,3,4,5,6,7,8,9]; return collect.limit(dat,3,3)";
-        Query query = dataQL.createQuery(qlString);
-        QueryResult queryResult = query.execute();
-        DataModel dataModel = queryResult.getData();
+        DataModel dataModel = dataQL.createQuery(qlString).execute().getData();
         //
         assert dataModel.isListModel();
         assert ((ListModel) dataModel).size() == 3;

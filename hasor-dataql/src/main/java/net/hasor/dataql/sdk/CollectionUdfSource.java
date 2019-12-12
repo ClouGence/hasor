@@ -26,9 +26,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * 集合函数库
+ * 集合函数。函数库引入 <code>import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;</code>
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2019-12-12
  */
 public class CollectionUdfSource extends TypeUdfMap implements UdfSource {
     public CollectionUdfSource() {
