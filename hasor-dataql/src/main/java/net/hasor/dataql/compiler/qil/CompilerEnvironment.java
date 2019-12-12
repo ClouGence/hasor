@@ -66,6 +66,7 @@ public class CompilerEnvironment implements Finder {
         put(ReturnInst.class, new ReturnInstCompiler());
         put(ThrowInst.class, new ThrowInstCompiler());
         put(VarInst.class, new VarInstCompiler());
+        put(RunInst.class, new RunInstCompiler());
         put(SwitchInst.class, new SwitchInstCompiler());
         //
         put(AtomExpression.class, new AtomExprInstCompiler());

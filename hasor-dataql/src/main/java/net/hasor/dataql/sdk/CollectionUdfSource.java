@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.sdk;
+import net.hasor.core.provider.InstanceProvider;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.Udf;
 import net.hasor.dataql.UdfSource;
@@ -42,7 +43,7 @@ public class CollectionUdfSource extends TypeUdfMap implements UdfSource {
     // ----------------------------------------------------------------------------------
 
     /**循环遍历函数*/
-    private static Collection<Object> foreach(Object collection) {
+    protected static Collection<Object> foreach(Object collection) {
         Collection<Object> listData = null;
         if (collection == null) {
             listData = new ArrayList<>();
@@ -133,5 +134,14 @@ public class CollectionUdfSource extends TypeUdfMap implements UdfSource {
             curIndex++;
         }
         return finalList;
+    }
+
+    /** 创建一个有状态的 Array 对象 */
+    @UdfName("new")
+    public static TypeUdfMap newArray() {
+        InstanceProvider<Object> provider = new InstanceProvider<>(null);
+        InnerCollectionStateUdfSource typeUdfMap = new InnerCollectionStateUdfSource(provider);
+        provider.set(typeUdfMap);
+        return typeUdfMap;
     }
 }

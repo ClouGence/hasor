@@ -67,6 +67,12 @@ public interface DataQLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVarInst(DataQLParser.VarInstContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link DataQLParser#runInst}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRunInst(DataQLParser.RunInstContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link DataQLParser#anyObject}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

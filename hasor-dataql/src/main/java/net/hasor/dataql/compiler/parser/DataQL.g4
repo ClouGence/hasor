@@ -14,6 +14,7 @@ RETURN  : 'return';
 THROW   : 'throw';
 EXIT    : 'exit';
 VAR     : 'var';
+RUN     : 'run';
 HINT    : 'hint';
 IMPORT  : 'import';
 TRUE    : 'true';
@@ -89,8 +90,8 @@ hintInst        : HINT IDENTIFIER ASS primitiveValue ';'?;
 importInst      : IMPORT ROU? STRING AS IDENTIFIER ';'?;
 
 /* 语句块 */
-blockSet        : OCBR ((varInst | ifInst | breakInst) (';')?)+ CCBR #multipleInst   // 多行语句
-                | (varInst | ifInst | breakInst) (';')?              #singleInst     // 单行语句
+blockSet        : OCBR ((runInst | varInst | ifInst | breakInst) (';')?)+ CCBR #multipleInst   // 多行语句
+                | (runInst | varInst | ifInst | breakInst) (';')?              #singleInst     // 单行语句
                 ;
 
 /* if 语句 */
@@ -106,6 +107,8 @@ lambdaDef       : LBT (IDENTIFIER (COMMA IDENTIFIER)*)? RBT '->' blockSet ;
 /* var 语句 var aaa = ... */
 varInst         : VAR IDENTIFIER ASS anyObject;
 
+/* run 语句 run ... */
+runInst         : RUN anyObject;
 /* ----------------------------------------------------------------------------------- 路由 */
 
 anyObject       : lambdaDef | primitiveValue | objectValue | listValue | funcCall | routeMapping | expr;

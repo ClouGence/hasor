@@ -20,8 +20,10 @@ import net.hasor.dataql.Udf;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -78,11 +80,30 @@ public class TypeUdfMap extends HashMap<String, Udf> {
         if (this.containsKey(method.getName())) {
             return;
         }
+        // .确定函数名
+        UdfName udfName = method.getAnnotation(UdfName.class);
+        if (udfName == null) {
+            udfName = method.getDeclaringClass().getAnnotation(UdfName.class);
+            if (udfName == null) {
+                udfName = new UdfName() {
+                    public Class<? extends Annotation> annotationType() {
+                        return UdfName.class;
+                    }
+
+                    public String value() {
+                        return method.getName();
+                    }
+                };
+            }
+        }
+        if (StringUtils.isBlank(udfName.value())) {
+            throw new NullPointerException("udfName is null -> " + method.toString());
+        }
         //
         if (Modifier.isStatic(modifiers)) {
-            this.put(method.getName(), new StaticUdf(method));
+            this.put(udfName.value(), new StaticUdf(method));
         } else {
-            this.put(method.getName(), new ObjectUdf(method, provider));
+            this.put(udfName.value(), new ObjectUdf(method, provider));
         }
     }
 
