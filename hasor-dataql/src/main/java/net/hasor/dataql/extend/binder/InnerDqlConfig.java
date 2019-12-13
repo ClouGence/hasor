@@ -23,10 +23,8 @@ import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.dataql.runtime.VarSupplier;
 import net.hasor.utils.StringUtils;
-import net.hasor.utils.resource.ResourceLoader;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,25 +40,18 @@ import static net.hasor.utils.CommonCodeUtils.MD5;
 class InnerDqlConfig extends HintsSet implements DataQL {
     private Map<String, VarSupplier> compilerVarMap = new HashMap<>();
     private Map<String, QIL>         cacheQIL       = new HashMap<>();
-    private ResourceLoader           resourceLoader;
     private Finder                   finderObject;
 
     public void initConfig(AppContext appContext) {
         List<ShareVar> shareVars = appContext.findBindingBean(ShareVar.class);
         shareVars.forEach(shareVar -> compilerVarMap.put(shareVar.getName(), shareVar));
-        this.finderObject = new AppContextFinder(appContext) {
-            public InputStream findResource(String resourceName) throws IOException {
-                if (resourceLoader != null) {
-                    return resourceLoader.getResourceAsStream(resourceName);
-                } else {
-                    return super.findResource(resourceName);
-                }
-            }
-        };
+        if (this.finderObject == null) {
+            this.finderObject = new AppContextFinder(appContext);
+        }
     }
 
-    public void setResourceLoader(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
+    public void setFinder(Finder finder) {
+        this.finderObject = finder;
     }
 
     @Override
@@ -76,6 +67,11 @@ class InnerDqlConfig extends HintsSet implements DataQL {
     }
 
     @Override
+    public Finder getFinder() {
+        return this.finderObject;
+    }
+
+    @Override
     public Query createQuery(String queryString) throws IOException {
         if (StringUtils.isBlank(queryString)) {
             return null;
@@ -88,7 +84,7 @@ class InnerDqlConfig extends HintsSet implements DataQL {
         QIL compilerQIL = this.cacheQIL.get(hashString);
         if (compilerQIL == null) {
             QueryModel queryModel = QueryHelper.queryParser(queryString);
-            compilerQIL = QueryHelper.queryCompiler(queryModel, compilerVarMap.keySet(), this.finderObject);
+            compilerQIL = QueryHelper.queryCompiler(queryModel, this.compilerVarMap.keySet(), this.finderObject);
             this.cacheQIL.put(hashString, compilerQIL);
         }
         //

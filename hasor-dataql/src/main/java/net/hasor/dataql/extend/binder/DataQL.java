@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.extend.binder;
+import net.hasor.dataql.Finder;
 import net.hasor.dataql.Query;
 
 import java.io.IOException;
@@ -35,6 +36,8 @@ public interface DataQL {
 
     /** 添加全局变量（等同于 compilerVar） */
     public <T> DataQL addShareVar(String name, Supplier<T> provider);
+
+    public Finder getFinder();
 
     public Query createQuery(String queryString) throws IOException;
 }

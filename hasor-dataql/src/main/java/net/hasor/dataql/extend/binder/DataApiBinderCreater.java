@@ -17,7 +17,7 @@ package net.hasor.dataql.extend.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.utils.resource.ResourceLoader;
+import net.hasor.dataql.Finder;
 
 /**
  * DataQL 扩展接口。
@@ -70,8 +70,8 @@ public class DataApiBinderCreater implements ApiBinderCreater {
         }
 
         @Override
-        public DataApiBinder bindResourceLoader(ResourceLoader resourceLoader) {
-            this.innerDqlConfig.setResourceLoader(resourceLoader);
+        public DataApiBinder bindFinder(Finder finder) {
+            this.innerDqlConfig.setFinder(finder);
             return this;
         }
     }

@@ -16,8 +16,8 @@
 package net.hasor.dataql.extend.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
+import net.hasor.dataql.Finder;
 import net.hasor.dataql.Hints;
-import net.hasor.utils.resource.ResourceLoader;
 
 import java.util.function.Supplier;
 
@@ -53,5 +53,5 @@ public interface DataApiBinder extends ApiBinder, Hints {
         return this;
     }
 
-    public DataApiBinder bindResourceLoader(ResourceLoader resourceLoader);
+    public DataApiBinder bindFinder(Finder finder);
 }
