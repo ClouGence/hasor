@@ -14,28 +14,31 @@
  * limitations under the License.
  */
 package net.hasor.dataql.sdk;
+import net.hasor.core.provider.InstanceProvider;
+import net.hasor.dataql.Finder;
 import net.hasor.dataql.Udf;
 import net.hasor.dataql.UdfSource;
 
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * 时间函数。函数库引入 <code>import 'net.hasor.dataql.sdk.DateTimeUdfSource' as time;</code>
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
-public class DateTimeUdfSource extends TypeUdfMap implements UdfSource {
-    public DateTimeUdfSource() {
-        super(DateTimeUdfSource.class);
-    }
-
+public class DateTimeUdfSource implements UdfSource {
     @Override
-    public Map<String, Udf> getUdfResource() {
-        return this;
+    public Supplier<Map<String, Udf>> getUdfResource(Finder finder) {
+        Supplier<?> supplier = () -> finder.findBean(DateTimeUdfSource.class);
+        Predicate<Method> predicate = method -> true;
+        return InstanceProvider.of(new TypeUdfMap(DateTimeUdfSource.class, supplier, predicate));
     }
     // ----------------------------------------------------------------------------------
 

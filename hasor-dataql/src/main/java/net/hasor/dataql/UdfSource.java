@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * UDF 源
@@ -23,5 +24,5 @@ import java.util.Map;
  */
 @FunctionalInterface
 public interface UdfSource {
-    public Map<String, Udf> getUdfResource();
+    public Supplier<Map<String, Udf>> getUdfResource(Finder finder);
 }

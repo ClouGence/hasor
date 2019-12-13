@@ -47,7 +47,7 @@ class M_TYP implements InsetProcess {
         }
         //
         if (loadObject instanceof UdfSource) {
-            loadObject = ((UdfSource) loadObject).getUdfResource();
+            loadObject = ((UdfSource) loadObject).getUdfResource(context.getFinder()).get();
         }
         //
         dataStack.push(loadObject);

@@ -14,31 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.dataql.sdk;
-import net.hasor.dataql.Udf;
-import net.hasor.dataql.UdfSource;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
 
 /**
  * 带有状态的集合。函数库引入 <code>import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect; var arr = collect.new</code>
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
-class InnerCollectionStateUdfSource extends TypeUdfMap implements UdfSource {
+class InnerCollectionStateUdfSource {
     private List<Object> objectArrayList = new ArrayList<>();
-
-    public InnerCollectionStateUdfSource(Supplier<Object> provider) {
-        super(InnerCollectionStateUdfSource.class, provider, method -> true);
-    }
-
-    @Override
-    public Map<String, Udf> getUdfResource() {
-        return this;
-    }
-    // ----------------------------------------------------------------------------------
 
     /** 合并多个对象或者集合 */
     public List<Object> add(Object dataArrays) {

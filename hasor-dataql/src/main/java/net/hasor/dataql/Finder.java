@@ -42,19 +42,24 @@ public interface Finder {
 
     public default Object findBean(String beanName) {
         // .确定ClassLoader
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             Class c = classLoader.loadClass(Query.class.getName());
             if (c != Query.class) {
                 classLoader = Query.class.getClassLoader();
             }
-        } catch (ClassNotFoundException cnfe) { /* ignore */ }
-        // .加载类并创建对象
-        try {
             Class<?> loadClass = classLoader.loadClass(beanName);
-            return loadClass.newInstance();
-        } catch (Exception e) {
+            return findBean(loadClass);
+        } catch (ClassNotFoundException e) {
             throw ExceptionUtils.toRuntimeException(e, throwable -> new RuntimeException("load Bean failed -> '" + beanName, throwable));
+        }
+    }
+
+    public default Object findBean(Class<?> beanType) {
+        try {
+            return beanType.newInstance();
+        } catch (Exception e) {
+            throw ExceptionUtils.toRuntimeException(e, throwable -> new RuntimeException("load Bean failed -> '" + beanType.getName(), throwable));
         }
     }
 }

@@ -40,6 +40,10 @@ public class InsetProcessContext extends HintsSet implements CustomizeScope {
         this.finder = finder;
     }
 
+    public Finder getFinder() {
+        return finder;
+    }
+
     /** 查找一元运算执行器 */
     public OperatorProcess findUnaryOperator(String unarySymbol, Class<?> fstType) {
         return opeManager.findUnaryProcess(unarySymbol, fstType);

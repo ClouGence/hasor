@@ -15,15 +15,18 @@
  */
 package net.hasor.dataql.sdk;
 import net.hasor.core.provider.InstanceProvider;
+import net.hasor.dataql.Finder;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.Udf;
 import net.hasor.dataql.UdfSource;
 import net.hasor.dataql.domain.ListModel;
 import net.hasor.utils.ExceptionUtils;
 
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -31,14 +34,12 @@ import java.util.stream.Collectors;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
-public class CollectionUdfSource extends TypeUdfMap implements UdfSource {
-    public CollectionUdfSource() {
-        super(CollectionUdfSource.class);
-    }
-
+public class CollectionUdfSource implements UdfSource {
     @Override
-    public Map<String, Udf> getUdfResource() {
-        return this;
+    public Supplier<Map<String, Udf>> getUdfResource(Finder finder) {
+        Supplier<?> supplier = () -> finder.findBean(CollectionUdfSource.class);
+        Predicate<Method> predicate = method -> true;
+        return InstanceProvider.of(new TypeUdfMap(CollectionUdfSource.class, supplier, predicate));
     }
     // ----------------------------------------------------------------------------------
 
@@ -139,9 +140,7 @@ public class CollectionUdfSource extends TypeUdfMap implements UdfSource {
     /** 创建一个有状态的 Array 对象 */
     @UdfName("new")
     public static TypeUdfMap newArray() {
-        InstanceProvider<Object> provider = new InstanceProvider<>(null);
-        InnerCollectionStateUdfSource typeUdfMap = new InnerCollectionStateUdfSource(provider);
-        provider.set(typeUdfMap);
-        return typeUdfMap;
+        Supplier<InnerCollectionStateUdfSource> supplier = InstanceProvider.of(new InnerCollectionStateUdfSource());
+        return new TypeUdfMap(InnerCollectionStateUdfSource.class, supplier, method -> true);
     }
 }
