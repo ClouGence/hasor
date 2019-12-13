@@ -16,7 +16,9 @@
 package net.hasor.dataql;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 查询
@@ -38,15 +40,13 @@ public interface Query extends Hints {
     }
 
     /** 执行查询 */
-    public default QueryResult execute(Object... envData) throws InstructRuntimeException {
-        return execute(Arrays.asList(envData));
-    }
-
-    /** 执行查询 */
-    public default QueryResult execute(List<?> envData) throws InstructRuntimeException {
+    public default QueryResult execute(Object[] envData) throws InstructRuntimeException {
+        if (envData == null) {
+            return this.execute(Collections.emptyMap());
+        }
         Map<String, Object> objectMap = new HashMap<>();
-        for (int i = 0; i < envData.size(); i++) {
-            objectMap.put("_" + i, envData.get(i));
+        for (int i = 0; i < envData.length; i++) {
+            objectMap.put("_" + i, envData[i]);
         }
         return this.execute(objectMap);
     }
