@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static net.hasor.utils.CommonCodeUtils.MD5;
 
@@ -47,12 +48,12 @@ class InnerDqlConfig extends HintsSet implements DataQL {
     public void initConfig(AppContext appContext) {
         List<ShareVar> shareVars = appContext.findBindingBean(ShareVar.class);
         shareVars.forEach(shareVar -> compilerVarMap.put(shareVar.getName(), shareVar));
-        this.finderObject = new FinderWrap(appContext) {
+        this.finderObject = new AppContextFinder(appContext) {
             public InputStream findResource(String resourceName) throws IOException {
                 if (resourceLoader != null) {
                     return resourceLoader.getResourceAsStream(resourceName);
                 } else {
-                    return Finder.DEFAULT.findResource(resourceName);
+                    return super.findResource(resourceName);
                 }
             }
         };
@@ -60,6 +61,18 @@ class InnerDqlConfig extends HintsSet implements DataQL {
 
     public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
+    }
+
+    @Override
+    public <T> DataQL addShareVar(String name, Class<? extends T> implementation) {
+        this.compilerVarMap.put(name, () -> finderObject.findBean(implementation));
+        return this;
+    }
+
+    @Override
+    public <T> DataQL addShareVar(String name, Supplier<T> provider) {
+        this.compilerVarMap.put(name, provider::get);
+        return this;
     }
 
     @Override

@@ -17,6 +17,7 @@ package net.hasor.dataql.extend.binder;
 import net.hasor.dataql.Query;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 
 /**
  * DataQL 上下文。
@@ -24,5 +25,16 @@ import java.io.IOException;
  * @version : 2017-03-23
  */
 public interface DataQL {
+    /** 添加全局变量（等同于 compilerVar） */
+    public default DataQL addShareVarInstance(String name, Object instance) {
+        return this.addShareVar(name, () -> instance);
+    }
+
+    /** 添加全局变量（等同于 compilerVar） */
+    public <T> DataQL addShareVar(String name, Class<? extends T> implementation);
+
+    /** 添加全局变量（等同于 compilerVar） */
+    public <T> DataQL addShareVar(String name, Supplier<T> provider);
+
     public Query createQuery(String queryString) throws IOException;
 }
