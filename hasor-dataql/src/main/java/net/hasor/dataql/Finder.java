@@ -62,4 +62,8 @@ public interface Finder {
             throw ExceptionUtils.toRuntimeException(e, throwable -> new RuntimeException("load Bean failed -> '" + beanType.getName(), throwable));
         }
     }
+
+    public default FragmentProcess findFragmentProcess(String fragmentType) {
+        throw new RuntimeException(fragmentType + " fragment undefine.");
+    }
 }

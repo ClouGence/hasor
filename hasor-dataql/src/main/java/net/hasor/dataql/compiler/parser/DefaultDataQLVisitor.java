@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * This class provides an empty implementation of {@link DataQLVisitor},
+ * This class provides an empty implementation of {@link DataQLParserVisitor},
  * which can be extended to create a visitor which only needs to handle a subset
  * of the available methods.
  * @param <T> The return type of the visit operation. Use {@link Void} for
  * operations with no return type.
  */
-public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> implements DataQLVisitor<T> {
+public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> implements DataQLParserVisitor<T> {
     private Stack<Object> instStack = new Stack<>();
 
     @Override
@@ -645,6 +645,25 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             this.instStack.push(new AtomExpression(var));
             return null;
         }
+    }
+
+    @Override
+    public T visitExtBlock(ExtBlockContext ctx) {
+        String fragmentName = ctx.IDENTIFIER().getText();
+        String fragmentString = ctx.EXT_ANY().getText();
+        //
+        FragmentVariable fragmentVariable = new FragmentVariable(fragmentName, fragmentString);
+        ExtParamsContext paramsContext = ctx.extParams();
+        for (TerminalNode terminalNode : paramsContext.IDENTIFIER()) {
+            fragmentVariable.getParamList().add(terminalNode.getText());
+        }
+        this.instStack.push(fragmentVariable);
+        return null;
+    }
+
+    @Override
+    public T visitExtParams(ExtParamsContext ctx) {
+        return null;
     }
 
     private TerminalNode operSwitch(TerminalNode first, TerminalNode second) {

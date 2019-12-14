@@ -88,7 +88,7 @@ public class FmtObjRuntimeTest extends AbstractTestResource implements HintValue
     public void self_1_Test() throws Exception {
         Query compilerQL = compilerQL("return ${_0} => { 'a': @ }");
         try {
-            compilerQL.execute(Arrays.asList(1, 2, 3, 4, 5, 6, 7)).getData();
+            compilerQL.execute(new Object[] { Arrays.asList(1, 2, 3, 4, 5, 6, 7) }).getData();
             assert false;
         } catch (Exception e) {
             assert e.getMessage().equals("Array index out of range: 1");
@@ -103,7 +103,7 @@ public class FmtObjRuntimeTest extends AbstractTestResource implements HintValue
                 new DataBean(3) //
         };
         Query compilerQL = compilerQL("return ${_0} => { 'a': $ }");
-        DataModel dataModel = compilerQL.execute(dataBeans).getData();
+        DataModel dataModel = compilerQL.execute(new Object[] { dataBeans }).getData();
         assert dataModel.isObjectModel();
         assert ((ObjectModel) dataModel).asObjectModel("a").asValueModel("name").asString().equals("马三_1");
     }
@@ -116,7 +116,7 @@ public class FmtObjRuntimeTest extends AbstractTestResource implements HintValue
                 new DataBean(3) //
         };
         Query compilerQL = compilerQL("return ${_0} => [ #.name ]");
-        DataModel dataModel = compilerQL.execute(dataBeans).getData();
+        DataModel dataModel = compilerQL.execute(new Object[] { dataBeans }).getData();
         assert dataModel.isListModel();
         assert ((ListModel) dataModel).asValueModel(0).asString().equals("马三_1");
         assert ((ListModel) dataModel).asValueModel(1).asString().equals("马三_2");
@@ -131,7 +131,7 @@ public class FmtObjRuntimeTest extends AbstractTestResource implements HintValue
                 new DataBean(3) //
         };
         Query compilerQL = compilerQL("return ${_0} => [ name ]");
-        DataModel dataModel = compilerQL.execute(dataBeans).getData();
+        DataModel dataModel = compilerQL.execute(new Object[] { dataBeans }).getData();
         assert dataModel.isListModel();
         assert ((ListModel) dataModel).asValueModel(0).asString().equals("马三_1");
         assert ((ListModel) dataModel).asValueModel(1).asString().equals("马三_2");

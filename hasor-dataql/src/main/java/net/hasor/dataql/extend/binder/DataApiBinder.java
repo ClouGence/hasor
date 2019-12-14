@@ -17,6 +17,7 @@ package net.hasor.dataql.extend.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.dataql.Finder;
+import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Hints;
 
 import java.util.function.Supplier;
@@ -54,4 +55,25 @@ public interface DataApiBinder extends ApiBinder, Hints {
     }
 
     public DataApiBinder bindFinder(Finder finder);
+
+    /** 注册 FragmentProcess */
+    public default DataApiBinder bindFragment(String fragmentType, FragmentProcess instance) {
+        return this.bindFragment(fragmentType, () -> instance);
+    }
+
+    /** 注册 FragmentProcess */
+    public default <T extends FragmentProcess> DataApiBinder bindFragment(String fragmentType, Class<? extends T> implementation) {
+        return this.bindFragment(fragmentType, getProvider(implementation));
+    }
+
+    /** 注册 FragmentProcess */
+    public default <T extends FragmentProcess> DataApiBinder bindFragment(String fragmentType, BindInfo<T> bindInfo) {
+        return this.bindFragment(fragmentType, getProvider(bindInfo));
+    }
+
+    /** 注册 FragmentProcess */
+    public default <T extends FragmentProcess> DataApiBinder bindFragment(String fragmentType, Supplier<T> provider) {
+        bindType(FragmentProcess.class).nameWith(fragmentType).toProvider(provider);
+        return this;
+    }
 }

@@ -1,0 +1,9 @@
+select
+        `xxx` as sss ,
+        `ssss` as ss
+    from
+        xxx
+    where
+        xxx = afsd
+
+    select ...........

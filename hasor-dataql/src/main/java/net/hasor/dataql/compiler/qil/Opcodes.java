@@ -56,7 +56,8 @@ public interface Opcodes {
     public static final byte M_DEF  = 62;   // 函数定义，将栈顶元素转换为 UDF
     public static final byte M_REF  = 63;   // 引用另一处的指令序列地址，并将其作为 UDF 形态存放到栈顶
     public static final byte M_TYP  = 64;   // 加载一个类型对象到栈顶，该类型是一个有效的 UDF。这相当于引用 java 类型UDF 函数
-    public static final byte LOCAL  = 65;   // 将入参存入堆，也用于标记变量名称
+    public static final byte M_FRAG = 65;   // 引用外部片段执行器，并将其作为 UDF 形态存放到栈顶
+    public static final byte LOCAL  = 66;   // 将入参存入堆，也用于标记变量名称
     // -------------------------------------------------------------------------- 辅助指令
     public static final byte HINT   = 71;   // 设置 Hint，影响执行引擎的参数选项。
     public static final byte LABEL  = 72;   // 协助GOTO定位用，无实际作用

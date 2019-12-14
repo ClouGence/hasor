@@ -1,4 +1,4 @@
-// Generated from /Users/yongchun.zyc/Documents/Drive/projects/hasor/hasor.git/hasor-dataql/src/main/java/net/hasor/dataql/compiler/parser/DataQL.g4 by ANTLR 4.7.2
+// Generated from /Users/yongchun.zyc/Documents/Drive/projects/hasor/hasor.git/hasor-dataql/src/main/java/net/hasor/dataql/compiler/parser/DataQLParser.g4 by ANTLR 4.7.2
 package net.hasor.dataql.compiler.parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  * @param <T> The return type of the visit operation. Use {@link Void} for
  * operations with no return type.
  */
-public interface DataQLVisitor<T> extends ParseTreeVisitor<T> {
+public interface DataQLParserVisitor<T> extends ParseTreeVisitor<T> {
 	/**
 	 * Visit a parse tree produced by {@link DataQLParser#rootInstSet}.
 	 * @param ctx the parse tree
@@ -236,4 +236,16 @@ public interface DataQLVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAtomExpr(DataQLParser.AtomExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DataQLParser#extBlock}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExtBlock(DataQLParser.ExtBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DataQLParser#extParams}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExtParams(DataQLParser.ExtParamsContext ctx);
 }

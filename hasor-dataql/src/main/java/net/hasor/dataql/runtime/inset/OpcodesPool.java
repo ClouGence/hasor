@@ -87,6 +87,7 @@ public class OpcodesPool {
         pool.addInsetProcess(new M_REF());
         pool.addInsetProcess(new M_DEF());
         pool.addInsetProcess(new M_TYP());
+        pool.addInsetProcess(new M_FRAG());
         pool.addInsetProcess(new LOCAL());
         //
         pool.addInsetProcess(new LABEL());

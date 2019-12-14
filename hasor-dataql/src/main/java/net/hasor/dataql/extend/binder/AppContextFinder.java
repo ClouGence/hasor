@@ -16,6 +16,7 @@
 package net.hasor.dataql.extend.binder;
 import net.hasor.core.AppContext;
 import net.hasor.dataql.Finder;
+import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Query;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
@@ -71,5 +72,10 @@ class AppContextFinder implements Finder {
 
     public Object findBean(Class<?> beanType) {
         return appContext.getInstance(beanType);
+    }
+
+    @Override
+    public FragmentProcess findFragmentProcess(String fragmentType) {
+        return this.appContext.findBindingBean(fragmentType, FragmentProcess.class);
     }
 }

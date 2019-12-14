@@ -20,7 +20,7 @@ import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.ast.inst.RootBlockSet;
 import net.hasor.dataql.compiler.parser.DataQLLexer;
 import net.hasor.dataql.compiler.parser.DataQLParser;
-import net.hasor.dataql.compiler.parser.DataQLVisitor;
+import net.hasor.dataql.compiler.parser.DataQLParserVisitor;
 import net.hasor.dataql.compiler.parser.DefaultDataQLVisitor;
 import net.hasor.dataql.compiler.qil.*;
 import org.antlr.v4.runtime.CharStream;
@@ -148,7 +148,7 @@ public class QueryHelper {
     private static RootBlockSet queryParser(CharStream charStream) {
         DataQLLexer lexer = new DataQLLexer(charStream);
         DataQLParser qlParser = new DataQLParser(new CommonTokenStream(lexer));
-        DataQLVisitor visitor = new DefaultDataQLVisitor();
+        DataQLParserVisitor visitor = new DefaultDataQLVisitor();
         return (RootBlockSet) visitor.visit(qlParser.rootInstSet());
     }
 

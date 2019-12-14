@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.CustomizeScope;
 import net.hasor.dataql.Finder;
+import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.runtime.operator.OperatorManager;
 import net.hasor.dataql.runtime.operator.OperatorProcess;
 
@@ -64,5 +65,9 @@ public class InsetProcessContext extends HintsSet implements CustomizeScope {
 
     public Object loadObject(String udfType) {
         return this.finder.findBean(udfType);
+    }
+
+    public FragmentProcess findFragmentProcess(String fragmentType) {
+        return this.finder.findFragmentProcess(fragmentType);
     }
 }

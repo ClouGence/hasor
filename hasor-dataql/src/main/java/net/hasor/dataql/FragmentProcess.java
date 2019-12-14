@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.compiler.ast;
+package net.hasor.dataql;
 /**
- * 表达式，基类
+ * 执行外部代码片段
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2019-12-14
  */
-public interface Expression extends Variable {
+public interface FragmentProcess {
+    public Object runFragment(Hints hint, Object[] params, String fragmentString) throws Throwable;
 }

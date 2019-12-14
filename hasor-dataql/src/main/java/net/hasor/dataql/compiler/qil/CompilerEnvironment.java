@@ -82,6 +82,7 @@ public class CompilerEnvironment implements Finder {
         //
         put(ObjectFormat.class, new ObjectFormatInstCompiler());
         put(ListFormat.class, new ListFormatInstCompiler());
+        put(FragmentVariable.class, new FragmentVariableInstCompiler());
         //
         put(SubscriptRouteVariable.class, new SubscriptRouteVariableInstCompiler());
         put(NameRouteVariable.class, new NameRouteVariableInstCompiler());

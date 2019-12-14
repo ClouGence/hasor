@@ -41,7 +41,7 @@ public class FunRuntimeTest extends AbstractTestResource implements HintValue {
         //
         Udf udf = (readOnly, params) -> params;
         Query compilerQL = compilerQL("return ${_0}(1,2,3,4)[2];");
-        DataModel dataModel = compilerQL.execute(udf).getData();
+        DataModel dataModel = compilerQL.execute(new Object[] { udf }).getData();
         //
         assert dataModel.isValueModel();
         assert ((ValueModel) dataModel).isNumber();

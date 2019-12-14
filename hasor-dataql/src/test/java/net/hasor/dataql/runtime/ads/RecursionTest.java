@@ -2,6 +2,7 @@ package net.hasor.dataql.runtime.ads;
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.Hasor;
 import net.hasor.dataql.AbstractTestResource;
+import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.domain.UdfModel;
 import net.hasor.dataql.extend.binder.DataQL;
@@ -12,7 +13,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class RecursionTest extends AbstractTestResource {
-    private DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
+    private DataQL dataQL = Hasor.create().build(apiBinder -> {
+        apiBinder.bindType("sql", FragmentProcess.class, (hint, params, fragmentString) -> {
+            return fragmentString.trim();
+        });
+    }).getInstance(DataQL.class);
 
     private void queryTest1(String testCase) throws IOException {
         Query query = this.dataQL.createQuery(getScript("/net_hasor_dataql_adv/" + testCase + ".ql"));
@@ -34,6 +39,14 @@ public class RecursionTest extends AbstractTestResource {
         assert queryJsonData1.trim().equals(queryJsonData2.trim());
     }
 
+    private void queryTest3(String testCase) throws IOException {
+        Query query = this.dataQL.createQuery(getScript("/net_hasor_dataql_adv/" + testCase + ".ql"));
+        String queryResult = getScript("/net_hasor_dataql_adv/" + testCase + ".result");
+        //
+        Object unwrap = query.execute().getData().unwrap();
+        assert unwrap.equals(queryResult);
+    }
+
     @Test
     public void returnLambda() throws Throwable {
         Query query = this.dataQL.createQuery(getScript("/net_hasor_dataql_adv/return_lambda.ql"));
@@ -51,5 +64,10 @@ public class RecursionTest extends AbstractTestResource {
     @Test
     public void recursion_test() throws IOException {
         queryTest2("recursion");
+    }
+
+    @Test
+    public void sql_fragment_test() throws IOException {
+        queryTest3("sql_fragment");
     }
 }
