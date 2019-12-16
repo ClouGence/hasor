@@ -19,10 +19,7 @@ import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.InstructRuntimeException;
-import net.hasor.dataql.runtime.mem.DataHeap;
-import net.hasor.dataql.runtime.mem.DataStack;
-import net.hasor.dataql.runtime.mem.EnvStack;
-import net.hasor.dataql.runtime.mem.RefCall;
+import net.hasor.dataql.runtime.mem.*;
 
 /**
  * M_DEF   // 函数定义，将栈顶元素转换为 UDF
@@ -48,7 +45,8 @@ class M_DEF implements InsetProcess {
         if (!(refCall instanceof Udf)) {
             throw new InstructRuntimeException("target or Property is not UDF.");
         }
-        refCall = new RefCall((Udf) refCall);
+        boolean innerUDF = refCall instanceof RefFragmentCall || refCall instanceof RefLambdaCall;
+        refCall = new RefCall(!innerUDF, (Udf) refCall);
         dataStack.push(refCall);
     }
 }

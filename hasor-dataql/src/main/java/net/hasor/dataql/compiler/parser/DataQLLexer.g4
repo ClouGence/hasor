@@ -72,9 +72,9 @@ LAMBDA  : '->';     // ->
 STRING          : '"' (~["\r\n] | '""' | TRANS)* '"'
                 | '\'' (~['\r\n] | '\'\'' | TRANS)* '\''
                 ;
-fragmentProcess TRANS  : '\\' (['"\\/bfnrt] | UNICODE);
-fragmentProcess UNICODE: 'u' HEX HEX HEX HEX;
-fragmentProcess HEX    : [0-9a-fA-F];
+fragment TRANS  : '\\' (['"\\/bfnrt] | UNICODE);
+fragment UNICODE: 'u' HEX HEX HEX HEX;
+fragment HEX    : [0-9a-fA-F];
 
 /* 数字 */
 HEX_NUM         : '0' [xX] [0-9a-fA-F]+;                // 十六进制：0x12345

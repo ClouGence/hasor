@@ -70,4 +70,9 @@ public class RecursionTest extends AbstractTestResource {
     public void sql_fragment_test() throws IOException {
         queryTest3("sql_fragment");
     }
+
+    @Test
+    public void multi_dimensional_test() throws IOException {
+        queryTest2("multi_dimensional");
+    }
 }

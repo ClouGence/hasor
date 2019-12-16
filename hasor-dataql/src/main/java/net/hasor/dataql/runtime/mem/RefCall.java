@@ -16,6 +16,8 @@
 package net.hasor.dataql.runtime.mem;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.Udf;
+import net.hasor.dataql.domain.DataModel;
+import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.utils.ExceptionUtils;
 
@@ -25,15 +27,25 @@ import net.hasor.utils.ExceptionUtils;
  * @version : 2019-11-22
  */
 public class RefCall {
-    private Udf refCall;
+    private boolean autoUnwrap;
+    private Udf     refCall;
 
-    public RefCall(Udf refCall) {
+    public RefCall(boolean autoUnwrap, Udf refCall) {
+        this.autoUnwrap = autoUnwrap;
         this.refCall = refCall;
     }
 
     public Object invokeMethod(Object[] paramArrays, Hints optionSet) throws InstructRuntimeException {
         try {
-            return this.refCall.call(optionSet, paramArrays);
+            Object[] objects = paramArrays.clone();
+            if (this.autoUnwrap) {
+                for (int i = 0; i < objects.length; i++) {
+                    if (objects[i] instanceof DataModel) {
+                        objects[i] = ((DataModel) objects[i]).unwrap();
+                    }
+                }
+            }
+            return DomainHelper.convertTo(this.refCall.call(optionSet, objects));
         } catch (Throwable e) {
             if (e instanceof InstructRuntimeException) {
                 throw (InstructRuntimeException) e;
