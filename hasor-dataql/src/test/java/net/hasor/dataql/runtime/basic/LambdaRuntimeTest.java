@@ -12,13 +12,11 @@ import net.hasor.dataql.domain.ValueModel;
 import net.hasor.test.dataql.udfs.DemoUdf;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 public class LambdaRuntimeTest extends AbstractTestResource implements HintValue {
     @Test
     public void lambda_1_Test() throws Exception {
         Query compilerQL = compilerQL("var sex_str = (sex) -> return (sex == 'F') ? '男' : '女' ; return [sex_str(${_0}),sex_str(${_1})]");
-        DataModel dataModel = compilerQL.execute(new Object[] { Arrays.asList("F", "M") }).getData();
+        DataModel dataModel = compilerQL.execute(new Object[] { "F", "M" }).getData();
         assert dataModel.isListModel();
         assert ((ListModel) dataModel).asValueModel(0).asString().equals("男");
         assert ((ListModel) dataModel).asValueModel(1).asString().equals("女");

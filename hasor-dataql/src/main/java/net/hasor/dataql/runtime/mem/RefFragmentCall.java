@@ -18,6 +18,8 @@ import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.Udf;
 
+import java.util.Map;
+
 /**
  * 代理 Fragment 使其成为 UDF.
  * @author 赵永春 (zyc@hasor.net)
@@ -32,9 +34,8 @@ public class RefFragmentCall implements Udf {
 
     @Override
     public Object call(Hints readOnly, Object... params) throws Throwable {
-        String fragmentString = params[params.length - 1].toString();
-        Object[] fragmentParams = new Object[params.length - 1];
-        System.arraycopy(params, 0, fragmentParams, 0, fragmentParams.length);
+        Map<String, Object> fragmentParams = (Map<String, Object>) params[0];
+        String fragmentString = params[1].toString();
         return this.fragmentProcess.runFragment(readOnly, fragmentParams, fragmentString);
     }
 }

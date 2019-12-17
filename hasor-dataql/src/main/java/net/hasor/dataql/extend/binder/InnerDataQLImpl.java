@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -105,10 +104,10 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
     }
 
     @Override
-    public QIL compilerQuery(QueryModel queryModel, Set<String> compilerVar) throws IOException {
-        return QueryHelper.queryCompiler(queryModel, compilerVar, getFinder());
+    public QIL compilerQuery(QueryModel queryModel) throws IOException {
+        return QueryHelper.queryCompiler(queryModel, this.compilerVarMap.keySet(), getFinder());
     }
-
+ 
     @Override
     public Query createQuery(QIL compilerQIL) {
         //        QIL compilerQIL = this.cacheQIL.get(hashString);

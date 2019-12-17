@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
+import java.util.Map;
+
 /**
  * 执行外部代码片段
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-14
  */
 public interface FragmentProcess {
-    public Object runFragment(Hints hint, Object[] params, String fragmentString) throws Throwable;
+    public Object runFragment(Hints hint, Map<String, Object> params, String fragmentString) throws Throwable;
 }
+
+
+

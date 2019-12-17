@@ -43,16 +43,17 @@ public class FragmentVariableInstCompiler implements InstCompiler<FragmentVariab
         // .声明片段入口
         newMethodInst.inst(M_FRAG, astInst.getFragmentName());
         //  .加载入参变量
+        newMethodInst.inst(NEW_O);
         for (int i = 0; i < paramList.size(); i++) {
             String name = paramList.get(i);
             ContainsIndex index = compilerContext.containsWithTree(name);
             newMethodInst.inst(LOAD, index.depth, index.index);
+            newMethodInst.inst(PUT, name);
         }
         // .最后一个参数是的片段内容
         newMethodInst.inst(LDC_S, astInst.getFragmentString());
         // .执行函数调用
-        int paramCount = paramList.size() + 1;
-        newMethodInst.inst(CALL, paramCount);
+        newMethodInst.inst(CALL, 2);
         newMethodInst.inst(RETURN, 0);
         compilerContext.dropFrame();
         //

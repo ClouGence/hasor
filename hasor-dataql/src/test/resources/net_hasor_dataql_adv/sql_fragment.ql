@@ -1,15 +1,8 @@
 
-var a = @@sql(a,b,c) <%
+var a = @@sql(item_code) <%
 
-    select
-        `xxx` as sss ,
-        `ssss` as ss
-    from
-        xxx
-    where
-        xxx = afsd
+    select * from category where co_code like '%:item_code%'
 
-    select ...........
 %>
 
 return a();

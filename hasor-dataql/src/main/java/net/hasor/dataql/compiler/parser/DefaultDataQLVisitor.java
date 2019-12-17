@@ -650,9 +650,15 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     @Override
     public T visitExtBlock(ExtBlockContext ctx) {
         String fragmentName = ctx.IDENTIFIER().getText();
-        String fragmentString = ctx.EXT_ANY().getText();
+        StringBuilder fragmentString = new StringBuilder();
+        List<TerminalNode> chars = ctx.CHAR();
+        if (chars != null) {
+            chars.forEach(terminalNode -> {
+                fragmentString.append(terminalNode.getText());
+            });
+        }
         //
-        FragmentVariable fragmentVariable = new FragmentVariable(fragmentName, fragmentString);
+        FragmentVariable fragmentVariable = new FragmentVariable(fragmentName, fragmentString.toString());
         ExtParamsContext paramsContext = ctx.extParams();
         for (TerminalNode terminalNode : paramsContext.IDENTIFIER()) {
             fragmentVariable.getParamList().add(terminalNode.getText());

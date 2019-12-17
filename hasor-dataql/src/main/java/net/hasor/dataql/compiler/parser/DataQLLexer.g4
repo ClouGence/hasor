@@ -90,4 +90,4 @@ IDENTIFIER      : [_a-zA-Z] [_0-9a-zA-Z]*;
 /* 扩展代码块 */
 mode EXT_INSTR;
 CLOS_TAG    : '%>' -> popMode;
-EXT_ANY     : (~[{%>}])+;
+CHAR        : .;

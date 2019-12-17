@@ -29,8 +29,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -111,7 +109,7 @@ public interface DataQL {
      * @param queryString 脚本字符串
      */
     public default QIL compilerQuery(String queryString) throws IOException {
-        return compilerQuery(parserQuery(queryString), Collections.emptySet());
+        return compilerQuery(parserQuery(queryString));
     }
 
     /**
@@ -119,7 +117,7 @@ public interface DataQL {
      * @param queryReader 脚本输入流
     `     */
     public default QIL compilerQuery(Reader queryReader) throws IOException {
-        return compilerQuery(parserQuery(queryReader), Collections.emptySet());
+        return compilerQuery(parserQuery(queryReader));
     }
 
     /**
@@ -127,7 +125,7 @@ public interface DataQL {
      * @param queryInput 脚本输入流，使用 UTF-8 字符集
      */
     public default QIL compilerQuery(InputStream queryInput) throws IOException {
-        return compilerQuery(parserQuery(queryInput, StandardCharsets.UTF_8), Collections.emptySet());
+        return compilerQuery(parserQuery(queryInput, StandardCharsets.UTF_8));
     }
 
     /**
@@ -136,16 +134,14 @@ public interface DataQL {
      * @param charset 读取字节流使用的字符集
      */
     public default QIL compilerQuery(InputStream queryInput, Charset charset) throws IOException {
-        return compilerQuery(parserQuery(queryInput, charset), Collections.emptySet());
+        return compilerQuery(parserQuery(queryInput, charset));
     }
 
     /**
      * 编译已经解析好的 DataQL
      * @param queryModel 解析之后的 DataQL 查询模型。
-     * @param compilerVar 编译变量名，编译变量的作用相当于在脚本中预先 执行 var xxx = null;
-     *                    其意义在于在编译期就把脚本中尚未定义过的变量预先进行声明从而免去通过 ${...} 或类似方式查找变量。
      */
-    public QIL compilerQuery(QueryModel queryModel, Set<String> compilerVar) throws IOException;
+    public QIL compilerQuery(QueryModel queryModel) throws IOException;
 
     /** 创建查询实例 */
     public default Query createQuery(String queryString) throws IOException {
@@ -165,11 +161,6 @@ public interface DataQL {
     /** 创建查询实例 */
     public default Query createQuery(InputStream inputStream, Charset charset) throws IOException {
         return createQuery(compilerQuery(inputStream, charset));
-    }
-
-    /** 创建查询实例 */
-    public default Query createQuery(QueryModel queryModel, Set<String> compilerVar) throws IOException {
-        return createQuery(compilerQuery(queryModel, compilerVar));
     }
 
     /** 创建查询实例 */

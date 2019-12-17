@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.domain.DataModel;
+import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -23,6 +25,7 @@ import net.hasor.dataql.runtime.mem.EnvStack;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * CAST_O  // 将栈顶元素转换为一个对象，如果是集合那么取第一条记录（可以通过CAST_I方式解决，但会多消耗大约8条左右的指令）
@@ -45,6 +48,13 @@ class CAST_O implements InsetProcess {
         //
         if (data == null) {
             //
+        } else if (data instanceof ListModel) {
+            List<DataModel> modelList = ((ListModel) data).asOri();
+            if (modelList == null || modelList.isEmpty()) {
+                data = null;
+            } else {
+                data = modelList.get(0);
+            }
         } else if (data instanceof Collection) {
             Iterator dataSet = ((Collection) data).iterator();
             if (dataSet.hasNext()) {

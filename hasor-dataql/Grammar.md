@@ -76,7 +76,7 @@ DataQL 有一些设计原则，这也使其成为有一定的特性。
 | var    | 执行一个查询动作，并把查询结果保存到临时变量中。 |
 | run    | 仅仅执行查询动作，不保留查询的结果。 |
 | hint   | 写在 DataQL 查询语句的最前面，用于设置一些执行选项参数。  |
-| import | 将另外一个 DataQL 查询导入并作为一个 Udf 形式存在、或直接导入一个 Udf 导入到当前查询中。 |
+| import | 将另外一个 DataQL 查询导入并作为一个 Udf 形式存在、或直接导入一个 Udf 到当前查询中。 |
 | as     | 与 import 关键字配合使用，用作将导入的 Udf 命名为一个本地变量名。 |
 | true   | 基础类型之一，表示 Boolean 的：真值。 |
 | false  | 基础类型之一，表示 Boolean 的：假值。 |
@@ -139,7 +139,7 @@ DataQL 有一些设计原则，这也使其成为有一定的特性。
 ### 3 数据类型
 &emsp;&emsp;DataQL 是弱类型的查询语言。在DataQL 中所有数据都会被归结到有限的几种类型上。在弱类型系统中编写查询会非常方便，它去掉了繁杂的类型定义。
 弱类型也带来了明显的问题：
-- 字段不确定性：在没有搭配辅助的转换函数情况下，字段类型会具有不确定性。即：它有可能是 boolean 也有可能是字符串，这具体要看 DataQL 的原始查询返回的数据类型。
+- 字段不确定性：在没有搭配辅助的转换函数情况下，字段类型会具有不确定性。即：它有可能是 boolean 也有可能是字符串，这具体要看用户数据的原始返回的数据类型。
 
 #### 3.1 类型定义
 - 布尔类型
@@ -187,6 +187,8 @@ DataQL 有一些设计原则，这也使其成为有一定的特性。
   - 外部Udf：外部的 Udf 被引入之后，通常以标识符形式表示它。
   - DataQL 中书写的 lambda 表达方式为：var foo = () -> { /* 代码块 */ }
   - 外部代码片段： var a = @@xxx() <% /* 外部代码块 */ %>
+- JSON
+  - DataQL 可以直接表达 Json 数据，不过作为 json 的 Key 必须通过双引号或单引号形式包裹起来。
 
 #### 3.3 类型提升
 &emsp;&emsp;类型提升：两个操作数之间做运算时，其中一个数值类型和另外一个数值的类型不一致情况下。将两个数值的类型统一转换成同一种类型的行为。
@@ -204,17 +206,50 @@ DataQL 有一些设计原则，这也使其成为有一定的特性。
 
 Java 引擎中类型自动提升行为表
 
-|            | bool       | byte       | sort       | int        | long       | float      | double     | BigInteger | BigDecimal |
-| ---------: | :--------: | :--------: | :--------: | :--------: | :--------: | :--------: | :--------: | :--------: | :--------  |
-| bool       | -          | byte       | sort       | int        | long       | float      | double     | BigInteger | BigDecimal |
-| byte       | byte       |  -         | sort       | int        | long       | float      | double     | BigInteger | BigDecimal |
-| sort       | sort       | sort       | -          | int        | long       | float      | double     | BigInteger | BigDecimal |
-| int        | int        | int        | int        | -          | long       | double     | double     | BigInteger | BigDecimal |
-| long       | long       | long       | long       | long       | -          | double     | double     | BigInteger | BigDecimal |
-| float      | float      | float      | float      | double     | double     | -          | double     | BigDecimal | BigDecimal |
-| double     | double     | double     | double     | double     | double     | double     | -          | BigDecimal | BigDecimal |
-| BigInteger | BigInteger | BigInteger | BigInteger | BigInteger | BigInteger | BigDecimal | BigDecimal | -          | BigDecimal |
-| BigDecimal | BigDecimal | BigDecimal | BigDecimal | BigDecimal | BigDecimal | BigDecimal | BigDecimal | BigDecimal | -          |
+|            | bool       | byte       | sort       | int        | long       | float      | double     | BigInteger | BigDecimal | string    |
+| ---------: | :--------: | :--------: | :--------: | :--------: | :--------: | :--------: | :--------: | :--------: | :-------:  | :-------: |
+| bool       | -          | byte       | sort       | int        | long       | float      | double     | BigInteger | BigDecimal | string    |
+| byte       | byte       |  -         | sort       | int        | long       | float      | double     | BigInteger | BigDecimal | string    |
+| sort       | sort       | sort       | -          | int        | long       | float      | double     | BigInteger | BigDecimal | string    |
+| int        | int        | int        | int        | -          | long       | double     | double     | BigInteger | BigDecimal | string    |
+| long       | long       | long       | long       | long       | -          | double     | double     | BigInteger | BigDecimal | string    |
+| float      | float      | float      | float      | double     | double     | -          | double     | BigDecimal | BigDecimal | string    |
+| double     | double     | double     | double     | double     | double     | double     | -          | BigDecimal | BigDecimal | string    |
+| BigInteger | BigInteger | BigInteger | BigInteger | BigInteger | BigInteger | BigDecimal | BigDecimal | -          | BigDecimal | string    |
+| BigDecimal | BigDecimal | BigDecimal | BigDecimal | BigDecimal | BigDecimal | BigDecimal | BigDecimal | BigDecimal | -          | string    |
+| string     | string     | string     | string     | string     | string     | string     | string     | string     | string     | -
+
+#### 3.4 数值默认宽度
+&emsp;&emsp;数值表示的默认宽度，举例：`var = 235` 这个数即可是 byte 的也可能是 int 类型的。 默认宽度是指在 DataQL 查询语句中，定义的数字类型数据所使用的默认类型。
+- 整数：byte、short、int(默认)、long、big
+- 浮点数：float、double(默认)、big
+
+&emsp;&emsp;修改默认数值计算宽度
+- option MIN_DECIMAL_WIDTH = double
+- option MIN_INTEGER_WIDTH = int
+
+#### 3.5 浮点数
+单精度float或者双精度double，由于其自身存储特性导致在做运算时出现精度丢失问题：
+- 可以将浮点数的数值宽度提升到 big 就会以 BigDecimal 方式进行计算以解决精度丢失问题。缺点是性能损耗。
+
+浮点数计算舍入精度
+- 默认 20 位
+
+修改浮点数计算舍入精度
+- option MAX_DECIMAL_DIGITS = 20
+    
+舍入规则
+- UP：向远离零的方向舍入。舍弃非零部分，并将非零舍弃部分相邻的一位数字加一。
+- DOWN：向接近零的方向舍入。舍弃非零部分，同时不会非零舍弃部分相邻的一位数字加一，采取截取行为。
+- CEILING：向正无穷的方向舍入。如果为正数，舍入结果同ROUND_UP一致；如果为负数，舍入结果同ROUND_DOWN一致。注意：此模式不会减少数值大小。
+- FLOOR：向负无穷的方向舍入。如果为正数，舍入结果同ROUND_DOWN一致；如果为负数，舍入结果同ROUND_UP一致。注意：此模式不会增加数值大小。
+- HALF_UP：向“最接近”的数字舍入，如果与两个相邻数字的距离相等，则为向上舍入的舍入模式。如果舍弃部分>= 0.5，则舍入行为与ROUND_UP相同；否则舍入行为与ROUND_DOWN相同。这种模式也就是我们常说的我们的“四舍五入”。
+- HALF_DOWN：向“最接近”的数字舍入，如果与两个相邻数字的距离相等，则为向下舍入的舍入模式。如果舍弃部分> 0.5，则舍入行为与ROUND_UP相同；否则舍入行为与ROUND_DOWN相同。这种模式也就是我们常说的我们的“五舍六入”。
+-  HALF_EVEN：向“最接近”的数字舍入，如果与两个相邻数字的距离相等，则相邻的偶数舍入。如果舍弃部分左边的数字奇数，则舍入行为与 ROUND_HALF_UP 相同；如果为偶数，则舍入行为与 ROUND_HALF_DOWN 相同。注意：在重复进行一系列计算时，此舍入模式可以将累加错误减到最小。此舍入模式也称为“银行家舍入法”，主要在美国使用。四舍六入，五分两种情况，如果前一位为奇数，则入位，否则舍去。*/
+-  UNNECESSARY：断言请求的操作具有精确的结果，因此不需要舍入。如果对获得精确结果的操作指定此舍入模式，则抛出ArithmeticException。
+
+更换舍入规则
+-  例：option NUMBER_ROUNDING = "HALF_EVEN"
 
 ### 4.表达式
 &emsp;&emsp;DataQL 具备完整的表达式计算能力，这使得数据在转换过程中在需要数值计算的情况上变得非常好用。对比 GraphQL 而言省去了编写大量 Udf 的操作。一个典型的场景就是是货币和汇率的转换。
@@ -262,23 +297,25 @@ return userByID({'id': 4})['username'];
 return userList()[0]['username'];
 ```
 
-#### 4.3 数组对象的下标取值
-&emsp;&emsp;对于常规数组下标取值只要填写要获取的元素索引编号即可。负数表示从后向前，正数表示从前向后。
+#### 4.3 数组索引
+&emsp;&emsp;对于数字形式的下标分为：`正向索引`、`反向索引` 两种。例如有一个数据集：
 ```
-// 返回用户列表中最后一条数据的用户名
-return userList()[-1].username;
+var list = [0,1,2,3,4,5,6,7,8,9]
 ```
-
-- 数组下标为负数表示，获取数据使用的索引编号是从后向前的。
-  - 从前向后取值，0 代表第一个元素。
-  - 从后向前取值，-1 代表最后一个元素。
-
-
+- 正向索引：list[3] = 4 or list[5] = 5
+  - 正数，从前向后数，从0开始。
+- 反向索引：list[-3] = 7 or list[-5] = 5
+  - 负数，从后向前数，从1开始。
+- 索引溢出
+  - 正向索引溢出：list[100]，取最后一个。
+  - 反向索引溢出：list[-100]，取第一个。
+        
 #### 4.4 对象赋值
 &emsp;&emsp;非常抱歉。DataQL 是专注于数据聚合查询的工具，并不是一门脚本语言。因此一些开发语言中的特性在 DataQL 中并不存在。赋值语句就是其中之一。
-在比如对于修改返回结果中某一条数据中的一个值，这个场景也不属于 DataQL 的领域范畴。您需要在业务维度将数据先准备好在交给 DataQL 做转换。
+在比如对于修改返回结果中某一条数据中的一个值，这个场景也不属于 DataQL 的领域范畴。
+您需要在业务维度将数据先准备好在交给 DataQL 做转换，或者您通过 lambda、Udf 等手段对数据进行批量处理。
 
-&emsp;&emsp;因此 DataQL 可以说专注于数据流的，这也是 DataQL 的设计原则之一。
+- DataQL 是专注于数据流的，这也是 DataQL 的设计原则之一，因此对数据的逻辑处理 DataQL 并不十分擅长。
 
 ### 5 结果转换
 
@@ -288,7 +325,7 @@ return userList()[-1].username;
 - `<表达式> => { ... }` 表达式结果作为对象类型处理
   - 表达式值为集合元素的情况下，取得第一个元素进行处理
 
-#### 5.1 数组 - 不同结构的转换
+#### 5.1 转换为数组
 &emsp;&emsp;调用用户程序的一个数据接口并获取到返回值，然后对返回的数据结果结构进行变换。这个就是结果转换。我们假定有一个用户列表接口它会返回一个 `List<User>` 类型结构，这个结构如下定义：
 ```java
 long    userID = 1234567890;
@@ -318,7 +355,23 @@ return userList() => [
 - Map 中具有一个 name 属性，这个属性值的来源是迭代的当前元素中 name 属性。
 - Map 中具有一个 age 属性，这个属性值的来源是迭代的当前元素中 age 属性。
 
-#### 5.2 数组 - 结构转为基本值
+#### 5.2 转换为对象
+&emsp;&emsp;如果是数组转对象，相当于获取数组的第一个元素然后对这个元素对象进行结构转换。
+```
+return userList() => {
+    'name': name,
+    'age' : age
+}
+```
+
+在这个例子中，转换语句可以简写为：
+```
+return userList() => {
+    'name', 'age'
+}
+```
+
+#### 5.3 转换为基本值类型数组
 &emsp;&emsp;仍然以 `userList` 接口为例子，目前只需要返回所有用户的用户名即可，最终的结构应该是：`List<String>`
 ```
 return userList() => [ name ]
@@ -329,15 +382,6 @@ return userList() => [ name ]
 - 接口返回数据将会作为 List 形式
 - 把接口返回数据封装成为迭代器，并且迭代所有元素。
 - 每次迭代都获取迭代的当前元素中 name 属性作为新的元素值。
-
-#### 5.3 数组转为对象
-&emsp;&emsp;数组转对象，相当于获取数组的第一个元素然后对这个元素对象进行结构转换。
-```
-return userList() => {
-    'name': name,
-    'age' : age
-}
-```
 
 #### 5.4 多维数组的转换
 &emsp;&emsp;前面几种数组数据转换方式中，在转换过程中当前元素都是对象类型。可以直接通过对象属性方式获取所需要的值。
@@ -363,15 +407,47 @@ return data => [
 ]
 ```
 
+#### 6 路由访问符
+&emsp;&emsp;在介绍路由之前需要先说明 DataQL 运行时的内存结构。DataQL 运行时内存结构是：两栈一堆模型。
+- 栈：后入先出，插入删除在栈顶操作。
+- 堆：在 DataQL 运行时，一个带有 parent 属性的一维数组就是堆。对堆的操作就是读写这个带 parent 的一维数组。
+
+所谓两栈一堆就是有两个栈模型一个堆模型它们分别的意义是：
+- 数据栈：
+- 环境栈：
+- 数据堆：在函数或者查询中定义的一些基本类型的变量和对象的引用变量都在数据堆内存中分配。例如：var 语句产生的临时变量。与 Java 不同的是 DataQL 的堆是一个二叉树结构，当进入一个函数之后 DataQL 运行时会自动为其分配一个新的堆空间，函数执行完毕之后会释放这个堆空间。
 
 
 
 
-结果转换
-    对象
-        对象结构转换
-        对象转换为数组
-        转换中的简写
+
+路由：
+    可选的符号：@、#、$
+
+    一般路由取值原理：
+        首先将环境栈顶对象 copy 到数据栈顶，然后在数据栈顶的元素身上执行路由取值。
+
+    $ss.sss.sss 是一般路由的升级形式：
+        # 表示环境栈顶(同一般路由)，@ 表示第二层环境栈元素，$ 根环境栈元素（每一个结果转换都会产生一层环境栈）
+
+    ${xxxx} 自定义取值
 
 
-### 6 服务聚合
+路由中单独只使用符号
+    @，取上一层数据栈的数据
+    #，取当前数据栈的数据
+    $，取数据栈栈根数据
+    例如：
+        var _0 = [1,2,3,4,5,6] ; return ${_0} => { 'a': $ }  -> 结果为 { 'a' : 1 }
+
+
+
+
+
+### 7 函数
+函数和调用：
+    DataQL 中的对象都是数据对象，类似 'var a = abs(123)' 这样的语句执行实际是，从环境对象上获取 abs 属性。
+    而 abs 属性是一个 UDF 类型对象。这一点不同于 java 的对象方法调用。
+
+
+### 8 执行外部代码片段
