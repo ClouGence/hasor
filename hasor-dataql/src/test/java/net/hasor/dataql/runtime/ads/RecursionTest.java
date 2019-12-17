@@ -9,8 +9,6 @@ import net.hasor.dataql.extend.binder.DataQL;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
 public class RecursionTest extends AbstractTestResource {
     private DataQL dataQL = Hasor.create().build(apiBinder -> {
@@ -19,32 +17,13 @@ public class RecursionTest extends AbstractTestResource {
         });
     }).getInstance(DataQL.class);
 
-    private void queryTest1(String testCase) throws IOException {
+    private void queryTest(String testCase) throws IOException {
         Query query = this.dataQL.createQuery(getScript("/net_hasor_dataql_adv/" + testCase + ".ql"));
         String queryResult = getScript("/net_hasor_dataql_adv/" + testCase + ".result");
         //
         Object unwrap = query.execute().getData().unwrap();
-        String queryJsonData1 = JSON.toJSONString(unwrap);
-        String queryJsonData2 = JSON.toJSONString(JSON.parseObject(queryResult, LinkedHashMap.class));
-        assert queryJsonData1.trim().equals(queryJsonData2.trim());
-    }
-
-    private void queryTest2(String testCase) throws IOException {
-        Query query = this.dataQL.createQuery(getScript("/net_hasor_dataql_adv/" + testCase + ".ql"));
-        String queryResult = getScript("/net_hasor_dataql_adv/" + testCase + ".result");
-        //
-        Object unwrap = query.execute().getData().unwrap();
-        String queryJsonData1 = JSON.toJSONString(unwrap);
-        String queryJsonData2 = JSON.toJSONString(JSON.parseObject(queryResult, ArrayList.class));
-        assert queryJsonData1.trim().equals(queryJsonData2.trim());
-    }
-
-    private void queryTest3(String testCase) throws IOException {
-        Query query = this.dataQL.createQuery(getScript("/net_hasor_dataql_adv/" + testCase + ".ql"));
-        String queryResult = getScript("/net_hasor_dataql_adv/" + testCase + ".result");
-        //
-        Object unwrap = query.execute().getData().unwrap();
-        assert unwrap.equals(queryResult);
+        String jsonData = JSON.toJSONString(unwrap, true);
+        assert jsonData.trim().equals(queryResult.trim());
     }
 
     @Test
@@ -58,21 +37,26 @@ public class RecursionTest extends AbstractTestResource {
 
     @Test
     public void basic_fmt_test() throws IOException {
-        queryTest1("basic_fmt");
+        queryTest("basic_fmt");
     }
 
     @Test
     public void recursion_test() throws IOException {
-        queryTest2("recursion");
+        queryTest("recursion");
     }
 
     @Test
     public void sql_fragment_test() throws IOException {
-        queryTest3("sql_fragment");
+        queryTest("sql_fragment");
     }
 
     @Test
     public void multi_dimensional_test() throws IOException {
-        queryTest2("multi_dimensional");
+        queryTest("multi_dimensional");
+    }
+
+    @Test
+    public void totree_test() throws IOException {
+        queryTest("totree");
     }
 }

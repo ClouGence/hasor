@@ -37,7 +37,6 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

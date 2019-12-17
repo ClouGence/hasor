@@ -1,1 +1,5 @@
-{"name":"this is name2.","age":31,"nick":"my name is nick."}
+{
+	"name":"this is name2.",
+	"age":31,
+	"nick":"my name is nick."
+}

@@ -660,8 +660,10 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         //
         FragmentVariable fragmentVariable = new FragmentVariable(fragmentName, fragmentString.toString());
         ExtParamsContext paramsContext = ctx.extParams();
-        for (TerminalNode terminalNode : paramsContext.IDENTIFIER()) {
-            fragmentVariable.getParamList().add(terminalNode.getText());
+        if (paramsContext != null) {
+            for (TerminalNode terminalNode : paramsContext.IDENTIFIER()) {
+                fragmentVariable.getParamList().add(terminalNode.getText());
+            }
         }
         this.instStack.push(fragmentVariable);
         return null;
