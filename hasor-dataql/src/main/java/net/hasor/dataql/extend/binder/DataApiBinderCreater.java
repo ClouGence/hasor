@@ -31,11 +31,11 @@ public class DataApiBinderCreater implements ApiBinderCreater {
     }
 
     private static class DataApiBinderImpl extends ApiBinderWrap implements DataApiBinder {
-        private InnerDqlConfig innerDqlConfig = new InnerDqlConfig();
+        private InnerDataQLImpl innerDqlConfig = new InnerDataQLImpl();
 
         public DataApiBinderImpl(ApiBinder apiBinder) {
             super(apiBinder);
-            apiBinder.bindType(InnerDqlConfig.class).toInstance(innerDqlConfig);
+            apiBinder.bindType(InnerDataQLImpl.class).toInstance(innerDqlConfig);
             apiBinder.bindType(DataQL.class).toInstance(innerDqlConfig);
         }
 

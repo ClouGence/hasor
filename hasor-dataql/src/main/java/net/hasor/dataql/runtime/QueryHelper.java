@@ -126,7 +126,7 @@ public class QueryHelper {
         if (queryModel instanceof RootBlockSet) {
             rootBlockSet = (RootBlockSet) queryModel;
         } else {
-            rootBlockSet = queryParser(CharStreams.fromString(queryModel.toQueryString()));
+            rootBlockSet = (RootBlockSet) queryParser(CharStreams.fromString(queryModel.toQueryString()));
         }
         //
         if (compilerVar == null) {
@@ -145,7 +145,7 @@ public class QueryHelper {
         return new QIL(queueSet, compilerVarMap);
     }
 
-    private static RootBlockSet queryParser(CharStream charStream) {
+    public static QueryModel queryParser(CharStream charStream) {
         DataQLLexer lexer = new DataQLLexer(charStream);
         DataQLParser qlParser = new DataQLParser(new CommonTokenStream(lexer));
         DataQLParserVisitor visitor = new DefaultDataQLVisitor();

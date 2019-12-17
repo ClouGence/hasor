@@ -15,14 +15,18 @@
  */
 package net.hasor.dataql.extend.binder;
 import net.hasor.core.AppContext;
+import net.hasor.core.BindInfo;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Query;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
+import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * 通过 AppContext 进行资源加载。
@@ -30,16 +34,25 @@ import java.io.InputStream;
  * @version : 2017-03-23
  */
 class AppContextFinder implements Finder {
-    private AppContext appContext;
+    private AppContext                                       appContext;
+    private Map<String, Supplier<? extends FragmentProcess>> fragmentProcessMap;
 
     public AppContextFinder(AppContext appContext) {
         this.appContext = appContext;
+        this.fragmentProcessMap = new LinkedCaseInsensitiveMap<>();
+        List<BindInfo<FragmentProcess>> bindInfos = this.appContext.findBindingRegister(FragmentProcess.class);
+        if (bindInfos != null) {
+            bindInfos.forEach(fragmentInfo -> {
+                Supplier<? extends FragmentProcess> fragmentProcess = appContext.getProvider(fragmentInfo);
+                this.fragmentProcessMap.put(fragmentInfo.getBindName().toLowerCase(), fragmentProcess);
+            });
+        }
     }
 
-    public InputStream findResource(String resourceName) throws IOException {
+    public InputStream findResource(String resourceName) {
         InputStream inputStream = null;
         try {
-            ClassLoader classLoader = appContext.getEnvironment().getClassLoader();
+            ClassLoader classLoader = this.appContext.getEnvironment().getClassLoader();
             if (classLoader != null) {
                 resourceName = ResourcesUtils.formatResource(resourceName);
                 inputStream = classLoader.getResourceAsStream(resourceName);
@@ -55,7 +68,7 @@ class AppContextFinder implements Finder {
 
     public Object findBean(String beanName) {
         try {
-            ClassLoader classLoader = appContext.getEnvironment().getClassLoader();
+            ClassLoader classLoader = this.appContext.getEnvironment().getClassLoader();
             if (classLoader == null) {
                 classLoader = Thread.currentThread().getContextClassLoader();
             }
@@ -66,16 +79,24 @@ class AppContextFinder implements Finder {
             Class<?> loadClass = classLoader.loadClass(beanName);
             return findBean(loadClass);
         } catch (ClassNotFoundException e) {
-            return appContext.getInstance(beanName);
+            return this.appContext.getInstance(beanName);
         }
     }
 
     public Object findBean(Class<?> beanType) {
-        return appContext.getInstance(beanType);
+        return this.appContext.getInstance(beanType);
     }
 
     @Override
     public FragmentProcess findFragmentProcess(String fragmentType) {
-        return this.appContext.findBindingBean(fragmentType, FragmentProcess.class);
+        Supplier<? extends FragmentProcess> fragmentProcessSupplier = this.fragmentProcessMap.get(fragmentType.toLowerCase());
+        if (fragmentProcessSupplier == null) {
+            return this.appContext.findBindingBean(fragmentType, FragmentProcess.class);
+        }
+        return fragmentProcessSupplier.get();
+    }
+
+    public void addFragmentProcess(String name, Supplier<? extends FragmentProcess> provider) {
+        this.fragmentProcessMap.put(name, provider);
     }
 }

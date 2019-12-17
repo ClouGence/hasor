@@ -30,6 +30,6 @@ public class DataQLModule implements Module {
 
     @Override
     public void onStart(AppContext appContext) {
-        appContext.getInstance(InnerDqlConfig.class).initConfig(appContext);
+        appContext.getInstance(InnerDataQLImpl.class).initConfig(appContext);
     }
 }

@@ -15,34 +15,37 @@
  */
 package net.hasor.dataql.extend.binder;
 import net.hasor.core.AppContext;
+import net.hasor.core.BindInfo;
 import net.hasor.dataql.Finder;
+import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.dataql.runtime.VarSupplier;
-import net.hasor.utils.StringUtils;
+import org.antlr.v4.runtime.CharStream;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
-
-import static net.hasor.utils.CommonCodeUtils.MD5;
 
 /**
  * UDF 函数定义
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-class InnerDqlConfig extends HintsSet implements DataQL {
+class InnerDataQLImpl extends HintsSet implements DataQL {
     private Map<String, VarSupplier> compilerVarMap = new HashMap<>();
-    private Map<String, QIL>         cacheQIL       = new HashMap<>();
+    //    private Map<String, QIL>         cacheQIL       = new HashMap<>();
+    private AppContext               appContext;
     private Finder                   finderObject;
 
     public void initConfig(AppContext appContext) {
+        this.appContext = appContext;
         List<ShareVar> shareVars = appContext.findBindingBean(ShareVar.class);
         shareVars.forEach(shareVar -> compilerVarMap.put(shareVar.getName(), shareVar));
         if (this.finderObject == null) {
@@ -67,27 +70,53 @@ class InnerDqlConfig extends HintsSet implements DataQL {
     }
 
     @Override
+    public <T extends FragmentProcess> DataQL addFragmentProcess(String name, BindInfo<T> bindInfo) {
+        if (this.finderObject instanceof AppContextFinder) {
+            return addFragmentProcess(name, this.appContext.getProvider(bindInfo));
+        }
+        throw new UnsupportedOperationException("custom Finder Unsupported. ");
+    }
+
+    @Override
+    public <T extends FragmentProcess> DataQL addFragmentProcess(String name, Class<T> implementation) {
+        if (this.finderObject instanceof AppContextFinder) {
+            return addFragmentProcess(name, this.appContext.getProvider(implementation));
+        }
+        throw new UnsupportedOperationException("custom Finder Unsupported. ");
+    }
+
+    @Override
+    public <T extends FragmentProcess> DataQL addFragmentProcess(String name, Supplier<T> provider) {
+        if (this.finderObject instanceof AppContextFinder) {
+            ((AppContextFinder) this.finderObject).addFragmentProcess(name, provider);
+            return this;
+        }
+        throw new UnsupportedOperationException("custom Finder Unsupported. ");
+    }
+
+    @Override
     public Finder getFinder() {
         return this.finderObject;
     }
 
     @Override
-    public Query createQuery(String queryString) throws IOException {
-        if (StringUtils.isBlank(queryString)) {
-            return null;
-        }
-        String hashString = queryString;
-        try {
-            hashString = MD5.getMD5(queryString);
-        } catch (Exception e) { /**/ }
-        //
-        QIL compilerQIL = this.cacheQIL.get(hashString);
-        if (compilerQIL == null) {
-            QueryModel queryModel = QueryHelper.queryParser(queryString);
-            compilerQIL = QueryHelper.queryCompiler(queryModel, this.compilerVarMap.keySet(), this.finderObject);
-            this.cacheQIL.put(hashString, compilerQIL);
-        }
-        //
+    public QueryModel parserQuery(CharStream charStream) {
+        return QueryHelper.queryParser(charStream);
+    }
+
+    @Override
+    public QIL compilerQuery(QueryModel queryModel, Set<String> compilerVar) throws IOException {
+        return QueryHelper.queryCompiler(queryModel, compilerVar, getFinder());
+    }
+
+    @Override
+    public Query createQuery(QIL compilerQIL) {
+        //        QIL compilerQIL = this.cacheQIL.get(hashString);
+        //        if (compilerQIL == null) {
+        //            QueryModel queryModel = QueryHelper.queryParser(queryString);
+        //            compilerQIL = QueryHelper.queryCompiler(queryModel, this.compilerVarMap.keySet(), this.finderObject);
+        //            this.cacheQIL.put(hashString, compilerQIL);
+        //        }
         Query query = QueryHelper.createQuery(compilerQIL, this.finderObject);
         this.compilerVarMap.forEach(query::setCompilerVar);
         query.setHints(this);

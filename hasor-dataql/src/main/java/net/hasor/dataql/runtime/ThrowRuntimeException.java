@@ -44,7 +44,7 @@ public class ThrowRuntimeException extends InstructRuntimeException {
     public int getThrowCode() {
         return throwCode;
     }
- 
+
     public long getExecutionTime() {
         return executionTime;
     }
