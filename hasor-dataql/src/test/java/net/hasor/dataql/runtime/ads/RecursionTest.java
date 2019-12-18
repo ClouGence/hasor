@@ -5,7 +5,7 @@ import net.hasor.dataql.AbstractTestResource;
 import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.domain.UdfModel;
-import net.hasor.dataql.extend.binder.DataQL;
+import net.hasor.dataql.binder.DataQL;
 import org.junit.Test;
 
 import java.io.IOException;

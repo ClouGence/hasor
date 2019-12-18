@@ -1,4 +1,6 @@
-// 层次化：把带有 parent 属性的数据转换成 tree
+// 层次化：把带有 parent 属性的数据转换成 tree 结构
+//  - 需要用到集合包的 filter 函数
+//  - 实现思路是：递归
 
 import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;
 

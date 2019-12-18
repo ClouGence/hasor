@@ -201,23 +201,23 @@ DataQL 有一些设计原则，这也使其成为有一定的特性。
 - 长整型(long)，长度64，取值范围：-9233372036854477808 ~ 9233372036854477808
 - 浮点型(float)，长度32，取值范围：-3.40292347E+38 ~ 3.40292347E+38
 - 双精度(double)，长度64，取值范围：-1.79769313486231570E+308 ~ 1.79769313486231570E+308
-- 大整数(BigInteger)，取值范围：java.math.BigInteger
-- 大浮点数(BigDecimal)，取值范围：java.math.BigDecimal
+- 大整数(BigInt)，取值范围：java.math.BigInt
+- 大浮点数(Decimal)，取值范围：java.math.BigDecimal
 
 Java 引擎中类型自动提升行为表
 
-|            | bool       | byte       | sort       | int        | long       | float      | double     | BigInteger | BigDecimal | string    |
-| ---------: | :--------: | :--------: | :--------: | :--------: | :--------: | :--------: | :--------: | :--------: | :-------:  | :-------: |
-| bool       | -          | byte       | sort       | int        | long       | float      | double     | BigInteger | BigDecimal | string    |
-| byte       | byte       |  -         | sort       | int        | long       | float      | double     | BigInteger | BigDecimal | string    |
-| sort       | sort       | sort       | -          | int        | long       | float      | double     | BigInteger | BigDecimal | string    |
-| int        | int        | int        | int        | -          | long       | double     | double     | BigInteger | BigDecimal | string    |
-| long       | long       | long       | long       | long       | -          | double     | double     | BigInteger | BigDecimal | string    |
-| float      | float      | float      | float      | double     | double     | -          | double     | BigDecimal | BigDecimal | string    |
-| double     | double     | double     | double     | double     | double     | double     | -          | BigDecimal | BigDecimal | string    |
-| BigInteger | BigInteger | BigInteger | BigInteger | BigInteger | BigInteger | BigDecimal | BigDecimal | -          | BigDecimal | string    |
-| BigDecimal | BigDecimal | BigDecimal | BigDecimal | BigDecimal | BigDecimal | BigDecimal | BigDecimal | BigDecimal | -          | string    |
-| string     | string     | string     | string     | string     | string     | string     | string     | string     | string     | -
+|        | bool   | byte   | sort   | int    | long   | float  | double | BigInt | Decimal| string|
+| -----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :---: |
+| bool   | -      | byte   | sort   | int    | long   | float  | double | BigInt | Decimal| string|
+| byte   | byte   |  -     | sort   | int    | long   | float  | double | BigInt | Decimal| string|
+| sort   | sort   | sort   | -      | int    | long   | float  | double | BigInt | Decimal| string|
+| int    | int    | int    | int    | -      | long   | double | double | BigInt | Decimal| string|
+| long   | long   | long   | long   | long   | -      | double | double | BigInt | Decimal| string|
+| float  | float  | float  | float  | double | double | -      | double | Decimal| Decimal| string|
+| double | double | double | double | double | double | double | -      | Decimal| Decimal| string|
+| BigInt | BigInt | BigInt | BigInt | BigInt | BigInt | Decimal| Decimal| -      | Decimal| string|
+| Decimal| Decimal| Decimal| Decimal| Decimal| Decimal| Decimal| Decimal| Decimal| -      | string|
+| string | string | string | string | string | string | string | string | string | string | -     |
 
 #### 3.4 数值默认宽度
 &emsp;&emsp;数值表示的默认宽度，举例：`var = 235` 这个数即可是 byte 的也可能是 int 类型的。 默认宽度是指在 DataQL 查询语句中，定义的数字类型数据所使用的默认类型。
@@ -230,7 +230,7 @@ Java 引擎中类型自动提升行为表
 
 #### 3.5 浮点数
 单精度float或者双精度double，由于其自身存储特性导致在做运算时出现精度丢失问题：
-- 可以将浮点数的数值宽度提升到 big 就会以 BigDecimal 方式进行计算以解决精度丢失问题。缺点是性能损耗。
+- 可以将浮点数的数值宽度提升到 big 就会以 Decimal 方式进行计算以解决精度丢失问题。缺点是性能损耗。
 
 浮点数计算舍入精度
 - 默认 20 位
@@ -413,9 +413,18 @@ return data => [
 - 堆：在 DataQL 运行时，一个带有 parent 属性的一维数组就是堆。对堆的操作就是读写这个带 parent 的一维数组。
 
 所谓两栈一堆就是有两个栈模型一个堆模型它们分别的意义是：
-- 数据栈：
-- 环境栈：
-- 数据堆：在函数或者查询中定义的一些基本类型的变量和对象的引用变量都在数据堆内存中分配。例如：var 语句产生的临时变量。与 Java 不同的是 DataQL 的堆是一个二叉树结构，当进入一个函数之后 DataQL 运行时会自动为其分配一个新的堆空间，函数执行完毕之后会释放这个堆空间。
+
+*数据栈*
+全局只有一个。除了环境栈指令，绝大多数指令的数据操作都是在数据栈上进行。
+
+*环境栈*
+全局只有一个。少数，，，只有在结果转换期间起作用。
+
+*数据堆*
+在函数或者查询中定义的一些基本类型的变量和对象的引用变量都在数据堆内存中分配。例如：var 语句产生的临时变量。
+每次 lambda 的函数调用和外部代码块的调用都会创建一层新堆，当方法结束并返回之后这个新的堆会被销毁。
+
+
 
 
 

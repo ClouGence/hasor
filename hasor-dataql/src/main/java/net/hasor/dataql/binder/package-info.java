@@ -13,23 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.extend.binder;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.Module;
-
 /**
- * 提供 <code>DataQL</code> 初始化功能。
- * @version : 2017-6-08
- * @author 赵永春 (zyc@byshell.org)
+ * DataQL，Hasor 专用扩展。
  */
-public class DataQLModule implements Module {
-    @Override
-    public void loadModule(ApiBinder apiBinder) {
-    }
-
-    @Override
-    public void onStart(AppContext appContext) {
-        appContext.getInstance(InnerDataQLImpl.class).initConfig(appContext);
-    }
-}
+package net.hasor.dataql.binder;

@@ -1,5 +1,4 @@
-//
-// 说明：定义lambda函数，返回 lambda 函数交给例子程序，例子程序通过 UDF 接口调用引擎执行 lambda 函数。
+// 说明：定义lambda函数，返回 lambda 函数交给例子程序，例子程序通过 UDF 接口调用 DataQL 中定义的 lambda 函数。
 
 var title = "性别："
 var sexConstant = {

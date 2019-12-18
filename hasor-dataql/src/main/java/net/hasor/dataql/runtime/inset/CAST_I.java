@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.domain.ListModel;
+import net.hasor.dataql.domain.ValueModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -49,6 +50,8 @@ class CAST_I implements InsetProcess {
         Iterator iterator = null;
         //
         if (data == null) {
+            iterator = Collections.EMPTY_LIST.iterator();
+        } else if (data instanceof ValueModel && ((ValueModel) data).isNull()) {
             iterator = Collections.EMPTY_LIST.iterator();
         } else if (data instanceof ListModel) {
             iterator = ((ListModel) data).asOri().iterator();

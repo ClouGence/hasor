@@ -13,34 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.extend.binder;
-import net.hasor.dataql.runtime.VarSupplier;
-
-import java.util.function.Supplier;
+package net.hasor.dataql.binder;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * UDF 函数定义
+ * Udf 源
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2019-12-18
  */
-class ShareVar implements VarSupplier {
-    private String      varName;
-    private Supplier<?> varSupplier;
-
-    public ShareVar(String varName, Supplier<?> varSupplier) {
-        this.varName = varName;
-        this.varSupplier = varSupplier;
-    }
-
-    public String getName() {
-        return this.varName;
-    }
-
-    @Override
-    public Object get() {
-        if (this.varSupplier != null) {
-            return this.varSupplier.get();
-        }
-        return null;
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface DimUdfSource {
+    /** Udf 源被引入之后的包名称。 */
+    public String value();
 }
