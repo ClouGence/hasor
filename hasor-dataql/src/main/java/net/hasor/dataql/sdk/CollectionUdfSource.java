@@ -37,9 +37,9 @@ import java.util.stream.Collectors;
 public class CollectionUdfSource implements UdfSource {
     @Override
     public Supplier<Map<String, Udf>> getUdfResource(Finder finder) {
-        Supplier<?> supplier = () -> finder.findBean(CollectionUdfSource.class);
+        Supplier<?> supplier = () -> finder.findBean(getClass());
         Predicate<Method> predicate = method -> true;
-        return InstanceProvider.of(new TypeUdfMap(CollectionUdfSource.class, supplier, predicate));
+        return InstanceProvider.of(new TypeUdfMap(getClass(), supplier, predicate));
     }
     // ----------------------------------------------------------------------------------
 
