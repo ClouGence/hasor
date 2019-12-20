@@ -69,6 +69,11 @@ public class ListModel implements DataModel {
         return this.dataModel.get(index) instanceof ValueModel;
     }
 
+    /** 获取某一个元素 */
+    public DataModel asModel(int index) {
+        return this.dataModel.get(index);
+    }
+
     /** 将某一个元素转换为 ValueModel */
     public ValueModel asValueModel(int index) {
         Object dataItem = this.dataModel.get(index);

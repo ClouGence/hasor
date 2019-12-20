@@ -83,7 +83,7 @@ public class DomainHelper {
             ObjectModel objectModel = new ObjectModel();
             for (String entryKey : beanMap.keySet()) {
                 if ("class".equals(entryKey)) {
-                    objectModel.put(entryKey, convertTo(beanMap.getBean().getClass().getName()));
+                    //objectModel.put(entryKey, convertTo(beanMap.getBean().getClass().getName()));
                 } else {
                     objectModel.put(entryKey, convertTo(beanMap.get(entryKey)));
                 }

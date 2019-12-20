@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package net.hasor.utils.ref;
+import net.hasor.utils.BeanUtils;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -38,9 +40,9 @@ import java.util.*;
  */
 public class BeanMap extends AbstractMap<String, Object> implements Cloneable {
     private transient    Object                     bean;
-    private transient    HashMap<String, Method>    readMethods      = new HashMap<>();
-    private transient    HashMap<String, Method>    writeMethods     = new HashMap<>();
-    private transient    HashMap<String, Class<?>>  types            = new HashMap<>();
+    private transient    Map<String, Method>        readMethods      = new LinkedHashMap<>();
+    private transient    Map<String, Method>        writeMethods     = new LinkedHashMap<>();
+    private transient    Map<String, Class<?>>      types            = new LinkedHashMap<>();
     /** An empty array.  Used to invoke accessors via reflection. */
     public static final  Object[]                   NULL_ARGUMENTS   = {};
     /**
@@ -86,7 +88,7 @@ public class BeanMap extends AbstractMap<String, Object> implements Cloneable {
      * @return a <code>String</code> representation of this object
      */
     public String toString() {
-        return "BeanMap<" + String.valueOf(bean) + ">";
+        return "BeanMap<" + bean + ">";
     }
 
     /**
@@ -460,34 +462,37 @@ public class BeanMap extends AbstractMap<String, Object> implements Cloneable {
         }
         Class<?> beanClass = getBean().getClass();
         try {
-            //BeanInfo beanInfo = Introspector.getBeanInfo( bean, null );
+            Map<String, PropertyDescriptor> pd = new LinkedHashMap<>();
+            // 为了有序
             BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+            BeanUtils.getPropertys(beanClass).forEach(s -> pd.put(s, null));
             if (propertyDescriptors != null) {
                 for (int i = 0; i < propertyDescriptors.length; i++) {
                     PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
-                    if (propertyDescriptor != null) {
-                        String name = propertyDescriptor.getName();
-                        Method readMethod = propertyDescriptor.getReadMethod();
-                        Method writeMethod = propertyDescriptor.getWriteMethod();
-                        Class<?> aType = propertyDescriptor.getPropertyType();
-                        if (readMethod != null) {
-                            readMethods.put(name, readMethod);
-                        }
-                        if (writeMethod != null) {
-                            writeMethods.put(name, writeMethod);
-                        }
-                        types.put(name, aType);
-                    }
+                    pd.put(propertyDescriptor.getName(), propertyDescriptor);
                 }
             }
+            // 为了有序
+            pd.forEach((name, propertyDescriptor) -> {
+                Method readMethod = propertyDescriptor.getReadMethod();
+                Method writeMethod = propertyDescriptor.getWriteMethod();
+                Class<?> aType = propertyDescriptor.getPropertyType();
+                if (readMethod != null) {
+                    readMethods.put(name, readMethod);
+                }
+                if (writeMethod != null) {
+                    writeMethods.put(name, writeMethod);
+                }
+                types.put(name, aType);
+            });
         } catch (IntrospectionException e) {
             logWarn(e);
         }
     }
 
     /**
-     * Called during a successful {@link #put(Object, Object)} operation.
+     * Called during a successful {@link #put(String, Object)} operation.
      * Default implementation does nothing.  Override to be notified of
      * property changes in the bean caused by this map.
      *

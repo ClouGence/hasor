@@ -1,13 +1,16 @@
 package net.hasor.dataql.sdk;
 import net.hasor.core.Hasor;
 import net.hasor.dataql.AbstractTestResource;
+import net.hasor.dataql.binder.DataQL;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ListModel;
-import net.hasor.dataql.binder.DataQL;
+import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 public class CollectionTest extends AbstractTestResource {
     @Test
@@ -55,5 +58,39 @@ public class CollectionTest extends AbstractTestResource {
         assert ((ListModel) dataModel).asValueModel(0).asInt() == 3;
         assert ((ListModel) dataModel).asValueModel(1).asInt() == 4;
         assert ((ListModel) dataModel).asValueModel(2).asInt() == 5;
+    }
+
+    @Test
+    public void list2map() throws IOException, InstructRuntimeException {
+        String qlString = "";
+        qlString = qlString + "import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;";
+        qlString = qlString + "import 'net.hasor.test.dataql.udfs.UserOrderUdfSource' as data;";
+        qlString = qlString + "return collect.list2map(data.userList(),'userID')";
+        //
+        DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
+        ObjectModel dataModel = (ObjectModel) dataQL.createQuery(qlString).execute().getData();
+        //
+        assert dataModel.size() == 4;
+        Set<String> strings = dataModel.asOri().keySet();
+        assert strings.contains(String.valueOf(1));
+        assert strings.contains(String.valueOf(2));
+        assert strings.contains(String.valueOf(3));
+        assert strings.contains(String.valueOf(4));
+    }
+
+    @Test
+    public void map2list() throws IOException, InstructRuntimeException {
+        String qlString = "";
+        qlString = qlString + "import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;";
+        qlString = qlString + "import 'net.hasor.test.dataql.udfs.UserOrderUdfSource' as data;";
+        qlString = qlString + "return collect.map2list(data.userList()[0])";
+        //
+        DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
+        ListModel dataModel = (ListModel) dataQL.createQuery(qlString).execute().getData();
+        //
+        assert dataModel.size() == 8;
+        List<Object> unwrap = dataModel.unwrap();
+        //
+        assert unwrap.size() == 8;
     }
 }

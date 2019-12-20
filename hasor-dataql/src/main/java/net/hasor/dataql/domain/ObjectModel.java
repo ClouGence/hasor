@@ -61,6 +61,11 @@ public class ObjectModel implements DataModel {
         return true;
     }
 
+    /** 获取某一个元素 */
+    public DataModel asModel(String fieldName) {
+        return this.dataModel.get(fieldName);
+    }
+
     /** 判断是否为 ValueModel 类型值 */
     public boolean isValueModel(String fieldName) {
         return this.dataModel.get(fieldName) instanceof ValueModel;

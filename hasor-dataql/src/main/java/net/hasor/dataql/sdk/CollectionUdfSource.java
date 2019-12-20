@@ -19,7 +19,10 @@ import net.hasor.dataql.Finder;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.Udf;
 import net.hasor.dataql.UdfSource;
+import net.hasor.dataql.domain.DataModel;
+import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataql.domain.ListModel;
+import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.utils.ExceptionUtils;
 
 import java.lang.reflect.Method;
@@ -142,5 +145,79 @@ public class CollectionUdfSource implements UdfSource {
     public static TypeUdfMap newArray() {
         Supplier<InnerCollectionStateUdfSource> supplier = InstanceProvider.of(new InnerCollectionStateUdfSource());
         return new TypeUdfMap(InnerCollectionStateUdfSource.class, supplier, method -> true);
+    }
+
+    /** List 转为 Map */
+    public static Map<String, Object> list2map(List<Object> valueList, String key, Udf convert, Hints option) throws Throwable {
+        ListModel convertTo = (ListModel) DomainHelper.convertTo(valueList);
+        if (convertTo == null || convertTo.size() == 0) {
+            return Collections.emptyMap();
+        }
+        Map<String, Object> mapData = new LinkedHashMap<>();
+        Map<String, Object> errorData = new LinkedHashMap<>();
+        for (int i = 0; i < convertTo.size(); i++) {
+            DataModel dataModel = convertTo.asModel(i);
+            String errorMessage = "";
+            if (dataModel.isObjectModel()) {
+                DataModel objectModel = dataModel;
+                DataModel keyValue = ((ObjectModel) objectModel).asModel(key);
+                if (keyValue != null) {
+                    if (keyValue.isValueModel()) {
+                        if (convert != null) {
+                            Object call = convert.call(option, objectModel);
+                            objectModel = DomainHelper.convertTo(call);
+                        }
+                        mapData.put(keyValue.unwrap().toString(), objectModel);
+                        continue;
+                    } else {
+                        errorMessage = "element key '" + key + "' type must primary.";
+                    }
+                } else {
+                    errorMessage = "element key '" + key + "' is not exist.";
+                }
+            } else {
+                errorMessage = "element type is not Object.";
+            }
+            //
+            LinkedHashMap<String, Object> hashMap = new LinkedHashMap<>();
+            hashMap.put("errorMsg", errorMessage);
+            hashMap.put("errorData", dataModel);
+            errorData.put("idx_" + i, hashMap);
+        }
+        //
+        if (!errorData.isEmpty()) {
+            int i = 0;
+            String mapKey = "errorData";
+            while (true) {
+                if (mapData.containsKey(mapKey)) {
+                    i++;
+                    mapKey = "errorData_" + i;
+                    continue;
+                }
+                mapData.put(mapKey, errorData);
+                break;
+            }
+        }
+        return mapData;
+    }
+
+    /** Map 转为 List */
+    public static List<Object> map2list(Object mapValue, Udf convert, Hints option) throws Throwable {
+        ObjectModel convertTo = (ObjectModel) DomainHelper.convertTo(mapValue);
+        if (convertTo == null || convertTo.size() == 0) {
+            return Collections.emptyList();
+        }
+        ArrayList<Object> listData = new ArrayList<>();
+        Set<Map.Entry<String, DataModel>> entrySet = convertTo.asOri().entrySet();
+        for (Map.Entry<String, DataModel> entry : entrySet) {
+            DataModel objectModel = DomainHelper.newObject();
+            ((ObjectModel) objectModel).put("key", entry.getKey());
+            ((ObjectModel) objectModel).put("value", entry.getValue());
+            if (convert != null) {
+                objectModel = DomainHelper.convertTo(convert.call(option, objectModel));
+            }
+            listData.add(objectModel);
+        }
+        return listData;
     }
 }

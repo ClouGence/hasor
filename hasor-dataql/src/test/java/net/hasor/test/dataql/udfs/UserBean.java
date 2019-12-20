@@ -22,6 +22,22 @@ public class UserBean {
         this.name = "this is name. -> " + i;
     }
 
+    public long getUserID() {
+        return userID;
+    }
+
+    public void setUserID(long userID) {
+        this.userID = userID;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     public String getName() {
         return name;
     }
@@ -38,22 +54,6 @@ public class UserBean {
         this.name2 = name2;
     }
 
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public SexEnum getSex() {
-        return sex;
-    }
-
-    public void setSex(SexEnum sex) {
-        this.sex = sex;
-    }
-
     public String getNick() {
         return nick;
     }
@@ -62,12 +62,12 @@ public class UserBean {
         this.nick = nick;
     }
 
-    public long getUserID() {
-        return userID;
+    public SexEnum getSex() {
+        return sex;
     }
 
-    public void setUserID(long userID) {
-        this.userID = userID;
+    public void setSex(SexEnum sex) {
+        this.sex = sex;
     }
 
     public boolean isStatus() {

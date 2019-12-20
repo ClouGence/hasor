@@ -239,7 +239,7 @@ public class BeanUtils {
 
     /**获取属性名集合，被包含的属性可能有些只是只读属性，有些是只写属性。也有读写属性。*/
     public static List<String> getPropertys(final Class<?> target) {
-        List<String> mnames = new ArrayList<String>();
+        List<String> mnames = new ArrayList<>();
         List<Method> ms = BeanUtils.getMethods(target);
         for (Method m : ms) {
             String name = m.getName();
@@ -262,7 +262,7 @@ public class BeanUtils {
 
     /**获取属性名集合，被包含的属性可能有些只是只读属性，有些是只写属性。也有读写属性。*/
     public static PropertyDescriptor[] getPropertyDescriptors(final Class<?> defineType) {
-        List<PropertyDescriptor> mnames = new ArrayList<PropertyDescriptor>();
+        List<PropertyDescriptor> mnames = new ArrayList<>();
         List<String> ms = BeanUtils.getPropertys(defineType);
         for (String m : ms) {
             try {

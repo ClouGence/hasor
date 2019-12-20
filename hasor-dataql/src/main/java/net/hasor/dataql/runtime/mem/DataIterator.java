@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.mem;
+import net.hasor.dataql.domain.DomainHelper;
+
 import java.util.Iterator;
 
 /**
@@ -35,7 +37,7 @@ public class DataIterator {
 
     public boolean isNext() {
         if (this.iterator.hasNext()) {
-            this.data = iterator.next();
+            this.data = DomainHelper.convertTo(iterator.next());
             return true;
         }
         return false;
