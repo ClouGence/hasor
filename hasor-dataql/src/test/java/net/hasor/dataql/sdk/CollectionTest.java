@@ -5,6 +5,7 @@ import net.hasor.dataql.binder.DataQL;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataql.domain.ObjectModel;
+import net.hasor.dataql.domain.ValueModel;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 import org.junit.Test;
 
@@ -92,5 +93,17 @@ public class CollectionTest extends AbstractTestResource {
         List<Object> unwrap = dataModel.unwrap();
         //
         assert unwrap.size() == 8;
+    }
+
+    @Test
+    public void empty() throws IOException, InstructRuntimeException {
+        String qlString = "";
+        qlString = qlString + "import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;";
+        qlString = qlString + "return collect.isEmpty([])";
+        //
+        DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
+        ValueModel dataModel = (ValueModel) dataQL.createQuery(qlString).execute().getData();
+        //
+        assert dataModel.asBoolean();
     }
 }

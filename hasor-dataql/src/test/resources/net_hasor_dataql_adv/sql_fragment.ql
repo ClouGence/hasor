@@ -8,6 +8,6 @@ var dataSet = @@sql(item_code) <%
 
 return dataSet() => [
     {
-        "id","name","code"
+        "id","name","code","body"
     }
 ]

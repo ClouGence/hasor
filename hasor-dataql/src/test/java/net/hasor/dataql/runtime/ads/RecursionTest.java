@@ -4,8 +4,9 @@ import net.hasor.core.Hasor;
 import net.hasor.dataql.AbstractTestResource;
 import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Query;
-import net.hasor.dataql.domain.UdfModel;
 import net.hasor.dataql.binder.DataQL;
+import net.hasor.dataql.domain.UdfModel;
+import net.hasor.test.dataql.udfs.SqlFragmentUdf;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.io.IOException;
 public class RecursionTest extends AbstractTestResource {
     private DataQL dataQL = Hasor.create().build(apiBinder -> {
         apiBinder.bindType("sql", FragmentProcess.class, (hint, params, fragmentString) -> {
-            return fragmentString.trim();
+            return new SqlFragmentUdf(1).call(fragmentString.trim());
         });
     }).getInstance(DataQL.class);
 

@@ -67,7 +67,7 @@ public class CollectionUdfSource implements UdfSource {
         return listData;
     }
 
-    /** 合并多个对象或者集合 */
+    /** 合并多个对象或者集合成为一个新的集合 */
     public static List<Object> merge(UdfParams dataArrays) {
         if (dataArrays == null) {
             return null;
@@ -115,8 +115,13 @@ public class CollectionUdfSource implements UdfSource {
         return valueList.stream().filter(predicateAtomicReference.get()).collect(Collectors.toList());
     }
 
+    /** 集合是否为空 */
+    public static boolean isEmpty(List<Object> valueList) {
+        return valueList == null || valueList.isEmpty();
+    }
+
     /** 截取一部分，返回一个集合 */
-    public static List<Object> limit(Object collection, int startInt, int limitInt) {
+    public static List<Object> limit(List<Object> collection, int startInt, int limitInt) {
         Collection<Object> objects = foreach(collection);
         if (objects.isEmpty()) {
             return null;
@@ -142,8 +147,12 @@ public class CollectionUdfSource implements UdfSource {
 
     /** 创建一个有状态的 Array 对象 */
     @UdfName("new")
-    public static TypeUdfMap newArray() {
-        Supplier<InnerCollectionStateUdfSource> supplier = InstanceProvider.of(new InnerCollectionStateUdfSource());
+    public static TypeUdfMap newArray(Object mabeCollection) {
+        List<Object> initData = new ArrayList<>();
+        if (mabeCollection != null) {
+            initData.addAll(foreach(mabeCollection));
+        }
+        Supplier<InnerCollectionStateUdfSource> supplier = InstanceProvider.of(new InnerCollectionStateUdfSource(initData));
         return new TypeUdfMap(InnerCollectionStateUdfSource.class, supplier, method -> true);
     }
 

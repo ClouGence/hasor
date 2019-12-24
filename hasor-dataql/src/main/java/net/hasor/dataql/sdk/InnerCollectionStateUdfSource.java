@@ -23,10 +23,28 @@ import java.util.List;
  * @version : 2019-12-12
  */
 class InnerCollectionStateUdfSource {
-    private List<Object> objectArrayList = new ArrayList<>();
+    private List<Object> objectArrayList;
 
-    /** 合并多个对象或者集合 */
-    public List<Object> add(Object dataArrays) {
+    public InnerCollectionStateUdfSource(List<Object> initData) {
+        if (initData != null) {
+            objectArrayList = initData;
+        } else {
+            objectArrayList = new ArrayList<>();
+        }
+    }
+
+    /** 把参数数据加到开头 */
+    public List<Object> addFirst(Object dataArrays) {
+        if (dataArrays != null) {
+            this.objectArrayList = CollectionUdfSource.merge(() -> {
+                return new Object[] { dataArrays, objectArrayList };
+            });
+        }
+        return this.objectArrayList;
+    }
+
+    /** 把参数数据加到末尾 */
+    public List<Object> addLast(Object dataArrays) {
         if (dataArrays != null) {
             this.objectArrayList = CollectionUdfSource.merge(() -> {
                 return new Object[] { objectArrayList, dataArrays };
