@@ -12,6 +12,7 @@ Welcome to Hasor Framework Documentation
 
     overview/catalog
     basic/index
+    event/index
     web/index
     config/index
 

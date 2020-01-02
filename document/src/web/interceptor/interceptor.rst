@@ -3,10 +3,10 @@
 在 Hasor 中，一共有三种不同的方式实现请求拦截。
 
 1. 通过 Aop 实现请求拦截器
-2. 通过 InvokerFilter 接口拦截请求
-3. 通过 javax.servlet.Filter 接口拦截请求
+2. 通过 `InvokerFilter` 接口拦截请求
+3. 通过 `javax.servlet.Filter` 接口拦截请求
 
-其中 InvokerFilter 接口和 Filter 接口的工作方式和原理是等价的，只是用了不同的接口结构。
+其中 `InvokerFilter` 接口和 `Filter` 接口的工作方式和原理是等价的，只是用了不同的接口结构。
 
 
 Aop方式
@@ -19,7 +19,7 @@ Aop方式
     @Aop(CountInterceptor.class)
     @MappingTo("/helloAcrion.do")
     public class HelloAcrion extends WebController {
-        public void execute(RenderInvoker invoker, @Params() ParamsFormBean formBean){
+        public void execute(RenderInvoker invoker, @ParameterGroup() ParamsFormBean formBean){
             ...
         }
     }
@@ -41,7 +41,7 @@ Aop方式
 
 InvokerFilter接口
 ------------------------------------
-第二种，用前一章节介绍的 InvokerFilter 接口。这种方式的最大优点是您可以在拦截器中直接拿到 Invoker 接口对象，这种方式也是极力推荐的例如：
+第二种，用前一节介绍的 `InvokerFilter` 接口。这种方式的最大优点是您可以在拦截器中直接拿到 `Invoker` 接口对象，这种方式也是极力推荐的例如：
 
 .. code-block:: java
     :linenos:
@@ -68,7 +68,7 @@ InvokerFilter接口
 
 Filter
 ------------------------------------
-第三种，用传统的 J2EE的 Filter 充当拦截器。例如：
+第三种，用传统的 J2EE的 `Filter` 充当拦截器。例如：
 
 .. code-block:: java
     :linenos:

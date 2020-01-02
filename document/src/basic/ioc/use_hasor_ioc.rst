@@ -169,17 +169,6 @@ Name的意义是为同一个类型的不同 Bean 配置不同的名字来加一�
 ------------------------------------
 我们先来举例一个场景，假定我们有一个类用来封装数据库连接信息。首先我们有一个配置文件用于存放数据库连接信息：
 
-.. code-block:: properties
-    :linenos:
-
-    jdbcSettings.jdbcDriver = com.mysql.jdbc.Driver
-    jdbcSettings.jdbcURL = jdbc:mysql://127.0.0.1:3306/test
-    jdbcSettings.userName = sa
-    jdbcSettings.userPassword =
-
-
-您也可以通过一个 Xml 来配置上面的信息：
-
 .. code-block:: xml
 
     <?xml version="1.0" encoding="UTF-8"?>
@@ -191,6 +180,17 @@ Name的意义是为同一个类型的不同 Bean 配置不同的名字来加一�
             <userPassword></userPassword>
         </jdbcSettings>
     </config>
+
+
+您也可以通过一个属性文件来配置上面的信息：
+
+.. code-block:: properties
+    :linenos:
+
+    jdbcSettings.jdbcDriver = com.mysql.jdbc.Driver
+    jdbcSettings.jdbcURL = jdbc:mysql://127.0.0.1:3306/test
+    jdbcSettings.userName = sa
+    jdbcSettings.userPassword =
 
 
 接下来我们创建一个 DataBaseBean 然后将这些属性注入到这个 Bean 中，这一次我们使用 `@InjectSettings` 注解：

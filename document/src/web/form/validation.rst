@@ -8,9 +8,9 @@
     :linenos:
 
     public class LoginForm {
-        @ReqParam("account")
+        @RequestParameter("account")
         private String account;
-        @ReqParam("password")
+        @RequestParameter("password")
         private String password;
         ...
     }
@@ -64,7 +64,7 @@
 
     @MappingTo("/login.do")
     public class Longin {
-        public void execute(@Valid() @Params LoginForm loginForm) {
+        public void execute(@Valid() @ParameterGroup LoginForm loginForm) {
             System.out.println("login data is " + JSON.toString(loginForm));
         }
     }
@@ -77,7 +77,7 @@
 
     @MappingTo("/login.htm")
     public class Longin {
-        public void execute(@Valid() @Params LoginForm loginForm,
+        public void execute(@Valid() @ParameterGroup LoginForm loginForm,
                             RenderInvoker invoker,
                             ValidInvoker valid) {
             if (valid.isValid()) {
@@ -176,7 +176,7 @@
 
     @MappingTo("/scene/login.do")
     public class Login4Scene {
-        public void execute(@Valid("login") @Params LoginForm4Scene loginForm,
+        public void execute(@Valid("login") @ParameterGroup LoginForm4Scene loginForm,
                             RenderInvoker invoker,
                             ValidInvoker valid) {
             ...

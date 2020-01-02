@@ -2,7 +2,6 @@
 Web开发
 --------------------
 
-
 热身
 ------------------------------------
 .. toctree::
@@ -19,6 +18,7 @@ Web开发
 
     request/request
     request/params
+
 
 请求拦截器
 ------------------------------------
@@ -53,29 +53,12 @@ J2EE
     upload/fileupload
 
 
-结果响应
+渲染器
 ------------------------------------
 .. toctree::
     :maxdepth: 3
 
-    view/render
-    view/use_freemarker
-    view/use_json
-    view/use_user_template
-
-
-母版页技术
-------------------------------------
-.. toctree::
-    :maxdepth: 3
-
-    advanced/decorator
-
-
-高级特性
-------------------------------------
-.. toctree::
-    :maxdepth: 3
-
-    advanced/webplugin
-    advanced/mappingsetup
+    view/json_render
+    view/freemarker_render
+    view/custom_render
+    view/decorator

@@ -10,38 +10,38 @@ FormBean
     @MappingTo("/helloAcrion.do")
     public class HelloAcrion extends WebController {
         public void execute(RenderInvoker invoker,
-                            @ReqParam("param_1") String param_1,
-                            @ReqParam("param_2") String param_2,
-                            @ReqParam("param_3") String param_3,
-                            @ReqParam("param_4") String param_4,
-                            @ReqParam("param_5") String param_5){
+                            @RequestParameter("param_1") String param_1,
+                            @RequestParameter("param_2") String param_2,
+                            @RequestParameter("param_3") String param_3,
+                            @RequestParameter("param_4") String param_4,
+                            @RequestParameter("param_5") String param_5){
             ...
         }
     }
 
 
-通过 @Params 注解，Hasor 允许您更简单的方式获取这个表单数据。首先我们先定义一个表单 FormBean，然后通过 @Params 获取表单数据。如下：
+通过 @Params 注解，Hasor 允许您更简单的方式获取这个表单数据。首先我们先定义一个表单 FormBean，然后通过 @ParameterGroup 获取表单数据。如下：
 
 .. code-block:: java
     :linenos:
 
     public class ParamsFormBean {
-        @ReqParam("param_1")
+        @RequestParameter("param_1")
         private String param_1;
-        @ReqParam("param_2")
+        @RequestParameter("param_2")
         private String param_2;
-        @ReqParam("param_3")
+        @RequestParameter("param_3")
         private String param_3;
-        @ReqParam("param_4")
+        @RequestParameter("param_4")
         private String param_4;
-        @ReqParam("param_5")
+        @RequestParameter("param_5")
         private String param_5;
         ...
     }
 
     @MappingTo("/helloAcrion.do")
     public class HelloAcrion extends WebController {
-        public void execute(RenderInvoker invoker, @Params() ParamsFormBean formBean){
+        public void execute(RenderInvoker invoker, @ParameterGroup() ParamsFormBean formBean){
             ...
         }
     }

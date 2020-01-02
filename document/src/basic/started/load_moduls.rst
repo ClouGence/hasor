@@ -60,7 +60,7 @@
 .. code-block:: java
     :linenos:
 
-    Hasor.create().build("my-config.xml", new UserModule(),new ClassModule() ...);
+    Hasor.create().mainSettingWith("my-config.xml").build(new UserModule(),new ClassModule() ...);
 
 
 **方式二：** 为了解决第一种方式中带来的不足，我们可以预先创建一个总入口，然后在总入口中逐个加载所有模块。不光如此总入口我们也可以设置多个，甚至总入口中加载的模块可以是项目中其它模块的入口。这种方式解决了 Module 的规划和加载问题。

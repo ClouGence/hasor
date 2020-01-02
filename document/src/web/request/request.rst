@@ -87,7 +87,7 @@ execute 是一个默认的处理入口，如果您想使用其它方法来替代
 
 如果你不知道什么是请求类型，那么请看这里
 
-.. image:: http://files.hasor.net/uploader/20180620/085200/CC2_11EF_EF69_F9BE.png
+.. image:: ../../_static/CC2_11EF_EF69_F9BE.png
 
 自定义请求类型
 ------------------------------------
