@@ -29,7 +29,7 @@ public class SpiTest {
         AppContextAware aware1 = reference1::set;
         AppContextAware aware2 = reference2::set;
         //
-        AppContext appContext = Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
             assert aware1 == HasorUtils.autoAware(apiBinder.getEnvironment(), aware1);
             Supplier<AppContextAware> awareSupplier = () -> aware2;
             assert awareSupplier == HasorUtils.autoAware(apiBinder.getEnvironment(), awareSupplier);
@@ -46,7 +46,7 @@ public class SpiTest {
         AppContextListener listener1 = new AppContextListener();
         AppContextListener listener2 = new AppContextListener();
         //
-        AppContext appContext = Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
             assert listener1 == HasorUtils.pushStartListener(apiBinder.getEnvironment(), listener1);
             BindInfo<EventListener> bindInfo = apiBinder.bindType(EventListener.class).toInstance(listener2).toInfo();
             assert bindInfo == HasorUtils.pushStartListener(apiBinder.getEnvironment(), bindInfo);
@@ -63,7 +63,7 @@ public class SpiTest {
         AppContextListener listener1 = new AppContextListener();
         AppContextListener listener2 = new AppContextListener();
         //
-        AppContext appContext = Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
             assert listener1 == HasorUtils.pushShutdownListener(apiBinder.getEnvironment(), listener1);
             BindInfo<EventListener> bindInfo = apiBinder.bindType(EventListener.class).toInstance(listener2).toInfo();
             assert bindInfo == HasorUtils.pushShutdownListener(apiBinder.getEnvironment(), bindInfo);

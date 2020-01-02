@@ -66,7 +66,7 @@ public class SpiCallerContainerTest {
     public void spiTest2() {
         ArrayList<Object> receive = new ArrayList<>();
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
-        spiCallerContainer.addListener(ScopeProvisionListener.class, (ScopeProvisionListener) (scopeName, scopeSupplier) -> {
+        spiCallerContainer.addListener(ScopeProvisionListener.class, (scopeName, scopeSupplier) -> {
             receive.add(scopeSupplier);
         });
         //

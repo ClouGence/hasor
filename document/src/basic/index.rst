@@ -1,7 +1,6 @@
 --------------------
-基础功能
+Bean容器
 --------------------
-
 
 创建Hasor容器
 ------------------------------------
@@ -36,47 +35,12 @@
 .. toctree::
     :maxdepth: 3
 
-    lifecycle/overview
-    lifecycle/module_lifecycle
     lifecycle/bean_lifecycle
+    lifecycle/module_lifecycle
 
-Bean的管理
+作用域
 ------------------------------------
 .. toctree::
     :maxdepth: 3
 
     beans/scope
-
-模块化
-------------------------------------
-.. toctree::
-    :maxdepth: 3
-
-    module/module
-
-事件机制
-------------------------------------
-.. toctree::
-    :maxdepth: 3
-
-    event/about_event
-    event/fire_event
-
-环境变量
-------------------------------------
-.. toctree::
-    :maxdepth: 3
-
-    environment/what_is_it
-    environment/use_hconfig_properties
-    environment/use_it
-    environment/in_settings_use_var
-
-配置文件
-------------------------------------
-.. toctree::
-    :maxdepth: 3
-
-    config/settings
-    config/namespace
-    config/xml_parser

@@ -27,7 +27,7 @@
 帮助 Hasor 可以有很多方式，资金的捐赠只是其中一种。我们希望看到的是，您在 Hasor 上学到东西之余能够让我们知道您、让更多人知道 Hasor。帮助 Hasor 包括但不限下面这些途径：
 
 1. 在社区向 Hasor 提问或解答问题。
-2. 分享您在使用 Hasor 过程中的心得和体会，您也可以撰写Blog或者微博，向更多的人介绍 Hasor。
+2. 分享您在使用 Hasor 过程中的心得和体会，您也可以撰写Blog或者微博，向更多的人介绍它
 3. 向 Hasor 递交 Issues，报告 Bug 和建议。[http://git.oschina.net/teams/hasor/issues]
 4. 贡献您的智慧，为 Hasor 递交代码
 5. 捐赠金钱
@@ -39,23 +39,7 @@
 `Github <https://github.com/zycgit/hasor>`__ 或 `码云 <http://git.oschina.net/zycgit/hasor>`__
 上 fork、start 一下，这也算是为 Hasor 进行了贡献。
 
-
 编译本手册
 ------------------------------------
-1.安装pip：
-
-- https://pip.pypa.io/en/stable/installing/
-- https://bootstrap.pypa.io/3.2/get-pip.py
-- python get-pip.py
-- pip install -U pip
-
-2.安装sphinx
-
-- pip install sphinx  --upgrade --ignore-installed six
-- pip install sphinx_rtd_theme（https://sphinx-rtd-theme.readthedocs.io/en/latest/configuring.html）
-- pip install recommonmark（http://www.sphinx-doc.org/en/master/markdown.html）
-- sphinx-quickstart
-
-3.编译手册
-
-- make html
+1.安装 Maven 环境
+2.Maven 环境下执行 `mvn clean site`

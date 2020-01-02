@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Hasor's Documentation!
+Welcome to Hasor Framework Documentation
 ======================================
 
 .. toctree::
@@ -13,6 +13,7 @@ Welcome to Hasor's Documentation!
     overview/catalog
     basic/index
     web/index
+    config/index
 
     extends/index
     attachment/index

@@ -19,7 +19,7 @@
 # -- Project information -----------------------------------------------------
 
 project = u'Hasor Docs'
-copyright = u'2018, 赵永春'
+copyright = u'2020, 赵永春'
 author = u'赵永春'
 
 # The short X.Y version

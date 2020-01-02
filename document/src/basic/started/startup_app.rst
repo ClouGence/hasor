@@ -6,7 +6,7 @@
     :linenos:
 
     import net.hasor.core.Hasor;
-    AppContext appContext = Hasor.createAppContext();
+    AppContext appContext = Hasor.create().build();
 
 
 当然您可以在项目中创建配置文件给 Hasor ，下面这段代码展示了 Hasor 容器时使用配置文件。如下所示：
@@ -15,7 +15,7 @@
     :linenos:
 
     import net.hasor.core.Hasor;
-    AppContext appContext = Hasor.createAppContext("simple-config.xml");
+    AppContext appContext = Hasor.create().mainSettingWith("simple-config.xml").build();
 
 
 simple-config.xml 配置文件的格式如下:
@@ -29,24 +29,22 @@ simple-config.xml 配置文件的格式如下:
     </config>
 
 
-唯一性
+启动模式
 ------------------------------------
-有的时候我们为了方便将AppContext放到某个 static 的静态变量上。Hasor 提供了一种方式来协助你做到这一点，您无需自己额外编写多余的类来进行管理。
+Hasor 的启动有三种模式，所有模式都在 `net.hasor.core.Hasor.Level` 类中定义。Hasor默认运行在 Full 模式中。
+三种启动模式的介绍如下：
 
-.. code-block:: xml
+- Full：完整加载框架和可以发现的所有插件模块。
+- Core：核心部分，只完整的加载 hasor-core。
+- Tiny：最小化启动，放弃一切插件加载。相当于设置如下两个环境变量为 false
+
+HASOR_LOAD_MODULE、HASOR_LOAD_EXTERNALBINDER
+
+带有设置启动模式的代码如下：
+
+.. code-block:: java
     :linenos:
 
-    // .初始化为全局
-    Hasor.create("xxxx").asGlobalSingleton();
-    // .每次使用 AppContext 这样就可以获取
-    AppContext appContext = Hasor.localAppContext();
-
-
-除了上面创建全局唯一 AppContext 之外，Hasor 还提供了另外几个场景的唯一。使用它们的方式就是将 “asGlobalSingleton” 换为你所需要的。
-
-- asGlobalSingleton()：使用 JNDI 方式保证 JVM 内全局唯一。
-- asStaticSingleton()：使用 static 方式保证全局唯一。
-- asThreadSingleton()：线程级别的唯一。
-- asContextSingleton()：基于当前线程的 ClassLoader 来保证 Loader 级别的唯一。
-
-如无特殊指定 Hasor 是不会进行唯一性处理。
+    Hasor.create().asCore().build(); // Core 模式
+    Hasor.create().asFull().build(); // Full 模式
+    Hasor.create().asTiny().build(); // Tiny 模式

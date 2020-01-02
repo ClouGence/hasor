@@ -1,6 +1,6 @@
 什么是Aop？
 ------------------------------------
-“面向切面编程”也被称为“Aop”，是目前非常活跃的一个开发思想。利用 AOP 可以对业务逻辑的各个部分进行隔离，从而使得业务逻辑各部分之间的耦合度降低，提高程序的 可重用性，同时提高了开发的效率。
+“面向切面编程”也被称为“Aop”是目前非常活跃的一个开发思想。利用 AOP 可以对业务逻辑的各个部分进行隔离，从而使得业务逻辑各部分之间的耦合度降低，提高程序的 `可重用性`，同时提高了开发的效率。
 
 Aop 编程的目的是将例如日志记录、性能统计、安全控制、事务、异常处理等代码从业 务逻辑代码中划分出来。
 
@@ -124,7 +124,7 @@ Hasor 的方式
 .. code-block:: java
     :linenos:
 
-    AppContext appContext = Hasor.createAppContext();
+    AppContext appContext = Hasor.create().build();
     AopBean fooBean = appContext.getInstance(AopBean.class);
     System.out.println("aopBean : " + fooBean.echo("sayMessage"));
 

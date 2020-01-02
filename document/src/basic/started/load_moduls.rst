@@ -19,7 +19,7 @@
 .. code-block:: java
     :linenos:
 
-    Hasor.createAppContext(new FirstModule());
+    Hasor.create().build(new FirstModule());
 
 
 有时候为了减少代码行数我们会把 FirstModule 简写成一个匿名类，例如：
@@ -27,7 +27,7 @@
 .. code-block:: java
     :linenos:
 
-    Hasor.createAppContext(new Module {
+    Hasor.create().build(new Module {
         public void loadModule(ApiBinder apiBinder) throws Throwable {
             ...
         }
@@ -39,9 +39,9 @@
 .. code-block:: java
     :linenos:
 
-    Hasor.createAppContext("my-config.xml", new FirstModule());
+    Hasor.create().build("my-config.xml", new FirstModule());
     or
-    Hasor.createAppContext("my-config.xml", new Module {
+    Hasor.create().build("my-config.xml", new Module {
         public void loadModule(ApiBinder apiBinder) throws Throwable {
             ...
         }
@@ -49,18 +49,18 @@
 
 
 
-如果我有多个启动入口怎么办？没关系 Hasor 支持多个启动入口，你只需要按照你想要的启动顺序排好，然后在 `Hasor.createAppContext` 启动容器时候传递进去就可以了，Hasor 会自动照顾好它们。
+如果我有多个启动入口怎么办？没关系 Hasor 支持多个启动入口，你只需要按照你想要的启动顺序排好，然后在 `Hasor.create().build()` 启动容器时候传递进去就可以了，Hasor 会自动照顾好它们。
 
 加载多个Module
 ------------------------------------
 前面我们一直说的是如何在启动时候通过参数形式加载启动入口，现在我们就来想象一下如下情景。一个项目，按照业务纬度划分了若干个模块。每个模块都可以通过 Hasor 的 Module 来管理，接下来那么为了方便开发，每个模块负责人会负责开发自己的 Module，最后在统一的地方进行加载。
 
-**方式一：** `Hasor.createAppContext` 在初始化 Hasor 容器时指定所有模块。这种方式简单粗暴，无需过多语言进行描述。它的缺点比较明显，那就是随着项目复杂度的提升 Module 可能会越来越多。到时候创建 Hasor 会看起来很复杂。
+**方式一：** `Hasor.create().build()` 在初始化 Hasor 容器时指定所有模块。这种方式简单粗暴，无需过多语言进行描述。它的缺点比较明显，那就是随着项目复杂度的提升 Module 可能会越来越多。到时候创建 Hasor 会看起来很复杂。
 
 .. code-block:: java
     :linenos:
 
-    Hasor.createAppContext("my-config.xml", new UserModule(),new ClassModule() ...);
+    Hasor.create().build("my-config.xml", new UserModule(),new ClassModule() ...);
 
 
 **方式二：** 为了解决第一种方式中带来的不足，我们可以预先创建一个总入口，然后在总入口中逐个加载所有模块。不光如此总入口我们也可以设置多个，甚至总入口中加载的模块可以是项目中其它模块的入口。这种方式解决了 Module 的规划和加载问题。
@@ -92,45 +92,3 @@
             <module>net.hasor.plugins.aop.AopModule</module>
         </hasor.modules>
     </config>
-
-
-最小化启动
-------------------------------------
-如果您想要一个最纯粹的 Hasor，不希望它在初始化时加载任何插件，您可以通过 `HASOR_LOAD_MODULE` 环境变量禁用 `findModules`。例如：下面这个配置中 `HelloModule` 就不会被加载，同时任何一个内置的 Module 都不会被加载。
-
-.. code-block:: xml
-    :linenos:
-
-    <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
-        <hasor>
-            <environmentVar>
-                <!-- 是否加载模块 -->
-                <HASOR_LOAD_MODULE>false</HASOR_LOAD_MODULE>
-            </environmentVar>
-            <modules>
-                <module>net.test.hasor.HelloModule</module>
-            </modules>
-        </hasor>
-    </config>
-
-
-下面这个配置文件可以达到和上面配置文件等同。有关配置文件特性的细节请访问配置文件相关章节。
-
-.. code-block:: xml
-    :linenos:
-
-    <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
-        <hasor.modules loadModule="false">
-            <module>net.test.hasor.HelloModule</module>
-        </hasor.modules>
-    </config>
-
-除了配置文件你也可以在创建 Hasor 时通过下面这样的方式来构建一个最小的 Hasor：
-
-.. code-block:: java
-    :linenos:
-
-    AppContext appContext = Hasor.create().asSmaller().build();
-

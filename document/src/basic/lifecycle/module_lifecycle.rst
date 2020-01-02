@@ -1,17 +1,42 @@
-LifeModule
+模块生命周期
 ------------------------------------
-一般来说当我们定义 ``Module`` 时使用的是 “net.hasor.core.Module” 接口，这个接口仅有一个 loadModule 方法。因此它是不具备生命周期特性的。如果使用生命周期，您需要更换使用 “net.hasor.core.LifeModule” 接口。LifeModule 继承了 Module 同时新增了两个生命周期方法。
+Hasor 的生命周期大致分为三个阶段：`init`、`start`、`shutdown`，其中在启动时会一次性完成 init、start 两步操作。如果您想深入到代码层面了解 Hasor 启动和销毁的细节逻辑，那么请参考 `TemplateAppContext` 类。
 
-.. image:: http://files.hasor.net/uploader/20170310/111859/CC2_C40A_8741_5534.jpg
+.. image:: ../../_static/CC2_040A_4409_E756.png
 
-LifeModule 的执行阶段一共分为三个,它们是：loadModule、onStart、onStop。
+面我们对每一个重要的节点做一个简单的介绍，这些过程代码你可以在 ``TemplateAppContext`` 类中找到它们。
+
+
+**一、Init阶段**
+
+- `findModules` ：在配置文件中，查找找所有可以加载的 Module。
+- `doInitialize` ：执行 init 阶段的起始标志，默认是空实现。
+- `newApiBinder` ：创建 Module 在执行 loadModule 方法时用到的 ApiBinder 对象。包括 ApiBinder 的扩展机制也是在这里给予支持。
+- `installModule` ：加载每一个 Module，简单来说就是一个 for。
+- `doBind` ：容器级的初始化操作，这个过程细分为 doBindBefore、installModule、doBindAfter 三个部分。
+- `doInitializeCompleted` ：执行 init 阶段的终止标志，默认是空实现。
+
+**二、Start阶段**
+
+- `doStart` ：执行 start 阶段的起始标志。
+- `ContextEvent_Started` ：通过事件机制发送 `AppContext#ContextEvent_Started` 事件。
+- `doStartCompleted` ：执行 start 阶段的终止标志。
+
+**三、Shutdown阶段**
+
+- `doShutdown` ：执行 shutdown 阶段的起始标志。
+- `ContextEvent_Shutdown` ：发送 `AppContext#ContextEvent_Shutdown` 事件。
+- `doShutdownCompleted` ：执行 shutdown 阶段的终止标志。
+
+
+提示：Hasor 在 start 时候会通过 `Runtime.getRuntime().addShutdownHook(...)` 注册一个钩子用于在 JVM 推出时自动执行 shutdown。
 
 现在我们用一个小例子来想你展示 Hasor 生命周期的特征，首先我们新建一个类，这个类实现了 LifeModule 接口。我们在每一个周期到来时打印一行日志。
 
 .. code-block:: java
     :linenos:
 
-    public class OnLifeModule implements LifeModule {
+    public class OnLifeModule implements Module {
         public void loadModule(ApiBinder apiBinder) throws Throwable {
             logger.info("初始化拉...");
         }
@@ -26,52 +51,30 @@ LifeModule 的执行阶段一共分为三个,它们是：loadModule、onStart、
 
 接下来我们用最简单的方式启动 Hasor 并加载这个 Module，当 Hasor 启动之后我们可以看到控制台上先后打印出 “初始化拉...”、“启动啦...”，当jvm 退出时我们还会看到控制台打印“停止啦...”。
 
-.. code-block:: java
-    :linenos:
 
-    Hasor.createAppContext(new OnLifeModule());
-
-通过事件监听生命周期
-------------------------------------
-下面介绍一种方式可以在不使用 LifeModule 的前提下，借助 Event 机制监听到生命周期调用。
+**使用SPI机制**
 
 .. code-block:: java
     :linenos:
 
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
-        // Bean
-        BindInfo<LifeBean> bindInfo = apiBinder.bindType(LifeBean.class)
-                .to(LifeBeanImpl.class).toInfo();
-        // 启动事件
-        Hasor.addStartListener(apiBinder.getEnvironment(), bindInfo);
-        // 停止事件
-        Hasor.addShutdownListener(apiBinder.getEnvironment(), bindInfo);
-    }
+    AppContext appContext = Hasor.create().build(apiBinder -> {
+        apiBinder.bindSpiListener(ContextInitializeListener.class, new ContextInitializeListener() {
+            @Override
+            public void doInitializeCompleted(AppContext templateAppContext) {
+                ....
+            }
+        });
+    });
 
-如果你的 Bean 是 new 出来的，不需要经过 Hasor 容器来 create 那么可以更简单如下。
+**使用事件机制**
 
 .. code-block:: java
     :linenos:
 
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        // Bean
-        LifeBean lifeBean = new LifeBeanImpl();
-        apiBinder.bindType(LifeBean.class).toInstance(lifeBean);
+        EventListener<AppContext> eventListener = ...;
         // 启动事件
-        Hasor.addStartListener(apiBinder.getEnvironment(), lifeBean);
+        HasorUtils.pushStartListener(apiBinder.getEnvironment(), eventListener);
         // 停止事件
-        Hasor.addShutdownListener(apiBinder.getEnvironment(), lifeBean);
+        HasorUtils.pushShutdownListener(apiBinder.getEnvironment(), eventListener);
     }
-
-
-ContextListener
-------------------------------------
-当你开发一个 Hasor 插件时可能会关注这样一个时刻：“当所有插件都加载完毕”。
-
-.. CAUTION::
-    请注意，这相当于拦截所有 Module 的生命周期调用。
-
-这个 Case 下我们上面两个方式都无法满足你的要求，因为当加载你的 LifeModule 时你并不能确定当前 Module 是最后一个。这时候就需要用到 ContextStartListener 接口和 ContextShutdownListener接口。
-
-- ContextStartListener 接口中的两个方法，分别应对的是 LifeModule 接口中 `onStart` 方法调用前和调用后。
-- ContextShutdownListener 接口中的两个方法，分别应对的是 LifeModule 接口中 `onStop` 方法调用前和调用后。
