@@ -6,7 +6,6 @@ Hasor 的生命周期大致分为三个阶段：`init`、`start`、`shutdown`，
 
 面我们对每一个重要的节点做一个简单的介绍，这些过程代码你可以在 ``TemplateAppContext`` 类中找到它们。
 
-
 **一、Init阶段**
 
 - `findModules` ：在配置文件中，查找找所有可以加载的 Module。

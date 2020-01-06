@@ -1,25 +1,6 @@
-加载Module
-------------------------------------
-当您使用 Hasor 时让框架跑起来只是第一步，您还需要一个启动入口用于配置您项目。在这个启动入口里您可以为您的项目做一些实际的设定。
-
-在 Hasor 里一切的开始都是 `net.hasor.core.Module` 接口，您需要编写一个类实现这个接口，接口中只有一个方法需要您实现。下面这段代码就是我们实现的第一个 Module：
-
-.. code-block:: java
-    :linenos:
-
-    public class FirstModule implements Module {
-        public void loadModule(ApiBinder apiBinder) throws Throwable {
-            ...
-        }
-    }
-
 
 接下来我们迫切需要的是让 Hasor 可以加载这个 Module。对于一般情况下而言我们可以在 `Hasor.create` 时进行加载，例如：
 
-.. code-block:: java
-    :linenos:
-
-    Hasor.create().build(new FirstModule());
 
 
 有时候为了减少代码行数我们会把 FirstModule 简写成一个匿名类，例如：
