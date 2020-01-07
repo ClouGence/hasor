@@ -27,6 +27,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static net.hasor.dataql.HintNames.INDEX_OVERFLOW;
+
 /**
  * PULL    // 栈顶元素是一个集合类型，获取集合的指定索引元素。（例：PULL 123）
  *         - 参数说明：共1参数；参数1：元素位置(负数表示从后向前，正数表示从前向后)
@@ -55,6 +57,16 @@ class PULL implements InsetProcess {
             data = Arrays.asList((Object[]) data);
         }
         //
+        boolean indexOverflow = context.getOrMap(INDEX_OVERFLOW.name(), val -> {
+            if (val == null) {
+                return true;
+            }
+            if (val instanceof Boolean) {
+                return (Boolean) val;
+            }
+            return "true".equalsIgnoreCase(val.toString());
+        });
+        //
         if (!(data instanceof Collection)) {
             throw new InstructRuntimeException("output data error, target type must be Collection.");
         }
@@ -63,10 +75,20 @@ class PULL implements InsetProcess {
         if (point < 0) {
             point = size + point;
             if (point <= 0) {
-                point = 0;
+                if (indexOverflow) {
+                    point = 0;//反向溢出，索引位置归零
+                } else {
+                    dataStack.push(null);// 不使用溢出能力，以 null 代替
+                    return;
+                }
             }
         } else if (point >= size) {
-            point = size - 1;
+            if (indexOverflow) {
+                point = size - 1;//正向溢出，索引位置归到最大
+            } else {
+                dataStack.push(null);// 不使用溢出能力，以 null 代替
+                return;
+            }
         }
         //
         Object pullData = null;

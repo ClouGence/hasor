@@ -36,7 +36,7 @@ public class NumberDOP extends AbstractDOP {
         }
         // .数值计算的选项参数
         RoundingEnum roundingMode = RoundingEnum.find((String) option.getHint(Hints.NUMBER_ROUNDING));   // 舍入模式
-        int maxDecimal = option.getOrMap(Hints.MAX_DECIMAL_DIGITS, val -> {                                // 小数位数(默认20位)
+        int maxDecimal = option.getOrMap(Hints.MAX_DECIMAL_DIGITS, val -> {                              // 小数位数(默认20位)
             if (val == null) {
                 return 20;
             }

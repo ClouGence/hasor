@@ -60,4 +60,9 @@ public class RecursionTest extends AbstractTestResource {
     public void totree_test() throws IOException {
         queryTest("totree");
     }
+
+    @Test
+    public void mapjoin_test() throws IOException {
+        queryTest("mapjoin");
+    }
 }

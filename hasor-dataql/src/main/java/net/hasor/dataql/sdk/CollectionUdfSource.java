@@ -63,7 +63,6 @@ public class CollectionUdfSource implements UdfSource {
                 listData = (Collection<Object>) collection;
             }
         }
-        //
         return listData;
     }
 
@@ -228,5 +227,38 @@ public class CollectionUdfSource implements UdfSource {
             listData.add(objectModel);
         }
         return listData;
+    }
+
+    private static String evalJoinKey(Object data, String[] joinField) {
+        ObjectModel objectModel = (ObjectModel) DomainHelper.convertTo(data);
+        StringBuilder joinKey = new StringBuilder("");
+        Arrays.stream(joinField).forEach(s -> {
+            joinKey.append(objectModel.asModel(s).unwrap().toString()).append(",");
+        });
+        return joinKey.toString();
+    }
+
+    /** 将两个 Map List 进行链接，行为和 sql 中的 left join 相同 */
+    public static List<Map<String, Object>> mapjoin(List<Object> data1, List<Object> data2, Map<String, String> join, Udf convert, Hints option) {
+        //
+        LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<>(join);
+        String[] joinKey1 = linkedHashMap.keySet().toArray(new String[0]);
+        String[] joinKey2 = linkedHashMap.values().toArray(new String[0]);
+        //
+        //
+        Map<String, Object> joinMap = new HashMap<>();
+        for (Object dat : data2) {
+            joinMap.put(evalJoinKey(dat, joinKey2), dat);
+        }
+        //
+        List<Map<String, Object>> returnData = new ArrayList<>();
+        for (Object dat1 : data1) {
+            String joinKey = evalJoinKey(dat1, joinKey1);
+            returnData.add(new HashMap<String, Object>() {{
+                put("data1", dat1);
+                put("data2", joinMap.get(joinKey));
+            }});
+        }
+        return returnData;
     }
 }

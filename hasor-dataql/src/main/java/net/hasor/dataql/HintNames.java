@@ -22,6 +22,8 @@ import static net.hasor.dataql.HintValue.*;
  * @version : 2017-03-23
  */
 public enum HintNames {
+    /** 是否自动处理路由索引溢出，如果关闭那么当遇到溢出之后会得到一个 NULL 值（默认启用）可选值有：true\false。例：正向索引溢出：`list[100]`，取最后一个、反向索引溢出：`list[-100]`，取第一个。 */
+    INDEX_OVERFLOW("true"),
     /** 最大保留的小数位数，默认为：20。超出该范围将会根据 NUMBER_ROUNDING 选项指定的舍入模式进行舍入，默认是四舍五入。 */
     MAX_DECIMAL_DIGITS("20"),
     /** 小数的舍入模式，参考 RoundingEnum 定义的舍入模式(一共八种)，默认为：四舍五入。详细配置参考：RoundingEnum 枚举。 */

@@ -10,7 +10,7 @@ var data = [
 var foo = (dat, arrayObj) -> {
     var tmpArray = dat => [ # ];  // 符号 '#' 相当于在循环 dat 数组期间的，当前元素。
     if (tmpArray[0] == dat) {
-        run arrayObj.add(dat);    // 末级元素直接加到最终的集合中，否则就继续遍历集合
+        run arrayObj.addLast(dat);// 末级元素直接加到最终的集合中，否则就继续遍历集合
     } else {
         run tmpArray => [ foo(#,arrayObj) ];
     }

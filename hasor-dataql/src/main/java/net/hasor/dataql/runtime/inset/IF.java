@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.domain.ValueModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -39,6 +40,10 @@ class IF implements InsetProcess {
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
         Object test = dataStack.pop();
+        if (test instanceof ValueModel) {
+            test = ((ValueModel) test).asOri();
+        }
+        //
         int jumpLabel = sequence.currentInst().getInt(0);
         //
         boolean testFailed = (test == null || Boolean.FALSE.equals(test));
