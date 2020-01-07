@@ -13,8 +13,9 @@ Welcome to Hasor Framework Documentation
     overview/catalog
     basic/index
     event/index
-    web/index
     config/index
+    web/index
+    dataql/index
 
     extends/index
     attachment/index

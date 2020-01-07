@@ -1,29 +1,24 @@
-Web工程配置
+工程配置
 ------------------------------------
-在 Web 开发开始前，请先检查您的工程是否是一个 Web 工程。一个正确的 Web 工程应该包含一个存有 web.xml 文件的 webapp 目录。
-
-首先您需要创建一个配置文件并放入您的 classpath 中。文件名随意，我们使用 “hasor-config.xml”，内容如下：
+Hasor的Web支持是一个独立的框架，在使用它之前首先引入它。在您的项目中添加下面这个依赖，然后配置 web.xml 即可。
 
 .. code-block:: xml
     :linenos:
 
-        <?xml version="1.0" encoding="UTF-8"?>
-        <config xmlns="http://project.hasor.net/hasor/schema/main">
-            <hasor>
-                <!-- 项目所属包：减少类扫描范围 -->
-                <loadPackages>com.xxx.you.project.*</loadPackages>
-                <!-- 框架启动入口 -->
-                <startup>com.xxx.you.project.StartModule</startup>
-            </hasor>
-        </config>
+    <!-- 渲染器插件依赖 -->
+    <dependency>
+        <groupId>net.hasor</groupId>
+        <artifactId>hasor-web</artifactId>
+        <version>4.0.7</version>
+    </dependency>
 
 
-接下来配置 web.xml 配置文件。
+接下来配置 web.xml 配置文件：
 
 .. code-block:: xml
     :linenos:
 
-    <!-- 框架启动入口 -->
+    <!-- 框架启动 -->
     <listener>
         <listener-class>net.hasor.web.startup.RuntimeListener</listener-class>
     </listener>
@@ -36,7 +31,12 @@ Web工程配置
         <filter-name>rootFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    <!-- 上面创建的那个配置文件名 -->
+    <!-- (建议)启动模块 -->
+    <context-param>
+        <param-name>hasor-root-module</param-name>
+        <param-value>com.xxx.you.project.StartModule</param-value>
+    </context-param>
+    <!-- (可选)如果有配置文件在这里指定 -->
     <context-param>
         <param-name>hasor-hconfig-name</param-name>
         <param-value>hasor-config.xml</param-value>
@@ -58,18 +58,71 @@ Web工程配置
 启动您的的 Web 工程，如果控制台上看到 “You Project Start.” 则证明框架成功配置。
 
 
-
-**“零”配置**
-
-在上面例子基础上，删掉 hasor-config.xml 配置文件。然后在 web.xml 中增加如下配置：
+.. HINT::
+    配置项 `hasor-root-module` 可以在配置文件中进行等效配置，使用配置文件的好处是可以提供更丰富的配置。具体如下：
 
 .. code-block:: xml
     :linenos:
 
-    <!-- 上面创建的那个配置文件名 -->
-    <context-param>
-        <param-name>hasor-root-module</param-name>
-        <param-value>com.xxx.you.project.StartModule</param-value>
-    </context-param>
+    <?xml version="1.0" encoding="UTF-8"?>
+    <config xmlns="http://project.hasor.net/hasor/schema/main">
+        <hasor>
+            <!-- 项目所属包：减少类扫描范围 -->
+            <loadPackages>com.xxx.you.project.*</loadPackages>
+            <!-- 框架启动入口 -->
+            <startup>com.xxx.you.project.StartModule</startup>
+        </hasor>
+    </config>
 
-重新启动工程，你会发现控制台上依然可以看到 “You Project Start.”，这是由于 “hasor-root-module” 配置替代了 hasor-config.xml 中配置的入口。
+
+HelloWord
+------------------------------------
+这里展示基于 MVC 使用 Hasor 接收一个 Web 请求然后交给 jsp 显示的例子。
+
+首先创建请求处理器，一个请求处理器可以简单的只包含一个 `execute` 方法
+
+.. code-block:: java
+    :linenos:
+
+    @MappingTo("/hello.jsp")
+    public class HelloMessage {
+        public void execute(Invoker invoker) {
+            invoker.put("message", "this message form Project.");
+        }
+    }
+
+
+然后在启动模块中注册控制器
+
+.. code-block:: java
+    :linenos:
+
+    public class StartModule extends WebModule {
+        public void loadModule(WebApiBinder apiBinder) throws Throwable {
+            //设置请求响应编码
+            apiBinder.setEncodingCharacter("utf-8", "utf-8");
+            // 扫描所有带有 @MappingTo 特征类
+            Set<Class<?>> aClass = apiBinder.findClass(MappingTo.class);
+            // 对 aClass 集合进行发现并自动配置控制器
+            apiBinder.loadMappingTo(aClass);
+        }
+    }
+
+
+最后创建 `hello.jsp` 文件，我们把 `message` 打印出来：
+
+.. code-block:: jsp
+    :linenos:
+
+    <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+    <html>
+        <head>
+            <title>Hello Word</title>
+        </head>
+        <body>
+            ${message}
+        </body>
+    </html>
+
+
+当上面的一切都做好之后，启动您的 web 工程，访问： `http://localhost:8080/hello.jsp` 即可得到结果。

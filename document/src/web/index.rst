@@ -2,48 +2,49 @@
 Web开发
 --------------------
 
-热身
+必读
 ------------------------------------
 .. toctree::
     :maxdepth: 3
 
     setup/start
-    setup/simple_mvc
 
-
-处理Web请求
+接收Web请求
 ------------------------------------
 .. toctree::
     :maxdepth: 3
 
     request/request
+    request/restful
+
+获取请求参数
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
     request/params
 
+请求验证
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    request/validation
 
 请求拦截器
 ------------------------------------
 .. toctree::
     :maxdepth: 3
 
-    interceptor/interceptor
+    request/interceptor
 
-
-表单
-------------------------------------
-.. toctree::
-    :maxdepth: 3
-
-    form/fill_form
-    form/validation
-
-
-J2EE
+J2EE兼容
 ------------------------------------
 .. toctree::
     :maxdepth: 3
 
     j2ee/j2ee
-
+    j2ee/servlet3
 
 文件上传
 ------------------------------------
@@ -51,7 +52,6 @@ J2EE
     :maxdepth: 3
 
     upload/fileupload
-
 
 渲染器
 ------------------------------------

@@ -1,24 +1,9 @@
-# RSF 分布式RPC框架
+# 分布式 RPC 服务框架
 
 &emsp;&emsp;一个高可用、高性能、轻量级的分布式服务框架。支持容灾、负载均衡、集群。一个典型的应用场景是，将同一个服务部署在多个`Server`上提供 request、response 消息通知。
 
-&emsp;&emsp;使用RSF可以点对点调用，也可以分布式调用。部署方式上：可以搭配注册中心（[详细..](hasor-registry/README.md)），也可以独立使用。
-
 ----------
-### 工作原理
-![工作原理](http://project.hasor.net/resources/224933_BV6Q_1166271.jpg)
-
-----------
-### RSF架构设计
-![RSF架构](http://project.hasor.net/resources/002011_mz60_1166271.jpg)
-
-----------
-### RoadMap
-![RoadMap](http://project.hasor.net/resources/120213_9S4m_1166271.jpg)
-
-----------
-### 介绍
-##### 特色功能:
+## 特性
 01. 支持服务热插拔：支持服务动态发布、动态卸载
 02. 支持服务分组：支持服务分组、分版本
 03. 支持多种方式调用：同步、异步、回调、接口代理
@@ -32,47 +17,37 @@
 09. 内置 Telnet 控制台，可以命令行方式直接管理机器
 10. 支持 offline/online 动作
 
-##### 扩展性:
-01. 支持第三方集成，可以独立使用,也可以和 Spring、Jfinal等第三方框架整合使用
-02. 支持拦截器RsfFilter，开发者可以通过扩展 Filter 实现更多需求
-03. 支持自定义序列化。默认使用内置 Hessian 4.0.7 序列化库
-04. 支持Telnet控制台自定义指令。通过扩展控制台指令，可以发挥更大想象空间
+# 样例
 
-##### 稳定性(参数可配置):
-01. 最大发并发请求数配置（默认:200）
-02. 最大发起请求超限制策略设置: A-等待1秒重试、B-抛异常（默认:B-抛异常）
-03. Netty线程数配置（默认: 监听请求线程数: 1，IO线程数: 8）
-04. 提供者调用队列容量配置（默认: 队列容量: 4096）
-05. Work线程数配置（默认: 处理调用线程数: 4）
-06. 请求超时设置。支持服务提供者，服务订阅者独立配置各自的超时参数（默认 6000毫秒）
-07. 双向通信。RSF会合理利用Socket连接，双向通信是指当A机器发起远程调用请求之后，RSF会建立长连接
-        &emsp;&emsp;-- 如果B机器有调用A机器的需求则直接使用这个连接不会重新创建新的连接，双向通信会大量降低集群间的连接数
-08. 支持优雅停机。应用停机，Center会自动通知整个集群。即便所有 Center 离线，RSF也会正确处理失效地址
+服务端
+```java
+public class ProviderServer {
+    public static void main(String[] args) throws Throwable {
+        AppContext appContext = Hasor.create().addVariable("RSF_SERVICE_PORT","2181").build((RsfModule) apiBinder -> {
+            apiBinder.rsfService(EchoService.class).to(EchoServiceImpl.class).register();
+        });
+        //
+        System.out.println("server start.");
+        appContext.joinSignal();//阻塞当前线程的继续执行，直到 shutdown 或接收到 kill -15 or kill -2 信号
+    }
+}
+```
 
-##### 健壮性:
-01. 每小时地址本动态备份。当所有注册中心离线，即便在没有注册中心的情况下应用程序重启，也不会导致服务找不到提供者的情况
-02. 当某个地址失效之后，RSF会冻结一段时间，在这段时间内不会有请求发往这个地址
-03. 支持请求、响应分别使用不同序列化规则
-
-##### 可维护性:
-01. 支持QoS流量控制。流控可以精确到：接口、方法、地址
-02. 支持动态路由脚本。路由可以精确到：接口、方法、参数
-03. 通过路由脚本可以轻松实现接口灰度发布
-
-##### 安全性:
-01. 支持发布服务授权
-02. 支持服务订阅授权
-03. 支持匿名应用
-
-# Rsf-Center Rsf服务注册中心
-
-&emsp;&emsp; RSF 的注册中心
-
-----------
-## 架构
-![架构](http://files.hasor.net/uploader/20170210/120013/CC2_36F9_DD24_9009.png "架构")
-
-
-一个节点上同一个服务只能以一种身份发布。不能即是消费者也是提供者
-
-暂时不支持多协议下发，因为 rsf 客户端不支持。
+客户端
+```java
+public class CustomerClient {
+    public static void main(String[] args) throws Throwable {
+        AppContext appContext = Hasor.create().addVariable("RSF_SERVICE_PORT","2171").build((RsfModule) apiBinder -> {
+            InterAddress remote = new InterAddress("rsf://localhost:2181/default");
+            apiBinder.rsfService(EchoService.class).bindAddress(remote).register();
+        });
+        //
+        System.out.println("client start.");
+        RsfClient client = clientContext.getInstance(RsfClient.class);
+        EchoService echoService = client.wrapper(EchoService.class);
+        for (int i = 0; i < 20; i++) {
+            String res = echoService.sayHello("Hello Word for Invoker");
+        }
+    }
+}
+```

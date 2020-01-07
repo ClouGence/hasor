@@ -1,8 +1,9 @@
-表单验证
+请求验证
 ------------------------------------
-通常一个表单在递交到后台之后我们在处理表单内容之前会做一些参数合法性校验。比如：年龄大于1，性别必须是：男或女，帐号密码输入不能为空。最后还要把验证的信息反馈到页面上。Hasor 在设计表单验证功能时候参考了大量具有类似功能的框架，也做了大量 API 上面的设计优化。
+一个请求在递交到后台之后正式处理之前会做一些参数合法性校验。比如：年龄大于1，性别必须是：男或女，帐号密码输入不能为空等。
+最后还要把验证的信息反馈到页面上，Hasor 的验证器可以帮助实现这些功能
 
-我们以登录场景为例进行说明，首先把各种登录请求参数传递进来。下面是处理登录请求的代码。
+以登录场景为例，首先定义请求参数组：
 
 .. code-block:: java
     :linenos:
@@ -15,16 +16,8 @@
         ...
     }
 
-    @MappingTo("/login.htm")
-    public class Longin {
-        public void execute(@Params LoginForm loginForm,
-                            RenderInvoker invoker) {
-            ...
-        }
-    }
 
-
-第一步：编写表单验证器
+然后编写验证器
 
 .. code-block:: java
     :linenos:
@@ -46,7 +39,7 @@
     }
 
 
-第二步：建立表单对象 LoginForm 和验证器 LoginFormValidation 之间的关系
+接着建立参数组和验证器之间的关系
 
 .. code-block:: java
     :linenos:
@@ -57,26 +50,13 @@
     }
 
 
-第三步：通过 @Valid 注解告诉 Controller 这个参数需要进行表单验证。
-
-.. code-block:: java
-    :linenos:
-
-    @MappingTo("/login.do")
-    public class Longin {
-        public void execute(@Valid() @ParameterGroup LoginForm loginForm) {
-            System.out.println("login data is " + JSON.toString(loginForm));
-        }
-    }
-
-
-接下来我们接着改造 Login，让它实现如果表单验证成功我们就跳转到用户详情页。如果验证失败就回到登陆页并提示错误。
+最后通过 @Valid 注解配置请求在接收处理之前先做一次验证：
 
 .. code-block:: java
     :linenos:
 
     @MappingTo("/login.htm")
-    public class Longin {
+    public class Login {
         public void execute(@Valid() @ParameterGroup LoginForm loginForm,
                             RenderInvoker invoker,
                             ValidInvoker valid) {
@@ -90,7 +70,7 @@
     }
 
 
-剩下的就是login页面处理验证信息回显（freemarker 模板语法）
+剩下的就是页面处理验证信息回显（freemarker 模板语法）
 
 .. code-block:: none
     :linenos:
@@ -113,7 +93,7 @@
 
 多个验证器共同验证
 ------------------------------------
-有些校验逻辑比较通用，我们可以提取成公共的校验逻辑。这样一个表单的校验就可以是 `公共 + 制定` 两部分组成。表单验证器可以同配置多个，如下：
+有些校验逻辑比较通用，可以提取成公共的校验逻辑。这样请求验证就可以是 `公共 + 制定` 两部分组成，如下：
 
 .. code-block:: java
     :linenos:
@@ -124,9 +104,9 @@
     }
 
 
-场景化表单验证
+验证场景化
 ------------------------------------
-场景化表单验证，是指在执行表单验证时。开发者可以通过传给表单验证器的场景名称，进行必要的逻辑判断。我们以用户帐号信息验证为例，下面表单验证器中定义了两个场景的验证方法：
+场景化，是指在执行验证时。开发者可以通过传给表单验证器的场景名称，进行必要的逻辑判断：
 
 1. doValidLogin、负责处理登录
 2. doValidSignUp、负责处理注册
@@ -169,7 +149,7 @@
     }
 
 
-最后，在使用表单验证时，我们在 @Valid 注解上设定好要使用的场景名称，就可以了。
+最后，在使用验证时，在 @Valid 注解上设定好要使用的场景名称，就可以了。
 
 .. code-block:: java
     :linenos:

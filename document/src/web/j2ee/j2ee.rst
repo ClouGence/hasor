@@ -1,38 +1,12 @@
-J2EE
-------------------------------------
-在 Hasor 中您可以直接使用 J2EE 的接口实现你想要的功能，然后通过 Hasor 的 Module 将其注册到框架中来。
-
-通过注册 J2EE 的 Servlet 和 Filter 等常见接口，您可以不需要投入任何框架集成改造。就可以将 Spring、Struts 定一系列经典的 Web 框架集成到 Hasor 中来。
+在 Hasor 中可以直接使用 J2EE 的接口实现想要的功能，J2EE 的原始接口好处有两个
+- 1. 使用框架的学习成本降低。
+- 2. 可以不需要投入任何框架集成改造就可以将一系列经典的框架进来。
 
 下面就在本章中介绍一下 Servlet 、Filter 、HttpSessionListener、ServletContextListener 的用法。
 
 Servlet
 ------------------------------------
-在 Hasor Web 中使用 Servlet 如下所示，首先编写我们自己的 HttpServlet，然后将它注册到 Hasor 中：
-
-.. code-block:: java
-    :linenos:
-
-    public class DemoHttpServlet extends HttpServlet{
-        protected void service(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-            ...
-        }
-    }
-
-第一种方式 Api 接口注册 Servlet 的地址。
-
-.. code-block:: java
-    :linenos:
-
-    public class DemoModule extends WebModule{
-        public void loadModule(WebApiBinder apiBinder) throws Throwable {
-            apiBinder.jeeServlet("/your_point.do").with(DemoHttpServlet.class);
-        }
-    }
-
-
-第二种方式，通过 @MappingTo 注册 Servlet，如下：
+使用 Servlet 如下所示：
 
 .. code-block:: java
     :linenos:
@@ -45,27 +19,24 @@ Servlet
         }
     }
 
-
-扫描所有 @MappingTo
+然后注册 Servlet
 
 .. code-block:: java
     :linenos:
 
-    public class DemoModule extends WebModule{
+    public class DemoModule extends WebModule {
         public void loadModule(WebApiBinder apiBinder) throws Throwable {
-            ...
-            // 扫描所有带有 @MappingTo 特征类
+            // 扫描所有带有 @MappingTo 注解类
             Set<Class<?>> aClass = apiBinder.findClass(MappingTo.class);
             // 对 aClass 集合进行发现并自动配置控制器
             apiBinder.loadType(aClass);
-            ...
         }
     }
 
 
 Filter
 ------------------------------------
-在 Hasor Web 中使用 Filter 如下所示，首先编写我们自己的 Filter，然后将它注册到 Hasor 中：
+使用 Filter 如下所示：
 
 .. code-block:: java
     :linenos:
@@ -75,7 +46,7 @@ Filter
     }
 
 
-然后将其注册到 Hasor 框架中：
+然后注册 Filter：
 
 .. code-block:: java
     :linenos:
@@ -89,9 +60,11 @@ Filter
     }
 
 
-HttpSessionListener
+J2EE的Listener
 ------------------------------------
-在 Hasor Web 中使用 HttpSessionListener 如下所示，首先编写我们自己的 HttpSessionListener，然后将它注册到 Hasor 中：
+J2EE 规范中定义了各种各样的 Listener 例如 `javax.servlet.http.HttpSessionListener`
+
+这些 Listener 基本在 Hasor 中都是都是支持的，配置它们需要通过 SPI 的形式来注册。例如：
 
 .. code-block:: java
     :linenos:
@@ -99,42 +72,23 @@ HttpSessionListener
     public class MyHttpSessionListener implements HttpSessionListener {
         ...
     }
-
-
-然后将其注册到 Hasor 框架中：
-
-.. code-block:: java
-    :linenos:
-
     public class StartModule extends WebModule {
         public void loadModule(WebApiBinder apiBinder) throws Throwable {
             ...
-            apiBinder.addSessionListener(MyHttpSessionListener.class);
+            apiBinder.bindSpiListener(HttpSessionListener.class, new MyHttpSessionListener());
             ...
         }
     }
 
 
-ServletContextListener
-------------------------------------
-在 Hasor Web 中使用 ServletContextListener 如下所示，首先编写我们自己的 ServletContextListener，然后将它注册到 Hasor 中：
+目前 Hasor 已经支持的 J2EE Listener清单有：
 
-.. code-block:: java
-    :linenos:
-
-    public class MyServletContextListener implements ServletContextListener {
-        ...
-    }
-
-然后将其注册到 Hasor 框架中：
-
-.. code-block:: java
-    :linenos:
-
-    public class StartModule extends WebModule {
-        public void loadModule(WebApiBinder apiBinder) throws Throwable {
-            ...
-            apiBinder.addServletListener(MyServletContextListener.class);
-            ...
-        }
-    }
++---------------------------------------------+
+| 接口                                        |
++=============================================+
+| `javax.servlet.http.HttpSessionListener`    |
++---------------------------------------------+
+| `javax.servlet.ServletContextListener`      |
++---------------------------------------------+
+| `javax.servlet.ServletRequestListener`      |
++---------------------------------------------+

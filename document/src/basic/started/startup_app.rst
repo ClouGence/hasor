@@ -46,7 +46,7 @@ Hasor 的启动有三种模式，所有模式都在 `net.hasor.core.Hasor.Level`
 
 Module
 ------------------------------------
-.. CAUTION::
+.. HINT::
     Module 是使用 Hasor 的统一入口，它的地位类似于 java 的 main 方法。
 
 在 Hasor 里一切的开始都是 `net.hasor.core.Module` 接口，您需要编写一个类实现这个接口，接口中只有一个方法需要您实现。下面这段代码就是我们实现的第一个 Module：
