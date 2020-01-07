@@ -106,4 +106,16 @@ public class CollectionTest extends AbstractTestResource {
         //
         assert dataModel.asBoolean();
     }
+
+    @Test
+    public void empty2() throws IOException, InstructRuntimeException {
+        String qlString = "";
+        qlString = qlString + "import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;";
+        qlString = qlString + "if (collect.isEmpty([])) return true else return false;";
+        //
+        DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
+        ValueModel dataModel = (ValueModel) dataQL.createQuery(qlString).execute().getData();
+        //
+        assert dataModel.asBoolean();
+    }
 }
