@@ -5,12 +5,12 @@
         <loadPackages>net.hasor.web.*</loadPackages>
 
         <environmentVar>
-            <!-- WebMVC 是否启用布局管理器 -->
+            <!-- 是否启用母版页 -->
             <HASOR_RESTFUL_LAYOUT>false</HASOR_RESTFUL_LAYOUT>
-            <!-- WebMVC 布局模版位置 -->
-            <HASOR_RESTFUL_LAYOUT_PATH_LAYOUT>/layout</HASOR_RESTFUL_LAYOUT_PATH_LAYOUT>
-            <!-- WebMVC 页面模版位置 -->
-            <HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES>/templates</HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES>
+            <!-- 母版页资源文件位置（可选，默认为：/layout） -->
+            <HASOR_RESTFUL_LAYOUT_PATH>/layout</HASOR_RESTFUL_LAYOUT_PATH>
+            <!-- 页面资源文件位置（可选，默认为：/templates） -->
+            <HASOR_RESTFUL_LAYOUT_TEMPLATES>/templates</HASOR_RESTFUL_LAYOUT_TEMPLATES>
 
             <!-- fileupload 允许的请求大小 -->
             <HASOR_UPLOAD_MAX_REQUEST_SIZE>-1</HASOR_UPLOAD_MAX_REQUEST_SIZE>
@@ -52,9 +52,9 @@
          -->
         <layout enable="${HASOR_RESTFUL_LAYOUT}" placeholder="content_placeholder" defaultLayout="default.html">
             <!-- 布局模版位置 -->
-            <layoutPath>${HASOR_RESTFUL_LAYOUT_PATH_LAYOUT}</layoutPath>
+            <layoutPath>${HASOR_RESTFUL_LAYOUT_PATH}</layoutPath>
             <!-- 页面模版位置 -->
-            <templatePath>${HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES}</templatePath>
+            <templatePath>${HASOR_RESTFUL_LAYOUT_TEMPLATES}</templatePath>
         </layout>
 
     </hasor>

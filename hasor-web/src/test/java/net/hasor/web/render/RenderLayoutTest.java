@@ -39,8 +39,8 @@ public class RenderLayoutTest extends AbstractTest {
         return buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", context -> {
             Hasor hasor = Hasor.create(context);
             hasor.addVariable("HASOR_RESTFUL_LAYOUT", String.valueOf(enableLayout));
-            hasor.addVariable("HASOR_RESTFUL_LAYOUT_PATH_LAYOUT", "/layout/mytest");
-            hasor.addVariable("HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES", "/templates/myfiles");
+            hasor.addVariable("HASOR_RESTFUL_LAYOUT_PATH", "/layout/mytest");
+            hasor.addVariable("HASOR_RESTFUL_LAYOUT_TEMPLATES", "/templates/myfiles");
             return hasor;
         }, apiBinder -> {
             if (renderEngine != null) {

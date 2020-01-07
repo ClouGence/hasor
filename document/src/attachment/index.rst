@@ -6,4 +6,3 @@
     :maxdepth: 3
 
     config-namespace
-    config-web

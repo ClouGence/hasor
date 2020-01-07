@@ -1,6 +1,5 @@
-FreeMarker渲染引擎
+扩展：FreeMarker渲染引擎
 ------------------------------------
-Hasor的渲染器是专门用来处理 Response 响应的，您可以根据不同的渲染器向客户端做出不同格式的响应，其地位相当于 MVC 中的 View。
 
 .. code-block:: java
     :linenos:
@@ -10,6 +9,7 @@ Hasor的渲染器是专门用来处理 Response 响应的，您可以根据不�
      * @version : 2016年1月3日
      * @author 赵永春 (zyc@hasor.net)
      */
+    @Render("flt")
     public class FreemarkerRender implements RenderEngine {
         protected Configuration freemarker;
         //
@@ -60,52 +60,5 @@ Hasor的渲染器是专门用来处理 Response 响应的，您可以根据不�
                 data.put(key, renderData.get(key));
             }
             temp.process(data, writer);
-        }
-    }
-
-
-**注册渲染器**
-方式一，编码
-
-.. code-block:: java
-    :linenos:
-
-    public class StartModule extends WebModule {
-        @Override
-        public void loadModule(WebApiBinder apiBinder) throws Throwable {
-            apiBinder.suffix("htm").bind(FreemarkerRender.class);//设置 Freemarker 渲染器
-        }
-    }
-
-
-方式二，注解扫描
-
-.. code-block:: java
-    :linenos:
-
-    @Render({ "html", "htm" })
-    public class UserRender implements RenderEngine {
-        ...
-    }
-    // -----
-    public class StartModule extends WebModule {
-        public void loadModule(WebApiBinder apiBinder) throws Throwable {
-            //扫描所有 Render 注解
-            apiBinder.scanAnnoRender();
-        }
-    }
-
-
-**使用渲染器**
-通过 @Produces 注解指定渲染器
-
-.. code-block:: java
-    :linenos:
-
-    @MappingTo("/index.htm")
-    public class Index {
-        @Produces("htm")
-        public void execute(RenderInvoker invoker) {
-            ...
         }
     }

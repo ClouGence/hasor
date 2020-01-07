@@ -53,12 +53,12 @@ J2EE兼容
 
     upload/fileupload
 
-渲染器
+结果响应
 ------------------------------------
 .. toctree::
     :maxdepth: 3
 
-    view/json_render
-    view/freemarker_render
-    view/custom_render
-    view/decorator
+    response/about_render
+    response/decorator
+    response/json_render
+    response/freemarker_render

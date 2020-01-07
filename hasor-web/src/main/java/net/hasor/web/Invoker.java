@@ -22,7 +22,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * 请求调用
@@ -135,5 +138,105 @@ public interface Invoker extends MimeType {
             requestPath = requestPath.substring(contextPath.length());
         }
         return requestPath;
+    }
+
+    /**
+     * Performs the given action for each entry in this map until all entries
+     * have been processed or the action throws an exception.   Unless
+     * otherwise specified by the implementing class, actions are performed in
+     * the order of entry set iteration (if an iteration order is specified.)
+     * Exceptions thrown by the action are relayed to the caller.
+     *
+     * @param action The action to be performed for each entry
+     * @throws NullPointerException if the specified action is null
+     * @since 1.8
+     */
+    public default void forEach(BiConsumer<String, Object> action) {
+        Objects.requireNonNull(action);
+        for (String key : keySet()) {
+            Object optionValue = get(key);
+            action.accept(key, optionValue);
+        }
+    }
+
+    /**
+     * If the specified key is not already associated with a value (or is mapped
+     * to {@code null}) associates it with the given value and returns
+     * {@code null}, else returns the current value.
+     *
+     * @param key key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @throws UnsupportedOperationException if the {@code put} operation is not supported by this map
+     * @since 1.8
+     */
+    public default void putIfAbsent(String key, Object value) {
+        if (get(key) == null) {
+            put(key, value);
+        }
+    }
+
+    /**
+     * Returns the value to which the specified key is mapped, or
+     * {@code defaultValue} if this map contains no mapping for the key.
+     *
+     * @implSpec
+     * The default implementation makes no guarantees about synchronization
+     * or atomicity properties of this method. Any implementation providing
+     * atomicity guarantees must override this method and document its
+     * concurrency properties.
+     *
+     * @param key the key whose associated value is to be returned
+     * @param defaultValue the default mapping of the key
+     * @return the value to which the specified key is mapped, or {@code defaultValue} if this map contains no mapping for the key
+     * @since 1.8
+     */
+    public default Object getOrDefault(String key, Object defaultValue) {
+        Object v = null;
+        return ((v = get(key)) != null) ? v : defaultValue;
+    }
+
+    /**
+     * Returns the value to which the specified key is mapped, or
+     * {@code defaultValue} if this map contains no mapping for the key.
+     *
+     * @implSpec
+     * The default implementation makes no guarantees about synchronization
+     * or atomicity properties of this method. Any implementation providing
+     * atomicity guarantees must override this method and document its
+     * concurrency properties.
+     *
+     * @param key the key whose associated value is to be returned
+     * @param defaultValue the default mapping of the key
+     * @return the value to which the specified key is mapped, or {@code defaultValue} if this map contains no mapping for the key
+     * @since 1.8
+     */
+    public default <V> V getOrMap(String key, Function<Object, V> defaultValue) {
+        return defaultValue.apply(get(key));
+    }
+
+    /**
+     * If the specified key is not already associated with a value (or is mapped
+     * to {@code null}), attempts to compute its value using the given mapping
+     * function and enters it into this map unless {@code null}.
+     *
+     * <p>If the function returns {@code null} no mapping is recorded. If
+     * the function itself throws an (unchecked) exception, the
+     * exception is rethrown, and no mapping is recorded.  The most
+     * common usage is to construct a new object serving as an initial
+     * mapped value or memoized result.
+     *
+     * @param key key with which the specified value is to be associated
+     * @param mappingFunction the function to compute a value
+     * @throws UnsupportedOperationException if the {@code put} operation is not supported by this map
+     * @since 1.8
+     */
+    public default void computeIfAbsent(String key, Function<String, Object> mappingFunction) {
+        Objects.requireNonNull(mappingFunction);
+        if (get(key) == null) {
+            Object newValue;
+            if ((newValue = mappingFunction.apply(key)) != null) {
+                put(key, newValue);
+            }
+        }
     }
 }

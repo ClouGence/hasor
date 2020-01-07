@@ -91,21 +91,6 @@
 请求URL地址：`http://localhost:8080/helloAction.do?value=true`
 
 
-获取URL中?部分的参数
-------------------------------------
-需要使用 `@QueryParameter` 注解，例如：
-
-.. code-block:: java
-    :linenos:
-
-    @MappingTo("/helloAction.do")
-    public class HelloAction {
-        public void execute(@QueryParameter("value") boolean ajaxTo) {
-            ...
-        }
-    }
-
-
 获取Attribute
 ------------------------------------
 最原始的办法是通过 httpRequest.getAttribute 获取，但 Hasor 提供了 `@AttributeParameter` 注解

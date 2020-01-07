@@ -103,7 +103,7 @@ HelloWord
             apiBinder.setEncodingCharacter("utf-8", "utf-8");
             // 扫描所有带有 @MappingTo 特征类
             Set<Class<?>> aClass = apiBinder.findClass(MappingTo.class);
-            // 对 aClass 集合进行发现并自动配置控制器
+            // 配置控制器
             apiBinder.loadMappingTo(aClass);
         }
     }

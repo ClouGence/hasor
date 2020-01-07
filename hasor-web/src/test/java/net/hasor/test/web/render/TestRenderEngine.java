@@ -15,7 +15,6 @@
  */
 package net.hasor.test.web.render;
 import com.alibaba.fastjson.JSON;
-import net.hasor.core.AppContext;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.render.RenderEngine;
@@ -32,11 +31,6 @@ public class TestRenderEngine implements RenderEngine {//
 
     public TestRenderEngine(List<String> templateSet) {
         this.templateSet.addAll(templateSet.stream().filter(StringUtils::isNotBlank).collect(Collectors.toList()));
-    }
-
-    @Override
-    public void initEngine(AppContext appContext) throws Throwable {
-        //
     }
 
     @Override
