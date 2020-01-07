@@ -16,6 +16,7 @@
 package net.hasor.core.container;
 import net.hasor.core.Scope;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
+import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.scope.SingletonScope;
 import net.hasor.core.spi.ScopeProvisionListener;
 import net.hasor.test.core.basic.destroy.PrototypePublicCallDestroyBean;
@@ -33,11 +34,11 @@ import org.powermock.api.mockito.PowerMockito;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
-public class ScopContainerTest {
+public class ScopeContainerTest {
     @Test
     public void scopTest1() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
-        ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
+        ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         spiCallerContainer.init();
         //
         try {
@@ -62,7 +63,7 @@ public class ScopContainerTest {
     @Test
     public void scopTest2() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
-        ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
+        ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         spiCallerContainer.init();
         scopeContainer.init();
         //
@@ -77,7 +78,7 @@ public class ScopContainerTest {
     @Test
     public void scopTest3() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
-        ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
+        ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         spiCallerContainer.init();
         scopeContainer.init();
         //
@@ -103,7 +104,7 @@ public class ScopContainerTest {
     @Test
     public void scopTest4() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
-        ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
+        ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         spiCallerContainer.init();
         scopeContainer.init();
         //
@@ -119,7 +120,7 @@ public class ScopContainerTest {
     @Test
     public void scopTest5() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
-        ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
+        ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         spiCallerContainer.init();
         scopeContainer.init();
         //
@@ -136,7 +137,7 @@ public class ScopContainerTest {
     @Test
     public void scopTest6() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
-        ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
+        ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         spiCallerContainer.init();
         //
         try {
@@ -150,7 +151,7 @@ public class ScopContainerTest {
     @Test
     public void scopTest7() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
-        ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
+        ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         //
         assert scopeContainer.collectScope((Class<?>) null) == null;
     }
@@ -158,7 +159,7 @@ public class ScopContainerTest {
     @Test
     public void scopTest8() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
-        ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
+        ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         scopeContainer.init();
         //
         DefaultBindInfoProviderAdapter<SampleFace> adapter1 = new DefaultBindInfoProviderAdapter<>();
@@ -176,7 +177,7 @@ public class ScopContainerTest {
     @Test
     public void scopTest9() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
-        ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
+        ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         scopeContainer.init();
         //
         DefaultBindInfoProviderAdapter<SingletonSampleBean> adapter = new DefaultBindInfoProviderAdapter<>();
@@ -280,16 +281,16 @@ public class ScopContainerTest {
     @Test
     public void scopTest11() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
-        ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
+        ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         spiCallerContainer.init();
         scopeContainer.init();
         //
         //
         HashMap<String, Object> spiTest = new HashMap<>();
-        spiCallerContainer.addListener(ScopeProvisionListener.class, (scopeName, scopeSupplier) -> {
+        spiCallerContainer.addListener(ScopeProvisionListener.class, InstanceProvider.of((scopeName, scopeSupplier) -> {
             spiTest.put(scopeName, scopeSupplier.get());
             //
-        });
+        }));
         //
         Scope mockScope = PowerMockito.mock(Scope.class);
         scopeContainer.registerScope(My.class.getName(), mockScope);

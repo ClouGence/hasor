@@ -16,6 +16,7 @@
 package net.hasor.rsf.container;
 import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
+import net.hasor.core.spi.SpiChainProcessor;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfEnvironment;
@@ -145,7 +146,17 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
     }
 
     @Override
+    public <T extends EventListener> void bindSpiChainProcessor(Class<T> spiType, Supplier<SpiChainProcessor<?>> chainProcessorSupplier) {
+        this.apiBinder.bindSpiChainProcessor(spiType, chainProcessorSupplier);
+    }
+
+    @Override
     public <T extends Scope> Supplier<T> bindScope(String scopeName, Supplier<T> scopeSupplier) {
         return this.apiBinder.bindScope(scopeName, scopeSupplier);
+    }
+
+    @Override
+    public Supplier<Scope> findScope(String scopeName) {
+        return this.apiBinder.findScope(scopeName);
     }
 }

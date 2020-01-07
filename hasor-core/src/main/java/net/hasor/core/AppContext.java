@@ -16,6 +16,7 @@
 package net.hasor.core;
 import net.hasor.utils.StringUtils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Objects;
@@ -258,4 +259,12 @@ public interface AppContext extends MetaInfo {
             return StringUtils.equals(bindInfo.getBindName(), withName);
         }).findFirst().orElse(null);
     }
+
+    /** 根据类型查找作用域 */
+    public default Supplier<Scope> findScope(Class<? extends Annotation> scopeType) {
+        return findScope(scopeType.getName());
+    }
+
+    /** 根据名字查找作用域 */
+    public Supplier<Scope> findScope(String scopeName);
 }

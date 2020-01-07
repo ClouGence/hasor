@@ -40,7 +40,7 @@ public class InjectContextTest {
         Environment env = new StandardEnvironment();
         AppContext appContext2 = new AppContextWarp(new StatusAppContext(env));
         PojoBean mockBean = new PojoBean();
-        appContext2.start((Module) apiBinder -> {
+        appContext2.start(apiBinder -> {
             apiBinder.bindType(PojoBean.class).idWith("pojobean").toInstance(mockBean);
             apiBinder.bindType(SingleConstructorPojoBeanRef.class)//
                     .toConstructor(SingleConstructorPojoBeanRef.class.getConstructor(PojoBean.class))//
@@ -83,7 +83,7 @@ public class InjectContextTest {
         //
         PojoBean mockBean2 = new PojoBean();
         AppContext appContext3 = new AppContextWarp(new StatusAppContext(env));
-        appContext3.start((Module) apiBinder -> {
+        appContext3.start(apiBinder -> {
             apiBinder.bindType(PojoBean.class).toInstance(mockBean);
             apiBinder.bindType(PropertyPojoBeanRef.class).overwriteAnnotation()//
                     .injectValue("pojoBean", mockBean2);

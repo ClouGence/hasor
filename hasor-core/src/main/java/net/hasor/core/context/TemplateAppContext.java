@@ -86,16 +86,16 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
 
     @Override
     public boolean isSingleton(BindInfo<?> bindInfo) {
-        return getContainer().getScopContainer().isSingleton(bindInfo);
+        return getContainer().getScopeContainer().isSingleton(bindInfo);
     }
 
     @Override
     public boolean isSingleton(Class<?> targetType) {
         BindInfo<?> bindInfo = getContainer().getBindInfoContainer().findBindInfo("", targetType);
         if (bindInfo != null) {
-            return getContainer().getScopContainer().isSingleton(bindInfo);
+            return getContainer().getScopeContainer().isSingleton(bindInfo);
         } else {
-            return getContainer().getScopContainer().isSingleton(targetType);
+            return getContainer().getScopeContainer().isSingleton(targetType);
         }
     }
 
@@ -180,6 +180,13 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         Objects.requireNonNull(bindType, "bindType is null.");
         return getContainer().getBindInfoContainer().findBindInfoList(bindType);
     }
+
+    @Override
+    public Supplier<Scope> findScope(String scopeName) {
+        Objects.requireNonNull(scopeName, "scopeName is null.");
+        return getContainer().getScopeContainer().findScope(scopeName);
+    }
+
     /*------------------------------------------------------------------------------------Process*/
 
     /**查找Module（由Module初始化的子Module不再查找范围内）。*/

@@ -142,6 +142,11 @@ public class AppContextWarp implements AppContext {
     }
 
     @Override
+    public Supplier<Scope> findScope(String scopeName) {
+        return this.getAppContext().findScope(scopeName);
+    }
+
+    @Override
     public Object getMetaData(String key) {
         return this.getAppContext().getMetaData(key);
     }

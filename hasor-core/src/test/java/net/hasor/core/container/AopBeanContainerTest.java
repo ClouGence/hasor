@@ -51,7 +51,7 @@ public class AopBeanContainerTest {
         BeanContainer container = new BeanContainer(mockEnv);
         container.preInitialize();
         //
-        DefaultBindInfoProviderAdapter<AopBindInfoAdapter> adapter = container.getBindInfoContainer().createInfoAdapter(AopBindInfoAdapter.class);
+        DefaultBindInfoProviderAdapter<AopBindInfoAdapter> adapter = container.getBindInfoContainer().createInfoAdapter(AopBindInfoAdapter.class, null);
         Predicate<Class<?>> ma = aClass -> true;
         Predicate<Method> mb = aMethod -> true;
         MyAopInterceptor.resetInit();
@@ -74,7 +74,7 @@ public class AopBeanContainerTest {
         BeanContainer container = new BeanContainer(mockEnv);
         container.preInitialize();
         //
-        DefaultBindInfoProviderAdapter<AopBindInfoAdapter> adapter = container.getBindInfoContainer().createInfoAdapter(AopBindInfoAdapter.class);
+        DefaultBindInfoProviderAdapter<AopBindInfoAdapter> adapter = container.getBindInfoContainer().createInfoAdapter(AopBindInfoAdapter.class, null);
         Predicate<Class<?>> ma = aClass -> false;
         Predicate<Method> mb = aMethod -> true;
         MyAopInterceptor.resetInit();
@@ -97,7 +97,7 @@ public class AopBeanContainerTest {
         BeanContainer container = new BeanContainer(mockEnv);
         container.preInitialize();
         //
-        DefaultBindInfoProviderAdapter<AopBindInfoAdapter> adapter = container.getBindInfoContainer().createInfoAdapter(AopBindInfoAdapter.class);
+        DefaultBindInfoProviderAdapter<AopBindInfoAdapter> adapter = container.getBindInfoContainer().createInfoAdapter(AopBindInfoAdapter.class, null);
         Predicate<Class<?>> ma = aClass -> true;
         Predicate<Method> mb = aMethod -> true;
         MethodInterceptor interceptor = new MyAopInterceptor();

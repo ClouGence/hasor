@@ -15,10 +15,19 @@
  */
 package net.hasor.core.spi;
 /**
- *
+ * 执行 Spi 调用，扩展 SpiResultCaller 接口。并提供了可以无返回值的形式。
  * @version : 2019年06月20日
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface SpiCaller<T> {
-    public void doSpi(T listener) throws Throwable;
+public interface SpiCaller<T, R> {
+    public R doResultSpi(T listener) throws Throwable;
+
+    public interface SpiCallerWithoutResult<T> extends SpiCaller<T, Object> {
+        public default Object doResultSpi(T listener) throws Throwable {
+            this.doSpi(listener);
+            return null;
+        }
+
+        public void doSpi(T listener) throws Throwable;
+    }
 }

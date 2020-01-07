@@ -15,7 +15,7 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.container.BindInfoContainer;
-import net.hasor.core.container.ScopContainer;
+import net.hasor.core.container.ScopeContainer;
 import net.hasor.core.container.SpiCallerContainer;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
@@ -45,7 +45,7 @@ public class AbstractBinderDataTest {
         this.reference = new AtomicReference<>();
         //
         BindInfoContainer bindInfoContainer = PowerMockito.mock(BindInfoContainer.class);
-        PowerMockito.when(bindInfoContainer.createInfoAdapter((Class<?>) any())).thenAnswer((Answer<Object>) invocationOnMock -> {
+        PowerMockito.when(bindInfoContainer.createInfoAdapter((Class<?>) any(), any())).thenAnswer((Answer<Object>) invocationOnMock -> {
             Class<Object> targetType = (Class<Object>) invocationOnMock.getArguments()[0];
             DefaultBindInfoProviderAdapter<Object> adapter = new DefaultBindInfoProviderAdapter<>(targetType);
             Predicate<Class<?>> defaultMatcher = (ignoreMatcher == null) ? (aClass -> false) : ignoreMatcher;
@@ -60,9 +60,9 @@ public class AbstractBinderDataTest {
         PowerMockito.when(factory.getBindInfoContainer()).thenReturn(bindInfoContainer);
         //
         SpiCallerContainer spiContainer = new SpiCallerContainer();
-        ScopContainer scopFactory = new ScopContainer(spiContainer);
+        ScopeContainer scopFactory = new ScopeContainer(spiContainer);
         scopFactory.init();
-        PowerMockito.when(factory.getScopContainer()).thenReturn(scopFactory);
+        PowerMockito.when(factory.getScopeContainer()).thenReturn(scopFactory);
         this.binder = new ApiBinderWrap(new AbstractBinder(new StandardEnvironment(null)) {
             @Override
             protected BindInfoBuilderFactory containerFactory() {

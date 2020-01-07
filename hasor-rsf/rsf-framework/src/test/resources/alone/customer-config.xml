@@ -3,7 +3,7 @@
 
     <hasor.environmentVar>
         <!-- RSF对外提供服务的IP -->
-        <RSF_SERVICE_IP>127.0.0.1</RSF_SERVICE_IP>
+        <RSF_SERVICE_IP>0.0.0.0</RSF_SERVICE_IP>
 
         <!-- Telnet 控制台端口 -->
         <TCONSOLE_PORT>2170</TCONSOLE_PORT>

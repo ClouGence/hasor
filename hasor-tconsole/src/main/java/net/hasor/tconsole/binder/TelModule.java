@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
-import net.hasor.core.Environment;
-import net.hasor.core.container.BindInfoContainer;
-import net.hasor.core.container.ScopeContainer;
-import net.hasor.core.container.SpiCallerContainer;
+package net.hasor.tconsole.binder;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Module;
 
 /**
- *
- * @version : 2014年7月2日
+ * tConsol
+ * @version : 2020年01月07日
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface BindInfoBuilderFactory {
-    public Environment getEnvironment();
+@FunctionalInterface
+public interface TelModule extends Module {
+    @Override
+    public default void loadModule(final ApiBinder apiBinder) throws Throwable {
+        ConsoleApiBinder webApiBinder = apiBinder.tryCast(ConsoleApiBinder.class);
+        if (webApiBinder == null) {
+            return;
+        }
+        this.loadModule(webApiBinder);
+    }
 
-    public SpiCallerContainer getSpiContainer();
-
-    public BindInfoContainer getBindInfoContainer();
-
-    public ScopeContainer getScopeContainer();
+    public void loadModule(ConsoleApiBinder apiBinder) throws Throwable;
 }

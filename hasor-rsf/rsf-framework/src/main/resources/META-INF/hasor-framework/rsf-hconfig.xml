@@ -15,7 +15,7 @@
         <RSF_APP_UNIT>default</RSF_APP_UNIT>
 
         <!-- RSF对外提供服务的IP -->
-        <RSF_SERVICE_IP>local</RSF_SERVICE_IP>
+        <RSF_SERVICE_IP>0.0.0.0</RSF_SERVICE_IP>
 
         <!-- RSF对外提供服务的服务端口（可以配置 0 用来关闭 RSF连接器） -->
         <RSF_SERVICE_PORT>2181</RSF_SERVICE_PORT>

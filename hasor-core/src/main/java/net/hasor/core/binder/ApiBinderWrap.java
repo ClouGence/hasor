@@ -15,6 +15,7 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.*;
+import net.hasor.core.spi.SpiChainProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,6 @@ public class ApiBinderWrap implements ApiBinder {
     protected static Logger    logger = LoggerFactory.getLogger(ApiBinderWrap.class);
     private final    ApiBinder apiBinder;
 
-    //
     public ApiBinderWrap(ApiBinder apiBinder) {
         this.apiBinder = Objects.requireNonNull(apiBinder);
     }
@@ -104,7 +104,17 @@ public class ApiBinderWrap implements ApiBinder {
         this.apiBinder.bindSpiListener(spiType, listener);
     }
 
+    @Override
+    public <T extends EventListener> void bindSpiChainProcessor(Class<T> spiType, Supplier<SpiChainProcessor<?>> chainProcessorSupplier) {
+        this.apiBinder.bindSpiChainProcessor(spiType, chainProcessorSupplier);
+    }
+
     public <T extends Scope> Supplier<T> bindScope(String scopeName, Supplier<T> scopeProvider) {
         return this.apiBinder.bindScope(scopeName, scopeProvider);
+    }
+
+    @Override
+    public Supplier<Scope> findScope(String scopeName) {
+        return this.apiBinder.findScope(scopeName);
     }
 }

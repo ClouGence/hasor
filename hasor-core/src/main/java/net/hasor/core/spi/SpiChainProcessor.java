@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
-import net.hasor.core.Environment;
-import net.hasor.core.container.BindInfoContainer;
-import net.hasor.core.container.ScopeContainer;
-import net.hasor.core.container.SpiCallerContainer;
-
+package net.hasor.core.spi;
 /**
- *
- * @version : 2014年7月2日
+ * SPI 调用链处理器。
+ * @version : 2013-11-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface BindInfoBuilderFactory {
-    public Environment getEnvironment();
+public interface SpiChainProcessor<R> {
+    public interface SpiChainInvocation<R> {
+        /** 上一个 Spi 的结果 */
+        public R lastSpiResult();
 
-    public SpiCallerContainer getSpiContainer();
+        /** 调用 SPI 得到结果 */
+        public R doSpi() throws Throwable;
+    }
 
-    public BindInfoContainer getBindInfoContainer();
-
-    public ScopeContainer getScopeContainer();
+    public R nextSpi(SpiChainInvocation<R> invocation) throws Throwable;
 }

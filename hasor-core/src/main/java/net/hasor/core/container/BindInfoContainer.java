@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
@@ -112,7 +113,7 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
      * 创建{@link DefaultBindInfoProviderAdapter}，交给外层用于Bean定义。
      * @param bindType 声明的类型。
      */
-    public <T> DefaultBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType) {
+    public <T> DefaultBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType, ApiBinder apiBinder) {
         if (this.isInit()) {
             throw new IllegalStateException("container has been started.");
         }
@@ -122,7 +123,7 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
         adapter.setBindID(adapter.getBindID());
         // .触发 SPI
         this.spiCallerContainer.callSpi(BindInfoProvisionListener.class, listener -> {
-            listener.newBindInfo(adapter);
+            listener.newBindInfo(adapter, apiBinder);
         });
         return adapter;
     }

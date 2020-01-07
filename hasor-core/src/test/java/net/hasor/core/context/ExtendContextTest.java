@@ -22,7 +22,7 @@ import java.io.IOException;
 
 public class ExtendContextTest {
     @Test
-    public void test1() throws IOException {
+    public void test1() {
         AppContext appContext1 = Hasor.create().mainSettingWith("/net_hasor_core_context/startup1_exter.xml").build();
         assert appContext1.getInstance(String.class).equals("config");
         //

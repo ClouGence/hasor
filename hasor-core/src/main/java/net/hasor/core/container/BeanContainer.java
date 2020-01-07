@@ -24,10 +24,7 @@ import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.provider.SingleProvider;
 import net.hasor.core.scope.PrototypeScope;
-import net.hasor.core.spi.AppContextAware;
-import net.hasor.core.spi.BindInfoAware;
-import net.hasor.core.spi.CreaterProvisionListener;
-import net.hasor.core.spi.InjectMembers;
+import net.hasor.core.spi.*;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.ClassUtils;
@@ -55,14 +52,14 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
     private Environment                                 environment        = null;
     private SpiCallerContainer                          spiCallerContainer = null;
     private BindInfoContainer                           bindInfoContainer  = null;
-    private ScopContainer                               scopContainer      = null;
+    private ScopeContainer                              scopeContainer     = null;
     private ConcurrentHashMap<Class<?>, AopClassConfig> classEngineMap     = null;
 
     public BeanContainer(Environment environment) {
         this.environment = Objects.requireNonNull(environment, "need Environment.");
         this.spiCallerContainer = new SpiCallerContainer();
         this.bindInfoContainer = new BindInfoContainer(spiCallerContainer);
-        this.scopContainer = new ScopContainer(spiCallerContainer);
+        this.scopeContainer = new ScopeContainer(spiCallerContainer);
         this.classEngineMap = new ConcurrentHashMap<>();
     }
 
@@ -82,8 +79,8 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
     }
 
     @Override
-    public ScopContainer getScopContainer() {
-        return this.scopContainer;
+    public ScopeContainer getScopeContainer() {
+        return this.scopeContainer;
     }
 
     /*-------------------------------------------------------------------------------------------*/
@@ -266,11 +263,20 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         // .作用域
         Supplier<Scope>[] scopeProvider = null;
         if (bindInfo != null) {
-            scopeProvider = this.scopContainer.collectScope(bindInfo);
+            scopeProvider = this.scopeContainer.collectScope(bindInfo);
         }
         if (ArrayUtils.isEmpty(scopeProvider)) {
-            scopeProvider = this.scopContainer.collectScope(targetType);
+            scopeProvider = this.scopeContainer.collectScope(targetType);
         }
+        Supplier<Scope>[] tmpScopeProvider = scopeProvider;
+        scopeProvider = this.spiCallerContainer.callResultSpi(CollectScopeListener.class, listener -> {
+            if (bindInfo != null) {
+                return listener.collectScope(bindInfo, appContext, tmpScopeProvider);
+            } else {
+                return listener.collectScope(targetType, appContext, tmpScopeProvider);
+            }
+        }, tmpScopeProvider);
+        //
         Scope[] scope = null;
         if (ArrayUtils.isNotEmpty(scopeProvider)) {
             scope = Arrays.stream(scopeProvider).map(supplier -> {
@@ -507,9 +513,9 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         if (destroyMethod != null && Modifier.isPublic(destroyMethod.getModifiers())) {
             boolean single = false;
             if (bindInfo != null) {
-                single = getScopContainer().isSingleton(bindInfo);
+                single = getScopeContainer().isSingleton(bindInfo);
             } else {
-                single = getScopContainer().isSingleton(targetObject.getClass());
+                single = getScopeContainer().isSingleton(targetObject.getClass());
             }
             if (single) {
                 HasorUtils.pushShutdownListener(appContext.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
@@ -521,7 +527,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
 
     public void preInitialize() {
         tryInit(this.spiCallerContainer);
-        tryInit(this.scopContainer);
+        tryInit(this.scopeContainer);
     }
 
     @Override
@@ -532,7 +538,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         this.bindInfoContainer.forEach(bindInfo -> {
             DefaultBindInfoProviderAdapter<?> infoAdapter = (DefaultBindInfoProviderAdapter<?>) bindInfo;
             Method initMethod = findInitMethod(infoAdapter.getBindType(), infoAdapter); // 配置了init方法
-            boolean singleton = scopContainer.isSingleton(bindInfo);                    // 配置了单例（只有单例的才会在容器启动时调用）
+            boolean singleton = scopeContainer.isSingleton(bindInfo);                    // 配置了单例（只有单例的才会在容器启动时调用）
             if (initMethod != null && singleton) {
                 // 当前为 doInitialize 阶段，需要在 doStart 阶段开始调用 Bean 的 init。执行 init 只需要 get 它们。
                 HasorUtils.pushStartListener(this.environment, (EventListener<AppContext>) (event, eventData) -> {
@@ -546,7 +552,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
     protected void doClose() {
         this.classEngineMap.clear();
         tryClose(this.bindInfoContainer);
-        tryClose(this.scopContainer);
+        tryClose(this.scopeContainer);
         tryClose(this.spiCallerContainer);
     }
 

@@ -17,9 +17,9 @@ package net.hasor.utils.resource.loader;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.resource.ResourceLoader;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
 /**
  * 用于创建一个可以从classpath中获取资源的ResourceLoader。
  * @version : 2013-6-6
@@ -28,24 +28,29 @@ import java.net.URL;
 public class ClassPathResourceLoader implements ResourceLoader {
     private String      packageName = null;
     private ClassLoader classLoader = null;
+
     /***/
     public ClassPathResourceLoader(String packageName) {
         this.packageName = packageName;
         this.classLoader = Thread.currentThread().getContextClassLoader();
     }
+
     /***/
     public ClassPathResourceLoader(String packageName, ClassLoader classLoader) {
         this.packageName = packageName;
         this.classLoader = classLoader;
     }
+
     /**获取资源获取的包路径。*/
     public String getPackageName() {
         return this.packageName;
     }
+
     /**获取装载资源使用的类装载器。*/
     public ClassLoader getClassLoader() {
         return this.classLoader;
     }
+
     private String formatResourcePath(String resourcePath) {
         String path = this.packageName + (resourcePath.charAt(0) == '/' ? resourcePath : "/" + resourcePath);
         path = path.replaceAll("/{2}", "/");
@@ -54,13 +59,15 @@ public class ClassPathResourceLoader implements ResourceLoader {
         }
         return path;
     }
+
     public InputStream getResourceAsStream(String resourcePath) {
         if (StringUtils.isBlank(resourcePath)) {
             return null;
         }
         return this.classLoader.getResourceAsStream(formatResourcePath(resourcePath));
     }
-    public boolean canModify(String resourcePath) throws IOException {
+
+    public boolean canModify(String resourcePath) {
         if (StringUtils.isBlank(resourcePath)) {
             return false;
         }
@@ -70,6 +77,7 @@ public class ClassPathResourceLoader implements ResourceLoader {
         }
         return false;
     }
+
     public boolean exist(String resourcePath) {
         if (StringUtils.isBlank(resourcePath)) {
             return false;
@@ -77,8 +85,8 @@ public class ClassPathResourceLoader implements ResourceLoader {
         URL url = this.classLoader.getResource(formatResourcePath(resourcePath));
         return !(url == null);
     }
-    public URL getResource(String resourcePath) throws IOException {
-        URL url = this.classLoader.getResource(formatResourcePath(resourcePath));
-        return url;
+
+    public URL getResource(String resourcePath) {
+        return this.classLoader.getResource(formatResourcePath(resourcePath));
     }
 }

@@ -16,6 +16,7 @@
 package net.hasor.core;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.AppContextAware;
+import net.hasor.core.spi.SpiChainProcessor;
 
 import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
@@ -240,6 +241,14 @@ public interface ApiBinder {
     /** 添加SPI监听器 */
     public <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<T> listener);
 
+    /** 绑定SPI监听器处理器 */
+    public default <T extends EventListener> void bindSpiChainProcessor(Class<T> spiType, SpiChainProcessor<?> chainProcessorSupplier) {
+        this.bindSpiChainProcessor(spiType, InstanceProvider.of(chainProcessorSupplier));
+    }
+
+    /** 绑定SPI监听器处理器 */
+    public <T extends EventListener> void bindSpiChainProcessor(Class<T> spiType, Supplier<SpiChainProcessor<?>> chainProcessorSupplier);
+
     /**
      * 注册作用域。
      * @param scopeType 作用域名称
@@ -273,6 +282,14 @@ public interface ApiBinder {
      * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
      */
     public <T extends Scope> Supplier<T> bindScope(String scopeName, Supplier<T> scopeSupplier);
+
+    /** 根据类型查找作用域 */
+    public default Supplier<Scope> findScope(Class<? extends Annotation> scopeType) {
+        return findScope(scopeType.getName());
+    }
+
+    /** 根据名字查找作用域 */
+    public Supplier<Scope> findScope(String scopeName);
 
     public default <T> Supplier<T> getProvider(Class<T> targetType) {
         Objects.requireNonNull(targetType, "targetType is null.");

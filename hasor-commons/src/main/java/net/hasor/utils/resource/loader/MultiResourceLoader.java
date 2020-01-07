@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  *
  * @version : 2015年7月1日
@@ -31,10 +32,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class MultiResourceLoader implements ResourceLoader {
     private final List<ResourceLoader>                  loaders           = new CopyOnWriteArrayList<ResourceLoader>();
     private final ConcurrentMap<String, ResourceLoader> lastLoaderForName = new ConcurrentHashMap<String, ResourceLoader>();
+
     /** Creates a new empty multi resource Loader. */
     public MultiResourceLoader() {
         this(new ResourceLoader[0]);
     }
+
     /**
      * Creates a new multi resource Loader that will use the specified loaders.
      * @param loaders the loaders that are used to load resources. 
@@ -44,12 +47,14 @@ public class MultiResourceLoader implements ResourceLoader {
             this.loaders.add(loaders[i]);
         }
     }
+
     /**添加一个{@link ResourceLoader}。*/
     public void addResourceLoader(ResourceLoader loader) {
         if (!loaders.contains(loader)) {
             this.loaders.add(loader);
         }
     }
+
     public InputStream getResourceAsStream(String resourcePath) throws IOException {
         ResourceLoader loader = findLoader(resourcePath);
         if (loader != null) {
@@ -58,7 +63,7 @@ public class MultiResourceLoader implements ResourceLoader {
         }
         return null;
     }
-    //
+
     protected ResourceLoader findLoader(String resourcePath) throws IOException {
         ResourceLoader loader = this.lastLoaderForName.get(resourcePath);
         if (loader == null) {
@@ -73,11 +78,11 @@ public class MultiResourceLoader implements ResourceLoader {
         }
         return loader;
     }
-    //
+
     public boolean exist(String resourcePath) throws IOException {
         return findLoader(resourcePath) != null;
     }
-    //
+
     public URL getResource(String resourcePath) throws IOException {
         ResourceLoader loader = findLoader(resourcePath);
         if (loader != null) {

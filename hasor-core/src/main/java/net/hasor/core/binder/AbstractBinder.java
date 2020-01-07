@@ -18,6 +18,7 @@ import net.hasor.core.*;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.provider.InstanceProvider;
+import net.hasor.core.spi.SpiChainProcessor;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
@@ -76,16 +77,16 @@ public abstract class AbstractBinder implements ApiBinder {
 
     @Override
     public boolean isSingleton(BindInfo<?> bindInfo) {
-        return containerFactory().getScopContainer().isSingleton(bindInfo);
+        return containerFactory().getScopeContainer().isSingleton(bindInfo);
     }
 
     @Override
     public boolean isSingleton(Class<?> targetType) {
         BindInfo<?> bindInfo = containerFactory().getBindInfoContainer().findBindInfo("", targetType);
         if (bindInfo != null) {
-            return containerFactory().getScopContainer().isSingleton(bindInfo);
+            return containerFactory().getScopeContainer().isSingleton(bindInfo);
         } else {
-            return containerFactory().getScopContainer().isSingleton(targetType);
+            return containerFactory().getScopeContainer().isSingleton(targetType);
         }
     }
 
@@ -95,7 +96,7 @@ public abstract class AbstractBinder implements ApiBinder {
     //
     @Override
     public <T> NamedBindingBuilder<T> bindType(final Class<T> type) {
-        BindInfoBuilder<T> typeBuilder = this.containerFactory().getBindInfoContainer().createInfoAdapter(type);
+        BindInfoBuilder<T> typeBuilder = this.containerFactory().getBindInfoContainer().createInfoAdapter(type, this);
         return new BindingBuilderImpl<>(typeBuilder);
     }
 
@@ -105,8 +106,18 @@ public abstract class AbstractBinder implements ApiBinder {
     }
 
     @Override
+    public <T extends EventListener> void bindSpiChainProcessor(Class<T> spiType, Supplier<SpiChainProcessor<?>> chainProcessorSupplier) {
+        this.containerFactory().getSpiContainer().bindSpiChainProcessor(spiType, chainProcessorSupplier);
+    }
+
+    @Override
     public <T extends Scope> Supplier<T> bindScope(final String scopeName, final Supplier<T> scopeProvider) {
-        return this.containerFactory().getScopContainer().registerScopeProvider(scopeName, scopeProvider);
+        return this.containerFactory().getScopeContainer().registerScopeProvider(scopeName, scopeProvider);
+    }
+
+    @Override
+    public Supplier<Scope> findScope(String scopeName) {
+        return this.containerFactory().getScopeContainer().findScope(scopeName);
     }
 
     /*----------------------------------------------------------------------------------------Aop*/
@@ -262,7 +273,7 @@ public abstract class AbstractBinder implements ApiBinder {
         @Override
         public OptionPropertyBindingBuilder<T> toScope(final String... scopeName) {
             Supplier[] supplierArrays = Arrays.stream(scopeName).map(name -> {
-                Supplier<Scope> scope = containerFactory().getScopContainer().findScope(name);
+                Supplier<Scope> scope = containerFactory().getScopeContainer().findScope(name);
                 if (scope == null) {
                     throw new IllegalStateException("scope '" + name + "' Have not yet registered");
                 }

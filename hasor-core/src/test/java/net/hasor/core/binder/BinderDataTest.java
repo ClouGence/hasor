@@ -383,11 +383,11 @@ public class BinderDataTest extends AbstractBinderDataTest {
         //
         container.init();
         BindInfo<Object> bindInfo1 = container.getBindInfoContainer().findBindInfo("aa");
-        Supplier<Scope>[] collectScope1 = container.getScopContainer().collectScope(bindInfo1);
+        Supplier<Scope>[] collectScope1 = container.getScopeContainer().collectScope(bindInfo1);
         assert collectScope1[0].get() == myScope1;
         //
         BindInfo<Object> bindInfo2 = container.getBindInfoContainer().findBindInfo("bb");
-        Supplier<Scope>[] collectScope2 = container.getScopContainer().collectScope(bindInfo2);
+        Supplier<Scope>[] collectScope2 = container.getScopeContainer().collectScope(bindInfo2);
         assert collectScope2[0].get() == myScope2;
     }
 
@@ -439,7 +439,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
         //
         container.init();
         BindInfo<Object> bindInfo = container.getBindInfoContainer().findBindInfo("aa");
-        Supplier<Scope>[] collectScope = container.getScopContainer().collectScope(bindInfo);
+        Supplier<Scope>[] collectScope = container.getScopeContainer().collectScope(bindInfo);
         assert collectScope[0].get() == myScope1;
         assert collectScope[1].get() == myScope2;
     }

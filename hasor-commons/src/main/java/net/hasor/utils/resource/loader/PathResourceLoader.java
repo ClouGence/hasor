@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
 /**
  * 将一个File对象所代表的路径作为根路径，资源获取相对于该路径下。
  * @version : 2011-9-17
@@ -28,14 +29,17 @@ import java.net.URL;
  */
 public class PathResourceLoader implements ResourceLoader {
     private String dirPath = null;
+
     public PathResourceLoader(String dirPath) {
         this.dirPath = dirPath;
     }
+
     private String formatResourcePath(String resourcePath) {
         String $resourcePath = this.dirPath + "/" + resourcePath;
         $resourcePath = $resourcePath.replaceAll("/{2}", "/");
         return $resourcePath;
     }
+
     public InputStream getResourceAsStream(String resourcePath) throws IOException {
         resourcePath = formatResourcePath(resourcePath);
         File file = new File(resourcePath);
@@ -44,11 +48,13 @@ public class PathResourceLoader implements ResourceLoader {
         }
         return null;
     }
+
     public boolean exist(String resourcePath) {
         resourcePath = formatResourcePath(resourcePath);
         File file = new File(resourcePath);
         return (file.exists() && file.isFile());
     }
+
     public URL getResource(String resourcePath) throws IOException {
         File file = new File(resourcePath);
         if (file.exists() && file.isFile()) {

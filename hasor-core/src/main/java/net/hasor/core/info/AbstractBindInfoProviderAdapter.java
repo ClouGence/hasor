@@ -113,6 +113,9 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
     }
 
     public void addScopeProvider(final Supplier<Scope> scopeProvider) {
+        if (scopeProvider == null) {
+            return;
+        }
         if (this.scopeProvider == null) {
             this.scopeProvider = new ArrayList<>();
         }

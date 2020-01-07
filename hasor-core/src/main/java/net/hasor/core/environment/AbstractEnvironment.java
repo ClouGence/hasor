@@ -101,7 +101,7 @@ public abstract class AbstractEnvironment implements Environment {
         return null;
     }
     // ------------------------------------------------------------------------------- findClass */
-    
+
     @Override
     public Set<Class<?>> findClass(final Class<?> featureType) {
         return this.findClass(featureType, this.spanPackage);

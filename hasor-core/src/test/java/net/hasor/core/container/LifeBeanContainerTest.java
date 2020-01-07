@@ -108,9 +108,9 @@ public class LifeBeanContainerTest {
         BeanContainer container = new BeanContainer(mockEnv);
         container.preInitialize();
         //
-        DefaultBindInfoProviderAdapter<StaticPublicCallInitBean> adapter = container.getBindInfoContainer().createInfoAdapter(StaticPublicCallInitBean.class);
+        DefaultBindInfoProviderAdapter<StaticPublicCallInitBean> adapter = container.getBindInfoContainer().createInfoAdapter(StaticPublicCallInitBean.class, null);
         adapter.initMethod("init");
-        adapter.addScopeProvider(container.getScopContainer().findScope(Singleton.class));
+        adapter.addScopeProvider(container.getScopeContainer().findScope(Singleton.class.getName()));
         //
         container.init();
         //

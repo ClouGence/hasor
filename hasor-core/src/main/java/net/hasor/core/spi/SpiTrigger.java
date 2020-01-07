@@ -15,6 +15,8 @@
  */
 
 package net.hasor.core.spi;
+import net.hasor.core.spi.SpiCaller.SpiCallerWithoutResult;
+
 import java.util.EventListener;
 
 /**
@@ -24,5 +26,10 @@ import java.util.EventListener;
  */
 public interface SpiTrigger {
     /** 执行 SPI */
-    public <T extends EventListener> void callSpi(Class<T> spiType, SpiCaller<T> spiCaller);
+    public default <T extends EventListener> void callSpi(Class<T> spiType, SpiCallerWithoutResult<T> spiCaller) {
+        callResultSpi(spiType, spiCaller, null);
+    }
+
+    /** 执行 SPI */
+    public <R, T extends EventListener> R callResultSpi(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult);
 }

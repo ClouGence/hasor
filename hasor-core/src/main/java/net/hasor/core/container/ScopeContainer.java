@@ -32,13 +32,13 @@ import java.util.function.Supplier;
  * @version : 2019年06月20日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ScopContainer extends AbstractContainer {
+public class ScopeContainer extends AbstractContainer {
     private SingletonScope                             singletonScope = new SingletonScope();
     private PrototypeScope                             prototypeScope = new PrototypeScope();
     private SpiCallerContainer                         spiContainer   = null;
     private ConcurrentHashMap<String, Supplier<Scope>> scopeMapping   = new ConcurrentHashMap<>();
 
-    public ScopContainer(SpiCallerContainer spiContainer) {
+    public ScopeContainer(SpiCallerContainer spiContainer) {
         this.spiContainer = Objects.requireNonNull(spiContainer, "SpiCallerContainer si null.");
     }
 
@@ -99,14 +99,6 @@ public class ScopContainer extends AbstractContainer {
      */
     public Supplier<Scope> findScope(String scopeName) {
         return this.scopeMapping.get(scopeName);
-    }
-
-    /**
-     * 查找某个作用域。
-     * @param scopeType 作用域名称
-     */
-    public Supplier<Scope> findScope(Class<?> scopeType) {
-        return this.scopeMapping.get(scopeType.getName());
     }
 
     /**

@@ -106,11 +106,11 @@ public class ContainerUtilsTest {
     public void initMethodTest2() {
         BindInfoContainer infoContainer = new BindInfoContainer(new SpiCallerContainer());
         //
-        DefaultBindInfoProviderAdapter<NonePrivateCallInitBean> adapter_1 = infoContainer.createInfoAdapter(NonePrivateCallInitBean.class);
+        DefaultBindInfoProviderAdapter<NonePrivateCallInitBean> adapter_1 = infoContainer.createInfoAdapter(NonePrivateCallInitBean.class, null);
         adapter_1.initMethod("init");
-        DefaultBindInfoProviderAdapter<NonePublicCallInitBean> adapter_2 = infoContainer.createInfoAdapter(NonePublicCallInitBean.class);
+        DefaultBindInfoProviderAdapter<NonePublicCallInitBean> adapter_2 = infoContainer.createInfoAdapter(NonePublicCallInitBean.class, null);
         adapter_2.initMethod("init");
-        DefaultBindInfoProviderAdapter<WithoutAnnoCallInitBean> adapter_3 = infoContainer.createInfoAdapter(WithoutAnnoCallInitBean.class);
+        DefaultBindInfoProviderAdapter<WithoutAnnoCallInitBean> adapter_3 = infoContainer.createInfoAdapter(WithoutAnnoCallInitBean.class, null);
         adapter_3.initMethod("init");
         //
         //
@@ -123,7 +123,7 @@ public class ContainerUtilsTest {
     public void initMethodTest3() throws NoSuchMethodException {
         BindInfoContainer infoContainer = new BindInfoContainer(new SpiCallerContainer());
         //
-        DefaultBindInfoProviderAdapter<NonePublicCallInitBean> adapter = infoContainer.createInfoAdapter(NonePublicCallInitBean.class);
+        DefaultBindInfoProviderAdapter<NonePublicCallInitBean> adapter = infoContainer.createInfoAdapter(NonePublicCallInitBean.class, null);
         adapter.initMethod("isInit");
         //
         Method initMethod = NonePublicCallInitBean.class.getDeclaredMethod("isInit");
@@ -143,11 +143,11 @@ public class ContainerUtilsTest {
     public void destroyMethodTest2() {
         BindInfoContainer infoContainer = new BindInfoContainer(new SpiCallerContainer());
         //
-        DefaultBindInfoProviderAdapter<NonePrivateCallDestroyBean> adapter_1 = infoContainer.createInfoAdapter(NonePrivateCallDestroyBean.class);
+        DefaultBindInfoProviderAdapter<NonePrivateCallDestroyBean> adapter_1 = infoContainer.createInfoAdapter(NonePrivateCallDestroyBean.class, null);
         adapter_1.destroyMethod("destroy");
-        DefaultBindInfoProviderAdapter<NonePublicCallDestroyBean> adapter_2 = infoContainer.createInfoAdapter(NonePublicCallDestroyBean.class);
+        DefaultBindInfoProviderAdapter<NonePublicCallDestroyBean> adapter_2 = infoContainer.createInfoAdapter(NonePublicCallDestroyBean.class, null);
         adapter_2.destroyMethod("destroy");
-        DefaultBindInfoProviderAdapter<WithoutAnnoCallDestroyBean> adapter_3 = infoContainer.createInfoAdapter(WithoutAnnoCallDestroyBean.class);
+        DefaultBindInfoProviderAdapter<WithoutAnnoCallDestroyBean> adapter_3 = infoContainer.createInfoAdapter(WithoutAnnoCallDestroyBean.class, null);
         adapter_3.destroyMethod("destroy");
         //
         //
@@ -160,7 +160,7 @@ public class ContainerUtilsTest {
     public void destroyMethodTest3() throws NoSuchMethodException {
         BindInfoContainer infoContainer = new BindInfoContainer(new SpiCallerContainer());
         //
-        DefaultBindInfoProviderAdapter<NonePublicCallDestroyBean> adapter = infoContainer.createInfoAdapter(NonePublicCallDestroyBean.class);
+        DefaultBindInfoProviderAdapter<NonePublicCallDestroyBean> adapter = infoContainer.createInfoAdapter(NonePublicCallDestroyBean.class, null);
         adapter.destroyMethod("isDestroy");
         //
         Method destroyMethod = NonePublicCallDestroyBean.class.getDeclaredMethod("isDestroy");

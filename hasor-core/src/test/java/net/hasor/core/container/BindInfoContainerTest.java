@@ -35,7 +35,7 @@ public class BindInfoContainerTest {
         //
         String beanID = "abc";
         assert infoContainer.findBindInfo(beanID) == null;
-        BindInfoBuilder<PojoBean> beanBuilder = infoContainer.createInfoAdapter(PojoBean.class);
+        BindInfoBuilder<PojoBean> beanBuilder = infoContainer.createInfoAdapter(PojoBean.class, null);
         beanBuilder.setBindID(beanID);
         assert infoContainer.findBindInfo(beanID) != null;
         assert infoContainer.findBindInfo(beanID).getBindType().equals(PojoBean.class);
@@ -49,7 +49,7 @@ public class BindInfoContainerTest {
         assert infoContainer.findBindInfoList(List.class).isEmpty();
         assert infoContainer.findBindInfoList(PojoBean.class).isEmpty();
         //
-        infoContainer.createInfoAdapter(PojoBean.class);
+        infoContainer.createInfoAdapter(PojoBean.class, null);
         //
         assert infoContainer.findBindInfoList(List.class).isEmpty();
         assert infoContainer.findBindInfoList(PojoBean.class).size() == 1;
@@ -66,11 +66,11 @@ public class BindInfoContainerTest {
         assert infoContainer.findBindInfo(beanName2, PojoBean.class) == null;
         assert infoContainer.findBindInfo(null, PojoBean.class) == null;
         //
-        BindInfoBuilder<PojoBean> beanBuilder1 = infoContainer.createInfoAdapter(PojoBean.class);
+        BindInfoBuilder<PojoBean> beanBuilder1 = infoContainer.createInfoAdapter(PojoBean.class, null);
         beanBuilder1.setBindName(beanName1);
-        BindInfoBuilder<PojoBean> beanBuilder2 = infoContainer.createInfoAdapter(PojoBean.class);
+        BindInfoBuilder<PojoBean> beanBuilder2 = infoContainer.createInfoAdapter(PojoBean.class, null);
         beanBuilder2.setBindName(beanName2);
-        BindInfoBuilder<PojoBean> beanBuilder3 = infoContainer.createInfoAdapter(PojoBean.class);
+        BindInfoBuilder<PojoBean> beanBuilder3 = infoContainer.createInfoAdapter(PojoBean.class, null);
         //
         assert infoContainer.findBindInfo(beanName1, PojoBean.class) == beanBuilder1;
         assert infoContainer.findBindInfo(beanName2, PojoBean.class) == beanBuilder2;
@@ -86,7 +86,7 @@ public class BindInfoContainerTest {
         infoContainer.forEach(objs1::add);
         assert objs1.isEmpty();
         //
-        infoContainer.createInfoAdapter(PojoBean.class);
+        infoContainer.createInfoAdapter(PojoBean.class, null);
         //
         ArrayList<Object> objs2 = new ArrayList<>();
         infoContainer.forEach(objs2::add);
@@ -98,11 +98,11 @@ public class BindInfoContainerTest {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         BindInfoContainer infoContainer = new BindInfoContainer(spiCallerContainer);
         //
-        infoContainer.createInfoAdapter(PojoBean.class);
+        infoContainer.createInfoAdapter(PojoBean.class, null);
         infoContainer.init();
         //
         try {
-            infoContainer.createInfoAdapter(PojoBean.class);
+            infoContainer.createInfoAdapter(PojoBean.class, null);
             assert false;
         } catch (Exception e) {
             assert e.getMessage().equals("container has been started.");
@@ -116,8 +116,8 @@ public class BindInfoContainerTest {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         BindInfoContainer infoContainer = new BindInfoContainer(spiCallerContainer);
         //
-        infoContainer.createInfoAdapter(PojoBean.class);
-        infoContainer.createInfoAdapter(PojoBean.class);
+        infoContainer.createInfoAdapter(PojoBean.class, null);
+        infoContainer.createInfoAdapter(PojoBean.class, null);
         //
         try {
             infoContainer.init();
@@ -132,10 +132,10 @@ public class BindInfoContainerTest {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         BindInfoContainer infoContainer = new BindInfoContainer(spiCallerContainer);
         //
-        infoContainer.createInfoAdapter(PojoBean.class).setBindName("abc_1");
+        infoContainer.createInfoAdapter(PojoBean.class, null).setBindName("abc_1");
         //
         try {
-            infoContainer.createInfoAdapter(PojoBean.class).setBindName("abc_1");
+            infoContainer.createInfoAdapter(PojoBean.class, null).setBindName("abc_1");
             assert false;
         } catch (Exception e) {
             assert e.getMessage().startsWith("duplicate bind -> bindName '");
@@ -147,10 +147,10 @@ public class BindInfoContainerTest {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         BindInfoContainer infoContainer = new BindInfoContainer(spiCallerContainer);
         //
-        infoContainer.createInfoAdapter(PojoBean.class).setBindID("abc_1");
+        infoContainer.createInfoAdapter(PojoBean.class, null).setBindID("abc_1");
         //
         try {
-            infoContainer.createInfoAdapter(PojoBean.class).setBindID("abc_1");
+            infoContainer.createInfoAdapter(PojoBean.class, null).setBindID("abc_1");
             assert false;
         } catch (Exception e) {
             assert e.getMessage().startsWith("duplicate bind -> id value is ");
@@ -164,7 +164,7 @@ public class BindInfoContainerTest {
         //
         try {
             // 因为原始值和新值相同因此不会引发异常
-            infoContainer.createInfoAdapter(PojoBean.class).setBindType(PojoBean.class);
+            infoContainer.createInfoAdapter(PojoBean.class, null).setBindType(PojoBean.class);
             assert true;
         } catch (Exception e) {
             assert false;
@@ -172,7 +172,7 @@ public class BindInfoContainerTest {
         //
         try {
             // 反射的方式设置一个新值，引发异常；
-            DefaultBindInfoProviderAdapter<SampleFace> adapter = infoContainer.createInfoAdapter(SampleFace.class);
+            DefaultBindInfoProviderAdapter<SampleFace> adapter = infoContainer.createInfoAdapter(SampleFace.class, null);
             Method writeMethod = BeanUtils.getWriteMethod("bindType", DefaultBindInfoProviderAdapter.class);
             writeMethod.invoke(adapter, SampleBean.class);
             assert false;

@@ -1,69 +1,22 @@
 # Core 容器框架
 
-&emsp;&emsp;Hasor 是一款基于 Java  语言的应用程序开发框架，它的核心设计目标是提供一个简单、且必要的环境给开发者。开发者可以在此基础上，通过 Hasor 强有力的粘合机制，构建出更加完善的应用场景。
-
-----------
-## 设计思想
-&emsp;&emsp;Hasor 提倡开发者充分利用编程语言的优势进行三方整合和模块化设计。同时 Hasor 也主要是通过这种“ 微内核+插件 ”的方式丰富开发所需的所有功能。
-
-&emsp;&emsp;决定避开 COC 原则的原因是，COC 虽然已约定的方式降低了整个框架的设计复杂度，但同时也最大限度的牺牲了框架的灵活性。缺少灵活性的框架在应用场景上会受到极大的制约。而 Hasor 的设计则更加通用，因此需要更多的灵活性。
-
-&emsp;&emsp;Hasor 强大的灵活性表现在模块整合能力上，对于某一个领域开发方面 Hasor 依然强调并力推 COC 。小而美的核心，大而全的生态圈是 Hasor 的目标。
-
-----------
-## 架构
-![架构](http://files.hasor.net/resources/185946_9TWV_1166271.png "架构")
+&emsp;&emsp;Core 具备 Aop 并兼容 JSR-330 的Bean容器框架。
 
 ----------
 ## 特性
-01. IoC/Aop编程模型，设计精巧，使用简单。
-02. COC原则的最佳实践，‘零’配置文件。
-03. 微内核 + 扩展，基于微内核，让您有无限的可能。
-04. 真正的零开发，解析项目特有的自定义 Xml 配置。
-05. 支持模板化配置文件，程序打包之后一套配置通吃(日常、预发、线上)以及其它各种环境。
-06. 内置事件机制，方便进行业务深度解耦，使业务逻辑更佳清晰。
-07. 支持log4j、logback等多种主流日志框架。
-08. 体积小，无第三方依赖。
+01. 提供一个支持IoC、Aop的Bean容器
+03. 基于 Module + ApiBinder 机制提供统一的插件入口
+04. 特色的 Xml 解析器。让你无需二次开发无需配置，直接读取自定义xml配置文件
+04. 支持 JSR-330
 
-
-# Boot 能力
-
-&emsp;&emsp;Boot 是一个快速帮助用户启动运行基于 Hasor 框架应用的启动器，您可以借用 Spring Boot 来启动 Hasor Boot
+# 样例
 
 ```java
-@SetupModule()
-public class ConsoleDemo implements Module {
+public class ConsoleDemo {
     public static void main(String[] args) {
-        HasorLauncher.run(ConsoleDemo.class, args);
-    }
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
-        System.out.println("HelloWord");
-    }
-}
-```
-
-
-&emsp;&emsp;下面是一个通过 HasorBoot 快速实现命令路由的例子。下面共有两个命令：hello、help 当执行 main 方法时 第 0 个参数作为路由命令的参数。
-```java
-@SetupModule()
-public class CommandDemo implements Module {
-    public static void main(String[] args) {
-        HasorLauncher.run(CommandDemo.class, args);
-    }
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
-        // - 注册命令
-        apiBinder.tryCast(BootBinder.class).addCommand(0, "hello", new HelloCommand());
-        apiBinder.tryCast(BootBinder.class).addCommand(0, "help", new HelloCommand());
-    }
-}
-public class HelloCommand implements CommandLauncher {
-    public void run(String[] args, AppContext appContext) {
-        System.out.println("hello word!");
-    }
-}
-public class ShowCommand implements CommandLauncher {
-    public void run(String[] args, AppContext appContext) {
-        System.out.println("show help!");
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            ...
+        });
     }
 }
 ```

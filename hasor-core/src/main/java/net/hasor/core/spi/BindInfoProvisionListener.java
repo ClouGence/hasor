@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.spi;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 
 import java.util.EventListener;
@@ -27,6 +28,7 @@ public interface BindInfoProvisionListener extends EventListener {
     /**
      * 注入AppContext。
      * @param bindInfo 新对象的 BindInfo
+     * @param apiBinder 声明这个 BindInfo 时使用的 ApiBinder
      */
-    public void newBindInfo(BindInfo<?> bindInfo) throws Throwable;
+    public void newBindInfo(BindInfo<?> bindInfo, ApiBinder apiBinder) throws Throwable;
 }

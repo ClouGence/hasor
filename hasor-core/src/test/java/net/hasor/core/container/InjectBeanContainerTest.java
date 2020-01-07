@@ -236,7 +236,7 @@ public class InjectBeanContainerTest {
         AppContext appContext = PowerMockito.mock(AppContext.class);
         //
         BeanContainer container = new BeanContainer(mockEnv);
-        DefaultBindInfoProviderAdapter<PropertyBean> adapter = container.getBindInfoContainer().createInfoAdapter(PropertyBean.class);
+        DefaultBindInfoProviderAdapter<PropertyBean> adapter = container.getBindInfoContainer().createInfoAdapter(PropertyBean.class, null);
         adapter.addInject("byteValue", InstanceProvider.of(123));
         PropertyBean confValue = new PropertyBean();
         PropertyBean propertyBean = container.justInject(confValue, adapter, appContext);
@@ -271,9 +271,9 @@ public class InjectBeanContainerTest {
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
         //
         BeanContainer container = new BeanContainer(mockEnv);
-        DefaultBindInfoProviderAdapter<InjectBindInfoOk> adapter1 = container.getBindInfoContainer().createInfoAdapter(InjectBindInfoOk.class);
+        DefaultBindInfoProviderAdapter<InjectBindInfoOk> adapter1 = container.getBindInfoContainer().createInfoAdapter(InjectBindInfoOk.class, null);
         adapter1.setBindID("aaa");
-        DefaultBindInfoProviderAdapter<InjectBindInfoFailed> adapter2 = container.getBindInfoContainer().createInfoAdapter(InjectBindInfoFailed.class);
+        DefaultBindInfoProviderAdapter<InjectBindInfoFailed> adapter2 = container.getBindInfoContainer().createInfoAdapter(InjectBindInfoFailed.class, null);
         adapter2.setBindID("bbb");
         //
         InjectBindInfoOk bean = container.providerOnlyBindInfo(adapter1, appContext).get();

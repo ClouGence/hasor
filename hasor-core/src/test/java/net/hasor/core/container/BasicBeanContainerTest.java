@@ -216,11 +216,11 @@ public class BasicBeanContainerTest {
     @Test
     public void bindinfoTest1() {
         BeanContainer container = new BeanContainer(PowerMockito.mock(Environment.class));
-        ScopContainer scopContainer = container.getScopContainer();
-        scopContainer.init();
+        ScopeContainer scopeContainer = container.getScopeContainer();
+        scopeContainer.init();
         //
-        DefaultBindInfoProviderAdapter<PojoBean> adapter1 = container.getBindInfoContainer().createInfoAdapter(PojoBean.class);
-        adapter1.addScopeProvider(scopContainer.findScope(Singleton.class));
+        DefaultBindInfoProviderAdapter<PojoBean> adapter1 = container.getBindInfoContainer().createInfoAdapter(PojoBean.class, null);
+        adapter1.addScopeProvider(scopeContainer.findScope(Singleton.class.getName()));
         //
         PojoBean pojoBean1 = container.providerOnlyBindInfo(adapter1, appContext).get();
         PojoBean pojoBean2 = container.providerOnlyBindInfo(adapter1, appContext).get();
@@ -229,7 +229,7 @@ public class BasicBeanContainerTest {
         //
         PojoBean outside1 = new PojoBean();
         PojoBean outside2 = new PojoBean();
-        DefaultBindInfoProviderAdapter<NativeConstructorPojoBeanRef2> adapter2 = container.getBindInfoContainer().createInfoAdapter(NativeConstructorPojoBeanRef2.class);
+        DefaultBindInfoProviderAdapter<NativeConstructorPojoBeanRef2> adapter2 = container.getBindInfoContainer().createInfoAdapter(NativeConstructorPojoBeanRef2.class, null);
         adapter2.setConstructor(0, PojoBean.class, InstanceProvider.of(outside1));
         adapter2.setConstructor(1, PojoBean.class, InstanceProvider.of(outside2));
         NativeConstructorPojoBeanRef2 refBean1 = container.providerOnlyBindInfo(adapter2, appContext).get();
@@ -242,8 +242,8 @@ public class BasicBeanContainerTest {
     @Test
     public void bindinfoTest2() {
         BeanContainer container = new BeanContainer(PowerMockito.mock(Environment.class));
-        ScopContainer scopContainer = container.getScopContainer();
-        scopContainer.init();
+        ScopeContainer scopeContainer = container.getScopeContainer();
+        scopeContainer.init();
         //
         assert container.providerOnlyBindInfo(null, appContext) == null;
     }
@@ -251,8 +251,8 @@ public class BasicBeanContainerTest {
     @Test
     public void bindinfoTest3() {
         BeanContainer container = new BeanContainer(PowerMockito.mock(Environment.class));
-        ScopContainer scopContainer = container.getScopContainer();
-        scopContainer.init();
+        ScopeContainer scopeContainer = container.getScopeContainer();
+        scopeContainer.init();
         //
         assert container.providerOnlyBindInfo(null, appContext) == null;
     }
@@ -277,11 +277,11 @@ public class BasicBeanContainerTest {
         });
         //
         // .使用 container API 注册Bean
-        DefaultBindInfoProviderAdapter<PojoBean> adapter1 = container.getBindInfoContainer().createInfoAdapter(PojoBean.class);
+        DefaultBindInfoProviderAdapter<PojoBean> adapter1 = container.getBindInfoContainer().createInfoAdapter(PojoBean.class, null);
         adapter1.setBindID("id_a");
         adapter1.setBindName("aaa");
         adapter1.addInject("uuid", InstanceProvider.of("id_a_uuid"));
-        DefaultBindInfoProviderAdapter<PojoBean> adapter2 = container.getBindInfoContainer().createInfoAdapter(PojoBean.class);
+        DefaultBindInfoProviderAdapter<PojoBean> adapter2 = container.getBindInfoContainer().createInfoAdapter(PojoBean.class, null);
         adapter2.setBindID("id_b");
         adapter2.setBindName("bbb");
         adapter2.addInject("uuid", InstanceProvider.of("id_b_uuid"));
@@ -311,8 +311,8 @@ public class BasicBeanContainerTest {
     @Test
     public void annotationTest2() {
         BeanContainer container = new BeanContainer(PowerMockito.mock(Environment.class));
-        ScopContainer scopContainer = container.getScopContainer();
-        scopContainer.init();
+        ScopeContainer scopeContainer = container.getScopeContainer();
+        scopeContainer.init();
         //
         assert container.providerOnlyAnnotation(PojoBean.class, null, appContext) == null;
         //

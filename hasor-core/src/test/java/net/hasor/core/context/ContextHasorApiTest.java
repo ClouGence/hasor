@@ -45,7 +45,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ContextHasorApiTest {
     @Test
     public void contextTest1() {
-        AppContext appContext = new AppContextWarp(Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext = new AppContextWarp(Hasor.create().build(apiBinder -> {
             apiBinder.bindType(PojoBean.class).bothWith("pojo");
             apiBinder.bindType(GrandFatherBean.class).nameWith("james").to(JamesBean.class);
             apiBinder.bindType(GrandFatherBean.class).nameWith("william").to(WilliamSonBean.class);
@@ -73,7 +73,7 @@ public class ContextHasorApiTest {
 
     @Test
     public void contextTest2() {
-        AppContext appContext = new AppContextWarp(Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext = new AppContextWarp(Hasor.create().build(apiBinder -> {
             apiBinder.bindType(PojoBean.class).bothWith("pojo").asEagerSingleton();
         }));
         //
@@ -235,7 +235,7 @@ public class ContextHasorApiTest {
     @Test
     public void hasorTest8() {
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-        Hasor.create().addModules((Module) apiBinder -> {
+        Hasor.create().addModules(apiBinder -> {
             atomicBoolean.set(true);
         }).build();
         //
