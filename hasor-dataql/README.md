@@ -18,8 +18,8 @@ return userByID({'id': 4}) => {
 ```json
 {
   'name' : '马三',
-  'sex'  : 'F',
-  'age'  : 25
+  'sex'  : '男',
+  'age'  : '25岁'
 }
 ```
 
