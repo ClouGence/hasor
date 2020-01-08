@@ -18,6 +18,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.core.spi.ContextStartListener;
+import net.hasor.tconsole.ConsoleApiBinder;
 
 /**
  * tConsole Hasor 插件入口。

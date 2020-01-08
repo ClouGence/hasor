@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.binder;
+package net.hasor.dataql;
 import net.hasor.core.BindInfo;
-import net.hasor.dataql.Finder;
-import net.hasor.dataql.FragmentProcess;
-import net.hasor.dataql.Query;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
 import org.antlr.v4.runtime.CharStream;

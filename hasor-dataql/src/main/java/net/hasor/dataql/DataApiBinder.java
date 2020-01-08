@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.binder;
+package net.hasor.dataql;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.spi.ContextInitializeListener;
-import net.hasor.dataql.*;
+import net.hasor.dataql.binder.DimFragment;
+import net.hasor.dataql.binder.DimUdf;
+import net.hasor.dataql.binder.DimUdfSource;
 import net.hasor.utils.StringUtils;
 
 import java.util.Arrays;
@@ -160,11 +162,7 @@ public interface DataApiBinder extends ApiBinder, Hints {
     }
 
     /** 添加全局变量（等同于 compilerVar） */
-    public default <T> DataApiBinder addShareVar(String name, Supplier<T> provider) {
-        ShareVar shareVar = new ShareVar(name, provider);
-        bindType(ShareVar.class).nameWith(name).toInstance(shareVar);
-        return this;
-    }
+    public <T> DataApiBinder addShareVar(String name, Supplier<T> provider);
 
     public DataApiBinder bindFinder(Finder finder);
 

@@ -17,7 +17,11 @@ package net.hasor.dataql.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
+import net.hasor.dataql.DataApiBinder;
+import net.hasor.dataql.DataQL;
 import net.hasor.dataql.Finder;
+
+import java.util.function.Supplier;
 
 /**
  * DataQL 扩展接口。
@@ -67,6 +71,13 @@ public class DataApiBinderCreater implements ApiBinderCreater {
         @Override
         public void setHint(String hintName, boolean value) {
             this.innerDqlConfig.setHint(hintName, value);
+        }
+
+        @Override
+        public <T> DataApiBinder addShareVar(String name, Supplier<T> provider) {
+            ShareVar shareVar = new ShareVar(name, provider);
+            bindType(ShareVar.class).nameWith(name).toInstance(shareVar);
+            return this;
         }
 
         @Override

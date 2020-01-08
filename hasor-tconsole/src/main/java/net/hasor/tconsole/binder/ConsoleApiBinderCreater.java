@@ -16,6 +16,7 @@
 package net.hasor.tconsole.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.binder.ApiBinderCreater;
+import net.hasor.tconsole.ConsoleApiBinder;
 import net.hasor.tconsole.TelContext;
 
 /**

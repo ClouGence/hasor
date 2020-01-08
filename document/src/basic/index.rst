@@ -42,3 +42,10 @@ Bean容器
 
     beans/bean_lifecycle
     beans/module_lifecycle
+
+Bean管理
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    beans/id_name

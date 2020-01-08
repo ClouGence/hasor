@@ -1,14 +1,10 @@
 package net.hasor.dataql.extend;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.dataql.Query;
-import net.hasor.dataql.QueryResult;
-import net.hasor.dataql.Udf;
+import net.hasor.dataql.*;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataql.domain.ValueModel;
-import net.hasor.dataql.binder.DataApiBinder;
-import net.hasor.dataql.binder.DataQL;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 import org.junit.Test;
 
@@ -16,6 +12,22 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class HasorTest {
+    @Test
+    public void hasor_0() throws IOException, InstructRuntimeException {
+        AppContext appContext = Hasor.create().build((QueryModule) apiBinder -> {
+            apiBinder.addShareVarInstance("abc", true);
+            apiBinder.addShareVarInstance("bcd", false);
+        });
+        //
+        DataQL dataQL = appContext.getInstance(DataQL.class);
+        QueryResult queryResult = dataQL.createQuery("return userByID({'id': 4}) => {\n" + "    'name',\n" + "    'sex' : (sex == 'F') ? '男' : '女' ,\n" + "    'age' : age + '岁'\n" + "}").execute();
+        //
+        DataModel dataModel = queryResult.getData();
+        assert dataModel.isListModel();
+        assert ((ListModel) dataModel).asValueModel(0).asBoolean();
+        assert !((ListModel) dataModel).asValueModel(1).asBoolean();
+    }
+
     @Test
     public void hasor_1() throws IOException, InstructRuntimeException {
         AppContext appContext = Hasor.create().build();

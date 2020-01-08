@@ -17,6 +17,7 @@ package net.hasor.tconsole.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.binder.ApiBinderWrap;
+import net.hasor.tconsole.ConsoleApiBinder;
 import net.hasor.tconsole.TelExecutor;
 
 import java.io.Reader;

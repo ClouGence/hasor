@@ -1,89 +1,60 @@
-# DataQL 服务查询引擎
+# DataQL 数据查询引擎
 
-&emsp;&emsp;DataQL 是一款服务查询框架，你可以把任意的服务通过 DataQL 进行查询整合形成新的结果来使用。使用DataQL 将会极大的满足业务灵活性上的开发需要。
+&emsp;&emsp;DataQL（Data Query Language）DataQL 是一种查询语言。旨在通过提供直观、灵活的语法来描述客户端应用程序的数据需求和交互。
+            
+&emsp;&emsp;数据的存储根据其业务形式通常是较为简单的，并不适合直接在页面上进行展示。因此开发页面的前端工程师需要为此做大量的工作，这就是 DataQL 极力解决的问题。
+            
+&emsp;&emsp;例如：下面这个 DataQL 从 user 函数中查询 id 为 4 的用户相关信息并返回给应用。
 
-&emsp;&emsp; 因此也可以称 DataQL 为服务聚合引擎。
+```js
+return userByID({'id': 4}) => {
+    'name',
+    'sex' : (sex == 'F') ? '男' : '女' ,
+    'age' : age + '岁'
+}
+```
 
-----------
-## 设计思想
-&emsp;&emsp;DataQL 的设计思想借鉴了 GraphQL。在借鉴的同时使用了全新的语法，同时增加了一些新特性。这些新特性会让您用起来比 GraphQL 更加舒心，更加接地气。
-
-&emsp;&emsp; 例如：在 DataQL 中您可以进行常规的表达式计算、也可以执行 if 逻辑判断、它还支持 lambda 函数、甚至您可以在应用中调用 DataQL定义的 lambda 函数。
-
-----------
-## 架构
-![架构](http://files.hasor.net/resources/CC2_5C5A_6D1E_18C4.png "架构")
+返回结果：
+```json
+{
+  'name' : '马三',
+  'sex'  : 'F',
+  'age'  : 25
+}
+```
 
 ----------
 ## 特性
-01. 融入脚本特性，突破 GraphQL 只能做数据组织的界限，让业务开发更加容易。
-02. 采用编译执行，拥有飞快的执行速度。
-03. 支持使用 lambda 在查询中定义函数。
-04. 支持表达式计算。
-05. 灵活的 UDF 扩展函数。
-06. 完全独立，脱离 Hasor 依然可用。
-07. DataQL 支持 JSON 数据输入。
-08. 支持运算符重载（功能暂不开放）
-09. 支持DataQL 查询结果返回一个 lambda 定义的 UDF 函数。
-10. 支持 JSR223
+01. **层次结构**：多数产品都涉及数据的层次结构，为了保证结构的一致性 DataQL 结果也是分层的。
+02. **数据为中心**：前端工程是一个比较典型的场景，但是 DataQL 不局限于此。
+03. **弱类型**：语言中不会要求声明任何形式的类型结构。
+04. **简单逻辑**：具备简单逻辑处理能力：表达式计算、对象取值、条件分支、lambda和函数。
+05. **编译运行**：查询的执行是基于编译结果的。
+06. **混合语言**：允许查询中混合任意的其它语言代码，典型的场景是查询中混合 SQL 查询语句。
+07. **类 JS 语法**：类JS语法设计，学习成本极低。
 
-----------
-## 数据类型
-01. 在 DataQL 中总共包含三大数据类型。
-    * 基本类型
-    * 原始类型
-        * udf函数调用后未经处理的原始数据，原始数据可能是任何一个 java 中的对象。
-    * 集合类型(List)
-        * 数组、多维数组、List、Set。在 DataQL 中都可以作为集合类型进行处理。
-        * 默认集合类型采用的是 ArrayList 保存和处理。
-    * 结构体(struts)
-        * 通常指的是具有一个或多个属性集合的数据对象。任何一个 java 对象都可以在 DataQL 当做结构体。
-        * 当访问结构体中的属性时将会通过 get/set or field 进行读取和访问。
-02. 基本类型定义及其取值范围(基本与Java相同)
-    * 布尔(boolean)
-        * true、false
-    * 数值(number)
-        * 字节型(byte)，长度8， 取值范围：-128 ~ 127
-        * 短整型(sort)，长度16，取值范围：-32768 ~ 32768
-        * 整型(int)，   长度32，取值范围：-2147483648 ~ 2147483648
-        * 长整型(long)，长度64，取值范围：-9233372036854477808 ~ 9233372036854477808
-        * 浮点型(float)，长度32，取值范围：-3.40292347E+38 ~ 3.40292347E+38
-        * 双精度(double)，长度64，取值范围：-1.79769313486231570E+308 ~ 1.79769313486231570E+308
-        * 大整数(BigInteger)，取值范围：java.math.BigInteger
-        * 大浮点数(BigDecimal)，取值范围：java.math.BigDecimal
-    * 字符串(string)
-        * 双引号括起来的，或者是单引号括起来的："xxx" or 'xxx'
-    * 空或未定义
-        * null
+## 样例
 
-----------
-## 计算精度
-01. 浮点数计算精度，默认值保留小数点后20位。
-02. 您可以通过 “option MAX_DECIMAL_DIGITS = 20” 来修改浮点数的默认保留位数。
-03. 小数默认舍入规则为：四舍五入。如需更换舍入规则需要通过 “option NUMBER_ROUNDING = "HALF_EVEN" ” 更换
-    * UP：向远离零的方向舍入。舍弃非零部分，并将非零舍弃部分相邻的一位数字加一。
-    * DOWN：向接近零的方向舍入。舍弃非零部分，同时不会非零舍弃部分相邻的一位数字加一，采取截取行为。
-    * CEILING：向正无穷的方向舍入。如果为正数，舍入结果同ROUND_UP一致；如果为负数，舍入结果同ROUND_DOWN一致。注意：此模式不会减少数值大小。
-    * FLOOR：向负无穷的方向舍入。如果为正数，舍入结果同ROUND_DOWN一致；如果为负数，舍入结果同ROUND_UP一致。注意：此模式不会增加数值大小。
-    * HALF_UP：向“最接近”的数字舍入，如果与两个相邻数字的距离相等，则为向上舍入的舍入模式。如果舍弃部分>= 0.5，则舍入行为与ROUND_UP相同；否则舍入行为与ROUND_DOWN相同。这种模式也就是我们常说的我们的“四舍五入”。
-    * HALF_DOWN：向“最接近”的数字舍入，如果与两个相邻数字的距离相等，则为向下舍入的舍入模式。如果舍弃部分> 0.5，则舍入行为与ROUND_UP相同；否则舍入行为与ROUND_DOWN相同。这种模式也就是我们常说的我们的“五舍六入”。
-    * HALF_EVEN：向“最接近”的数字舍入，如果与两个相邻数字的距离相等，则相邻的偶数舍入。如果舍弃部分左边的数字奇数，则舍入行为与 ROUND_HALF_UP 相同；如果为偶数，则舍入行为与 ROUND_HALF_DOWN 相同。注意：在重复进行一系列计算时，此舍入模式可以将累加错误减到最小。此舍入模式也称为“银行家舍入法”，主要在美国使用。四舍六入，五分两种情况，如果前一位为奇数，则入位，否则舍去。*/
-    * UNNECESSARY：断言请求的操作具有精确的结果，因此不需要舍入。如果对获得精确结果的操作指定此舍入模式，则抛出ArithmeticException。
+```java
+public class UserByIdUdf implements Udf {
+    public UserInfo call(Hints readOnly, Object[] params) {
+        ...
+    }
+}
 
-----------
-## 表达式计算
-01. 算数运算：加(+)、减(-)、乘(*)、除(\\)、整除(/)、求余(%)、取反(-)
-02. 逻辑运算：与(&&)、或(||)、非(!)、异或(^)
-03. 比较运算：大于(>)、大于等于(>=)、小于(<)、小于等于(<=)、不等于(!=)、等于(==)
-04. 二进制位运算：与(&)、或(|)、异或(^)、向左位移(<<)、向右位移(>>)、不带符号向右位移(>>>)
+public class ConsoleDemo {
+    public static void main(String[] args) {
+        AppContext appContext = Hasor.create().build((QueryModule) apiBinder -> {
+            apiBinder.addShareVarInstance("userByID", new UserByIdUdf());
 
-----------
-## 基础语法
-01. 设置查询选项："option key = value;"
-02. 执行查询："var query = ..."
-03. 结束查询并返回结果："return ..."
-04. 退出整个查询并返回结果："exit ..."
-05. 中断查询并抛出异常："throw ..."
-06. 定义函数："var name = lambda : () -> ..."
-07. 调用UDF或lambda函数："var name = udfName() ..."
-08. 未完待续...
+        });
+        DataQL dataQL = appContext.getInstance(DataQL.class);
+        QueryResult queryResult = dataQL.createQuery("return userByID({'id': 4}) => {" +
+                                                     "    'name'," +
+                                                     "    'sex' : (sex == 'F') ? '男' : '女' ," +
+                                                     "    'age' : age + '岁'" +
+                                                     "}").execute();
+        DataModel dataModel = queryResult.getData();
+    }
+}
+```

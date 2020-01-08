@@ -16,6 +16,7 @@
 package net.hasor.dataql.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
+import net.hasor.dataql.DataQL;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Query;

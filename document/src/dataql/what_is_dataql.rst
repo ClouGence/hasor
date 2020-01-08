@@ -11,8 +11,8 @@ DataQL（Data Query Language）DataQL 是一种查询语言。旨在通过提供
 
     return userByID({'id': 4}) => {
         'name',
-        'sex'
-        'age',
+        'sex',
+        'age'
     }
 
 返回结果：
