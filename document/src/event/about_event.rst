@@ -193,7 +193,7 @@ fireSyncEvent 方法默认的执行方式是 Interrupt，下面是两者的触�
     :linenos:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
+    <config xmlns="http://www.hasor.net/sechma/main">
         <hasor.environmentVar>
             <!-- 执行事件的线程池大小 -->
             <HASOR_LOAD_EVENT_POOL>20</HASOR_LOAD_EVENT_POOL>
@@ -205,7 +205,7 @@ fireSyncEvent 方法默认的执行方式是 Interrupt，下面是两者的触�
     :linenos:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
+    <config xmlns="http://www.hasor.net/sechma/main">
         <!-- 执行事件的线程池大小 -->
         <hasor.eventThreadPoolSize>20</hasor.eventThreadPoolSize>
     </config>

@@ -1,5 +1,5 @@
 --------------------
-附录3：Release Node
+Release Nodes
 --------------------
 .. toctree::
     :maxdepth: 3

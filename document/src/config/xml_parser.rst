@@ -6,7 +6,7 @@
     :linenos:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
+    <config xmlns="http://www.hasor.net/sechma/main">
         <hasor>
             <modules loadModule="${HASOR_LOAD_MODULE}" loadErrorShow="true">
                 <module>net.hasor.web.render.RenderWebPlugin</module>

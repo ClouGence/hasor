@@ -94,7 +94,7 @@ Hasor 内置了 apache 的 fileuplaod 组件，并且对该组件做了精简优
     :linenos:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
+    <config xmlns="http://www.hasor.net/sechma/main">
         <hasor>
             <fileupload>
                 <!-- 上传文件缓存目录 -->
@@ -112,7 +112,7 @@ Hasor 在上传中可以配置的缓存信息有：
     :linenos:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
+    <config xmlns="http://www.hasor.net/sechma/main">
         <hasor>
             <fileupload>
                 <!-- 上传文件缓存目录 -->

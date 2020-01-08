@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://project.hasor.net/hasor/schema/main">
+<config xmlns="http://www.hasor.net/sechma/main">
     <hasor.environmentVar>
         <!-- RSF对外提供服务的IP -->
         <RSF_SERVICE_IP>127.0.0.1</RSF_SERVICE_IP>

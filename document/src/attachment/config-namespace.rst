@@ -1,10 +1,24 @@
-已占用的 Xml 命名空间
+附录1：配置
 ------------------------------------
 
-- http://project.hasor.net/hasor/schema/main
-- http://project.hasor.net/hasor/schema/hasor-core
-- http://project.hasor.net/hasor/schema/hasor-rsf
-- http://project.hasor.net/hasor/schema/hasor-registry
-- http://project.hasor.net/hasor/schema/hasor-land
-- http://project.hasor.net/hasor/schema/hasor-jstl
-- http://project.hasor.net/hasor/schema/hasor-mime-mapping
++-------------+-------------------------------------------------+
+| 模块        | 命名空间                                        |
++=============+=================================================+
+| 应用自身    | `http://www.hasor.net/sechma/main`              |
++-------------+-------------------------------------------------+
+| Core        | `http://www.hasor.net/sechma/hasor-core`        |
++-------------+-------------------------------------------------+
+| Jdbc        | `http://www.hasor.net/sechma/hasor-db`          |
++-------------+-------------------------------------------------+
+| Web         | `http://www.hasor.net/sechma/hasor-web`         |
++-------------+-------------------------------------------------+
+| web-mime    | `http://www.hasor.net/sechma/mime-mapping`      |
++-------------+-------------------------------------------------+
+| tConsole    | `http://www.hasor.net/sechma/hasor-tconsole`    |
++-------------+-------------------------------------------------+
+| RSF         | `http://www.hasor.net/sechma/rsf-framework`     |
++-------------+-------------------------------------------------+
+| Registry    | `http://www.hasor.net/sechma/rsf-registry`      |
++-------------+-------------------------------------------------+
+| Land        | `http://www.hasor.net/sechma/hasor-land`        |
++-------------+-------------------------------------------------+

@@ -26,7 +26,7 @@ import java.util.Date;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface Settings {
-    public static final String DefaultNameSpace = "http://project.hasor.net/hasor/schema/main";
+    public static final String DefaultNameSpace = "http://www.hasor.net/sechma/main";
     public static final String DefaultCharset   = "UTF-8";
 
     /** @return 已解析的命名空间列表。 */

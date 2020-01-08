@@ -18,7 +18,7 @@ Hasor 支持两种格式的配置文件，这两种文件的内容都要求使�
     :linenos:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
+    <config xmlns="http://www.hasor.net/sechma/main">
         ...
     </config>
 
@@ -39,7 +39,7 @@ Hasor 支持两种格式的配置文件，这两种文件的内容都要求使�
     :linenos:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
+    <config xmlns="http://www.hasor.net/sechma/main">
         <!-- Demo 项目源码所处包 -->
         <hasor debug="false">
             <loadPackages>net.test.project.*</loadPackages>

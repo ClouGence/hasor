@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://project.hasor.net/hasor/schema/main">
+<config xmlns="http://www.hasor.net/sechma/main">
     <mySelf>
         <myName>赵永春</myName>
         <myAge>12</myAge>

@@ -27,6 +27,7 @@ import net.hasor.web.RenderInvoker;
 
 import java.io.IOException;
 import java.io.Writer;
+
 /**
  * JSON 渲染器，您可以通过 apiBinder.bind(JsonRenderEngine.class).... 来设置您自定义的渲染方式。
  * 默认情况下，JsonRender会自动按照下面顺序尝试寻找可以使用的 JSON 库：fastjson、Gson
@@ -35,6 +36,7 @@ import java.io.Writer;
  */
 public class JsonRender implements RenderEngine {
     private JsonRenderEngine jsonRenderEngine;
+
     @Override
     public void initEngine(AppContext appContext) throws Throwable {
         BindInfo<JsonRenderEngine> bindInfo = appContext.getBindInfo(JsonRenderEngine.class);
@@ -55,19 +57,23 @@ public class JsonRender implements RenderEngine {
             this.jsonRenderEngine = appContext.getInstance(bindInfo);
         }
     }
+
     @Override
     public boolean exist(String template) throws IOException {
         return true;
     }
+
     @Override
     public void process(RenderInvoker renderData, Writer writer) throws Throwable {
         Object data = renderData.get(Invoker.RETURN_DATA_KEY);
         this.jsonRenderEngine.writerJson(data, writer);
     }
+
     public static interface JsonRenderEngine {
         public void writerJson(Object renderData, Writer writerTo) throws Throwable;
     }
     //-----------------------------------------
+
     /** FastJSON渲染器 */
     public static class FastJsonRenderEngine implements JsonRenderEngine {
         @Override
@@ -75,9 +81,11 @@ public class JsonRender implements RenderEngine {
             JSON.writeJSONString(writerTo, renderData);
         }
     }
+
     /** Gson渲染器 */
     public static class GsonRenderEngine implements JsonRenderEngine {
         private Gson gson = new GsonBuilder().create();
+
         @Override
         public void writerJson(Object renderData, Writer writerTo) throws Throwable {
             JsonWriter jsonWriter = this.gson.newJsonWriter(writerTo);

@@ -16,7 +16,7 @@
 .. code-block:: xml
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
+    <config xmlns="http://www.hasor.net/sechma/main">
         <jdbcSettings>
             <jdbcDriver>com.mysql.jdbc.Driver</jdbcDriver>
             <jdbcURL>jdbc:mysql://127.0.0.1:3306/test</jdbcURL>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<auth_keys xmlns="http://project.hasor.net/hasor/schema/main">
+<auth_keys xmlns="http://www.hasor.net/sechma/main">
     <!--
         <appKey appKey="" keySecret="" expireTime="2999-12-12 23:59:59"/>
     -->

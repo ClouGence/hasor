@@ -37,7 +37,7 @@ public class TimeTest extends AbstractTestResource {
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
         DataModel dataModel = dataQL.createQuery(qlString).execute().getData();
         //
-        String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String format = new SimpleDateFormat("yyyy-M-d").format(new Date());
         assert dataModel.isValueModel();
         assert ((ValueModel) dataModel).asString().equalsIgnoreCase(format);
     }

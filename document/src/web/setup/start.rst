@@ -65,7 +65,7 @@ Hasor的Web支持是一个独立的框架，在使用它之前首先引入它。
     :linenos:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
+    <config xmlns="http://www.hasor.net/sechma/main">
         <hasor>
             <!-- 项目所属包：减少类扫描范围 -->
             <loadPackages>com.xxx.you.project.*</loadPackages>

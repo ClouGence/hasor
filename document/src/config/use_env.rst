@@ -34,7 +34,7 @@
     :linenos:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
+    <config xmlns="http://www.hasor.net/sechma/main">
         <hasor.environmentVar>
             <MY_VAR>Hello Word , this is my JAVA_HOME : %JAVA_HOME%</MY_VAR>
         </hasor.environmentVar>
@@ -59,7 +59,7 @@
     :linenos:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
+    <config xmlns="http://www.hasor.net/sechma/main">
         <hasor.environmentVar>
             <MY_VAR>Hello Word , this is my JAVA_HOME : %JAVA_HOME%</MY_VAR>
         </hasor.environmentVar>
@@ -75,7 +75,7 @@ MY_VAR 的输出结果是：`Hello Word , this is my JAVA_HOME : xxxxxx`
     :linenos:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
+    <config xmlns="http://www.hasor.net/sechma/main">
         <hasor.environmentVar>
             <MY_NAME>zyc</MY_NAME>
             <MY_AGE>100</MY_>
@@ -95,7 +95,7 @@ MY_VAR 的输出结果是：`my name is : zyc , age is 100`
     :linenos:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
+    <config xmlns="http://www.hasor.net/sechma/main">
         <jdbcSettings>
             <jdbcDriver>com.mysql.jdbc.Driver</jdbcDriver>
             <userName>sa</userName>
@@ -110,7 +110,7 @@ MY_VAR 的输出结果是：`my name is : zyc , age is 100`
     :linenos:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <config xmlns="http://project.hasor.net/hasor/schema/main">
+    <config xmlns="http://www.hasor.net/sechma/main">
         <hasor.environmentVar>
             <JDBC_USER_NAME>sa</JDBC_USER_NAME>
             <JDBC_USER_PWD>password</JDBC_USER_PWD>
