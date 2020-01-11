@@ -61,6 +61,6 @@ Hasor 支持两种格式的配置文件，这两种文件的内容都要求使�
 .. code-block:: java
     :linenos:
 
-    AppContext appContext = Hasor.createAppContext("simple-config.xml");
+    AppContext appContext = Hasor.create().mainSettingWith("simple-config.xml").build();
     Settings settings = appContext.getInstance(Settings.class);
     String driver = settings.getString("hasor-jdbc.dataSource.driver");
