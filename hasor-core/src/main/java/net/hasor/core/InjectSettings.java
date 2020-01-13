@@ -30,9 +30,12 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 public @interface InjectSettings {
-    /**配置Key*/
+    /** 聚焦在某个 配置空间 中 */
+    public String ns() default "";
+
+    /** 配置Key */
     public String value();
 
-    /**默认值*/
+    /** 默认值 */
     public String defaultValue() default "";
 }

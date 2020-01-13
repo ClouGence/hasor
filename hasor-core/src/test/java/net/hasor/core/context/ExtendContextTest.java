@@ -18,8 +18,6 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import org.junit.Test;
 
-import java.io.IOException;
-
 public class ExtendContextTest {
     @Test
     public void test1() {
@@ -31,5 +29,6 @@ public class ExtendContextTest {
         //
         AppContext appContext3 = Hasor.create().mainSettingWith("/net_hasor_core_context/startup3_exter.xml").build();
         assert appContext3.getInstance(String.class).equals("config");
+        //
     }
 }

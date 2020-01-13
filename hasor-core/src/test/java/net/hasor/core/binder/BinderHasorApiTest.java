@@ -17,7 +17,6 @@ package net.hasor.core.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.core.Module;
 import net.hasor.core.exts.aop.Aop;
 import net.hasor.core.scope.SingletonScope;
 import net.hasor.test.core.basic.pojo.PojoBean;
@@ -34,7 +33,7 @@ import org.junit.Test;
 public class BinderHasorApiTest {
     @Test
     public void scopeTest1() {
-        Hasor.create().build((Module) apiBinder -> {
+        Hasor.create().build(apiBinder -> {
             try {
                 apiBinder.bindScope(Aop.class, new SingletonScope());
                 assert false;
@@ -47,7 +46,7 @@ public class BinderHasorApiTest {
     @Test
     public void scopeTest2() {
         SingletonScope myScope = new SingletonScope();
-        AppContext appContext = Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.bindScope("my", myScope);
             apiBinder.bindType(PojoBean.class).idWith("abc").toScope("my");
         });
@@ -63,7 +62,7 @@ public class BinderHasorApiTest {
     @Test
     public void scopeTest3() {
         SingletonScope myScope = new SingletonScope();
-        AppContext appContext = Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.bindScope(My.class, myScope);
         });
         //
@@ -77,7 +76,7 @@ public class BinderHasorApiTest {
 
     @Test
     public void scopeTest4() {
-        AppContext appContext = Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.bindType(PojoBean.class).asEagerSingleton();
         });
         //
@@ -88,7 +87,7 @@ public class BinderHasorApiTest {
 
     @Test
     public void scopeTest5() {
-        AppContext appContext1 = Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext1 = Hasor.create().build(apiBinder -> {
             apiBinder.bindType(SingletonSampleBean.class).asEagerPrototype();
         });
         SingletonSampleBean pojoBean1 = appContext1.getInstance(SingletonSampleBean.class);
@@ -103,7 +102,7 @@ public class BinderHasorApiTest {
 
     @Test
     public void providerTest1() {
-        AppContext appContext = Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.bindType(PojoBean.class);
             apiBinder.bindType(PojoBeanRef.class)//
                     .injectValue("name", "providerTest1") //
@@ -125,7 +124,7 @@ public class BinderHasorApiTest {
 
     @Test
     public void providerTest2() {
-        AppContext appContext = Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.bindType(PojoBeanRef.class)//
                     .injectValue("name", "providerTest2") //
                     .inject("pojoBean", apiBinder.getProvider(PojoBean.class));
@@ -146,7 +145,7 @@ public class BinderHasorApiTest {
 
     @Test
     public void providerTest3() {
-        AppContext appContext = Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
             BindInfo<PojoBean> bindInfo = apiBinder.bindType(PojoBean.class)//
                     .injectValue("uuid", "uuid")//
                     .toInfo();

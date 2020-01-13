@@ -146,12 +146,12 @@ public abstract class AbstractSettings implements Settings {
             return EMPTY_SETTING_VALUE;
         }
         //
-        Collections.sort(svList, (o1, o2) -> {
+        svList.sort((o1, o2) -> {
             int o1Index = DefaultNameSpace.equalsIgnoreCase(o1.getSpace()) ? 0 : 1;
             int o2Index = DefaultNameSpace.equalsIgnoreCase(o2.getSpace()) ? 0 : 1;
-            return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
+            return Integer.compare(o1Index, o2Index);
         });
-        return svList.toArray(new SettingValue[svList.size()]);
+        return svList.toArray(new SettingValue[0]);
     }
 
     protected <T> T converTo(Object oriObject, final Class<T> toType, final T defaultValue) {

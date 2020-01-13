@@ -34,9 +34,9 @@ import java.util.function.Predicate;
  */
 public class StandardContextSettings extends InputStreamSettings {
     /**主配置文件名称*/
-    public static final  String            MainSettingName = "hasor-config.xml";
+    public static final  String            MainSettingName = "hconfig.xml";
     /**默认静态配置文件名称*/
-    private static final String            SechmaName      = "/META-INF/hasor.schemas";
+    private static final String            SchemaName      = "/META-INF/hasor.schemas";
     private              URI               settingURI;
     private static       Predicate<String> loadMatcher     = null;
 
@@ -109,7 +109,7 @@ public class StandardContextSettings extends InputStreamSettings {
     protected void readyLoad() throws IOException {
         super.readyLoad();
         //1.装载所有 xxx-hconfig.xml
-        List<URL> schemaUrlList = ResourcesUtils.getResources(SechmaName);
+        List<URL> schemaUrlList = ResourcesUtils.getResources(SchemaName);
         for (URL schemaUrl : schemaUrlList) {
             InputStream sechmaStream = ResourcesUtils.getResourceAsStream(schemaUrl);
             List<String> readLines = IOUtils.readLines(sechmaStream, Settings.DefaultCharset);
@@ -132,7 +132,7 @@ public class StandardContextSettings extends InputStreamSettings {
                 }
             }
         }
-        //2.装载hasor-config.xml
+        //2.装载 hconfig.xml
         URI settingConfig = getSettingURI();
         if (settingConfig != null) {
             InputStream stream = ResourcesUtils.getResourceAsStream(settingConfig);

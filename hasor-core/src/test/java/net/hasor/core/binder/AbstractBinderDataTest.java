@@ -40,7 +40,6 @@ public class AbstractBinderDataTest {
     protected AtomicReference<DefaultBindInfoProviderAdapter> reference;
     protected ApiBinderWrap                                   binder;
 
-    //
     public void beforeTest() throws IOException {
         this.reference = new AtomicReference<>();
         //

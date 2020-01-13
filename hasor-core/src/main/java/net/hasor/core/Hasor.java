@@ -17,7 +17,6 @@ package net.hasor.core;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
-import net.hasor.core.setting.AbstractSettings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.core.setting.StreamType;
 import net.hasor.utils.ExceptionUtils;
@@ -132,10 +131,12 @@ public final class Hasor extends HashMap<String, String> {
         return this;
     }
 
+    /** 导入环境变量到配置（导入目标是：Settings.DefaultNameSpace） */
     public Hasor importVariablesToSettings() {
         return importVariablesToSettings(Settings.DefaultNameSpace);
     }
 
+    /** 导入环境变量到配置（导入目标自定义） */
     public Hasor importVariablesToSettings(String namespace) {
         if (StringUtils.isBlank(namespace)) {
             throw new IllegalArgumentException("namespace is not null.");
@@ -214,7 +215,7 @@ public final class Hasor extends HashMap<String, String> {
         }
         //
         try {
-            AbstractSettings mainSettings = null;
+            StandardContextSettings mainSettings = null;
             if (this.mainSettings == null) {
                 logger.info("create AppContext ,mainSettings = {}", TemplateAppContext.DefaultSettings);
                 mainSettings = new StandardContextSettings(TemplateAppContext.DefaultSettings);

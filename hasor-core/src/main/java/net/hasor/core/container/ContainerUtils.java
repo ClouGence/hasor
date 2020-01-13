@@ -170,6 +170,7 @@ public class ContainerUtils {
         if (injectSettings == null || StringUtils.isBlank(injectSettings.value())) {
             return BeanUtils.getDefaultValue(toType);
         }
+        String useNS = injectSettings.ns();
         String defaultVal = injectSettings.defaultValue();
         String settingVar = injectSettings.value();
         //
@@ -184,7 +185,11 @@ public class ContainerUtils {
             if (StringUtils.isBlank(defaultVal)) {
                 defaultVal = null;// 行为保持和 Convert 一致
             }
-            settingValue = appContext.getEnvironment().getSettings().getString(settingVar, defaultVal);
+            Settings settings = appContext.getEnvironment().getSettings();
+            if (StringUtils.isNotBlank(useNS)) {
+                settings = settings.getSettings(useNS);
+            }
+            settingValue = settings.getString(settingVar, defaultVal);
         }
         //
         if (settingValue == null && !toType.isPrimitive()) {
