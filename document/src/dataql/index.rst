@@ -29,3 +29,4 @@ QIL指令集
     :maxdepth: 3
 
     runtime/instruction
+    runtime/mnemonics

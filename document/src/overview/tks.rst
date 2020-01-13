@@ -18,7 +18,6 @@
 - Sphinx：[http://www.sphinx-doc.org/en/master/]
 - QQ群：193943114
 
-
 编译本手册
 ------------------------------------
 1.安装 Maven 环境

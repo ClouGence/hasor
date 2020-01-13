@@ -1,11 +1,20 @@
+ApiBinder 扩展机制存在的意义在于，可以帮助应用或工具框架在 init 阶段构建自己的交互接口。
+
 .. HINT::
     ApiBinder 扩展机制是从 Hasor 2.3 之后加入的。
 
-作用和意义
+原理
 ------------------------------------
-ApiBinder 扩展机制存在的意义在于，可以帮助应用或工具框架在 init 阶段构建自己的交互接口。
+在 Hasor init 过程的 newApiBinder 阶段，Hasor 会从配置文件中收集所有 ApiBinder 扩展点并创建它们。
 
-演示
+.. image:: ../_static/CC2_E1VA_864B_GCI5.png
+
+被创建的扩展点对象会存放在一个叫 supportMap 的 Map 中，Map 的 key 是用户自定义的 ApiBinder 接口。
+在下面例子中这个类型是 `net.test.binder.TestBinder`。
+
+最后这些扩展点类型会通过 Java 的动态代理机制归纳到一个对象身上，完整的处理逻辑在 `net.hasor.core.context.TemplateAppContext` 类中。
+
+演示样例
 ------------------------------------
 首先在 Hasor 的配置文件中注册一个 ApiBinder 扩展。其中 TestBinderCreater 类实现了 `net.hasor.core.binder.ApiBinderCreater` 接口。
 
@@ -68,12 +77,3 @@ tryCast 会做尝试转换，如果 apiBinder 并未加载 TestBinder 扩展，t
     } else {
         return null;
     }
-
-原理
-------------------------------------
-在 Hasor init 过程的 newApiBinder 阶段，Hasor 会从配置文件中收集所有 ApiBinder 扩展点并创建它们。
-
-被创建的扩展点对象会存放在一个叫 supportMap 的 Map 中，Map 的 key 是用户自定义的 ApiBinder 接口。
-在上面例子中这个类型是 `net.test.binder.TestBinder`。
-
-最后这些扩展点类型会通过 Java 的动态代理机制归纳到一个对象身上，完整的处理逻辑在 `net.hasor.core.context.TemplateAppContext` 类中。
