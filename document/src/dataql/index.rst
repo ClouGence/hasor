@@ -14,14 +14,27 @@ DataQL 查询引擎
 .. toctree::
     :maxdepth: 3
 
-    grammar/grammar
+    grammar/lexical
+    grammar/types
+    grammar/numbers
+    grammar/expr
+    grammar/values
+    grammar/convert
+    grammar/function
 
 使用手册
 ------------------------------------
 .. toctree::
     :maxdepth: 3
 
-    grammar/grammar
+    guide/grammar
+
+样例集锦
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    demos/convert_adv
 
 QIL指令集
 ------------------------------------
