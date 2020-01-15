@@ -13,7 +13,7 @@ hintInst        : HINT IDENTIFIER ASS primitiveValue SEM?;
 importInst      : IMPORT ROU? STRING AS IDENTIFIER SEM?;
 
 /* 语句块 */
-blockSet        : OCBR ((runInst | varInst | ifInst | breakInst) (SEM)?)+ CCBR #multipleInst   // 多行语句
+blockSet        : OCBR ((runInst | varInst | ifInst | breakInst) (SEM)?)* CCBR #multipleInst   // 多行语句
                 | (runInst | varInst | ifInst | breakInst) (SEM)?              #singleInst     // 单行语句
                 ;
 

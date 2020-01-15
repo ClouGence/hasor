@@ -21,6 +21,71 @@
         </developer>
     </developers>
 
+    <properties>
+        <antlr4.visitor>true</antlr4.visitor>
+    </properties>
+
+    <build>
+        <plugins>
+            <!-- 把 antlr4 目录的 g4 文件生源代码到 target/generated-sources/antlr4 目录下 -->
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>4.7.2</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <visitor>true</visitor>
+                        </configuration>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 把 target/generated-sources/antlr4 目录加入到源码 -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>target/generated-sources/antlr4</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 把 target/generated-sources/antlr4 目录下生成的两个 DataQL tokens 文件放回到 g4 目录（为了 IDE 插件） -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <configuration>
+                            <target>
+                                <copy file="${basedir}/target/generated-sources/antlr4/DataQLLexer.tokens"
+                                      tofile="${basedir}/src/main/antlr4/net.hasor.dataql.compiler.parser/DataQLLexer.tokens"/>
+                                <copy file="${basedir}/target/generated-sources/antlr4/DataQLParser.tokens"
+                                      tofile="${basedir}/src/main/antlr4/net.hasor.dataql.compiler.parser/DataQLParser.tokens"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <!-- 引用依赖 -->
     <dependencies>
         <dependency>

@@ -37,11 +37,19 @@ public interface HintValue {
     //
     //
     //
+    /** 当遇到索引溢出情况时严格的抛出 ArrayIndexOutOfBoundsException 异常*/
+    public static final String INDEX_OVERFLOW_THROW        = "throw";
+    /** 当遇到索引溢出情况时返回 null。*/
+    public static final String INDEX_OVERFLOW_NULL         = "null";
+    /** 当遇到索引溢出情况时取最近的元素。例：正向索引溢出：`list[100]`，取最后一个、反向索引溢出：`list[-100]`，取第一个。 */
+    public static final String INDEX_OVERFLOW_NEAR         = "near";
+    //
     //
     /** 浮点数计算使用的最小数值宽度，可选值有：float,double,big。默认为：double */
     public static final String MIN_DECIMAL_WIDTH_FLOAT     = "float";
     public static final String MIN_DECIMAL_WIDTH_DOUBLE    = "double";
     public static final String MIN_DECIMAL_WIDTH_BIG       = "big";
+    //
     //
     /** 整数计算使用的最小数值宽度，可选值有：byte,short,int,long,big。默认为：int */
     public static final String MIN_INTEGER_WIDTH_BYTE      = "byte";
@@ -49,7 +57,6 @@ public interface HintValue {
     public static final String MIN_INTEGER_WIDTH_INT       = "int";
     public static final String MIN_INTEGER_WIDTH_LONG      = "long";
     public static final String MIN_INTEGER_WIDTH_BIG       = "big";
-    //
     //
     //
     /** 向远离零的方向舍入。舍弃非零部分，并将非零舍弃部分相邻的一位数字加一。*/

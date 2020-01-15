@@ -28,7 +28,7 @@ import java.util.Stack;
  * @param <T> The return type of the visit operation. Use {@link Void} for
  * operations with no return type.
  */
-public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> implements DataQLParserVisitor<T> {
+public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> implements net.hasor.dataql.compiler.parser.DataQLParserVisitor<T> {
     private Stack<Object> instStack = new Stack<>();
 
     @Override

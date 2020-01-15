@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static net.hasor.dataql.HintNames.INDEX_OVERFLOW;
+import static net.hasor.dataql.HintValue.*;
 
 /**
  * PULL    // 栈顶元素是一个集合类型，获取集合的指定索引元素。（例：PULL 123）
@@ -57,14 +58,8 @@ class PULL implements InsetProcess {
             data = Arrays.asList((Object[]) data);
         }
         //
-        boolean indexOverflow = context.getOrMap(INDEX_OVERFLOW.name(), val -> {
-            if (val == null) {
-                return true;
-            }
-            if (val instanceof Boolean) {
-                return (Boolean) val;
-            }
-            return "true".equalsIgnoreCase(val.toString());
+        String indexOverflow = context.getOrMap(INDEX_OVERFLOW.name(), val -> {
+            return (val == null) ? INDEX_OVERFLOW_NEAR : val.toString();
         });
         //
         if (!(data instanceof Collection)) {
@@ -75,19 +70,25 @@ class PULL implements InsetProcess {
         if (point < 0) {
             point = size + point;
             if (point <= 0) {
-                if (indexOverflow) {
-                    point = 0;//反向溢出，索引位置归零
-                } else {
+                if (INDEX_OVERFLOW_THROW.equalsIgnoreCase(indexOverflow)) {
+                    throw new ArrayIndexOutOfBoundsException(point + " out of " + size);
+                }
+                if (INDEX_OVERFLOW_NULL.equalsIgnoreCase(indexOverflow)) {
                     dataStack.push(null);// 不使用溢出能力，以 null 代替
                     return;
+                } else {
+                    point = 0;//反向溢出，索引位置归零
                 }
             }
         } else if (point >= size) {
-            if (indexOverflow) {
-                point = size - 1;//正向溢出，索引位置归到最大
-            } else {
+            if (INDEX_OVERFLOW_THROW.equalsIgnoreCase(indexOverflow)) {
+                throw new ArrayIndexOutOfBoundsException(point + " out of " + size);
+            }
+            if (INDEX_OVERFLOW_NULL.equalsIgnoreCase(indexOverflow)) {
                 dataStack.push(null);// 不使用溢出能力，以 null 代替
                 return;
+            } else {
+                point = size - 1;//正向溢出，索引位置归到最大
             }
         }
         //

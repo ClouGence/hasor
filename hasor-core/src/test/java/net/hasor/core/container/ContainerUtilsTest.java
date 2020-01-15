@@ -277,6 +277,11 @@ public class ContainerUtilsTest {
             }
 
             @Override
+            public String ns() {
+                return "";
+            }
+
+            @Override
             public String value() {
                 return value;
             }
