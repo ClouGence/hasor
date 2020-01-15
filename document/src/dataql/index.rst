@@ -42,5 +42,19 @@ QIL指令集
 .. toctree::
     :maxdepth: 3
 
-    runtime/instruction
-    runtime/mnemonics
+    runtime/create_instset
+    runtime/store_instset
+    runtime/exit_instset
+    runtime/run_instset
+    runtime/control_instset
+    runtime/fun_instset
+    runtime/other_instset
+    runtime/params
+
+附录
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    moreinfo/mnemonics
+    moreinfo/hints

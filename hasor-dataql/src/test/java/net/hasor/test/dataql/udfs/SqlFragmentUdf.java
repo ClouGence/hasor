@@ -1,10 +1,11 @@
 package net.hasor.test.dataql.udfs;
+import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.Udf;
 
 import java.util.HashMap;
+import java.util.Map;
 
-public class SqlFragmentUdf implements Udf {
+public class SqlFragmentUdf implements FragmentProcess {
     private int index;
 
     public SqlFragmentUdf(int index) {
@@ -12,12 +13,13 @@ public class SqlFragmentUdf implements Udf {
     }
 
     @Override
-    public Object call(Hints readOnly, Object[] params) {
+    public Object runFragment(Hints hint, Map<String, Object> params, String fragmentString) throws Throwable {
         return new HashMap<String, Object>() {{
             put("id", "id_" + index);
             put("name", "name_" + index);
             put("code", "code_" + index);
-            put("body", params[0]);
+            put("body", fragmentString.trim());
+            put("params", params);
         }};
     }
 }
