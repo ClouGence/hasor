@@ -1,17 +1,18 @@
-贡献
+参与开发
 ------------------------------------
-做开源项目，往往是利用工作时间之余来做这些事情，需要耗费很大精力和时间。Hasor 不要求您一定有所回报，但是还是希望您有一些回报以帮助 Hasor 可以更好的前进。
-帮助 Hasor 包括但不限下面这些途径：
+Git仓库，由于国内外网络访问速度因素。Hasor 的源码被同时托管在两个不同的仓库站点上。
 
-1. 在社区向 Hasor 提问或解答问题。
-2. 分享您在使用 Hasor 过程中的心得和体会，您也可以撰写Blog或者微博，向更多的人介绍它
-3. 向 Hasor 递交 Issues，报告 Bug 和建议。[http://git.oschina.net/teams/hasor/issues]
-4. 贡献您的智慧，递交代码
-5. 捐赠金钱
-6. 提供服务器空间带宽资源
-7. 提供不同语言的翻译
-8. 为 Hasor 提供不同的插件
+    - 中国境内： `码云(https://gitee.com/zycgit/hasor) <https://gitee.com/zycgit/hasor>`__
+    - 中国境外： `Github(https://github.com/zycgit/hasor) <https://github.com/zycgit/hasor>`__
 
-如果您觉得上面这些帮助 Hasor 的方式对于您来说仍然很难做到，那么您可以在
-`Github <https://github.com/zycgit/hasor>`__ 或 `码云 <http://git.oschina.net/zycgit/hasor>`__
-上 fork、start 一下，这也算是为 Hasor 进行了贡献。
+通过 ``git clone`` 命令可以完整的得到 Hasor 所有源码。Hasor 是通过 Maven 工具来组织代码工程的，因此您还需要准备好 Maven 环境。
+
+    - 源码编译：``mvn clean compile``
+    - 源码打包：``mvn clean package``，打包会执行一些列 TestCase。如果想快速打包那么执行 ``mvn clean package -Dmaven.test.skip=true``
+    - 编译本手册：``cd document && mvn clean site``
+
+**相关资源**
+    - Issues：[https://gitee.com/zycgit/hasor/issues]
+    - Hasor首页项目：[http://git.oschina.net/zycgit/hasor-website]
+    - Sphinx：[http://www.sphinx-doc.org/en/master/]
+    - QQ群：193943114

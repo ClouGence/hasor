@@ -65,6 +65,23 @@ public class LambdaRuntimeTest extends AbstractTestResource implements HintValue
     }
 
     @Test
+    public void lambda_5_1_Test() throws Exception {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+        });
+        Finder finder = new Finder() {
+            @Override
+            public Object findBean(String beanName) {
+                return appContext.getInstance(beanName);
+            }
+        };
+        //
+        Query compilerQL = compilerQL("import 'net.hasor.test.dataql.udfs.DemoUdf' as foo; return foo().name", finder);
+        DataModel dataModel = compilerQL.execute().getData();
+        assert dataModel.isValueModel();
+        assert ((ValueModel) dataModel).asString().equals("马三");
+    }
+
+    @Test
     public void lambda_6_Test() throws Throwable {
         Query compilerQL = compilerQL("var a = 10 ; var foo = () -> { return a; } ; return foo");
         DataModel dataModel = compilerQL.execute().getData();

@@ -20,7 +20,7 @@ public class HasorTest {
         });
         //
         DataQL dataQL = appContext.getInstance(DataQL.class);
-        QueryResult queryResult = dataQL.createQuery("return userByID({'id': 4}) => {\n" + "    'name',\n" + "    'sex' : (sex == 'F') ? '男' : '女' ,\n" + "    'age' : age + '岁'\n" + "}").execute();
+        QueryResult queryResult = dataQL.createQuery("return [abc,bcd]").execute();
         //
         DataModel dataModel = queryResult.getData();
         assert dataModel.isListModel();
