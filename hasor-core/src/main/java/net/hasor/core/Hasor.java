@@ -200,8 +200,7 @@ public final class Hasor extends HashMap<String, String> {
         this.addVariable("RUN_PATH", runPath);
         this.addVariable("RUN_MODE", this.asLevel.name());
         if (logger.isInfoEnabled()) {
-            logger.info("runMode at {}", this.get("RUN_MODE"));
-            logger.info("runPath at {}", runPath);
+            logger.info("runMode at {} ,runPath at {}", this.get("RUN_MODE"), runPath);
         }
         //
         if (this.asLevel == Level.Tiny) {
@@ -217,28 +216,21 @@ public final class Hasor extends HashMap<String, String> {
         try {
             StandardContextSettings mainSettings = null;
             if (this.mainSettings == null) {
-                logger.info("create AppContext ,mainSettings = {}", TemplateAppContext.DefaultSettings);
                 mainSettings = new StandardContextSettings(TemplateAppContext.DefaultSettings);
             } else if (this.mainSettings instanceof String) {
                 if (StringUtils.isBlank(this.mainSettings.toString())) {
                     this.mainSettings = TemplateAppContext.DefaultSettings;
                 }
-                logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
                 mainSettings = new StandardContextSettings((String) this.mainSettings);
             } else if (this.mainSettings instanceof File) {
-                logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
                 mainSettings = new StandardContextSettings((File) this.mainSettings);
             } else if (this.mainSettings instanceof URI) {
-                logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
                 mainSettings = new StandardContextSettings((URI) this.mainSettings);
             } else if (this.mainSettings instanceof URL) {
-                logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
                 mainSettings = new StandardContextSettings(((URL) this.mainSettings).toURI());
             } else if (this.mainSettings instanceof Reader && this.mainSettingsStreamType != null) {
-                logger.info("create AppContext ,mainSettingsStreamType = {} , ", this.mainSettingsStreamType);
                 mainSettings = new StandardContextSettings((Reader) this.mainSettings, this.mainSettingsStreamType);
             } else {
-                logger.error("create AppContext ,mainSettings Unsupported.");
                 throw new UnsupportedOperationException();
             }
             //

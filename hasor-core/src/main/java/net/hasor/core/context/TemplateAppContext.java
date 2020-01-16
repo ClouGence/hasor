@@ -22,6 +22,7 @@ import net.hasor.core.binder.ApiBinderInvocationHandler;
 import net.hasor.core.binder.BindInfoBuilderFactory;
 import net.hasor.core.container.BeanContainer;
 import net.hasor.core.info.MetaDataAdapter;
+import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.core.spi.ContextInitializeListener;
 import net.hasor.core.spi.ContextShutdownListener;
 import net.hasor.core.spi.ContextStartListener;
@@ -55,8 +56,8 @@ import java.util.stream.Stream;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class TemplateAppContext extends MetaDataAdapter implements AppContext {
-    public static final String       DefaultSettings = "hasor-config.xml";
-    protected           Logger       logger          = LoggerFactory.getLogger(getClass());
+    public static final String       DefaultSettings = StandardContextSettings.MainSettingName;
+    protected static    Logger       logger          = LoggerFactory.getLogger(TemplateAppContext.class);
     private final       ShutdownHook shutdownHook    = new ShutdownHook(this);
 
     @Override
@@ -395,12 +396,12 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
             throw new IllegalStateException("the container is already started");
         }
         /*1.findModules*/
-        logger.info("appContext -> findModules.");
+        logger.debug("appContext -> findModules.");
         ArrayList<Module> findModules = new ArrayList<>();
         findModules.addAll(Arrays.asList(this.findModules()));
         findModules.addAll(Arrays.asList(modules));
         /*2.doInitialize*/
-        logger.info("appContext -> doInitialize.");
+        logger.debug("appContext -> doInitialize.");
         this.getContainer().preInitialize();
         /*3.Bind*/
         ApiBinder apiBinder = newApiBinder();
@@ -410,25 +411,24 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
                 this.installModule(apiBinder, module);
             }
         }
-        logger.info("appContext -> doBind.");
+        logger.debug("appContext -> doBind.");
         doBindAfter(apiBinder);
         this.getContainer().init();
         /*4.引发事件*/
         doInitializeCompleted();
-        logger.info("appContext -> doInitializeCompleted");
+        logger.debug("appContext -> doInitializeCompleted");
         //
         //-------------------------------------------------------------------------------------------
         Runtime.getRuntime().addShutdownHook(shutdownHook);
         /*5.Start*/
-        logger.info("appContext -> doStart");
+        logger.debug("appContext -> doStart");
         doStart();
         /*6.发送启动事件*/
-        logger.info("appContext -> fireSyncEvent ,eventType = {}", ContextEvent_Started);
+        logger.debug("appContext -> fireSyncEvent ,eventType = {}", ContextEvent_Started);
         getEnvironment().getEventContext().fireSyncEvent(ContextEvent_Started, this);
-        logger.info("Hasor Started!");
         /*7.异步方式通知启动成功*/
         getEnvironment().getEventContext().asyncTask(() -> {
-            logger.info("appContext -> doStartCompleted");
+            logger.info("Hasor StartCompleted!");
             doStartCompleted();/*用于扩展*/
         });
     }
@@ -438,7 +438,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         tryShutdown();
         EventContext ec = getEnvironment().getEventContext();
         /*1.Init*/
-        logger.info("shutdown - doShutdown.");
+        logger.debug("shutdown - doShutdown.");
         doShutdown();
         /*2.引发事件*/
         logger.debug("shutdown - fireSyncEvent.");
@@ -447,10 +447,10 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         } catch (Throwable throwable) {
             /**/
         }
-        logger.debug("shutdown - doShutdownCompleted.");
         doShutdownCompleted();
+        logger.debug("shutdown - doShutdownCompleted.");
         this.getContainer().close();
-        logger.info("shutdown - finish.");
+        logger.info("Hasor StartCompleted.");
         try {
             Runtime.getRuntime().removeShutdownHook(shutdownHook);
         } catch (IllegalStateException e) {

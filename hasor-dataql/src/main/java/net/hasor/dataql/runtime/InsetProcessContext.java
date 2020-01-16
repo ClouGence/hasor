@@ -56,7 +56,7 @@ public class InsetProcessContext extends HintsSet implements CustomizeScope {
     }
 
     /** 获取环境数据，symbol 可能的值有：@、#、$。其中 # 为默认 */
-    public Map<String, Object> findCustomizeEnvironment(String symbol) {
+    public Map<String, ?> findCustomizeEnvironment(String symbol) {
         if (this.customizeScope == null) {
             return null;
         }

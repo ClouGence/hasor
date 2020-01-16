@@ -23,5 +23,5 @@ import java.util.Map;
  */
 public interface CustomizeScope {
     /** 自定义取值，操作符将下面下之一：#、@、$(常用) */
-    public Map<String, Object> findCustomizeEnvironment(String symbol);
+    public Map<String, ?> findCustomizeEnvironment(String symbol);
 }

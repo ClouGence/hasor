@@ -36,7 +36,7 @@ public class AopModule implements Module {
         Predicate<Class<?>> matcherClass = Matchers.annotatedWithClass(Aop.class);//
         Predicate<Method> matcherMethod = Matchers.annotatedWithMethod(Aop.class);//
         //
-        logger.info("aops -> matcherClass = {}, matcherMethod ={}.", matcherClass, matcherMethod);
+        logger.debug("aops -> matcherClass = {}, matcherMethod ={}.", matcherClass, matcherMethod);
         AopInterceptor aopInterceptor = HasorUtils.autoAware(apiBinder.getEnvironment(), new AopInterceptor());
         apiBinder.bindInterceptor(matcherClass, matcherMethod, aopInterceptor);
     }

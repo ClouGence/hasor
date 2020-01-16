@@ -35,7 +35,7 @@ public interface Query extends Hints {
     }
 
     /** 执行查询 */
-    public default QueryResult execute(Map<String, Object> envData) throws InstructRuntimeException {
+    public default QueryResult execute(Map<String, ?> envData) throws InstructRuntimeException {
         return this.execute(symbol -> envData);
     }
 

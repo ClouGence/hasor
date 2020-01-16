@@ -29,7 +29,10 @@ import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Settings接口的抽象实现。
@@ -135,7 +138,7 @@ public abstract class AbstractSettings implements Settings {
 
     /**清空已经装载的所有数据。*/
     protected void cleanData() {
-        logger.info("cleanData -> clear all data.");
+        logger.debug("cleanData -> clear all data.");
         this.allSettingValue().deleteAllSpace();
     }
 

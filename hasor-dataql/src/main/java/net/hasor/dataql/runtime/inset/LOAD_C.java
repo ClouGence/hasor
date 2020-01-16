@@ -42,7 +42,7 @@ class LOAD_C implements InsetProcess {
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
         String symbol = sequence.currentInst().getString(0);
-        Map<String, Object> envMap = context.findCustomizeEnvironment(symbol);
+        Map<String, ?> envMap = context.findCustomizeEnvironment(symbol);
         if (envMap == null) {
             envMap = Collections.emptyMap();
         }

@@ -111,24 +111,24 @@ public class StandardContextSettings extends InputStreamSettings {
         //1.装载所有 xxx-hconfig.xml
         List<URL> schemaUrlList = ResourcesUtils.getResources(SchemaName);
         for (URL schemaUrl : schemaUrlList) {
-            InputStream sechmaStream = ResourcesUtils.getResourceAsStream(schemaUrl);
-            List<String> readLines = IOUtils.readLines(sechmaStream, Settings.DefaultCharset);
+            InputStream schemaStream = ResourcesUtils.getResourceAsStream(schemaUrl);
+            List<String> readLines = IOUtils.readLines(schemaStream, Settings.DefaultCharset);
             if (readLines == null || readLines.isEmpty()) {
                 logger.warn("found nothing , {}", schemaUrl.toString());
                 continue;
             }
             for (String sechma : readLines) {
                 if (loadMatcher != null && !loadMatcher.test(sechma)) {
-                    logger.info("addSechma '{}' ignore.", sechma);
+                    logger.info("addConfig '{}' ignore.", sechma);
                     continue;
                 }
                 //
-                InputStream stream = ResourcesUtils.getResourceAsStream(sechma);
-                if (stream != null) {
-                    logger.info("addSechma '{}' in '{}'", sechma, schemaUrl.toString());
-                    _addStream(stream, sechma);
+                InputStream inputStream = ResourcesUtils.getResourceAsStream(sechma);
+                if (inputStream != null) {
+                    logger.info("addConfig '{}' in '{}'", sechma, schemaUrl.toString());
+                    _addStream(inputStream, sechma);
                 } else {
-                    logger.error("cannot be read '{}' in '{}'", sechma);
+                    logger.error("cannot be read '{}' in '{}'", sechma, schemaUrl.toString());
                 }
             }
         }
@@ -137,7 +137,7 @@ public class StandardContextSettings extends InputStreamSettings {
         if (settingConfig != null) {
             InputStream stream = ResourcesUtils.getResourceAsStream(settingConfig);
             if (stream != null) {
-                logger.info("found = {}", settingConfig);
+                logger.info("addConfig '{}'", settingConfig);
                 _addStream(stream, settingConfig.toString());
             } else {
                 logger.error("cannot be read {}", settingConfig);
@@ -157,7 +157,7 @@ public class StandardContextSettings extends InputStreamSettings {
 
     @Override
     public void refresh() throws IOException {
-        logger.info("refresh -> cleanData and loadSettings...");
+        logger.debug("refresh -> cleanData and loadSettings...");
         this.cleanData();
         this.loadSettings();
     }
