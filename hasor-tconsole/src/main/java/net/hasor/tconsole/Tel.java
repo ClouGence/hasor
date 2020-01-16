@@ -15,22 +15,17 @@
  * limitations under the License.
  */
 package net.hasor.tconsole;
+import java.lang.annotation.*;
+
 /**
  * tConsole 指令。
  * @version : 2016年09月20日
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface TelExecutor {
-    /** 帮助信息 */
-    public default String helpInfo() {
-        return "no more information.";
-    }
-
-    /** 用于确定读取一个完整的命令 */
-    public default boolean readCommand(TelCommand telCommand, TelReader telReader) {
-        return true;
-    }
-
-    /**执行命令*/
-    public String doCommand(TelCommand telCommand) throws Throwable;
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+@Documented
+public @interface Tel {
+    /** Tel 命令 */
+    public String[] value();
 }

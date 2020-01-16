@@ -26,14 +26,14 @@ import net.hasor.core.Module;
 public interface QueryModule extends Module {
     @Override
     public default void loadModule(final ApiBinder apiBinder) throws Throwable {
-        DataApiBinder dataApiBinder = apiBinder.tryCast(DataApiBinder.class);
-        if (dataApiBinder == null) {
+        QueryApiBinder queryApiBinder = apiBinder.tryCast(QueryApiBinder.class);
+        if (queryApiBinder == null) {
             return;
         }
-        this.loadModule(dataApiBinder);
+        this.loadModule(queryApiBinder);
     }
 
-    public void loadModule(DataApiBinder apiBinder) throws Throwable;
+    public void loadModule(QueryApiBinder apiBinder) throws Throwable;
 }
 
 

@@ -16,17 +16,25 @@
 package net.hasor.tconsole;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
+import net.hasor.core.aop.AsmTools;
+import net.hasor.core.exts.aop.Matchers;
 
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static net.hasor.tconsole.launcher.TelUtils.finalBindAddress;
 
@@ -82,6 +90,39 @@ public interface ConsoleApiBinder extends ApiBinder {
     }
 
     public interface TelnetBuilder {
+        /** 加载带有 @Tel 注解的类。 */
+        public default TelnetBuilder loadExecutor(Set<Class<?>> udfTypeSet) {
+            return this.loadExecutor(udfTypeSet, Matchers.annotatedWithClass(Tel.class));
+        }
+
+        /** 加载带有 @Tel 注解的类。 */
+        public default TelnetBuilder loadExecutor(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher) {
+            if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
+                mabeUdfTypeSet.stream().filter(matcher).forEach(this::loadExecutor);
+            }
+            return this;
+        }
+
+        /** 加载带有 @Tel 注解的类 */
+        public default void loadExecutor(Class<?> telType) {
+            Objects.requireNonNull(telType, "class is null.");
+            int modifier = telType.getModifiers();
+            if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || telType.isArray() || telType.isEnum()) {
+                throw new IllegalStateException(telType.getName() + " must be normal Bean");
+            }
+            Tel[] annotationsByType = telType.getAnnotationsByType(Tel.class);
+            if (annotationsByType == null || annotationsByType.length == 0) {
+                throw new IllegalStateException(telType.getName() + " must be configure @Tel");
+            }
+            //
+            if (TelExecutor.class.isAssignableFrom(telType)) {
+                String[] telNames = Arrays.stream(annotationsByType).flatMap((Function<Tel, Stream<String>>) dimTel -> {
+                    return Arrays.stream(dimTel.value());
+                }).toArray(String[]::new);
+                addExecutor(telNames).to((Class<? extends TelExecutor>) telType);
+            }
+        }
+
         /** 添加新命令 */
         public CommandBindingBuilder addExecutor(String... names);
     }

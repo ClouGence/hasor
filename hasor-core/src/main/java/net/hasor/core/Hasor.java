@@ -99,6 +99,21 @@ public final class Hasor extends HashMap<String, String> {
         return this;
     }
 
+    /** 加载配置文件到默认配置空间。 */
+    public Hasor loadSettings(Properties properties) {
+        return loadSettings(Settings.DefaultNameSpace, properties);
+    }
+
+    /** 加载配置文件到指定配置空间。 */
+    public Hasor loadSettings(String namespace, Properties properties) {
+        if (properties != null) {
+            for (Object key : properties.keySet()) {
+                this.addSettings(namespace, key.toString(), properties.getProperty(key.toString()));
+            }
+        }
+        return this;
+    }
+
     public Hasor addVariable(String key, String value) {
         this.put(key, value);
         return this;
@@ -122,13 +137,19 @@ public final class Hasor extends HashMap<String, String> {
         return loadVariables(new InputStreamReader(inStream, encodeing));
     }
 
+    public Hasor loadVariables(Properties properties) {
+        if (properties != null) {
+            for (Object key : properties.keySet()) {
+                this.put(key.toString(), properties.getProperty(key.toString()));
+            }
+        }
+        return this;
+    }
+
     public Hasor loadVariables(Reader propertiesReader) throws IOException {
         Properties properties = new Properties();
         properties.load(propertiesReader);
-        for (Object key : properties.keySet()) {
-            this.put(key.toString(), properties.getProperty(key.toString()));
-        }
-        return this;
+        return loadVariables(properties);
     }
 
     /** 导入环境变量到配置（导入目标是：Settings.DefaultNameSpace） */

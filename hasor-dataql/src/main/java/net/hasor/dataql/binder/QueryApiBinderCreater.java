@@ -17,9 +17,9 @@ package net.hasor.dataql.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.dataql.DataApiBinder;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.Finder;
+import net.hasor.dataql.QueryApiBinder;
 
 import java.util.function.Supplier;
 
@@ -28,16 +28,16 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class DataApiBinderCreater implements ApiBinderCreater {
+public class QueryApiBinderCreater implements ApiBinderCreater {
     @Override
     public ApiBinder createBinder(final ApiBinder apiBinder) {
-        return new DataApiBinderImpl(apiBinder);
+        return new QueryApiBinderImpl(apiBinder);
     }
 
-    private static class DataApiBinderImpl extends ApiBinderWrap implements DataApiBinder {
+    private static class QueryApiBinderImpl extends ApiBinderWrap implements QueryApiBinder {
         private InnerDataQLImpl innerDqlConfig = new InnerDataQLImpl();
 
-        public DataApiBinderImpl(ApiBinder apiBinder) {
+        public QueryApiBinderImpl(ApiBinder apiBinder) {
             super(apiBinder);
             apiBinder.bindType(InnerDataQLImpl.class).toInstance(innerDqlConfig);
             apiBinder.bindType(DataQL.class).toInstance(innerDqlConfig);
@@ -74,14 +74,14 @@ public class DataApiBinderCreater implements ApiBinderCreater {
         }
 
         @Override
-        public <T> DataApiBinder addShareVar(String name, Supplier<T> provider) {
+        public <T> QueryApiBinder addShareVar(String name, Supplier<T> provider) {
             ShareVar shareVar = new ShareVar(name, provider);
             bindType(ShareVar.class).nameWith(name).toInstance(shareVar);
             return this;
         }
 
         @Override
-        public DataApiBinder bindFinder(Finder finder) {
+        public QueryApiBinder bindFinder(Finder finder) {
             this.innerDqlConfig.setFinder(finder);
             return this;
         }

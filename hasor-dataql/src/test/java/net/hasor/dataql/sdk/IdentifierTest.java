@@ -1,9 +1,9 @@
 package net.hasor.dataql.sdk;
 import net.hasor.core.Hasor;
 import net.hasor.dataql.AbstractTestResource;
+import net.hasor.dataql.DataQL;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ValueModel;
-import net.hasor.dataql.DataQL;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 import org.junit.Test;
 

@@ -17,6 +17,7 @@ package net.hasor.web;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.aop.AsmTools;
+import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.ResourcesUtils;
@@ -77,33 +78,20 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     public <T> MappingToBindingBuilder<T> mappingTo(String[] morePatterns);
 
     /** 加载带有 @MappingTo 注解的类。 */
-    public default void loadMappingTo(Set<Class<?>> mappingTypeSet) {
-        this.loadMappingTo(mappingTypeSet, aClass -> {
-            int modifier = aClass.getModifiers();
-            if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || aClass.isArray() || aClass.isEnum()) {
-                return false;
-            }
-            MappingTo[] annotationsByType = aClass.getAnnotationsByType(MappingTo.class);
-            if (annotationsByType == null || annotationsByType.length == 0) {
-                return false;
-            }
-            return true;
-        });
+    public default WebApiBinder loadMappingTo(Set<Class<?>> udfTypeSet) {
+        return this.loadMappingTo(udfTypeSet, Matchers.annotatedWithClass(MappingTo.class));
     }
 
     /** 加载带有 @MappingTo 注解的类。 */
-    public default void loadMappingTo(Set<Class<?>> mabeMappingToSet, Predicate<Class<?>> matcher) {
-        if (mabeMappingToSet != null && !mabeMappingToSet.isEmpty()) {
-            for (Class<?> type : mabeMappingToSet) {
-                if (matcher.test(type)) {
-                    loadMappingTo(type);
-                }
-            }
+    public default WebApiBinder loadMappingTo(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher) {
+        if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
+            mabeUdfTypeSet.stream().filter(matcher).forEach(this::loadMappingTo);
         }
+        return this;
     }
 
     /** 加载带有 @MappingTo 注解的类。 */
-    public default void loadMappingTo(Class<?> mappingType) {
+    public default WebApiBinder loadMappingTo(Class<?> mappingType) {
         Objects.requireNonNull(mappingType, "class is null.");
         int modifier = mappingType.getModifiers();
         if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || mappingType.isArray() || mappingType.isEnum()) {
@@ -128,6 +116,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
                 mappingTo(mappingTo.value()).with(mappingType);
             });
         }
+        return this;
     }
 
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
@@ -355,31 +344,21 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     }
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    /** 加载@Render注解配置的渲染器。*/
-    public default void loadRender(Set<Class<?>> renderSet) {
-        this.loadRender(renderSet, aClass -> {
-            int modifier = aClass.getModifiers();
-            if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || aClass.isArray() || aClass.isEnum()) {
-                return false;
-            }
-            Render[] annotationsByType = aClass.getAnnotationsByType(Render.class);
-            return annotationsByType != null && annotationsByType.length != 0;
-        });
+    /** 加载带有 @Render注解配置的渲染器。 */
+    public default WebApiBinder loadRender(Set<Class<?>> udfTypeSet) {
+        return this.loadRender(udfTypeSet, Matchers.annotatedWithClass(Render.class));
     }
 
-    /** 加载@Render注解配置的渲染器。*/
-    public default void loadRender(Set<Class<?>> renderSet, Predicate<Class<?>> matcher) {
-        if (renderSet != null && !renderSet.isEmpty()) {
-            for (Class<?> type : renderSet) {
-                if (matcher.test(type)) {
-                    loadRender(type);
-                }
-            }
+    /** 加载带有 @Render注解配置的渲染器。 */
+    public default WebApiBinder loadRender(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher) {
+        if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
+            mabeUdfTypeSet.stream().filter(matcher).forEach(this::loadRender);
         }
+        return this;
     }
 
     /** 加载 @Render注解配置的渲染器。*/
-    public default void loadRender(Class<?> renderClass) {
+    public default WebApiBinder loadRender(Class<?> renderClass) {
         Objects.requireNonNull(renderClass, "class is null.");
         int modifier = renderClass.getModifiers();
         if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || renderClass.isArray() || renderClass.isEnum()) {
@@ -398,6 +377,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
                 addRender(renderName).to((Class<? extends RenderEngine>) renderClass);
             }
         }
+        return this;
     }
 
     /**

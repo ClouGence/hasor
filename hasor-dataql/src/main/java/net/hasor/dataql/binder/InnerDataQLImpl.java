@@ -108,7 +108,7 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
     public QIL compilerQuery(QueryModel queryModel) throws IOException {
         return QueryHelper.queryCompiler(queryModel, this.compilerVarMap.keySet(), getFinder());
     }
- 
+
     @Override
     public Query createQuery(QIL compilerQIL) {
         //        QIL compilerQIL = this.cacheQIL.get(hashString);

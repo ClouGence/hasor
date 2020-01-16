@@ -17,7 +17,6 @@ package net.hasor.tconsole.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.tconsole.ConsoleApiBinder;
-import net.hasor.tconsole.TelModule;
 import net.hasor.tconsole.launcher.hosts.HostServerTest;
 import net.hasor.test.tconsole.TestExecutor;
 import org.junit.Test;
@@ -97,13 +96,5 @@ public class BasicBinderTest extends HostServerTest {
         //
         String string = stringWriter.toString();
         assert string.contains("{\"args\":\"\",\"name\":\"test\"}");            // test 命令
-    }
-
-    @Test
-    public void hasor_module_1() {
-        AppContext appContext = Hasor.create().build((TelModule) apiBinder -> {
-            apiBinder.asTelnet("0.0.0.0", 2180);
-        });
-        appContext.joinSignal();
     }
 }

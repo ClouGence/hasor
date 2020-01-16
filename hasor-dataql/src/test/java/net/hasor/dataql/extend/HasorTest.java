@@ -60,10 +60,10 @@ public class HasorTest {
     public void hasor_3() throws IOException, InstructRuntimeException {
         AppContext appContext = Hasor.create().build(apiBinder -> {
             Udf testUdf = (readOnly, params) -> readOnly.getHint("abc");
-            DataApiBinder dataApiBinder = apiBinder.tryCast(DataApiBinder.class);
+            QueryApiBinder queryApiBinder = apiBinder.tryCast(QueryApiBinder.class);
             //
-            dataApiBinder.addShareVar("foo", () -> testUdf);
-            dataApiBinder.setHint("abc", "aaaa");
+            queryApiBinder.addShareVar("foo", () -> testUdf);
+            queryApiBinder.setHint("abc", "aaaa");
         });
         DataQL dataQL = appContext.getInstance(DataQL.class);
         //

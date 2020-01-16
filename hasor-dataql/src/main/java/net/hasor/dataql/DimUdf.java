@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.binder;
+package net.hasor.dataql;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Udf 源
+ * 定义一个 Udf
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-18
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-public @interface DimUdfSource {
-    /** Udf 源被引入之后的包名称。 */
+public @interface DimUdf {
+    /** Udf 被引入之后的名称 */
     public String value();
 }
