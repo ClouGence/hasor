@@ -22,6 +22,7 @@ DataQL 查询引擎
     grammar/convert
     grammar/function
     grammar/statement
+    grammar/params
 
 使用手册
 ------------------------------------
@@ -49,7 +50,6 @@ QIL指令集
     runtime/control_instset
     runtime/fun_instset
     runtime/other_instset
-    runtime/params
 
 附录
 ------------------------------------

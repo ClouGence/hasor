@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-parent</artifactId>
@@ -15,7 +17,7 @@
         <!--<maven.test.skip>true</maven.test.skip>-->
         <!--<skipTests>true</skipTests>-->
         <jacoco.version>0.8.2</jacoco.version>
-        <powermock.version>2.0.2</powermock.version>
+        <powermock.version>2.0.4</powermock.version>
 
         <project.shortname>Hasor-</project.shortname>
         <project.website>http://www.hasor.net/</project.website>
@@ -78,7 +80,6 @@
         <tag>HEAD</tag>
     </scm>
 
-
     <!-- 开发者 -->
     <developers>
         <developer>
@@ -94,7 +95,7 @@
         <module>hasor-web</module>
         <module>hasor-tconsole</module>
         <module>hasor-dataql</module>
-        <!--                <module>hasor-rsf/rsf-framework</module>-->
+        <module>hasor-rsf/rsf-framework</module>
         <!--        <module>hasor-rsf/rsf-registry</module>-->
         <!--        <module>hasor-plugins</module>-->
         <!--        <module>hasor-land</module>-->
@@ -229,6 +230,7 @@
     </repositories>
 
     <!-- 发布使用的版本库 -->
+
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
@@ -320,7 +322,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.59</version>
+            <version>1.2.62</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -384,7 +386,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.26</version>
+                <version>1.7.30</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

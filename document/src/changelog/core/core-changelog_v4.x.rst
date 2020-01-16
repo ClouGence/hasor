@@ -1,17 +1,54 @@
 --------------------
 Release Hasor v3.x
 --------------------
-Hasor v4.0.7 (2019-06-?)
+Hasor v4.0.7 (2020-01-?)
 ------------------------------------
-**新增**
-    - WebApiBinder 接口中新增 addWebListener 方法用来注册 ServletListener、SessionListener、RequestListener
-    - 新增 ServletRequestListener 支持。
-**改进**
-    - WebApiBinder,接口中 addServletListener、addSessionListener 都合并到 addWebListener 方法。
-    - hasor-env-properties 参数更名为 hasor-envconfig-name
-    - 删除 Hasor 默认提供的 JFinal 插件支持。理由是 JFinal 功能和 Hasor 体系重叠，若 JFinal 用户想使用 Hasor 的某一特殊功能例如 tConsole/rsf 可以独立使用它们而非一定要通过插件整合的方式。
-**修复**
+**Commons**
     - 修复 ResourcesUtils 和 ScanClassPath，IO 文件句柄泄露问题。
+    - BasicFuture 的 callback，当没有实现CancellFutureCallback的时候时候，会触发failed。
+    - DataQL 中的 InterBeanMap 更名为 BeanMap 移到 commons 中。
+    - DB 中的 LinkedCaseInsensitiveMap 移到 commons 中。
+**Core**
+    - 改造 hasor.core 全面支持 JSR-330。
+    - 全新的 SPI 能力。
+    - 单测覆盖率达到 90%，修复若干潜在的问题。
+    - 主 namespace 'http://project.hasor.net/hasor/schema/main' 统一改为 'http://www.hasor.net/sechma/main'
+    - @InjectSettings 注解增加，命名空间支持。
+    - 默认配置文件名 hasor-config.xml 改为 hconfig.xml、不在提供环境参数属性文件的机制。
+    - 其它大量接口上和内部执行机制的优化
+**Web**
+    - 单测覆盖率达到 90%，修复若干潜在的问题。
+    - hasor-env-properties 参数不在有效。
+    - @Produces 注解行为变化为不在影响使用哪个渲染器，而是负责指明使用什么类型作为 response 的 ContentType。
+    - j2ee Servlet 会被转换成 MappingTo 运行。j2ee Filter 会被转换成 InvokerFilter 运行。
+    - 新增 OneConfig 汇总了FilterConfig, ServletConfig, InvokerConfig 三个接口的实现。
+    - ListenerPipeline 不在需要，取而代之使用 SPI 机制来替代。
+    - RenderInvoker 接口不在提供 lockViewType 相关方法。
+    - MimeType 接口在获取 mimeType 信息时改为优先框架内的数据，如果框架内数据招不到在到 context 上查找。
+**DB**
+    - mybatis 插件回归 hasor-db
+**tConsole**
+    - 重构，对于多行输入支持用户自定义命令结符号or字符串。重构后单测覆盖率达到 90%。
+    - 支持 server 模式通过 Socket 端口运行
+    - 支持 基于标准输入输出流运行
+    - hasor-boot 能力被完完全全整合，因此 Hasor 将不在提供 hasor-boot。
+**DataQL**
+    - 重构，放弃 javacc 更换成 antlr4。antlr4 更加智能。AST 模型仍然不变。重构后单测覆盖率达到 90%。
+    - DataQL 大量新语法新特性。具体参看语法参考手册。一些老的语法形式也不在支持，因此 DataQL 的语法和以前有明显变化。
+    - 运行时内存模型：确定为 两栈一堆
+    - 指令集系统：不在需要 ASM、ASA、ASO 三个指令，取而代之的是更严谨的指令集。
+    - SDK：函数包能力
+    - DataModel数据模型：增加 unwrap 方法，用来解开 DataModel 包裹
+    - 新增 Fragment 机制允许 DataQL 执行外部非 DataQL 语法的代码片段。
+    - BeanContainer 改为 Finder，删掉 UdfSource、UdfManager、UdfResult 不在需要这些概念。
+    - 原有 dql test case 语句文件统一转移到 _old 目录下面备用。
+**RSF**
+    - rsf 使用 tconsole 的新接口
+    - 注册中心暂不可用，下几个版本会重新设计。
+    - rsf 的 InterAddress 支持域名传入，但是toString 的时仍然会转换为 ip。
+**Plugins**
+    - 删除 Hasor 默认提供的 JFinal 插件支持。理由是 JFinal 功能和 Hasor 体系重叠，同时 Hasor 的所有功能都是独立。
+    - 整合 Hasor 及其容易因此没有提供集成代码的必要。
 
 Hasor v4.0.6 (2019-05-31)
 ------------------------------------
@@ -23,7 +60,7 @@ Hasor v4.0.5 (2019-05-27)
 ------------------------------------
 **重要**
     - 4.0.0版本新增的 Hasor-Boot 项目不在单独存在，理由 Hasor 可以很好的在 Spring Boot 上运行和部署，因此并无任何必要在重复构建相同功能。
-    - Boot 的机制融入到AppContext 接口的两个 join、joinSignal 新增方法中。
+    - Boot 的机制融入到AppContext 接口的两个 join、joinSignal 新增方法中，不在单独设立 Hasor Boot 启动器。
     - 删除 @IgnoreParam 注解，@ParameterForm 注解更名为 @ParameterGroup。
 **新增**
     - 新增 @Destroy 注解 @PreDestroy 注解支持，可以配置当容器停止时调用的方法。

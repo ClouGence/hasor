@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>net.hasor</groupId>
@@ -26,7 +28,6 @@
 
     <!-- 引用依赖 -->
     <dependencies>
-        <!-- Hasor-Core -->
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
@@ -45,20 +46,8 @@
             <version>2.2</version>
             <scope>provided</scope>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>javax.websocket</groupId>-->
-        <!--            <artifactId>javax.websocket-api</artifactId>-->
-        <!--            <version>1.1</version>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.eclipse.jetty.websocket</groupId>-->
-        <!--            <artifactId>websocket-api</artifactId>-->
-        <!--            <version>9.4.18.v20190429</version>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
 
-
+        <!-- test -->
         <dependency>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
@@ -77,17 +66,5 @@
             <version>4.5.3</version>
             <scope>test</scope>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.eclipse.jetty</groupId>-->
-        <!--            <artifactId>jetty-servlet</artifactId>-->
-        <!--            <version>9.4.18.v20190429</version>-->
-        <!--            <scope>test</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.eclipse.jetty.websocket</groupId>-->
-        <!--            <artifactId>javax-websocket-server-impl</artifactId>-->
-        <!--            <version>9.4.18.v20190429</version>-->
-        <!--            <scope>test</scope>-->
-        <!--        </dependency>-->
     </dependencies>
 </project>
