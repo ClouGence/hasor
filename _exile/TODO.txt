@@ -1,0 +1,36 @@
+已知问题：
+1.RsfFilter 中 response 一个数据 似乎有问题。
+2. 返回值不支持接口类型，例如：Map，List 等。
+4. Center 服务注册没有清理机制。
+
+features：
+1. RPC 流式调用
+2. 广播调用
+
+
+        invoker.ownerMapping().getTargetType().getBindType();
+                希望可以直接拿到直接调用的那个对象（HttpServiet 会有问题，因为 getTargetType 拿到的 BindInfo 是绑定到 HttpServiet 上的那个对象）
+
+
+
+https://www.eclipse.org/jetty/documentation/current/embedding-jetty.html
+
+* mvn release:prepare -P release
+* mvn clean deploy -P release
+
+
+1。 parser 失败的时候，不应该继续尝试解析  g4。
+2。 定位行号
+
+
+java.lang.ClassNotFoundException: J
+	at java.lang.ClassLoader.findClass(ClassLoader.java:530)
+	at net.hasor.core.aop.AopClassLoader.findClass(AopClassLoader.java:58)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:348)
+	at net.hasor.utils.ClassUtils.getClass(ClassUtils.java:696)
+	at net.hasor.rsf.protocol.rsf.v1.CodecAdapterForV1.readRequestInfo(CodecAdapterForV1.java:206)
+	at net.hasor.rsf.protocol.rsf.RsfDecoder.doDecode(RsfDecoder.java:80)
+	at net.hasor.rsf.protocol.rsf.RsfDecoder.decode(RsfDecoder.java:57)

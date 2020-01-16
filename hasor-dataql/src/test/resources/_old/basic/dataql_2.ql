@@ -14,3 +14,23 @@ return {
     },
     "source" : "DataQL"
 }
+
+
+
+@@sql(abc,abc,abc) <%
+
+    select
+        `xxx` as sss ,
+        `ssss` as ss
+    from
+        xxx
+    where
+        xxx = afsd
+
+    select ...........
+%>
+
+
+
+
+return abc.query();
