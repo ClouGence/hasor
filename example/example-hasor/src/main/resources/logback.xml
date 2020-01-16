@@ -8,7 +8,7 @@
     </appender>
 
     <!-- 日志输出级别 -->
-    <root level="Info">
+    <root level="error">
         <appender-ref ref="consoleOut"/>
     </root>
 </configuration>

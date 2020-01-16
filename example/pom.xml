@@ -12,17 +12,15 @@
     <name>example-root</name>
 
     <modules>
-        <module>example-rsf</module>
         <module>example-hasor</module>
-        <module>example-hasor-web</module>
-        <module>example-jfinal</module>
-        <module>example-spring</module>
-        <module>example-nutz</module>
+        <module>example-web</module>
+        <!--        <module>example-rsf</module>-->
+        <!--        <module>example-nutz</module>-->
     </modules>
 
     <!-- 配置属性 -->
     <properties>
-        <hasor.version>4.0.1-SNAPSHOT</hasor.version>
+        <hasor.version>4.0.7-SNAPSHOT</hasor.version>
         <wtpversion>2.0</wtpversion>
         <downloadSources>true</downloadSources>
         <downloadJavadocs>true</downloadJavadocs>
@@ -49,15 +47,15 @@
 
     <repositories>
         <repository>
-            <id>snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <id>nutzcn-snapshots</id>
+            <url>https://jfrog.nutz.cn/artifactory/snapshots</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
         </repository>
         <repository>
-            <id>nutzcn-snapshots</id>
-            <url>https://jfrog.nutz.cn/artifactory/snapshots</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -110,25 +108,6 @@
                 <artifactId>hasor-registry</artifactId>
                 <version>${hasor.version}</version>
             </dependency>
-            <dependency>
-                <groupId>net.hasor</groupId>
-                <artifactId>hasor-plugins</artifactId>
-                <version>${hasor.version}</version>
-            </dependency>
-            <!-- Plugins -->
-            <dependency>
-                <groupId>net.hasor</groupId>
-                <artifactId>hasor-plugins</artifactId>
-                <version>${hasor.version}</version>
-            </dependency>
-
-            <!-- JFinal -->
-            <dependency>
-                <groupId>com.jfinal</groupId>
-                <artifactId>jfinal</artifactId>
-                <version>2.2</version>
-            </dependency>
-
             <!-- Spring -->
             <dependency>
                 <groupId>org.springframework</groupId>
