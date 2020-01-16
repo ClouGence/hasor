@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.BindInfo;
+import net.hasor.core.*;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
 
@@ -35,12 +34,12 @@ import java.util.function.Supplier;
  * @version : 2017-03-23
  */
 public interface QueryApiBinder extends ApiBinder, Hints {
-    /** 加载带有 @DimFragment 注解的类。 */
+    /** 加载带有 @DimFragment 注解的类 */
     public default QueryApiBinder loadFragment(Set<Class<?>> fragmentTypeSet) {
         return this.loadFragment(fragmentTypeSet, Matchers.annotatedWithClass(DimFragment.class));
     }
 
-    /** 加载带有 @DimFragment 注解的类。 */
+    /** 加载带有 @DimFragment 注解的类 */
     public default QueryApiBinder loadFragment(Set<Class<?>> mabeFragmentTypeSet, Predicate<Class<?>> matcher) {
         if (mabeFragmentTypeSet != null && !mabeFragmentTypeSet.isEmpty()) {
             mabeFragmentTypeSet.stream().filter(matcher).forEach(this::loadFragment);
@@ -48,7 +47,7 @@ public interface QueryApiBinder extends ApiBinder, Hints {
         return this;
     }
 
-    /** 加载带有 @DimFragment 注解的类。 */
+    /** 加载带有 @DimFragment 注解的类 */
     public default void loadFragment(Class<?> fragmentType) {
         Objects.requireNonNull(fragmentType, "class is null.");
         int modifier = fragmentType.getModifiers();
@@ -59,18 +58,20 @@ public interface QueryApiBinder extends ApiBinder, Hints {
         if (annotationsByType == null) {
             throw new IllegalStateException(fragmentType.getName() + " must be configure @DimFragment");
         }
-        //
-        if (FragmentProcess.class.isAssignableFrom(fragmentType)) {
-            addShareVar(annotationsByType.value(), getProvider(fragmentType));
+        if (!FragmentProcess.class.isAssignableFrom(fragmentType)) {
+            throw new ClassCastException(fragmentType.getName() + " is not " + FragmentProcess.class.getName());
         }
+        //
+        Supplier<? extends FragmentProcess> processSupplier = getProvider((Class<? extends FragmentProcess>) fragmentType);
+        bindFragment(annotationsByType.value(), processSupplier);
     }
 
-    /** 加载带有 @DimUdf 注解的类。 */
+    /** 加载带有 @DimUdf 注解的类 */
     public default QueryApiBinder loadUdf(Set<Class<?>> udfTypeSet) {
         return this.loadUdf(udfTypeSet, Matchers.annotatedWithClass(DimUdf.class));
     }
 
-    /** 加载带有 @DimUdf 注解的类。 */
+    /** 加载带有 @DimUdf 注解的类 */
     public default QueryApiBinder loadUdf(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher) {
         if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
             mabeUdfTypeSet.stream().filter(matcher).forEach(this::loadUdf);
@@ -78,7 +79,7 @@ public interface QueryApiBinder extends ApiBinder, Hints {
         return this;
     }
 
-    /** 加载带有 @DimUdf 注解的类。 */
+    /** 加载带有 @DimUdf 注解的类 */
     public default void loadUdf(Class<?> udfType) {
         Objects.requireNonNull(udfType, "class is null.");
         int modifier = udfType.getModifiers();
@@ -89,40 +90,51 @@ public interface QueryApiBinder extends ApiBinder, Hints {
         if (annotationsByType == null) {
             throw new IllegalStateException(udfType.getName() + " must be configure @DimUdf");
         }
-        //
-        if (Udf.class.isAssignableFrom(udfType)) {
-            addShareVar(annotationsByType.value(), getProvider(udfType));
+        if (!Udf.class.isAssignableFrom(udfType)) {
+            throw new ClassCastException(udfType.getName() + " is not " + Udf.class.getName());
         }
+        addShareVar(annotationsByType.value(), getProvider(udfType));
     }
 
-    /** 加载带有 @DimUdfSource 注解的类。 */
+    /** 加载带有 @DimUdfSource 注解的类 */
     public default QueryApiBinder loadUdfSource(Set<Class<?>> udfTypeSet) {
         return this.loadUdfSource(udfTypeSet, Matchers.annotatedWithClass(DimUdfSource.class));
     }
 
-    /** 加载带有 @DimUdfSource 注解的类。 */
+    /** 加载带有 @DimUdfSource 注解的类 */
     public default QueryApiBinder loadUdfSource(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher) {
         if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
-            mabeUdfTypeSet.stream().filter(matcher).forEach(this::loadUdfSource);
+            this.loadUdfSource(mabeUdfTypeSet.stream().filter(matcher).toArray(Class<?>[]::new));
         }
         return this;
     }
 
-    /** 加载带有 @DimUdfSource 注解的类。 */
-    public default void loadUdfSource(Class<?> udfType) {
-        Objects.requireNonNull(udfType, "class is null.");
-        int modifier = udfType.getModifiers();
-        if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || udfType.isArray() || udfType.isEnum()) {
-            throw new IllegalStateException(udfType.getName() + " must be normal Bean");
-        }
-        DimUdfSource annotationsByType = udfType.getAnnotation(DimUdfSource.class);
-        if (annotationsByType == null) {
-            throw new IllegalStateException(udfType.getName() + " must be configure @DimUdfSource");
+    /** 加载带有 @DimUdfSource 注解的类 */
+    public default void loadUdfSource(Class<?>... sourceTypeArray) {
+        for (Class<?> sourceType : sourceTypeArray) {
+            Objects.requireNonNull(sourceType, "class is null.");
+            int modifier = sourceType.getModifiers();
+            if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || sourceType.isArray() || sourceType.isEnum()) {
+                throw new IllegalStateException(sourceType.getName() + " must be normal Bean");
+            }
+            DimUdfSource annotationsByType = sourceType.getAnnotation(DimUdfSource.class);
+            if (annotationsByType == null) {
+                throw new IllegalStateException(sourceType.getName() + " must be configure @DimUdfSource");
+            }
+            if (!UdfSource.class.isAssignableFrom(sourceType)) {
+                throw new ClassCastException(sourceType.getName() + " is not " + UdfSource.class.getName());
+            }
         }
         //
-        if (UdfSource.class.isAssignableFrom(udfType)) {
-            addShareVar(annotationsByType.value(), getProvider(udfType));
-        }
+        HasorUtils.pushStartListener(getEnvironment(), (EventListener<AppContext>) (event, appContext) -> {
+            DataQL dataQL = appContext.getInstance(DataQL.class);
+            Finder qlFinder = dataQL.getFinder();
+            for (Class<?> sourceType : sourceTypeArray) {
+                Class<? extends UdfSource> type = (Class<? extends UdfSource>) sourceType;
+                DimUdfSource annotationsByType = type.getAnnotation(DimUdfSource.class);
+                dataQL.addShareVar(annotationsByType.value(), appContext.getInstance(type).getUdfResource(qlFinder));
+            }
+        });
     }
 
     /** 添加全局变量（等同于 compilerVar） */

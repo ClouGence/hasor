@@ -475,6 +475,9 @@ public class BeanMap extends AbstractMap<String, Object> implements Cloneable {
             }
             // 为了有序
             pd.forEach((name, propertyDescriptor) -> {
+                if (propertyDescriptor == null) {
+                    return;
+                }
                 Method readMethod = propertyDescriptor.getReadMethod();
                 Method writeMethod = propertyDescriptor.getWriteMethod();
                 Class<?> aType = propertyDescriptor.getPropertyType();
