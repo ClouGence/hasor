@@ -19,9 +19,9 @@ import net.hasor.db.jdbc.mapper.BeanPropertyRowMapper;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
 import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
-import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.io.IOUtils;
+import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -327,12 +327,12 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
 
     @Override
     public <T> List<T> query(final PreparedStatementCreator psc, final RowMapper<T> rowMapper) throws SQLException {
-        return this.query(psc, new RowMapperResultSetExtractor<T>(rowMapper));
+        return this.query(psc, new RowMapperResultSetExtractor<>(rowMapper));
     }
 
     @Override
     public <T> List<T> query(final String sql, final PreparedStatementSetter pss, final RowMapper<T> rowMapper) throws SQLException {
-        return this.query(sql, pss, new RowMapperResultSetExtractor<T>(rowMapper));
+        return this.query(sql, pss, new RowMapperResultSetExtractor<>(rowMapper));
     }
 
     @Override
@@ -342,7 +342,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
 
     @Override
     public <T> List<T> query(final String sql, final Object[] args, final RowMapper<T> rowMapper) throws SQLException {
-        return this.query(sql, args, new RowMapperResultSetExtractor<T>(rowMapper));
+        return this.query(sql, args, new RowMapperResultSetExtractor<>(rowMapper));
     }
 
     @Override
@@ -392,7 +392,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
 
     @Override
     public <T> T queryForObject(final String sql, final RowMapper<T> rowMapper, final Object... args) throws SQLException {
-        return JdbcTemplate.requiredSingleResult(this.query(sql, args, new RowMapperResultSetExtractor<T>(rowMapper, 1)));
+        return JdbcTemplate.requiredSingleResult(this.query(sql, args, new RowMapperResultSetExtractor<>(rowMapper, 1)));
     }
 
     @Override

@@ -69,7 +69,7 @@ public class RowMapperResultSetExtractor<T> implements ResultSetExtractor<List<T
 
     @Override
     public List<T> extractData(final ResultSet rs) throws SQLException {
-        List<T> results = this.rowsExpected > 0 ? new ArrayList<T>(this.rowsExpected) : new ArrayList<T>();
+        List<T> results = this.rowsExpected > 0 ? new ArrayList<>(this.rowsExpected) : new ArrayList<T>();
         int rowNum = 0;
         while (rs.next()) {
             results.add(this.rowMapper.mapRow(rs, rowNum++));
