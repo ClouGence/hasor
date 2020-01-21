@@ -1,5 +1,5 @@
-var dataQuery = @@sql_query()<%
-    select * from MyOption
+var dataQuery = @@sql_exec()<%
+    select * from my_option
 %>
 
-return dataQuery(${_0}) => [ KEY ];
+return dataQuery(${_0}) => [ key ];

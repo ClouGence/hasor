@@ -15,8 +15,8 @@
     <modules>
         <module>example-hasor</module>
         <module>example-web</module>
-        <!--        <module>example-rsf</module>-->
-        <!--        <module>example-nutz</module>-->
+        <!-- <module>example-rsf</module>-->
+        <!-- <module>example-nutz</module>-->
     </modules>
 
     <!-- 配置属性 -->

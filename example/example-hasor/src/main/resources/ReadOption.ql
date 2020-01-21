@@ -4,8 +4,8 @@ if (${_0} == null) {
     return "wrong args number."
 }
 
-var dataQuery = @@sql_query(dataKey)<%
-    select * from MyOption where key = :dataKey
+var dataQuery = @@sql_exec(dataKey)<%
+    select * from my_option where `key` = :dataKey
 %>
 var data = dataQuery(${_0}) => [ # ];
 

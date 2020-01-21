@@ -1,5 +1,5 @@
 package net.example.hasor;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
@@ -20,20 +20,14 @@ public class ExampleModule implements Module {
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         // .数据库
-        ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        dataSource.setDriverClass("org.hsqldb.jdbcDriver");
-        dataSource.setJdbcUrl("jdbc:hsqldb:file:user.db;close_result=true;ifexists=true;");
-        dataSource.setUser("sa");
-        dataSource.setPassword("sa");
-        dataSource.setMaxPoolSize(10);
-        dataSource.setInitialPoolSize(1);
-        dataSource.setIdleConnectionTestPeriod(18000);
-        dataSource.setCheckoutTimeout(3000);
-        dataSource.setTestConnectionOnCheckin(true);
-        dataSource.setAcquireRetryDelay(1000);
-        dataSource.setAcquireRetryAttempts(30);
-        dataSource.setAcquireIncrement(1);
-        dataSource.setMaxIdleTime(25000);
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql://daily.db.hasor.net:3306/example");
+        dataSource.setUsername("example");
+        dataSource.setPassword("LonkP-jW3@ptJPxePf");
+        dataSource.setInitialSize(1);
+        dataSource.setMinIdle(1);
+        dataSource.setMaxActive(5);
         apiBinder.installModule(new JdbcModule(Level.Full, dataSource));
         // .DataQL
         apiBinder.tryCast(QueryApiBinder.class).loadFragment(apiBinder.findClass(DimFragment.class));
@@ -44,10 +38,10 @@ public class ExampleModule implements Module {
     public void onStart(AppContext appContext) throws Throwable {
         // 初始化内容数据库
         Map<String, String> loadMapper = new HashMap<>();
-        loadMapper.put("MYOPTION", "/ddl_sql_option.sql");
+        loadMapper.put("MY_OPTION", "/ddl_sql_option.sql");
         //
         JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        List<String> tables = jdbcTemplate.queryForList("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES;", String.class);
+        List<String> tables = jdbcTemplate.queryForList("show tables;", String.class);//SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES;
         for (String tableName : tables) {
             loadMapper.remove(tableName.toUpperCase());
         }
@@ -56,7 +50,7 @@ public class ExampleModule implements Module {
             String mapperPath = loadMapper.get(loadItem);
             logger.info("loadSQL {} -> {}.", loadItem, mapperPath);
             jdbcTemplate.loadSQL("UTF-8", mapperPath);
-            jdbcTemplate.executeUpdate("insert into MyOption (id,key,value,desc,create_time,modify_time) values (?,?,?,?,?,?)",//
+            jdbcTemplate.executeUpdate("insert into `my_option`(`id`,`key`,`value`,`desc`,`create_time`,`modify_time`) values (?,?,?,?,?,?)",//
                     UUID.randomUUID().toString(),   // id
                     "self",                                 // key
                     "self-value",                           // value

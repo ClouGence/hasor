@@ -10,7 +10,7 @@
 
     <!-- Maven Info -->
     <groupId>net.hasor</groupId>
-    <artifactId>example-hasor</artifactId>
+    <artifactId>example-web</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
