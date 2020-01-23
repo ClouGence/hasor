@@ -26,7 +26,8 @@ Bean 的启动
         }
     }
 
-小贴士：如果您组合使用 @Singleton 注解和 @Init 注解，同时这个类在 Hasor 启动时通过 Module 预先注册了。那么 Hasor 会在启动时自动创建这个类并调用 init 方法。例如：
+.. HINT::
+    如果您组合使用 @Singleton 注解和 @Init 注解，同时这个类在 Hasor 启动时通过 Module 预先注册了。那么 Hasor 会在启动时自动创建这个类并调用 init 方法。例如：
 
 .. code-block:: java
     :linenos:

@@ -80,19 +80,29 @@
 拦截器的匹配器 `net.hasor.core.exts.aop.Matchers`
 
 匹配所有类
-- `Matchers.anyClass();`
+    - `Matchers.anyClass();`
+
 匹配所有方法
-- `Matchers.anyMethod();`
+    - `Matchers.anyMethod();`
+
 匹配标记了 @MyAop 注解的类
-- `Matchers.annotatedWithClass(MyAop.class);`
+    - `Matchers.annotatedWithClass(MyAop.class);`
+
 匹配标记了 @MyAop 注解的方法
-- `Matchers.annotatedWithMethod(MyAop.class);`
+    - `Matchers.annotatedWithMethod(MyAop.class);`
+
 匹配 List 类型的子类
-- `Matchers.subClassesOf(List.class);`
-按照通配符匹配类，格式为：<包名>.<类名>。通配符符号为：?表示任意一个字符；*表示任意多个字符。
-- `Matchers.expressionClass("abc.foo.*");`
-按照通配符匹配方法，格式为：<返回值> <类名>.<方法名>(<参数签名列表>)。通配符符号为：?表示任意一个字符；*表示任意多个字符。
-- `Matchers.expressionMethod("abc.foo.*");`
+    - `Matchers.subClassesOf(List.class);`
+
+按照通配符匹配类
+    - 格式为：<包名>.<类名>
+    - 通配符符号为：?表示任意一个字符；*表示任意多个字符。
+    - `Matchers.expressionClass("abc.foo.*");`
+
+按照通配符匹配方法
+    - 格式为：<返回值> <类名>.<方法名>(<参数签名列表>)
+    - 通配符符号为：?表示任意一个字符；*表示任意多个字符。
+    - `Matchers.expressionMethod("abc.foo.*");`
 
 
 通配符匹配方法样例
@@ -107,4 +117,3 @@
      *  * net.test.hasor.*(*)    匹配：包“net.test.hasor”下的任意类，任意方法。
      *  * net.test.hasor.add*(*) 匹配：包“net.test.hasor”下的任意类，任意add开头的方法。
      *  java.lang.String *.*(*)  匹配：任意返回值为String类型的方法。
-

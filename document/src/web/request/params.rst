@@ -152,12 +152,12 @@ Hasor Web 框架可以帮助你进行简单的类型转换。例如：
 
 可以转换的类型有：
 
-- 基础类型：byte、short、int、long、float、double、boolean、String
-- 大数类型：BigInteger、BigDecimal
-- 时间日期：java.util.Date、java.util.Calendar、java.sql.Date、java.sql.Time、java.sql.Timestamp
-- 其它类型：Enum、File、URL、URI
+- 基础类型：``byte``、``short``、``int``、``long``、``float``、``double``、``boolean``、``String``
+- 大数类型：``BigInteger``、``BigDecimal``
+- 时间日期：``java.util.Date``、``java.util.Calendar``、``java.sql.Date``、``java.sql.Time``、``java.sql.Timestamp``
+- 其它类型：``Enum``、``File``、``URL``、``URI``
 
-类型转换是使用的 net.hasor.utils.convert.ConverterUtils 工具，因此设置时间格式需要通过下面这段代码来配置 `ConverterUtils` 工具。
+类型转换是使用的 net.hasor.utils.convert.ConverterUtils 工具，因此设置时间格式需要通过下面这段代码来配置 ``ConverterUtils`` 工具。
 
 整个程序启动时执行一次就可以。
 

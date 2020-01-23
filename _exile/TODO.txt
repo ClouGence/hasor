@@ -19,7 +19,6 @@ https://www.eclipse.org/jetty/documentation/current/embedding-jetty.html
 * mvn clean deploy -P release
 
 
-1。 parser 失败的时候，不应该继续尝试解析  g4。
 2。 定位行号
 
 

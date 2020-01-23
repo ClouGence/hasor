@@ -6,26 +6,23 @@ Hasor 的生命周期大致分为三个阶段：`init`、`start`、`shutdown`，
 
 面我们对每一个重要的节点做一个简单的介绍，这些过程代码你可以在 ``TemplateAppContext`` 类中找到它们。
 
-**一、Init阶段**
+**Init阶段**
+    - `findModules` ：在配置文件中，查找找所有可以加载的 Module。
+    - `doInitialize` ：执行 init 阶段的起始标志，默认是空实现。
+    - `newApiBinder` ：创建 Module 在执行 loadModule 方法时用到的 ApiBinder 对象。包括 ApiBinder 的扩展机制也是在这里给予支持。
+    - `installModule` ：加载每一个 Module，简单来说就是一个 for。
+    - `doBind` ：容器级的初始化操作，这个过程细分为 doBindBefore、installModule、doBindAfter 三个部分。
+    - `doInitializeCompleted` ：执行 init 阶段的终止标志，默认是空实现。
 
-- `findModules` ：在配置文件中，查找找所有可以加载的 Module。
-- `doInitialize` ：执行 init 阶段的起始标志，默认是空实现。
-- `newApiBinder` ：创建 Module 在执行 loadModule 方法时用到的 ApiBinder 对象。包括 ApiBinder 的扩展机制也是在这里给予支持。
-- `installModule` ：加载每一个 Module，简单来说就是一个 for。
-- `doBind` ：容器级的初始化操作，这个过程细分为 doBindBefore、installModule、doBindAfter 三个部分。
-- `doInitializeCompleted` ：执行 init 阶段的终止标志，默认是空实现。
+**Start阶段**
+    - `doStart` ：执行 start 阶段的起始标志。
+    - `ContextEvent_Started` ：通过事件机制发送 `AppContext#ContextEvent_Started` 事件。
+    - `doStartCompleted` ：执行 start 阶段的终止标志。
 
-**二、Start阶段**
-
-- `doStart` ：执行 start 阶段的起始标志。
-- `ContextEvent_Started` ：通过事件机制发送 `AppContext#ContextEvent_Started` 事件。
-- `doStartCompleted` ：执行 start 阶段的终止标志。
-
-**三、Shutdown阶段**
-
-- `doShutdown` ：执行 shutdown 阶段的起始标志。
-- `ContextEvent_Shutdown` ：发送 `AppContext#ContextEvent_Shutdown` 事件。
-- `doShutdownCompleted` ：执行 shutdown 阶段的终止标志。
+**Shutdown阶段**
+    - `doShutdown` ：执行 shutdown 阶段的起始标志。
+    - `ContextEvent_Shutdown` ：发送 `AppContext#ContextEvent_Shutdown` 事件。
+    - `doShutdownCompleted` ：执行 shutdown 阶段的终止标志。
 
 
 提示：Hasor 在 start 时候会通过 `Runtime.getRuntime().addShutdownHook(...)` 注册一个钩子用于在 JVM 推出时自动执行 shutdown。
