@@ -1,0 +1,32 @@
+[
+	{
+		"id":1,
+		"label":"t1",
+		"children":[
+			{
+				"id":2,
+				"parent_id":1,
+				"label":"t2",
+				"children":[
+					{
+						"id":4,
+						"parent_id":2,
+						"label":"t4",
+						"children":[]
+					}
+				]
+			},
+			{
+				"id":3,
+				"parent_id":1,
+				"label":"t3",
+				"children":[]
+			}
+		]
+	},
+	{
+		"id":5,
+		"label":"t5",
+		"children":[]
+	}
+]

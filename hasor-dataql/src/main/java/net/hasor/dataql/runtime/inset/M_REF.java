@@ -44,6 +44,7 @@ class M_REF implements InsetProcess {
         RefLambdaCall refLambdaCall = new RefLambdaCall(//
                 methodSeq,  //
                 dataHeap,   //
+                envStack,   //
                 context     //
         );
         dataStack.push(refLambdaCall);

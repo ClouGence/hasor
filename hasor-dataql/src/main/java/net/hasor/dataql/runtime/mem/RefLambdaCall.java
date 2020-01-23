@@ -29,11 +29,13 @@ import net.hasor.dataql.runtime.inset.OpcodesPool;
 public class RefLambdaCall implements Udf {
     private InstSequence        instSequence;
     private DataHeap            dataHeap;
+    private EnvStack            envStack;
     private InsetProcessContext context;
 
-    public RefLambdaCall(InstSequence instSequence, DataHeap dataHeap, InsetProcessContext context) {
+    public RefLambdaCall(InstSequence instSequence, DataHeap dataHeap, EnvStack envStack, InsetProcessContext context) {
         this.instSequence = instSequence;
         this.dataHeap = dataHeap;
+        this.envStack = envStack;
         this.context = context;
     }
 
@@ -47,13 +49,12 @@ public class RefLambdaCall implements Udf {
         InstSequence instSequence = this.instSequence.clone();
         OpcodesPool opcodesPool = OpcodesPool.defaultOpcodesPool();
         DataHeap dataHeap = new DataHeap(this.dataHeap);
-        EnvStack envStack = new EnvStack();
         while (instSequence.hasNext()) {
             opcodesPool.doWork(     //
                     instSequence,   //
                     dataHeap,       //
                     cloneStack,     //
-                    envStack,       //
+                    this.envStack,  //
                     this.context    //
             );
             instSequence.doNext(1);

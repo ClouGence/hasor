@@ -90,4 +90,9 @@ public class RecursionTest extends AbstractTestResource {
     public void special_c_test() throws IOException {
         queryTest("special_c");
     }
+
+    @Test
+    public void special_tree_test() throws IOException {
+        queryTest("special_tree");
+    }
 }

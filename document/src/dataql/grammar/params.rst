@@ -143,18 +143,24 @@ DataQL 会把 ``=>`` 符左边的表达式值放入环境栈。当转换结束�
 .. HINT::
     即便所有表达式在编译之后都具有访问符，但这并不代表数据的源头都来自环境栈。编译器会优先在本地变量表中查找。具体逻辑在 ``NameRouteVariableInstCompiler`` 类中。
 
-例如如下例子，在对一颗 Tree 进行结构变换时。希望每一层
+例如：如下例子，在对一颗 Tree 进行结构变换时。希望每一层都能带上 parentID。
 
+`样本数据 <../../_static/test_json_2020-01-32-13-20.json>`_
 
+.. code-block:: js
+    :linenos:
 
+    var treeData = ..// 样本数据
+    var treeFmt = (dat) -> {
+            return {
+                "id"       : dat.id,
+                "parent_id": ((@[-3] !=null)? @[-3].id : null), // 获取整个环境栈然后在倒数第三层上获取
+                "label"    : dat.label,
+                "children" : dat.children => [ treeFmt(#) ]
+            }
+    }
+    return treeData => [ treeFmt(#) ]
 
+参照数据 -3 含义如下：
 
-单独使用访问符
-------------------------------------
-路由中单独只使用符号
-
-    - `@`，取上一层数据栈的数据
-    - `#`，取当前数据栈的数据
-    - `$`，取数据栈栈根数据
-
-例如：``var _0 = [1,2,3,4,5,6] ; return ${_0} => { 'a': $ }`  -> 结果为 `{ 'a' : 1 }``
+.. image::  ../../_static/CC2_F439_1D05_42F7.png

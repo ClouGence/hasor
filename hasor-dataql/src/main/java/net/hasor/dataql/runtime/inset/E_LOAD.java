@@ -59,7 +59,13 @@ class E_LOAD implements InsetProcess {
             dataStack.push(first);
         } else if ("@".equalsIgnoreCase(symbol)) {
             // @ 表示整个环境栈(数组形态)
-            dataStack.push(envStack.toArray());
+            Object[] objects = envStack.toArray();
+            for (int i = 0; i < objects.length; i++) {
+                if (objects[i] instanceof DataIterator) {
+                    objects[i] = ((DataIterator) objects[i]).getOriData();
+                }
+            }
+            dataStack.push(objects);
         } else {
             throw new InstructRuntimeException("symbol '" + symbol + "' is not define.");
         }
