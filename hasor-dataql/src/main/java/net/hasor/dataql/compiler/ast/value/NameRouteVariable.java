@@ -18,6 +18,7 @@ import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
+import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
 
@@ -68,21 +69,32 @@ public class NameRouteVariable implements Variable, RouteVariable {
             }
         }
         //
-        if (RouteType.Special == routeType) {
+        if (RouteType.Params == routeType) {
             writer.write(specialType.getCode() + "{");
-        }
-        if (RouteType.Special != routeType && SpecialType.Special_A != specialType) {
-            writer.write(specialType.getCode());
         }
         //
         this.parent.doFormat(depth, formatOption, writer);
         if (this.parent instanceof EnterRouteVariable) {
-            writer.write(this.name);
+            if (StringUtils.isBlank(this.name)) {
+                SpecialType special = ((EnterRouteVariable) this.parent).getSpecialType();
+                if (special != SpecialType.Special_A) {
+                    writer.write(((EnterRouteVariable) this.parent).getSpecialType().getCode());
+                }
+            } else {
+                if (RouteType.Params != routeType && SpecialType.Special_A != specialType) {
+                    writer.write(specialType.getCode());
+                }
+                writer.write(this.name);
+            }
         } else {
-            writer.write("." + this.name);
+            if (this.parent instanceof NameRouteVariable && StringUtils.isBlank(((NameRouteVariable) this.parent).name)) {
+                writer.write(this.name);
+            } else {
+                writer.write("." + this.name);
+            }
         }
         //
-        if (RouteType.Special == routeType) {
+        if (RouteType.Params == routeType) {
             writer.write("}");
         }
     }

@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.compiler.ast;
+package net.hasor.dataql.compiler;
 import net.hasor.dataql.AbstractTestResource;
-import net.hasor.dataql.compiler.QueryModel;
+import net.hasor.dataql.Finder;
+import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.utils.StringUtils;
 import org.junit.Test;
@@ -28,7 +29,17 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
-public class SourceFormatTest extends AbstractTestResource {
+public class CompilerTest extends AbstractTestResource {
+    private void qilTest(String testCase) throws IOException {
+        String query1 = getScript("/net_hasor_dataql_ast/" + testCase + "/ast.ql");
+        QueryModel queryModel = QueryHelper.queryParser(query1);
+        QIL qil = QueryHelper.queryCompiler(queryModel, null, Finder.DEFAULT);
+        //
+        String qilString1 = qil.toString();
+        String qilString2 = getScript("/net_hasor_dataql_ast/" + testCase + "/ast.qil");
+        assert qilString1.trim().equals(qilString2.trim());
+    }
+
     private void astTest(String testCase) throws IOException {
         String query1 = getScript("/net_hasor_dataql_ast/" + testCase + "/ast.ql");
         QueryModel queryModel1 = QueryHelper.queryParser(query1);
@@ -45,6 +56,8 @@ public class SourceFormatTest extends AbstractTestResource {
         //
         String basicVisitor = getScript("/net_hasor_dataql_ast/" + testCase + "/ast.visitor");
         assert visitor1.trim().equals(basicVisitor.trim());
+        //
+        qilTest(testCase);
     }
 
     @Test
@@ -173,6 +186,26 @@ public class SourceFormatTest extends AbstractTestResource {
     }
 
     @Test
+    public void fmt5_ast_format_test() throws IOException {
+        astTest("fmt_5");
+    }
+
+    @Test
+    public void fmt6_ast_format_test() throws IOException {
+        astTest("fmt_6");
+    }
+
+    @Test
+    public void fmt7_ast_format_test() throws IOException {
+        astTest("fmt_7");
+    }
+
+    @Test
+    public void fmt8_ast_format_test() throws IOException {
+        astTest("fmt_8");
+    }
+
+    @Test
     public void route1_ast_format_test() throws IOException {
         astTest("route_1");
     }
@@ -193,6 +226,11 @@ public class SourceFormatTest extends AbstractTestResource {
     }
 
     @Test
+    public void run1_ast_format_test() throws IOException {
+        astTest("run_1");
+    }
+
+    @Test
     public void lambda1_ast_format_test() throws IOException {
         astTest("lambda_1");
     }
@@ -200,5 +238,20 @@ public class SourceFormatTest extends AbstractTestResource {
     @Test
     public void lambda2_ast_format_test() throws IOException {
         astTest("lambda_2");
+    }
+
+    @Test
+    public void fragment1_ast_format_test() throws IOException {
+        astTest("fragment_1");
+    }
+
+    @Test
+    public void error_ast_format_test() throws IOException {
+        try {
+            QueryHelper.queryParser("return [1,2,3,4,5,6] => [ # ]"); // 不支持的语法
+            assert false;
+        } catch (Exception e) {
+            assert true;
+        }
     }
 }

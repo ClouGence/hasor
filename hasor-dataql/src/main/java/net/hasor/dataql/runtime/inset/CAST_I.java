@@ -24,10 +24,7 @@ import net.hasor.dataql.runtime.mem.DataIterator;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * CAST_I  // 将栈顶元素转换为迭代器，作为迭代器有三个特殊操作：data(数据)、next(移动到下一个，如果成功返回true)
@@ -48,21 +45,30 @@ class CAST_I implements InsetProcess {
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
         Object data = dataStack.pop();
         Iterator iterator = null;
+        Object oriData = null;
         //
         if (data == null) {
+            oriData = Collections.EMPTY_LIST;
             iterator = Collections.EMPTY_LIST.iterator();
         } else if (data instanceof ValueModel && ((ValueModel) data).isNull()) {
+            oriData = Collections.EMPTY_LIST;
             iterator = Collections.EMPTY_LIST.iterator();
         } else if (data instanceof ListModel) {
+            oriData = ((ListModel) data).asOri();
             iterator = ((ListModel) data).asOri().iterator();
         } else if (data instanceof Collection) {
+            oriData = data;
             iterator = ((Collection) data).iterator();
         } else if (data.getClass().isArray()) {
-            iterator = Arrays.asList((Object[]) data).iterator();
+            List<Object> objects = Arrays.asList((Object[]) data);
+            oriData = objects;
+            iterator = objects.iterator();
         } else {
-            iterator = Collections.singletonList(data).iterator();
+            List<Object> objects = Collections.singletonList(data);
+            oriData = objects;
+            iterator = objects.iterator();
         }
         //
-        dataStack.push(new DataIterator(iterator));
+        dataStack.push(new DataIterator(oriData, iterator));
     }
 }

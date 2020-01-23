@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil.cc;
+import net.hasor.dataql.compiler.ast.RouteVariable;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
 import net.hasor.dataql.compiler.ast.value.NameRouteVariable;
@@ -21,6 +22,7 @@ import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.CompilerContext.ContainsIndex;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
+import net.hasor.utils.StringUtils;
 
 /**
  * 编译 NameRouteVariable
@@ -31,9 +33,15 @@ public class NameRouteVariableInstCompiler implements InstCompiler<NameRouteVari
     @Override
     public void doCompiler(NameRouteVariable astInst, InstQueue queue, CompilerContext compilerContext) {
         String astInstName = astInst.getName();
-        if (astInst.getParent() instanceof EnterRouteVariable) {
-            EnterRouteVariable parent = (EnterRouteVariable) astInst.getParent();
-            if (parent.getRouteType() == RouteType.Normal) {
+        RouteVariable parent = astInst.getParent();
+        if (parent instanceof NameRouteVariable) {
+            if (StringUtils.isBlank(((NameRouteVariable) parent).getName())) {
+                parent = parent.getParent();
+            }
+        }
+        if (parent instanceof EnterRouteVariable) {
+            EnterRouteVariable enterParent = (EnterRouteVariable) parent;
+            if (enterParent.getRouteType() == RouteType.Expr) {
                 ContainsIndex withTree = compilerContext.containsWithTree(astInstName);
                 if (withTree.isValid()) {
                     queue.inst(LOAD, withTree.depth, withTree.index);
@@ -42,7 +50,7 @@ public class NameRouteVariableInstCompiler implements InstCompiler<NameRouteVari
             }
         }
         //
-        compilerContext.findInstCompilerByInst(astInst.getParent()).doCompiler(queue);
+        compilerContext.findInstCompilerByInst(parent).doCompiler(queue);
         queue.inst(GET, astInstName);
     }
 }

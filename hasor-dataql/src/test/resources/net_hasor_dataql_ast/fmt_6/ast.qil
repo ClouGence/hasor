@@ -1,0 +1,21 @@
+[0]
+  #00  E_LOAD    #
+  #01  GET       abc
+  #02  CAST_I
+  #03  E_PUSH
+  #04  NEW_A
+  #05  LABEL     5
+  #06  E_LOAD    #
+  #07  GET       next
+  #08  IF        16
+  #09  E_LOAD    #
+  #10  GET       data
+  #11  E_PUSH
+  #12  E_LOAD    #
+  #13  E_POP
+  #14  PUSH
+  #15  GOTO      5
+  #16  LABEL     16
+  #17  E_POP
+  #18  RETURN    0
+

@@ -17,6 +17,7 @@ package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.ast.expr.AtomExpression;
+import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
@@ -94,13 +95,29 @@ public class ObjectVariable implements Inst, Variable {
             }
             if (variable instanceof NameRouteVariable) {
                 NameRouteVariable nameRouteVariable = (NameRouteVariable) variable;
-                if (nameRouteVariable.getParent() instanceof EnterRouteVariable && !key.equals(nameRouteVariable.getName())) {
+                if (!key.equals(nameRouteVariable.getName())) {
                     writer.write(" : ");
                     variable.doFormat(depth + 1, formatOption, writer);
+                } else {
+                    RouteVariable tempParent = nameRouteVariable.getParent();
+                    if (tempParent instanceof NameRouteVariable && StringUtils.isBlank(((NameRouteVariable) tempParent).getName())) {
+                        tempParent = tempParent.getParent();
+                    }
+                    if (tempParent instanceof EnterRouteVariable) {
+                        SpecialType specialType = ((EnterRouteVariable) tempParent).getSpecialType();
+                        if (specialType != null && specialType != SpecialType.Special_A) {
+                            writer.write(" : ");
+                            variable.doFormat(depth + 1, formatOption, writer);
+                        }
+                    }
                 }
             } else {
                 writer.write(" : ");
-                variable.doFormat(depth + 1, formatOption, writer);
+                if (variable instanceof EnterRouteVariable) {
+                    writer.write(((EnterRouteVariable) variable).getSpecialType().getCode());
+                } else {
+                    variable.doFormat(depth + 1, formatOption, writer);
+                }
             }
         }
         //

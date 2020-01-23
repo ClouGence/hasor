@@ -35,12 +35,17 @@ runInst         : RUN anyObject;
 
 /* ----------------------------------------------------------------------------------- 路由 */
 
-anyObject       : extBlock | lambdaDef | primitiveValue | objectValue | listValue | funcCall | routeMapping | expr;
+anyObject       : extBlock | lambdaDef | primitiveValue | objectValue | listValue | funcCall | routeMapping | routeConver | expr;
 
 /* 路由 */
-routeMapping    : ROU OCBR (IDENTIFIER | STRING) CCBR routeSubscript? (DOT routeNameSet)?   #specialRoute  // 特殊路由
-                | ((ROU? routeNameSet) | (ROU (DOT routeNameSet)?) )                        #normalRoute   // 一般路由
-                | routeMapping CONVER (objectValue | listValue)                             #convertRoute  // 路由并转换结果
+routeMapping    : ROU OCBR (IDENTIFIER | STRING) CCBR routeSubscript? (DOT routeNameSet)?   #paramRoute    // 程序传参
+                | ROU routeSubscript+ (DOT routeNameSet)?                                   #subExprRoute  // 表达式（访问符 -> 先下标，在元素）
+                | ROU DOT? routeNameSet                                                     #nameExprRoute // 表达式（访问符 -> 子元素）
+                | ((ROU? routeNameSet) | (ROU routeNameSet?))                               #exprRoute     // 表达式
+                ;
+
+/* 转换 */
+routeConver     : routeMapping CONVER (objectValue | listValue)                             #exprFmtRoute  // 转换结果
                 ;
 
 /* 一般路由的规则 */
@@ -50,7 +55,7 @@ routeNameSet    : routeName (DOT routeName)*
 routeName       : IDENTIFIER routeSubscript*;
 
 /* 下标 */
-routeSubscript  : LSBT ( STRING | INTEGER_NUM ) RSBT;
+routeSubscript  : LSBT ( STRING | INTEGER_NUM | expr ) RSBT;
 
 /* 函数调用(不含转换,可用于表达式) */
 funcCall        : routeMapping LBT ( anyObject (COMMA anyObject)* )? RBT funcCallResult?;

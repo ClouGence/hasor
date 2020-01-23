@@ -71,7 +71,12 @@ public class FunCallRouteVariable implements RouteVariable {
             if (i > 0) {
                 writer.write(", ");
             }
-            this.paramList.get(i).doFormat(depth + 1, formatOption, writer);
+            Variable variable = this.paramList.get(i);
+            if (variable instanceof EnterRouteVariable) {
+                writer.write(((EnterRouteVariable) variable).getSpecialType().getCode());
+            } else {
+                variable.doFormat(depth + 1, formatOption, writer);
+            }
         }
         writer.write(")");
     }

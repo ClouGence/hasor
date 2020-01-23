@@ -1,0 +1,9 @@
+return ${_0} => [ #.name ]
+return ${_0} => [ #name ]
+return ${_0} => [ name ]
+
+return ${_0} => [ @.arg ]
+return ${_0} => [ @arg ]
+
+return ${_0} => [ $.min ]
+return ${_0} => [ $min ]

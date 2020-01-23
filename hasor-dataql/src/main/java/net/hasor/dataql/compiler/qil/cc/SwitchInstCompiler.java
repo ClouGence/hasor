@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil.cc;
+import net.hasor.dataql.compiler.CompilerException;
 import net.hasor.dataql.compiler.ast.Expression;
 import net.hasor.dataql.compiler.ast.inst.InstSet;
 import net.hasor.dataql.compiler.ast.inst.SwitchInst;
@@ -37,7 +38,7 @@ public class SwitchInstCompiler implements InstCompiler<SwitchInst> {
         InstSet elseBlockSet = astInst.getElseBlockSet();
         //
         if (testBlockSet.isEmpty()) {
-            throw new RuntimeException("if testBlockSet is empty.");
+            throw new CompilerException("if testBlockSet is empty.");
         }
         /*
             if (a == b)

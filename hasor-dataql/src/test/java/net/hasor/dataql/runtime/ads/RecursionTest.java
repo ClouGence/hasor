@@ -34,16 +34,6 @@ public class RecursionTest extends AbstractTestResource {
     }
 
     @Test
-    public void basic_fmt_test() throws IOException {
-        queryTest("basic_fmt");
-    }
-
-    @Test
-    public void recursion_test() throws IOException {
-        queryTest("recursion");
-    }
-
-    @Test
     public void sql_fragment_test() throws IOException {
         DataQL dataQL1 = Hasor.create().build((QueryModule) apiBinder -> {
             apiBinder.bindFragment("sql", new SqlFragmentUdf(1));
@@ -54,6 +44,16 @@ public class RecursionTest extends AbstractTestResource {
             apiBinder.bindType("sql", FragmentProcess.class, new SqlFragmentUdf(1));
         }).getInstance(DataQL.class);
         queryTest(dataQL2, "sql_fragment");
+    }
+
+    @Test
+    public void basic_fmt_test() throws IOException {
+        queryTest("basic_fmt");
+    }
+
+    @Test
+    public void recursion_test() throws IOException {
+        queryTest("recursion");
     }
 
     @Test
@@ -74,5 +74,20 @@ public class RecursionTest extends AbstractTestResource {
     @Test
     public void hints_test() throws IOException {
         queryTest("hints");
+    }
+
+    @Test
+    public void special_a_test() throws IOException {
+        queryTest("special_a");
+    }
+
+    @Test
+    public void special_b_test() throws IOException {
+        queryTest("special_b");
+    }
+
+    @Test
+    public void special_c_test() throws IOException {
+        queryTest("special_c");
     }
 }

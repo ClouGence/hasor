@@ -13,27 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.compiler;
+package net.hasor.dataql.compiler.parser;
+import net.hasor.dataql.compiler.ParseException;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
+
 /**
- * DataQL 解析异常。
+ * DataQL 解析异常处理器。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-01-22
  */
-public class ParseException extends RuntimeException {
-    private int line;
-    private int column;
+public class ThrowingErrorListener extends BaseErrorListener {
+    public static final ThrowingErrorListener INSTANCE = new ThrowingErrorListener();
 
-    public ParseException(int line, int column, String message) {
-        super("line " + line + ":" + column + " " + message);
-        this.line = line;
-        this.column = column;
-    }
-
-    public int getLine() {
-        return this.line;
-    }
-
-    public int getColumn() {
-        return this.column;
+    @Override
+    public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,//
+            int line, int charPositionInLine, String msg, RecognitionException e) {
+        throw new ParseException(line, charPositionInLine, msg);
     }
 }

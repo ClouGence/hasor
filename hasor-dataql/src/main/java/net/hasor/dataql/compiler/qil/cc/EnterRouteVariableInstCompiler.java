@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil.cc;
+import net.hasor.dataql.compiler.CompilerException;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
@@ -31,17 +32,19 @@ public class EnterRouteVariableInstCompiler implements InstCompiler<EnterRouteVa
     public void doCompiler(EnterRouteVariable astInst, InstQueue queue, CompilerContext compilerContext) {
         RouteType routeType = astInst.getRouteType();
         SpecialType specialType = astInst.getSpecialType();
-        if (routeType == RouteType.Normal) {
-            if (SpecialType.Special_A == specialType || specialType == null) {
-                queue.inst(E_LOAD, SpecialType.Special_A.getCode());// 一般路由
-            } else {
-                queue.inst(E_LOAD, specialType.getCode());          // 一般路由升级形式
-            }
-            return;
-        } else if (routeType == RouteType.Special) {
-            queue.inst(LOAD_C, specialType.getCode());              // 自定义路由
+        //
+        // 表达式
+        if (routeType == RouteType.Expr) {
+            specialType = (specialType == null) ? SpecialType.Special_A : specialType;
+            queue.inst(E_LOAD, specialType.getCode());
             return;
         }
-        throw new RuntimeException("routeType is null.");
+        //
+        // 程序传参
+        if (routeType == RouteType.Params) {
+            queue.inst(LOAD_C, specialType.getCode());
+            return;
+        }
+        throw new CompilerException("routeType is null.");
     }
 }

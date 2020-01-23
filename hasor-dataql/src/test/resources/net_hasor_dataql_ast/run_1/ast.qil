@@ -1,0 +1,12 @@
+[0]
+  #00  LDC_D     1
+  #01  LDC_D     1
+  #02  DO        +
+  #03  POP
+  #04  E_LOAD    #
+  #05  GET       abc
+  #06  M_DEF
+  #07  CALL      0
+  #08  LDC_D     123
+  #09  DO        +
+  #10  POP

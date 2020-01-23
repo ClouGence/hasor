@@ -1,0 +1,109 @@
+[0]
+  #000  E_LOAD    #
+  #001  GET       abc
+  #002  CAST_I
+  #003  E_PUSH
+  #004  NEW_A
+  #005  LABEL     5
+  #006  E_LOAD    #
+  #007  GET       next
+  #008  IF        20
+  #009  E_LOAD    #
+  #010  GET       data
+  #011  E_PUSH
+  #012  E_LOAD    #
+  #013  GET       foo
+  #014  M_DEF
+  #015  E_LOAD    #
+  #016  CALL      1
+  #017  E_POP
+  #018  PUSH
+  #019  GOTO      5
+  #020  LABEL     20
+  #021  E_POP
+  #022  RETURN    0
+  #023  E_LOAD    #
+  #024  GET       abc
+  #025  CAST_I
+  #026  E_PUSH
+  #027  NEW_A
+  #028  LABEL     28
+  #029  E_LOAD    #
+  #030  GET       next
+  #031  IF        44
+  #032  E_LOAD    #
+  #033  GET       data
+  #034  E_PUSH
+  #035  E_LOAD    #
+  #036  GET       foo
+  #037  M_DEF
+  #038  E_LOAD    #
+  #039  GET       name
+  #040  CALL      1
+  #041  E_POP
+  #042  PUSH
+  #043  GOTO      28
+  #044  LABEL     44
+  #045  E_POP
+  #046  RETURN    0
+  #047  E_LOAD    #
+  #048  GET       abc
+  #049  CAST_I
+  #050  E_PUSH
+  #051  NEW_A
+  #052  LABEL     52
+  #053  E_LOAD    #
+  #054  GET       next
+  #055  IF        64
+  #056  E_LOAD    #
+  #057  GET       data
+  #058  E_PUSH
+  #059  E_LOAD    @
+  #060  PULL      23
+  #061  E_POP
+  #062  PUSH
+  #063  GOTO      52
+  #064  LABEL     64
+  #065  E_POP
+  #066  RETURN    0
+  #067  E_LOAD    #
+  #068  GET       abc
+  #069  CAST_I
+  #070  E_PUSH
+  #071  NEW_A
+  #072  LABEL     72
+  #073  E_LOAD    #
+  #074  GET       next
+  #075  IF        84
+  #076  E_LOAD    #
+  #077  GET       data
+  #078  E_PUSH
+  #079  E_LOAD    #
+  #080  PULL      23
+  #081  E_POP
+  #082  PUSH
+  #083  GOTO      72
+  #084  LABEL     84
+  #085  E_POP
+  #086  RETURN    0
+  #087  E_LOAD    #
+  #088  GET       abc
+  #089  CAST_I
+  #090  E_PUSH
+  #091  NEW_A
+  #092  LABEL     92
+  #093  E_LOAD    #
+  #094  GET       next
+  #095  IF        104
+  #096  E_LOAD    #
+  #097  GET       data
+  #098  E_PUSH
+  #099  E_LOAD    $
+  #100  PULL      23
+  #101  E_POP
+  #102  PUSH
+  #103  GOTO      92
+  #104  LABEL     104
+  #105  E_POP
+  #106  RETURN    0
+

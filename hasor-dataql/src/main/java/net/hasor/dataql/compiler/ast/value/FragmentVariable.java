@@ -62,12 +62,12 @@ public class FragmentVariable implements Inst, Variable {
         writer.write("@@" + this.fragmentName);
         writer.write("(");
         for (int i = 0; i < this.paramList.size(); i++) {
-            if (i > 0) {
+            if (i == 0) {
                 writer.write(this.paramList.get(i));
             } else {
                 writer.write("," + this.paramList.get(i));
             }
         }
-        writer.write(") <%" + this.fragmentString + "%>\n");
+        writer.write(") <%" + this.fragmentString + "%>");
     }
 }

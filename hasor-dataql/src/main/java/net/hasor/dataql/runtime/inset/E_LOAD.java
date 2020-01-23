@@ -19,6 +19,7 @@ import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataIterator;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
 
@@ -47,14 +48,18 @@ class E_LOAD implements InsetProcess {
         }
         //
         if ("#".equalsIgnoreCase(symbol)) {
-            // # 表示环境栈顶(同一般路由)
+            // # 表示环境栈顶
             dataStack.push(envStack.peek());
-        } else if ("@".equalsIgnoreCase(symbol)) {
-            // @ 表示第二层环境栈元素
-            dataStack.push(envStack.peekOfDepth(1));
         } else if ("$".equalsIgnoreCase(symbol)) {
-            // $ 根环境栈元素（每一个结果转换都会产生一层环境栈）
-            dataStack.push(envStack.firstElement());
+            // $ 表示环境栈根
+            Object first = envStack.firstElement();
+            if (first instanceof DataIterator) {
+                first = ((DataIterator) first).getOriData();
+            }
+            dataStack.push(first);
+        } else if ("@".equalsIgnoreCase(symbol)) {
+            // @ 表示整个环境栈(数组形态)
+            dataStack.push(envStack.toArray());
         } else {
             throw new InstructRuntimeException("symbol '" + symbol + "' is not define.");
         }

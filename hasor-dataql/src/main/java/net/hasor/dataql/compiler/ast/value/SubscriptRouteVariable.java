@@ -16,6 +16,8 @@
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
+import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
 
 import java.io.IOException;
 
@@ -67,6 +69,15 @@ public class SubscriptRouteVariable implements Variable, RouteVariable {
     @Override
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
         this.parent.doFormat(depth, formatOption, writer);
+        if (this.parent instanceof EnterRouteVariable) {
+            RouteType routeType = ((EnterRouteVariable) parent).getRouteType();
+            SpecialType specialType = ((EnterRouteVariable) parent).getSpecialType();
+            if (specialType == null) {
+                specialType = EnterRouteVariable.SpecialType.Special_A;
+            }
+            writer.write(specialType.getCode());
+        }
+        //
         if (subType == SubType.String) {
             String newValue = subValue.replace(String.valueOf(quoteChar), "\\" + quoteChar);
             writer.write("[" + quoteChar + newValue + quoteChar + "]");

@@ -25,9 +25,11 @@ import java.util.Iterator;
  */
 public class DataIterator {
     private Iterator iterator = null;
+    private Object   oriData  = null;
     private Object   data     = null;
 
-    public DataIterator(Iterator iterator) {
+    public DataIterator(Object oriData, Iterator iterator) {
+        this.oriData = oriData;
         this.iterator = iterator;
     }
 
@@ -41,5 +43,9 @@ public class DataIterator {
             return true;
         }
         return false;
+    }
+
+    public Object getOriData() {
+        return this.oriData;
     }
 }

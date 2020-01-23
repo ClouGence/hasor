@@ -1,0 +1,142 @@
+[0]
+  #000  LOAD_C    $
+  #001  GET       _0
+  #002  CAST_I
+  #003  E_PUSH
+  #004  NEW_A
+  #005  LABEL     5
+  #006  E_LOAD    #
+  #007  GET       next
+  #008  IF        17
+  #009  E_LOAD    #
+  #010  GET       data
+  #011  E_PUSH
+  #012  E_LOAD    #
+  #013  GET       name
+  #014  E_POP
+  #015  PUSH
+  #016  GOTO      5
+  #017  LABEL     17
+  #018  E_POP
+  #019  RETURN    0
+  #020  LOAD_C    $
+  #021  GET       _0
+  #022  CAST_I
+  #023  E_PUSH
+  #024  NEW_A
+  #025  LABEL     25
+  #026  E_LOAD    #
+  #027  GET       next
+  #028  IF        37
+  #029  E_LOAD    #
+  #030  GET       data
+  #031  E_PUSH
+  #032  E_LOAD    #
+  #033  GET       name
+  #034  E_POP
+  #035  PUSH
+  #036  GOTO      25
+  #037  LABEL     37
+  #038  E_POP
+  #039  RETURN    0
+  #040  LOAD_C    $
+  #041  GET       _0
+  #042  CAST_I
+  #043  E_PUSH
+  #044  NEW_A
+  #045  LABEL     45
+  #046  E_LOAD    #
+  #047  GET       next
+  #048  IF        57
+  #049  E_LOAD    #
+  #050  GET       data
+  #051  E_PUSH
+  #052  E_LOAD    #
+  #053  GET       name
+  #054  E_POP
+  #055  PUSH
+  #056  GOTO      45
+  #057  LABEL     57
+  #058  E_POP
+  #059  RETURN    0
+  #060  LOAD_C    $
+  #061  GET       _0
+  #062  CAST_I
+  #063  E_PUSH
+  #064  NEW_A
+  #065  LABEL     65
+  #066  E_LOAD    #
+  #067  GET       next
+  #068  IF        77
+  #069  E_LOAD    #
+  #070  GET       data
+  #071  E_PUSH
+  #072  E_LOAD    @
+  #073  GET       arg
+  #074  E_POP
+  #075  PUSH
+  #076  GOTO      65
+  #077  LABEL     77
+  #078  E_POP
+  #079  RETURN    0
+  #080  LOAD_C    $
+  #081  GET       _0
+  #082  CAST_I
+  #083  E_PUSH
+  #084  NEW_A
+  #085  LABEL     85
+  #086  E_LOAD    #
+  #087  GET       next
+  #088  IF        97
+  #089  E_LOAD    #
+  #090  GET       data
+  #091  E_PUSH
+  #092  E_LOAD    @
+  #093  GET       arg
+  #094  E_POP
+  #095  PUSH
+  #096  GOTO      85
+  #097  LABEL     97
+  #098  E_POP
+  #099  RETURN    0
+  #100  LOAD_C    $
+  #101  GET       _0
+  #102  CAST_I
+  #103  E_PUSH
+  #104  NEW_A
+  #105  LABEL     105
+  #106  E_LOAD    #
+  #107  GET       next
+  #108  IF        117
+  #109  E_LOAD    #
+  #110  GET       data
+  #111  E_PUSH
+  #112  E_LOAD    $
+  #113  GET       min
+  #114  E_POP
+  #115  PUSH
+  #116  GOTO      105
+  #117  LABEL     117
+  #118  E_POP
+  #119  RETURN    0
+  #120  LOAD_C    $
+  #121  GET       _0
+  #122  CAST_I
+  #123  E_PUSH
+  #124  NEW_A
+  #125  LABEL     125
+  #126  E_LOAD    #
+  #127  GET       next
+  #128  IF        137
+  #129  E_LOAD    #
+  #130  GET       data
+  #131  E_PUSH
+  #132  E_LOAD    $
+  #133  GET       min
+  #134  E_POP
+  #135  PUSH
+  #136  GOTO      125
+  #137  LABEL     137
+  #138  E_POP
+  #139  RETURN    0
+

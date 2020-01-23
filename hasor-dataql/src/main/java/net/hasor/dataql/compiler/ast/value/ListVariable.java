@@ -76,7 +76,11 @@ public class ListVariable implements Variable {
                 writer.write("," + fixedString);
             }
             Variable expr = this.expressionList.get(i);
-            expr.doFormat(depth + 1, formatOption, writer);
+            if (expr instanceof EnterRouteVariable) {
+                writer.write(((EnterRouteVariable) expr).getSpecialType().getCode());
+            } else {
+                expr.doFormat(depth + 1, formatOption, writer);
+            }
         }
         //
         if (innerLine) {

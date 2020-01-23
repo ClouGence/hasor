@@ -1,4 +1,20 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.hasor.dataql.compiler.parser;
+import net.hasor.dataql.compiler.ParseException;
 import net.hasor.dataql.compiler.ast.Expression;
 import net.hasor.dataql.compiler.ast.RouteVariable;
 import net.hasor.dataql.compiler.ast.Variable;
@@ -13,6 +29,7 @@ import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
 import net.hasor.dataql.compiler.ast.value.PrimitiveVariable.ValueType;
 import net.hasor.dataql.compiler.ast.value.SubscriptRouteVariable.SubType;
 import net.hasor.dataql.compiler.parser.DataQLParser.*;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -27,6 +44,8 @@ import java.util.Stack;
  * of the available methods.
  * @param <T> The return type of the visit operation. Use {@link Void} for
  * operations with no return type.
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2019-11-07
  */
 public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> implements net.hasor.dataql.compiler.parser.DataQLParserVisitor<T> {
     private Stack<Object> instStack = new Stack<>();
@@ -84,7 +103,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             if ("@".equals(rouNode.getText())) {
                 importType = ImportType.Resource;
             } else {
-                throw new RuntimeException("parser failed -> visitImportInst.");
+                throw newParseException(rouNode.getSymbol(), "parser failed -> visitImportInst.");
             }
         }
         //
@@ -184,7 +203,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             ((InstSet) this.instStack.peek()).addInst(new ReturnInst(breakCode, variable));
             return null;
         }
-        throw new RuntimeException("parser failed -> visitBreakInst.");
+        throw newParseException(ctx.start, "missing exit statement.");
     }
 
     @Override
@@ -222,7 +241,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             Variable valueExp = (Variable) this.instStack.pop();
             objectVariable.addField(fieldKey, valueExp);
         } else {
-            EnterRouteVariable enterRoute = new EnterRouteVariable(RouteType.Normal, null);
+            EnterRouteVariable enterRoute = new EnterRouteVariable(RouteType.Expr, null);
             NameRouteVariable nameRoute = new NameRouteVariable(enterRoute, fieldKey);
             objectVariable.addField(fieldKey, nameRoute);
         }
@@ -430,23 +449,13 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     }
 
     @Override
-    public T visitSpecialRoute(SpecialRouteContext ctx) {
-        String rouType = ctx.ROU().getText();
-        SpecialType specialType = null;
-        if ("#".equals(rouType)) {
-            specialType = SpecialType.Special_A;
-        }
-        if ("$".equals(rouType)) {
-            specialType = SpecialType.Special_B;
-        }
-        if ("@".equals(rouType)) {
-            specialType = SpecialType.Special_C;
-        }
+    public T visitParamRoute(ParamRouteContext ctx) {
         // .根
+        SpecialType special = specialType(ctx.ROU(), SpecialType.Special_B);
         TerminalNode identifier = ctx.IDENTIFIER();
         TerminalNode string = ctx.STRING();
         String rouName = null;
-        EnterRouteVariable enter = new EnterRouteVariable(RouteType.Special, specialType);
+        EnterRouteVariable enter = new EnterRouteVariable(RouteType.Params, special);
         if (identifier != null) {
             rouName = identifier.getText();
         } else {
@@ -467,22 +476,45 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     }
 
     @Override
-    public T visitNormalRoute(NormalRouteContext ctx) {
-        SpecialType specialType = SpecialType.Special_A;
-        if (ctx.ROU() != null) {
-            String rouType = ctx.ROU().getText();
-            if ("#".equals(rouType)) {
-                specialType = SpecialType.Special_A;
-            }
-            if ("$".equals(rouType)) {
-                specialType = SpecialType.Special_B;
-            }
-            if ("@".equals(rouType)) {
-                specialType = SpecialType.Special_C;
-            }
+    public T visitSubExprRoute(SubExprRouteContext ctx) {
+        SpecialType special = specialType(ctx.ROU(), SpecialType.Special_B);
+        EnterRouteVariable enter = new EnterRouteVariable(RouteType.Expr, special);
+        this.instStack.push(enter);
+        //
+        List<RouteSubscriptContext> subscriptContexts = ctx.routeSubscript();
+        for (RouteSubscriptContext subContext : subscriptContexts) {
+            subContext.accept(this);
         }
         //
-        EnterRouteVariable enter = new EnterRouteVariable(RouteType.Normal, specialType);
+        RouteNameSetContext routeNameSet = ctx.routeNameSet();
+        if (routeNameSet != null) {
+            routeNameSet.accept(this);
+        }
+        return null;
+    }
+
+    @Override
+    public T visitNameExprRoute(NameExprRouteContext ctx) {
+        SpecialType special = specialType(ctx.ROU(), SpecialType.Special_B);
+        EnterRouteVariable enter = new EnterRouteVariable(RouteType.Expr, special);
+        if (ctx.DOT() != null) {
+            this.instStack.push(new NameRouteVariable(enter, ""));
+        } else {
+            this.instStack.push(enter);
+        }
+        //
+        RouteNameSetContext routeNameSet = ctx.routeNameSet();
+        if (routeNameSet != null) {
+            routeNameSet.accept(this);
+        }
+        return null;
+    }
+
+    @Override
+    public T visitExprRoute(ExprRouteContext ctx) {
+        SpecialType specialType = specialType(ctx.ROU(), SpecialType.Special_A);
+        //
+        EnterRouteVariable enter = new EnterRouteVariable(RouteType.Expr, specialType);
         this.instStack.push(enter);
         //
         RouteNameSetContext routeNameSet = ctx.routeNameSet();
@@ -493,7 +525,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     }
 
     @Override
-    public T visitConvertRoute(ConvertRouteContext ctx) {
+    public T visitExprFmtRoute(ExprFmtRouteContext ctx) {
         ctx.routeMapping().accept(this);
         RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
         //
@@ -541,14 +573,27 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         RouteVariable atNode = (RouteVariable) this.instStack.pop();
         TerminalNode intNode = ctx.INTEGER_NUM();
         TerminalNode stringNode = ctx.STRING();
+        ExprContext exprContext = ctx.expr();
         //
         if (intNode != null) {
             this.instStack.push(new SubscriptRouteVariable(SubType.Integer, atNode, intNode.getText()));
             return null;
-        } else {
+        }
+        if (stringNode != null) {
             this.instStack.push(new SubscriptRouteVariable(SubType.String, atNode, fixString(stringNode)));
             return null;
         }
+        if (exprContext != null) {
+            exprContext.accept(this);
+            Variable expr = (Expression) this.instStack.pop();
+            if (expr instanceof AtomExpression) {
+                expr = ((AtomExpression) expr).getVariableExpression();
+            }
+            this.instStack.push(new SubscriptRouteVariable(SubType.String, atNode, fixString(stringNode)));
+            //            return null;
+            throw newParseException(ctx.start, "parser failed -> visitRouteSubscript.");
+        }
+        throw newParseException(ctx.start, "parser failed -> visitRouteSubscript.");
     }
 
     @Override
@@ -674,8 +719,29 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         return null;
     }
 
+    private SpecialType specialType(TerminalNode rou, SpecialType defaultType) {
+        if (rou == null) {
+            return defaultType;
+        }
+        String rouType = rou.getText();
+        if ("#".equals(rouType)) {
+            return SpecialType.Special_A;
+        }
+        if ("$".equals(rouType)) {
+            return SpecialType.Special_B;
+        }
+        if ("@".equals(rouType)) {
+            return SpecialType.Special_C;
+        }
+        throw newParseException(rou.getSymbol(), "rouType '" + rouType + "' is not supported");
+    }
+
     private TerminalNode operSwitch(TerminalNode first, TerminalNode second) {
         return first != null ? first : second;
+    }
+
+    private ParseException newParseException(Token token, String errorMessage) {
+        return new ParseException(token.getLine(), token.getStartIndex(), errorMessage);
     }
 
     private String fixString(TerminalNode stringNode) {

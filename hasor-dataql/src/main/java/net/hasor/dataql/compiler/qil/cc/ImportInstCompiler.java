@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil.cc;
+import net.hasor.dataql.compiler.CompilerException;
 import net.hasor.dataql.compiler.ast.inst.ImportInst;
 import net.hasor.dataql.compiler.ast.inst.ImportInst.ImportType;
 import net.hasor.dataql.compiler.ast.inst.RootBlockSet;
@@ -52,13 +53,13 @@ public class ImportInstCompiler implements InstCompiler<ImportInst> {
         } else if (importType == ImportType.ClassType) {
             queue.inst(M_TYP, importResource);
         } else {
-            throw new RuntimeException("import compiler failed -> importType undefined");
+            throw new CompilerException("import compiler failed -> importType undefined");
         }
         //
         // .导入对象保存到堆
         int index = compilerContext.containsWithCurrent(asName);
         if (index >= 0) {
-            throw new RuntimeException("import '" + asName + "' is defined.");
+            throw new CompilerException("import '" + asName + "' is defined.");
         }
         index = compilerContext.push(asName);
         queue.inst(STORE, index);
@@ -71,7 +72,7 @@ public class ImportInstCompiler implements InstCompiler<ImportInst> {
             InputStream inputStream = Objects.requireNonNull(compilerContext.findResource(importName), "import resource '" + importName + "' not found.");
             queryModel = (RootBlockSet) QueryHelper.queryParser(inputStream);
         } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e, throwable -> new RuntimeException("import compiler failed -> parser failed.", throwable));
+            throw ExceptionUtils.toRuntimeException(e, throwable -> new CompilerException("import compiler failed -> parser failed.", throwable));
         }
         // 编译资源
         compilerContext.findInstCompilerByInst(queryModel).doCompiler(queue);

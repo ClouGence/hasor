@@ -1,4 +1,5 @@
 package net.hasor.dataql.runtime.basic;
+import com.alibaba.fastjson.JSON;
 import net.hasor.dataql.AbstractTestResource;
 import net.hasor.dataql.HintValue;
 import net.hasor.dataql.Query;
@@ -86,13 +87,19 @@ public class FmtObjRuntimeTest extends AbstractTestResource implements HintValue
 
     @Test
     public void self_1_Test() throws Exception {
-        Query compilerQL = compilerQL("return ${_0} => { 'a': @ }");
-        try {
-            compilerQL.execute(new Object[] { Arrays.asList(1, 2, 3, 4, 5, 6, 7) }).getData();
-            assert false;
-        } catch (Exception e) {
-            assert e.getMessage().equals("Array index out of range: 1");
-        }
+        Query compiler1 = compilerQL("return ${_0} => { 'a': # }");
+        Query compiler2 = compilerQL("return ${_0} => { 'a': ${_0}[0] }");
+        Query compiler3 = compilerQL("return ${_0} => { 'a': $ }");
+        DataModel data1 = compiler1.execute(new Object[] { Arrays.asList(1, 2, 3, 4, 5, 6, 7) }).getData();
+        DataModel data2 = compiler2.execute(new Object[] { Arrays.asList(1, 2, 3, 4, 5, 6, 7) }).getData();
+        DataModel data3 = compiler3.execute(new Object[] { Arrays.asList(1, 2, 3, 4, 5, 6, 7) }).getData();
+        //
+        String str1 = JSON.toJSONString(data1.unwrap());
+        String str2 = JSON.toJSONString(data2.unwrap());
+        String str3 = JSON.toJSONString(data3.unwrap());
+        //
+        assert str1.equalsIgnoreCase(str2);
+        assert str2.equalsIgnoreCase(str3);
     }
 
     @Test

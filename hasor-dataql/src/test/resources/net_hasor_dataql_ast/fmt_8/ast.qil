@@ -1,0 +1,35 @@
+[0]
+  #00  E_LOAD    #
+  #01  GET       abc
+  #02  CAST_O
+  #03  E_PUSH
+  #04  NEW_O
+  #05  E_LOAD    #
+  #06  GET       name
+  #07  PUT       name1
+  #08  E_LOAD    #
+  #09  GET       name2
+  #10  PUT       name2
+  #11  E_LOAD    #
+  #12  GET       name3
+  #13  PUT       name3
+  #14  E_LOAD    $
+  #15  GET       name4
+  #16  PUT       name4
+  #17  E_LOAD    $
+  #18  GET       name5
+  #19  PUT       name5
+  #20  E_LOAD    #
+  #21  GET       foo
+  #22  M_DEF
+  #23  E_LOAD    #
+  #24  CALL      1
+  #25  PUT       name6
+  #26  E_LOAD    #
+  #27  PUT       name7
+  #28  E_LOAD    @
+  #29  PULL      22
+  #30  PUT       name8
+  #31  E_POP
+  #32  RETURN    0
+

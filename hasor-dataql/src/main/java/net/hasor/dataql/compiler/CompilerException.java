@@ -15,25 +15,16 @@
  */
 package net.hasor.dataql.compiler;
 /**
- * DataQL 解析异常。
+ * 编译异常
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-01-22
  */
-public class ParseException extends RuntimeException {
-    private int line;
-    private int column;
-
-    public ParseException(int line, int column, String message) {
-        super("line " + line + ":" + column + " " + message);
-        this.line = line;
-        this.column = column;
+public class CompilerException extends RuntimeException {
+    public CompilerException(String message) {
+        super(message);
     }
 
-    public int getLine() {
-        return this.line;
-    }
-
-    public int getColumn() {
-        return this.column;
+    public CompilerException(String message, Throwable throwable) {
+        super(message, throwable);
     }
 }
