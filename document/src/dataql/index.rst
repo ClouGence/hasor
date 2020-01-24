@@ -21,6 +21,7 @@ DataQL 查询引擎
     grammar/values
     grammar/convert
     grammar/function
+    grammar/extscript
     grammar/statement
     grammar/params
 
