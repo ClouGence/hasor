@@ -64,6 +64,7 @@ public class OpcodesPool {
         pool.addInsetProcess(new PUT());
         pool.addInsetProcess(new PULL());
         pool.addInsetProcess(new PUSH());
+        pool.addInsetProcess(new COPY());
         //
         pool.addInsetProcess(new RETURN());
         pool.addInsetProcess(new EXIT());
@@ -71,6 +72,7 @@ public class OpcodesPool {
         //
         pool.addInsetProcess(new UO());
         pool.addInsetProcess(new DO());
+        pool.addInsetProcess(new TYPEOF());
         //
         pool.addInsetProcess(new IF());
         pool.addInsetProcess(new GOTO());

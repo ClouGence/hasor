@@ -110,3 +110,28 @@ PUSH
       #3  LDC_D     2
       #4  PUSH
       ...(部分略)...
+
+COPY
+'''''''
+将栈顶的元素 Copy 一个（浅拷贝）
+
+* 参数说明：共0参数；
+* 栈行为：消费0，产出1
+* 堆行为：无
+
+.. code-block:: text
+    :linenos:
+
+    代码：return abc[a]
+    指令：
+    [0]
+      #000  E_LOAD    #
+      #001  GET       abc
+      #002  E_LOAD    #
+      #003  GET       a
+      #004  COPY
+      #005  TYPEOF
+      #006  COPY
+      #007  LDC_S     string
+      #008  DO        ==
+      ...(部分略)...

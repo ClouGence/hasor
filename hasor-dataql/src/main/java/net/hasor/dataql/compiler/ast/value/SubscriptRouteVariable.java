@@ -16,6 +16,8 @@
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.expr.AtomExpression;
+import net.hasor.dataql.compiler.ast.expr.PrivilegeExpression;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
 
@@ -28,17 +30,30 @@ import java.io.IOException;
  */
 public class SubscriptRouteVariable implements Variable, RouteVariable {
     public static enum SubType {
-        String, Integer
+        String, Integer, Expr
     }
 
     private RouteVariable parent;
     private SubType       subType;
     private String        subValue;
+    private Expression    exprValue;
 
-    public SubscriptRouteVariable(SubType subType, RouteVariable parent, String subValue) {
-        this.subType = subType;
+    public SubscriptRouteVariable(RouteVariable parent, int subValue) {
+        this.subType = SubType.Integer;
+        this.parent = parent;
+        this.subValue = String.valueOf(subValue);
+    }
+
+    public SubscriptRouteVariable(RouteVariable parent, String subValue) {
+        this.subType = SubType.String;
         this.parent = parent;
         this.subValue = subValue;
+    }
+
+    public SubscriptRouteVariable(RouteVariable parent, Expression exprValue) {
+        this.subType = SubType.Expr;
+        this.parent = parent;
+        this.exprValue = exprValue;
     }
 
     @Override
@@ -52,6 +67,10 @@ public class SubscriptRouteVariable implements Variable, RouteVariable {
 
     public String getSubValue() {
         return subValue;
+    }
+
+    public Expression getExprValue() {
+        return exprValue;
     }
 
     @Override
@@ -81,8 +100,27 @@ public class SubscriptRouteVariable implements Variable, RouteVariable {
         if (subType == SubType.String) {
             String newValue = subValue.replace(String.valueOf(quoteChar), "\\" + quoteChar);
             writer.write("[" + quoteChar + newValue + quoteChar + "]");
-        } else {
+        } else if (subType == SubType.Integer) {
             writer.write("[" + subValue + "]");
+        } else {
+            writer.write("[");
+            Variable varExp = this.exprValue;
+            while (true) {
+                if (varExp instanceof PrivilegeExpression) {
+                    varExp = ((PrivilegeExpression) varExp).getExpression();
+                    continue;
+                }
+                break;
+            }
+            if (varExp instanceof AtomExpression) {
+                varExp = ((AtomExpression) varExp).getVariableExpression();
+            }
+            if (varExp instanceof EnterRouteVariable) {
+                writer.write(((EnterRouteVariable) varExp).getSpecialType().getCode());
+            } else {
+                varExp.doFormat(depth, formatOption, writer);
+            }
+            writer.write("]");
         }
     }
 }

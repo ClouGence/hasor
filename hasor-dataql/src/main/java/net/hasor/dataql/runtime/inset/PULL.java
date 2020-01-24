@@ -47,6 +47,12 @@ class PULL implements InsetProcess {
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
+        int point = 0;
+        if (sequence.currentInst().getArrays().length > 0) {
+            point = sequence.currentInst().getInt(0);
+        } else {
+            point = (int) dataStack.pop();
+        }
         Object data = dataStack.pop();
         //
         if (data == null) {
@@ -65,7 +71,6 @@ class PULL implements InsetProcess {
         if (!(data instanceof Collection)) {
             throw new InstructRuntimeException("output data error, target type must be Collection.");
         }
-        int point = sequence.currentInst().getInt(0);
         int size = ((Collection) data).size();
         if (point < 0) {
             point = size + point;

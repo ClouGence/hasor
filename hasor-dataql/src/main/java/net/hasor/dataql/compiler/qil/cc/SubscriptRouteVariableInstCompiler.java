@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil.cc;
+import net.hasor.dataql.compiler.ast.Expression;
 import net.hasor.dataql.compiler.ast.value.SubscriptRouteVariable;
 import net.hasor.dataql.compiler.ast.value.SubscriptRouteVariable.SubType;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
+import net.hasor.dataql.compiler.qil.Label;
 
 /**
  * 对 RouteVariable 的下标操作
@@ -37,6 +39,37 @@ public class SubscriptRouteVariableInstCompiler implements InstCompiler<Subscrip
         }
         if (subType == SubType.Integer) {
             queue.inst(PULL, Integer.parseInt(subValue));
+        }
+        if (subType == SubType.Expr) {
+            Label nextLabel = null;
+            Label finalLabel = queue.labelDef();
+            //
+            Expression exprValue = astInst.getExprValue();
+            compilerContext.findInstCompilerByInst(exprValue).doCompiler(queue);
+            queue.inst(COPY);   // 表达式值Copy 一份用来计算 typeof
+            queue.inst(TYPEOF);
+            queue.inst(COPY);   // typeof 的值Copy 一份用来做两次 if 判断
+            //
+            nextLabel = queue.labelDef();
+            queue.inst(LDC_S, "string");
+            queue.inst(DO, "==");
+            queue.inst(IF, nextLabel);
+            queue.inst(POP);
+            queue.inst(GET);
+            queue.inst(GOTO, finalLabel);
+            queue.inst(LABEL, nextLabel);
+            //
+            nextLabel = queue.labelDef();
+            queue.inst(LDC_S, "number");
+            queue.inst(DO, "==");
+            queue.inst(IF, nextLabel);
+            queue.inst(PULL);
+            queue.inst(GOTO, finalLabel);
+            queue.inst(LABEL, nextLabel);
+            //
+            queue.inst(LDC_S, "type is not string or number.");
+            queue.inst(THROW, 500);
+            queue.inst(LABEL, finalLabel);
         }
     }
 }

@@ -27,7 +27,6 @@ import net.hasor.dataql.compiler.ast.value.*;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
 import net.hasor.dataql.compiler.ast.value.PrimitiveVariable.ValueType;
-import net.hasor.dataql.compiler.ast.value.SubscriptRouteVariable.SubType;
 import net.hasor.dataql.compiler.parser.DataQLParser.*;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
@@ -576,22 +575,18 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         ExprContext exprContext = ctx.expr();
         //
         if (intNode != null) {
-            this.instStack.push(new SubscriptRouteVariable(SubType.Integer, atNode, intNode.getText()));
+            this.instStack.push(new SubscriptRouteVariable(atNode, Integer.parseInt(intNode.getText())));
             return null;
         }
         if (stringNode != null) {
-            this.instStack.push(new SubscriptRouteVariable(SubType.String, atNode, fixString(stringNode)));
+            this.instStack.push(new SubscriptRouteVariable(atNode, fixString(stringNode)));
             return null;
         }
         if (exprContext != null) {
             exprContext.accept(this);
-            Variable expr = (Expression) this.instStack.pop();
-            if (expr instanceof AtomExpression) {
-                expr = ((AtomExpression) expr).getVariableExpression();
-            }
-            this.instStack.push(new SubscriptRouteVariable(SubType.String, atNode, fixString(stringNode)));
-            //            return null;
-            throw newParseException(ctx.start, "parser failed -> visitRouteSubscript.");
+            Expression expr = (Expression) this.instStack.pop();
+            this.instStack.push(new SubscriptRouteVariable(atNode, expr));
+            return null;
         }
         throw newParseException(ctx.start, "parser failed -> visitRouteSubscript.");
     }

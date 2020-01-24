@@ -34,6 +34,7 @@ public interface Opcodes {
     public static final byte PUT    = 24;   // 将栈顶对象元素放入对象元素中（例：GET,"xxxx"）
     public static final byte PULL   = 25;   // 栈顶元素是一个集合类型，获取集合的指定索引元素。（例：PULL 123）
     public static final byte PUSH   = 26;   // 将栈顶元素压入集合（例：PUSH）
+    public static final byte COPY   = 27;   // Copy 栈顶数据
     // -------------------------------------------------------------------------- 结束指令
     public static final byte EXIT   = 31;   // 结束所有指令序列的执行并返回数据和状态
     public static final byte RETURN = 32;   // 结束当前指令序列的执行，并返回数据和状态给上一个指令序列。如果没有上一个指令序列那么结束整个查询
@@ -41,6 +42,7 @@ public interface Opcodes {
     // -------------------------------------------------------------------------- 运算指令
     public static final byte UO     = 41;   // 一元运算
     public static final byte DO     = 42;   // 二元运算，堆栈【第一个操作数，第二个操作数】  第一操作数 * 第二操作数
+    public static final byte TYPEOF = 43;   // 计算表达式值的类型：string、number、boolean、object、list、udf、null
     // -------------------------------------------------------------------------- 控制指令
     public static final byte IF     = 51;   // if 条件判断，如果条件判断失败那么 GOTO 到指定位置，否则继续往下执行
     public static final byte GOTO   = 52;   // 执行跳转

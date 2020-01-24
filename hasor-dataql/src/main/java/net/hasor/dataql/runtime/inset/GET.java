@@ -42,7 +42,12 @@ class GET implements InsetProcess {
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
-        String nodeName = sequence.currentInst().getString(0);
+        String nodeName = null;
+        if (sequence.currentInst().getArrays().length > 0) {
+            nodeName = sequence.currentInst().getString(0);
+        } else {
+            nodeName = (String) dataStack.pop();
+        }
         Object useData = dataStack.pop();
         useData = readProperty(useData, nodeName);
         dataStack.push(useData);

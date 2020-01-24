@@ -55,8 +55,12 @@ public class PrivilegeExpression implements Expression {
 
     @Override
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
-        writer.write("(");
-        this.expression.doFormat(depth, formatOption, writer);
-        writer.write(")");
+        if (this.expression instanceof PrivilegeExpression) {
+            this.expression.doFormat(depth, formatOption, writer);
+        } else {
+            writer.write("(");
+            this.expression.doFormat(depth, formatOption, writer);
+            writer.write(")");
+        }
     }
 }

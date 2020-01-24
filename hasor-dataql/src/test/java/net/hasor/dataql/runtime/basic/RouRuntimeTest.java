@@ -176,6 +176,15 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
     }
 
     @Test
+    public void self_2_Test() throws Exception {
+        Query compilerQL = compilerQL("var a=1; var data = [1,2,3]; return data[a]");
+        DataModel dataModel = compilerQL.execute().getData();
+        //
+        assert dataModel.isValueModel();
+        assert ((ValueModel) dataModel).asInt() == 2;
+    }
+
+    @Test
     public void list_1_Test() throws Exception {
         Map<String, Object> objectMap1 = new HashMap<String, Object>() {{
             put("a", Arrays.asList(null, null, null, null));

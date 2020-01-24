@@ -226,6 +226,11 @@ public class CompilerTest extends AbstractTestResource {
     }
 
     @Test
+    public void route5_ast_format_test() throws IOException {
+        astTest("route_5");
+    }
+
+    @Test
     public void run1_ast_format_test() throws IOException {
         astTest("run_1");
     }

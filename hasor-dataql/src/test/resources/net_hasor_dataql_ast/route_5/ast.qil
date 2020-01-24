@@ -1,0 +1,503 @@
+[0]
+  #000  E_LOAD    #
+  #001  GET       abc
+  #002  E_LOAD    #
+  #003  GET       a
+  #004  COPY
+  #005  TYPEOF
+  #006  COPY
+  #007  LDC_S     string
+  #008  DO        ==
+  #009  IF        13
+  #010  POP
+  #011  GET
+  #012  GOTO      22
+  #013  LABEL     13
+  #014  LDC_S     number
+  #015  DO        ==
+  #016  IF        19
+  #017  PULL
+  #018  GOTO      22
+  #019  LABEL     19
+  #020  LDC_S     type is not string or number.
+  #021  THROW     500
+  #022  LABEL     22
+  #023  RETURN    0
+  #024  E_LOAD    #
+  #025  GET       abc
+  #026  E_LOAD    #
+  #027  GET       a
+  #028  M_DEF
+  #029  CALL      0
+  #030  GET       abc
+  #031  COPY
+  #032  TYPEOF
+  #033  COPY
+  #034  LDC_S     string
+  #035  DO        ==
+  #036  IF        40
+  #037  POP
+  #038  GET
+  #039  GOTO      49
+  #040  LABEL     40
+  #041  LDC_S     number
+  #042  DO        ==
+  #043  IF        46
+  #044  PULL
+  #045  GOTO      49
+  #046  LABEL     46
+  #047  LDC_S     type is not string or number.
+  #048  THROW     500
+  #049  LABEL     49
+  #050  RETURN    0
+  #051  E_LOAD    #
+  #052  GET       abc
+  #053  E_LOAD    #
+  #054  GET       a
+  #055  M_DEF
+  #056  CALL      0
+  #057  COPY
+  #058  TYPEOF
+  #059  COPY
+  #060  LDC_S     string
+  #061  DO        ==
+  #062  IF        66
+  #063  POP
+  #064  GET
+  #065  GOTO      75
+  #066  LABEL     66
+  #067  LDC_S     number
+  #068  DO        ==
+  #069  IF        72
+  #070  PULL
+  #071  GOTO      75
+  #072  LABEL     72
+  #073  LDC_S     type is not string or number.
+  #074  THROW     500
+  #075  LABEL     75
+  #076  RETURN    0
+  #077  E_LOAD    #
+  #078  GET       abc
+  #079  E_LOAD    @
+  #080  COPY
+  #081  TYPEOF
+  #082  COPY
+  #083  LDC_S     string
+  #084  DO        ==
+  #085  IF        89
+  #086  POP
+  #087  GET
+  #088  GOTO      98
+  #089  LABEL     89
+  #090  LDC_S     number
+  #091  DO        ==
+  #092  IF        95
+  #093  PULL
+  #094  GOTO      98
+  #095  LABEL     95
+  #096  LDC_S     type is not string or number.
+  #097  THROW     500
+  #098  LABEL     98
+  #099  RETURN    0
+  #100  E_LOAD    #
+  #101  GET       abc
+  #102  E_LOAD    #
+  #103  COPY
+  #104  TYPEOF
+  #105  COPY
+  #106  LDC_S     string
+  #107  DO        ==
+  #108  IF        112
+  #109  POP
+  #110  GET
+  #111  GOTO      121
+  #112  LABEL     112
+  #113  LDC_S     number
+  #114  DO        ==
+  #115  IF        118
+  #116  PULL
+  #117  GOTO      121
+  #118  LABEL     118
+  #119  LDC_S     type is not string or number.
+  #120  THROW     500
+  #121  LABEL     121
+  #122  RETURN    0
+  #123  E_LOAD    #
+  #124  GET       abc
+  #125  E_LOAD    $
+  #126  COPY
+  #127  TYPEOF
+  #128  COPY
+  #129  LDC_S     string
+  #130  DO        ==
+  #131  IF        135
+  #132  POP
+  #133  GET
+  #134  GOTO      144
+  #135  LABEL     135
+  #136  LDC_S     number
+  #137  DO        ==
+  #138  IF        141
+  #139  PULL
+  #140  GOTO      144
+  #141  LABEL     141
+  #142  LDC_S     type is not string or number.
+  #143  THROW     500
+  #144  LABEL     144
+  #145  RETURN    0
+  #146  E_LOAD    #
+  #147  GET       abc
+  #148  E_LOAD    @
+  #149  E_LOAD    #
+  #150  GET       a
+  #151  COPY
+  #152  TYPEOF
+  #153  COPY
+  #154  LDC_S     string
+  #155  DO        ==
+  #156  IF        160
+  #157  POP
+  #158  GET
+  #159  GOTO      169
+  #160  LABEL     160
+  #161  LDC_S     number
+  #162  DO        ==
+  #163  IF        166
+  #164  PULL
+  #165  GOTO      169
+  #166  LABEL     166
+  #167  LDC_S     type is not string or number.
+  #168  THROW     500
+  #169  LABEL     169
+  #170  GET       name
+  #171  COPY
+  #172  TYPEOF
+  #173  COPY
+  #174  LDC_S     string
+  #175  DO        ==
+  #176  IF        180
+  #177  POP
+  #178  GET
+  #179  GOTO      189
+  #180  LABEL     180
+  #181  LDC_S     number
+  #182  DO        ==
+  #183  IF        186
+  #184  PULL
+  #185  GOTO      189
+  #186  LABEL     186
+  #187  LDC_S     type is not string or number.
+  #188  THROW     500
+  #189  LABEL     189
+  #190  RETURN    0
+  #191  E_LOAD    #
+  #192  GET       abc
+  #193  E_LOAD    #
+  #194  GET       aa
+  #195  E_LOAD    #
+  #196  GET       ss
+  #197  GET       ss
+  #198  COPY
+  #199  TYPEOF
+  #200  COPY
+  #201  LDC_S     string
+  #202  DO        ==
+  #203  IF        207
+  #204  POP
+  #205  GET
+  #206  GOTO      216
+  #207  LABEL     207
+  #208  LDC_S     number
+  #209  DO        ==
+  #210  IF        213
+  #211  PULL
+  #212  GOTO      216
+  #213  LABEL     213
+  #214  LDC_S     type is not string or number.
+  #215  THROW     500
+  #216  LABEL     216
+  #217  COPY
+  #218  TYPEOF
+  #219  COPY
+  #220  LDC_S     string
+  #221  DO        ==
+  #222  IF        226
+  #223  POP
+  #224  GET
+  #225  GOTO      235
+  #226  LABEL     226
+  #227  LDC_S     number
+  #228  DO        ==
+  #229  IF        232
+  #230  PULL
+  #231  GOTO      235
+  #232  LABEL     232
+  #233  LDC_S     type is not string or number.
+  #234  THROW     500
+  #235  LABEL     235
+  #236  RETURN    0
+  #237  E_LOAD    #
+  #238  GET       abc
+  #239  E_LOAD    #
+  #240  GET       abc
+  #241  COPY
+  #242  TYPEOF
+  #243  COPY
+  #244  LDC_S     string
+  #245  DO        ==
+  #246  IF        250
+  #247  POP
+  #248  GET
+  #249  GOTO      259
+  #250  LABEL     250
+  #251  LDC_S     number
+  #252  DO        ==
+  #253  IF        256
+  #254  PULL
+  #255  GOTO      259
+  #256  LABEL     256
+  #257  LDC_S     type is not string or number.
+  #258  THROW     500
+  #259  LABEL     259
+  #260  RETURN    0
+  #261  E_LOAD    #
+  #262  GET       abc
+  #263  E_LOAD    #
+  #264  GET       abc
+  #265  COPY
+  #266  TYPEOF
+  #267  COPY
+  #268  LDC_S     string
+  #269  DO        ==
+  #270  IF        274
+  #271  POP
+  #272  GET
+  #273  GOTO      283
+  #274  LABEL     274
+  #275  LDC_S     number
+  #276  DO        ==
+  #277  IF        280
+  #278  PULL
+  #279  GOTO      283
+  #280  LABEL     280
+  #281  LDC_S     type is not string or number.
+  #282  THROW     500
+  #283  LABEL     283
+  #284  RETURN    0
+  #285  E_LOAD    #
+  #286  GET       abc
+  #287  E_LOAD    @
+  #288  GET       abc
+  #289  COPY
+  #290  TYPEOF
+  #291  COPY
+  #292  LDC_S     string
+  #293  DO        ==
+  #294  IF        298
+  #295  POP
+  #296  GET
+  #297  GOTO      307
+  #298  LABEL     298
+  #299  LDC_S     number
+  #300  DO        ==
+  #301  IF        304
+  #302  PULL
+  #303  GOTO      307
+  #304  LABEL     304
+  #305  LDC_S     type is not string or number.
+  #306  THROW     500
+  #307  LABEL     307
+  #308  RETURN    0
+  #309  E_LOAD    #
+  #310  GET       abc
+  #311  E_LOAD    @
+  #312  GET       abc
+  #313  COPY
+  #314  TYPEOF
+  #315  COPY
+  #316  LDC_S     string
+  #317  DO        ==
+  #318  IF        322
+  #319  POP
+  #320  GET
+  #321  GOTO      331
+  #322  LABEL     322
+  #323  LDC_S     number
+  #324  DO        ==
+  #325  IF        328
+  #326  PULL
+  #327  GOTO      331
+  #328  LABEL     328
+  #329  LDC_S     type is not string or number.
+  #330  THROW     500
+  #331  LABEL     331
+  #332  RETURN    0
+  #333  E_LOAD    #
+  #334  GET       abc
+  #335  E_LOAD    $
+  #336  GET       abc
+  #337  COPY
+  #338  TYPEOF
+  #339  COPY
+  #340  LDC_S     string
+  #341  DO        ==
+  #342  IF        346
+  #343  POP
+  #344  GET
+  #345  GOTO      355
+  #346  LABEL     346
+  #347  LDC_S     number
+  #348  DO        ==
+  #349  IF        352
+  #350  PULL
+  #351  GOTO      355
+  #352  LABEL     352
+  #353  LDC_S     type is not string or number.
+  #354  THROW     500
+  #355  LABEL     355
+  #356  RETURN    0
+  #357  E_LOAD    #
+  #358  GET       abc
+  #359  E_LOAD    $
+  #360  GET       abc
+  #361  COPY
+  #362  TYPEOF
+  #363  COPY
+  #364  LDC_S     string
+  #365  DO        ==
+  #366  IF        370
+  #367  POP
+  #368  GET
+  #369  GOTO      379
+  #370  LABEL     370
+  #371  LDC_S     number
+  #372  DO        ==
+  #373  IF        376
+  #374  PULL
+  #375  GOTO      379
+  #376  LABEL     376
+  #377  LDC_S     type is not string or number.
+  #378  THROW     500
+  #379  LABEL     379
+  #380  RETURN    0
+  #381  E_LOAD    #
+  #382  GET       abc
+  #383  LDC_D     1
+  #384  LDC_D     1
+  #385  DO        +
+  #386  COPY
+  #387  TYPEOF
+  #388  COPY
+  #389  LDC_S     string
+  #390  DO        ==
+  #391  IF        395
+  #392  POP
+  #393  GET
+  #394  GOTO      404
+  #395  LABEL     395
+  #396  LDC_S     number
+  #397  DO        ==
+  #398  IF        401
+  #399  PULL
+  #400  GOTO      404
+  #401  LABEL     401
+  #402  LDC_S     type is not string or number.
+  #403  THROW     500
+  #404  LABEL     404
+  #405  RETURN    0
+  #406  E_LOAD    #
+  #407  GET       abc
+  #408  LDC_D     1
+  #409  LDC_D     1
+  #410  DO        +
+  #411  COPY
+  #412  TYPEOF
+  #413  COPY
+  #414  LDC_S     string
+  #415  DO        ==
+  #416  IF        420
+  #417  POP
+  #418  GET
+  #419  GOTO      429
+  #420  LABEL     420
+  #421  LDC_S     number
+  #422  DO        ==
+  #423  IF        426
+  #424  PULL
+  #425  GOTO      429
+  #426  LABEL     426
+  #427  LDC_S     type is not string or number.
+  #428  THROW     500
+  #429  LABEL     429
+  #430  RETURN    0
+  #431  E_LOAD    #
+  #432  GET       abc
+  #433  E_LOAD    #
+  #434  COPY
+  #435  TYPEOF
+  #436  COPY
+  #437  LDC_S     string
+  #438  DO        ==
+  #439  IF        443
+  #440  POP
+  #441  GET
+  #442  GOTO      452
+  #443  LABEL     443
+  #444  LDC_S     number
+  #445  DO        ==
+  #446  IF        449
+  #447  PULL
+  #448  GOTO      452
+  #449  LABEL     449
+  #450  LDC_S     type is not string or number.
+  #451  THROW     500
+  #452  LABEL     452
+  #453  RETURN    0
+  #454  E_LOAD    #
+  #455  GET       abc
+  #456  E_LOAD    $
+  #457  COPY
+  #458  TYPEOF
+  #459  COPY
+  #460  LDC_S     string
+  #461  DO        ==
+  #462  IF        466
+  #463  POP
+  #464  GET
+  #465  GOTO      475
+  #466  LABEL     466
+  #467  LDC_S     number
+  #468  DO        ==
+  #469  IF        472
+  #470  PULL
+  #471  GOTO      475
+  #472  LABEL     472
+  #473  LDC_S     type is not string or number.
+  #474  THROW     500
+  #475  LABEL     475
+  #476  RETURN    0
+  #477  E_LOAD    #
+  #478  GET       abc
+  #479  E_LOAD    @
+  #480  GET       aa
+  #481  COPY
+  #482  TYPEOF
+  #483  COPY
+  #484  LDC_S     string
+  #485  DO        ==
+  #486  IF        490
+  #487  POP
+  #488  GET
+  #489  GOTO      499
+  #490  LABEL     490
+  #491  LDC_S     number
+  #492  DO        ==
+  #493  IF        496
+  #494  PULL
+  #495  GOTO      499
+  #496  LABEL     496
+  #497  LDC_S     type is not string or number.
+  #498  THROW     500
+  #499  LABEL     499
+  #500  RETURN    0
+
