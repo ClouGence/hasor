@@ -3,7 +3,6 @@ sudo: true
 
 jdk:
   - openjdk8
-  - oraclejdk8
 
 notifications:
   email: false
@@ -21,19 +20,19 @@ before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libxml2-dev
 
-script: 
+script:
   - mvn clean package -Dmaven.javadoc.skip=true
 
 after_success:
-  - 
-  
+  -
+
 after_failure:
- -
+  -
 
 services:
   - mysql
 
 addons:
   hosts:
-  - hasor.net
-  - www.hasor.net
+    - hasor.net
+    - www.hasor.net
