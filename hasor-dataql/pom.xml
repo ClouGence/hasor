@@ -74,9 +74,9 @@
                         <configuration>
                             <target>
                                 <copy file="${basedir}/target/generated-sources/antlr4/DataQLLexer.tokens"
-                                      tofile="${basedir}/src/main/antlr4/net.hasor.dataql.compiler.parser/DataQLLexer.tokens"/>
+                                      tofile="${basedir}/src/main/antlr4/net/hasor/dataql/compiler/parser/DataQLLexer.tokens"/>
                                 <copy file="${basedir}/target/generated-sources/antlr4/DataQLParser.tokens"
-                                      tofile="${basedir}/src/main/antlr4/net.hasor.dataql.compiler.parser/DataQLParser.tokens"/>
+                                      tofile="${basedir}/src/main/antlr4/net/hasor/dataql/compiler/parser/DataQLParser.tokens"/>
                             </target>
                         </configuration>
                         <goals>
@@ -93,7 +93,6 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>4.7.2</version>
         </dependency>
         <!-- Commons -->
         <dependency>

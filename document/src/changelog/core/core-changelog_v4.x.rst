@@ -46,9 +46,10 @@ Hasor v4.0.7 (2020-01-?)
     - rsf 使用 tconsole 的新接口
     - 注册中心暂不可用，下几个版本会重新设计。
     - rsf 的 InterAddress 支持域名传入，但是toString 的时仍然会转换为 ip。
-**Plugins**
+**其它**
     - 删除 Hasor 默认提供的 JFinal 插件支持。理由是 JFinal 功能和 Hasor 体系重叠，同时 Hasor 的所有功能都是独立。
     - 整合 Hasor 及其容易因此没有提供集成代码的必要。
+    - 新增 Hasor-all 包。
 
 Hasor v4.0.6 (2019-05-31)
 ------------------------------------

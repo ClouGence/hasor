@@ -3647,8 +3647,7 @@ public class ArrayUtils {
      * @param index  the position of the new object
      * @param element  the object to add
      * @return A new array containing the existing elements and the new element
-     * @throws IndexOutOfBoundsException if the index is out of range
-     * (index < 0 || index > array.length).
+     * @throws IndexOutOfBoundsException if the index is out of range (index < 0 || index > array.length).
      */
     public static Object[] add(final Object[] array, final int index, final Object element) {
         Class<?> clss = null;

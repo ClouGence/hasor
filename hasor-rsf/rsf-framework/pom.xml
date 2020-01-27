@@ -6,7 +6,7 @@
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
         <version>4.0.7-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath>../..</relativePath>
     </parent>
 
     <!-- Maven Info -->
@@ -26,33 +26,27 @@
 
     <!-- 引用依赖 -->
     <dependencies>
-        <!-- 核心依赖 -->
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-tconsole</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.44.Final</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy</artifactId>
-            <version>2.5.8</version>
         </dependency>
 
         <!-- JSON 序列化 -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.62</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
