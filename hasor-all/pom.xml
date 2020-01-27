@@ -46,6 +46,13 @@
     <properties>
         <generatedSourceDir>${project.build.directory}/src</generatedSourceDir>
         <javadocs.bottom><![CDATA[
+<p class="pull-left">
+    <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33011002013536">
+        <img src="http://files.hasor.net/resources/beian.png" style="display: inline-block;">浙公网安备 33011002013536号
+    </a>
+    &nbsp;&nbsp;
+    <a target="_blank" href="http://www.beian.miit.gov.cn/">浙ICP备18034797号</a>
+</p>
 <!-- CNZZ -->
 <script type="text/javascript">
     var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
@@ -111,23 +118,27 @@
             </plugin>
             <!-- Javadoc -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <additionalDependencies>
-                        <dependency>
-                            <groupId>javax.servlet</groupId>
-                            <artifactId>javax.servlet-api</artifactId>
-                        </dependency>
-                        <dependency>
-                            <groupId>javax.servlet.jsp</groupId>
-                            <artifactId>jsp-api</artifactId>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.mybatis</groupId>
-                            <artifactId>mybatis</artifactId>
-                        </dependency>
-                    </additionalDependencies>
+                    <failOnError>false</failOnError>
+                    <failOnWarnings>false</failOnWarnings>
+                    <doclint>none</doclint>
+                    <additionalJOption>--allow-script-in-comments</additionalJOption>
+                    <excludePackageNames>net.hasor.utils.*,net.hasor.libs.*</excludePackageNames>
+                    <encoding>UTF-8</encoding>
+                    <docencoding>UTF-8</docencoding>
+                    <header><![CDATA[ [<a target="_blank" href="http://www.hasor.net">Web Site</a>] ]]></header>
+                    <bottom>${javadocs.bottom}</bottom>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <!-- all source files were unpacked -->
             <plugin>
@@ -247,6 +258,7 @@
                             </excludes>
                             <dataFileIncludes>**/target/jacoco.exec</dataFileIncludes>
                             <outputDirectory>${project.basedir}/target/jacoco-ut</outputDirectory>
+                            <footer>浙公网安备 33011002013536号 - 浙ICP备18034797号</footer>
                         </configuration>
                     </execution>
                 </executions>
