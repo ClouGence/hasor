@@ -162,11 +162,11 @@
                             <goals>
                                 <goal>report</goal>
                             </goals>
-                            <configuration>
-                                <outputDirectory>${project.basedir}/target/jacoco-ut</outputDirectory>
-                            </configuration>
                         </execution>
                     </executions>
+                    <configuration>
+                        <outputDirectory>${project.basedir}/target/jacoco-ut</outputDirectory>
+                    </configuration>
                 </plugin>
                 <!-- GPG -->
                 <plugin>

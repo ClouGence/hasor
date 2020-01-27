@@ -117,17 +117,14 @@
                         <dependency>
                             <groupId>javax.servlet</groupId>
                             <artifactId>javax.servlet-api</artifactId>
-                            <version>3.1.0</version>
                         </dependency>
                         <dependency>
                             <groupId>javax.servlet.jsp</groupId>
                             <artifactId>jsp-api</artifactId>
-                            <version>2.2</version>
                         </dependency>
                         <dependency>
                             <groupId>org.mybatis</groupId>
                             <artifactId>mybatis</artifactId>
-                            <version>3.5.3</version>
                         </dependency>
                     </additionalDependencies>
                 </configuration>
@@ -225,12 +222,29 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>**net/hasor/utils/**</exclude>
+                                <exclude>**net/hasor/rsf/libs/**</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>report-aggregate</id>
                         <phase>package</phase>
                         <goals>
                             <goal>report-aggregate</goal>
                         </goals>
                         <configuration>
+                            <excludes>
+                                <exclude>**net/hasor/utils/**</exclude>
+                                <exclude>**net/hasor/rsf/libs/**</exclude>
+                            </excludes>
                             <dataFileIncludes>**/target/jacoco.exec</dataFileIncludes>
                             <outputDirectory>${project.basedir}/target/jacoco-ut</outputDirectory>
                         </configuration>
