@@ -16,30 +16,44 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-commons</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-db</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-web</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-tconsole</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-dataql</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-rsf</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
@@ -86,7 +100,7 @@
             <!-- shade -->
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -117,14 +131,17 @@
                         <dependency>
                             <groupId>javax.servlet</groupId>
                             <artifactId>javax.servlet-api</artifactId>
+                            <version>3.1.0</version>
                         </dependency>
                         <dependency>
                             <groupId>javax.servlet.jsp</groupId>
                             <artifactId>jsp-api</artifactId>
+                            <version>2.2</version>
                         </dependency>
                         <dependency>
                             <groupId>org.mybatis</groupId>
                             <artifactId>mybatis</artifactId>
+                            <version>3.5.3</version>
                         </dependency>
                     </additionalDependencies>
                 </configuration>
@@ -133,7 +150,6 @@
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
-                    <!-- Unpack all source files -->
                     <execution>
                         <id>unpack-sources</id>
                         <phase>prepare-package</phase>
@@ -153,6 +169,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <id>add-source</id>
@@ -248,6 +265,26 @@
                             <dataFileIncludes>**/target/jacoco.exec</dataFileIncludes>
                             <outputDirectory>${project.basedir}/target/jacoco-ut</outputDirectory>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- clean source -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <delete dir="${basedir}/target/src"/>
+                                <delete file="${basedir}/target/original-${project.artifactId}-${project.version}.jar"/>
+                                <delete file="${basedir}/target/original-${project.artifactId}-${project.version}-sources.jar"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
