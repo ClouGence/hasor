@@ -9,7 +9,7 @@ Hasor的Web支持是一个独立的框架，在使用它之前首先引入它。
     <dependency>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-web</artifactId>
-        <version>4.0.7</version>
+        <version>4.1.0</version>
     </dependency>
 
 
