@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.Query;
+import net.hasor.dataql.compiler.ParseException;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.ast.inst.RootBlockSet;
 import net.hasor.dataql.compiler.parser.DataQLLexer;
@@ -145,7 +146,7 @@ public class QueryHelper {
         return new QIL(queueSet, compilerVarMap);
     }
 
-    public static QueryModel queryParser(CharStream charStream) {
+    public static QueryModel queryParser(CharStream charStream) throws ParseException {
         DataQLLexer lexer = new DataQLLexer(charStream);
         lexer.removeErrorListeners();
         lexer.addErrorListener(ThrowingErrorListener.INSTANCE);

@@ -3,6 +3,7 @@ import net.hasor.dataql.*;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.domain.*;
+import net.hasor.dataql.runtime.CompilerVarQuery;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.test.dataql.udfs.DataBean;
 import org.junit.Test;
@@ -204,7 +205,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         }};
         QueryModel queryModel = QueryHelper.queryParser("return list[2]");
         QIL qil = QueryHelper.queryCompiler(queryModel, compilerVar, Finder.DEFAULT);
-        Query query = QueryHelper.createQuery(qil, Finder.DEFAULT);
+        CompilerVarQuery query = (CompilerVarQuery) QueryHelper.createQuery(qil, Finder.DEFAULT);
         //
         query.setCompilerVar("list", Arrays.asList("a", "b", "c", "d"));
         DataModel dataModel = query.execute().getData();

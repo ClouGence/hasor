@@ -32,7 +32,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-class QueryImpl extends HintsSet implements Query {
+class QueryImpl extends HintsSet implements CompilerVarQuery {
     private QIL                 qil;
     private Finder              finder;
     private Map<String, Object> compilerVar;
@@ -41,6 +41,13 @@ class QueryImpl extends HintsSet implements Query {
         this.qil = qil;
         this.finder = finder;
         this.compilerVar = new HashMap<>();
+    }
+
+    @Override
+    public Query clone() {
+        QueryImpl query = new QueryImpl(this.qil, this.finder);
+        query.compilerVar = new HashMap<>(this.compilerVar);
+        return query;
     }
 
     public void setCompilerVar(String compilerVar, Object object) {

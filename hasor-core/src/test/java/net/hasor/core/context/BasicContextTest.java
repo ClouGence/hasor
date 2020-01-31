@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BasicContextTest {
-    private static boolean isWin(){
+    private static boolean isWin() {
         // Runtime.getRuntime().exec("taskkill /pid "+pid+" /f");
         //Runtime.getRuntime().exec("kill -15 " + pid);
         String os = System.getProperty("os.name");
@@ -40,7 +40,7 @@ public class BasicContextTest {
 
     @Test
     public void joinTest1() throws Throwable {
-        if (isWin()){
+        if (isWin()) {
             return;
         }
         Environment env = new StandardEnvironment();
@@ -70,7 +70,7 @@ public class BasicContextTest {
 
     @Test
     public void joinTest2() throws Throwable {
-        if (isWin()){
+        if (isWin()) {
             return;
         }
         Environment env = new StandardEnvironment();
@@ -102,7 +102,7 @@ public class BasicContextTest {
 
     @Test
     public void joinTest3() throws Throwable {
-        if (isWin()){
+        if (isWin()) {
             return;
         }
         Environment env = new StandardEnvironment();

@@ -19,6 +19,7 @@ import net.hasor.dataql.Hints;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.compiler.qil.QIL;
+import net.hasor.dataql.runtime.CompilerVarQuery;
 import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.QueryHelper;
@@ -73,7 +74,6 @@ class DataQLCompiledScript extends CompiledScript implements Hints {
     public void setHint(String hintName, boolean value) {
         this.optionSet.setHint(hintName, value);
     }
-    // -------------------------------------------------------------------------------------------- Option
 
     @Override
     public ScriptEngine getEngine() {
@@ -84,8 +84,9 @@ class DataQLCompiledScript extends CompiledScript implements Hints {
     public QueryResult eval(ScriptContext context) throws ScriptException {
         Query query = QueryHelper.createQuery(this.compilerQIL, this.engine.getFinder());
         Bindings globalBindings = context.getBindings(ScriptContext.GLOBAL_SCOPE);
-        if (globalBindings != null) {
-            globalBindings.forEach(query::setCompilerVar);
+        if (globalBindings != null && query instanceof CompilerVarQuery) {
+            CompilerVarQuery varQuery = (CompilerVarQuery) query;
+            globalBindings.forEach(varQuery::setCompilerVar);
         }
         //
         CustomizeScope customizeScope = this.engine.getCustomizeScopeCreater().create();

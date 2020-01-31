@@ -17,6 +17,7 @@ package net.hasor.dataql;
 import net.hasor.core.BindInfo;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
+import net.hasor.dataql.runtime.VarSupplier;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 
@@ -26,6 +27,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -44,6 +46,9 @@ public interface DataQL {
 
     /** 添加全局变量（等同于 compilerVar） */
     public <T> DataQL addShareVar(String name, Supplier<T> provider);
+
+    /** 获取所有全局变量 */
+    public Map<String, VarSupplier> getShareVarMap();
 
     /** 添加一个外部代码片段执行器 */
     public default DataQL addFragmentProcess(String name, FragmentProcess instance) {

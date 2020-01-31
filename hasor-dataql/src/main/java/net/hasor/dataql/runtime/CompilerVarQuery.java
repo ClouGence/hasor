@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import java.util.function.Supplier;
+import net.hasor.dataql.Query;
 
 /**
- * 为 compilerVar 提供一个延迟装载的机制，当 LOAD 指令加载到 compilerVar 时。会自动对该接口对象进行展开。
+ * 用于封装和引发 QL 查询执行。
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2019-12-11
+ * @version : 2017-03-23
  */
-public interface VarSupplier extends Supplier<Object> {
+public interface CompilerVarQuery extends Query {
+    /** 初始化编译变量 */
+    public void setCompilerVar(String compilerVar, Object object);
 }

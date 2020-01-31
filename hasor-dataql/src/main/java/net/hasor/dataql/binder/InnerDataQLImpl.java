@@ -22,12 +22,14 @@ import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
+import net.hasor.dataql.runtime.CompilerVarQuery;
 import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.dataql.runtime.VarSupplier;
 import org.antlr.v4.runtime.CharStream;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +42,6 @@ import java.util.function.Supplier;
  */
 class InnerDataQLImpl extends HintsSet implements DataQL {
     private Map<String, VarSupplier> compilerVarMap = new HashMap<>();
-    //    private Map<String, QIL>         cacheQIL       = new HashMap<>();
     private AppContext               appContext;
     private Finder                   finderObject;
 
@@ -67,6 +68,11 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
     public <T> DataQL addShareVar(String name, Supplier<T> provider) {
         this.compilerVarMap.put(name, provider::get);
         return this;
+    }
+
+    @Override
+    public Map<String, VarSupplier> getShareVarMap() {
+        return Collections.unmodifiableMap(this.compilerVarMap);
     }
 
     @Override
@@ -111,14 +117,11 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
 
     @Override
     public Query createQuery(QIL compilerQIL) {
-        //        QIL compilerQIL = this.cacheQIL.get(hashString);
-        //        if (compilerQIL == null) {
-        //            QueryModel queryModel = QueryHelper.queryParser(queryString);
-        //            compilerQIL = QueryHelper.queryCompiler(queryModel, this.compilerVarMap.keySet(), this.finderObject);
-        //            this.cacheQIL.put(hashString, compilerQIL);
-        //        }
         Query query = QueryHelper.createQuery(compilerQIL, this.finderObject);
-        this.compilerVarMap.forEach(query::setCompilerVar);
+        if (query instanceof CompilerVarQuery) {
+            CompilerVarQuery varQuery = (CompilerVarQuery) query;
+            this.compilerVarMap.forEach(varQuery::setCompilerVar);
+        }
         query.setHints(this);
         return query;
     }

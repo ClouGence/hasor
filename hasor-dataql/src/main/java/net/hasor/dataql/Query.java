@@ -25,10 +25,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface Query extends Hints {
-    /** 初始化编译变量 */
-    public void setCompilerVar(String compilerVar, Object object);
-
+public interface Query extends Hints, Cloneable {
     /** 执行查询 */
     public default QueryResult execute() throws InstructRuntimeException {
         return this.execute(symbol -> Collections.emptyMap());
@@ -53,4 +50,7 @@ public interface Query extends Hints {
 
     /** 执行查询 */
     public QueryResult execute(CustomizeScope customizeScope) throws InstructRuntimeException;
+
+    /** 复制一个Query */
+    public Query clone();
 }
