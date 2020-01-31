@@ -6,6 +6,7 @@
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
         <version>4.0.7-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
     </parent>
 
     <!-- Maven Info -->
