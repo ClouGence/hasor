@@ -30,7 +30,10 @@ DataQL 查询引擎
 .. toctree::
     :maxdepth: 3
 
-    guide/grammar
+    guide/use_dataql
+    guide/datamode
+    guide/ext_dataql
+    guide/inner_sdk
 
 样例集锦
 ------------------------------------
