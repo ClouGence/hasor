@@ -33,7 +33,13 @@ DataQL 查询引擎
     guide/use_dataql
     guide/datamode
     guide/ext_dataql
-    guide/inner_sdk
+
+内置函数库(SDK)
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    sdk/inner_sdk
 
 样例集锦
 ------------------------------------

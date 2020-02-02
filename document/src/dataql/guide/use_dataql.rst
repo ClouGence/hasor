@@ -35,7 +35,7 @@
     }
 
 
-然后利用整个单例执行查询
+然后执行查询
 
 .. code-block:: java
     :linenos:
