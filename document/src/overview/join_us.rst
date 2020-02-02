@@ -10,6 +10,7 @@ Git仓库，由于国内外网络访问速度因素。Hasor 的源码被同时�
     - 源码编译：``mvn clean compile``
     - 源码打包：``mvn clean package``，打包会执行一些列 TestCase。如果想快速打包那么执行 ``mvn clean package -Dmaven.test.skip=true``
     - 编译本手册：``cd document && mvn clean site``
+    - Mac 系统下建议在编辑手册时设置字体为 Osaka
 
 **相关资源**
     - Issues：[https://gitee.com/zycgit/hasor/issues]
