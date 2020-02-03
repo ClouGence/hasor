@@ -14,16 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.sdk;
-import net.hasor.core.provider.InstanceProvider;
-import net.hasor.dataql.Finder;
-import net.hasor.dataql.Udf;
-import net.hasor.dataql.UdfSource;
-
-import java.lang.reflect.Method;
-import java.util.Map;
 import java.util.UUID;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * ID函数。函数库引入 <code>import 'net.hasor.dataql.sdk.IdentifierUdfSource' as ids;</code>

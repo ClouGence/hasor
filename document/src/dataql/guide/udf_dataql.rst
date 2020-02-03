@@ -74,7 +74,7 @@ import导入(函数/函数包)
 .. code-block:: js
     :linenos:
 
-    import @'net.xxxx.foo.udfs.UserByIdUdf' as findUserById;
+    import 'net.xxxx.foo.udfs.UserByIdUdf' as findUserById;
     return findUserById(1) => { 'name','sex' }
 
 函数包的导入语句相同，只是在调用函数包中函数的时需要指明函数包，例如：
@@ -82,7 +82,7 @@ import导入(函数/函数包)
 .. code-block:: js
     :linenos:
 
-    import @'net.xxxx.foo.udfs.DateTimeUdfSource' as timeUtil;
+    import 'net.xxxx.foo.udfs.DateTimeUdfSource' as timeUtil;
     return timeUtil.now()
 
 

@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataql.sdk;
-import net.hasor.core.provider.InstanceProvider;
-import net.hasor.dataql.Finder;
 import net.hasor.dataql.Udf;
-import net.hasor.dataql.UdfSource;
 
-import java.lang.reflect.Method;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * 状态函数 <code>import 'net.hasor.dataql.sdk.StateUdfSource' as state;</code>

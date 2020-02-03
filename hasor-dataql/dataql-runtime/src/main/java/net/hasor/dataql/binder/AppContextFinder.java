@@ -72,7 +72,7 @@ public class AppContextFinder implements Finder {
             if (classLoader == null) {
                 classLoader = Thread.currentThread().getContextClassLoader();
             }
-            Class c = classLoader.loadClass(Query.class.getName());
+            Class<?> c = classLoader.loadClass(Query.class.getName());
             if (c != Query.class) {
                 classLoader = Query.class.getClassLoader();
             }
