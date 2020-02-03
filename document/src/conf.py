@@ -23,9 +23,9 @@ copyright = u'2020, 赵永春'
 author = u'赵永春'
 
 # The short X.Y version
-version = u'4.0.7'
+version = u'4.1.0'
 # The full version, including alpha/beta/rc tags
-release = u'Release.Hasor-4.0.7'
+release = u'Release.Hasor-4.1.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -101,30 +101,5 @@ html_css_files = ['css/custom.css']
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html']``.
 # html_sidebars = {}
 # -- Options for HTMLHelp output ---------------------------------------------
-
-# Output file base name for HTML help builder.
-htmlhelp_basename = 'Hasor Docs'
-
-# -- Options for manual page output ------------------------------------------
-
-# One entry per manual page. List of tuples
-# (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'hasordocs', u'Hasor Documentation',[author], 1)
-]
-
-
-# -- Options for Texinfo output ----------------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-texinfo_documents = [
-    (
-        master_doc, 'HasorDocs', u'Hasor Docs Documentation',
-        author, 'HasorDocs', 'One line description of project.','Miscellaneous'
-    ),
-]
-
 
 # -- Extension configuration -------------------------------------------------
