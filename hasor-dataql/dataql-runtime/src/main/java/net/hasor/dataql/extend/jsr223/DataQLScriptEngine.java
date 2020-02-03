@@ -33,10 +33,9 @@ import java.util.Objects;
  * @version : 2017-10-19
  */
 public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEngine, Compilable, Hints {
-    private HintsSet                  optionSet             = new HintsSet();
+    private HintsSet                  optionSet = new HintsSet();
     private DataQLScriptEngineFactory engineFactory;
-    private CustomizeScopeCreater     customizeScopeCreater = () -> null;
-    private Finder                    finder                = Finder.DEFAULT;
+    private Finder                    finder    = Finder.DEFAULT;
 
     DataQLScriptEngine(DataQLScriptEngineFactory engineFactory) {
         this.engineFactory = engineFactory;
@@ -79,14 +78,6 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
 
     public void setFinder(Finder finder) {
         this.finder = Objects.requireNonNull(finder, "finder is null.");
-    }
-
-    public CustomizeScopeCreater getCustomizeScopeCreater() {
-        return customizeScopeCreater;
-    }
-
-    public void setCustomizeScopeCreater(CustomizeScopeCreater customizeScopeCreater) {
-        this.customizeScopeCreater = Objects.requireNonNull(customizeScopeCreater, "customizeScopeCreater is null.");
     }
     // -------------------------------------------------------------------------------------------- ScriptEngine
 

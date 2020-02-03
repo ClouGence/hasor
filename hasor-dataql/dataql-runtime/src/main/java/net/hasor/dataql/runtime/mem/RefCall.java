@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.mem;
+import net.hasor.dataql.Finder;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.Udf;
+import net.hasor.dataql.UdfSource;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.DomainHelper;
+import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.utils.ExceptionUtils;
 
@@ -35,7 +38,7 @@ public class RefCall {
         this.refCall = refCall;
     }
 
-    public Object invokeMethod(Object[] paramArrays, Hints optionSet) throws InstructRuntimeException {
+    public Object invokeMethod(Object[] paramArrays, Hints optionSet, Finder finder) throws InstructRuntimeException {
         try {
             Object[] objects = paramArrays.clone();
             if (this.autoUnwrap) {
@@ -45,7 +48,11 @@ public class RefCall {
                     }
                 }
             }
-            return DomainHelper.convertTo(this.refCall.call(optionSet, objects));
+            Object result = this.refCall.call(optionSet, objects);
+            if (result instanceof UdfSource) {
+                result = ((UdfSource) result).getUdfResource(finder).get();
+            }
+            return DomainHelper.convertTo(result);
         } catch (Throwable e) {
             if (e instanceof InstructRuntimeException) {
                 throw (InstructRuntimeException) e;

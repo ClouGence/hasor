@@ -56,7 +56,7 @@ public class AbstractTestResource {
         String buildQuery = outWriter.toString();
         logger.info("\n" + buildQuery);
         logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        return buildQuery;
+        return buildQuery.replace("\r\n", "\n");
     }
 
     protected Query compilerQL(String qlString) throws IOException {

@@ -43,27 +43,21 @@ public class Jsr223Test {
 
     @Test
     public void jar223_3() throws ScriptException {
-        HashMap<String, Object> tempData = new HashMap<String, Object>() {{
-            put("uid", "uid form tempData");
-            put("sid", "sid form tempData");
-        }};
-        //
         ScriptEngineManager engineManager = new ScriptEngineManager();
         DataQLScriptEngine scriptEngine = (DataQLScriptEngine) engineManager.getEngineByName("dataql");
-        scriptEngine.setCustomizeScopeCreater(() -> symbol -> tempData);
         //
         SimpleScriptContext params = new SimpleScriptContext();
         params.setBindings(scriptEngine.createBindings(), ScriptContext.GLOBAL_SCOPE);
         params.setBindings(scriptEngine.createBindings(), ScriptContext.ENGINE_SCOPE);
-        params.setAttribute("uid", "uid form env", ScriptContext.ENGINE_SCOPE); // 因为设置了 CustomizeScopeCreater，所以这里无效
-        params.setAttribute("sid", "sid form env", ScriptContext.GLOBAL_SCOPE); // 因为设置了 CustomizeScopeCreater，所以这里无效
+        params.setAttribute("uid", "uid form env", ScriptContext.ENGINE_SCOPE);
+        params.setAttribute("sid", "sid form env", ScriptContext.GLOBAL_SCOPE);
         //
         Object eval = scriptEngine.eval("return [${uid},${sid}]", params);
         assert eval instanceof QueryResult;
         DataModel dataModel = ((QueryResult) eval).getData();
         assert dataModel.isList();
-        assert ((ListModel) dataModel).getValue(0).asString().equals("uid form tempData");
-        assert ((ListModel) dataModel).getValue(1).asString().equals("sid form tempData");
+        assert ((ListModel) dataModel).getValue(0).asString().equals("uid form env");
+        assert ((ListModel) dataModel).getValue(1).asString().equals("sid form env");
     }
 
     @Test

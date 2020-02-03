@@ -44,9 +44,9 @@ public class ObjectDomainTest extends AbstractTestResource {
         assert objectModel.isValue("data_null");
         assert objectModel.isValue("data_big");
         //
-        assert !objectModel.isValue("data_str");
-        assert objectModel.isValue("data_array");
-        assert objectModel.isValue("data_list");
+        assert !objectModel.isList("data_str");
+        assert objectModel.isList("data_array");
+        assert objectModel.isList("data_list");
         //
         assert !objectModel.isObject("data_big");
         assert !objectModel.isObject("data_list");

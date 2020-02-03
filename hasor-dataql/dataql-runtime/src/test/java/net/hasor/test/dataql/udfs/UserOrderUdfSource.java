@@ -14,32 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.test.dataql.udfs;
-import net.hasor.core.provider.InstanceProvider;
-import net.hasor.dataql.Finder;
-import net.hasor.dataql.Udf;
-import net.hasor.dataql.UdfSource;
-import net.hasor.dataql.sdk.TypeUdfMap;
+import net.hasor.dataql.sdk.UdfSourceAssembly;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
-public class UserOrderUdfSource implements UdfSource {
-    @Override
-    public Supplier<Map<String, Udf>> getUdfResource(Finder finder) {
-        Supplier<?> supplier = () -> finder.findBean(UserOrderUdfSource.class);
-        Predicate<Method> predicate = method -> true;
-        return InstanceProvider.of(new TypeUdfMap(UserOrderUdfSource.class, supplier, predicate));
-    }
-    // ----------------------------------------------------------------------------------
-
+public class UserOrderUdfSource implements UdfSourceAssembly {
     /** user_list */
     public static List<UserBean> userList() {
         return new ArrayList<UserBean>() {{
