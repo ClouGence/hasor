@@ -38,7 +38,7 @@ public class ErrorTest extends AbstractTestResource {
             assert false;
         } catch (ThrowRuntimeException e) {
             assert e.getThrowCode() == 123;
-            assert e.getResult().isValueModel();
+            assert e.getResult().isValue();
             assert ((ValueModel) e.getResult()).asString().equals("abc");
         }
     }

@@ -31,7 +31,7 @@ public class FunRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return ${udf}().list[0];");
         DataModel dataModel = compilerQL.execute(objectMap1).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isString();
         assert ((ValueModel) dataModel).asString().equals("1");
     }
@@ -43,7 +43,7 @@ public class FunRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return ${_0}(1,2,3,4)[2];");
         DataModel dataModel = compilerQL.execute(new Object[] { udf }).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).asInt() == 3;
     }

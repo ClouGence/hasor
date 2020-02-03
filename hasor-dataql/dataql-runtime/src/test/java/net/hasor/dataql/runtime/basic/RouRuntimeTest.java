@@ -20,7 +20,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return ${a};");
         DataModel dataModel = compilerQL.execute(objectMap1).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isBoolean();
         assert ((ValueModel) dataModel).asBoolean();
     }
@@ -36,7 +36,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return ${a}.a;");
         DataModel dataModel = compilerQL.execute(objectMap2_1).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isBoolean();
         assert ((ValueModel) dataModel).asBoolean();
     }
@@ -52,7 +52,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return ${a}.a;");
         DataModel dataModel = compilerQL.execute(objectMap2_2).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isBoolean();
         assert ((ValueModel) dataModel).asBoolean();
     }
@@ -62,7 +62,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return ${a}.a;");
         DataModel dataModel = compilerQL.execute((CustomizeScope) null).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNull();
     }
 
@@ -75,7 +75,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return ${a}.name;");
         DataModel dataModel = compilerQL.execute(objectMap3).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asString().equals("马三");
     }
 
@@ -95,10 +95,10 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return [#{a},${a},@{a}];");
         DataModel dataModel = compilerQL.execute(objectMap::get).getData();
         //
-        assert dataModel.isListModel();
-        assert ((ListModel) dataModel).asValueModel(0).asInt() == 1;
-        assert ((ListModel) dataModel).asValueModel(1).asInt() == 2;
-        assert ((ListModel) dataModel).asValueModel(2).asInt() == 3;
+        assert dataModel.isList();
+        assert ((ListModel) dataModel).getValue(0).asInt() == 1;
+        assert ((ListModel) dataModel).getValue(1).asInt() == 2;
+        assert ((ListModel) dataModel).getValue(2).asInt() == 3;
     }
 
     private Map<String, Object> object_list_map1 = new HashMap<String, Object>() {{
@@ -123,7 +123,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return #{list}[-1];");
         DataModel dataModel = compilerQL.execute(object_list_map1).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asString().equals("4");
     }
 
@@ -132,7 +132,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return #{list}[100];");// 从前向后检索溢出
         DataModel dataModel = compilerQL.execute(object_list_map1).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asString().equals("4");
     }
 
@@ -141,7 +141,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return #{list}[-2];");
         DataModel dataModel = compilerQL.execute(object_list_map1).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asString().equals("3");
     }
 
@@ -150,7 +150,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return #{list}[1];");
         DataModel dataModel = compilerQL.execute(object_list_map1).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asString().equals("2");
     }
 
@@ -159,7 +159,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return #{list}[-100];"); // 从后向前检索溢出
         DataModel dataModel = compilerQL.execute(object_list_map2).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asString().equals("1");
     }
 
@@ -172,7 +172,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return #");
         DataModel dataModel = compilerQL.execute(objectMap1).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNull();
     }
 
@@ -181,7 +181,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("var a=1; var data = [1,2,3]; return data[a]");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asInt() == 2;
     }
 
@@ -194,7 +194,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return ${_0}[1]");
         DataModel dataModel = compilerQL.execute(objectMap1).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNull();
     }
 
@@ -210,7 +210,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
         query.setCompilerVar("list", Arrays.asList("a", "b", "c", "d"));
         DataModel dataModel = query.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asString().equals("c");
     }
 }

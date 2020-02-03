@@ -38,102 +38,102 @@ public class ObjectDomainTest extends AbstractTestResource {
     @Test
     public void ok_test() {
         ObjectModel objectModel = (ObjectModel) DomainHelper.convertTo(hashMap);
-        assert objectModel.isValueModel("data_str");
-        assert objectModel.isValueModel("data_boolean");
-        assert objectModel.isValueModel("data_int");
-        assert objectModel.isValueModel("data_null");
-        assert objectModel.isValueModel("data_big");
+        assert objectModel.isValue("data_str");
+        assert objectModel.isValue("data_boolean");
+        assert objectModel.isValue("data_int");
+        assert objectModel.isValue("data_null");
+        assert objectModel.isValue("data_big");
         //
-        assert !objectModel.isListModel("data_str");
-        assert objectModel.isListModel("data_array");
-        assert objectModel.isListModel("data_list");
+        assert !objectModel.isValue("data_str");
+        assert objectModel.isValue("data_array");
+        assert objectModel.isValue("data_list");
         //
-        assert !objectModel.isObjectModel("data_big");
-        assert !objectModel.isObjectModel("data_list");
-        assert objectModel.isObjectModel("data_bean");
+        assert !objectModel.isObject("data_big");
+        assert !objectModel.isObject("data_list");
+        assert objectModel.isObject("data_bean");
         //
-        assert objectModel.isUdfModel("data_udf");
-        assert objectModel.asUdfModel("data_udf") != null;
+        assert objectModel.isUdf("data_udf");
+        assert objectModel.getUdf("data_udf") != null;
         //
         //
         //
-        assert objectModel.asValueModel("data_str").isString();
-        assert objectModel.asValueModel("data_boolean").isBoolean();
-        assert objectModel.asValueModel("data_int").isInt();
-        assert objectModel.asValueModel("data_null").isNull();
+        assert objectModel.getValue("data_str").isString();
+        assert objectModel.getValue("data_boolean").isBoolean();
+        assert objectModel.getValue("data_int").isInt();
+        assert objectModel.getValue("data_null").isNull();
         //
-        assert objectModel.asListModel("data_array").asValueModel(0).asInt() == 1;
-        assert objectModel.asListModel("data_array").asValueModel(1).asInt() == 2;
-        assert objectModel.asListModel("data_array").asValueModel(2).asInt() == 3;
-        assert objectModel.asListModel("data_array").asValueModel(3).asInt() == 4;
+        assert objectModel.getList("data_array").getValue(0).asInt() == 1;
+        assert objectModel.getList("data_array").getValue(1).asInt() == 2;
+        assert objectModel.getList("data_array").getValue(2).asInt() == 3;
+        assert objectModel.getList("data_array").getValue(3).asInt() == 4;
         //
-        assert objectModel.asListModel("data_list").isListModel(3);
-        assert objectModel.asListModel("data_list").asListModel(3).isValueModel(0);
-        assert objectModel.asListModel("data_list").asListModel(3).asValueModel(0).asString().equals("bcd0");
-        assert objectModel.asListModel("data_list").asListModel(3).isValueModel(1);
-        assert objectModel.asListModel("data_list").asListModel(3).asValueModel(1).asString().equals("bcd1");
-        assert objectModel.asListModel("data_list").asListModel(3).isValueModel(2);
-        assert objectModel.asListModel("data_list").asListModel(3).asValueModel(2).asString().equals("bcd2");
-        assert objectModel.asListModel("data_list").isUdfModel(4);
-        assert objectModel.asListModel("data_list").asUdfModel(4) != null;
+        assert objectModel.getList("data_list").isList(3);
+        assert objectModel.getList("data_list").getList(3).isValue(0);
+        assert objectModel.getList("data_list").getList(3).getValue(0).asString().equals("bcd0");
+        assert objectModel.getList("data_list").getList(3).isValue(1);
+        assert objectModel.getList("data_list").getList(3).getValue(1).asString().equals("bcd1");
+        assert objectModel.getList("data_list").getList(3).isValue(2);
+        assert objectModel.getList("data_list").getList(3).getValue(2).asString().equals("bcd2");
+        assert objectModel.getList("data_list").isUdf(4);
+        assert objectModel.getList("data_list").getUdf(4) != null;
         //
-        assert objectModel.isObjectModel("data_bean");
-        assert objectModel.asObjectModel("data_bean").isValueModel("name");
-        assert objectModel.asObjectModel("data_bean").asValueModel("name").asString().equals("马三");
+        assert objectModel.isObject("data_bean");
+        assert objectModel.getObject("data_bean").isValue("name");
+        assert objectModel.getObject("data_bean").getValue("name").asString().equals("马三");
         //
-        assert objectModel.asListModel("data_beans").isObjectModel(0);
-        assert objectModel.asListModel("data_beans").asObjectModel(0).isValueModel("name");
-        assert objectModel.asListModel("data_beans").asObjectModel(0).asValueModel("name").asString().equals("马三");
+        assert objectModel.getList("data_beans").isObject(0);
+        assert objectModel.getList("data_beans").getObject(0).isValue("name");
+        assert objectModel.getList("data_beans").getObject(0).getValue("name").asString().equals("马三");
     }
 
     @Test
     public void failed_test() {
         ObjectModel objectModel = (ObjectModel) DomainHelper.convertTo(hashMap);
         try {
-            objectModel.asValueModel("data_list");
+            objectModel.getValue("data_list");
             assert false;
         } catch (Exception e) {
             assert e.getMessage().endsWith(" not Cast to ValueModel.");
         }
         try {
-            objectModel.asListModel("data_big");
+            objectModel.getList("data_big");
             assert false;
         } catch (Exception e) {
             assert e.getMessage().endsWith(" not Cast to ListModel.");
         }
         try {
-            objectModel.asObjectModel("data_big");
+            objectModel.getObject("data_big");
             assert false;
         } catch (Exception e) {
             assert e.getMessage().endsWith(" not Cast to ObjectModel.");
         }
         try {
-            objectModel.asUdfModel("data_big");
+            objectModel.getUdf("data_big");
             assert false;
         } catch (Exception e) {
             assert e.getMessage().endsWith(" not Cast to UdfModel.");
         }
         //
         try {
-            objectModel.asListModel("data_list").asObjectModel(0);
+            objectModel.getList("data_list").getObject(0);
             assert false;
         } catch (Exception e) {
             assert e.getMessage().endsWith(" not Cast to ObjectModel.");
         }
         try {
-            objectModel.asListModel("data_list").asListModel(0);
+            objectModel.getList("data_list").getList(0);
             assert false;
         } catch (Exception e) {
             assert e.getMessage().endsWith(" not Cast to ListModel.");
         }
         try {
-            objectModel.asListModel("data_list").asValueModel(3);
+            objectModel.getList("data_list").getValue(3);
             assert false;
         } catch (Exception e) {
             assert e.getMessage().endsWith(" not Cast to ValueModel.");
         }
         try {
-            objectModel.asListModel("data_list").asUdfModel(0);
+            objectModel.getList("data_list").getUdf(0);
             assert false;
         } catch (Exception e) {
             assert e.getMessage().endsWith(" not Cast to UdfModel.");

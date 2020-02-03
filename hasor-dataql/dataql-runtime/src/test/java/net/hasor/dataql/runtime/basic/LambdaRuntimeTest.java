@@ -17,16 +17,16 @@ public class LambdaRuntimeTest extends AbstractTestResource implements HintValue
     public void lambda_1_Test() throws Exception {
         Query compilerQL = compilerQL("var sex_str = (sex) -> return (sex == 'F') ? '男' : '女' ; return [sex_str(${_0}),sex_str(${_1})]");
         DataModel dataModel = compilerQL.execute(new Object[] { "F", "M" }).getData();
-        assert dataModel.isListModel();
-        assert ((ListModel) dataModel).asValueModel(0).asString().equals("男");
-        assert ((ListModel) dataModel).asValueModel(1).asString().equals("女");
+        assert dataModel.isList();
+        assert ((ListModel) dataModel).getValue(0).asString().equals("男");
+        assert ((ListModel) dataModel).getValue(1).asString().equals("女");
     }
 
     @Test
     public void lambda_2_Test() throws Exception {
         Query compilerQL = compilerQL("var a = 10 ; var foo = () -> return a ; return foo()");
         DataModel dataModel = compilerQL.execute().getData();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asInt() == 10;
     }
 
@@ -34,7 +34,7 @@ public class LambdaRuntimeTest extends AbstractTestResource implements HintValue
     public void lambda_3_Test() throws Exception {
         Query compilerQL = compilerQL("var a = 10 ; var foo = () -> { var a = 12; return a; } ; return foo()");
         DataModel dataModel = compilerQL.execute().getData();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asInt() == 12;
     }
 
@@ -42,7 +42,7 @@ public class LambdaRuntimeTest extends AbstractTestResource implements HintValue
     public void lambda_4_Test() throws Exception {
         Query compilerQL = compilerQL("var a = 10 ; var foo = () -> { return a; } ; var a = 12; return foo()");
         DataModel dataModel = compilerQL.execute().getData();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asInt() == 12;
     }
 
@@ -60,7 +60,7 @@ public class LambdaRuntimeTest extends AbstractTestResource implements HintValue
         //
         Query compilerQL = compilerQL("import 'net.hasor.test.dataql.udfs.DemoUdf' as foo; return foo().name", finder);
         DataModel dataModel = compilerQL.execute().getData();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asString().equals("马三");
     }
 
@@ -77,7 +77,7 @@ public class LambdaRuntimeTest extends AbstractTestResource implements HintValue
         //
         Query compilerQL = compilerQL("import 'net.hasor.test.dataql.udfs.DemoUdf' as foo; return foo().name", finder);
         DataModel dataModel = compilerQL.execute().getData();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asString().equals("马三");
     }
 
@@ -85,9 +85,9 @@ public class LambdaRuntimeTest extends AbstractTestResource implements HintValue
     public void lambda_6_Test() throws Throwable {
         Query compilerQL = compilerQL("var a = 10 ; var foo = () -> { return a; } ; return foo");
         DataModel dataModel = compilerQL.execute().getData();
-        assert dataModel.isUdfModel();
+        assert dataModel.isUdf();
         DataModel dat = ((UdfModel) dataModel).call(null, null);
-        assert dat.isValueModel();
+        assert dat.isValue();
         assert ((ValueModel) dat).asInt() == 10;
     }
 }

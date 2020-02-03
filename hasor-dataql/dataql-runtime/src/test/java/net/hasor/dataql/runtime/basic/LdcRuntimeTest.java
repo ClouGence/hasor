@@ -12,7 +12,7 @@ public class LdcRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return true;");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isBoolean();
         assert ((ValueModel) dataModel).asBoolean();
     }
@@ -22,7 +22,7 @@ public class LdcRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return false;");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isBoolean();
         assert !((ValueModel) dataModel).asBoolean();
     }
@@ -32,7 +32,7 @@ public class LdcRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("var a = true ;return a");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isBoolean();
         assert ((ValueModel) dataModel).asBoolean();
     }
@@ -42,7 +42,7 @@ public class LdcRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("var a = false ;return a");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isBoolean();
         assert !((ValueModel) dataModel).asBoolean();
     }
@@ -53,7 +53,7 @@ public class LdcRuntimeTest extends AbstractTestResource implements HintValue {
         compilerQL.setHint(MIN_INTEGER_WIDTH, MIN_INTEGER_WIDTH_BYTE);
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isByte();
         assert ((ValueModel) dataModel).asInt() == 123;
     }
@@ -63,7 +63,7 @@ public class LdcRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return 123"); // 定义十进制数
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).isInt();
         assert ((ValueModel) dataModel).asInt() == 123;
@@ -74,7 +74,7 @@ public class LdcRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("var a = 0o123 ;return a"); // 定义八进制数
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isInt();
         assert ((ValueModel) dataModel).asInt() == 83;
     }
@@ -84,7 +84,7 @@ public class LdcRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("var a = 0b01111011 ;return a"); // 定义二进制数
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isInt();
         assert ((ValueModel) dataModel).asInt() == 123;
     }
@@ -94,7 +94,7 @@ public class LdcRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("var a = 0x123 ;return a"); // 定义十六进制数
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isInt();
         assert ((ValueModel) dataModel).asInt() == 0x123;
     }
@@ -104,7 +104,7 @@ public class LdcRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("var a = '' ;return a");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert !((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).isString();
         assert ((ValueModel) dataModel).asString().equals("");
@@ -115,7 +115,7 @@ public class LdcRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("var a = \"\" ;return a");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert !((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).isString();
         assert ((ValueModel) dataModel).asString().equals("");
@@ -126,7 +126,7 @@ public class LdcRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return 'abc'");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert !((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).isString();
         assert ((ValueModel) dataModel).asString().equals("abc");
@@ -137,7 +137,7 @@ public class LdcRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return null");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert !((ValueModel) dataModel).isNumber();
         assert !((ValueModel) dataModel).isString();
         assert ((ValueModel) dataModel).isNull();
@@ -148,7 +148,7 @@ public class LdcRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("var a = null ;return a");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert !((ValueModel) dataModel).isNumber();
         assert !((ValueModel) dataModel).isString();
         assert ((ValueModel) dataModel).isNull();

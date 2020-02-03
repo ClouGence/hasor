@@ -27,22 +27,22 @@ public interface DataModel {
     public Object unwrap();
 
     /** 判断是否为 ValueModel 类型值 */
-    public default boolean isValueModel() {
+    public default boolean isValue() {
         return false;
     }
 
     /** 判断是否为 ListModel 类型值 */
-    public default boolean isListModel() {
+    public default boolean isList() {
         return false;
     }
 
     /** 判断是否为 ObjectModel 类型值 */
-    public default boolean isObjectModel() {
+    public default boolean isObject() {
         return false;
     }
 
     /** 判断是否为 UdfModel 类型值 */
-    public default boolean isUdfModel() {
+    public default boolean isUdf() {
         return false;
     }
 }

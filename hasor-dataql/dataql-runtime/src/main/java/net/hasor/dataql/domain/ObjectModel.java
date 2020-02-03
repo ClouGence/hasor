@@ -57,22 +57,22 @@ public class ObjectModel implements DataModel {
     }
 
     /** 判断是否为 ObjectModel 类型值 */
-    public boolean isObjectModel() {
+    public boolean isObject() {
         return true;
     }
 
     /** 获取某一个元素 */
-    public DataModel asModel(String fieldName) {
+    public DataModel get(String fieldName) {
         return this.dataModel.get(fieldName);
     }
 
     /** 判断是否为 ValueModel 类型值 */
-    public boolean isValueModel(String fieldName) {
+    public boolean isValue(String fieldName) {
         return this.dataModel.get(fieldName) instanceof ValueModel;
     }
 
     /** 将某一个元素转换为 ValueModel */
-    public ValueModel asValueModel(String fieldName) {
+    public ValueModel getValue(String fieldName) {
         DataModel dataItem = this.dataModel.get(fieldName);
         if (dataItem instanceof ValueModel) {
             return (ValueModel) dataItem;
@@ -81,12 +81,12 @@ public class ObjectModel implements DataModel {
     }
 
     /** 判断是否为 ListModel 类型值 */
-    public boolean isListModel(String fieldName) {
+    public boolean isList(String fieldName) {
         return this.dataModel.get(fieldName) instanceof ListModel;
     }
 
     /** 将某一个元素转换为 ListModel */
-    public ListModel asListModel(String fieldName) {
+    public ListModel getList(String fieldName) {
         DataModel dataItem = this.dataModel.get(fieldName);
         if (dataItem instanceof ListModel) {
             return (ListModel) dataItem;
@@ -95,12 +95,12 @@ public class ObjectModel implements DataModel {
     }
 
     /** 判断是否为 ObjectModel 类型值 */
-    public boolean isObjectModel(String fieldName) {
+    public boolean isObject(String fieldName) {
         return this.dataModel.get(fieldName) instanceof ObjectModel;
     }
 
     /** 将某一个元素转换为 ObjectModel */
-    public ObjectModel asObjectModel(String fieldName) {
+    public ObjectModel getObject(String fieldName) {
         DataModel dataItem = this.dataModel.get(fieldName);
         if (dataItem instanceof ObjectModel) {
             return (ObjectModel) dataItem;
@@ -109,12 +109,12 @@ public class ObjectModel implements DataModel {
     }
 
     /** 判断是否为 UdfModel 类型值 */
-    public boolean isUdfModel(String fieldName) {
+    public boolean isUdf(String fieldName) {
         return this.dataModel.get(fieldName) instanceof UdfModel;
     }
 
     /** 将某一个元素转换为 UdfModel */
-    public UdfModel asUdfModel(String fieldName) {
+    public UdfModel getUdf(String fieldName) {
         DataModel dataItem = this.dataModel.get(fieldName);
         if (dataItem instanceof UdfModel) {
             return (UdfModel) dataItem;

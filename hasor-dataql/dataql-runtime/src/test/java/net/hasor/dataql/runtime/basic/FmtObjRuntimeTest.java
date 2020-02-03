@@ -41,7 +41,7 @@ public class FmtObjRuntimeTest extends AbstractTestResource implements HintValue
     public void fmt_1_Test() throws Exception {
         Query compilerQL = compilerQL("return ${dataList} => {}");
         DataModel dataModel = compilerQL.execute(object_list_map1).getData();
-        assert dataModel.isObjectModel();
+        assert dataModel.isObject();
         assert ((ObjectModel) dataModel).size() == 0;
     }
 
@@ -49,7 +49,7 @@ public class FmtObjRuntimeTest extends AbstractTestResource implements HintValue
     public void fmt_2_Test() throws Exception {
         Query compilerQL = compilerQL("return ${dataList} => []");
         DataModel dataModel = compilerQL.execute(object_list_map1).getData();
-        assert dataModel.isListModel();
+        assert dataModel.isList();
         assert ((ListModel) dataModel).size() == 0;
     }
 
@@ -57,32 +57,32 @@ public class FmtObjRuntimeTest extends AbstractTestResource implements HintValue
     public void fmt_3_Test() throws Exception {
         Query compilerQL = compilerQL("return ${dataList} => { 'a': name }");
         DataModel dataModel = compilerQL.execute(object_list_map1).getData();
-        assert dataModel.isObjectModel();
-        assert ((ObjectModel) dataModel).asValueModel("a").asString().equals("马三_1");
+        assert dataModel.isObject();
+        assert ((ObjectModel) dataModel).getValue("a").asString().equals("马三_1");
     }
 
     @Test
     public void fmt_4_Test() throws Exception {
         Query compilerQL = compilerQL("return ${dataList} => { 'a': name }");
         DataModel dataModel = compilerQL.execute(object_list_map3).getData();
-        assert dataModel.isObjectModel();
-        assert ((ObjectModel) dataModel).asValueModel("a").asString().equals("马三_1");
+        assert dataModel.isObject();
+        assert ((ObjectModel) dataModel).getValue("a").asString().equals("马三_1");
     }
 
     @Test
     public void npt_1_Test() throws Exception {
         Query compilerQL = compilerQL("return ${dataList} => { 'a': name }");
         DataModel dataModel = compilerQL.execute(object_list_map0).getData();
-        assert dataModel.isObjectModel();
-        assert ((ObjectModel) dataModel).asValueModel("a").asString() == null;
+        assert dataModel.isObject();
+        assert ((ObjectModel) dataModel).getValue("a").asString() == null;
     }
 
     @Test
     public void npt_2_Test() throws Exception {
         Query compilerQL = compilerQL("return ${dataList} => { 'a': name }");
         DataModel dataModel = compilerQL.execute(object_list_map2).getData();
-        assert dataModel.isObjectModel();
-        assert ((ObjectModel) dataModel).asValueModel("a").asString() == null;
+        assert dataModel.isObject();
+        assert ((ObjectModel) dataModel).getValue("a").asString() == null;
     }
 
     @Test
@@ -111,8 +111,8 @@ public class FmtObjRuntimeTest extends AbstractTestResource implements HintValue
         };
         Query compilerQL = compilerQL("return ${_0} => { 'a': $ }");
         DataModel dataModel = compilerQL.execute(new Object[] { dataBeans }).getData();
-        assert dataModel.isObjectModel();
-        assert ((ObjectModel) dataModel).asObjectModel("a").asValueModel("name").asString().equals("马三_1");
+        assert dataModel.isObject();
+        assert ((ObjectModel) dataModel).getObject("a").getValue("name").asString().equals("马三_1");
     }
 
     @Test
@@ -124,10 +124,10 @@ public class FmtObjRuntimeTest extends AbstractTestResource implements HintValue
         };
         Query compilerQL = compilerQL("return ${_0} => [ #.name ]");
         DataModel dataModel = compilerQL.execute(new Object[] { dataBeans }).getData();
-        assert dataModel.isListModel();
-        assert ((ListModel) dataModel).asValueModel(0).asString().equals("马三_1");
-        assert ((ListModel) dataModel).asValueModel(1).asString().equals("马三_2");
-        assert ((ListModel) dataModel).asValueModel(2).asString().equals("马三_3");
+        assert dataModel.isList();
+        assert ((ListModel) dataModel).getValue(0).asString().equals("马三_1");
+        assert ((ListModel) dataModel).getValue(1).asString().equals("马三_2");
+        assert ((ListModel) dataModel).getValue(2).asString().equals("马三_3");
     }
 
     @Test
@@ -139,9 +139,9 @@ public class FmtObjRuntimeTest extends AbstractTestResource implements HintValue
         };
         Query compilerQL = compilerQL("return ${_0} => [ name ]");
         DataModel dataModel = compilerQL.execute(new Object[] { dataBeans }).getData();
-        assert dataModel.isListModel();
-        assert ((ListModel) dataModel).asValueModel(0).asString().equals("马三_1");
-        assert ((ListModel) dataModel).asValueModel(1).asString().equals("马三_2");
-        assert ((ListModel) dataModel).asValueModel(2).asString().equals("马三_3");
+        assert dataModel.isList();
+        assert ((ListModel) dataModel).getValue(0).asString().equals("马三_1");
+        assert ((ListModel) dataModel).getValue(1).asString().equals("马三_2");
+        assert ((ListModel) dataModel).getValue(2).asString().equals("马三_3");
     }
 }

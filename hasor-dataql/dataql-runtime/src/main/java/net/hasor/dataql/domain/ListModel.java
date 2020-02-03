@@ -37,10 +37,12 @@ public class ListModel implements DataModel {
         }
     }
 
+    /** 向集合的末尾追加一个元素 */
     public void add(Object object) {
         this.dataModel.add(DomainHelper.convertTo(object));
     }
 
+    /** 集合大小 */
     public int size() {
         return this.dataModel.size();
     }
@@ -60,22 +62,37 @@ public class ListModel implements DataModel {
     }
 
     /** 判断是否为 ListModel 类型值 */
-    public boolean isListModel() {
+    public boolean isList() {
         return true;
     }
 
     /** 判断是否为 ValueModel 类型值 */
-    public boolean isValueModel(int index) {
+    public boolean isValue(int index) {
         return this.dataModel.get(index) instanceof ValueModel;
     }
 
+    /** 判断是否为 ListModel 类型值 */
+    public boolean isList(int index) {
+        return this.dataModel.get(index) instanceof ListModel;
+    }
+
+    /** 判断是否为 ObjectModel 类型值 */
+    public boolean isObject(int index) {
+        return this.dataModel.get(index) instanceof ObjectModel;
+    }
+
+    /** 判断是否为 UdfModel 类型值 */
+    public boolean isUdf(int index) {
+        return this.dataModel.get(index) instanceof UdfModel;
+    }
+
     /** 获取某一个元素 */
-    public DataModel asModel(int index) {
+    public DataModel get(int index) {
         return this.dataModel.get(index);
     }
 
     /** 将某一个元素转换为 ValueModel */
-    public ValueModel asValueModel(int index) {
+    public ValueModel getValue(int index) {
         Object dataItem = this.dataModel.get(index);
         if (dataItem instanceof ValueModel) {
             return (ValueModel) dataItem;
@@ -83,13 +100,8 @@ public class ListModel implements DataModel {
         throw new ClassCastException(dataItem.getClass() + " not Cast to ValueModel.");
     }
 
-    /** 判断是否为 ListModel 类型值 */
-    public boolean isListModel(int index) {
-        return this.dataModel.get(index) instanceof ListModel;
-    }
-
     /** 将某一个元素转换为 ListModel */
-    public ListModel asListModel(int index) {
+    public ListModel getList(int index) {
         Object dataItem = this.dataModel.get(index);
         if (dataItem instanceof ListModel) {
             return (ListModel) dataItem;
@@ -97,13 +109,8 @@ public class ListModel implements DataModel {
         throw new ClassCastException(dataItem.getClass() + " not Cast to ListModel.");
     }
 
-    /** 判断是否为 ObjectModel 类型值 */
-    public boolean isObjectModel(int index) {
-        return this.dataModel.get(index) instanceof ObjectModel;
-    }
-
     /** 将某一个元素转换为 ObjectModel */
-    public ObjectModel asObjectModel(int index) {
+    public ObjectModel getObject(int index) {
         Object dataItem = this.dataModel.get(index);
         if (dataItem instanceof ObjectModel) {
             return (ObjectModel) dataItem;
@@ -111,13 +118,8 @@ public class ListModel implements DataModel {
         throw new ClassCastException(dataItem.getClass() + " not Cast to ObjectModel.");
     }
 
-    /** 判断是否为 UdfModel 类型值 */
-    public boolean isUdfModel(int index) {
-        return this.dataModel.get(index) instanceof UdfModel;
-    }
-
     /** 将某一个元素转换为 UdfModel */
-    public UdfModel asUdfModel(int index) {
+    public UdfModel getUdf(int index) {
         Object dataItem = this.dataModel.get(index);
         if (dataItem instanceof UdfModel) {
             return (UdfModel) dataItem;

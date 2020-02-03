@@ -164,13 +164,13 @@ public class CollectionUdfSource implements UdfSource {
         Map<String, Object> mapData = new LinkedHashMap<>();
         Map<String, Object> errorData = new LinkedHashMap<>();
         for (int i = 0; i < convertTo.size(); i++) {
-            DataModel dataModel = convertTo.asModel(i);
+            DataModel dataModel = convertTo.get(i);
             String errorMessage = "";
-            if (dataModel.isObjectModel()) {
+            if (dataModel.isObject()) {
                 DataModel objectModel = dataModel;
-                DataModel keyValue = ((ObjectModel) objectModel).asModel(key);
+                DataModel keyValue = ((ObjectModel) objectModel).get(key);
                 if (keyValue != null) {
-                    if (keyValue.isValueModel()) {
+                    if (keyValue.isValue()) {
                         if (convert != null) {
                             Object call = convert.call(option, objectModel);
                             objectModel = DomainHelper.convertTo(call);
@@ -233,7 +233,7 @@ public class CollectionUdfSource implements UdfSource {
         ObjectModel objectModel = (ObjectModel) DomainHelper.convertTo(data);
         StringBuilder joinKey = new StringBuilder("");
         Arrays.stream(joinField).forEach(s -> {
-            joinKey.append(objectModel.asModel(s).unwrap().toString()).append(",");
+            joinKey.append(objectModel.get(s).unwrap().toString()).append(",");
         });
         return joinKey.toString();
     }

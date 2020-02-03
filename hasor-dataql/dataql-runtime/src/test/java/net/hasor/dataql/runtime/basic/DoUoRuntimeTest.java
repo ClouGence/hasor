@@ -16,7 +16,7 @@ public class DoUoRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return true + false;");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert !((ValueModel) dataModel).isBoolean();
         assert ((ValueModel) dataModel).isString();
         assert ((ValueModel) dataModel).asString().equals("truefalse");
@@ -27,7 +27,7 @@ public class DoUoRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return 12 + 12;");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).asInt() == 24;
     }
@@ -38,7 +38,7 @@ public class DoUoRuntimeTest extends AbstractTestResource implements HintValue {
         compilerQL.setHint(MIN_INTEGER_WIDTH, MIN_INTEGER_WIDTH_BYTE);
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isByte();
         assert ((ValueModel) dataModel).asByte() == 14;
     }
@@ -48,7 +48,7 @@ public class DoUoRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return (2 + 3) * 4;");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).asInt() == 20;
     }
@@ -58,7 +58,7 @@ public class DoUoRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return (2 + 3) - 0xF;"); // 0xF = 10
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).asInt() == -10;
     }
@@ -73,7 +73,7 @@ public class DoUoRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return ${a}-${b};");
         DataModel dataModel = compilerQL.execute(objectMap).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).asInt() == 6;
     }
@@ -83,7 +83,7 @@ public class DoUoRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return - 1;");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).asInt() == -1;
     }
@@ -93,7 +93,7 @@ public class DoUoRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("var a=123 return -a;");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).asInt() == -123;
     }
@@ -103,7 +103,7 @@ public class DoUoRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return !true;");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isBoolean();
         assert !((ValueModel) dataModel).asBoolean();
     }
@@ -113,7 +113,7 @@ public class DoUoRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("var a=true return !a;");
         DataModel dataModel = compilerQL.execute().getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isBoolean();
         assert !((ValueModel) dataModel).asBoolean();
     }
@@ -127,7 +127,7 @@ public class DoUoRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("return !${a};");
         DataModel dataModel = compilerQL.execute(objectMap).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isBoolean();
         assert !((ValueModel) dataModel).asBoolean();
     }

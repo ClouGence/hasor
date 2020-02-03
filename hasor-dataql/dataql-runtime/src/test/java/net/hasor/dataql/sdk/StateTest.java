@@ -19,9 +19,9 @@ public class StateTest extends AbstractTestResource {
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
         DataModel dataModel = dataQL.createQuery(qlString).execute().getData();
         //
-        assert ((ListModel) dataModel).asValueModel(0).asLong() == 1;
-        assert ((ListModel) dataModel).asValueModel(1).asLong() == 2;
-        assert ((ListModel) dataModel).asValueModel(2).asLong() == 3;
+        assert ((ListModel) dataModel).getValue(0).asLong() == 1;
+        assert ((ListModel) dataModel).getValue(1).asLong() == 2;
+        assert ((ListModel) dataModel).getValue(2).asLong() == 3;
     }
 
     @Test
@@ -33,9 +33,9 @@ public class StateTest extends AbstractTestResource {
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
         DataModel dataModel = dataQL.createQuery(qlString).execute().getData();
         //
-        assert ((ListModel) dataModel).asValueModel(0).asLong() == 1;
-        assert ((ListModel) dataModel).asValueModel(1).asLong() == 2;
-        assert ((ListModel) dataModel).asValueModel(2).asLong() == 3;
+        assert ((ListModel) dataModel).getValue(0).asLong() == 1;
+        assert ((ListModel) dataModel).getValue(1).asLong() == 2;
+        assert ((ListModel) dataModel).getValue(2).asLong() == 3;
     }
 
     @Test
@@ -47,9 +47,9 @@ public class StateTest extends AbstractTestResource {
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
         DataModel dataModel = dataQL.createQuery(qlString).execute().getData();
         //
-        assert ((ListModel) dataModel).asValueModel(0).asLong() == -1;
-        assert ((ListModel) dataModel).asValueModel(1).asLong() == -2;
-        assert ((ListModel) dataModel).asValueModel(2).asLong() == -3;
+        assert ((ListModel) dataModel).getValue(0).asLong() == -1;
+        assert ((ListModel) dataModel).getValue(1).asLong() == -2;
+        assert ((ListModel) dataModel).getValue(2).asLong() == -3;
     }
 
     @Test
@@ -61,8 +61,8 @@ public class StateTest extends AbstractTestResource {
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
         DataModel dataModel = dataQL.createQuery(qlString).execute().getData();
         //
-        assert ((ListModel) dataModel).asValueModel(0).asLong() == -1;
-        assert ((ListModel) dataModel).asValueModel(1).asLong() == -2;
-        assert ((ListModel) dataModel).asValueModel(2).asLong() == -3;
+        assert ((ListModel) dataModel).getValue(0).asLong() == -1;
+        assert ((ListModel) dataModel).getValue(1).asLong() == -2;
+        assert ((ListModel) dataModel).getValue(2).asLong() == -3;
     }
 }

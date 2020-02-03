@@ -62,19 +62,19 @@ class TYPEOF implements InsetProcess {
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
         DataModel dataModel = DomainHelper.convertTo(dataStack.pop());
-        if (dataModel.isObjectModel()) {
+        if (dataModel.isObject()) {
             dataStack.push(TypeOfEnum.Object.typeCode());
             return;
         }
-        if (dataModel.isListModel()) {
+        if (dataModel.isList()) {
             dataStack.push(TypeOfEnum.List.typeCode());
             return;
         }
-        if (dataModel.isUdfModel()) {
+        if (dataModel.isUdf()) {
             dataStack.push(TypeOfEnum.Udf.typeCode());
             return;
         }
-        if (dataModel.isValueModel()) {
+        if (dataModel.isValue()) {
             ValueModel val = (ValueModel) dataModel;
             if (val.isNull()) {
                 dataStack.push(TypeOfEnum.Null.typeCode());

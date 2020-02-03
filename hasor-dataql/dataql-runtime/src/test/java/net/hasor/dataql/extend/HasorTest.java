@@ -23,9 +23,9 @@ public class HasorTest {
         QueryResult queryResult = dataQL.createQuery("return [abc,bcd]").execute();
         //
         DataModel dataModel = queryResult.getData();
-        assert dataModel.isListModel();
-        assert ((ListModel) dataModel).asValueModel(0).asBoolean();
-        assert !((ListModel) dataModel).asValueModel(1).asBoolean();
+        assert dataModel.isList();
+        assert ((ListModel) dataModel).getValue(0).asBoolean();
+        assert !((ListModel) dataModel).getValue(1).asBoolean();
     }
 
     @Test
@@ -35,7 +35,7 @@ public class HasorTest {
         QueryResult queryResult = dataQL.createQuery("var a= 10 ; return a").execute();
         //
         DataModel dataModel = queryResult.getData();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asInt() == 10;
     }
 
@@ -51,9 +51,9 @@ public class HasorTest {
         //
         QueryResult queryResult = dataQL.createQuery("return [${uid},${sid}]").execute(tempData);
         DataModel dataModel = queryResult.getData();
-        assert dataModel.isListModel();
-        assert ((ListModel) dataModel).asValueModel(0).asString().equals("uid form tempData");
-        assert ((ListModel) dataModel).asValueModel(1).asString().equals("sid form tempData");
+        assert dataModel.isList();
+        assert ((ListModel) dataModel).getValue(0).asString().equals("uid form tempData");
+        assert ((ListModel) dataModel).getValue(1).asString().equals("sid form tempData");
     }
 
     @Test
@@ -70,14 +70,14 @@ public class HasorTest {
         Query query = dataQL.createQuery("return foo()");
         QueryResult queryResult = query.execute();
         DataModel dataModel = queryResult.getData();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asString().equals("aaaa");
         //
         //
         query.setHint("abc", "bbb");
         queryResult = query.execute();
         dataModel = queryResult.getData();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asString().equals("bbb");
     }
 }

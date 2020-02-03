@@ -23,9 +23,9 @@ public class CollectionTest extends AbstractTestResource {
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
         DataModel dataModel = dataQL.createQuery(qlString).execute().getData();
         //
-        assert dataModel.isListModel();
+        assert dataModel.isList();
         assert ((ListModel) dataModel).size() == 10;
-        assert ((ListModel) dataModel).asValueModel(5).asInt() == 5;
+        assert ((ListModel) dataModel).getValue(5).asInt() == 5;
     }
 
     @Test
@@ -37,12 +37,12 @@ public class CollectionTest extends AbstractTestResource {
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
         DataModel dataModel = dataQL.createQuery(qlString).execute().getData();
         //
-        assert dataModel.isListModel();
+        assert dataModel.isList();
         assert ((ListModel) dataModel).size() == 4;
-        assert ((ListModel) dataModel).asValueModel(0).asInt() == 6;
-        assert ((ListModel) dataModel).asValueModel(1).asInt() == 7;
-        assert ((ListModel) dataModel).asValueModel(2).asInt() == 8;
-        assert ((ListModel) dataModel).asValueModel(3).asInt() == 9;
+        assert ((ListModel) dataModel).getValue(0).asInt() == 6;
+        assert ((ListModel) dataModel).getValue(1).asInt() == 7;
+        assert ((ListModel) dataModel).getValue(2).asInt() == 8;
+        assert ((ListModel) dataModel).getValue(3).asInt() == 9;
     }
 
     @Test
@@ -54,11 +54,11 @@ public class CollectionTest extends AbstractTestResource {
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
         DataModel dataModel = dataQL.createQuery(qlString).execute().getData();
         //
-        assert dataModel.isListModel();
+        assert dataModel.isList();
         assert ((ListModel) dataModel).size() == 3;
-        assert ((ListModel) dataModel).asValueModel(0).asInt() == 3;
-        assert ((ListModel) dataModel).asValueModel(1).asInt() == 4;
-        assert ((ListModel) dataModel).asValueModel(2).asInt() == 5;
+        assert ((ListModel) dataModel).getValue(0).asInt() == 3;
+        assert ((ListModel) dataModel).getValue(1).asInt() == 4;
+        assert ((ListModel) dataModel).getValue(2).asInt() == 5;
     }
 
     @Test

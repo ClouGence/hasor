@@ -38,7 +38,7 @@ public class TimeTest extends AbstractTestResource {
         DataModel dataModel = dataQL.createQuery(qlString).execute().getData();
         //
         String format = new SimpleDateFormat("yyyy-M-d").format(new Date());
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asString().equalsIgnoreCase(format);
     }
 
@@ -52,7 +52,7 @@ public class TimeTest extends AbstractTestResource {
         DataModel dataModel = dataQL.createQuery(qlString).execute().getData();
         //
         String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asString().equalsIgnoreCase(format);
     }
 
@@ -66,7 +66,7 @@ public class TimeTest extends AbstractTestResource {
         DataModel dataModel = dataQL.createQuery(qlString).execute().getData();
         //
         long format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2017-03-15 12:44:56").getTime();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asLong() == format;
     }
 }

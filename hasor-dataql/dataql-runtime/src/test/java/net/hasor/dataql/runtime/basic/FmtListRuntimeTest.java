@@ -17,7 +17,7 @@ public class FmtListRuntimeTest extends AbstractTestResource implements HintValu
     public void fmt_1_Test() throws Exception {
         Query compilerQL = compilerQL("return ${data} => [a]");
         DataModel dataModel = compilerQL.execute().getData();
-        assert dataModel.isListModel();
+        assert dataModel.isList();
         assert ((ListModel) dataModel).size() == 0;
     }
 
@@ -28,10 +28,10 @@ public class FmtListRuntimeTest extends AbstractTestResource implements HintValu
         }};
         Query compilerQL = compilerQL("return ${dataList} => [#]");
         DataModel dataModel = compilerQL.execute(data).getData();
-        assert dataModel.isListModel();
+        assert dataModel.isList();
         assert ((ListModel) dataModel).size() == 5;
-        assert ((ListModel) dataModel).asValueModel(0).asInt() == 1;
-        assert ((ListModel) dataModel).asValueModel(2).asInt() == 5;
+        assert ((ListModel) dataModel).getValue(0).asInt() == 1;
+        assert ((ListModel) dataModel).getValue(2).asInt() == 5;
     }
 
     @Test
@@ -41,8 +41,8 @@ public class FmtListRuntimeTest extends AbstractTestResource implements HintValu
         }};
         Query compilerQL = compilerQL("return ${dataList} => [#]");
         DataModel dataModel = compilerQL.execute(data).getData();
-        assert dataModel.isListModel();
+        assert dataModel.isList();
         assert ((ListModel) dataModel).size() == 1;
-        assert ((ListModel) dataModel).asObjectModel(0).asValueModel("name").asString().equals("马三_12");
+        assert ((ListModel) dataModel).getObject(0).getValue("name").asString().equals("马三_12");
     }
 }

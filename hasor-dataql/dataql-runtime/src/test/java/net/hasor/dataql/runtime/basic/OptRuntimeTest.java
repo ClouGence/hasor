@@ -17,7 +17,7 @@ public class OptRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("hint abc = true; return ${_0}()");
         DataModel dataModel = compilerQL.execute(obj).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asBoolean();
     }
 
@@ -30,7 +30,7 @@ public class OptRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("hint abc = false; return ${_0}()");
         DataModel dataModel = compilerQL.execute(obj).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert !((ValueModel) dataModel).asBoolean();
     }
 
@@ -43,7 +43,7 @@ public class OptRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("hint abc = 123; return ${_0}()");
         DataModel dataModel = compilerQL.execute(obj).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isInt();
         assert ((ValueModel) dataModel).asInt() == 123;
     }
@@ -57,7 +57,7 @@ public class OptRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("hint MIN_INTEGER_WIDTH = 'byte'; hint abc = 123; return ${_0}()");
         DataModel dataModel = compilerQL.execute(obj).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isByte();
         assert ((ValueModel) dataModel).asByte() == 123;
     }
@@ -71,7 +71,7 @@ public class OptRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("hint MIN_INTEGER_WIDTH = 'byte'; hint abc = 1234; return ${_0}()");
         DataModel dataModel = compilerQL.execute(obj).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isShort();
         assert ((ValueModel) dataModel).asShort() == 1234;
     }
@@ -85,7 +85,7 @@ public class OptRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("hint abc = 0xabcdef; return ${_0}()");
         DataModel dataModel = compilerQL.execute(obj).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isInt();
         assert ((ValueModel) dataModel).asInt() == 11259375;
     }
@@ -99,7 +99,7 @@ public class OptRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("hint abc = 'abc'; return ${_0}()");
         DataModel dataModel = compilerQL.execute(obj).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isString();
         assert ((ValueModel) dataModel).asString().equals("abc");
     }
@@ -113,7 +113,7 @@ public class OptRuntimeTest extends AbstractTestResource implements HintValue {
         Query compilerQL = compilerQL("hint abc = null; return ${_0}()");
         DataModel dataModel = compilerQL.execute(obj).getData();
         //
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNull();
     }
 }

@@ -17,7 +17,7 @@ public class ExitRuntimeTest extends AbstractTestResource implements HintValue {
         //
         DataModel dataModel = result.getData();
         assert result.getCode() == 12;
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asString().equals("truefalse");
         assert !result.isExit();
     }
@@ -29,7 +29,7 @@ public class ExitRuntimeTest extends AbstractTestResource implements HintValue {
         //
         DataModel dataModel = result.getData();
         assert result.getCode() == 12;
-        assert dataModel.isObjectModel();
+        assert dataModel.isObject();
         assert ((ObjectModel) dataModel).size() == 0;
         assert !result.isExit();
     }
@@ -41,7 +41,7 @@ public class ExitRuntimeTest extends AbstractTestResource implements HintValue {
         //
         DataModel dataModel = result.getData();
         assert result.getCode() == 12;
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asString().equals("truefalse");
         assert result.isExit();
     }
@@ -53,7 +53,7 @@ public class ExitRuntimeTest extends AbstractTestResource implements HintValue {
         //
         DataModel dataModel = result.getData();
         assert result.getCode() == 12;
-        assert dataModel.isObjectModel();
+        assert dataModel.isObject();
         assert ((ObjectModel) dataModel).size() == 0;
         assert result.isExit();
     }
@@ -68,7 +68,7 @@ public class ExitRuntimeTest extends AbstractTestResource implements HintValue {
             assert e instanceof ThrowRuntimeException;
             assert ((ThrowRuntimeException) e).getThrowCode() == 12;
             DataModel dataModel = ((ThrowRuntimeException) e).getResult();
-            assert dataModel.isValueModel();
+            assert dataModel.isValue();
             assert ((ValueModel) dataModel).asString().equals("truefalse");
         }
     }
@@ -83,7 +83,7 @@ public class ExitRuntimeTest extends AbstractTestResource implements HintValue {
             assert e instanceof ThrowRuntimeException;
             assert ((ThrowRuntimeException) e).getThrowCode() == 12;
             DataModel dataModel = ((ThrowRuntimeException) e).getResult();
-            assert dataModel.isObjectModel();
+            assert dataModel.isObject();
             assert ((ObjectModel) dataModel).size() == 0;
         }
     }

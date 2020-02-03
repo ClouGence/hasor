@@ -18,7 +18,7 @@ public class IfRuntimeTest extends AbstractTestResource implements HintValue {
         //
         Query compilerQL = compilerQL(" if (${a}) return 123 else return 321");
         DataModel dataModel = compilerQL.execute(objectMap).getData();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).asInt() == 123;
     }
@@ -31,7 +31,7 @@ public class IfRuntimeTest extends AbstractTestResource implements HintValue {
         //
         Query compilerQL = compilerQL(" if (${a}) return 123 else return 321");
         DataModel dataModel = compilerQL.execute(objectMap).getData();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).asInt() == 321;
     }
@@ -44,7 +44,7 @@ public class IfRuntimeTest extends AbstractTestResource implements HintValue {
         //
         Query compilerQL = compilerQL("return ${a} ? 123 : 321");
         DataModel dataModel = compilerQL.execute(objectMap).getData();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).asInt() == 321;
     }
@@ -57,7 +57,7 @@ public class IfRuntimeTest extends AbstractTestResource implements HintValue {
         //
         Query compilerQL = compilerQL("return ${a} ? 123 : 321");
         DataModel dataModel = compilerQL.execute(objectMap).getData();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isNumber();
         assert ((ValueModel) dataModel).asInt() == 123;
     }
@@ -70,7 +70,7 @@ public class IfRuntimeTest extends AbstractTestResource implements HintValue {
         //
         Query compilerQL = compilerQL("if (${a} == 1) return 'a1' else if ( ${a} ==2 ) return 'a2' else return 'a3'");
         DataModel dataModel = compilerQL.execute(objectMap).getData();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).isString();
         assert ((ValueModel) dataModel).asString().equals("a2");
     }

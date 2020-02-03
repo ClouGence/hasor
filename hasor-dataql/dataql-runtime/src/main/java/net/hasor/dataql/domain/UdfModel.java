@@ -41,7 +41,7 @@ public class UdfModel implements DataModel, Udf {
     }
 
     /** 判断是否为 UdfModel 类型值 */
-    public boolean isUdfModel() {
+    public boolean isUdf() {
         return true;
     }
 

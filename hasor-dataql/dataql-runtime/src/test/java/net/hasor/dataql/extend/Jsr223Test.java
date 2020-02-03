@@ -18,7 +18,7 @@ public class Jsr223Test {
         //
         assert eval instanceof QueryResult;
         DataModel dataModel = ((QueryResult) eval).getData();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asInt() == 10;
     }
 
@@ -35,9 +35,9 @@ public class Jsr223Test {
         Object eval = scriptEngine.eval("return [${uid},${sid}]", params);
         assert eval instanceof QueryResult;
         DataModel dataModel = ((QueryResult) eval).getData();
-        assert dataModel.isListModel();
-        assert ((ListModel) dataModel).asValueModel(0).asString().equals("uid form env");
-        assert ((ListModel) dataModel).asValueModel(1).asString().equals("sid form env");
+        assert dataModel.isList();
+        assert ((ListModel) dataModel).getValue(0).asString().equals("uid form env");
+        assert ((ListModel) dataModel).getValue(1).asString().equals("sid form env");
     }
 
     @Test
@@ -59,9 +59,9 @@ public class Jsr223Test {
         Object eval = scriptEngine.eval("return [${uid},${sid}]", params);
         assert eval instanceof QueryResult;
         DataModel dataModel = ((QueryResult) eval).getData();
-        assert dataModel.isListModel();
-        assert ((ListModel) dataModel).asValueModel(0).asString().equals("uid form tempData");
-        assert ((ListModel) dataModel).asValueModel(1).asString().equals("sid form tempData");
+        assert dataModel.isList();
+        assert ((ListModel) dataModel).getValue(0).asString().equals("uid form tempData");
+        assert ((ListModel) dataModel).getValue(1).asString().equals("sid form tempData");
     }
 
     @Test
@@ -77,7 +77,7 @@ public class Jsr223Test {
         Object eval = scriptEngine.eval("return foo()", params);
         assert eval instanceof QueryResult;
         DataModel dataModel = ((QueryResult) eval).getData();
-        assert dataModel.isValueModel();
+        assert dataModel.isValue();
         assert ((ValueModel) dataModel).asInt() == 10;
     }
 }
