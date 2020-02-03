@@ -1,7 +1,7 @@
 --------------------
 Release Hasor v4.x
 --------------------
-Hasor v4.1.0 (2020-01-?)
+Hasor v4.1.0 (2020-01-03)
 ------------------------------------
 **Commons**
     - 修复 ResourcesUtils 和 ScanClassPath，IO 文件句柄泄露问题。
