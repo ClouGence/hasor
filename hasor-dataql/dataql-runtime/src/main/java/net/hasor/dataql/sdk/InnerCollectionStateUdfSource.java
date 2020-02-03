@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.dataql.sdk;
+import net.hasor.dataql.Finder;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * 带有状态的集合。函数库引入 <code>import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect; var arr = collect.new</code>
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
-class InnerCollectionStateUdfSource {
+class InnerCollectionStateUdfSource implements UdfSourceAssembly {
     private List<Object> objectArrayList;
 
     public InnerCollectionStateUdfSource(List<Object> initData) {
@@ -31,6 +34,11 @@ class InnerCollectionStateUdfSource {
         } else {
             objectArrayList = new ArrayList<>();
         }
+    }
+
+    @Override
+    public Supplier<?> getSupplier(Class<?> targetType, Finder finder) {
+        return () -> this;
     }
 
     /** 把参数数据加到开头 */

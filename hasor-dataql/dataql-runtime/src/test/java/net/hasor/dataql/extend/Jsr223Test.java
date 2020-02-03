@@ -1,4 +1,5 @@
 package net.hasor.dataql.extend;
+import net.hasor.core.Hasor;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.Udf;
 import net.hasor.dataql.domain.DataModel;
@@ -47,7 +48,8 @@ public class Jsr223Test {
             put("sid", "sid form tempData");
         }};
         //
-        DataQLScriptEngine scriptEngine = (DataQLScriptEngine) new ScriptEngineManager().getEngineByName("dataql");
+        ScriptEngineManager engineManager = new ScriptEngineManager();
+        DataQLScriptEngine scriptEngine = (DataQLScriptEngine) engineManager.getEngineByName("dataql");
         scriptEngine.setCustomizeScopeCreater(() -> symbol -> tempData);
         //
         SimpleScriptContext params = new SimpleScriptContext();

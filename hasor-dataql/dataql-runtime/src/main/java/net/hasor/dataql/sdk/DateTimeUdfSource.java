@@ -33,15 +33,7 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
-public class DateTimeUdfSource implements UdfSource {
-    @Override
-    public Supplier<Map<String, Udf>> getUdfResource(Finder finder) {
-        Supplier<?> supplier = () -> finder.findBean(getClass());
-        Predicate<Method> predicate = method -> true;
-        return InstanceProvider.of(new TypeUdfMap(getClass(), supplier, predicate));
-    }
-    // ----------------------------------------------------------------------------------
-
+public class DateTimeUdfSource implements UdfSourceAssembly {
     /** 返回当前时间戳 long 格式 */
     public long now() {
         return System.currentTimeMillis();

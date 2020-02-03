@@ -1,5 +1,5 @@
 --------------------
-DataQL 查询引擎
+DataQL 引擎
 --------------------
 
 介绍
@@ -32,6 +32,8 @@ DataQL 查询引擎
 
     guide/use_dataql
     guide/datamode
+    guide/global_var
+    guide/udf_dataql
     guide/ext_dataql
 
 内置函数库(SDK)

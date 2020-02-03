@@ -89,21 +89,17 @@ class DataQLCompiledScript extends CompiledScript implements Hints {
             globalBindings.forEach(varQuery::setCompilerVar);
         }
         //
-        CustomizeScope customizeScope = this.engine.getCustomizeScopeCreater().create();
-        if (customizeScope == null) {
-            Bindings engineBindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
-            //
-            Map<String, Object> dataMap = new HashMap<>();
-            if (globalBindings != null) {
-                dataMap.putAll(globalBindings);
-            }
-            if (engineBindings != null) {
-                dataMap.putAll(engineBindings);
-            }
-            customizeScope = symbol -> {
-                return dataMap;
-            };
+        Bindings engineBindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
+        Map<String, Object> dataMap = new HashMap<>();
+        if (globalBindings != null) {
+            dataMap.putAll(globalBindings);
         }
+        if (engineBindings != null) {
+            dataMap.putAll(engineBindings);
+        }
+        CustomizeScope customizeScope = symbol -> {
+            return dataMap;
+        };
         try {
             query.setHints(this);
             return query.execute(customizeScope);

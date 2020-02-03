@@ -21,23 +21,28 @@ import net.hasor.dataql.UdfSource;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * ID函数。函数库引入 <code>import 'net.hasor.dataql.sdk.IdentifierUdfSource' as ids;</code>
+ * UDF UdfSource 的装配接口
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2019-12-12
+ * @version : 2019-12-11
  */
-public class IdentifierUdfSource implements UdfSourceAssembly {
-    /** 返回一个完整格式的 UUID 字符串。  */
-    public String uuid() {
-        return UUID.randomUUID().toString();
+public interface UdfSourceAssembly extends UdfSource {
+    @Override
+    public default Supplier<Map<String, Udf>> getUdfResource(Finder finder) {
+        Class<?> targetType = getClass();
+        Supplier<?> supplier = getSupplier(targetType, finder);
+        Predicate<Method> predicate = getPredicate(targetType);
+        return InstanceProvider.of(new TypeUdfMap(targetType, supplier, predicate));
     }
 
-    /** 返回一个不含"-" 符号的 UUID 字符串 */
-    public String uuid2() {
-        return UUID.randomUUID().toString().replace("-", "");
+    public default Supplier<?> getSupplier(Class<?> targetType, Finder finder) {
+        return () -> finder.findBean(targetType);
+    }
+
+    public default Predicate<Method> getPredicate(Class<?> targetType) {
+        return method -> true;
     }
 }

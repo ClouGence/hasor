@@ -33,7 +33,7 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-class AppContextFinder implements Finder {
+public class AppContextFinder implements Finder {
     private AppContext                                       appContext;
     private Map<String, Supplier<? extends FragmentProcess>> fragmentProcessMap;
 

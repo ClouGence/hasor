@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class TypeUdfMap extends HashMap<String, Udf> {
+class TypeUdfMap extends HashMap<String, Udf> {
     public TypeUdfMap(Class<?> utilType) {
         this(utilType, method -> true);
     }

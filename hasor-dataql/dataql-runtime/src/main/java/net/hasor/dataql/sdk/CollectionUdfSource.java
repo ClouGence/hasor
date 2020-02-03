@@ -37,15 +37,7 @@ import java.util.stream.Collectors;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
-public class CollectionUdfSource implements UdfSource {
-    @Override
-    public Supplier<Map<String, Udf>> getUdfResource(Finder finder) {
-        Supplier<?> supplier = () -> finder.findBean(getClass());
-        Predicate<Method> predicate = method -> true;
-        return InstanceProvider.of(new TypeUdfMap(getClass(), supplier, predicate));
-    }
-    // ----------------------------------------------------------------------------------
-
+public class CollectionUdfSource implements UdfSourceAssembly {
     /**循环遍历函数*/
     protected static Collection<Object> foreach(Object collection) {
         Collection<Object> listData = null;
@@ -146,13 +138,12 @@ public class CollectionUdfSource implements UdfSource {
 
     /** 创建一个有状态的 Array 对象 */
     @UdfName("new")
-    public static TypeUdfMap newArray(Object mabeCollection) {
+    public static UdfSource newArray(Object mabeCollection) {
         List<Object> initData = new ArrayList<>();
         if (mabeCollection != null) {
             initData.addAll(foreach(mabeCollection));
         }
-        Supplier<InnerCollectionStateUdfSource> supplier = InstanceProvider.of(new InnerCollectionStateUdfSource(initData));
-        return new TypeUdfMap(InnerCollectionStateUdfSource.class, supplier, method -> true);
+        return new InnerCollectionStateUdfSource(initData);
     }
 
     /** List 转为 Map */

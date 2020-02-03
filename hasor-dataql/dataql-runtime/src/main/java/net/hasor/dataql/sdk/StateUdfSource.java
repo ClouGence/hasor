@@ -31,15 +31,7 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
-public class StateUdfSource implements UdfSource {
-    @Override
-    public Supplier<Map<String, Udf>> getUdfResource(Finder finder) {
-        Supplier<?> supplier = () -> finder.findBean(getClass());
-        Predicate<Method> predicate = method -> true;
-        return InstanceProvider.of(new TypeUdfMap(getClass(), supplier, predicate));
-    }
-    // ----------------------------------------------------------------------------------
-
+public class StateUdfSource implements UdfSourceAssembly {
     /** 返回一个自增的 int，每次调用函数获取值都会自增 1。 */
     public Udf decInt(int initValue) {
         AtomicInteger atomicLong = new AtomicInteger(initValue);

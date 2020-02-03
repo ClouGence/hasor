@@ -73,6 +73,8 @@ DataQL 默认实现了这一规范的接入API，这就使得开发者可以脱�
 
 dataModel 的值就是 ``['uid form engine','sid form global']``
 
+.. HINT::
+    在 JSR223 方式下：不提供CustomizeScope接口支持。三个Dim注解无效：@DimFragment、@DimUdf、@DimUdfSource
 
 基于底层接口使用DataQL
 ------------------------------------

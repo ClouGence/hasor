@@ -30,15 +30,7 @@ import java.util.regex.Pattern;
  * 字符串函数 <code>import 'net.hasor.dataql.sdk.StringUdfSource' as string;</code>
  * @version : 2019-12-12
  */
-public class StringUdfSource implements UdfSource {
-    @Override
-    public Supplier<Map<String, Udf>> getUdfResource(Finder finder) {
-        Supplier<?> supplier = () -> finder.findBean(getClass());
-        Predicate<Method> predicate = method -> true;
-        return InstanceProvider.of(new TypeUdfMap(getClass(), supplier, predicate));
-    }
-
-    // ----------------------------------------------------------------------------------
+public class StringUdfSource implements UdfSourceAssembly {
     private static Pattern linePattern = Pattern.compile("_(\\w)");
 
     /** 下划线转驼峰 */
