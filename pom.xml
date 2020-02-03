@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-parent</artifactId>
-    <version>4.1.0</version>
+    <version>4.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <!-- 配置属性 -->
@@ -40,7 +40,7 @@
         <connection>scm:git:git@git.oschina.net:zycgit/hasor.git</connection>
         <developerConnection>scm:git:git@git.oschina.net:zycgit/hasor.git</developerConnection>
         <url>git@git.oschina.net:zycgit/hasor.git</url>
-        <tag>hasor-parent-4.1.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <!-- 开发者 -->
