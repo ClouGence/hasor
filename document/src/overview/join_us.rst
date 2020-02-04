@@ -13,7 +13,7 @@ Git仓库，由于国内外网络访问速度因素。Hasor 的源码被同时�
     - Mac 系统下建议在编辑手册时设置字体为 Osaka
 
 **相关资源**
-    - Issues：[https://gitee.com/zycgit/hasor/issues]
-    - Hasor首页项目：[http://git.oschina.net/zycgit/hasor-website]
+    - Issues：[https://github.com/zycgit/hasor/issues]
     - Sphinx：[http://www.sphinx-doc.org/en/master/]
+    - Gitalk：[https://github.com/gitalk/gitalk]
     - QQ群：193943114

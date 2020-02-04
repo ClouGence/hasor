@@ -1,6 +1,23 @@
 {% extends '!footer.html' %} {% block extrafooter %}
 {{ super() }}
-
+<!-- gitalk -->
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://geektutu.github.io/hexo-theme-geektutu/js/gitalk.min.js"></script>
+<div id="gitalk-container"></div>
+<script type="text/javascript">
+    const gitalk = new Gitalk({
+        clientID: 'b37d8b8cb14534e8457d',
+        clientSecret: 'c132627b4759493784099326b5a1ae3ec5d1d762',
+        accessToken: 'Github Personal Access Token',
+        repo: 'hasor',
+        owner: 'zycgit',
+        admin: ['zycgit'],
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+        distractionFreeMode: true,  // Facebook-like distraction free mode
+        createIssueManually: true
+    });
+    gitalk.render('gitalk-container')
+</script>
 <!-- CNZZ -->
 <script type="text/javascript">
     var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
