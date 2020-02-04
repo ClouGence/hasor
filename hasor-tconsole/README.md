@@ -1,7 +1,7 @@
 # Telnet Console 框架
 
 &emsp;&emsp;提供一个 Telnet 环境支持，给予没有界面类的应用一个可以通过命令行进行交互的工具。
-              
+
 ----------
 ## 特性
 01. 支持监听本地端口提供 Telnet 交互的界面。
@@ -29,18 +29,18 @@ public class HelloWordExecutor implements TelExecutor {
 ```java
 public static void main(String[] args) {
     AppContext appContext = Hasor.create().build((TelModule) apiBinder -> {
-        TelnetBuilder telnetBuild = apiBinder.asTelnet("127.0.0.0", 2180);
+        TelnetBuilder telnetBuild = apiBinder.asTelnet("127.0.0.1", 2180);
         telnetBuild.addExecutor("hello").to(HelloWordExecutor.class);
     }
     appContext.joinSignal();
 }
 ```
 
-输入 `telnet 127.0.0.0 2180` 之后
+输入 `telnet 127.0.0.1 2180` 之后
 ```text
->telnet 127.0.0.0 2180
-Trying 127.0.0.0...
-Connected to 127.0.0.0.
+>telnet 127.0.0.1 2180
+Trying 127.0.0.1...
+Connected to 127.0.0.1.
 Escape character is '^]'.
 --------------------------------------------
 
