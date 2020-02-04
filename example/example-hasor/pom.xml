@@ -31,18 +31,8 @@
     <dependencies>
         <dependency>
             <groupId>net.hasor</groupId>
-            <artifactId>hasor-dataql</artifactId>
-            <version>${hasor.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-tconsole</artifactId>
-            <version>${hasor.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-db</artifactId>
-            <version>${hasor.version}</version>
+            <artifactId>hasor-all</artifactId>
+            <version>4.1.0</version>
         </dependency>
 
         <dependency>
