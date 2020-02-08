@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <!-- Project Info -->
-    <name>Hasor-DataQL</name>
+    <name>Hasor-DataQL/Runtime</name>
     <description>the hasor DataQL project.</description>
 
     <developers>

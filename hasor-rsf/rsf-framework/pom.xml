@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <!-- Project Info -->
-    <name>Hasor-RSF</name>
+    <name>Hasor-RSF/RPC</name>
     <description>the Hasor Remote Service Framework project.</description>
 
     <developers>

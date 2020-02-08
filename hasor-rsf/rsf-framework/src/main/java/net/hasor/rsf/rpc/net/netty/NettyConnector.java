@@ -88,16 +88,14 @@ public class NettyConnector extends Connector {
         boot.childOption(ChannelOption.SO_KEEPALIVE, true);
         ChannelFuture future = configBoot(boot).bind(this.getBindAddress().toSocketAddress());
         //
-        final BasicFuture<RsfChannel> result = new BasicFuture<RsfChannel>();
-        future.addListener(new ChannelFutureListener() {
-            public void operationComplete(ChannelFuture future) throws Exception {
-                if (!future.isSuccess()) {
-                    future.channel().close();
-                    result.failed(future.cause());
-                } else {
-                    Channel channel = future.channel();
-                    result.completed(new RsfChannelOnNetty(getBindAddress(), channel, LinkType.Listener));
-                }
+        final BasicFuture<RsfChannel> result = new BasicFuture<>();
+        future.addListener((ChannelFutureListener) future1 -> {
+            if (!future1.isSuccess()) {
+                future1.channel().close();
+                result.failed(future1.cause());
+            } else {
+                Channel channel = future1.channel();
+                result.completed(new RsfChannelOnNetty(getBindAddress(), channel, LinkType.Listener));
             }
         });
         try {
