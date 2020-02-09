@@ -35,6 +35,7 @@ DataQL 引擎
     guide/global_var
     guide/udf_dataql
     guide/ext_dataql
+    guide/maven_plugin
 
 内置函数库(SDK)
 ------------------------------------

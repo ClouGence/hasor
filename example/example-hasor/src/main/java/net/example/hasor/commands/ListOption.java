@@ -1,12 +1,12 @@
 package net.example.hasor.commands;
 import net.hasor.tconsole.Tel;
 import net.hasor.tconsole.TelCommand;
-import net.hasor.utils.ResourcesUtils;
 
 @Tel("list")
 public class ListOption extends AbstractTelExecutor {
     @Override
     public String doCommand(TelCommand telCommand) throws Throwable {
-        return doQuery(telCommand, dataQL.createQuery(ResourcesUtils.getResourceAsStream("ListOption.ql")));
+        String[] commandArgs = telCommand.getCommandArgs();
+        return doQuery(new ListOptionQuery(dataQL).execute(commandArgs));
     }
 }

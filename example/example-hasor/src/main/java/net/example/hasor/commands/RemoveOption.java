@@ -7,6 +7,7 @@ import net.hasor.utils.ResourcesUtils;
 public class RemoveOption extends AbstractTelExecutor {
     @Override
     public String doCommand(TelCommand telCommand) throws Throwable {
-        return doQuery(telCommand, dataQL.createQuery(ResourcesUtils.getResourceAsStream("RemoveOption.ql")));
+        String[] commandArgs = telCommand.getCommandArgs();
+        return doQuery(new RemoveOptionQuery(dataQL).execute(commandArgs));
     }
 }

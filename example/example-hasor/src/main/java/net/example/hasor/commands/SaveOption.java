@@ -7,6 +7,7 @@ import net.hasor.utils.ResourcesUtils;
 public class SaveOption extends AbstractTelExecutor {
     @Override
     public String doCommand(TelCommand telCommand) throws Throwable {
-        return doQuery(telCommand, dataQL.createQuery(ResourcesUtils.getResourceAsStream("SaveOption.ql")));
+        String[] commandArgs = telCommand.getCommandArgs();
+        return doQuery(new SaveOptionQuery(dataQL).execute(commandArgs));
     }
 }
