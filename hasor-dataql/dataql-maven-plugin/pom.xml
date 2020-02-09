@@ -16,6 +16,7 @@
     <!-- Project Info -->
     <name>Hasor-DataQL/Maven-Plugin</name>
     <description>Generate the DataQL Java class from the query file.</description>
+    <url>https://www.hasor.net/maven-plugin/hasor-dataql/</url>
 
     <developers>
         <developer>
@@ -88,13 +89,6 @@
             <artifactId>plexus-container-default</artifactId>
             <version>2.1.0</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.codehaus.plexus</groupId>-->
-        <!--            <artifactId>plexus-utils</artifactId>-->
-        <!--            <version>3.0.15</version>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-
 
         <!-- Testing requirements... -->
         <dependency>
@@ -144,6 +138,11 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.8.2</version>
+            </plugin>
         </plugins>
     </build>
 
@@ -152,15 +151,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.3</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.4</version>
-                <configuration>
-                    <quiet>true</quiet>
-                </configuration>
+                <version>3.6.0</version>
             </plugin>
         </plugins>
     </reporting>
