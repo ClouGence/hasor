@@ -40,3 +40,21 @@ DataQL Maven 插件的作用是，根据 DataQL 查询文件生成对应的查�
 +-----------------------------+-------------------------------------------------------+
 
 插件工作在 GENERATE_SOURCES 阶段，依赖的范围是：COMPILE
+
+下面这个接口是生成的类的接口模板
+
+.. code-block:: xml
+    :linenos:
+
+    public class ListOptionQuery extends HintsSet implements Query {
+        // 构造方法
+        private ListOptionQuery(HintsSet hintsSet) { ... }
+        public ListOptionQuery() throws IOException, ParseException { ... }
+        public ListOptionQuery(DataQL dataQL) throws IOException, ParseException { ... }
+        public ListOptionQuery(Finder finder, Map<String, VarSupplier> shareVarMap) throws IOException, ParseException { ... }
+        // 方法
+        public QueryResult execute(CustomizeScope customizeScope) throws InstructRuntimeException { ... }
+        public ListOptionQuery clone() { ... }
+    }
+
+详细配置查看：`Maven 配置页面 <../../../maven-plugin/hasor-dataql/index.html>`_
