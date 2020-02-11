@@ -27,11 +27,18 @@ public class %target_name% extends HintsSet implements Query {
     }
 
     public %target_name%(Finder finder, Map<String, VarSupplier> shareVarMap) throws IOException, ParseException {
-        QIL queryQil = QueryHelper.queryCompiler(ResourcesUtils.getResourceAsStream(sourceCode), finder);
+        Set<String> keySet = shareVarMap.keySet();
+        QueryModel queryModel = QueryHelper.queryParser(ResourcesUtils.getResourceAsStream(sourceCode), Charset.forName("UTF-8"));
+        QIL queryQil = QueryHelper.queryCompiler(queryModel, keySet, finder);
         this.dataQuery = QueryHelper.createQuery(queryQil, finder);
         if (this.dataQuery instanceof CompilerVarQuery) {
             CompilerVarQuery varQuery = (CompilerVarQuery) this.dataQuery;
-            shareVarMap.forEach((s, varSupplier) -> varQuery.setCompilerVar(s, varQuery));
+            shareVarMap.forEach(new BiConsumer<String, VarSupplier>() {
+                @Override
+                public void accept(String s, VarSupplier varSupplier) {
+                    varQuery.setCompilerVar(s, varSupplier.get());
+                }
+            });
         }
     }
 
