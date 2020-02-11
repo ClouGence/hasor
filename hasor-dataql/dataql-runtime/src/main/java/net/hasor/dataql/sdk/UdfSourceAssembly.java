@@ -39,10 +39,10 @@ public interface UdfSourceAssembly extends UdfSource {
     }
 
     public default Supplier<?> getSupplier(Class<?> targetType, Finder finder) {
-        return () -> finder.findBean(targetType);
+        return () -> this;
     }
 
     public default Predicate<Method> getPredicate(Class<?> targetType) {
-        return method -> true;
+        return method -> method.getDeclaringClass() != Object.class;
     }
 }
