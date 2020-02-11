@@ -43,6 +43,11 @@ public interface UdfSourceAssembly extends UdfSource {
     }
 
     public default Predicate<Method> getPredicate(Class<?> targetType) {
-        return method -> method.getDeclaringClass() != Object.class;
+        return method -> {
+            boolean testA = method.getDeclaringClass() != Object.class;
+            boolean testB = method.getDeclaringClass() != UdfSource.class;
+            boolean testC = method.getDeclaringClass() != UdfSourceAssembly.class;
+            return testA && testB && testC;
+        };
     }
 }
