@@ -18,6 +18,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
+import net.hasor.core.TypeSupplier;
 
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -92,19 +93,25 @@ public interface ConsoleApiBinder extends ApiBinder {
     public interface TelnetBuilder {
         /** 加载带有 @Tel 注解的类。 */
         public default TelnetBuilder loadExecutor(Set<Class<?>> udfTypeSet) {
-            return this.loadExecutor(udfTypeSet, Matchers.annotatedWithClass(Tel.class));
+            return loadExecutor(udfTypeSet, Matchers.annotatedWithClass(Tel.class), null);
+        }
+
+        /** 加载带有 @Tel 注解的类 */
+        public default void loadExecutor(Class<?> telType) {
+            Objects.requireNonNull(telType, "class is null.");
+            loadExecutor(telType, null);
         }
 
         /** 加载带有 @Tel 注解的类。 */
-        public default TelnetBuilder loadExecutor(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher) {
+        public default TelnetBuilder loadExecutor(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier<TelExecutor> typeSupplier) {
             if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
-                mabeUdfTypeSet.stream().filter(matcher).forEach(this::loadExecutor);
+                mabeUdfTypeSet.stream().filter(matcher).forEach(aClass -> loadExecutor(aClass, typeSupplier));
             }
             return this;
         }
 
         /** 加载带有 @Tel 注解的类 */
-        public default void loadExecutor(Class<?> telType) {
+        public default <T> void loadExecutor(Class<?> telType, TypeSupplier<TelExecutor> typeSupplier) {
             Objects.requireNonNull(telType, "class is null.");
             int modifier = telType.getModifiers();
             if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || telType.isArray() || telType.isEnum()) {
@@ -119,7 +126,12 @@ public interface ConsoleApiBinder extends ApiBinder {
                 String[] telNames = Arrays.stream(annotationsByType).flatMap((Function<Tel, Stream<String>>) dimTel -> {
                     return Arrays.stream(dimTel.value());
                 }).toArray(String[]::new);
-                addExecutor(telNames).to((Class<? extends TelExecutor>) telType);
+                Class<? extends TelExecutor> telExecutorType = (Class<? extends TelExecutor>) telType;
+                if (typeSupplier == null) {
+                    addExecutor(telNames).to(telExecutorType);
+                } else {
+                    addExecutor(telNames).toProvider(() -> typeSupplier.get(telExecutorType));
+                }
             }
         }
 

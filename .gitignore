@@ -2,7 +2,6 @@
 test-work
 bin
 .DS_Store
-build/
 _book
 hasor-all/dependency-reduced-pom.xml
 

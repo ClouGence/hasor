@@ -15,12 +15,13 @@
  */
 package net.hasor.dataql;
 import net.hasor.core.*;
+import net.hasor.core.EventListener;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
+import net.hasor.core.TypeSupplier;
 
 import java.lang.reflect.Modifier;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -36,19 +37,24 @@ import java.util.function.Supplier;
 public interface QueryApiBinder extends ApiBinder, Hints {
     /** 加载带有 @DimFragment 注解的类 */
     public default QueryApiBinder loadFragment(Set<Class<?>> fragmentTypeSet) {
-        return this.loadFragment(fragmentTypeSet, Matchers.annotatedWithClass(DimFragment.class));
+        return this.loadFragment(fragmentTypeSet, Matchers.annotatedWithClass(DimFragment.class), null);
     }
 
     /** 加载带有 @DimFragment 注解的类 */
-    public default QueryApiBinder loadFragment(Set<Class<?>> mabeFragmentTypeSet, Predicate<Class<?>> matcher) {
-        if (mabeFragmentTypeSet != null && !mabeFragmentTypeSet.isEmpty()) {
-            mabeFragmentTypeSet.stream().filter(matcher).forEach(this::loadFragment);
+    public default QueryApiBinder loadFragment(Set<Class<?>> mabyFragmentTypeSet, Predicate<Class<?>> matcher, TypeSupplier<FragmentProcess> typeSupplier) {
+        if (mabyFragmentTypeSet != null && !mabyFragmentTypeSet.isEmpty()) {
+            mabyFragmentTypeSet.stream().filter(matcher).forEach(aClass -> loadFragment(aClass, typeSupplier));
         }
         return this;
     }
 
     /** 加载带有 @DimFragment 注解的类 */
     public default void loadFragment(Class<?> fragmentType) {
+        loadFragment(fragmentType, null);
+    }
+
+    /** 加载带有 @DimFragment 注解的类 */
+    public default void loadFragment(Class<?> fragmentType, TypeSupplier<FragmentProcess> typeSupplier) {
         Objects.requireNonNull(fragmentType, "class is null.");
         int modifier = fragmentType.getModifiers();
         if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || fragmentType.isArray() || fragmentType.isEnum()) {
@@ -62,25 +68,37 @@ public interface QueryApiBinder extends ApiBinder, Hints {
             throw new ClassCastException(fragmentType.getName() + " is not " + FragmentProcess.class.getName());
         }
         //
-        Supplier<? extends FragmentProcess> processSupplier = getProvider((Class<? extends FragmentProcess>) fragmentType);
+        Supplier<? extends FragmentProcess> processSupplier = null;
+        Class<? extends FragmentProcess> processType = (Class<? extends FragmentProcess>) fragmentType;
+        if (typeSupplier != null) {
+            processSupplier = () -> typeSupplier.get(processType);
+        } else {
+            processSupplier = getProvider(processType);
+        }
+        //
         bindFragment(annotationsByType.value(), processSupplier);
     }
 
     /** 加载带有 @DimUdf 注解的类 */
     public default QueryApiBinder loadUdf(Set<Class<?>> udfTypeSet) {
-        return this.loadUdf(udfTypeSet, Matchers.annotatedWithClass(DimUdf.class));
+        return this.loadUdf(udfTypeSet, Matchers.annotatedWithClass(DimUdf.class), null);
     }
 
     /** 加载带有 @DimUdf 注解的类 */
-    public default QueryApiBinder loadUdf(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher) {
-        if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
-            mabeUdfTypeSet.stream().filter(matcher).forEach(this::loadUdf);
+    public default QueryApiBinder loadUdf(Set<Class<?>> mabyUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier<Udf> typeSupplier) {
+        if (mabyUdfTypeSet != null && !mabyUdfTypeSet.isEmpty()) {
+            mabyUdfTypeSet.stream().filter(matcher).forEach(aClass -> loadUdf(aClass, typeSupplier));
         }
         return this;
     }
 
     /** 加载带有 @DimUdf 注解的类 */
     public default void loadUdf(Class<?> udfType) {
+        loadUdf(udfType, null);
+    }
+
+    /** 加载带有 @DimUdf 注解的类 */
+    public default void loadUdf(Class<?> udfType, TypeSupplier<Udf> typeSupplier) {
         Objects.requireNonNull(udfType, "class is null.");
         int modifier = udfType.getModifiers();
         if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || udfType.isArray() || udfType.isEnum()) {
@@ -93,46 +111,55 @@ public interface QueryApiBinder extends ApiBinder, Hints {
         if (!Udf.class.isAssignableFrom(udfType)) {
             throw new ClassCastException(udfType.getName() + " is not " + Udf.class.getName());
         }
-        addShareVar(annotationsByType.value(), getProvider(udfType));
+        //
+        if (typeSupplier == null) {
+            addShareVar(annotationsByType.value(), getProvider(udfType));
+        } else {
+            addShareVar(annotationsByType.value(), () -> typeSupplier.get((Class<? extends Udf>) udfType));
+        }
     }
 
     /** 加载带有 @DimUdfSource 注解的类 */
-    public default QueryApiBinder loadUdfSource(Set<Class<?>> udfTypeSet) {
-        return this.loadUdfSource(udfTypeSet, Matchers.annotatedWithClass(DimUdfSource.class));
+    public default QueryApiBinder loadUdfSource(Class<?>... udfSourceTypeArrays) {
+        return loadUdfSource(new HashSet<>(Arrays.asList(udfSourceTypeArrays)));
     }
 
     /** 加载带有 @DimUdfSource 注解的类 */
-    public default QueryApiBinder loadUdfSource(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher) {
-        if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
-            this.loadUdfSource(mabeUdfTypeSet.stream().filter(matcher).toArray(Class<?>[]::new));
+    public default QueryApiBinder loadUdfSource(Set<Class<?>> udfSourceTypeSet) {
+        return this.loadUdfSource(udfSourceTypeSet, Matchers.annotatedWithClass(DimUdfSource.class), null);
+    }
+
+    /** 加载带有 @DimUdfSource 注解的类 */
+    public default QueryApiBinder loadUdfSource(Set<Class<?>> mabyUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier<UdfSource> typeSupplier) {
+        if (mabyUdfTypeSet != null && !mabyUdfTypeSet.isEmpty()) {
+            mabyUdfTypeSet.stream().filter(matcher).forEach(aClass -> loadUdfSource(aClass, typeSupplier));
         }
         return this;
     }
 
     /** 加载带有 @DimUdfSource 注解的类 */
-    public default void loadUdfSource(Class<?>... sourceTypeArray) {
-        for (Class<?> sourceType : sourceTypeArray) {
-            Objects.requireNonNull(sourceType, "class is null.");
-            int modifier = sourceType.getModifiers();
-            if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || sourceType.isArray() || sourceType.isEnum()) {
-                throw new IllegalStateException(sourceType.getName() + " must be normal Bean");
-            }
-            DimUdfSource annotationsByType = sourceType.getAnnotation(DimUdfSource.class);
-            if (annotationsByType == null) {
-                throw new IllegalStateException(sourceType.getName() + " must be configure @DimUdfSource");
-            }
-            if (!UdfSource.class.isAssignableFrom(sourceType)) {
-                throw new ClassCastException(sourceType.getName() + " is not " + UdfSource.class.getName());
-            }
+    public default void loadUdfSource(Class<?> sourceType, TypeSupplier<UdfSource> typeSupplier) {
+        Objects.requireNonNull(sourceType, "class is null.");
+        int modifier = sourceType.getModifiers();
+        if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || sourceType.isArray() || sourceType.isEnum()) {
+            throw new IllegalStateException(sourceType.getName() + " must be normal Bean");
+        }
+        DimUdfSource annotationsByType = sourceType.getAnnotation(DimUdfSource.class);
+        if (annotationsByType == null) {
+            throw new IllegalStateException(sourceType.getName() + " must be configure @DimUdfSource");
+        }
+        if (!UdfSource.class.isAssignableFrom(sourceType)) {
+            throw new ClassCastException(sourceType.getName() + " is not " + UdfSource.class.getName());
         }
         //
+        Class<? extends UdfSource> udfSourceType = (Class<? extends UdfSource>) sourceType;
         HasorUtils.pushStartListener(getEnvironment(), (EventListener<AppContext>) (event, appContext) -> {
             DataQL dataQL = appContext.getInstance(DataQL.class);
             Finder qlFinder = dataQL.getFinder();
-            for (Class<?> sourceType : sourceTypeArray) {
-                Class<? extends UdfSource> type = (Class<? extends UdfSource>) sourceType;
-                DimUdfSource annotationsByType = type.getAnnotation(DimUdfSource.class);
-                dataQL.addShareVar(annotationsByType.value(), appContext.getInstance(type).getUdfResource(qlFinder));
+            if (typeSupplier == null) {
+                dataQL.addShareVar(annotationsByType.value(), appContext.getInstance(udfSourceType).getUdfResource(qlFinder));
+            } else {
+                dataQL.addShareVar(annotationsByType.value(), () -> typeSupplier.get(udfSourceType).getUdfResource(qlFinder));
             }
         });
     }

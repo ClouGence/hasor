@@ -19,6 +19,7 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
+import net.hasor.core.TypeSupplier;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.web.annotation.MappingTo;
@@ -34,6 +35,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -79,19 +81,24 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /** 加载带有 @MappingTo 注解的类。 */
     public default WebApiBinder loadMappingTo(Set<Class<?>> udfTypeSet) {
-        return this.loadMappingTo(udfTypeSet, Matchers.annotatedWithClass(MappingTo.class));
+        return this.loadMappingTo(udfTypeSet, Matchers.annotatedWithClass(MappingTo.class), null);
     }
 
     /** 加载带有 @MappingTo 注解的类。 */
-    public default WebApiBinder loadMappingTo(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher) {
+    public default WebApiBinder loadMappingTo(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier<Object> typeSupplier) {
         if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
-            mabeUdfTypeSet.stream().filter(matcher).forEach(this::loadMappingTo);
+            mabeUdfTypeSet.stream().filter(matcher).forEach(aClass -> loadMappingTo(aClass, typeSupplier));
         }
         return this;
     }
 
     /** 加载带有 @MappingTo 注解的类。 */
     public default WebApiBinder loadMappingTo(Class<?> mappingType) {
+        return loadMappingTo(mappingType, null);
+    }
+
+    /** 加载带有 @MappingTo 注解的类。 */
+    public default WebApiBinder loadMappingTo(Class<?> mappingType, final TypeSupplier<?> typeSupplier) {
         Objects.requireNonNull(mappingType, "class is null.");
         int modifier = mappingType.getModifiers();
         if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || mappingType.isArray() || mappingType.isEnum()) {
@@ -103,17 +110,31 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         }
         //
         if (HttpServlet.class.isAssignableFrom(mappingType)) {
+            final Class<? extends HttpServlet> httpServletType = (Class<HttpServlet>) mappingType;
             Arrays.stream(annotationsByType).peek(mappingTo -> {
             }).forEach(mappingTo -> {
                 if (!isSingleton(mappingType)) {
                     throw new IllegalStateException("HttpServlet " + mappingType + " must be Singleton.");
                 }
-                jeeServlet(mappingTo.value()).with((Class<? extends HttpServlet>) mappingType);
+                if (typeSupplier != null) {
+                    jeeServlet(mappingTo.value()).with(() -> {
+                        return ((TypeSupplier<HttpServlet>) typeSupplier).get(httpServletType);
+                    });
+                } else {
+                    jeeServlet(mappingTo.value()).with(httpServletType);
+                }
             });
         } else {
+            final Class<Object> mappingObjType = (Class<Object>) mappingType;
             Arrays.stream(annotationsByType).peek(mappingTo -> {
             }).forEach(mappingTo -> {
-                mappingTo(mappingTo.value()).with(mappingType);
+                if (typeSupplier != null) {
+                    mappingTo(mappingTo.value()).with(mappingObjType, () -> {
+                        return ((TypeSupplier<Object>) typeSupplier).get(mappingObjType);
+                    });
+                } else {
+                    mappingTo(mappingTo.value()).with(mappingType);
+                }
             });
         }
         return this;
@@ -174,11 +195,11 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     public void addMimeType(String type, String mimeType);
 
     public default void loadMimeType(String resource) throws IOException {
-        loadMimeType(Charset.forName("UTF-8"), resource);
+        loadMimeType(StandardCharsets.UTF_8, resource);
     }
 
     public default void loadMimeType(InputStream inputStream) throws IOException {
-        loadMimeType(Charset.forName("UTF-8"), inputStream);
+        loadMimeType(StandardCharsets.UTF_8, inputStream);
     }
 
     public default void loadMimeType(Charset charset, String resource) throws IOException {
@@ -209,7 +230,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
             this.through(0, filterRegister, null);
         }
 
-        //
         public default void through(Class<? extends T> filterKey, Map<String, String> initParams) {
             this.through(0, filterKey, initParams);
         }
@@ -226,7 +246,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
             this.through(0, filterRegister, initParams);
         }
 
-        //
         public default void through(int index, Class<? extends T> filterKey) {
             this.through(index, filterKey, null);
         }
@@ -243,7 +262,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
             this.through(index, filterRegister, null);
         }
 
-        //
         public void through(int index, Class<? extends T> filterKey, Map<String, String> initParams);
 
         public void through(int index, T filter, Map<String, String> initParams);
@@ -270,7 +288,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         public default void with(BindInfo<? extends HttpServlet> targetInfo) {
             with(0, targetInfo, null);
         }
-        //
 
         public default void with(Class<? extends HttpServlet> servletKey, Map<String, String> initParams) {
             this.with(0, servletKey, initParams);
@@ -288,7 +305,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
             this.with(0, servletRegister, initParams);
         }
 
-        //
         public default void with(int index, Class<? extends HttpServlet> targetKey) {
             this.with(index, targetKey, null);
         }
@@ -305,7 +321,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
             this.with(index, targetInfo, null);
         }
 
-        //
         public void with(int index, Class<? extends HttpServlet> servletKey, Map<String, String> initParams);
 
         public void with(int index, HttpServlet servlet, Map<String, String> initParams);
@@ -333,7 +348,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
             with(0, targetInfo);
         }
 
-        //
         public void with(int index, Class<? extends T> targetKey);
 
         public void with(int index, T target);
@@ -346,19 +360,24 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /** 加载带有 @Render注解配置的渲染器。 */
     public default WebApiBinder loadRender(Set<Class<?>> udfTypeSet) {
-        return this.loadRender(udfTypeSet, Matchers.annotatedWithClass(Render.class));
+        return this.loadRender(udfTypeSet, Matchers.annotatedWithClass(Render.class), null);
     }
 
     /** 加载带有 @Render注解配置的渲染器。 */
-    public default WebApiBinder loadRender(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher) {
+    public default WebApiBinder loadRender(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier<?> typeSupplier) {
         if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
-            mabeUdfTypeSet.stream().filter(matcher).forEach(this::loadRender);
+            mabeUdfTypeSet.stream().filter(matcher).forEach(aClass -> loadRender(aClass, typeSupplier));
         }
         return this;
     }
 
     /** 加载 @Render注解配置的渲染器。*/
     public default WebApiBinder loadRender(Class<?> renderClass) {
+        return loadRender(renderClass, null);
+    }
+
+    /** 加载 @Render注解配置的渲染器。*/
+    public default WebApiBinder loadRender(Class<?> renderClass, TypeSupplier<?> typeSupplier) {
         Objects.requireNonNull(renderClass, "class is null.");
         int modifier = renderClass.getModifiers();
         if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || renderClass.isArray() || renderClass.isEnum()) {
@@ -371,10 +390,17 @@ public interface WebApiBinder extends ApiBinder, MimeType {
             throw new IllegalStateException(renderClass.getName() + " must be implements RenderEngine.");
         }
         //
+        Class<RenderEngine> engineClass = (Class<RenderEngine>) renderClass;
         Render renderInfo = renderClass.getAnnotation(Render.class);
         if (renderInfo != null && renderInfo.value().length > 0) {
             for (String renderName : renderInfo.value()) {
-                addRender(renderName).to((Class<? extends RenderEngine>) renderClass);
+                if (typeSupplier == null) {
+                    addRender(renderName).to(engineClass);
+                } else {
+                    addRender(renderName).toProvider(() -> {
+                        return ((TypeSupplier<RenderEngine>) typeSupplier).get(engineClass);
+                    });
+                }
             }
         }
         return this;
