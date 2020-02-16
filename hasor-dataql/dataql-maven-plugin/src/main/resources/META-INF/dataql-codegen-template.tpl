@@ -1,13 +1,17 @@
 %target_pacakge%
 import net.hasor.dataql.*;
 import net.hasor.dataql.compiler.ParseException;
+import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.*;
 import net.hasor.utils.ResourcesUtils;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
 
 // Generated from '%source_resource%'
 public class %target_name% extends HintsSet implements Query {
