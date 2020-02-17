@@ -21,7 +21,7 @@
 
     <!-- 配置属性 -->
     <properties>
-        <hasor.version>4.0.7-SNAPSHOT</hasor.version>
+        <hasor.version>4.1.1-SNAPSHOT</hasor.version>
         <wtpversion>2.0</wtpversion>
         <downloadSources>true</downloadSources>
         <downloadJavadocs>true</downloadJavadocs>
