@@ -168,6 +168,11 @@ public interface AppContext extends MetaInfo {
     /** 根据 BindInfo 创建 Bean 的 Provider */
     public <T> Supplier<? extends T> getProvider(BindInfo<T> info);
 
+    /** 将 AppContext 接口的 getInstance(Class) 能力转换为 TypeSupplier 接口形式。*/
+    public default <T> TypeSupplier<T> wrapTypeSupplier() {
+        return AppContext.this::getInstance;
+    }
+
     /** 对 object 对象仅执行依赖注入，要注入的属性等信息参照：findBindingRegister(null,object.getClass())。
      * 如果参照信息为空，那么将直接 return object。 */
     public default <T> T justInject(T object) {
