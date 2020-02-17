@@ -103,7 +103,7 @@ public interface ConsoleApiBinder extends ApiBinder {
         }
 
         /** 加载带有 @Tel 注解的类。 */
-        public default TelnetBuilder loadExecutor(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier<TelExecutor> typeSupplier) {
+        public default TelnetBuilder loadExecutor(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
             if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
                 mabeUdfTypeSet.stream().filter(matcher).forEach(aClass -> loadExecutor(aClass, typeSupplier));
             }
@@ -111,7 +111,7 @@ public interface ConsoleApiBinder extends ApiBinder {
         }
 
         /** 加载带有 @Tel 注解的类 */
-        public default <T> void loadExecutor(Class<?> telType, TypeSupplier<TelExecutor> typeSupplier) {
+        public default <T> void loadExecutor(Class<?> telType, TypeSupplier typeSupplier) {
             Objects.requireNonNull(telType, "class is null.");
             int modifier = telType.getModifiers();
             if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || telType.isArray() || telType.isEnum()) {

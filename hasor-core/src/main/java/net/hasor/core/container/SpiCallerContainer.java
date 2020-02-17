@@ -15,9 +15,10 @@
  */
 package net.hasor.core.container;
 import net.hasor.core.spi.SpiCaller;
-import net.hasor.core.spi.SpiChainProcessor;
+import net.hasor.core.spi.SpiInterceptor;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.utils.ExceptionUtils;
+import net.hasor.core.spi.SpiInterceptor.SpiChainInvocation;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,8 +34,8 @@ import java.util.stream.Stream;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SpiCallerContainer extends AbstractContainer implements SpiTrigger {
-    private ConcurrentHashMap<Class<?>, List<Supplier<EventListener>>>  spiListener      = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<Class<?>, Supplier<SpiChainProcessor<?>>> spiChainListener = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Class<?>, List<Supplier<EventListener>>> spiListener      = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Class<?>, Supplier<SpiInterceptor>>      spiChainListener = new ConcurrentHashMap<>();
 
     /** 执行 SPI */
     @Override
@@ -44,9 +45,9 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
             return defaultResult;
         }
         // .得到 SpiChainProcessor
-        SpiChainProcessor<R> spiChain = null;
+        SpiInterceptor spiChain = null;
         if (spiChainListener.get(spiType) != null) {
-            spiChain = (SpiChainProcessor<R>) spiChainListener.get(spiType).get();
+            spiChain = spiChainListener.get(spiType).get();
         }
         //
         AtomicReference<R> result = new AtomicReference<>(defaultResult);
@@ -55,18 +56,18 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
                 if (spiChain == null) {
                     result.set(spiCaller.doResultSpi((T) listener.get()));
                 } else {
-                    R spiResult = spiChain.nextSpi(new SpiChainProcessor.SpiChainInvocation<R>() {
+                    Object spiResult = spiChain.doSpi(new SpiChainInvocation() {
                         @Override
-                        public R lastSpiResult() {
+                        public Object defaultValue() {
                             return result.get();
                         }
 
                         @Override
-                        public R doSpi() throws Throwable {
+                        public Object doSpi() throws Throwable {
                             return spiCaller.doResultSpi((T) listener.get());
                         }
                     });
-                    result.set(spiResult);
+                    result.set((R) spiResult);
                 }
             } catch (Throwable e) {
                 throw ExceptionUtils.toRuntimeException(e);
@@ -104,11 +105,11 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
         listenerList.add((Supplier<EventListener>) spiListener);
     }
 
-    /** 注册一个 SPI 监听器链处理器 */
-    public synchronized <T extends EventListener> void bindSpiChainProcessor(Class<T> spiType, Supplier<SpiChainProcessor<?>> chainProcessorSupplier) {
+    /** 注册一个 SPI 调用拦截器 */
+    public synchronized <T extends EventListener> void bindSpiInterceptor(Class<T> spiType, Supplier<SpiInterceptor> spiInterceptorSupplier) {
         Objects.requireNonNull(spiType, "spiType is null.");
-        Objects.requireNonNull(spiListener, "chainProcessorSupplier is null.");
-        this.spiChainListener.put(spiType, chainProcessorSupplier);
+        Objects.requireNonNull(spiListener, "spiInterceptorSupplier is null.");
+        this.spiChainListener.put(spiType, spiInterceptorSupplier);
     }
 
     /** 遍历所有 Listener */

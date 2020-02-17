@@ -25,9 +25,12 @@ import net.hasor.test.core.aop.ignore.types.WilliamSonBean;
 import net.hasor.test.core.basic.inject.constructor.NativeConstructorPojoBeanRef;
 import net.hasor.test.core.basic.inject.constructor.SingleConstructorPojoBeanRef;
 import net.hasor.test.core.basic.pojo.PojoBean;
+import net.hasor.test.core.scope.AnnoSingletonBean;
+import net.hasor.test.core.scope.CustomHashBean;
 import net.hasor.utils.ResourcesUtils;
 import org.junit.Test;
 
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,6 +39,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -276,5 +280,35 @@ public class ContextHasorApiTest {
         assert instance instanceof DynamicClass;
         //
         assert loader.findClassConfig(instance.getClass().getName()) != null;
+    }
+
+    @Test
+    public void hasorTest11() {
+        AppContext build = Hasor.create().build(apiBinder -> {
+            apiBinder.bindType(CustomHashBean.class).asEagerSingleton();
+        });
+        build = new AppContextWarp(build);
+        assert build.isSingleton(AnnoSingletonBean.class);
+        assert build.isSingleton(build.getBindInfo(CustomHashBean.class));
+        assert build.isSingleton(CustomHashBean.class);
+        assert build.isStart();
+        //
+        assert build.findScope(Singleton.class) != null;
+        assert build.findScope(Singleton.class.getName()) != null;
+        assert build.findScope("sss") == null;
+    }
+
+    @Test
+    public void hasorTest12() {
+        Properties properties = new Properties();
+        properties.put("msg", "ABCDEFG");
+        //
+        AppContext appContext = Hasor.create()//
+                .mainSettingWith("/net_hasor_core_context/hello.xml")//
+                .loadSettings(properties)//
+                .build();//
+        //
+        assert appContext.getEnvironment().getSettings().getString("msg_hallo").equals("Hello Word");
+        assert appContext.getEnvironment().getSettings().getString("msg").equals("ABCDEFG");
     }
 }

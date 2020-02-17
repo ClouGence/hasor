@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.core.context;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import net.hasor.core.*;
+import net.hasor.test.core.basic.pojo.PojoBean;
 import org.junit.Test;
 
 public class ExtendContextTest {
     @Test
     public void test1() {
+        PojoBean pojoBean = new PojoBean();
+        TypeSupplier objectTypeSupplier = Hasor.create().build(apiBinder -> {
+            apiBinder.bindType(PojoBean.class).toInstance(pojoBean);
+        }).wrapTypeSupplier();
+        assert objectTypeSupplier.get(PojoBean.class) == pojoBean;
+    }
+
+    @Test
+    public void test2() {
         AppContext appContext1 = Hasor.create().mainSettingWith("/net_hasor_core_context/startup1_exter.xml").build();
         assert appContext1.getInstance(String.class).equals("config");
         //

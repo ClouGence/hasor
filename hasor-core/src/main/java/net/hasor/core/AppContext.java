@@ -169,7 +169,7 @@ public interface AppContext extends MetaInfo {
     public <T> Supplier<? extends T> getProvider(BindInfo<T> info);
 
     /** 将 AppContext 接口的 getInstance(Class) 能力转换为 TypeSupplier 接口形式。*/
-    public default <T> TypeSupplier<T> wrapTypeSupplier() {
+    public default TypeSupplier wrapTypeSupplier() {
         return AppContext.this::getInstance;
     }
 

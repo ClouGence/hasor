@@ -85,7 +85,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     }
 
     /** 加载带有 @MappingTo 注解的类。 */
-    public default WebApiBinder loadMappingTo(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier<Object> typeSupplier) {
+    public default WebApiBinder loadMappingTo(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
         if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
             mabeUdfTypeSet.stream().filter(matcher).forEach(aClass -> loadMappingTo(aClass, typeSupplier));
         }
@@ -98,7 +98,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     }
 
     /** 加载带有 @MappingTo 注解的类。 */
-    public default WebApiBinder loadMappingTo(Class<?> mappingType, final TypeSupplier<?> typeSupplier) {
+    public default WebApiBinder loadMappingTo(Class<?> mappingType, final TypeSupplier typeSupplier) {
         Objects.requireNonNull(mappingType, "class is null.");
         int modifier = mappingType.getModifiers();
         if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || mappingType.isArray() || mappingType.isEnum()) {
@@ -117,9 +117,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
                     throw new IllegalStateException("HttpServlet " + mappingType + " must be Singleton.");
                 }
                 if (typeSupplier != null) {
-                    jeeServlet(mappingTo.value()).with(() -> {
-                        return ((TypeSupplier<HttpServlet>) typeSupplier).get(httpServletType);
-                    });
+                    jeeServlet(mappingTo.value()).with(() -> typeSupplier.get(httpServletType));
                 } else {
                     jeeServlet(mappingTo.value()).with(httpServletType);
                 }
@@ -129,9 +127,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
             Arrays.stream(annotationsByType).peek(mappingTo -> {
             }).forEach(mappingTo -> {
                 if (typeSupplier != null) {
-                    mappingTo(mappingTo.value()).with(mappingObjType, () -> {
-                        return ((TypeSupplier<Object>) typeSupplier).get(mappingObjType);
-                    });
+                    mappingTo(mappingTo.value()).with(mappingObjType, () -> typeSupplier.get(mappingObjType));
                 } else {
                     mappingTo(mappingTo.value()).with(mappingType);
                 }
@@ -364,7 +360,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     }
 
     /** 加载带有 @Render注解配置的渲染器。 */
-    public default WebApiBinder loadRender(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier<?> typeSupplier) {
+    public default WebApiBinder loadRender(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
         if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
             mabeUdfTypeSet.stream().filter(matcher).forEach(aClass -> loadRender(aClass, typeSupplier));
         }
@@ -377,7 +373,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     }
 
     /** 加载 @Render注解配置的渲染器。*/
-    public default WebApiBinder loadRender(Class<?> renderClass, TypeSupplier<?> typeSupplier) {
+    public default WebApiBinder loadRender(Class<?> renderClass, TypeSupplier typeSupplier) {
         Objects.requireNonNull(renderClass, "class is null.");
         int modifier = renderClass.getModifiers();
         if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || renderClass.isArray() || renderClass.isEnum()) {
@@ -398,7 +394,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
                     addRender(renderName).to(engineClass);
                 } else {
                     addRender(renderName).toProvider(() -> {
-                        return ((TypeSupplier<RenderEngine>) typeSupplier).get(engineClass);
+                        return typeSupplier.get(engineClass);
                     });
                 }
             }

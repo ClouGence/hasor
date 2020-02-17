@@ -16,7 +16,7 @@
 package net.hasor.core;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.AppContextAware;
-import net.hasor.core.spi.SpiChainProcessor;
+import net.hasor.core.spi.SpiInterceptor;
 
 import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
@@ -241,13 +241,13 @@ public interface ApiBinder {
     /** 添加SPI监听器 */
     public <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<T> listener);
 
-    /** 绑定SPI监听器处理器 */
-    public default <T extends EventListener> void bindSpiChainProcessor(Class<T> spiType, SpiChainProcessor<?> chainProcessorSupplier) {
-        this.bindSpiChainProcessor(spiType, InstanceProvider.of(chainProcessorSupplier));
+    /** 绑定SPI监听器处理器，一个SPI只能注册一个拦截器 */
+    public default <T extends EventListener> void bindSpiInterceptor(Class<T> spiType, SpiInterceptor spiInterceptorSupplier) {
+        this.bindSpiInterceptor(spiType, InstanceProvider.of(spiInterceptorSupplier));
     }
 
-    /** 绑定SPI监听器处理器 */
-    public <T extends EventListener> void bindSpiChainProcessor(Class<T> spiType, Supplier<SpiChainProcessor<?>> chainProcessorSupplier);
+    /** 绑定SPI监听器处理器，一个SPI只能注册一个拦截器 */
+    public <T extends EventListener> void bindSpiInterceptor(Class<T> spiType, Supplier<SpiInterceptor> spiInterceptorSupplier);
 
     /**
      * 注册作用域。

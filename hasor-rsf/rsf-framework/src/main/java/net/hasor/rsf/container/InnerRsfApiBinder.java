@@ -16,7 +16,7 @@
 package net.hasor.rsf.container;
 import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.core.spi.SpiChainProcessor;
+import net.hasor.core.spi.SpiInterceptor;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfEnvironment;
@@ -146,8 +146,8 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
     }
 
     @Override
-    public <T extends EventListener> void bindSpiChainProcessor(Class<T> spiType, Supplier<SpiChainProcessor<?>> chainProcessorSupplier) {
-        this.apiBinder.bindSpiChainProcessor(spiType, chainProcessorSupplier);
+    public <T extends EventListener> void bindSpiInterceptor(Class<T> spiType, Supplier<SpiInterceptor> spiInterceptorSupplier) {
+        this.apiBinder.bindSpiInterceptor(spiType, spiInterceptorSupplier);
     }
 
     @Override

@@ -22,6 +22,8 @@ import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.BindInfoProvisionListener;
+import net.hasor.core.spi.SpiInterceptor;
+import net.hasor.core.spi.SpiTrigger;
 import net.hasor.test.core.basic.init.SingletonPublicCallInitBean;
 import net.hasor.test.core.basic.init.WithoutAnnoCallInitBean;
 import net.hasor.test.core.basic.pojo.PojoBean;
@@ -31,6 +33,7 @@ import net.hasor.test.core.basic.pojo.SampleBean;
 import net.hasor.test.core.binder.TestBinder;
 import net.hasor.test.core.scope.My;
 import net.hasor.test.core.scope.MyScope;
+import net.hasor.test.core.spi.TestSpi;
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
@@ -468,5 +471,30 @@ public class BinderDataTest extends AbstractBinderDataTest {
         //
         assert binder.isSingleton(SingletonPublicCallInitBean.class);
         assert binder.isSingleton(WithoutAnnoCallInitBean.class);
+    }
+
+    @Test
+    public void bindSpiChainProcessorTest() {
+        PojoBean bean1 = new PojoBean();// spi result
+        PojoBean bean2 = new PojoBean();// spiChain result
+        PojoBean bean3 = new PojoBean();// default
+        //
+        SpiInterceptor spiInterceptor = invocation -> {
+            Object defaultValue = invocation.defaultValue();
+            assert bean3 == defaultValue;
+            assert bean1 == invocation.doSpi();
+            return bean2;
+        };
+        //
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            ApiBinderWrap wrap = new ApiBinderWrap(apiBinder);
+            wrap.bindSpiListener(TestSpi.class, () -> bean1);
+            wrap.bindSpiInterceptor(TestSpi.class, spiInterceptor);
+        });
+        //
+        SpiTrigger spiCaller = appContext.getInstance(SpiTrigger.class);
+        Object result = spiCaller.callResultSpi(TestSpi.class, TestSpi::doSpi, bean3);
+        //
+        assert result == bean2;
     }
 }

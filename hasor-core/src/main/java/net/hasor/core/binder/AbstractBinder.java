@@ -18,7 +18,7 @@ import net.hasor.core.*;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.provider.InstanceProvider;
-import net.hasor.core.spi.SpiChainProcessor;
+import net.hasor.core.spi.SpiInterceptor;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
@@ -106,8 +106,8 @@ public abstract class AbstractBinder implements ApiBinder {
     }
 
     @Override
-    public <T extends EventListener> void bindSpiChainProcessor(Class<T> spiType, Supplier<SpiChainProcessor<?>> chainProcessorSupplier) {
-        this.containerFactory().getSpiContainer().bindSpiChainProcessor(spiType, chainProcessorSupplier);
+    public <T extends EventListener> void bindSpiInterceptor(Class<T> spiType, Supplier<SpiInterceptor> chainProcessorSupplier) {
+        this.containerFactory().getSpiContainer().bindSpiInterceptor(spiType, chainProcessorSupplier);
     }
 
     @Override

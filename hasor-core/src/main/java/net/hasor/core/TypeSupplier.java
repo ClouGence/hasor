@@ -20,7 +20,7 @@ package net.hasor.core;
  * @author 赵永春 (zyc@byshell.org)
  */
 @FunctionalInterface
-public interface TypeSupplier<T> {
+public interface TypeSupplier {
     /** @return 获取对象。*/
-    public T get(Class<? extends T> targetType);
+    public <T> T get(Class<? extends T> targetType);
 }

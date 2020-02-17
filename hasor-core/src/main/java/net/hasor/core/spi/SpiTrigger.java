@@ -25,11 +25,18 @@ import java.util.EventListener;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface SpiTrigger {
-    /** 执行 SPI */
+    /** 执行 SPI
+     * @param spiType SPI 接口类型
+     * @param spiCaller spiCaller
+     */
     public default <T extends EventListener> void callSpi(Class<T> spiType, SpiCallerWithoutResult<T> spiCaller) {
         callResultSpi(spiType, spiCaller, null);
     }
 
-    /** 执行 SPI */
+    /** 执行 SPI
+     * @param spiType SPI 接口类型
+     * @param spiCaller spiCaller
+     * @param defaultResult 默认值
+     */
     public <R, T extends EventListener> R callResultSpi(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult);
 }

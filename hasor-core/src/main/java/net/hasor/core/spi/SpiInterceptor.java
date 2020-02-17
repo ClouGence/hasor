@@ -15,18 +15,19 @@
  */
 package net.hasor.core.spi;
 /**
- * SPI 调用链处理器。
+ * SPI 调用拦截器。
  * @version : 2013-11-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface SpiChainProcessor<R> {
-    public interface SpiChainInvocation<R> {
-        /** 上一个 Spi 的结果 */
-        public R lastSpiResult();
+public interface SpiInterceptor {
+    public interface SpiChainInvocation {
+        /** 上一个 Spi 的结果。当作为 SpiChain 环中第一被执行时候，该方法将会返回 default 默认值。
+         * @see SpiTrigger#callResultSpi(java.lang.Class, net.hasor.core.spi.SpiCaller, java.lang.Object) */
+        public Object defaultValue();
 
-        /** 调用 SPI 得到结果 */
-        public R doSpi() throws Throwable;
+        /** 调用 SPI 得到结果。 */
+        public Object doSpi() throws Throwable;
     }
 
-    public R nextSpi(SpiChainInvocation<R> invocation) throws Throwable;
+    public Object doSpi(SpiChainInvocation invocation) throws Throwable;
 }
