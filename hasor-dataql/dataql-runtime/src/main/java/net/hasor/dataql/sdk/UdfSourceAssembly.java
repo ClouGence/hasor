@@ -39,11 +39,12 @@ public interface UdfSourceAssembly extends UdfSource {
     }
 
     public default Supplier<?> getSupplier(Class<?> targetType, Finder finder) {
-        return () -> this;
+        return () -> this;// the Supplier return self.
     }
 
     public default Predicate<Method> getPredicate(Class<?> targetType) {
         return method -> {
+            // ignore all method form Object\UdfSource\UdfSourceAssembly
             boolean testA = method.getDeclaringClass() != Object.class;
             boolean testB = method.getDeclaringClass() != UdfSource.class;
             boolean testC = method.getDeclaringClass() != UdfSourceAssembly.class;

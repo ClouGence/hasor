@@ -45,6 +45,10 @@ public class SingleProvider<T> implements Supplier<T> {
         return provider.get();
     }
 
+    public static <T> Supplier<T> of(Supplier<T> supplier) {
+        return new SingleProvider<>(supplier);
+    }
+
     public String toString() {
         return "SingleProvider->" + provider.toString();
     }

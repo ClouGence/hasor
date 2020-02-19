@@ -17,10 +17,11 @@ package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.VarSupplier;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
+
+import java.util.function.Supplier;
 
 /**
  * LOAD    // 从指定深度的堆中加载n号元素到栈（例：LOAD 1 ,1 ）
@@ -43,8 +44,8 @@ class LOAD implements InsetProcess {
         int depth = sequence.currentInst().getInt(0);
         int index = sequence.currentInst().getInt(1);
         Object data = dataHeap.loadData(depth, index);
-        if (data instanceof VarSupplier) {
-            data = ((VarSupplier) data).get();
+        if (data instanceof Supplier) {
+            data = ((Supplier) data).get();
         }
         dataStack.push(data);
     }

@@ -16,17 +16,17 @@
 package net.hasor.dataql.apibinder;
 import net.hasor.core.Hasor;
 import net.hasor.core.TypeSupplier;
+import net.hasor.core.exts.aop.Matchers;
 import net.hasor.dataql.*;
-import net.hasor.dataql.compiler.QueryModel;
-import net.hasor.dataql.compiler.qil.QIL;
-import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.test.dataql.udfs.AnnoDemoUdf;
-import net.hasor.utils.StringUtils;
+import net.hasor.test.dataql.udfs.TimeUdfSource;
+import net.hasor.utils.ExceptionUtils;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,27 +35,45 @@ import java.util.Map;
  * @version : 2017-07-19
  */
 public class BinderTest extends AbstractTestResource {
+    private Map<Class<?>, Object> objectMap = new HashMap<>();
+    private TypeSupplier          supplier  = new TypeSupplier() {
+        @Override
+        public <T> T get(Class<? extends T> targetType) {
+            try {
+                objectMap.put(targetType, targetType.newInstance());
+                return (T) objectMap.get(targetType);
+            } catch (Exception e) {
+                throw ExceptionUtils.toRuntimeException(e);
+            }
+        }
+    };
+
     @Test
     public void typeSupplier_1_test() throws IOException {
-        Map<Class<?>, Object> objectMap = new HashMap<>();
-        TypeSupplier supplier = new TypeSupplier() {
-            @Override
-            public <T> T get(Class<? extends T> targetType) {
-                if (targetType == AnnoDemoUdf.class) {
-                    objectMap.put(targetType, new AnnoDemoUdf());
-                    return (T) objectMap.get(targetType);
-                }
-                return null;
-            }
-        };
-        //
+        objectMap.clear();
         DataQL dataQL = Hasor.create().build((QueryModule) apiBinder -> {
-            apiBinder.loadUdf(AnnoDemoUdf.class, supplier);
+            apiBinder.loadUdf(apiBinder.findClass(DimUdf.class), Matchers.anyClass(), supplier);
         }).getInstance(DataQL.class);
         //
         Object unwrap = dataQL.createQuery("return test();").execute().getData().unwrap();
         assert unwrap.equals("test");
         assert objectMap.size() == 1;
         assert objectMap.get(AnnoDemoUdf.class) != null;
+    }
+
+    @Test
+    public void typeSupplier_2_test() throws IOException {
+        objectMap.clear();
+        DataQL dataQL = Hasor.create().build((QueryModule) apiBinder -> {
+            apiBinder.loadUdfSource(apiBinder.findClass(DimUdfSource.class), Matchers.anyClass(), supplier);
+        }).getInstance(DataQL.class);
+        //
+        long t = System.currentTimeMillis();
+        String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date(t));
+        //
+        Object unwrap = dataQL.createQuery("return time.ymd(" + t + ");").execute().getData().unwrap();
+        assert unwrap.equals(format);
+        assert objectMap.size() == 1;
+        assert objectMap.get(TimeUdfSource.class) != null;
     }
 }

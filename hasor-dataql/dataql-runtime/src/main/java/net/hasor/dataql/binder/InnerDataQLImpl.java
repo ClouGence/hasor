@@ -25,7 +25,6 @@ import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.CompilerVarQuery;
 import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataql.runtime.QueryHelper;
-import net.hasor.dataql.runtime.VarSupplier;
 import org.antlr.v4.runtime.CharStream;
 
 import java.io.IOException;
@@ -41,14 +40,16 @@ import java.util.function.Supplier;
  * @version : 2017-03-23
  */
 class InnerDataQLImpl extends HintsSet implements DataQL {
-    private Map<String, VarSupplier> compilerVarMap = new HashMap<>();
+    private Map<String, Supplier<?>> compilerVarMap = new HashMap<>();
     private AppContext               appContext;
     private Finder                   finderObject;
 
     public void initConfig(AppContext appContext) {
         this.appContext = appContext;
         List<ShareVar> shareVars = appContext.findBindingBean(ShareVar.class);
-        shareVars.forEach(shareVar -> compilerVarMap.put(shareVar.getName(), shareVar));
+        shareVars.forEach(shareVar -> {
+            compilerVarMap.put(shareVar.getName(), shareVar);
+        });
         if (this.finderObject == null) {
             this.finderObject = new AppContextFinder(appContext);
         }
@@ -66,12 +67,12 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
 
     @Override
     public <T> DataQL addShareVar(String name, Supplier<T> provider) {
-        this.compilerVarMap.put(name, provider::get);
+        this.compilerVarMap.put(name, provider);
         return this;
     }
 
     @Override
-    public Map<String, VarSupplier> getShareVarMap() {
+    public Map<String, Supplier<?>> getShareVarMap() {
         return Collections.unmodifiableMap(this.compilerVarMap);
     }
 

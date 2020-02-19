@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql.binder;
-import net.hasor.dataql.runtime.VarSupplier;
-
 import java.util.function.Supplier;
 
 /**
@@ -23,7 +21,7 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-class ShareVar implements VarSupplier {
+class ShareVar implements Supplier {
     private String      varName;
     private Supplier<?> varSupplier;
 

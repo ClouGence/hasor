@@ -15,13 +15,14 @@
  */
 package net.hasor.dataql;
 import net.hasor.core.*;
-import net.hasor.core.EventListener;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
-import net.hasor.core.TypeSupplier;
 
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -43,7 +44,10 @@ public interface QueryApiBinder extends ApiBinder, Hints {
     /** 加载带有 @DimFragment 注解的类 */
     public default QueryApiBinder loadFragment(Set<Class<?>> mabyFragmentTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
         if (mabyFragmentTypeSet != null && !mabyFragmentTypeSet.isEmpty()) {
-            mabyFragmentTypeSet.stream().filter(matcher).forEach(aClass -> loadFragment(aClass, typeSupplier));
+            mabyFragmentTypeSet.stream()//
+                    .filter(matcher)//
+                    .filter(Matchers.annotatedWithClass(DimFragment.class))//
+                    .forEach(aClass -> loadFragment(aClass, typeSupplier));
         }
         return this;
     }
@@ -87,7 +91,10 @@ public interface QueryApiBinder extends ApiBinder, Hints {
     /** 加载带有 @DimUdf 注解的类 */
     public default QueryApiBinder loadUdf(Set<Class<?>> mabyUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
         if (mabyUdfTypeSet != null && !mabyUdfTypeSet.isEmpty()) {
-            mabyUdfTypeSet.stream().filter(matcher).forEach(aClass -> loadUdf(aClass, typeSupplier));
+            mabyUdfTypeSet.stream()//
+                    .filter(matcher)//
+                    .filter(Matchers.annotatedWithClass(DimUdf.class))//
+                    .forEach(aClass -> loadUdf(aClass, typeSupplier));
         }
         return this;
     }
@@ -115,7 +122,9 @@ public interface QueryApiBinder extends ApiBinder, Hints {
         if (typeSupplier == null) {
             addShareVar(annotationsByType.value(), getProvider(udfType));
         } else {
-            addShareVar(annotationsByType.value(), () -> typeSupplier.get(udfType));
+            addShareVar(annotationsByType.value(), () -> {
+                return typeSupplier.get(udfType);
+            });
         }
     }
 
@@ -132,7 +141,10 @@ public interface QueryApiBinder extends ApiBinder, Hints {
     /** 加载带有 @DimUdfSource 注解的类 */
     public default QueryApiBinder loadUdfSource(Set<Class<?>> mabyUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
         if (mabyUdfTypeSet != null && !mabyUdfTypeSet.isEmpty()) {
-            mabyUdfTypeSet.stream().filter(matcher).forEach(aClass -> loadUdfSource(aClass, typeSupplier));
+            mabyUdfTypeSet.stream()//
+                    .filter(matcher)//
+                    .filter(Matchers.annotatedWithClass(DimUdfSource.class))//
+                    .forEach(aClass -> loadUdfSource(aClass, typeSupplier));
         }
         return this;
     }
@@ -157,9 +169,13 @@ public interface QueryApiBinder extends ApiBinder, Hints {
             DataQL dataQL = appContext.getInstance(DataQL.class);
             Finder qlFinder = dataQL.getFinder();
             if (typeSupplier == null) {
-                dataQL.addShareVar(annotationsByType.value(), appContext.getInstance(udfSourceType).getUdfResource(qlFinder));
+                dataQL.addShareVar(annotationsByType.value(), () -> {
+                    return appContext.getInstance(udfSourceType).getUdfResource(qlFinder).get();
+                });
             } else {
-                dataQL.addShareVar(annotationsByType.value(), () -> typeSupplier.get(udfSourceType).getUdfResource(qlFinder));
+                dataQL.addShareVar(annotationsByType.value(), () -> {
+                    return typeSupplier.get(udfSourceType).getUdfResource(qlFinder).get();
+                });
             }
         });
     }
@@ -171,12 +187,16 @@ public interface QueryApiBinder extends ApiBinder, Hints {
 
     /** 添加全局变量（等同于 compilerVar） */
     public default <T> QueryApiBinder addShareVar(String name, Class<? extends T> implementation) {
-        return this.addShareVar(name, getProvider(implementation));
+        return this.addShareVar(name, () -> {
+            return getProvider(implementation).get();
+        });
     }
 
     /** 添加全局变量（等同于 compilerVar） */
     public default <T> QueryApiBinder addShareVar(String name, BindInfo<T> bindInfo) {
-        return this.addShareVar(name, getProvider(bindInfo));
+        return this.addShareVar(name, () -> {
+            return getProvider(bindInfo).get();
+        });
     }
 
     /** 添加全局变量（等同于 compilerVar） */
