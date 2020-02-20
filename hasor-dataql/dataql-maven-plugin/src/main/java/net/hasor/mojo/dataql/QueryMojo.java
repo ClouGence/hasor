@@ -90,6 +90,9 @@ public class QueryMojo extends AbstractMojo {
     private   File         outputResourceDirectory;
     @Component
     private   BuildContext buildContext;
+    /** continue generate DataQL file , when parsing failed. */
+    @Parameter(defaultValue = "false")
+    private   boolean      ignoreError;
 
     /**
      * The main entry point for this Mojo, it is responsible for converting
@@ -157,20 +160,28 @@ public class QueryMojo extends AbstractMojo {
                 getLog().debug("  ... relative path is: " + relPath);
                 //
                 // 进行一次解析操作，过滤掉语法有问题的查询文件
-                RootBlockSet queryModel = (RootBlockSet) QueryHelper.queryParser(new AutoCloseInputStream(new FileInputStream(qlFile)));
-                List<HintInst> optionSet = queryModel.getOptionSet();
                 boolean javaxInject = false;
                 String javaxInjectName = "";
-                for (HintInst inst : optionSet) {
-                    if ("javax.inject".equalsIgnoreCase(inst.getHint())) {
-                        if (inst.getValue().getValueType() == PrimitiveVariable.ValueType.Boolean) {
-                            javaxInject = (Boolean) inst.getValue().getValue();
+                try {
+                    RootBlockSet queryModel = (RootBlockSet) QueryHelper.queryParser(new AutoCloseInputStream(new FileInputStream(qlFile)));
+                    List<HintInst> optionSet = queryModel.getOptionSet();
+                    for (HintInst inst : optionSet) {
+                        if ("javax_inject".equalsIgnoreCase(inst.getHint())) {
+                            if (inst.getValue().getValueType() == PrimitiveVariable.ValueType.Boolean) {
+                                javaxInject = (Boolean) inst.getValue().getValue();
+                            }
+                        }
+                        if ("javax_inject_name".equalsIgnoreCase(inst.getHint())) {
+                            if (inst.getValue().getValueType() != PrimitiveVariable.ValueType.Null) {
+                                javaxInjectName = inst.getValue().getValue().toString();
+                            }
                         }
                     }
-                    if ("javax.inject.name".equalsIgnoreCase(inst.getHint())) {
-                        if (inst.getValue().getValueType() != PrimitiveVariable.ValueType.Null) {
-                            javaxInjectName = inst.getValue().getValue().toString();
-                        }
+                } catch (Exception e) {
+                    if (!this.ignoreError) {
+                        throw e;
+                    } else {
+                        getLog().error(e);
                     }
                 }
                 String injectReplaceString = "";
@@ -178,7 +189,7 @@ public class QueryMojo extends AbstractMojo {
                     if (StringUtils.isNotBlank(javaxInjectName)) {
                         injectReplaceString = "\"" + javaxInjectName.trim() + "\"";
                     }
-                    injectReplaceString = "@javax.inject.Named(" + javaxInjectName + ");";
+                    injectReplaceString = "@javax.inject.Named(" + javaxInjectName + ")";
                 }
                 //
                 // Copy 原始的查询文件

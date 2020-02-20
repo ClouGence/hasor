@@ -17,6 +17,7 @@ package net.hasor.dataql.runtime;
 import net.hasor.dataql.CustomizeScope;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.FragmentProcess;
+import net.hasor.dataql.Query;
 import net.hasor.dataql.runtime.operator.OperatorManager;
 import net.hasor.dataql.runtime.operator.OperatorProcess;
 
@@ -63,8 +64,15 @@ public class InsetProcessContext extends HintsSet implements CustomizeScope {
         return this.customizeScope.findCustomizeEnvironment(symbol);
     }
 
-    public Object loadObject(String udfType) {
-        return this.finder.findBean(udfType);
+    public Object loadObject(String udfType) throws ClassNotFoundException {
+        // .确定ClassLoader
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        Class<?> c = classLoader.loadClass(Query.class.getName());
+        if (c != Query.class) {
+            classLoader = Query.class.getClassLoader();
+        }
+        Class<?> loadClass = classLoader.loadClass(udfType);
+        return this.finder.findBean(loadClass);
     }
 
     public FragmentProcess findFragmentProcess(String fragmentType) {

@@ -40,23 +40,7 @@ public interface Finder {
         }
         return inputStream;
     }
-
-    /** 负责处理 <code>import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;</code>方式的资源的加载。 */
-    public default Object findBean(String beanName) {
-        // .确定ClassLoader
-        try {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            Class<?> c = classLoader.loadClass(Query.class.getName());
-            if (c != Query.class) {
-                classLoader = Query.class.getClassLoader();
-            }
-            Class<?> loadClass = classLoader.loadClass(beanName);
-            return findBean(loadClass);
-        } catch (ClassNotFoundException e) {
-            throw ExceptionUtils.toRuntimeException(e, throwable -> new RuntimeException("load Bean failed -> '" + beanName, throwable));
-        }
-    }
-
+ 
     /** 负责处理 <code>import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;</code>方式的资源的加载。 */
     public default Object findBean(Class<?> beanType) {
         try {

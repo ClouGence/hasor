@@ -41,7 +41,12 @@ class M_TYP implements InsetProcess {
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
         String udfType = sequence.currentInst().getString(0);
-        Object loadObject = context.loadObject(udfType);
+        Object loadObject = null;
+        try {
+            loadObject = context.loadObject(udfType);
+        } catch (ClassNotFoundException e) {
+            throw new InstructRuntimeException(udfType + " ClassNotFoundException.", e);
+        }
         if (loadObject == null) {
             throw new InstructRuntimeException("loadObject is null.");
         }

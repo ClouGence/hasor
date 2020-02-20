@@ -13,34 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.dataql.udfs;
+package net.hasor.dataql.udfs;
 import net.hasor.dataql.UdfSourceAssembly;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 /**
+ * ID函数。函数库引入 <code>import 'net.hasor.dataql.udfs.IdentifierUdfSource' as ids;</code>
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
-public class UserOrderUdfSource implements UdfSourceAssembly {
-    /** user_list */
-    public static List<UserBean> userList() {
-        return new ArrayList<UserBean>() {{
-            add(new UserBean(1));
-            add(new UserBean(2));
-            add(new UserBean(3));
-            add(new UserBean(4));
-        }};
+public class IdentifierUdfSource implements UdfSourceAssembly {
+    /** 返回一个完整格式的 UUID 字符串。  */
+    public String uuid() {
+        return UUID.randomUUID().toString();
     }
 
-    /** order_list */
-    public static List<OrderBean> orderList(final long accountID) {
-        return new ArrayList<OrderBean>() {{
-            add(new OrderBean(accountID, 1));
-            add(new OrderBean(accountID, 2));
-            add(new OrderBean(accountID, 3));
-            add(new OrderBean(accountID, 4));
-        }};
+    /** 返回一个不含"-" 符号的 UUID 字符串 */
+    public String uuid2() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }

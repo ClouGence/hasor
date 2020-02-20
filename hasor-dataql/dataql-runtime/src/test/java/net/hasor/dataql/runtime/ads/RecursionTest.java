@@ -52,23 +52,8 @@ public class RecursionTest extends AbstractTestResource {
     }
 
     @Test
-    public void recursion_test() throws IOException {
-        queryTest("recursion");
-    }
-
-    @Test
     public void multi_dimensional_test() throws IOException {
         queryTest("multi_dimensional");
-    }
-
-    @Test
-    public void totree_test() throws IOException {
-        queryTest("totree");
-    }
-
-    @Test
-    public void mapjoin_test() throws IOException {
-        queryTest("mapjoin");
     }
 
     @Test

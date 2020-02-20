@@ -53,8 +53,8 @@ public class LambdaRuntimeTest extends AbstractTestResource implements HintValue
         });
         Finder finder = new Finder() {
             @Override
-            public Object findBean(String beanName) {
-                return appContext.getInstance(beanName);
+            public Object findBean(Class<?> beanType) {
+                return appContext.getInstance(beanType);
             }
         };
         //
@@ -70,8 +70,8 @@ public class LambdaRuntimeTest extends AbstractTestResource implements HintValue
         });
         Finder finder = new Finder() {
             @Override
-            public Object findBean(String beanName) {
-                return appContext.getInstance(beanName);
+            public Object findBean(Class<?> beanType) {
+                return appContext.getInstance(beanType);
             }
         };
         //

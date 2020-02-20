@@ -1,9 +1,17 @@
 package net.hasor.test.dataql.udfs;
 import net.hasor.dataql.DimUdfSource;
-import net.hasor.dataql.sdk.DateTimeUdfSource;
+import net.hasor.dataql.UdfSourceAssembly;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @DimUdfSource("time")
-public class TimeUdfSource extends DateTimeUdfSource {
+public class TimeUdfSource implements UdfSourceAssembly {
+    /** 格式化指定时间 */
+    public String format(long time, String pattern) {
+        return new SimpleDateFormat(pattern).format(new Date(time));
+    }
+
     /** 格式化为：yyyy-MM-dd HH:mm:ss */
     public String ymd_hms(Object time) {
         if (time == null) {

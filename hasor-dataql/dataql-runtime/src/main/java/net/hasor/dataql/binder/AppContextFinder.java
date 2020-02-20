@@ -18,7 +18,6 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.FragmentProcess;
-import net.hasor.dataql.Query;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
@@ -65,24 +64,7 @@ public class AppContextFinder implements Finder {
         }
         return inputStream;
     }
-
-    public Object findBean(String beanName) {
-        try {
-            ClassLoader classLoader = this.appContext.getEnvironment().getClassLoader();
-            if (classLoader == null) {
-                classLoader = Thread.currentThread().getContextClassLoader();
-            }
-            Class<?> c = classLoader.loadClass(Query.class.getName());
-            if (c != Query.class) {
-                classLoader = Query.class.getClassLoader();
-            }
-            Class<?> loadClass = classLoader.loadClass(beanName);
-            return findBean(loadClass);
-        } catch (ClassNotFoundException e) {
-            return this.appContext.getInstance(beanName);
-        }
-    }
-
+ 
     public Object findBean(Class<?> beanType) {
         return this.appContext.getInstance(beanType);
     }

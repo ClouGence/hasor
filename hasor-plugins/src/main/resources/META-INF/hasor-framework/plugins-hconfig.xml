@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://www.hasor.net/sechma/hasor-plugin">
-    <!-- 包扫描覆盖范围，逗号间隔 -->
-    <hasor.loadPackages>net.hasor.plugins.*</hasor.loadPackages>
-</config>

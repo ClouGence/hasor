@@ -46,11 +46,6 @@ public class CompilerEnvironment implements Finder {
         return this.finder.findResource(resourceName);
     }
 
-    @Override
-    public Object findBean(String beanName) {
-        return this.finder.findBean(beanName);
-    }
-
     public <T extends Inst> InstCompiler<T> findInstCompilerByType(Class<T> instType) {
         return (InstCompiler<T>) Objects.requireNonNull(typeMappingToInstCompiler.get(instType), "not found " + instType.getName() + " InstCompiler.");
     }
