@@ -12,8 +12,10 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 // Generated from '%source_resource%'
+%inject_name%
 public class %target_name% extends HintsSet implements Query {
     protected final String sourceCode = "%source_resource%";
     protected       Query  dataQuery;
@@ -30,17 +32,17 @@ public class %target_name% extends HintsSet implements Query {
         this(dataQL.getFinder(), dataQL.getShareVarMap());
     }
 
-    public %target_name%(Finder finder, Map<String, VarSupplier> shareVarMap) throws IOException, ParseException {
+    public %target_name%(Finder finder, Map<String, Supplier<?>> shareVarMap) throws IOException, ParseException {
         Set<String> keySet = shareVarMap.keySet();
         QueryModel queryModel = QueryHelper.queryParser(ResourcesUtils.getResourceAsStream(sourceCode), Charset.forName("UTF-8"));
         QIL queryQil = QueryHelper.queryCompiler(queryModel, keySet, finder);
         this.dataQuery = QueryHelper.createQuery(queryQil, finder);
         if (this.dataQuery instanceof CompilerVarQuery) {
             CompilerVarQuery varQuery = (CompilerVarQuery) this.dataQuery;
-            shareVarMap.forEach(new BiConsumer<String, VarSupplier>() {
+            shareVarMap.forEach(new BiConsumer<String, Supplier<?>>() {
                 @Override
-                public void accept(String s, VarSupplier varSupplier) {
-                    varQuery.setCompilerVar(s, varSupplier.get());
+                public void accept(String s, Supplier<?> varSupplier) {
+                    varQuery.setCompilerVar(s, varSupplier);
                 }
             });
         }

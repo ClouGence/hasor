@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.mojo.dataql;
+import net.hasor.dataql.compiler.ast.inst.HintInst;
+import net.hasor.dataql.compiler.ast.inst.RootBlockSet;
+import net.hasor.dataql.compiler.ast.value.PrimitiveVariable;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
@@ -154,7 +157,29 @@ public class QueryMojo extends AbstractMojo {
                 getLog().debug("  ... relative path is: " + relPath);
                 //
                 // 进行一次解析操作，过滤掉语法有问题的查询文件
-                QueryHelper.queryParser(new AutoCloseInputStream(new FileInputStream(qlFile)));
+                RootBlockSet queryModel = (RootBlockSet) QueryHelper.queryParser(new AutoCloseInputStream(new FileInputStream(qlFile)));
+                List<HintInst> optionSet = queryModel.getOptionSet();
+                boolean javaxInject = false;
+                String javaxInjectName = "";
+                for (HintInst inst : optionSet) {
+                    if ("javax.inject".equalsIgnoreCase(inst.getHint())) {
+                        if (inst.getValue().getValueType() == PrimitiveVariable.ValueType.Boolean) {
+                            javaxInject = (Boolean) inst.getValue().getValue();
+                        }
+                    }
+                    if ("javax.inject.name".equalsIgnoreCase(inst.getHint())) {
+                        if (inst.getValue().getValueType() != PrimitiveVariable.ValueType.Null) {
+                            javaxInjectName = inst.getValue().getValue().toString();
+                        }
+                    }
+                }
+                String injectReplaceString = "";
+                if (javaxInject) {
+                    if (StringUtils.isNotBlank(javaxInjectName)) {
+                        injectReplaceString = "\"" + javaxInjectName.trim() + "\"";
+                    }
+                    injectReplaceString = "@javax.inject.Named(" + javaxInjectName + ");";
+                }
                 //
                 // Copy 原始的查询文件
                 try (InputStream sourceQueryFile = FileUtils.openInputStream(qlFile)) {
@@ -176,6 +201,7 @@ public class QueryMojo extends AbstractMojo {
                 tempClass = tempClass.replace("%target_pacakge%", targetPackageName);
                 tempClass = tempClass.replace("%source_resource%", "/" + relPath.replace(File.separator, "/"));
                 tempClass = tempClass.replace("%target_name%", className);
+                tempClass = tempClass.replace("%inject_name%", injectReplaceString);
                 File outFile = new File(new File(outputSourceDirectory, relPath).getParentFile(), className + ".java");
                 try (OutputStream targetQueryFile = FileUtils.openOutputStream(outFile)) {
                     targetQueryFile.write(tempClass.getBytes());
