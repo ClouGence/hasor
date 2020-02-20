@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@DimFragment("sql_exec")
+//@DimFragment("sql_exec")
 public class SqlQueryFragment implements FragmentProcess {
     @Inject
     private JdbcTemplate jdbcTemplate;
