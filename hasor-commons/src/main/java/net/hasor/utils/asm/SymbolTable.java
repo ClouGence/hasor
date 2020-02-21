@@ -30,10 +30,8 @@ package net.hasor.utils.asm;
  * The constant pool entries, the BootstrapMethods attribute entries and the (ASM specific) type
  * table entries of a class.
  *
- * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.4">JVMS
- *     4.4</a>
- * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.23">JVMS
- *     4.7.23</a>
+ * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.4">JVMS 4.4</a>
+ * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.23">JVMS 4.7.23</a>
  * @author Eric Bruneton
  */
 final class SymbolTable {
@@ -99,6 +97,7 @@ final class SymbolTable {
      * {@code i} has its {@link Symbol#index} equal to {@code i} (and vice versa).
      */
     private       Entry[]     typeTable;
+
     /**
      * Constructs a new, empty SymbolTable for the given ClassWriter.
      *
@@ -111,6 +110,7 @@ final class SymbolTable {
         this.constantPoolCount = 1;
         this.constantPool = new ByteVector();
     }
+
     /**
      * Constructs a new SymbolTable for the given ClassWriter, initialized with the constant pool and
      * bootstrap methods of the given ClassReader.
@@ -123,7 +123,7 @@ final class SymbolTable {
         this.classWriter = classWriter;
         this.sourceClassReader = classReader;
         // Copy the constant pool binary content.
-        byte[] inputBytes = classReader.b;
+        byte[] inputBytes = classReader.classFileBuffer;
         int constantPoolOffset = classReader.getItem(1) - 1;
         int constantPoolLength = classReader.header - constantPoolOffset;
         constantPoolCount = classReader.getItemCount();
@@ -189,6 +189,7 @@ final class SymbolTable {
             copyBootstrapMethods(classReader, charBuffer);
         }
     }
+
     /**
      * Read the BootstrapMethods 'bootstrap_methods' array binary content and add them as entries of
      * the SymbolTable.
@@ -199,7 +200,7 @@ final class SymbolTable {
      */
     private void copyBootstrapMethods(final ClassReader classReader, final char[] charBuffer) {
         // Find attributOffset of the 'bootstrap_methods' array.
-        byte[] inputBytes = classReader.b;
+        byte[] inputBytes = classReader.classFileBuffer;
         int currentAttributeOffset = classReader.getFirstAttributeOffset();
         for (int i = classReader.readUnsignedShort(currentAttributeOffset - 2); i > 0; --i) {
             String attributeName = classReader.readUTF8(currentAttributeOffset, charBuffer);
@@ -233,6 +234,7 @@ final class SymbolTable {
             }
         }
     }
+
     /**
      * Returns the ClassReader from which this SymbolTable was constructed.
      *
@@ -242,6 +244,7 @@ final class SymbolTable {
     ClassReader getSource() {
         return sourceClassReader;
     }
+
     /**
      * Returns the major version of the class to which this symbol table belongs.
      *
@@ -250,6 +253,7 @@ final class SymbolTable {
     int getMajorVersion() {
         return majorVersion;
     }
+
     /**
      * Returns the internal name of the class to which this symbol table belongs.
      *
@@ -258,6 +262,7 @@ final class SymbolTable {
     String getClassName() {
         return className;
     }
+
     /**
      * Sets the major version and the name of the class to which this symbol table belongs. Also adds
      * the class name to the constant pool.
@@ -271,6 +276,7 @@ final class SymbolTable {
         this.className = className;
         return addConstantClass(className).index;
     }
+
     /**
      * Returns the number of items in this symbol table's constant_pool array (plus 1).
      *
@@ -279,6 +285,7 @@ final class SymbolTable {
     int getConstantPoolCount() {
         return constantPoolCount;
     }
+
     /**
      * Returns the length in bytes of this symbol table's constant_pool array.
      *
@@ -287,6 +294,7 @@ final class SymbolTable {
     int getConstantPoolLength() {
         return constantPool.length;
     }
+
     /**
      * Puts this symbol table's constant_pool array in the given ByteVector, preceded by the
      * constant_pool_count value.
@@ -296,6 +304,7 @@ final class SymbolTable {
     void putConstantPool(final ByteVector output) {
         output.putShort(constantPoolCount).putByteArray(constantPool.data, 0, constantPool.length);
     }
+
     /**
      * Returns the size in bytes of this symbol table's BootstrapMethods attribute. Also adds the
      * attribute name in the constant pool.
@@ -310,6 +319,7 @@ final class SymbolTable {
             return 0;
         }
     }
+
     /**
      * Puts this symbol table's BootstrapMethods attribute in the given ByteVector. This includes the
      * 6 attribute header bytes and the num_bootstrap_methods value.
@@ -324,6 +334,7 @@ final class SymbolTable {
     // -----------------------------------------------------------------------------------------------
     // Generic symbol table entries management.
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Returns the list of entries which can potentially have the given hash code.
      *
@@ -334,6 +345,7 @@ final class SymbolTable {
     private Entry get(final int hashCode) {
         return entries[hashCode % entries.length];
     }
+
     /**
      * Puts the given entry in the {@link #entries} hash set. This method does <i>not</i> check
      * whether {@link #entries} already contains a similar entry or not. {@link #entries} is resized
@@ -365,6 +377,7 @@ final class SymbolTable {
         entry.next = entries[index];
         return entries[index] = entry;
     }
+
     /**
      * Adds the given entry in the {@link #entries} hash set. This method does <i>not</i> check
      * whether {@link #entries} already contains a similar entry or not, and does <i>not</i> resize
@@ -381,6 +394,7 @@ final class SymbolTable {
     // -----------------------------------------------------------------------------------------------
     // Constant pool entries management.
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Adds a number or string constant to the constant pool of this symbol table. Does nothing if the
      * constant pool already contains a similar item.
@@ -429,6 +443,7 @@ final class SymbolTable {
             throw new IllegalArgumentException("value " + value);
         }
     }
+
     /**
      * Adds a CONSTANT_Class_info to the constant pool of this symbol table. Does nothing if the
      * constant pool already contains a similar item.
@@ -439,6 +454,7 @@ final class SymbolTable {
     Symbol addConstantClass(final String value) {
         return addConstantUtf8Reference(Symbol.CONSTANT_CLASS_TAG, value);
     }
+
     /**
      * Adds a CONSTANT_Fieldref_info to the constant pool of this symbol table. Does nothing if the
      * constant pool already contains a similar item.
@@ -451,6 +467,7 @@ final class SymbolTable {
     Symbol addConstantFieldref(final String owner, final String name, final String descriptor) {
         return addConstantMemberReference(Symbol.CONSTANT_FIELDREF_TAG, owner, name, descriptor);
     }
+
     /**
      * Adds a CONSTANT_Methodref_info or CONSTANT_InterfaceMethodref_info to the constant pool of this
      * symbol table. Does nothing if the constant pool already contains a similar item.
@@ -465,6 +482,7 @@ final class SymbolTable {
         int tag = isInterface ? Symbol.CONSTANT_INTERFACE_METHODREF_TAG : Symbol.CONSTANT_METHODREF_TAG;
         return addConstantMemberReference(tag, owner, name, descriptor);
     }
+
     /**
      * Adds a CONSTANT_Fieldref_info, CONSTANT_Methodref_info or CONSTANT_InterfaceMethodref_info to
      * the constant pool of this symbol table. Does nothing if the constant pool already contains a
@@ -489,6 +507,7 @@ final class SymbolTable {
         constantPool.put122(tag, addConstantClass(owner).index, addConstantNameAndType(name, descriptor));
         return put(new Entry(constantPoolCount++, tag, owner, name, descriptor, 0, hashCode));
     }
+
     /**
      * Adds a new CONSTANT_Fieldref_info, CONSTANT_Methodref_info or CONSTANT_InterfaceMethodref_info
      * to the constant pool of this symbol table.
@@ -503,6 +522,7 @@ final class SymbolTable {
     private void addConstantMemberReference(final int index, final int tag, final String owner, final String name, final String descriptor) {
         add(new Entry(index, tag, owner, name, descriptor, 0, hash(tag, owner, name, descriptor)));
     }
+
     /**
      * Adds a CONSTANT_String_info to the constant pool of this symbol table. Does nothing if the
      * constant pool already contains a similar item.
@@ -513,6 +533,7 @@ final class SymbolTable {
     Symbol addConstantString(final String value) {
         return addConstantUtf8Reference(Symbol.CONSTANT_STRING_TAG, value);
     }
+
     /**
      * Adds a CONSTANT_Integer_info to the constant pool of this symbol table. Does nothing if the
      * constant pool already contains a similar item.
@@ -523,6 +544,7 @@ final class SymbolTable {
     Symbol addConstantInteger(final int value) {
         return addConstantIntegerOrFloat(Symbol.CONSTANT_INTEGER_TAG, value);
     }
+
     /**
      * Adds a CONSTANT_Float_info to the constant pool of this symbol table. Does nothing if the
      * constant pool already contains a similar item.
@@ -533,6 +555,7 @@ final class SymbolTable {
     Symbol addConstantFloat(final float value) {
         return addConstantIntegerOrFloat(Symbol.CONSTANT_FLOAT_TAG, Float.floatToRawIntBits(value));
     }
+
     /**
      * Adds a CONSTANT_Integer_info or CONSTANT_Float_info to the constant pool of this symbol table.
      * Does nothing if the constant pool already contains a similar item.
@@ -553,6 +576,7 @@ final class SymbolTable {
         constantPool.putByte(tag).putInt(value);
         return put(new Entry(constantPoolCount++, tag, value, hashCode));
     }
+
     /**
      * Adds a new CONSTANT_Integer_info or CONSTANT_Float_info to the constant pool of this symbol
      * table.
@@ -564,6 +588,7 @@ final class SymbolTable {
     private void addConstantIntegerOrFloat(final int index, final int tag, final int value) {
         add(new Entry(index, tag, value, hash(tag, value)));
     }
+
     /**
      * Adds a CONSTANT_Long_info to the constant pool of this symbol table. Does nothing if the
      * constant pool already contains a similar item.
@@ -574,6 +599,7 @@ final class SymbolTable {
     Symbol addConstantLong(final long value) {
         return addConstantLongOrDouble(Symbol.CONSTANT_LONG_TAG, value);
     }
+
     /**
      * Adds a CONSTANT_Double_info to the constant pool of this symbol table. Does nothing if the
      * constant pool already contains a similar item.
@@ -584,6 +610,7 @@ final class SymbolTable {
     Symbol addConstantDouble(final double value) {
         return addConstantLongOrDouble(Symbol.CONSTANT_DOUBLE_TAG, Double.doubleToRawLongBits(value));
     }
+
     /**
      * Adds a CONSTANT_Long_info or CONSTANT_Double_info to the constant pool of this symbol table.
      * Does nothing if the constant pool already contains a similar item.
@@ -606,6 +633,7 @@ final class SymbolTable {
         constantPoolCount += 2;
         return put(new Entry(index, tag, value, hashCode));
     }
+
     /**
      * Adds a new CONSTANT_Long_info or CONSTANT_Double_info to the constant pool of this symbol
      * table.
@@ -617,6 +645,7 @@ final class SymbolTable {
     private void addConstantLongOrDouble(final int index, final int tag, final long value) {
         add(new Entry(index, tag, value, hash(tag, value)));
     }
+
     /**
      * Adds a CONSTANT_NameAndType_info to the constant pool of this symbol table. Does nothing if the
      * constant pool already contains a similar item.
@@ -638,6 +667,7 @@ final class SymbolTable {
         constantPool.put122(tag, addConstantUtf8(name), addConstantUtf8(descriptor));
         return put(new Entry(constantPoolCount++, tag, name, descriptor, hashCode)).index;
     }
+
     /**
      * Adds a new CONSTANT_NameAndType_info to the constant pool of this symbol table.
      *
@@ -649,6 +679,7 @@ final class SymbolTable {
         final int tag = Symbol.CONSTANT_NAME_AND_TYPE_TAG;
         add(new Entry(index, tag, name, descriptor, hash(tag, name, descriptor)));
     }
+
     /**
      * Adds a CONSTANT_Utf8_info to the constant pool of this symbol table. Does nothing if the
      * constant pool already contains a similar item.
@@ -668,6 +699,7 @@ final class SymbolTable {
         constantPool.putByte(Symbol.CONSTANT_UTF8_TAG).putUTF8(value);
         return put(new Entry(constantPoolCount++, Symbol.CONSTANT_UTF8_TAG, value, hashCode)).index;
     }
+
     /**
      * Adds a new CONSTANT_String_info to the constant pool of this symbol table.
      *
@@ -677,6 +709,7 @@ final class SymbolTable {
     private void addConstantUtf8(final int index, final String value) {
         add(new Entry(index, Symbol.CONSTANT_UTF8_TAG, value, hash(Symbol.CONSTANT_UTF8_TAG, value)));
     }
+
     /**
      * Adds a CONSTANT_MethodHandle_info to the constant pool of this symbol table. Does nothing if
      * the constant pool already contains a similar item.
@@ -710,6 +743,7 @@ final class SymbolTable {
         }
         return put(new Entry(constantPoolCount++, tag, owner, name, descriptor, referenceKind, hashCode));
     }
+
     /**
      * Adds a new CONSTANT_MethodHandle_info to the constant pool of this symbol table.
      *
@@ -727,6 +761,7 @@ final class SymbolTable {
         int hashCode = hash(tag, owner, name, descriptor, referenceKind);
         add(new Entry(index, tag, owner, name, descriptor, referenceKind, hashCode));
     }
+
     /**
      * Adds a CONSTANT_MethodType_info to the constant pool of this symbol table. Does nothing if the
      * constant pool already contains a similar item.
@@ -737,6 +772,7 @@ final class SymbolTable {
     Symbol addConstantMethodType(final String methodDescriptor) {
         return addConstantUtf8Reference(Symbol.CONSTANT_METHOD_TYPE_TAG, methodDescriptor);
     }
+
     /**
      * Adds a CONSTANT_Dynamic_info to the constant pool of this symbol table. Also adds the related
      * bootstrap method to the BootstrapMethods of this symbol table. Does nothing if the constant
@@ -752,6 +788,7 @@ final class SymbolTable {
         Symbol bootstrapMethod = addBootstrapMethod(bootstrapMethodHandle, bootstrapMethodArguments);
         return addConstantDynamicOrInvokeDynamicReference(Symbol.CONSTANT_DYNAMIC_TAG, name, descriptor, bootstrapMethod.index);
     }
+
     /**
      * Adds a CONSTANT_InvokeDynamic_info to the constant pool of this symbol table. Also adds the
      * related bootstrap method to the BootstrapMethods of this symbol table. Does nothing if the
@@ -767,6 +804,7 @@ final class SymbolTable {
         Symbol bootstrapMethod = addBootstrapMethod(bootstrapMethodHandle, bootstrapMethodArguments);
         return addConstantDynamicOrInvokeDynamicReference(Symbol.CONSTANT_INVOKE_DYNAMIC_TAG, name, descriptor, bootstrapMethod.index);
     }
+
     /**
      * Adds a CONSTANT_Dynamic or a CONSTANT_InvokeDynamic_info to the constant pool of this symbol
      * table. Does nothing if the constant pool already contains a similar item.
@@ -791,6 +829,7 @@ final class SymbolTable {
         constantPool.put122(tag, bootstrapMethodIndex, addConstantNameAndType(name, descriptor));
         return put(new Entry(constantPoolCount++, tag, null, name, descriptor, bootstrapMethodIndex, hashCode));
     }
+
     /**
      * Adds a new CONSTANT_Dynamic_info or CONSTANT_InvokeDynamic_info to the constant pool of this
      * symbol table.
@@ -807,6 +846,7 @@ final class SymbolTable {
         int hashCode = hash(tag, name, descriptor, bootstrapMethodIndex);
         add(new Entry(index, tag, null, name, descriptor, bootstrapMethodIndex, hashCode));
     }
+
     /**
      * Adds a CONSTANT_Module_info to the constant pool of this symbol table. Does nothing if the
      * constant pool already contains a similar item.
@@ -817,6 +857,7 @@ final class SymbolTable {
     Symbol addConstantModule(final String moduleName) {
         return addConstantUtf8Reference(Symbol.CONSTANT_MODULE_TAG, moduleName);
     }
+
     /**
      * Adds a CONSTANT_Package_info to the constant pool of this symbol table. Does nothing if the
      * constant pool already contains a similar item.
@@ -827,6 +868,7 @@ final class SymbolTable {
     Symbol addConstantPackage(final String packageName) {
         return addConstantUtf8Reference(Symbol.CONSTANT_PACKAGE_TAG, packageName);
     }
+
     /**
      * Adds a CONSTANT_Class_info, CONSTANT_String_info, CONSTANT_MethodType_info,
      * CONSTANT_Module_info or CONSTANT_Package_info to the constant pool of this symbol table. Does
@@ -851,6 +893,7 @@ final class SymbolTable {
         constantPool.put12(tag, addConstantUtf8(value));
         return put(new Entry(constantPoolCount++, tag, value, hashCode));
     }
+
     /**
      * Adds a new CONSTANT_Class_info, CONSTANT_String_info, CONSTANT_MethodType_info,
      * CONSTANT_Module_info or CONSTANT_Package_info to the constant pool of this symbol table.
@@ -868,6 +911,7 @@ final class SymbolTable {
     // -----------------------------------------------------------------------------------------------
     // Bootstrap method entries management.
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Adds a bootstrap method to the BootstrapMethods attribute of this symbol table. Does nothing if
      * the BootstrapMethods already contains a similar bootstrap method.
@@ -908,6 +952,7 @@ final class SymbolTable {
         // Add the bootstrap method to the symbol table or revert the above changes.
         return addBootstrapMethod(bootstrapMethodOffset, bootstrapMethodlength, hashCode);
     }
+
     /**
      * Adds a bootstrap method to the BootstrapMethods attribute of this symbol table. Does nothing if
      * the BootstrapMethods already contains a similar bootstrap method (more precisely, reverts the
@@ -943,6 +988,7 @@ final class SymbolTable {
     // -----------------------------------------------------------------------------------------------
     // Type table entries management.
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Returns the type table element whose index is given.
      *
@@ -952,6 +998,7 @@ final class SymbolTable {
     Symbol getType(final int typeIndex) {
         return typeTable[typeIndex];
     }
+
     /**
      * Adds a type in the type table of this symbol table. Does nothing if the type table already
      * contains a similar type.
@@ -970,6 +1017,7 @@ final class SymbolTable {
         }
         return addTypeInternal(new Entry(typeCount, Symbol.TYPE_TAG, value, hashCode));
     }
+
     /**
      * Adds an {@link Frame#ITEM_UNINITIALIZED} type in the type table of this symbol table. Does
      * nothing if the type table already contains a similar type.
@@ -990,6 +1038,7 @@ final class SymbolTable {
         }
         return addTypeInternal(new Entry(typeCount, Symbol.UNINITIALIZED_TYPE_TAG, value, bytecodeOffset, hashCode));
     }
+
     /**
      * Adds a merged type in the type table of this symbol table. Does nothing if the type table
      * already contains a similar type.
@@ -1002,8 +1051,7 @@ final class SymbolTable {
      *     corresponding to the common super class of the given types.
      */
     int addMergedType(final int typeTableIndex1, final int typeTableIndex2) {
-        // TODO sort the arguments? The merge result should be independent of their order.
-        long data = typeTableIndex1 | (((long) typeTableIndex2) << 32);
+        long data = typeTableIndex1 < typeTableIndex2 ? typeTableIndex1 | (((long) typeTableIndex2) << 32) : typeTableIndex2 | (((long) typeTableIndex1) << 32);
         int hashCode = hash(Symbol.MERGED_TYPE_TAG, typeTableIndex1 + typeTableIndex2);
         Entry entry = get(hashCode);
         while (entry != null) {
@@ -1018,6 +1066,7 @@ final class SymbolTable {
         put(new Entry(typeCount, Symbol.MERGED_TYPE_TAG, data, hashCode)).info = commonSuperTypeIndex;
         return commonSuperTypeIndex;
     }
+
     /**
      * Adds the given type Symbol to {@link #typeTable}.
      *
@@ -1041,30 +1090,39 @@ final class SymbolTable {
     // -----------------------------------------------------------------------------------------------
     // Static helper methods to compute hash codes.
     // -----------------------------------------------------------------------------------------------
+
     private static int hash(final int tag, final int value) {
         return 0x7FFFFFFF & (tag + value);
     }
+
     private static int hash(final int tag, final long value) {
         return 0x7FFFFFFF & (tag + (int) value + (int) (value >>> 32));
     }
+
     private static int hash(final int tag, final String value) {
         return 0x7FFFFFFF & (tag + value.hashCode());
     }
+
     private static int hash(final int tag, final String value1, final int value2) {
         return 0x7FFFFFFF & (tag + value1.hashCode() + value2);
     }
+
     private static int hash(final int tag, final String value1, final String value2) {
         return 0x7FFFFFFF & (tag + value1.hashCode() * value2.hashCode());
     }
+
     private static int hash(final int tag, final String value1, final String value2, final int value3) {
         return 0x7FFFFFFF & (tag + value1.hashCode() * value2.hashCode() * (value3 + 1));
     }
+
     private static int hash(final int tag, final String value1, final String value2, final String value3) {
         return 0x7FFFFFFF & (tag + value1.hashCode() * value2.hashCode() * value3.hashCode());
     }
+
     private static int hash(final int tag, final String value1, final String value2, final String value3, final int value4) {
         return 0x7FFFFFFF & (tag + value1.hashCode() * value2.hashCode() * value3.hashCode() * value4);
     }
+
     /**
      * An entry of a SymbolTable. This concrete and private subclass of {@link Symbol} adds two fields
      * which are only used inside SymbolTable, to implement hash sets of symbols (in order to avoid
@@ -1080,22 +1138,27 @@ final class SymbolTable {
          * #entries}) as this one.
          */
         Entry next;
+
         Entry(final int index, final int tag, final String owner, final String name, final String value, final long data, final int hashCode) {
             super(index, tag, owner, name, value, data);
             this.hashCode = hashCode;
         }
+
         Entry(final int index, final int tag, final String value, final int hashCode) {
             super(index, tag, /* owner = */ null, /* name = */ null, value, /* data = */ 0);
             this.hashCode = hashCode;
         }
+
         Entry(final int index, final int tag, final String value, final long data, final int hashCode) {
             super(index, tag, /* owner = */ null, /* name = */ null, value, data);
             this.hashCode = hashCode;
         }
+
         Entry(final int index, final int tag, final String name, final String value, final int hashCode) {
             super(index, tag, /* owner = */ null, name, value, /* data = */ 0);
             this.hashCode = hashCode;
         }
+
         Entry(final int index, final int tag, final long data, final int hashCode) {
             super(index, tag, /* owner = */ null, /* name = */ null, /* value = */ null, data);
             this.hashCode = hashCode;

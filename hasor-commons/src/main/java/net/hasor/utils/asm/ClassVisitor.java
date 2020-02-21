@@ -29,9 +29,9 @@ package net.hasor.utils.asm;
 /**
  * A visitor to visit a Java class. The methods of this class must be called in the following order:
  * {@code visit} [ {@code visitSource} ] [ {@code visitModule} ][ {@code visitNestHost} ][ {@code
- * visitOuterClass} ] ( {@code visitAnnotation} | {@code visitTypeAnnotation} | {@code
- * visitAttribute} )* ( {@code visitNestMember} | {@code visitInnerClass} | {@code visitField} |
- * {@code visitMethod} )* {@code visitEnd}.
+ * visitPermittedSubtype} ][ {@code visitOuterClass} ] ( {@code visitAnnotation} | {@code
+ * visitTypeAnnotation} | {@code visitAttribute} )* ( {@code visitNestMember} | {@code
+ * visitInnerClass} | {@code visitField} | {@code visitMethod} )* {@code visitEnd}.
  *
  * @author Eric Bruneton
  */
@@ -41,8 +41,9 @@ public abstract class ClassVisitor {
      * Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
      */
     protected final int          api;
-    /** The class visitor to which this visitor must delegate method calls. May be null. */
+    /** The class visitor to which this visitor must delegate method calls. May be {@literal null}. */
     protected       ClassVisitor cv;
+
     /**
      * Constructs a new {@link ClassVisitor}.
      *
@@ -52,6 +53,7 @@ public abstract class ClassVisitor {
     public ClassVisitor(final int api) {
         this(api, null);
     }
+
     /**
      * Constructs a new {@link ClassVisitor}.
      *
@@ -61,12 +63,16 @@ public abstract class ClassVisitor {
      *     null.
      */
     public ClassVisitor(final int api, final ClassVisitor classVisitor) {
-        if (api != Opcodes.ASM6 && api != Opcodes.ASM5 && api != Opcodes.ASM4 && api != Opcodes.ASM7) {
-            throw new IllegalArgumentException();
+        if (api != Opcodes.ASM7 && api != Opcodes.ASM6 && api != Opcodes.ASM5 && api != Opcodes.ASM4 && api != Opcodes.ASM8_EXPERIMENTAL) {
+            throw new IllegalArgumentException("Unsupported api " + api);
+        }
+        if (api == Opcodes.ASM8_EXPERIMENTAL) {
+            Constants.checkAsm8Experimental(this);
         }
         this.api = api;
         this.cv = classVisitor;
     }
+
     /**
      * Visits the header of the class.
      *
@@ -88,6 +94,7 @@ public abstract class ClassVisitor {
             cv.visit(version, access, name, signature, superName, interfaces);
         }
     }
+
     /**
      * Visits the source of the class.
      *
@@ -101,6 +108,7 @@ public abstract class ClassVisitor {
             cv.visitSource(source, debug);
         }
     }
+
     /**
      * Visit the module corresponding to the class.
      *
@@ -120,6 +128,7 @@ public abstract class ClassVisitor {
         }
         return null;
     }
+
     /**
      * Visits the nest host class of the class. A nest is a set of classes of the same package that
      * share access to their private members. One of these classes, called the host, lists the other
@@ -138,6 +147,7 @@ public abstract class ClassVisitor {
             cv.visitNestHost(nestHost);
         }
     }
+
     /**
      * Visits the enclosing class of the class. This method must be called only if the class has an
      * enclosing class.
@@ -153,6 +163,7 @@ public abstract class ClassVisitor {
             cv.visitOuterClass(owner, name, descriptor);
         }
     }
+
     /**
      * Visits an annotation of the class.
      *
@@ -167,6 +178,7 @@ public abstract class ClassVisitor {
         }
         return null;
     }
+
     /**
      * Visits an annotation on a type in the class signature.
      *
@@ -191,6 +203,7 @@ public abstract class ClassVisitor {
         }
         return null;
     }
+
     /**
      * Visits a non standard attribute of the class.
      *
@@ -201,6 +214,7 @@ public abstract class ClassVisitor {
             cv.visitAttribute(attribute);
         }
     }
+
     /**
      * Visits a member of the nest. A nest is a set of classes of the same package that share access
      * to their private members. One of these classes, called the host, lists the other members of the
@@ -218,6 +232,25 @@ public abstract class ClassVisitor {
             cv.visitNestMember(nestMember);
         }
     }
+
+    /**
+     * <b>Experimental, use at your own risk. This method will be renamed when it becomes stable, this
+     * will break existing code using it</b>. Visits a permitted subtypes. A permitted subtypes is one
+     * of the allowed subtypes of the current class.
+     *
+     * @param permittedSubtype the internal name of a permitted subtype.
+     * @deprecated this API is experimental.
+     */
+    @Deprecated
+    public void visitPermittedSubtypeExperimental(final String permittedSubtype) {
+        if (api != Opcodes.ASM8_EXPERIMENTAL) {
+            throw new UnsupportedOperationException("This feature requires ASM8_EXPERIMENTAL");
+        }
+        if (cv != null) {
+            cv.visitPermittedSubtypeExperimental(permittedSubtype);
+        }
+    }
+
     /**
      * Visits information about an inner class. This inner class is not necessarily a member of the
      * class being visited.
@@ -235,6 +268,31 @@ public abstract class ClassVisitor {
             cv.visitInnerClass(name, outerName, innerName, access);
         }
     }
+
+    /**
+     * Visits a record component of the class.
+     *
+     * @param access the record component access flags, the only possible value is {@link
+     *     Opcodes#ACC_DEPRECATED}.
+     * @param name the record component name.
+     * @param descriptor the record component descriptor (see {@link Type}).
+     * @param signature the record component signature. May be {@literal null} if the record component
+     *     type does not use generic types.
+     * @return a visitor to visit this record component annotations and attributes, or {@literal null}
+     *     if this class visitor is not interested in visiting these annotations and attributes.
+     * @deprecated this API is experimental.
+     */
+    @Deprecated
+    public RecordComponentVisitor visitRecordComponentExperimental(final int access, final String name, final String descriptor, final String signature) {
+        if (api < Opcodes.ASM8_EXPERIMENTAL) {
+            throw new UnsupportedOperationException("This feature requires ASM8_EXPERIMENTAL");
+        }
+        if (cv != null) {
+            return cv.visitRecordComponentExperimental(access, name, descriptor, signature);
+        }
+        return null;
+    }
+
     /**
      * Visits a field of the class.
      *
@@ -259,6 +317,7 @@ public abstract class ClassVisitor {
         }
         return null;
     }
+
     /**
      * Visits a method of the class. This method <i>must</i> return a new {@link MethodVisitor}
      * instance (or {@literal null}) each time it is called, i.e., it should not return a previously
@@ -281,6 +340,7 @@ public abstract class ClassVisitor {
         }
         return null;
     }
+
     /**
      * Visits the end of the class. This method, which is the last one to be called, is used to inform
      * the visitor that all the fields and methods of the class have been visited.

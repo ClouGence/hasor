@@ -40,8 +40,12 @@ public abstract class AnnotationVisitor {
      * Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
      */
     protected final int               api;
-    /** The annotation visitor to which this visitor must delegate method calls. May be null. */
+    /**
+     * The annotation visitor to which this visitor must delegate method calls. May be {@literal
+     * null}.
+     */
     protected       AnnotationVisitor av;
+
     /**
      * Constructs a new {@link AnnotationVisitor}.
      *
@@ -51,21 +55,26 @@ public abstract class AnnotationVisitor {
     public AnnotationVisitor(final int api) {
         this(api, null);
     }
+
     /**
      * Constructs a new {@link AnnotationVisitor}.
      *
      * @param api the ASM API version implemented by this visitor. Must be one of {@link
      *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
      * @param annotationVisitor the annotation visitor to which this visitor must delegate method
-     *     calls. May be null.
+     *     calls. May be {@literal null}.
      */
     public AnnotationVisitor(final int api, final AnnotationVisitor annotationVisitor) {
-        if (api != Opcodes.ASM6 && api != Opcodes.ASM5 && api != Opcodes.ASM4 && api != Opcodes.ASM7) {
-            throw new IllegalArgumentException();
+        if (api != Opcodes.ASM7 && api != Opcodes.ASM6 && api != Opcodes.ASM5 && api != Opcodes.ASM4 && api != Opcodes.ASM8_EXPERIMENTAL) {
+            throw new IllegalArgumentException("Unsupported api " + api);
+        }
+        if (api == Opcodes.ASM8_EXPERIMENTAL) {
+            Constants.checkAsm8Experimental(this);
         }
         this.api = api;
         this.av = annotationVisitor;
     }
+
     /**
      * Visits a primitive value of the annotation.
      *
@@ -82,6 +91,7 @@ public abstract class AnnotationVisitor {
             av.visit(name, value);
         }
     }
+
     /**
      * Visits an enumeration value of the annotation.
      *
@@ -94,6 +104,7 @@ public abstract class AnnotationVisitor {
             av.visitEnum(name, descriptor, value);
         }
     }
+
     /**
      * Visits a nested annotation value of the annotation.
      *
@@ -109,6 +120,7 @@ public abstract class AnnotationVisitor {
         }
         return null;
     }
+
     /**
      * Visits an array value of the annotation. Note that arrays of primitive types (such as byte,
      * boolean, short, char, int, long, float or double) can be passed as value to {@link #visit
@@ -126,6 +138,7 @@ public abstract class AnnotationVisitor {
         }
         return null;
     }
+
     /** Visits the end of the annotation. */
     public void visitEnd() {
         if (av != null) {

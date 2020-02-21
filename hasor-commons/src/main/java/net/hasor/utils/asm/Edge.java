@@ -69,6 +69,7 @@ final class Edge {
      * The next edge in the list of outgoing edges of a basic block. See {@link Label#outgoingEdges}.
      */
     Edge nextEdge;
+
     /**
      * Constructs a new Edge.
      *

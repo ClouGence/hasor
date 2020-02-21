@@ -27,6 +27,7 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package net.hasor.utils.asm.signature;
 import net.hasor.utils.asm.Opcodes;
+
 /**
  * A visitor to visit a generic signature. The methods of this interface must be called in one of
  * the three following orders (the last one is the only valid order for a {@link SignatureVisitor}
@@ -58,6 +59,7 @@ public abstract class SignatureVisitor {
      * Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
      */
     protected final     int  api;
+
     /**
      * Constructs a new {@link SignatureVisitor}.
      *
@@ -65,11 +67,12 @@ public abstract class SignatureVisitor {
      *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
      */
     public SignatureVisitor(final int api) {
-        if (api != Opcodes.ASM6 && api != Opcodes.ASM5 && api != Opcodes.ASM4 && api != Opcodes.ASM7) {
-            throw new IllegalArgumentException();
+        if (api != Opcodes.ASM7 && api != Opcodes.ASM6 && api != Opcodes.ASM5 && api != Opcodes.ASM4 && api != Opcodes.ASM8_EXPERIMENTAL) {
+            throw new IllegalArgumentException("Unsupported api " + api);
         }
         this.api = api;
     }
+
     /**
      * Visits a formal type parameter.
      *
@@ -77,6 +80,7 @@ public abstract class SignatureVisitor {
      */
     public void visitFormalTypeParameter(final String name) {
     }
+
     /**
      * Visits the class bound of the last visited formal type parameter.
      *
@@ -85,6 +89,7 @@ public abstract class SignatureVisitor {
     public SignatureVisitor visitClassBound() {
         return this;
     }
+
     /**
      * Visits an interface bound of the last visited formal type parameter.
      *
@@ -93,6 +98,7 @@ public abstract class SignatureVisitor {
     public SignatureVisitor visitInterfaceBound() {
         return this;
     }
+
     /**
      * Visits the type of the super class.
      *
@@ -101,6 +107,7 @@ public abstract class SignatureVisitor {
     public SignatureVisitor visitSuperclass() {
         return this;
     }
+
     /**
      * Visits the type of an interface implemented by the class.
      *
@@ -109,6 +116,7 @@ public abstract class SignatureVisitor {
     public SignatureVisitor visitInterface() {
         return this;
     }
+
     /**
      * Visits the type of a method parameter.
      *
@@ -117,6 +125,7 @@ public abstract class SignatureVisitor {
     public SignatureVisitor visitParameterType() {
         return this;
     }
+
     /**
      * Visits the return type of the method.
      *
@@ -125,6 +134,7 @@ public abstract class SignatureVisitor {
     public SignatureVisitor visitReturnType() {
         return this;
     }
+
     /**
      * Visits the type of a method exception.
      *
@@ -133,6 +143,7 @@ public abstract class SignatureVisitor {
     public SignatureVisitor visitExceptionType() {
         return this;
     }
+
     /**
      * Visits a signature corresponding to a primitive type.
      *
@@ -140,6 +151,7 @@ public abstract class SignatureVisitor {
      */
     public void visitBaseType(final char descriptor) {
     }
+
     /**
      * Visits a signature corresponding to a type variable.
      *
@@ -147,6 +159,7 @@ public abstract class SignatureVisitor {
      */
     public void visitTypeVariable(final String name) {
     }
+
     /**
      * Visits a signature corresponding to an array type.
      *
@@ -155,6 +168,7 @@ public abstract class SignatureVisitor {
     public SignatureVisitor visitArrayType() {
         return this;
     }
+
     /**
      * Starts the visit of a signature corresponding to a class or interface type.
      *
@@ -162,6 +176,7 @@ public abstract class SignatureVisitor {
      */
     public void visitClassType(final String name) {
     }
+
     /**
      * Visits an inner class.
      *
@@ -169,9 +184,11 @@ public abstract class SignatureVisitor {
      */
     public void visitInnerClassType(final String name) {
     }
+
     /** Visits an unbounded type argument of the last visited class or inner class type. */
     public void visitTypeArgument() {
     }
+
     /**
      * Visits a type argument of the last visited class or inner class type.
      *
@@ -181,6 +198,7 @@ public abstract class SignatureVisitor {
     public SignatureVisitor visitTypeArgument(final char wildcard) {
         return this;
     }
+
     /** Ends the visit of a signature corresponding to a class or interface type. */
     public void visitEnd() {
     }

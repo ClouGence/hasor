@@ -158,6 +158,7 @@ public class TypeReference {
      *     4.7.20.1</a>
      */
     private final       int targetTypeAndInfo;
+
     /**
      * Constructs a new TypeReference.
      *
@@ -167,6 +168,7 @@ public class TypeReference {
     public TypeReference(final int typeRef) {
         this.targetTypeAndInfo = typeRef;
     }
+
     /**
      * Returns a type reference of the given sort.
      *
@@ -178,6 +180,7 @@ public class TypeReference {
     public static TypeReference newTypeReference(final int sort) {
         return new TypeReference(sort << 24);
     }
+
     /**
      * Returns a reference to a type parameter of a generic class or method.
      *
@@ -188,6 +191,7 @@ public class TypeReference {
     public static TypeReference newTypeParameterReference(final int sort, final int paramIndex) {
         return new TypeReference((sort << 24) | (paramIndex << 16));
     }
+
     /**
      * Returns a reference to a type parameter bound of a generic class or method.
      *
@@ -199,6 +203,7 @@ public class TypeReference {
     public static TypeReference newTypeParameterBoundReference(final int sort, final int paramIndex, final int boundIndex) {
         return new TypeReference((sort << 24) | (paramIndex << 16) | (boundIndex << 8));
     }
+
     /**
      * Returns a reference to the super class or to an interface of the 'implements' clause of a
      * class.
@@ -210,6 +215,7 @@ public class TypeReference {
     public static TypeReference newSuperTypeReference(final int itfIndex) {
         return new TypeReference((CLASS_EXTENDS << 24) | ((itfIndex & 0xFFFF) << 8));
     }
+
     /**
      * Returns a reference to the type of a formal parameter of a method.
      *
@@ -219,6 +225,7 @@ public class TypeReference {
     public static TypeReference newFormalParameterReference(final int paramIndex) {
         return new TypeReference((METHOD_FORMAL_PARAMETER << 24) | (paramIndex << 16));
     }
+
     /**
      * Returns a reference to the type of an exception, in a 'throws' clause of a method.
      *
@@ -228,6 +235,7 @@ public class TypeReference {
     public static TypeReference newExceptionReference(final int exceptionIndex) {
         return new TypeReference((THROWS << 24) | (exceptionIndex << 8));
     }
+
     /**
      * Returns a reference to the type of the exception declared in a 'catch' clause of a method.
      *
@@ -238,6 +246,7 @@ public class TypeReference {
     public static TypeReference newTryCatchReference(final int tryCatchBlockIndex) {
         return new TypeReference((EXCEPTION_PARAMETER << 24) | (tryCatchBlockIndex << 8));
     }
+
     /**
      * Returns a reference to the type of a type argument in a constructor or method call or
      * reference.
@@ -251,6 +260,7 @@ public class TypeReference {
     public static TypeReference newTypeArgumentReference(final int sort, final int argIndex) {
         return new TypeReference((sort << 24) | argIndex);
     }
+
     /**
      * Returns the sort of this type reference.
      *
@@ -266,6 +276,7 @@ public class TypeReference {
     public int getSort() {
         return targetTypeAndInfo >>> 24;
     }
+
     /**
      * Returns the index of the type parameter referenced by this type reference. This method must
      * only be used for type references whose sort is {@link #CLASS_TYPE_PARAMETER}, {@link
@@ -277,6 +288,7 @@ public class TypeReference {
     public int getTypeParameterIndex() {
         return (targetTypeAndInfo & 0x00FF0000) >> 16;
     }
+
     /**
      * Returns the index of the type parameter bound, within the type parameter {@link
      * #getTypeParameterIndex}, referenced by this type reference. This method must only be used for
@@ -288,6 +300,7 @@ public class TypeReference {
     public int getTypeParameterBoundIndex() {
         return (targetTypeAndInfo & 0x0000FF00) >> 8;
     }
+
     /**
      * Returns the index of the "super type" of a class that is referenced by this type reference.
      * This method must only be used for type references whose sort is {@link #CLASS_EXTENDS}.
@@ -298,6 +311,7 @@ public class TypeReference {
     public int getSuperTypeIndex() {
         return (short) ((targetTypeAndInfo & 0x00FFFF00) >> 8);
     }
+
     /**
      * Returns the index of the formal parameter whose type is referenced by this type reference. This
      * method must only be used for type references whose sort is {@link #METHOD_FORMAL_PARAMETER}.
@@ -307,6 +321,7 @@ public class TypeReference {
     public int getFormalParameterIndex() {
         return (targetTypeAndInfo & 0x00FF0000) >> 16;
     }
+
     /**
      * Returns the index of the exception, in a 'throws' clause of a method, whose type is referenced
      * by this type reference. This method must only be used for type references whose sort is {@link
@@ -317,6 +332,7 @@ public class TypeReference {
     public int getExceptionIndex() {
         return (targetTypeAndInfo & 0x00FFFF00) >> 8;
     }
+
     /**
      * Returns the index of the try catch block (using the order in which they are visited with
      * visitTryCatchBlock), whose 'catch' type is referenced by this type reference. This method must
@@ -327,6 +343,7 @@ public class TypeReference {
     public int getTryCatchBlockIndex() {
         return (targetTypeAndInfo & 0x00FFFF00) >> 8;
     }
+
     /**
      * Returns the index of the type argument referenced by this type reference. This method must only
      * be used for type references whose sort is {@link #CAST}, {@link
@@ -338,6 +355,7 @@ public class TypeReference {
     public int getTypeArgumentIndex() {
         return targetTypeAndInfo & 0xFF;
     }
+
     /**
      * Returns the int encoded value of this type reference, suitable for use in visit methods related
      * to type annotations, like visitTypeAnnotation.
@@ -347,6 +365,7 @@ public class TypeReference {
     public int getValue() {
         return targetTypeAndInfo;
     }
+
     /**
      * Puts the given target_type and target_info JVMS structures into the given ByteVector.
      *

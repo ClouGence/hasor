@@ -28,6 +28,7 @@
 package net.hasor.utils.asm;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+
 /**
  * A Java field or method type. This class can be used to make it easier to manipulate type and
  * method descriptors.
@@ -113,6 +114,7 @@ public final class Type {
      * and a field or method descriptor in the other cases.
      */
     private final        int    valueEnd;
+
     /**
      * Constructs a reference type.
      *
@@ -132,6 +134,7 @@ public final class Type {
     // -----------------------------------------------------------------------------------------------
     // Methods to get Type(s) from a descriptor, a reflected Method or Constructor, other types, etc.
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Returns the {@link Type} corresponding to the given type descriptor.
      *
@@ -141,6 +144,7 @@ public final class Type {
     public static Type getType(final String typeDescriptor) {
         return getTypeInternal(typeDescriptor, 0, typeDescriptor.length());
     }
+
     /**
      * Returns the {@link Type} corresponding to the given class.
      *
@@ -174,6 +178,7 @@ public final class Type {
             return getType(getDescriptor(clazz));
         }
     }
+
     /**
      * Returns the method {@link Type} corresponding to the given constructor.
      *
@@ -183,6 +188,7 @@ public final class Type {
     public static Type getType(final Constructor<?> constructor) {
         return getType(getConstructorDescriptor(constructor));
     }
+
     /**
      * Returns the method {@link Type} corresponding to the given method.
      *
@@ -192,6 +198,7 @@ public final class Type {
     public static Type getType(final Method method) {
         return getType(getMethodDescriptor(method));
     }
+
     /**
      * Returns the type of the elements of this array type. This method should only be used for an
      * array type.
@@ -202,6 +209,7 @@ public final class Type {
         final int numDimensions = getDimensions();
         return getTypeInternal(valueBuffer, valueBegin + numDimensions, valueEnd);
     }
+
     /**
      * Returns the {@link Type} corresponding to the given internal name.
      *
@@ -211,6 +219,7 @@ public final class Type {
     public static Type getObjectType(final String internalName) {
         return new Type(internalName.charAt(0) == '[' ? ARRAY : INTERNAL, internalName, 0, internalName.length());
     }
+
     /**
      * Returns the {@link Type} corresponding to the given method descriptor. Equivalent to <code>
      * Type.getType(methodDescriptor)</code>.
@@ -221,6 +230,7 @@ public final class Type {
     public static Type getMethodType(final String methodDescriptor) {
         return new Type(METHOD, methodDescriptor, 0, methodDescriptor.length());
     }
+
     /**
      * Returns the method {@link Type} corresponding to the given argument and return types.
      *
@@ -231,6 +241,7 @@ public final class Type {
     public static Type getMethodType(final Type returnType, final Type... argumentTypes) {
         return getType(getMethodDescriptor(returnType, argumentTypes));
     }
+
     /**
      * Returns the argument types of methods of this type. This method should only be used for method
      * types.
@@ -240,6 +251,7 @@ public final class Type {
     public Type[] getArgumentTypes() {
         return getArgumentTypes(getDescriptor());
     }
+
     /**
      * Returns the {@link Type} values corresponding to the argument types of the given method
      * descriptor.
@@ -260,7 +272,8 @@ public final class Type {
             }
             if (methodDescriptor.charAt(currentOffset++) == 'L') {
                 // Skip the argument descriptor content.
-                currentOffset = methodDescriptor.indexOf(';', currentOffset) + 1;
+                int semiColumnOffset = methodDescriptor.indexOf(';', currentOffset);
+                currentOffset = Math.max(currentOffset, semiColumnOffset + 1);
             }
             ++numArgumentTypes;
         }
@@ -277,12 +290,14 @@ public final class Type {
             }
             if (methodDescriptor.charAt(currentOffset++) == 'L') {
                 // Skip the argument descriptor content.
-                currentOffset = methodDescriptor.indexOf(';', currentOffset) + 1;
+                int semiColumnOffset = methodDescriptor.indexOf(';', currentOffset);
+                currentOffset = Math.max(currentOffset, semiColumnOffset + 1);
             }
             argumentTypes[currentArgumentTypeIndex++] = getTypeInternal(methodDescriptor, currentArgumentTypeOffset, currentOffset);
         }
         return argumentTypes;
     }
+
     /**
      * Returns the {@link Type} values corresponding to the argument types of the given method.
      *
@@ -297,6 +312,7 @@ public final class Type {
         }
         return types;
     }
+
     /**
      * Returns the return type of methods of this type. This method should only be used for method
      * types.
@@ -306,6 +322,7 @@ public final class Type {
     public Type getReturnType() {
         return getReturnType(getDescriptor());
     }
+
     /**
      * Returns the {@link Type} corresponding to the return type of the given method descriptor.
      *
@@ -313,20 +330,9 @@ public final class Type {
      * @return the {@link Type} corresponding to the return type of the given method descriptor.
      */
     public static Type getReturnType(final String methodDescriptor) {
-        // Skip the first character, which is always a '('.
-        int currentOffset = 1;
-        // Skip the argument types, one at a each loop iteration.
-        while (methodDescriptor.charAt(currentOffset) != ')') {
-            while (methodDescriptor.charAt(currentOffset) == '[') {
-                currentOffset++;
-            }
-            if (methodDescriptor.charAt(currentOffset++) == 'L') {
-                // Skip the argument descriptor content.
-                currentOffset = methodDescriptor.indexOf(';', currentOffset) + 1;
-            }
-        }
-        return getTypeInternal(methodDescriptor, currentOffset + 1, methodDescriptor.length());
+        return getTypeInternal(methodDescriptor, getReturnTypeOffset(methodDescriptor), methodDescriptor.length());
     }
+
     /**
      * Returns the {@link Type} corresponding to the return type of the given method.
      *
@@ -336,6 +342,30 @@ public final class Type {
     public static Type getReturnType(final Method method) {
         return getType(method.getReturnType());
     }
+
+    /**
+     * Returns the start index of the return type of the given method descriptor.
+     *
+     * @param methodDescriptor a method descriptor.
+     * @return the start index of the return type of the given method descriptor.
+     */
+    static int getReturnTypeOffset(final String methodDescriptor) {
+        // Skip the first character, which is always a '('.
+        int currentOffset = 1;
+        // Skip the argument types, one at a each loop iteration.
+        while (methodDescriptor.charAt(currentOffset) != ')') {
+            while (methodDescriptor.charAt(currentOffset) == '[') {
+                currentOffset++;
+            }
+            if (methodDescriptor.charAt(currentOffset++) == 'L') {
+                // Skip the argument descriptor content.
+                int semiColumnOffset = methodDescriptor.indexOf(';', currentOffset);
+                currentOffset = Math.max(currentOffset, semiColumnOffset + 1);
+            }
+        }
+        return currentOffset + 1;
+    }
+
     /**
      * Returns the {@link Type} corresponding to the given field or method descriptor.
      *
@@ -379,6 +409,7 @@ public final class Type {
     // -----------------------------------------------------------------------------------------------
     // Methods to get class names, internal names or descriptors.
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Returns the binary name of the class corresponding to this type. This method must not be used
      * on method types.
@@ -418,6 +449,7 @@ public final class Type {
             throw new AssertionError();
         }
     }
+
     /**
      * Returns the internal name of the class corresponding to this object or array type. The internal
      * name of a class is its fully qualified name (as returned by Class.getName(), where '.' are
@@ -428,6 +460,7 @@ public final class Type {
     public String getInternalName() {
         return valueBuffer.substring(valueBegin, valueEnd);
     }
+
     /**
      * Returns the internal name of the given class. The internal name of a class is its fully
      * qualified name, as returned by Class.getName(), where '.' are replaced by '/'.
@@ -438,6 +471,7 @@ public final class Type {
     public static String getInternalName(final Class<?> clazz) {
         return clazz.getName().replace('.', '/');
     }
+
     /**
      * Returns the descriptor corresponding to this type.
      *
@@ -447,11 +481,12 @@ public final class Type {
         if (sort == OBJECT) {
             return valueBuffer.substring(valueBegin - 1, valueEnd + 1);
         } else if (sort == INTERNAL) {
-            return new StringBuilder().append('L').append(valueBuffer, valueBegin, valueEnd).append(';').toString();
+            return 'L' + valueBuffer.substring(valueBegin, valueEnd) + ';';
         } else {
             return valueBuffer.substring(valueBegin, valueEnd);
         }
     }
+
     /**
      * Returns the descriptor corresponding to the given class.
      *
@@ -463,6 +498,7 @@ public final class Type {
         appendDescriptor(clazz, stringBuilder);
         return stringBuilder.toString();
     }
+
     /**
      * Returns the descriptor corresponding to the given constructor.
      *
@@ -478,6 +514,7 @@ public final class Type {
         }
         return stringBuilder.append(")V").toString();
     }
+
     /**
      * Returns the descriptor corresponding to the given argument and return types.
      *
@@ -495,6 +532,7 @@ public final class Type {
         returnType.appendDescriptor(stringBuilder);
         return stringBuilder.toString();
     }
+
     /**
      * Returns the descriptor corresponding to the given method.
      *
@@ -512,6 +550,7 @@ public final class Type {
         appendDescriptor(method.getReturnType(), stringBuilder);
         return stringBuilder.toString();
     }
+
     /**
      * Appends the descriptor corresponding to this type to the given string buffer.
      *
@@ -526,6 +565,7 @@ public final class Type {
             stringBuilder.append(valueBuffer, valueBegin, valueEnd);
         }
     }
+
     /**
      * Appends the descriptor of the given class to the given string builder.
      *
@@ -563,19 +603,13 @@ public final class Type {
             }
             stringBuilder.append(descriptor);
         } else {
-            stringBuilder.append('L');
-            String name = currentClass.getName();
-            int nameLength = name.length();
-            for (int i = 0; i < nameLength; ++i) {
-                char car = name.charAt(i);
-                stringBuilder.append(car == '.' ? '/' : car);
-            }
-            stringBuilder.append(';');
+            stringBuilder.append('L').append(getInternalName(currentClass)).append(';');
         }
     }
     // -----------------------------------------------------------------------------------------------
     // Methods to get the sort, dimension, size, and opcodes corresponding to a Type or descriptor.
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Returns the sort of this type.
      *
@@ -586,6 +620,7 @@ public final class Type {
     public int getSort() {
         return sort == INTERNAL ? OBJECT : sort;
     }
+
     /**
      * Returns the number of dimensions of this array type. This method should only be used for an
      * array type.
@@ -599,6 +634,7 @@ public final class Type {
         }
         return numDimensions;
     }
+
     /**
      * Returns the size of values of this type. This method must not be used for method types.
      *
@@ -626,6 +662,7 @@ public final class Type {
             throw new AssertionError();
         }
     }
+
     /**
      * Returns the size of the arguments and of the return value of methods of this type. This method
      * should only be used for method types.
@@ -638,6 +675,7 @@ public final class Type {
     public int getArgumentsAndReturnSizes() {
         return getArgumentsAndReturnSizes(getDescriptor());
     }
+
     /**
      * Computes the size of the arguments and of the return value of a method.
      *
@@ -663,7 +701,8 @@ public final class Type {
                 }
                 if (methodDescriptor.charAt(currentOffset++) == 'L') {
                     // Skip the argument descriptor content.
-                    currentOffset = methodDescriptor.indexOf(';', currentOffset) + 1;
+                    int semiColumnOffset = methodDescriptor.indexOf(';', currentOffset);
+                    currentOffset = Math.max(currentOffset, semiColumnOffset + 1);
                 }
                 argumentsSize += 1;
             }
@@ -677,6 +716,7 @@ public final class Type {
             return argumentsSize << 2 | returnSize;
         }
     }
+
     /**
      * Returns a JVM instruction opcode adapted to this {@link Type}. This method must not be used for
      * method types.
@@ -752,6 +792,7 @@ public final class Type {
     // -----------------------------------------------------------------------------------------------
     // Equals, hashCode and toString.
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Tests if the given object is equal to this type.
      *
@@ -785,6 +826,7 @@ public final class Type {
         }
         return true;
     }
+
     /**
      * Returns a hash code value for this type.
      *
@@ -800,6 +842,7 @@ public final class Type {
         }
         return hashCode;
     }
+
     /**
      * Returns a string representation of this type.
      *

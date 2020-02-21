@@ -37,10 +37,12 @@ public class ByteVector {
     byte[] data;
     /** The actual number of bytes in this vector. */
     int    length;
+
     /** Constructs a new {@link ByteVector} with a default initial capacity. */
     public ByteVector() {
         data = new byte[64];
     }
+
     /**
      * Constructs a new {@link ByteVector} with the given initial capacity.
      *
@@ -49,6 +51,7 @@ public class ByteVector {
     public ByteVector(final int initialCapacity) {
         data = new byte[initialCapacity];
     }
+
     /**
      * Constructs a new {@link ByteVector} from the given initial data.
      *
@@ -58,6 +61,7 @@ public class ByteVector {
         this.data = data;
         this.length = data.length;
     }
+
     /**
      * Puts a byte into this byte vector. The byte vector is automatically enlarged if necessary.
      *
@@ -73,6 +77,7 @@ public class ByteVector {
         length = currentLength;
         return this;
     }
+
     /**
      * Puts two bytes into this byte vector. The byte vector is automatically enlarged if necessary.
      *
@@ -91,6 +96,7 @@ public class ByteVector {
         length = currentLength;
         return this;
     }
+
     /**
      * Puts a short into this byte vector. The byte vector is automatically enlarged if necessary.
      *
@@ -108,6 +114,7 @@ public class ByteVector {
         length = currentLength;
         return this;
     }
+
     /**
      * Puts a byte and a short into this byte vector. The byte vector is automatically enlarged if
      * necessary.
@@ -128,6 +135,7 @@ public class ByteVector {
         length = currentLength;
         return this;
     }
+
     /**
      * Puts two bytes and a short into this byte vector. The byte vector is automatically enlarged if
      * necessary.
@@ -150,6 +158,7 @@ public class ByteVector {
         length = currentLength;
         return this;
     }
+
     /**
      * Puts an int into this byte vector. The byte vector is automatically enlarged if necessary.
      *
@@ -169,6 +178,7 @@ public class ByteVector {
         length = currentLength;
         return this;
     }
+
     /**
      * Puts one byte and two shorts into this byte vector. The byte vector is automatically enlarged
      * if necessary.
@@ -192,6 +202,7 @@ public class ByteVector {
         length = currentLength;
         return this;
     }
+
     /**
      * Puts a long into this byte vector. The byte vector is automatically enlarged if necessary.
      *
@@ -217,6 +228,7 @@ public class ByteVector {
         length = currentLength;
         return this;
     }
+
     /**
      * Puts an UTF8 string into this byte vector. The byte vector is automatically enlarged if
      * necessary.
@@ -253,6 +265,7 @@ public class ByteVector {
         length = currentLength;
         return this;
     }
+
     /**
      * Puts an UTF8 string into this byte vector. The byte vector is automatically enlarged if
      * necessary. The string length is encoded in two bytes before the encoded characters, if there is
@@ -307,6 +320,7 @@ public class ByteVector {
         length = currentLength;
         return this;
     }
+
     /**
      * Puts an array of bytes into this byte vector. The byte vector is automatically enlarged if
      * necessary.
@@ -327,6 +341,7 @@ public class ByteVector {
         length += byteLength;
         return this;
     }
+
     /**
      * Enlarges this byte vector so that it can receive 'size' more bytes.
      *

@@ -36,6 +36,7 @@ public final class ClassTooLargeException extends IndexOutOfBoundsException {
     private static final long   serialVersionUID = 160715609518896765L;
     private final        String className;
     private final        int    constantPoolCount;
+
     /**
      * Constructs a new {@link ClassTooLargeException}.
      *
@@ -47,6 +48,7 @@ public final class ClassTooLargeException extends IndexOutOfBoundsException {
         this.className = className;
         this.constantPoolCount = constantPoolCount;
     }
+
     /**
      * Returns the internal name of the class.
      *
@@ -55,6 +57,7 @@ public final class ClassTooLargeException extends IndexOutOfBoundsException {
     public String getClassName() {
         return className;
     }
+
     /**
      * Returns the number of constant pool items of the class.
      *

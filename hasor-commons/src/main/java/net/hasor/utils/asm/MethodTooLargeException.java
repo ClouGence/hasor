@@ -38,6 +38,7 @@ public final class MethodTooLargeException extends IndexOutOfBoundsException {
     private final        String methodName;
     private final        String descriptor;
     private final        int    codeSize;
+
     /**
      * Constructs a new {@link MethodTooLargeException}.
      *
@@ -53,6 +54,7 @@ public final class MethodTooLargeException extends IndexOutOfBoundsException {
         this.descriptor = descriptor;
         this.codeSize = codeSize;
     }
+
     /**
      * Returns the internal name of the owner class.
      *
@@ -61,6 +63,7 @@ public final class MethodTooLargeException extends IndexOutOfBoundsException {
     public String getClassName() {
         return className;
     }
+
     /**
      * Returns the name of the method.
      *
@@ -69,6 +72,7 @@ public final class MethodTooLargeException extends IndexOutOfBoundsException {
     public String getMethodName() {
         return methodName;
     }
+
     /**
      * Returns the descriptor of the method.
      *
@@ -77,6 +81,7 @@ public final class MethodTooLargeException extends IndexOutOfBoundsException {
     public String getDescriptor() {
         return descriptor;
     }
+
     /**
      * Returns the size of the method's Code attribute, in bytes.
      *

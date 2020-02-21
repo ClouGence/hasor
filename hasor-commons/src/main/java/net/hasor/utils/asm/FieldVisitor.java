@@ -39,8 +39,9 @@ public abstract class FieldVisitor {
      * Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
      */
     protected final int          api;
-    /** The field visitor to which this visitor must delegate method calls. May be null. */
+    /** The field visitor to which this visitor must delegate method calls. May be {@literal null}. */
     protected       FieldVisitor fv;
+
     /**
      * Constructs a new {@link FieldVisitor}.
      *
@@ -50,6 +51,7 @@ public abstract class FieldVisitor {
     public FieldVisitor(final int api) {
         this(api, null);
     }
+
     /**
      * Constructs a new {@link FieldVisitor}.
      *
@@ -59,12 +61,16 @@ public abstract class FieldVisitor {
      *     null.
      */
     public FieldVisitor(final int api, final FieldVisitor fieldVisitor) {
-        if (api != Opcodes.ASM6 && api != Opcodes.ASM5 && api != Opcodes.ASM4 && api != Opcodes.ASM7) {
-            throw new IllegalArgumentException();
+        if (api != Opcodes.ASM7 && api != Opcodes.ASM6 && api != Opcodes.ASM5 && api != Opcodes.ASM4 && api != Opcodes.ASM8_EXPERIMENTAL) {
+            throw new IllegalArgumentException("Unsupported api " + api);
+        }
+        if (api == Opcodes.ASM8_EXPERIMENTAL) {
+            Constants.checkAsm8Experimental(this);
         }
         this.api = api;
         this.fv = fieldVisitor;
     }
+
     /**
      * Visits an annotation of the field.
      *
@@ -79,6 +85,7 @@ public abstract class FieldVisitor {
         }
         return null;
     }
+
     /**
      * Visits an annotation on the type of the field.
      *
@@ -101,6 +108,7 @@ public abstract class FieldVisitor {
         }
         return null;
     }
+
     /**
      * Visits a non standard attribute of the field.
      *
@@ -111,6 +119,7 @@ public abstract class FieldVisitor {
             fv.visitAttribute(attribute);
         }
     }
+
     /**
      * Visits the end of the field. This method, which is the last one to be called, is used to inform
      * the visitor that all the annotations and attributes of the field have been visited.

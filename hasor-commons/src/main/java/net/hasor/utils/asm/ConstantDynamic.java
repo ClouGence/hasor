@@ -27,6 +27,7 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package net.hasor.utils.asm;
 import java.util.Arrays;
+
 /**
  * A constant whose value is computed at runtime, with a bootstrap method.
  *
@@ -44,6 +45,7 @@ public final class ConstantDynamic {
      * runtime.
      */
     private final Object[] bootstrapMethodArguments;
+
     /**
      * Constructs a new {@link ConstantDynamic}.
      *
@@ -59,6 +61,7 @@ public final class ConstantDynamic {
         this.bootstrapMethod = bootstrapMethod;
         this.bootstrapMethodArguments = bootstrapMethodArguments;
     }
+
     /**
      * Returns the name of this constant.
      *
@@ -67,6 +70,7 @@ public final class ConstantDynamic {
     public String getName() {
         return name;
     }
+
     /**
      * Returns the type of this constant.
      *
@@ -75,6 +79,7 @@ public final class ConstantDynamic {
     public String getDescriptor() {
         return descriptor;
     }
+
     /**
      * Returns the bootstrap method used to compute the value of this constant.
      *
@@ -83,6 +88,7 @@ public final class ConstantDynamic {
     public Handle getBootstrapMethod() {
         return bootstrapMethod;
     }
+
     /**
      * Returns the number of arguments passed to the bootstrap method, in order to compute the value
      * of this constant.
@@ -93,6 +99,7 @@ public final class ConstantDynamic {
     public int getBootstrapMethodArgumentCount() {
         return bootstrapMethodArguments.length;
     }
+
     /**
      * Returns an argument passed to the bootstrap method, in order to compute the value of this
      * constant.
@@ -104,6 +111,7 @@ public final class ConstantDynamic {
     public Object getBootstrapMethodArgument(final int index) {
         return bootstrapMethodArguments[index];
     }
+
     /**
      * Returns the arguments to pass to the bootstrap method, in order to compute the value of this
      * constant. WARNING: this array must not be modified, and must not be returned to the user.
@@ -114,6 +122,7 @@ public final class ConstantDynamic {
     Object[] getBootstrapMethodArgumentsUnsafe() {
         return bootstrapMethodArguments;
     }
+
     /**
      * Returns the size of this constant.
      *
@@ -123,6 +132,7 @@ public final class ConstantDynamic {
         char firstCharOfDescriptor = descriptor.charAt(0);
         return (firstCharOfDescriptor == 'J' || firstCharOfDescriptor == 'D') ? 2 : 1;
     }
+
     @Override
     public boolean equals(final Object object) {
         if (object == this) {
@@ -134,10 +144,12 @@ public final class ConstantDynamic {
         ConstantDynamic constantDynamic = (ConstantDynamic) object;
         return name.equals(constantDynamic.name) && descriptor.equals(constantDynamic.descriptor) && bootstrapMethod.equals(constantDynamic.bootstrapMethod) && Arrays.equals(bootstrapMethodArguments, constantDynamic.bootstrapMethodArguments);
     }
+
     @Override
     public int hashCode() {
         return name.hashCode() ^ Integer.rotateLeft(descriptor.hashCode(), 8) ^ Integer.rotateLeft(bootstrapMethod.hashCode(), 16) ^ Integer.rotateLeft(Arrays.hashCode(bootstrapMethodArguments), 24);
     }
+
     @Override
     public String toString() {
         return name + " : " + descriptor + ' ' + bootstrapMethod + ' ' + Arrays.toString(bootstrapMethodArguments);

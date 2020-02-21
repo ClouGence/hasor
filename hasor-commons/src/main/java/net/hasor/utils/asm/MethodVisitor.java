@@ -52,8 +52,11 @@ public abstract class MethodVisitor {
      * Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
      */
     protected final      int           api;
-    /** The method visitor to which this visitor must delegate method calls. May be null. */
+    /**
+     * The method visitor to which this visitor must delegate method calls. May be {@literal null}.
+     */
     protected            MethodVisitor mv;
+
     /**
      * Constructs a new {@link MethodVisitor}.
      *
@@ -63,6 +66,7 @@ public abstract class MethodVisitor {
     public MethodVisitor(final int api) {
         this(api, null);
     }
+
     /**
      * Constructs a new {@link MethodVisitor}.
      *
@@ -72,8 +76,11 @@ public abstract class MethodVisitor {
      *     be null.
      */
     public MethodVisitor(final int api, final MethodVisitor methodVisitor) {
-        if (api != Opcodes.ASM6 && api != Opcodes.ASM5 && api != Opcodes.ASM4 && api != Opcodes.ASM7) {
-            throw new IllegalArgumentException();
+        if (api != Opcodes.ASM7 && api != Opcodes.ASM6 && api != Opcodes.ASM5 && api != Opcodes.ASM4 && api != Opcodes.ASM8_EXPERIMENTAL) {
+            throw new IllegalArgumentException("Unsupported api " + api);
+        }
+        if (api == Opcodes.ASM8_EXPERIMENTAL) {
+            Constants.checkAsm8Experimental(this);
         }
         this.api = api;
         this.mv = methodVisitor;
@@ -81,10 +88,11 @@ public abstract class MethodVisitor {
     // -----------------------------------------------------------------------------------------------
     // Parameters, annotations and non standard attributes
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Visits a parameter of this method.
      *
-     * @param name parameter name or null if none is provided.
+     * @param name parameter name or {@literal null} if none is provided.
      * @param access the parameter's access flags, only {@code ACC_FINAL}, {@code ACC_SYNTHETIC}
      *     or/and {@code ACC_MANDATED} are allowed (see {@link Opcodes}).
      */
@@ -96,6 +104,7 @@ public abstract class MethodVisitor {
             mv.visitParameter(name, access);
         }
     }
+
     /**
      * Visits the default value of this annotation interface method.
      *
@@ -110,6 +119,7 @@ public abstract class MethodVisitor {
         }
         return null;
     }
+
     /**
      * Visits an annotation of this method.
      *
@@ -124,6 +134,7 @@ public abstract class MethodVisitor {
         }
         return null;
     }
+
     /**
      * Visits an annotation on a type in the method signature.
      *
@@ -149,6 +160,7 @@ public abstract class MethodVisitor {
         }
         return null;
     }
+
     /**
      * Visits the number of method parameters that can have annotations. By default (i.e. when this
      * method is not called), all the method parameters defined by the method descriptor can have
@@ -168,6 +180,7 @@ public abstract class MethodVisitor {
             mv.visitAnnotableParameterCount(parameterCount, visible);
         }
     }
+
     /**
      * Visits an annotation of a parameter this method.
      *
@@ -188,6 +201,7 @@ public abstract class MethodVisitor {
         }
         return null;
     }
+
     /**
      * Visits a non standard attribute of this method.
      *
@@ -198,12 +212,14 @@ public abstract class MethodVisitor {
             mv.visitAttribute(attribute);
         }
     }
+
     /** Starts the visit of the method's code, if any (i.e. non abstract method). */
     public void visitCode() {
         if (mv != null) {
             mv.visitCode();
         }
     }
+
     /**
      * Visits the current state of the local variables and operand stack elements. This method must(*)
      * be called <i>just before</i> any instruction <b>i</b> that follows an unconditional branch
@@ -269,6 +285,7 @@ public abstract class MethodVisitor {
     // -----------------------------------------------------------------------------------------------
     // Normal instructions
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Visits a zero operand instruction.
      *
@@ -288,6 +305,7 @@ public abstract class MethodVisitor {
             mv.visitInsn(opcode);
         }
     }
+
     /**
      * Visits an instruction with a single int operand.
      *
@@ -307,6 +325,7 @@ public abstract class MethodVisitor {
             mv.visitIntInsn(opcode, operand);
         }
     }
+
     /**
      * Visits a local variable instruction. A local variable instruction is an instruction that loads
      * or stores the value of a local variable.
@@ -321,6 +340,7 @@ public abstract class MethodVisitor {
             mv.visitVarInsn(opcode, var);
         }
     }
+
     /**
      * Visits a type instruction. A type instruction is an instruction that takes the internal name of
      * a class as parameter.
@@ -335,6 +355,7 @@ public abstract class MethodVisitor {
             mv.visitTypeInsn(opcode, type);
         }
     }
+
     /**
      * Visits a field instruction. A field instruction is an instruction that loads or stores the
      * value of a field of an object.
@@ -350,6 +371,7 @@ public abstract class MethodVisitor {
             mv.visitFieldInsn(opcode, owner, name, descriptor);
         }
     }
+
     /**
      * Visits a method instruction. A method instruction is an instruction that invokes a method.
      *
@@ -363,15 +385,10 @@ public abstract class MethodVisitor {
      */
     @Deprecated
     public void visitMethodInsn(final int opcode, final String owner, final String name, final String descriptor) {
-        if (api >= Opcodes.ASM5) {
-            boolean isInterface = opcode == Opcodes.INVOKEINTERFACE;
-            visitMethodInsn(opcode, owner, name, descriptor, isInterface);
-            return;
-        }
-        if (mv != null) {
-            mv.visitMethodInsn(opcode, owner, name, descriptor);
-        }
+        int opcodeAndSource = opcode | (api < Opcodes.ASM5 ? Opcodes.SOURCE_DEPRECATED : 0);
+        visitMethodInsn(opcodeAndSource, owner, name, descriptor, opcode == Opcodes.INVOKEINTERFACE);
     }
+
     /**
      * Visits a method instruction. A method instruction is an instruction that invokes a method.
      *
@@ -384,17 +401,18 @@ public abstract class MethodVisitor {
      * @param isInterface if the method's owner class is an interface.
      */
     public void visitMethodInsn(final int opcode, final String owner, final String name, final String descriptor, final boolean isInterface) {
-        if (api < Opcodes.ASM5) {
+        if (api < Opcodes.ASM5 && (opcode & Opcodes.SOURCE_DEPRECATED) == 0) {
             if (isInterface != (opcode == Opcodes.INVOKEINTERFACE)) {
-                throw new IllegalArgumentException("INVOKESPECIAL/STATIC on interfaces requires ASM5");
+                throw new UnsupportedOperationException("INVOKESPECIAL/STATIC on interfaces requires ASM5");
             }
             visitMethodInsn(opcode, owner, name, descriptor);
             return;
         }
         if (mv != null) {
-            mv.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+            mv.visitMethodInsn(opcode & ~Opcodes.SOURCE_MASK, owner, name, descriptor, isInterface);
         }
     }
+
     /**
      * Visits an invokedynamic instruction.
      *
@@ -414,6 +432,7 @@ public abstract class MethodVisitor {
             mv.visitInvokeDynamicInsn(name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments);
         }
     }
+
     /**
      * Visits a jump instruction. A jump instruction is an instruction that may jump to another
      * instruction.
@@ -429,6 +448,7 @@ public abstract class MethodVisitor {
             mv.visitJumpInsn(opcode, label);
         }
     }
+
     /**
      * Visits a label. A label designates the instruction that will be visited just after it.
      *
@@ -442,6 +462,7 @@ public abstract class MethodVisitor {
     // -----------------------------------------------------------------------------------------------
     // Special instructions
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Visits a LDC instruction. Note that new constant types may be added in future versions of the
      * Java Virtual Machine. To easily detect new constant types, implementations of this method
@@ -489,13 +510,14 @@ public abstract class MethodVisitor {
         if (api < Opcodes.ASM5 && (value instanceof Handle || (value instanceof Type && ((Type) value).getSort() == Type.METHOD))) {
             throw new UnsupportedOperationException(REQUIRES_ASM5);
         }
-        if (api != Opcodes.ASM7 && value instanceof ConstantDynamic) {
+        if (api < Opcodes.ASM7 && value instanceof ConstantDynamic) {
             throw new UnsupportedOperationException("This feature requires ASM7");
         }
         if (mv != null) {
             mv.visitLdcInsn(value);
         }
     }
+
     /**
      * Visits an IINC instruction.
      *
@@ -507,6 +529,7 @@ public abstract class MethodVisitor {
             mv.visitIincInsn(var, increment);
         }
     }
+
     /**
      * Visits a TABLESWITCH instruction.
      *
@@ -521,6 +544,7 @@ public abstract class MethodVisitor {
             mv.visitTableSwitchInsn(min, max, dflt, labels);
         }
     }
+
     /**
      * Visits a LOOKUPSWITCH instruction.
      *
@@ -534,6 +558,7 @@ public abstract class MethodVisitor {
             mv.visitLookupSwitchInsn(dflt, keys, labels);
         }
     }
+
     /**
      * Visits a MULTIANEWARRAY instruction.
      *
@@ -545,6 +570,7 @@ public abstract class MethodVisitor {
             mv.visitMultiANewArrayInsn(descriptor, numDimensions);
         }
     }
+
     /**
      * Visits an annotation on an instruction. This method must be called just <i>after</i> the
      * annotated instruction. It can be called several times for the same instruction.
@@ -576,6 +602,7 @@ public abstract class MethodVisitor {
     // -----------------------------------------------------------------------------------------------
     // Exceptions table entries, debug information, max stack and max locals
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Visits a try catch block.
      *
@@ -592,6 +619,7 @@ public abstract class MethodVisitor {
             mv.visitTryCatchBlock(start, end, handler, type);
         }
     }
+
     /**
      * Visits an annotation on an exception handler type. This method must be called <i>after</i> the
      * {@link #visitTryCatchBlock} for the annotated exception handler. It can be called several times
@@ -616,6 +644,7 @@ public abstract class MethodVisitor {
         }
         return null;
     }
+
     /**
      * Visits a local variable declaration.
      *
@@ -635,6 +664,7 @@ public abstract class MethodVisitor {
             mv.visitLocalVariable(name, descriptor, signature, start, end, index);
         }
     }
+
     /**
      * Visits an annotation on a local variable type.
      *
@@ -664,6 +694,7 @@ public abstract class MethodVisitor {
         }
         return null;
     }
+
     /**
      * Visits a line number declaration.
      *
@@ -678,6 +709,7 @@ public abstract class MethodVisitor {
             mv.visitLineNumber(line, start);
         }
     }
+
     /**
      * Visits the maximum stack size and the maximum number of local variables of the method.
      *
@@ -689,6 +721,7 @@ public abstract class MethodVisitor {
             mv.visitMaxs(maxStack, maxLocals);
         }
     }
+
     /**
      * Visits the end of the method. This method, which is the last one to be called, is used to
      * inform the visitor that all the annotations and attributes of the method have been visited.

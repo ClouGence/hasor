@@ -201,7 +201,8 @@ public class Label {
     short outputStackSize;
     /**
      * The maximum height reached by the output stack, relatively to the top of the input stack, in
-     * the basic block corresponding to this label. This maximum is always positive or null.
+     * the basic block corresponding to this label. This maximum is always positive or {@literal
+     * null}.
      */
     short outputStackMax;
     /**
@@ -233,12 +234,12 @@ public class Label {
      */
     Edge  outgoingEdges;
     /**
-     * The next element in the list of labels to which this label belongs, or null if it does not
-     * belong to any list. All lists of labels must end with the {@link #EMPTY_LIST} sentinel, in
-     * order to ensure that this field is null if and only if this label does not belong to a list of
-     * labels. Note that there can be several lists of labels at the same time, but that a label can
-     * belong to at most one list at a time (unless some lists share a common tail, but this is not
-     * used in practice).
+     * The next element in the list of labels to which this label belongs, or {@literal null} if it
+     * does not belong to any list. All lists of labels must end with the {@link #EMPTY_LIST}
+     * sentinel, in order to ensure that this field is null if and only if this label does not belong
+     * to a list of labels. Note that there can be several lists of labels at the same time, but that
+     * a label can belong to at most one list at a time (unless some lists share a common tail, but
+     * this is not used in practice).
      *
      * <p>List of labels are used in {@link MethodWriter#computeAllFrames} and {@link
      * MethodWriter#computeMaxStackAndLocal} to compute stack map frames and the maximum stack size,
@@ -251,10 +252,12 @@ public class Label {
     // -----------------------------------------------------------------------------------------------
     // Constructor and accessors
     // -----------------------------------------------------------------------------------------------
+
     /** Constructs a new label. */
     public Label() {
         // Nothing to do.
     }
+
     /**
      * Returns the bytecode offset corresponding to this label. This offset is computed from the start
      * of the method's bytecode. <i>This method is intended for {@link Attribute} sub classes, and is
@@ -269,6 +272,7 @@ public class Label {
         }
         return bytecodeOffset;
     }
+
     /**
      * Returns the "canonical" {@link Label} instance corresponding to this label's bytecode offset,
      * if known, otherwise the label itself. The canonical instance is the first label (in the order
@@ -288,6 +292,7 @@ public class Label {
     // -----------------------------------------------------------------------------------------------
     // Methods to manage line numbers
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Adds a source line number corresponding to this label.
      *
@@ -309,6 +314,7 @@ public class Label {
             otherLineNumbers[otherLineNumberIndex] = lineNumber;
         }
     }
+
     /**
      * Makes the given visitor visit this label and its source line numbers, if applicable.
      *
@@ -329,6 +335,7 @@ public class Label {
     // -----------------------------------------------------------------------------------------------
     // Methods to compute offsets and to manage forward references
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Puts a reference to this label in the bytecode of a method. If the bytecode offset of the label
      * is known, the relative bytecode offset between the label and the instruction referencing it is
@@ -357,6 +364,7 @@ public class Label {
             }
         }
     }
+
     /**
      * Adds a forward reference to this label. This method must be called only for a true forward
      * reference, i.e. only if this label is not resolved yet. For backward references, the relative
@@ -383,6 +391,7 @@ public class Label {
         forwardReferences[++lastElementIndex] = referenceType | referenceHandle;
         forwardReferences[0] = lastElementIndex;
     }
+
     /**
      * Sets the bytecode offset of this label to the given value and resolves the forward references
      * to this label, if any. This method must be called when this label is added to the bytecode of
@@ -439,6 +448,7 @@ public class Label {
     // -----------------------------------------------------------------------------------------------
     // Methods related to subroutines
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Finds the basic blocks that belong to the subroutine starting with the basic block
      * corresponding to this label, and marks these blocks as belonging to this subroutine. This
@@ -471,6 +481,7 @@ public class Label {
             }
         }
     }
+
     /**
      * Finds the basic blocks that end a subroutine starting with the basic block corresponding to
      * this label and, for each one of them, adds an outgoing edge to the basic block following the
@@ -523,6 +534,7 @@ public class Label {
             listOfProcessedBlocks = newListOfProcessedBlocks;
         }
     }
+
     /**
      * Adds the successors of this label in the method's control flow graph (except those
      * corresponding to a jsr target, and those already in a list of labels) to the given list of
@@ -552,6 +564,7 @@ public class Label {
     // -----------------------------------------------------------------------------------------------
     // Overridden Object methods
     // -----------------------------------------------------------------------------------------------
+
     /**
      * Returns a string representation of this label.
      *

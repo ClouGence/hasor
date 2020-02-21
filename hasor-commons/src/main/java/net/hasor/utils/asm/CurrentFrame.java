@@ -36,6 +36,7 @@ final class CurrentFrame extends Frame {
     CurrentFrame(final Label owner) {
         super(owner);
     }
+
     /**
      * Sets this CurrentFrame to the input stack map frame of the next "current" instruction, i.e. the
      * instruction just after the given one. It is assumed that the value of this object when this

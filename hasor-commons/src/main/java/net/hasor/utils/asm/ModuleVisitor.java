@@ -40,8 +40,11 @@ public abstract class ModuleVisitor {
      * Opcodes#ASM6} or {@link Opcodes#ASM7}.
      */
     protected final int           api;
-    /** The module visitor to which this visitor must delegate method calls. May be null. */
+    /**
+     * The module visitor to which this visitor must delegate method calls. May be {@literal null}.
+     */
     protected       ModuleVisitor mv;
+
     /**
      * Constructs a new {@link ModuleVisitor}.
      *
@@ -51,6 +54,7 @@ public abstract class ModuleVisitor {
     public ModuleVisitor(final int api) {
         this(api, null);
     }
+
     /**
      * Constructs a new {@link ModuleVisitor}.
      *
@@ -60,12 +64,16 @@ public abstract class ModuleVisitor {
      *     be null.
      */
     public ModuleVisitor(final int api, final ModuleVisitor moduleVisitor) {
-        if (api != Opcodes.ASM6 && api != Opcodes.ASM7) {
-            throw new IllegalArgumentException();
+        if (api != Opcodes.ASM7 && api != Opcodes.ASM6 && api != Opcodes.ASM5 && api != Opcodes.ASM4 && api != Opcodes.ASM8_EXPERIMENTAL) {
+            throw new IllegalArgumentException("Unsupported api " + api);
+        }
+        if (api == Opcodes.ASM8_EXPERIMENTAL) {
+            Constants.checkAsm8Experimental(this);
         }
         this.api = api;
         this.mv = moduleVisitor;
     }
+
     /**
      * Visit the main class of the current module.
      *
@@ -76,6 +84,7 @@ public abstract class ModuleVisitor {
             mv.visitMainClass(mainClass);
         }
     }
+
     /**
      * Visit a package of the current module.
      *
@@ -86,6 +95,7 @@ public abstract class ModuleVisitor {
             mv.visitPackage(packaze);
         }
     }
+
     /**
      * Visits a dependence of the current module.
      *
@@ -99,6 +109,7 @@ public abstract class ModuleVisitor {
             mv.visitRequire(module, access, version);
         }
     }
+
     /**
      * Visit an exported package of the current module.
      *
@@ -113,6 +124,7 @@ public abstract class ModuleVisitor {
             mv.visitExport(packaze, access, modules);
         }
     }
+
     /**
      * Visit an open package of the current module.
      *
@@ -127,6 +139,7 @@ public abstract class ModuleVisitor {
             mv.visitOpen(packaze, access, modules);
         }
     }
+
     /**
      * Visit a service used by the current module. The name must be the internal name of an interface
      * or a class.
@@ -138,6 +151,7 @@ public abstract class ModuleVisitor {
             mv.visitUse(service);
         }
     }
+
     /**
      * Visit an implementation of a service.
      *
@@ -150,6 +164,7 @@ public abstract class ModuleVisitor {
             mv.visitProvide(service, providers);
         }
     }
+
     /**
      * Visits the end of the module. This method, which is the last one to be called, is used to
      * inform the visitor that everything have been visited.

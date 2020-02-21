@@ -30,10 +30,8 @@ package net.hasor.utils.asm;
  * An entry of the constant pool, of the BootstrapMethods attribute, or of the (ASM specific) type
  * table of a class.
  *
- * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.4">JVMS
- *     4.4</a>
- * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.23">JVMS
- *     4.7.23</a>
+ * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.4">JVMS 4.4</a>
+ * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.23">JVMS 4.7.23</a>
  * @author Eric Bruneton
  */
 abstract class Symbol {
@@ -164,6 +162,7 @@ abstract class Symbol {
      * </ul>
      */
     int info;
+
     /**
      * Constructs a new Symbol. This constructor can't be used directly because the Symbol class is
      * abstract. Instead, use the factory methods of the {@link SymbolTable} class.
@@ -185,6 +184,7 @@ abstract class Symbol {
         this.value = value;
         this.data = data;
     }
+
     /**
      * Returns the result {@link Type#getArgumentsAndReturnSizes} on {@link #value}.
      *

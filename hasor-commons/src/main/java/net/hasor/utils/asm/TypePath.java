@@ -46,13 +46,12 @@ public final class TypePath {
      * Specification (JVMS) - corresponding to this TypePath is stored. The first byte of the
      * structure in this array is given by {@link #typePathOffset}.
      *
-     * @see <a
-     *     href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.20.2">JVMS
-     *     4.7.20.2</a>
+     * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.20.2">JVMS 4.7.20.2</a>
      */
     private final       byte[] typePathContainer;
     /** The offset of the first byte of the type_path JVMS structure in {@link #typePathContainer}. */
     private final       int    typePathOffset;
+
     /**
      * Constructs a new TypePath.
      *
@@ -64,6 +63,7 @@ public final class TypePath {
         this.typePathContainer = typePathContainer;
         this.typePathOffset = typePathOffset;
     }
+
     /**
      * Returns the length of this path, i.e. its number of steps.
      *
@@ -73,6 +73,7 @@ public final class TypePath {
         // path_length is stored in the first byte of a type_path.
         return typePathContainer[typePathOffset];
     }
+
     /**
      * Returns the value of the given step of this path.
      *
@@ -84,6 +85,7 @@ public final class TypePath {
         // Returns the type_path_kind of the path element of the given index.
         return typePathContainer[typePathOffset + 2 * index + 1];
     }
+
     /**
      * Returns the index of the type argument that the given step is stepping into. This method should
      * only be used for steps whose value is {@link #TYPE_ARGUMENT}.
@@ -95,6 +97,7 @@ public final class TypePath {
         // Returns the type_argument_index of the path element of the given index.
         return typePathContainer[typePathOffset + 2 * index + 2];
     }
+
     /**
      * Converts a type path in string form, in the format used by {@link #toString()}, into a TypePath
      * object.
@@ -139,6 +142,7 @@ public final class TypePath {
         output.data[0] = (byte) (output.length / 2);
         return new TypePath(output.data, 0);
     }
+
     /**
      * Returns a string representation of this type path. {@link #ARRAY_ELEMENT} steps are represented
      * with '[', {@link #INNER_TYPE} steps with '.', {@link #WILDCARD_BOUND} steps with '*' and {@link
@@ -168,6 +172,7 @@ public final class TypePath {
         }
         return result.toString();
     }
+
     /**
      * Puts the type_path JVMS structure corresponding to the given TypePath into the given
      * ByteVector.

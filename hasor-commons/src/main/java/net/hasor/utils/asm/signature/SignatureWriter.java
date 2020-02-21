@@ -27,12 +27,12 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package net.hasor.utils.asm.signature;
 import net.hasor.utils.asm.Opcodes;
+
 /**
  * A SignatureVisitor that generates signature literals, as defined in the Java Virtual Machine
  * Specification (JVMS).
  *
- * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.9.1">JVMS
- *     4.7.9.1</a>
+ * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.9.1">JVMS 4.7.9.1</a>
  * @author Thomas Hallgren
  * @author Eric Bruneton
  */
@@ -61,6 +61,7 @@ public class SignatureWriter extends SignatureVisitor {
      * visitEnd, or because visitInnerClassType is called).
      */
     private       int           argumentStack;
+
     /** Constructs a new {@link SignatureWriter}. */
     public SignatureWriter() {
         super(Opcodes.ASM7);
@@ -68,6 +69,7 @@ public class SignatureWriter extends SignatureVisitor {
     // -----------------------------------------------------------------------------------------------
     // Implementation of the SignatureVisitor interface
     // -----------------------------------------------------------------------------------------------
+
     @Override
     public void visitFormalTypeParameter(final String name) {
         if (!hasFormals) {
@@ -77,24 +79,29 @@ public class SignatureWriter extends SignatureVisitor {
         stringBuilder.append(name);
         stringBuilder.append(':');
     }
+
     @Override
     public SignatureVisitor visitClassBound() {
         return this;
     }
+
     @Override
     public SignatureVisitor visitInterfaceBound() {
         stringBuilder.append(':');
         return this;
     }
+
     @Override
     public SignatureVisitor visitSuperclass() {
         endFormals();
         return this;
     }
+
     @Override
     public SignatureVisitor visitInterface() {
         return this;
     }
+
     @Override
     public SignatureVisitor visitParameterType() {
         endFormals();
@@ -104,6 +111,7 @@ public class SignatureWriter extends SignatureVisitor {
         }
         return this;
     }
+
     @Override
     public SignatureVisitor visitReturnType() {
         endFormals();
@@ -113,26 +121,31 @@ public class SignatureWriter extends SignatureVisitor {
         stringBuilder.append(')');
         return this;
     }
+
     @Override
     public SignatureVisitor visitExceptionType() {
         stringBuilder.append('^');
         return this;
     }
+
     @Override
     public void visitBaseType(final char descriptor) {
         stringBuilder.append(descriptor);
     }
+
     @Override
     public void visitTypeVariable(final String name) {
         stringBuilder.append('T');
         stringBuilder.append(name);
         stringBuilder.append(';');
     }
+
     @Override
     public SignatureVisitor visitArrayType() {
         stringBuilder.append('[');
         return this;
     }
+
     @Override
     public void visitClassType(final String name) {
         stringBuilder.append('L');
@@ -141,6 +154,7 @@ public class SignatureWriter extends SignatureVisitor {
         // we can tell at this point).
         argumentStack *= 2;
     }
+
     @Override
     public void visitInnerClassType(final String name) {
         endArguments();
@@ -150,6 +164,7 @@ public class SignatureWriter extends SignatureVisitor {
         // we can tell at this point).
         argumentStack *= 2;
     }
+
     @Override
     public void visitTypeArgument() {
         // If the top of the stack is 'false', this means we are visiting the first type argument of the
@@ -161,6 +176,7 @@ public class SignatureWriter extends SignatureVisitor {
         }
         stringBuilder.append('*');
     }
+
     @Override
     public SignatureVisitor visitTypeArgument(final char wildcard) {
         // If the top of the stack is 'false', this means we are visiting the first type argument of the
@@ -175,11 +191,13 @@ public class SignatureWriter extends SignatureVisitor {
         }
         return this;
     }
+
     @Override
     public void visitEnd() {
         endArguments();
         stringBuilder.append(';');
     }
+
     /**
      * Returns the signature that was built by this signature writer.
      *
@@ -192,6 +210,7 @@ public class SignatureWriter extends SignatureVisitor {
     // -----------------------------------------------------------------------------------------------
     // Utility methods
     // -----------------------------------------------------------------------------------------------
+
     /** Ends the formal type parameters section of the signature. */
     private void endFormals() {
         if (hasFormals) {
@@ -199,6 +218,7 @@ public class SignatureWriter extends SignatureVisitor {
             stringBuilder.append('>');
         }
     }
+
     /** Ends the type arguments of a class or inner class type. */
     private void endArguments() {
         // If the top of the stack is 'true', this means that some type arguments have been visited for

@@ -38,6 +38,7 @@ package net.hasor.utils.asm.signature;
 public class SignatureReader {
     /** The JVMS signature to be read. */
     private final String signatureValue;
+
     /**
      * Constructs a {@link SignatureReader} for the given signature.
      *
@@ -46,6 +47,7 @@ public class SignatureReader {
     public SignatureReader(final String signature) {
         this.signatureValue = signature;
     }
+
     /**
      * Makes the given visitor visit the signature of this {@link SignatureReader}. This signature is
      * the one specified in the constructor (see {@link #SignatureReader}). This method is intended to
@@ -115,6 +117,7 @@ public class SignatureReader {
             }
         }
     }
+
     /**
      * Makes the given visitor visit the signature of this {@link SignatureReader}. This signature is
      * the one specified in the constructor (see {@link #SignatureReader}). This method is intended to
@@ -128,6 +131,7 @@ public class SignatureReader {
     public void acceptType(final SignatureVisitor signatureVisitor) {
         parseType(signatureValue, 0, signatureVisitor);
     }
+
     /**
      * Parses a JavaTypeSignature and makes the given visitor visit it.
      *

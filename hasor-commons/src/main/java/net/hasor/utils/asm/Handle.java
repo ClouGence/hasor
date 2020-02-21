@@ -48,6 +48,7 @@ public final class Handle {
     private final String  descriptor;
     /** Whether the owner is an interface or not. */
     private final boolean isInterface;
+
     /**
      * Constructs a new field or method handle.
      *
@@ -67,6 +68,7 @@ public final class Handle {
     public Handle(final int tag, final String owner, final String name, final String descriptor) {
         this(tag, owner, name, descriptor, tag == Opcodes.H_INVOKEINTERFACE);
     }
+
     /**
      * Constructs a new field or method handle.
      *
@@ -88,6 +90,7 @@ public final class Handle {
         this.descriptor = descriptor;
         this.isInterface = isInterface;
     }
+
     /**
      * Returns the kind of field or method designated by this handle.
      *
@@ -99,6 +102,7 @@ public final class Handle {
     public int getTag() {
         return tag;
     }
+
     /**
      * Returns the internal name of the class that owns the field or method designated by this handle.
      *
@@ -107,6 +111,7 @@ public final class Handle {
     public String getOwner() {
         return owner;
     }
+
     /**
      * Returns the name of the field or method designated by this handle.
      *
@@ -115,6 +120,7 @@ public final class Handle {
     public String getName() {
         return name;
     }
+
     /**
      * Returns the descriptor of the field or method designated by this handle.
      *
@@ -123,6 +129,7 @@ public final class Handle {
     public String getDesc() {
         return descriptor;
     }
+
     /**
      * Returns true if the owner of the field or method designated by this handle is an interface.
      *
@@ -131,6 +138,7 @@ public final class Handle {
     public boolean isInterface() {
         return isInterface;
     }
+
     @Override
     public boolean equals(final Object object) {
         if (object == this) {
@@ -142,10 +150,12 @@ public final class Handle {
         Handle handle = (Handle) object;
         return tag == handle.tag && isInterface == handle.isInterface && owner.equals(handle.owner) && name.equals(handle.name) && descriptor.equals(handle.descriptor);
     }
+
     @Override
     public int hashCode() {
         return tag + (isInterface ? 64 : 0) + owner.hashCode() * name.hashCode() * descriptor.hashCode();
     }
+
     /**
      * Returns the textual representation of this handle. The textual representation is:
      *

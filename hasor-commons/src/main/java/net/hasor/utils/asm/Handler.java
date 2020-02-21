@@ -32,8 +32,7 @@ package net.hasor.utils.asm;
  * can be chained together, with their {@link #nextHandler} field, to describe a full JVMS
  * exception_table array.
  *
- * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.3">JVMS
- *     4.7.3</a>
+ * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.3">JVMS 4.7.3</a>
  * @author Eric Bruneton
  */
 final class Handler {
@@ -64,6 +63,7 @@ final class Handler {
     final String catchTypeDescriptor;
     /** The next exception handler. */
     Handler nextHandler;
+
     /**
      * Constructs a new Handler.
      *
@@ -81,6 +81,7 @@ final class Handler {
         this.catchType = catchType;
         this.catchTypeDescriptor = catchTypeDescriptor;
     }
+
     /**
      * Constructs a new Handler from the given one, with a different scope.
      *
@@ -92,6 +93,7 @@ final class Handler {
         this(startPc, endPc, handler.handlerPc, handler.catchType, handler.catchTypeDescriptor);
         this.nextHandler = handler.nextHandler;
     }
+
     /**
      * Removes the range between start and end from the Handler list that begins with the given
      * element.
@@ -133,6 +135,7 @@ final class Handler {
             return new Handler(firstHandler, firstHandler.startPc, start);
         }
     }
+
     /**
      * Returns the number of elements of the Handler list that begins with the given element.
      *
@@ -148,6 +151,7 @@ final class Handler {
         }
         return length;
     }
+
     /**
      * Returns the size in bytes of the JVMS exception_table corresponding to the Handler list that
      * begins with the given element. <i>This includes the exception_table_length field.</i>
@@ -158,6 +162,7 @@ final class Handler {
     static int getExceptionTableSize(final Handler firstHandler) {
         return 2 + 8 * getExceptionTableLength(firstHandler);
     }
+
     /**
      * Puts the JVMS exception_table corresponding to the Handler list that begins with the given
      * element. <i>This includes the exception_table_length field.</i>
