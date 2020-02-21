@@ -28,59 +28,59 @@ import java.util.Date;
  */
 public class DateTimeUdfSource implements UdfSourceAssembly {
     /** 返回当前时间戳 long 格式 */
-    public long now() {
+    public static long now() {
         return System.currentTimeMillis();
     }
 
     /** 返回当前系统时区的：年 */
-    public int year(long time) {
+    public static int year(long time) {
         Calendar date = Calendar.getInstance();
         date.setTime(new Date(time));
         return date.get(Calendar.YEAR);
     }
 
     /** 返回当前系统时区的：月 */
-    public int month(long time) {
+    public static int month(long time) {
         Calendar date = Calendar.getInstance();
         date.setTime(new Date(time));
         return date.get(Calendar.MONTH) + 1;
     }
 
     /** 返回当前系统时区的：日 */
-    public int day(long time) {
+    public static int day(long time) {
         Calendar date = Calendar.getInstance();
         date.setTime(new Date(time));
         return date.get(Calendar.DAY_OF_MONTH);
     }
 
     /** 返回当前系统时区的：小时 */
-    public int hour(long time) {
+    public static int hour(long time) {
         Calendar date = Calendar.getInstance();
         date.setTime(new Date(time));
         return date.get(Calendar.HOUR);
     }
 
     /** 返回当前系统时区的：分钟 */
-    public int minute(long time) {
+    public static int minute(long time) {
         Calendar date = Calendar.getInstance();
         date.setTime(new Date(time));
         return date.get(Calendar.MINUTE);
     }
 
     /** 返回当前系统时区的：秒 */
-    public int second(long time) {
+    public static int second(long time) {
         Calendar date = Calendar.getInstance();
         date.setTime(new Date(time));
         return date.get(Calendar.SECOND);
     }
 
     /** 格式化指定时间 */
-    public String format(long time, String pattern) {
+    public static String format(long time, String pattern) {
         return new SimpleDateFormat(pattern).format(new Date(time));
     }
 
     /** 解析一个时间日期数据为 long */
-    public long parser(String time, String pattern) throws ParseException {
+    public static long parser(String time, String pattern) throws ParseException {
         return new SimpleDateFormat(pattern).parse(time).getTime();
     }
 }

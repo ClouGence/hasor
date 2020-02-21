@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.dataql.udfs;
+import net.hasor.dataql.Finder;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.Udf;
-import net.hasor.dataql.UdfSource;
 import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.DomainHelper;
@@ -133,14 +133,15 @@ public class CollectionUdfSource implements UdfSourceAssembly {
         return finalList;
     }
 
-    /** 创建一个有状态的 Array 对象 */
+    /** 创建一个有状态的 Array 对象
+     * @return*/
     @UdfName("new")
-    public static UdfSource newArray(Object mabeCollection) {
+    public static Map<String, Udf> newArray(Object mabeCollection) {
         List<Object> initData = new ArrayList<>();
         if (mabeCollection != null) {
             initData.addAll(foreach(mabeCollection));
         }
-        return new InnerCollectionStateUdfSource(initData);
+        return new InnerCollectionStateUdfSource(initData).getUdfResource(Finder.DEFAULT).get();
     }
 
     /** List 转为 Map */

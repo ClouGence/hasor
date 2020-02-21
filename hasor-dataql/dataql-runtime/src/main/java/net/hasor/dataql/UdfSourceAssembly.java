@@ -170,6 +170,7 @@ public interface UdfSourceAssembly extends UdfSource {
 
             public StaticUdf(Method target) {
                 this.target = target;
+                this.target.setAccessible(true);
             }
 
             @Override
@@ -184,6 +185,7 @@ public interface UdfSourceAssembly extends UdfSource {
 
             public ObjectUdf(Method target, Supplier<?> provider) {
                 this.target = target;
+                this.target.setAccessible(true);
                 this.provider = provider;
             }
 

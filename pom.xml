@@ -59,7 +59,9 @@
         <module>hasor-web</module>
         <module>hasor-tconsole</module>
         <module>hasor-dataql/dataql-runtime</module>
-        <module>hasor-dataql/dataql-ext</module>
+        <module>hasor-dataql/dataql-fx-basic</module>
+        <module>hasor-dataql/dataql-fx-net</module>
+        <module>hasor-dataql/dataql-fx-db</module>
         <module>hasor-dataql/dataql-maven-plugin</module>
         <module>hasor-rsf/rsf-framework</module>
         <!--        <module>hasor-rsf/rsf-gateway</module>-->
