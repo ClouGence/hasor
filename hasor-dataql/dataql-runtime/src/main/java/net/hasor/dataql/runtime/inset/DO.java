@@ -23,6 +23,7 @@ import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
 import net.hasor.dataql.runtime.operator.OperatorProcess;
+import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 /**
  * DO      // 二元运算，堆栈【第一个操作数，第二个操作数】  第一操作数 * 第二操作数
@@ -52,13 +53,35 @@ class DO implements InsetProcess {
         if (secExpData instanceof DataModel) {
             secExpData = ((DataModel) secExpData).asOri();
         }
+        // 除法修正
+        if ("/".equals(dyadicSymbol)) {
+            boolean isPositive = true;
+            if (OperatorUtils.isNumber(fstExpData)) {
+                Number number = (Number) fstExpData;
+                if (!OperatorUtils.isDecimal(number)) {
+                    fstExpData = OperatorUtils.multiply(number, 1.0d);// TODO 可以优化
+                }
+                isPositive = OperatorUtils.gteq(number, 0);
+            } else {
+                String msg = (fstExpData == null) ? "is null." : "must number.";
+                throw new InstructRuntimeException("DO -> first data " + msg);
+            }
+            if (secExpData == null) {
+                if (isPositive) {
+                    dataStack.push(Double.POSITIVE_INFINITY); // 除数为整数数，被除数为0 -> 正无穷大
+                } else {
+                    dataStack.push(Double.NEGATIVE_INFINITY); // 除数为负数，被除数为0 -> 负无穷大
+                }
+                return;
+            }
+        }
         //
         Class<?> fstType = (fstExpData == null) ? Void.class : fstExpData.getClass();
         Class<?> secType = (secExpData == null) ? Void.class : secExpData.getClass();
         OperatorProcess process = context.findDyadicOperator(dyadicSymbol, fstType, secType);
         //
         if (process == null) {
-            throw new InstructRuntimeException("DO -> type '" + fstType + "' and type '" + fstType + "' operation '" + dyadicSymbol + "' is not supported.");
+            throw new InstructRuntimeException("DO -> '" + fstType.getName() + "' and '" + secType.getName() + "' operation '" + dyadicSymbol + "' not support.");
         }
         //
         Object result = process.doProcess(dyadicSymbol, new Object[] { fstExpData, secExpData }, context);

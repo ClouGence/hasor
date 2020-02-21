@@ -86,6 +86,10 @@ public class NumberDOP extends AbstractDOP {
         //      1bit（符号位） 8bits（指数位） 23bits（尾数位）
         //      2^23 = 8388608，一共七位，因此小数精度为 6~7位。
         if (OperatorUtils.isFloatNumber(result) && maxDecimal < 7) {
+            float number = (float) result;
+            if (number == Float.POSITIVE_INFINITY || Float.isNaN(number) || number == Float.NEGATIVE_INFINITY) {
+                return result.toString();
+            }
             BigDecimal resultDecimal = new BigDecimal(result.toString());
             resultDecimal = resultDecimal.setScale(maxDecimal, roundingMode.getModeNum());
             return resultDecimal.floatValue();
@@ -94,6 +98,10 @@ public class NumberDOP extends AbstractDOP {
         //      1bit（符号位） 11bits（指数位） 52bits（尾数位）
         //      2^52 = 4503599627370496，一共16位，因此小数精度为 15~16位。
         if (OperatorUtils.isDoubleNumber(result) && maxDecimal < 16) {
+            double number = (double) result;
+            if (number == Double.POSITIVE_INFINITY || Double.isNaN(number) || number == Double.NEGATIVE_INFINITY) {
+                return result.toString();
+            }
             BigDecimal resultDecimal = new BigDecimal(result.toString());
             resultDecimal = resultDecimal.setScale(maxDecimal, roundingMode.getModeNum());
             return resultDecimal.doubleValue();

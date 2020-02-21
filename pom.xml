@@ -349,7 +349,7 @@
             </dependency>
             <dependency>
                 <groupId>net.hasor</groupId>
-                <artifactId>hasor-dataql-ext</artifactId>
+                <artifactId>hasor-dataql-fx-basic</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

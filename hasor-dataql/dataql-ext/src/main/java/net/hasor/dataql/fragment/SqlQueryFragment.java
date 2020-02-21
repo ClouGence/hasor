@@ -73,6 +73,8 @@ public class SqlQueryFragment implements FragmentProcess {
                     Set<Map.Entry<String, Object>> entrySet = objectMap.entrySet();
                     Map.Entry<String, Object> objectEntry = entrySet.iterator().next();
                     return objectEntry.getValue();
+                } else {
+                    return objectMap;
                 }
             }
             return mapList;

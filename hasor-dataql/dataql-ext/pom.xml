@@ -9,11 +9,11 @@
     </parent>
 
     <!-- Maven Info -->
-    <artifactId>hasor-dataql-ext</artifactId>
+    <artifactId>hasor-dataql-fx-basic</artifactId>
     <packaging>jar</packaging>
 
     <!-- Project Info -->
-    <name>Hasor-DataQL/ExtPackage</name>
+    <name>Hasor-DataQL/FunctionX-Basic</name>
     <description>the hasor DataQL project.</description>
 
     <developers>

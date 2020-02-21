@@ -221,13 +221,15 @@ public class CollectionUdfSource implements UdfSourceAssembly {
         ObjectModel objectModel = (ObjectModel) DomainHelper.convertTo(data);
         StringBuilder joinKey = new StringBuilder("");
         Arrays.stream(joinField).forEach(s -> {
-            joinKey.append(objectModel.get(s).unwrap().toString()).append(",");
+            Object unwrap = objectModel.get(s).unwrap();
+            unwrap = (unwrap == null) ? "NULL" : ("s" + unwrap.toString());
+            joinKey.append(unwrap).append(",");
         });
         return joinKey.toString();
     }
 
     /** 将两个 Map List 进行链接，行为和 sql 中的 left join 相同 */
-    public static List<Map<String, Object>> mapjoin(List<Object> data1, List<Object> data2, Map<String, String> join, Udf convert, Hints option) {
+    public static List<Map<String, Object>> mapjoin(List<Object> data1, List<Object> data2, Map<String, String> join, Hints option) {
         //
         LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<>(join);
         String[] joinKey1 = linkedHashMap.keySet().toArray(new String[0]);
