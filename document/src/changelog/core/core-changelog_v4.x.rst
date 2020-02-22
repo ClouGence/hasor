@@ -1,12 +1,30 @@
 --------------------
 Release Hasor v4.x
 --------------------
-Hasor v4.1.1 (2020-02-?)
+Hasor v4.1.2 (2020-02-?)
 ------------------------------------
-**修复**
-    - all-in-one 包的传递依赖丢失问题修复。
+    - .....
+
+Hasor v4.1.1 (2020-02-22)
+------------------------------------
 **新增**
     - 新增 DataQL Maven 插件，会根据 *.ql 文件生成对应的 Java 调用代码。
+    - 添加 TypeSupplier 接口可以让 Hasor 有能力工作在其它 IoC 框架下。一个典型的场景就是与 Spring 整合。
+    - DataQL：Finder 接口取消 Object findBean(String beanName)  方法
+**优化**
+    - UdfSourceAssembly 接口优化实现，getSupplier 改为返回自己。
+    - UdfSourceAssembly 接口中：Object、UdfSource、UdfSourceAssembly 三个类型的方法不被默认列入。
+    - bindSpiChainProcessor 方法更名为 bindSpiInterceptor 更为贴切其含义。
+    - VarSupplier 接口删除使用 Supplier 替代。
+    - SqlQueryFragment 当遇到返回数据仅一行时，将不在包裹 List 。
+    - CollectionUdfSource evalJoinKey 方法兼容 NULL 值。
+    - NumberDOP 在做二元计算时，兼顾了 POSITIVE_INFINITY、NaN、NEGATIVE_INFINITY 三种情况。
+    - DO 指令增加了 除法修正 的前置处理
+**修复**
+    - all-in-one 包的传递依赖丢失问题修复。
+**其它**
+    - land 项目并入 rsf。
+    - 内置ASM 升级到 7.3.1
 
 Hasor v4.1.0 (2020-02-03)
 ------------------------------------
