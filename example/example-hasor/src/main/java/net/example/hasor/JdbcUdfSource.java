@@ -1,6 +1,6 @@
 package net.example.hasor;
 import net.hasor.dataql.DimUdfSource;
-import net.hasor.dataql.sdk.UdfSourceAssembly;
+import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import org.springframework.util.CollectionUtils;
 

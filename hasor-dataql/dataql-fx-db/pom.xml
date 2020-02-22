@@ -9,11 +9,11 @@
     </parent>
 
     <!-- Maven Info -->
-    <artifactId>hasor-dataql-fx-basic</artifactId>
+    <artifactId>hasor-dataql-fx-db</artifactId>
     <packaging>jar</packaging>
 
     <!-- Project Info -->
-    <name>Hasor-DataQL/FunctionX-Basic</name>
+    <name>Hasor-DataQL/FunctionX-DataBase</name>
     <description>the hasor DataQL project.</description>
 
     <developers>
@@ -32,7 +32,6 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-db</artifactId>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

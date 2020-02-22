@@ -36,6 +36,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <ignoreError>true</ignoreError>
+                </configuration>
             </plugin>
         </plugins>
     </build>

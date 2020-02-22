@@ -38,7 +38,7 @@ import java.util.function.Supplier;
 public interface QueryApiBinder extends ApiBinder, Hints {
     /** 加载带有 @DimFragment 注解的类 */
     public default QueryApiBinder loadFragment(Set<Class<?>> fragmentTypeSet) {
-        return this.loadFragment(fragmentTypeSet, Matchers.annotatedWithClass(DimFragment.class), null);
+        return this.loadFragment(fragmentTypeSet, Matchers.anyClass(), null);
     }
 
     /** 加载带有 @DimFragment 注解的类 */
@@ -85,7 +85,7 @@ public interface QueryApiBinder extends ApiBinder, Hints {
 
     /** 加载带有 @DimUdf 注解的类 */
     public default QueryApiBinder loadUdf(Set<Class<?>> udfTypeSet) {
-        return this.loadUdf(udfTypeSet, Matchers.annotatedWithClass(DimUdf.class), null);
+        return this.loadUdf(udfTypeSet, Matchers.anyClass(), null);
     }
 
     /** 加载带有 @DimUdf 注解的类 */
@@ -135,7 +135,7 @@ public interface QueryApiBinder extends ApiBinder, Hints {
 
     /** 加载带有 @DimUdfSource 注解的类 */
     public default QueryApiBinder loadUdfSource(Set<Class<?>> udfSourceTypeSet) {
-        return this.loadUdfSource(udfSourceTypeSet, Matchers.annotatedWithClass(DimUdfSource.class), null);
+        return this.loadUdfSource(udfSourceTypeSet, Matchers.anyClass(), null);
     }
 
     /** 加载带有 @DimUdfSource 注解的类 */
