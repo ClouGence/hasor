@@ -17,7 +17,7 @@
 - 最低要求环境jdk8
 
 ### 技术体系
-.. image:: ../_static/CC2_403A_3BD5_D581.png
+![avatar](https://www.hasor.net/web/_images/CC2_403A_3BD5_D581.png)
 
 - Core 具备 Aop 并兼容 JSR-330 的Bean容器框架（[详细..](hasor-core/README.md)）
   - 提供一个支持IoC、Aop的Bean容器。
