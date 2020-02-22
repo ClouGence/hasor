@@ -2,7 +2,7 @@
 //  - 需要用到集合包的 filter 函数
 //  - 实现思路是：递归
 
-import 'net.hasor.dataql.udfs.CollectionUdfSource' as collect;
+import 'net.hasor.dataql.fx.CollectionUdfSource' as collect;
 
 var dataSet = [
     {'id': 1, 'parent_id':null, 'label' : 't1'},

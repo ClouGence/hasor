@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Environment;
 import net.hasor.core.container.BindInfoContainer;
 import net.hasor.core.container.ScopeContainer;
 import net.hasor.core.container.SpiCallerContainer;
@@ -62,11 +64,27 @@ public class AbstractBinderDataTest {
         ScopeContainer scopFactory = new ScopeContainer(spiContainer);
         scopFactory.init();
         PowerMockito.when(factory.getScopeContainer()).thenReturn(scopFactory);
-        this.binder = new ApiBinderWrap(new AbstractBinder(new StandardEnvironment(null)) {
+        this.binder = new ApiBinderWrap(newAbstractBinder(factory));
+    }
+
+    protected AbstractBinder newAbstractBinder(BindInfoBuilderFactory factory) throws IOException {
+        return newAbstractBinder(new StandardEnvironment(null), factory);
+    }
+
+    protected AbstractBinder newAbstractBinder(Environment environment, BindInfoBuilderFactory factory) {
+        AtomicReference<ApiBinder> refApiBinder = new AtomicReference<>();
+        AbstractBinder binder = new AbstractBinder(environment) {
+            @Override
+            protected ApiBinder self() {
+                return refApiBinder.get();
+            }
+
             @Override
             protected BindInfoBuilderFactory containerFactory() {
                 return factory;
             }
-        });
+        };
+        refApiBinder.set(this.binder);
+        return binder;
     }
 }

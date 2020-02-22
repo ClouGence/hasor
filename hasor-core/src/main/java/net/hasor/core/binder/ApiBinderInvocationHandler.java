@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,52 +48,29 @@ public class ApiBinderInvocationHandler implements InvocationHandler {
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
         if (method.getName().equals("toString")) {
-            StringBuilder builder = new StringBuilder();
-            builder = builder.append("count = ").append(this.supportMap.size()).append(" - [");
-            for (Class<?> face : this.supportMap.keySet()) {
-                builder = builder.append(face.getName()).append(",");
-            }
-            if (builder.charAt(builder.length() - 1) == ',') {
-                builder = builder.deleteCharAt(builder.length() - 1);
-            }
-            builder.append("]");
-            return builder.toString();
+            return proxyToString();
         }
         //
         Class<?> declaringClass = method.getDeclaringClass();
         Object target = this.supportMap.get(declaringClass);
-        if (method.getName().equals("installModule")) {
-            if (args[0] != null) {
-                ApiBinder apiBinder = (ApiBinder) this.supportMap.get(ApiBinder.class);
-                Environment environment = apiBinder.getEnvironment();
-                Module[] moduleArrays = (Module[]) args[0];
-                for (Module module : moduleArrays) {
-                    logger.info("installModule ->" + module);
-                    /*加载*/
-                    module.loadModule((ApiBinder) proxy);
-                    /*启动*/
-                    HasorUtils.pushStartListener(environment, (EventListener<AppContext>) (event, eventData) -> module.onStart(eventData));
-                    /*停止*/
-                    HasorUtils.pushShutdownListener(environment, (EventListener<AppContext>) (event, eventData) -> module.onStop(eventData));
-                }
-            }
-            return null;
-        }
-        if (method.getName().equals("tryCast")) {
-            Class<?>[] types = method.getParameterTypes();
-            if (types.length == 1 && types[0] == Class.class) {
-                Class<?> castApiBinder = (Class<?>) args[0];
-                if (!castApiBinder.isInstance(proxy)) {
-                    return null;
-                }
-                return proxy;
-            }
-        }
         //
         try {
             return method.invoke(target, args);
         } catch (InvocationTargetException ex) {
             throw ex.getTargetException();
         }
+    }
+
+    private Object proxyToString() {
+        StringBuilder builder = new StringBuilder();
+        builder = builder.append("count = ").append(this.supportMap.size()).append(" - [");
+        for (Class<?> face : this.supportMap.keySet()) {
+            builder = builder.append(face.getName()).append(",");
+        }
+        if (builder.charAt(builder.length() - 1) == ',') {
+            builder = builder.deleteCharAt(builder.length() - 1);
+        }
+        builder.append("]");
+        return builder.toString();
     }
 }

@@ -64,16 +64,27 @@ public abstract class AbstractBinder implements ApiBinder {
     }
 
     @Override
-    public void installModule(final Module... module) throws Throwable {
-        //see : net.hasor.core.binder.ApiBinderInvocationHandler.invoke() 由动态代理的拦截器实现。
-        throw new IllegalStateException("current state is not allowed.");
+    public ApiBinder installModule(final Module... modules) throws Throwable {
+        Environment environment = getEnvironment();
+        for (Module module : modules) {
+            logger.info("installModule ->" + module);
+            /*加载*/
+            module.loadModule(self());
+            /*启动*/
+            HasorUtils.pushStartListener(environment, (net.hasor.core.EventListener<AppContext>) (event, eventData) -> module.onStart(eventData));
+            /*停止*/
+            HasorUtils.pushShutdownListener(environment, (net.hasor.core.EventListener<AppContext>) (event, eventData) -> module.onStop(eventData));
+        }
+        return this;
     }
 
     @Override
     public <T extends ApiBinder> T tryCast(final Class<T> castApiBinder) {
-        //see : net.hasor.core.binder.ApiBinderInvocationHandler.invoke() 由动态代理的拦截器实现。
-        throw new IllegalStateException("current state is not allowed.");
+        ApiBinder self = self();
+        return (!castApiBinder.isInstance(self)) ? null : (T) self;
     }
+
+    protected abstract ApiBinder self();
 
     @Override
     public boolean isSingleton(BindInfo<?> bindInfo) {

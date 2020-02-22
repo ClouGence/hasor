@@ -1,5 +1,5 @@
 hint MAX_DECIMAL_DIGITS = 4
-import "net.hasor.dataql.udfs.CollectionUdfSource" as collect
+import "net.hasor.dataql.fx.CollectionUdfSource" as collect
 
 var year2019 = [
     { "pt":2019, "item_code":"code_1", "sum_price":2234 },

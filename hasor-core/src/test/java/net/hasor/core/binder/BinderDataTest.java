@@ -370,11 +370,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
     public void otherTest3() throws IOException {
         Environment env = new StandardEnvironment(null);
         BeanContainer container = new BeanContainer(env);
-        ApiBinderWrap binder = new ApiBinderWrap(new AbstractBinder(env) {
-            protected BindInfoBuilderFactory containerFactory() {
-                return container;
-            }
-        });
+        ApiBinderWrap binder = new ApiBinderWrap(newAbstractBinder(env, container));
         container.preInitialize();
         //
         MyScope myScope1 = new MyScope();
@@ -410,11 +406,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
     public void otherTest5() throws IOException {
         Environment env = new StandardEnvironment(null);
         BeanContainer container = new BeanContainer(env);
-        ApiBinderWrap binder = new ApiBinderWrap(new AbstractBinder(env) {
-            protected BindInfoBuilderFactory containerFactory() {
-                return container;
-            }
-        });
+        ApiBinderWrap binder = new ApiBinderWrap(newAbstractBinder(env, container));
         container.preInitialize();
         //
         BindInfoProvisionListener listener = PowerMockito.mock(BindInfoProvisionListener.class);
@@ -429,11 +421,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
     public void otherTest6() throws IOException {
         Environment env = new StandardEnvironment(null);
         BeanContainer container = new BeanContainer(env);
-        ApiBinderWrap binder = new ApiBinderWrap(new AbstractBinder(env) {
-            protected BindInfoBuilderFactory containerFactory() {
-                return container;
-            }
-        });
+        ApiBinderWrap binder = new ApiBinderWrap(newAbstractBinder(env, container));
         container.preInitialize();
         //
         MyScope myScope1 = new MyScope();
@@ -451,11 +439,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
     public void singletonTest1() throws IOException {
         Environment env = new StandardEnvironment(null);
         BeanContainer container = new BeanContainer(env);
-        ApiBinderWrap binder = new ApiBinderWrap(new AbstractBinder(env) {
-            protected BindInfoBuilderFactory containerFactory() {
-                return container;
-            }
-        });
+        ApiBinderWrap binder = new ApiBinderWrap(newAbstractBinder(env, container));
         container.preInitialize();
         //
         assert binder.isSingleton(SingletonPublicCallInitBean.class);

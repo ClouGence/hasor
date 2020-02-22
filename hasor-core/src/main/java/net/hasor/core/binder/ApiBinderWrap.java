@@ -58,8 +58,8 @@ public class ApiBinderWrap implements ApiBinder {
         return this.apiBinder.tryCast(castApiBinder);
     }
 
-    public void installModule(final Module... module) throws Throwable {
-        this.apiBinder.installModule(module);
+    public ApiBinder installModule(final Module... module) throws Throwable {
+        return this.apiBinder.installModule(module);
     }
 
     @Override
@@ -70,6 +70,11 @@ public class ApiBinderWrap implements ApiBinder {
     @Override
     public boolean isSingleton(Class<?> targetType) {
         return this.apiBinder.isSingleton(targetType);
+    }
+
+    @Override
+    public ApiBinder loadModule(Class<?> moduleType, TypeSupplier typeSupplier) {
+        return this.apiBinder.loadModule(moduleType, typeSupplier);
     }
 
     public void bindInterceptor(String matcherExpression, MethodInterceptor interceptor) {

@@ -42,6 +42,7 @@ import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -302,7 +303,13 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         }
         //
         // .创建扩展
+        AtomicReference<ApiBinder> proxyApiBinder = new AtomicReference<>();
         AbstractBinder binder = new AbstractBinder(this.getEnvironment()) {
+            @Override
+            protected ApiBinder self() {
+                return proxyApiBinder.get();
+            }
+
             protected BindInfoBuilderFactory containerFactory() {
                 return getContainer();
             }
@@ -332,8 +339,10 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         //
         // .返回
         Class<?>[] apiArrays = supportMap.keySet().toArray(new Class<?>[0]);
-        return (ApiBinder) Proxy.newProxyInstance(this.
+        ApiBinder apiBinder = (ApiBinder) Proxy.newProxyInstance(this.
                 getClassLoader(), apiArrays, new ApiBinderInvocationHandler(supportMap));
+        proxyApiBinder.set(apiBinder);
+        return apiBinder;
     }
 
     /**当开始所有 Module 的 installModule 之前。*/

@@ -38,7 +38,7 @@ import static org.mockito.ArgumentMatchers.any;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ HasorUtils.class })
-public class InvocationHandlerTest {
+public class InvocationHandlerTest extends AbstractBinderDataTest {
     @Test
     public void handlerTest() {
         Map<Class<?>, Object> supportMap = new HashMap<>();
@@ -77,11 +77,7 @@ public class InvocationHandlerTest {
         //
         Environment env = new StandardEnvironment(null);
         BeanContainer container = new BeanContainer(env);
-        ApiBinderWrap binder = new ApiBinderWrap(new AbstractBinder(env) {
-            protected BindInfoBuilderFactory containerFactory() {
-                return container;
-            }
-        });
+        ApiBinderWrap binder = new ApiBinderWrap(newAbstractBinder(env, container));
         container.preInitialize();
         //
         Map<Class<?>, Object> supportMap = new HashMap<>();

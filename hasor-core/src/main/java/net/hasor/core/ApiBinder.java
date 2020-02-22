@@ -75,7 +75,7 @@ public interface ApiBinder {
      * @throws Throwable 在执行loadModule方法期间发生异常的。
      * @see net.hasor.core.Module#loadModule(ApiBinder)
      */
-    public void installModule(Module... module) throws Throwable;
+    public ApiBinder installModule(Module... module) throws Throwable;
 
     /** 是否为单例 */
     public boolean isSingleton(BindInfo<?> bindInfo);
@@ -122,9 +122,9 @@ public interface ApiBinder {
         try {
             Class<? extends Module> newModuleType = (Class<? extends Module>) moduleType;
             if (typeSupplier != null) {
-                this.installModule(typeSupplier.get(newModuleType));
+                installModule(typeSupplier.get(newModuleType));
             } else {
-                this.installModule(newModuleType.newInstance());
+                installModule(newModuleType.newInstance());
             }
             return this;
         } catch (Throwable e) {

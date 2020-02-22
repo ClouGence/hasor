@@ -91,8 +91,8 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
     }
 
     @Override
-    public void installModule(Module... module) throws Throwable {
-        this.apiBinder.installModule(module);
+    public ApiBinder installModule(Module... module) throws Throwable {
+        return this.apiBinder.installModule(module);
     }
 
     @Override
@@ -103,6 +103,11 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
     @Override
     public boolean isSingleton(Class<?> targetType) {
         return this.apiBinder.isSingleton(targetType);
+    }
+
+    @Override
+    public ApiBinder loadModule(Class<?> moduleType, TypeSupplier typeSupplier) {
+        return this.apiBinder.loadModule(moduleType, typeSupplier);
     }
 
     @Override

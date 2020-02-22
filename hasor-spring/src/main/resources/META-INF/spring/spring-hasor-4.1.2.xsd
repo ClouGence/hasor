@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://www.hasor.net/schema/spring-hasor" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://www.hasor.net/schema/spring-hasor" elementFormDefault="qualified">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+
+    <!-- Factory -->
+    <xsd:element name="hasor">
+        <xsd:annotation>
+            <xsd:documentation>在 Spring 中整合 Hasor 框架.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="mainConfig" minOccurs="0" maxOccurs="1" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>Hasor 的配置文件入口.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+
+                <xsd:element name="property" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation>
+                        <xsd:documentation>环境变量配置.</xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:simpleContent>
+                            <xsd:extension base="xsd:string">
+                                <!-- K/V，属性Key -->
+                                <xsd:attribute name="name" type="xsd:string" use="required"/>
+                                <!-- K/V，属性Value -->
+                                <xsd:attribute name="value" type="xsd:string" use="optional"/>
+                            </xsd:extension>
+                        </xsd:simpleContent>
+                    </xsd:complexType>
+                </xsd:element>
+
+                <xsd:element name="loadModule" minOccurs="0" maxOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation>加载模块.</xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="module" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                    <!-- module 来自一个Spring Bean -->
+                                    <xsd:attribute name="refBean" type="xsd:string"/>
+                                    <!-- module 来自一个类型 -->
+                                    <xsd:attribute name="class" type="xsd:string"/>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                        <!-- 是否启用对 @DimModule 注解的自动扫描 -->
+                        <xsd:attribute name="autoScan" type="xsd:boolean" use="optional" default="false"/>
+                        <!-- 扫描时使用的扫描路径，如果没有指定那么使用 Hasor 默认扫描范围 -->
+                        <xsd:attribute name="scanPackages" type="xsd:string" use="optional"/>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+
+            <!-- Hasor框架，在Spring容器中的Bean ID。默认值为：net.hasor.core.AppContext -->
+            <xsd:attribute name="id" type="xsd:string" use="optional"/>
+
+            <!-- Hasor 容器的启动类。支持 spring 的 annotation-config 配置。-->
+            <xsd:attribute name="startWith" type="xsd:string" use="optional"/>
+            <!-- Spring 中配置的一个 Bean。用于配置Hasor框架的启动入口。-->
+            <xsd:attribute name="startWithRef" type="xsd:string" use="optional"/>
+
+            <!-- 引用一个属性配置，并导入到Hasor环境变量中。 -->
+            <xsd:attribute name="refProperties" type="xsd:string" use="optional"/>
+            <!-- 表示 Hasor 的环境属性变量是否作为配置，默认是 false -->
+            <xsd:attribute name="useProperties" type="xsd:boolean" use="optional" default="false"/>
+
+        </xsd:complexType>
+    </xsd:element>
+
+    <!-- Bean -->
+    <xsd:element name="bean">
+        <xsd:complexType>
+            <!-- 导出到Spring 之后的名字。默认值为：refID。如果refID未配置，那么使用 “refName + refType” -->
+            <xsd:attribute name="id" type="xsd:ID" use="optional"/>
+            <!-- 使用的 Hasor 容器ID，默认值为：net.hasor.core.AppContext -->
+            <xsd:attribute name="hasorID" type="xsd:string" use="optional"/>
+
+            <!-- 相当于，AppContext.getInstance("beanId") -->
+            <xsd:attribute name="refID" type="xsd:string"/>
+            <!-- 相当于，AppContext.getInstance(HasorBean.class) -->
+            <xsd:attribute name="refType" type="xsd:string" use="optional"/>
+            <!-- 配合 refType 一起使用，不会独立使用。相当于 AppContext.findBindingBean("beanName",HasorBean.class) -->
+            <xsd:attribute name="refName" type="xsd:string" use="optional"/>
+
+            <!-- 是否延迟创建 -->
+            <xsd:attribute name="lazy" type="xsd:boolean" use="optional" default="true"/>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

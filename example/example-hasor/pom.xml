@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <hasor.version>4.1.1-SNAPSHOT</hasor.version>
+        <hasor.version>4.1.2-SNAPSHOT</hasor.version>
     </properties>
 
     <build>
@@ -84,4 +84,23 @@
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
