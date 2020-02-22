@@ -16,10 +16,10 @@
 package net.hasor.web;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
+import net.hasor.core.TypeSupplier;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
-import net.hasor.core.TypeSupplier;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.web.annotation.MappingTo;
@@ -81,13 +81,16 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /** 加载带有 @MappingTo 注解的类。 */
     public default WebApiBinder loadMappingTo(Set<Class<?>> udfTypeSet) {
-        return this.loadMappingTo(udfTypeSet, Matchers.annotatedWithClass(MappingTo.class), null);
+        return this.loadMappingTo(udfTypeSet, Matchers.anyClass(), null);
     }
 
     /** 加载带有 @MappingTo 注解的类。 */
     public default WebApiBinder loadMappingTo(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
         if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
-            mabeUdfTypeSet.stream().filter(matcher).forEach(aClass -> loadMappingTo(aClass, typeSupplier));
+            mabeUdfTypeSet.stream()//
+                    .filter(matcher)//
+                    .filter(Matchers.annotatedWithClass(MappingTo.class))//
+                    .forEach(aClass -> loadMappingTo(aClass, typeSupplier));
         }
         return this;
     }
@@ -356,13 +359,16 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /** 加载带有 @Render注解配置的渲染器。 */
     public default WebApiBinder loadRender(Set<Class<?>> udfTypeSet) {
-        return this.loadRender(udfTypeSet, Matchers.annotatedWithClass(Render.class), null);
+        return this.loadRender(udfTypeSet, Matchers.anyClass(), null);
     }
 
     /** 加载带有 @Render注解配置的渲染器。 */
     public default WebApiBinder loadRender(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
         if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
-            mabeUdfTypeSet.stream().filter(matcher).forEach(aClass -> loadRender(aClass, typeSupplier));
+            mabeUdfTypeSet.stream()//
+                    .filter(matcher)//
+                    .filter(Matchers.annotatedWithClass(Render.class))//
+                    .forEach(aClass -> loadRender(aClass, typeSupplier));
         }
         return this;
     }

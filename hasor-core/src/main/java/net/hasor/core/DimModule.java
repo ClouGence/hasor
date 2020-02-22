@@ -13,24 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.udfs;
-import net.hasor.dataql.UdfSourceAssembly;
-
-import java.util.UUID;
+package net.hasor.core;
+import java.lang.annotation.*;
 
 /**
- * ID函数。函数库引入 <code>import 'net.hasor.dataql.udfs.IdentifierUdfSource' as ids;</code>
+ * 标记在 Module 接口上，用来动态扫描加载 Module。
+ * @version : 2020-02-22
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2019-12-12
  */
-public class IdentifierUdfSource implements UdfSourceAssembly {
-    /** 返回一个完整格式的 UUID 字符串。  */
-    public String uuid() {
-        return UUID.randomUUID().toString();
-    }
-
-    /** 返回一个不含"-" 符号的 UUID 字符串 */
-    public String uuid2() {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+@Documented
+public @interface DimModule {
 }

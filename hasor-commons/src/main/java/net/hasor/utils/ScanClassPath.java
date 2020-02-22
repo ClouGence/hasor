@@ -160,7 +160,7 @@ public class ScanClassPath {
         //className = classReader.getClassName().replace('/', '.');
         /*三、读取类的（名称、父类、接口、注解）信息*/
         final ClassInfo info = new ClassInfo();
-        classReader.accept(new ClassVisitor(Opcodes.ASM4) {
+        classReader.accept(new ClassVisitor(Opcodes.ASM7) {
             @Override
             public void visit(final int version, final int access, final String name, final String signature, final String superName, final String[] interfaces) {
                 //1.读取基本信息

@@ -16,9 +16,9 @@
 package net.hasor.tconsole;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
+import net.hasor.core.TypeSupplier;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
-import net.hasor.core.TypeSupplier;
 
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -93,7 +93,7 @@ public interface ConsoleApiBinder extends ApiBinder {
     public interface TelnetBuilder {
         /** 加载带有 @Tel 注解的类。 */
         public default TelnetBuilder loadExecutor(Set<Class<?>> udfTypeSet) {
-            return loadExecutor(udfTypeSet, Matchers.annotatedWithClass(Tel.class), null);
+            return loadExecutor(udfTypeSet, Matchers.anyClass(), null);
         }
 
         /** 加载带有 @Tel 注解的类 */
@@ -105,7 +105,10 @@ public interface ConsoleApiBinder extends ApiBinder {
         /** 加载带有 @Tel 注解的类。 */
         public default TelnetBuilder loadExecutor(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
             if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
-                mabeUdfTypeSet.stream().filter(matcher).forEach(aClass -> loadExecutor(aClass, typeSupplier));
+                mabeUdfTypeSet.stream()//
+                        .filter(matcher)//
+                        .filter(Matchers.annotatedWithClass(Tel.class))//
+                        .forEach(aClass -> loadExecutor(aClass, typeSupplier));
             }
             return this;
         }

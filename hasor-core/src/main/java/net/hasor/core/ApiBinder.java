@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import net.hasor.core.aop.AsmTools;
+import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.spi.SpiInterceptor;
+import net.hasor.utils.ExceptionUtils;
 
 import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.EventListener;
 import java.util.*;
 import java.util.function.Predicate;
@@ -79,6 +83,54 @@ public interface ApiBinder {
     /** 是否为单例 */
     public boolean isSingleton(Class<?> targetType);
     /*----------------------------------------------------------------------------------------Aop*/
+
+    /** 加载带有 @DimModule 注解的类。 */
+    public default ApiBinder loadModule(Set<Class<?>> moduleTypes) {
+        return this.loadModule(moduleTypes, Matchers.anyClass(), null);
+    }
+
+    /** 加载带有 @DimModule 注解的类。 */
+    public default ApiBinder loadModule(Set<Class<?>> mabeModuleTypes, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
+        if (mabeModuleTypes != null && !mabeModuleTypes.isEmpty()) {
+            mabeModuleTypes.stream()//
+                    .filter(matcher)//
+                    .filter(Matchers.annotatedWithClass(DimModule.class))//
+                    .forEach(aClass -> loadModule(aClass, typeSupplier));
+        }
+        return this;
+    }
+
+    /** 加载带有 @DimModule 注解的类。 */
+    public default ApiBinder loadModule(Class<?> moduleType) {
+        return loadModule(moduleType, null);
+    }
+
+    /** 加载带有 @DimModule 注解的类。 */
+    public default ApiBinder loadModule(Class<?> moduleType, final TypeSupplier typeSupplier) {
+        Objects.requireNonNull(moduleType, "class is null.");
+        int modifier = moduleType.getModifiers();
+        if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || moduleType.isArray() || moduleType.isEnum()) {
+            throw new IllegalStateException(moduleType.getName() + " must be normal Bean");
+        }
+        if (moduleType.getAnnotation(DimModule.class) == null) {
+            throw new IllegalStateException(moduleType.getName() + " must be configure @DimModule");
+        }
+        if (!Module.class.isAssignableFrom(moduleType)) {
+            throw new IllegalStateException(moduleType.getName() + " must be implements Module.");
+        }
+        //
+        try {
+            Class<? extends Module> newModuleType = (Class<? extends Module>) moduleType;
+            if (typeSupplier != null) {
+                this.installModule(typeSupplier.get(newModuleType));
+            } else {
+                this.installModule(newModuleType.newInstance());
+            }
+            return this;
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+    }
 
     /**
      * 使用表达式配置Aop。

@@ -313,7 +313,7 @@ public class ContainerUtils {
                             if (!AsmTools.toAsmType(AopIgnore.class).equals(desc)) {
                                 return super.visitAnnotation(desc, visible);
                             }
-                            return new AopIgnoreFinderVisitor(Opcodes.ASM4, super.visitAnnotation(desc, visible));
+                            return new AopIgnoreFinderVisitor(Opcodes.ASM7, super.visitAnnotation(desc, visible));
                         }
                     }, ClassReader.SKIP_CODE);
                 } catch (Exception e) {

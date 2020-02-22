@@ -18,6 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
+import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
@@ -31,7 +32,9 @@ import javax.servlet.http.HttpSessionListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Objects;
 import java.util.Properties;
+import java.util.function.Supplier;
 
 /**
  *
@@ -39,10 +42,30 @@ import java.util.Properties;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener, ServletRequestListener {
-    protected           Logger     logger         = LoggerFactory.getLogger(getClass());
-    public static final String     AppContextName = AppContext.class.getName();
-    private             AppContext appContext     = null;
-    private             SpiTrigger spiTrigger     = null;
+    protected           Logger               logger           = LoggerFactory.getLogger(getClass());
+    public static final String               AppContextName   = AppContext.class.getName();
+    private             boolean              contextIsOutsite = false;
+    private             Supplier<AppContext> appContext       = null;
+    private             SpiTrigger           spiTrigger       = null;
+
+    /*----------------------------------------------------------------------------------------------------*/
+    public RuntimeListener() {
+        this.contextIsOutsite = false;
+    }
+
+    public RuntimeListener(AppContext appContext) {
+        this(InstanceProvider.of(Objects.requireNonNull(appContext, "appContext is null.")));
+    }
+
+    public RuntimeListener(Supplier<AppContext> appContext) {
+        this.appContext = Objects.requireNonNull(appContext, "appContext is null.");
+        this.contextIsOutsite = true;
+    }
+
+    /**获取{@link AppContext}*/
+    public static AppContext getAppContext(ServletContext servletContext) {
+        return (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
+    }
     /*----------------------------------------------------------------------------------------------------*/
 
     /**创建{@link AppContext}对象*/
@@ -55,8 +78,6 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         if (properties != null && !properties.isEmpty()) {
             properties.forEach((key, val) -> webHasor.addVariable(key.toString(), val.toString()));
         }
-        String webContextDir = sc.getRealPath("/");
-        webHasor.addVariable("HASOR_WEBROOT", webContextDir);
         return webHasor;
     }
 
@@ -98,34 +119,37 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             //
             Properties properties = this.loadEnvProperties(sc, envProperties);
             Module startModule = this.newRootModule(sc, rootModule);
-            return this.newHasor(sc, configName, properties).build(startModule);
+            //
+            Hasor newHasor = this.newHasor(sc, configName, properties);
+            String webContextDir = sc.getRealPath("/");
+            newHasor.addVariable("HASOR_WEBROOT", webContextDir);
+            return newHasor.build(startModule);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
 
-    /**获取{@link AppContext}*/
-    public static AppContext getAppContext(ServletContext servletContext) {
-        return (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
-    }
-
     @Override
-    public void contextInitialized(final ServletContextEvent servletContextEvent) {
+    public final void contextInitialized(final ServletContextEvent servletContextEvent) {
         // 1. 初始化
-        this.appContext = this.doInit(servletContextEvent.getServletContext());
-        this.spiTrigger = appContext.getInstance(SpiTrigger.class);
+        if (this.appContext == null) {
+            this.appContext = InstanceProvider.of(this.doInit(servletContextEvent.getServletContext()));
+        }
+        this.spiTrigger = this.appContext.get().getInstance(SpiTrigger.class);
         // 2.放入ServletContext环境。
         logger.info("ServletContext Attribut is " + RuntimeListener.AppContextName);
-        servletContextEvent.getServletContext().setAttribute(RuntimeListener.AppContextName, this.appContext);
+        servletContextEvent.getServletContext().setAttribute(RuntimeListener.AppContextName, this.appContext.get());
         //
         this.spiTrigger.callSpi(ServletContextListener.class, listener -> listener.contextInitialized(servletContextEvent));
     }
 
     @Override
-    public void contextDestroyed(final ServletContextEvent servletContextEvent) {
+    public final void contextDestroyed(final ServletContextEvent servletContextEvent) {
         this.spiTrigger.callSpi(ServletContextListener.class, listener -> listener.contextDestroyed(servletContextEvent));
-        this.appContext.shutdown();
-        this.logger.info("shutdown.");
+        if (!this.contextIsOutsite) {
+            this.appContext.get().shutdown();
+            this.logger.info("shutdown.");
+        }
     }
 
     @Override
