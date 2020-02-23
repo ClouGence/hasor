@@ -58,6 +58,7 @@
         <module>hasor-db</module>
         <module>hasor-web</module>
         <module>hasor-tconsole</module>
+        <module>hasor-spring</module>
         <module>hasor-dataql/dataql-runtime</module>
         <module>hasor-dataql/dataql-fx-basic</module>
         <!--        <module>hasor-dataql/dataql-dataway</module>-->
@@ -221,6 +222,15 @@
             </snapshots>
         </repository>
     </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
     <!-- 发布使用的版本库 -->
     <distributionManagement>
