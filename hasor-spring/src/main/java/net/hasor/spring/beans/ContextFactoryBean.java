@@ -19,7 +19,6 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.utils.ResourcesUtils;
-import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -30,8 +29,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
-import org.springframework.util.SystemPropertyUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashMap;
@@ -46,40 +43,33 @@ import java.util.Properties;
  */
 public class ContextFactoryBean extends AbstractEnvironmentAware implements FactoryBean<Object>, InitializingBean, DisposableBean,//
         Module, ApplicationContextAware, EnvironmentAware {
-    protected static Logger              logger             = LoggerFactory.getLogger(Hasor.class);
-    private          AppContext          realAppContext     = null;
-    private          ApplicationContext  applicationContext = null;
-    //
-    private          String              mainConfig         = null; // 主配置文件
-    private          Properties          envProperties      = null; // 1st,来自 EnvironmentAware 接口的 K/V
-    private          Properties          refProperties      = null; // 2st,通过 refProperties 配置的 K/V
-    private          Map<Object, Object> customProperties   = null; // 3st,利用 property 额外扩充的 K/V
-    private          boolean             useProperties      = true; // 是否把属性导入到Settings
-    //
-    private          List<Module>        loadModules        = null; // 要加载的模块
+    protected static Logger             logger             = LoggerFactory.getLogger(Hasor.class);
+    private          AppContext         realAppContext     = null;
+    private          ApplicationContext applicationContext = null;
+    private          BuildConfig        buildConfig        = new BuildConfig();
     // ------------------------------------------------------------------------ getter/setter
 
     public void setMainConfig(String mainConfig) {
-        this.mainConfig = mainConfig;
+        this.buildConfig.mainConfig = mainConfig;
     }
 
     public void setRefProperties(Properties refProperties) {
-        this.refProperties = refProperties;
+        this.buildConfig.refProperties = refProperties;
     }
 
     public void setUseProperties(boolean useProperties) {
-        this.useProperties = useProperties;
+        this.buildConfig.useProperties = useProperties;
     }
 
     public void setCustomProperties(Map<Object, Object> customProperties) {
-        if (this.customProperties == null) {
-            this.customProperties = new HashMap<>();
+        if (this.buildConfig.customProperties == null) {
+            this.buildConfig.customProperties = new HashMap<>();
         }
-        this.customProperties.putAll(customProperties);
+        this.buildConfig.customProperties.putAll(customProperties);
     }
 
     public void setLoadModules(List<Module> loadModules) {
-        this.loadModules = loadModules;
+        this.buildConfig.loadModules = loadModules;
     }
 
     @Override
@@ -89,7 +79,7 @@ public class ContextFactoryBean extends AbstractEnvironmentAware implements Fact
 
     @Override
     public void setEnvironment(Environment environment) {
-        this.envProperties = super.setupEnvironment(environment);
+        this.buildConfig.envProperties = super.setupEnvironment(environment);
     }
 
     // ------------------------------------------------------------------------ promise FactoryBean.
@@ -112,7 +102,6 @@ public class ContextFactoryBean extends AbstractEnvironmentAware implements Fact
     // ------------------------------------------------------------------------ promise InitializingBean and DisposableBean.
     @Override
     public final void afterPropertiesSet() throws Exception {
-        //
         // create Hasor, if WebApplicationContext then get ServletContext
         Object parentObject = null;
         if (ResourcesUtils.getResourceAsStream("/org/springframework/web/context/WebApplicationContext.class") != null) {
@@ -120,42 +109,7 @@ public class ContextFactoryBean extends AbstractEnvironmentAware implements Fact
                 parentObject = ((WebApplicationContext) this.applicationContext).getServletContext();
             }
         }
-        Hasor hasorBuild = (parentObject == null) ? Hasor.create() : Hasor.create(parentObject);
-        hasorBuild.parentClassLoaderWith(this.applicationContext.getClassLoader());
-        //
-        // make sure mainConfig
-        String config = this.mainConfig;
-        if (!StringUtils.isBlank(config)) {
-            config = SystemPropertyUtils.resolvePlaceholders(config);
-            Resource resource = StringUtils.isNotBlank(config) ? this.applicationContext.getResource(config) : null;
-            if (resource != null) {
-                hasorBuild.mainSettingWith(resource.getURI());
-            }
-        }
-        //
-        // merge Properties
-        if (this.envProperties != null) {
-            this.envProperties.forEach((k, v) -> {
-                hasorBuild.addVariable(k.toString(), v.toString());
-            });
-        }
-        if (this.refProperties != null) {
-            this.refProperties.forEach((k, v) -> {
-                hasorBuild.addVariable(k.toString(), v.toString());
-            });
-        }
-        if (this.customProperties != null) {
-            this.customProperties.forEach((k, v) -> {
-                hasorBuild.addVariable(k.toString(), v.toString());
-            });
-        }
-        //
-        // import Properties to Settings
-        if (this.useProperties) {
-            hasorBuild.importVariablesToSettings();
-        }
-        //
-        this.realAppContext = hasorBuild.addModules(this.loadModules).build(this);
+        this.realAppContext = this.buildConfig.build(parentObject, this.applicationContext).build(this);
         logger.info("hasor Spring factory inited.");
     }
 

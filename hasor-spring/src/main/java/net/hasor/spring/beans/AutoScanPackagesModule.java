@@ -17,7 +17,9 @@ package net.hasor.spring.beans;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.DimModule;
 import net.hasor.core.Module;
+import net.hasor.core.TypeSupplier;
 import net.hasor.core.exts.aop.Matchers;
+import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +34,7 @@ import java.util.Set;
  * @version : 2020年02月23日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AutoScanPackagesModule extends AbstractTypeSupplierToos implements Module, ApplicationContextAware {
+public class AutoScanPackagesModule extends AbstractTypeSupplierTools implements Module, ApplicationContextAware {
     protected static Logger   logger             = LoggerFactory.getLogger(AutoScanPackagesModule.class);
     private          String[] loadModulePackages = null;
 
@@ -50,8 +52,20 @@ public class AutoScanPackagesModule extends AbstractTypeSupplierToos implements 
         if (loadModulePackages == null) {
             this.loadModulePackages = apiBinder.getEnvironment().getSpanPackage();
         }
+        //
+        TypeSupplier typeSupplier = this.getTypeSupplier().beforeOther(new TypeSupplier() {
+            @Override
+            public <T> T get(Class<? extends T> targetType) {
+                try {
+                    return targetType.newInstance();
+                } catch (Exception e) {
+                    throw ExceptionUtils.toRuntimeException(e);
+                }
+            }
+        });
+        //
         logger.info("loadModule autoScan='true' scanPackages=" + StringUtils.join(this.loadModulePackages, ","));
         Set<Class<?>> classSet = apiBinder.findClass(DimModule.class, loadModulePackages);
-        apiBinder.loadModule(classSet, Matchers.anyClass(), this.getTypeSupplier());
+        apiBinder.loadModule(classSet, Matchers.anyClass(), typeSupplier);
     }
 }

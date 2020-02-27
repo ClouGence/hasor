@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.spring.boot;
-import org.springframework.context.annotation.Import;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Import(value = { WebHasorConfiguration.class })
-public @interface EnableHasorWeb {
-    /** Hasor 全局拦截器工作的目录 */
-    public String path() default "/*";
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface Property {
+    /** 属性名 */
+    public String name();
 
-    /** Hasor 全局拦截器的顺序 */
-    public int order() default 0;
+    /** 属性值 */
+    public String value();
 }
+//    refProperties,
