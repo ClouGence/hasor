@@ -19,7 +19,6 @@ import net.hasor.spring.beans.AbstractTypeSupplierTools;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.web.startup.RuntimeFilter;
 import net.hasor.web.startup.RuntimeListener;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -29,11 +28,11 @@ import org.springframework.context.annotation.ImportAware;
 import org.springframework.core.type.AnnotationMetadata;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnWebApplication
-@ConditionalOnSingleCandidate(AppContext.class)
 public class WebHasorConfiguration extends AbstractTypeSupplierTools //
         implements ImportAware {
     private String filterPath  = "/*";
@@ -72,6 +71,7 @@ public class WebHasorConfiguration extends AbstractTypeSupplierTools //
 
     @Bean
     public ServletListenerRegistrationBean<RuntimeListener> hasorRuntimeListener(AppContext appContext) {
+        appContext = Objects.requireNonNull(appContext, "AppContext is not inject.");
         ServletListenerRegistrationBean<RuntimeListener> listenerBean = //
                 new ServletListenerRegistrationBean<>(new RuntimeListener(appContext));
         return listenerBean;

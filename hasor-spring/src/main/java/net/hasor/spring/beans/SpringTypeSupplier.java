@@ -16,6 +16,6 @@ public class SpringTypeSupplier implements TypeSupplier {
 
     @Override
     public <T> boolean test(Class<? extends T> targetType) {
-        return applicationContext.containsBean(targetType.getName());
+        return applicationContext.getBeanNamesForType(targetType).length > 0;
     }
 }
