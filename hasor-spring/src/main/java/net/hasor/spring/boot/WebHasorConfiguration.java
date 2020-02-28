@@ -33,8 +33,7 @@ import java.util.Set;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnWebApplication
-public class WebHasorConfiguration extends AbstractTypeSupplierTools //
-        implements ImportAware {
+public class WebHasorConfiguration extends AbstractTypeSupplierTools implements ImportAware {
     private String filterPath  = "/*";
     private int    filterOrder = 0;
 

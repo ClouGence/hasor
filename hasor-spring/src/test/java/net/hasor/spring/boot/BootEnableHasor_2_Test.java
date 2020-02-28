@@ -9,8 +9,8 @@ import org.springframework.context.ApplicationContext;
 import java.util.HashSet;
 import java.util.Set;
 
-@SpringBootTest(classes = BootEnableHasor_1.class)
-public class BootEnableHasor_1_Test {
+@SpringBootTest(classes = BootEnableHasor_2.class)
+public class BootEnableHasor_2_Test {
     @Autowired
     private AppContext         appContext;
     @Autowired
@@ -40,21 +40,19 @@ public class BootEnableHasor_1_Test {
         assert !hasType.contains(TestModuleD.class);
         //
         //
-        // 有DimModule、在ComponentScan范围内、在EnableHasor范围内、无Component
-        assert appContext.getBindInfo(TestDimModuleA.class) != null; // Hasor 加载了
+        // 有DimModule、在ComponentScan范围内、在EnableHasor范围外、无Component
+        assert appContext.getBindInfo(TestDimModuleA.class) == null; // 范围外不加载
         assert !hasType.contains(TestDimModuleA.class);// 无Component，Spring 中不存在它。
-        TestDimModuleA dimModuleA = appContext.getInstance(TestDimModuleA.class);
-        assert dimModuleA.getApplicationContext() == null;
         //
         //
-        // 有DimModule、在ComponentScan范围内、在EnableHasor范围内、有Component
-        assert appContext.getBindInfo(TestDimModuleB.class) != null; // Hasor 加载了
+        // 有DimModule、在ComponentScan范围内、在EnableHasor范围外、有Component
+        assert appContext.getBindInfo(TestDimModuleB.class) != null; // 虽然 Hasor 扫描范围外，但是Hasor 会加载 Spring Bean 中所有 DimModule 的 Module
         assert hasType.contains(TestDimModuleB.class);
         TestDimModuleB dimModuleB = appContext.getInstance(TestDimModuleB.class);
         assert dimModuleB.getApplicationContext() == applicationContext;
         //
         //
-        // 无DimModule、在ComponentScan范围内、在EnableHasor范围内、有Component
+        // 无DimModule、在ComponentScan范围内、在EnableHasor范围外、有Component
         assert appContext.getBindInfo(TestDimModuleC.class) == null; // 不是一个有效的 Module
         assert hasType.contains(TestDimModuleC.class);// 是Spring Bean
         TestDimModuleC dimModuleC_1 = appContext.getInstance(TestDimModuleC.class);

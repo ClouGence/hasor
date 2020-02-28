@@ -22,15 +22,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ *
+ * 关于 ComponentScan，首先 spring 的 ComponentScan 会扫描所有 Spring 的Bean。在此基础上如果这些 Bean 标记了 @DimModule 注解并且实现了 Module 接口。那么它们会被作为 Hasor 的初始化 Module。
+ * 如果 scanPackages 配置的扫描范围超出了 ComponentScan，那么这些标记了 @DimModule 的 Module 接口实现类将会以 new 的形式进行创建。
+ * */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Import(value = BasicHasorConfiguration.class)
 public @interface EnableHasor {
-    /** 是否自动扫描 @DimModule 注解的Module 并加载它们。 */
-    public boolean autoScan() default false;
-
-    /** 确定扫描范围，默认为空将会按照 Hasor 的默认扫描范围来扫描。这有可能会超出 Spring 的范围。 */
-    public String[] autoScanPackages() default {};
+    /** 扫描范围，如果 scanPackages 配置的扫描范围超出了 ComponentScan，那么这些标记了 @DimModule 的 Module 接口实现类将会以 new 的形式进行创建。*/
+    public String[] scanPackages() default {};
 
     /** Hasor 的主配置文件，可以是 Xml 或者 属性文件 */
     public String mainConfig() default "";

@@ -15,7 +15,9 @@
  */
 package net.hasor.spring.boot;
 import net.hasor.core.AppContext;
+import net.hasor.core.DimModule;
 import net.hasor.core.Module;
+import net.hasor.core.exts.aop.Matchers;
 import net.hasor.spring.beans.AbstractTypeSupplierTools;
 import net.hasor.spring.beans.AutoScanPackagesModule;
 import net.hasor.spring.beans.BuildConfig;
@@ -33,6 +35,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.ServletContext;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -75,9 +79,22 @@ public class BasicHasorConfiguration extends AbstractTypeSupplierTools implement
                 }
             }
         }
-        // 处理autoScan
-        if (enableHasor.autoScan()) {
-            AutoScanPackagesModule autoScanModule = new AutoScanPackagesModule(enableHasor.autoScanPackages());
+        // 把Spring 中所有标记了 @DimModule 的 Module，捞进来。
+        Set<Class<?>> needCheckRepeat = new HashSet<>(Arrays.asList(enableHasor.startWith()));
+        for (String name : applicationContext.getBeanDefinitionNames()) {
+            Class<?> type = applicationContext.getType(name);
+            if (type == null || needCheckRepeat.contains(type)) {
+                continue;
+            }
+            if (Module.class.isAssignableFrom(type) && type.getAnnotation(DimModule.class) != null) {
+                needCheckRepeat.add(type);
+                buildConfig.loadModules.add((Module) applicationContext.getBean(name));
+            }
+        }
+        //
+        // 处理scanPackages
+        if (enableHasor.scanPackages().length != 0) {
+            AutoScanPackagesModule autoScanModule = new AutoScanPackagesModule(enableHasor.scanPackages(), Matchers.anyClassExcludes(needCheckRepeat));
             autoScanModule.setApplicationContext(Objects.requireNonNull(applicationContext));
             buildConfig.loadModules.add(autoScanModule);
         }
@@ -93,13 +110,13 @@ public class BasicHasorConfiguration extends AbstractTypeSupplierTools implement
 
     @Bean
     @ConditionalOnNotWebApplication
-    public AppContext appContext(ApplicationContext applicationContext) {
+    public AppContext normalAppContext(ApplicationContext applicationContext) {
         return this.createAppContext(null, applicationContext);
     }
 
     @Bean
     @ConditionalOnWebApplication
-    public AppContext appContextWithWeb(ApplicationContext applicationContext) {
+    public AppContext webAppContext(ApplicationContext applicationContext) {
         ServletContext parent = null;
         if (applicationContext instanceof WebApplicationContext) {
             parent = ((WebApplicationContext) applicationContext).getServletContext();
@@ -110,6 +127,7 @@ public class BasicHasorConfiguration extends AbstractTypeSupplierTools implement
     }
 
     protected AppContext createAppContext(Object parentObject, ApplicationContext applicationContext) {
+        //
         try {
             return this.getBuildConfig().build(parentObject, applicationContext).build(apiBinder -> {
                 apiBinder.bindType(ApplicationContext.class).toInstance(applicationContext);
