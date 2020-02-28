@@ -12,6 +12,8 @@
         <downloadSources>true</downloadSources>
         <downloadJavadocs>true</downloadJavadocs>
         <jacoco.version>0.8.5</jacoco.version>
+        <spring.version>5.2.3.RELEASE</spring.version>
+        <spring.boot.version>2.2.4.RELEASE</spring.boot.version>
         <!--<maven.test.skip>true</maven.test.skip>-->
         <!--<skipTests>true</skipTests>-->
         <powermock.version>2.0.4</powermock.version>
@@ -376,6 +378,16 @@
                 <artifactId>hasor-rsf</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>net.hasor</groupId>
+                <artifactId>hasor-spring</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.hasor</groupId>
+                <artifactId>hasor-all</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- Log依赖 -->
             <dependency>
@@ -437,6 +449,24 @@
                 <groupId>javax.servlet.jsp</groupId>
                 <artifactId>jsp-api</artifactId>
                 <version>2.2</version>
+            </dependency>
+
+
+            <!-- Spring & SpringBoot -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-autoconfigure</artifactId>
+                <version>${spring.boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

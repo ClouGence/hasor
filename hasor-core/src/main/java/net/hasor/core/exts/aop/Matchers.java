@@ -22,6 +22,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -81,6 +82,16 @@ public class Matchers {
      */
     public static Predicate<Method> expressionMethod(final String matcherExpression) {
         return new MethodOf(MatchTypeEnum.Wild, matcherExpression);
+    }
+
+    /** 任意一个在集合中出现的 */
+    public static Predicate<Class<?>> anyClassInclude(Set<Class<?>> checkTypes) {
+        return checkTypes::contains;
+    }
+
+    /** 任意一个在集合中不出现的 */
+    public static Predicate<Class<?>> anyClassExcludes(Set<Class<?>> checkTypes) {
+        return anyClassInclude(checkTypes).negate();
     }
 
     /**匹配方法*/

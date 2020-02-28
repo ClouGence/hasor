@@ -143,6 +143,7 @@
                     <header><![CDATA[ [<a target="_blank" href="http://www.hasor.net">Web Site</a>] ]]></header>
                     <bottom>${javadocs.bottom}</bottom>
                     <additionalDependencies>
+                        <!-- hasor-web -->
                         <dependency>
                             <groupId>javax.servlet</groupId>
                             <artifactId>javax.servlet-api</artifactId>
@@ -153,6 +154,7 @@
                             <artifactId>jsp-api</artifactId>
                             <version>2.2</version>
                         </dependency>
+                        <!-- hasor-db -->
                         <dependency>
                             <groupId>org.mybatis</groupId>
                             <artifactId>mybatis</artifactId>
@@ -301,9 +303,9 @@
                         <phase>package</phase>
                         <configuration>
                             <target>
-                                <delete dir="${basedir}/target/src" />
-                                <delete file="${basedir}/target/original-${project.artifactId}-${project.version}.jar" />
-                                <delete file="${basedir}/target/original-${project.artifactId}-${project.version}-sources.jar" />
+                                <delete dir="${basedir}/target/src"/>
+                                <delete file="${basedir}/target/original-${project.artifactId}-${project.version}.jar"/>
+                                <delete file="${basedir}/target/original-${project.artifactId}-${project.version}-sources.jar"/>
                             </target>
                         </configuration>
                         <goals>
