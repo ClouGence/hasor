@@ -35,6 +35,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.ServletContext;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
@@ -74,7 +75,19 @@ public class BasicHasorConfiguration extends AbstractTypeSupplierTools implement
         buildConfig.useProperties = enableHasor.useProperties();
         // 处理startWith
         for (Class<? extends Module> startWith : enableHasor.startWith()) {
-            if (startWith.getAnnotation(Component.class) != null) {
+            boolean useSpring = false;
+            Annotation[] interfaces = startWith.getAnnotations();
+            for (Annotation annotatedType : interfaces) {
+                if (annotatedType instanceof Component) {
+                    useSpring = true;
+                    break;
+                }
+                if (annotatedType.annotationType().getAnnotation(Component.class) != null) {
+                    useSpring = true;
+                    break;
+                }
+            }
+            if (useSpring) {
                 buildConfig.loadModules.add(applicationContext.getBean(startWith));
             } else {
                 try {
