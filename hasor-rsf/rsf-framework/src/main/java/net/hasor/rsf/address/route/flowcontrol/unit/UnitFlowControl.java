@@ -40,7 +40,7 @@ public class UnitFlowControl extends AbstractRule {
     private float        threshold;
     private List<String> exclusions;
 
-    public void paserControl(Settings settings) {
+    public void parseControl(Settings settings) {
         this.enable(settings.getBoolean("flowControl.enable"));
         this.threshold = settings.getFloat("flowControl.threshold");
         String exclusions = settings.getString("flowControl.exclusions");
@@ -71,7 +71,7 @@ public class UnitFlowControl extends AbstractRule {
         return false;
     }
 
-    /**筛选本机房地址*/
+    /** 筛选本机房地址 */
     public List<InterAddress> siftUnitAddress(String unitName, List<InterAddress> address) {
         if (address == null || address.isEmpty())
             return null;

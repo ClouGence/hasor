@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractRule implements Rule {
     protected Logger  logger = LoggerFactory.getLogger(getClass());
     private   String  routeID;
-    private   String  routebody;
+    private   String  routeBody;
     private   boolean enable;
 
     /**路由规则ID*/
@@ -41,7 +41,7 @@ public abstract class AbstractRule implements Rule {
 
     /**路由规则原文*/
     public String rawRoute() {
-        return this.routebody;
+        return this.routeBody;
     }
 
     /**规则是否启用*/
@@ -55,13 +55,13 @@ public abstract class AbstractRule implements Rule {
     }
 
     /**设置规则ID*/
-    void setRouteID(String routeID) {
+    protected void setRouteID(String routeID) {
         this.routeID = routeID;
     }
 
     /**设置规则内容*/
-    void setRouteBody(String routebody) {
-        this.routebody = routebody;
+    protected void setRouteBody(String routeBody) {
+        this.routeBody = routeBody;
     }
 
     @Override
@@ -70,5 +70,5 @@ public abstract class AbstractRule implements Rule {
     }
 
     /**应用配置初始化规则器*/
-    public abstract void paserControl(Settings settings);
+    public abstract void parseControl(Settings settings);
 }

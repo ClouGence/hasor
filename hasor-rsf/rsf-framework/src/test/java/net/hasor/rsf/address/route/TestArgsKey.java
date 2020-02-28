@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.functions;
+package net.hasor.rsf.address.route;
 import net.hasor.rsf.address.route.rule.DefaultArgsKey;
 /**
  * 对指定的服务上的方法进行处理，sayEcho，testUserTag。两个方法上用于计算路由地址的参考参数是第一个传入参数。

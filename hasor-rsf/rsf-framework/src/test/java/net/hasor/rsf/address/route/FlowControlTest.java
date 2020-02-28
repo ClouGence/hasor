@@ -1,19 +1,4 @@
-/*
- * Copyright 2008-2009 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package test.net.hasor.rsf.functions;
+package net.hasor.rsf.address.route;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
@@ -27,42 +12,41 @@ import net.hasor.utils.ResourcesUtils;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-/**
- *
- * @version : 2015年4月5日
- * @author 赵永春 (zyc@hasor.net)
- */
+import java.util.Set;
+
 public class FlowControlTest {
-    private List<InterAddress> addressList() throws IOException, URISyntaxException {
-        List<InterAddress> addresses = new ArrayList<InterAddress>();
+    private List<InterAddress> addressList() {
+        List<InterAddress> addresses = new ArrayList<>();
         addresses.add(new InterAddress("192.168.137.1", 8000, "etc2"));
         addresses.add(new InterAddress("192.168.137.2", 8000, "etc2"));
         addresses.add(new InterAddress("192.168.1.3", 8000, "etc3"));
         addresses.add(new InterAddress("192.168.1.4", 8000, "etc3"));
         return addresses;
     }
-    private RuleParser getRuleParser() throws IOException, URISyntaxException {
+
+    private RuleParser getRuleParser() throws IOException {
         RsfEnvironment settings = new DefaultRsfEnvironment(new StandardEnvironment());
-        RuleParser parser = new RuleParser(settings);
-        return parser;
+        return new RuleParser(settings);
     }
-    //
+
     @Test
     public void randomTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String randomBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/random-flow.xml"), "utf-8");
+        String randomBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream(//
+                "/net_hasor_rsf_route/flowcontrol-random.xml"), "utf-8");
         RandomFlowControl rule = (RandomFlowControl) ruleParser.ruleSettings(randomBody);
+        List<InterAddress> addressPool = addressList();
         //
-        List<InterAddress> address = addressList();
-        //
-        for (int i = 0; i < 100; i++) {
-            InterAddress addr = rule.getServiceAddress(address);
+        Set<InterAddress> resultSet = new HashSet<>();
+        for (int i = 0; i < 1000; i++) {
+            InterAddress addr = rule.getServiceAddress(addressPool);
             System.out.println(i + "\t" + addr);
         }
     }
+
     @Test
     public void unitTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
@@ -74,6 +58,7 @@ public class FlowControlTest {
         List<InterAddress> addrList = rule.siftUnitAddress("etc2", address);
         System.out.println(addrList);
     }
+
     @Test
     public void speedTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();

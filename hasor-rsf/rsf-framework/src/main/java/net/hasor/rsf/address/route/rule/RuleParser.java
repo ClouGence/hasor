@@ -42,9 +42,9 @@ public class RuleParser {
     public RuleParser(RsfEnvironment rsfEnvironment) {
         this.ruleTypeMap = new HashMap<>();
         RsfSettings rsfSettings = rsfEnvironment.getSettings();
-        XmlNode[] flowcontrolNodes = rsfSettings.getXmlNodeArray("hasor.rsfConfig.route.flowcontrol");
-        if (flowcontrolNodes != null) {
-            for (XmlNode node : flowcontrolNodes) {
+        XmlNode[] flowControlNodes = rsfSettings.getXmlNodeArray("hasor.rsfConfig.route.flowcontrol");
+        if (flowControlNodes != null) {
+            for (XmlNode node : flowControlNodes) {
                 List<XmlNode> ruleTypes = node.getChildren();
                 ruleTypes = (ruleTypes == null) ? new ArrayList<>(0) : ruleTypes;
                 for (XmlNode ruleType : ruleTypes) {
@@ -74,7 +74,7 @@ public class RuleParser {
             ruleSettings.loadSettings();
             return ruleSettings(ruleSettings);
         } catch (Exception e) {
-            logger.error("rule raw format error. -> {}", e);
+            logger.error("rule raw format error. -> {}", e.getMessage(), e);
         }
         return null;
     }
@@ -108,10 +108,9 @@ public class RuleParser {
             ruleObject.setRouteID(ruleID);
             ruleObject.setRouteBody(ruleSettings.getXmlNode("flowControl").getXmlText());
             ruleObject.enable(ruleEnable);
-            ruleObject.paserControl(ruleSettings);
-            //
+            ruleObject.parseControl(ruleSettings);
         } catch (Exception e) {
-            logger.error("rule raw format error -> {}", e);
+            logger.error("rule raw format error -> {}", e.getMessage(), e);
         }
         return ruleObject;
     }

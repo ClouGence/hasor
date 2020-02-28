@@ -44,7 +44,7 @@ public class SpeedFlowControl extends AbstractRule {
     private QoSBucket                        defaultQoSBucket;
     private ConcurrentMap<String, QoSBucket> qosBucketMap;
 
-    public void paserControl(Settings settings) {
+    public void parseControl(Settings settings) {
         this.enable(settings.getBoolean("flowControl.enable"));
         this.action = settings.getEnum("flowControl.action", QoSActionEnum.class);
         this.rate = settings.getInteger("flowControl.rate");

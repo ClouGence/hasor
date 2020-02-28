@@ -35,7 +35,7 @@ public class RandomFlowControl extends AbstractRule {
     private Random random = new Random();
 
     @Override
-    public void paserControl(Settings settings) {
+    public void parseControl(Settings settings) {
         this.random = new Random(System.currentTimeMillis());
     }
 
