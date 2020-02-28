@@ -22,7 +22,11 @@ import net.hasor.spring.beans.AbstractTypeSupplierTools;
 import net.hasor.spring.beans.AutoScanPackagesModule;
 import net.hasor.spring.beans.BuildConfig;
 import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.ApplicationContext;
@@ -35,11 +39,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.ServletContext;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Spring Boot 启动入口
@@ -48,6 +50,8 @@ import java.util.Set;
  */
 @Configuration(proxyBeanMethods = false)
 public class BasicHasorConfiguration extends AbstractTypeSupplierTools implements ImportAware {
+    private static Logger logger = LoggerFactory.getLogger(BasicHasorConfiguration.class);
+
     @Override
     public final void setImportMetadata(AnnotationMetadata importMetadata) {
         BuildConfig buildConfig = getBuildConfig();
@@ -124,6 +128,18 @@ public class BasicHasorConfiguration extends AbstractTypeSupplierTools implement
                 buildConfig.customProperties.put(name, property.value());
             }
         }
+        //
+        // .打印 Hello
+        try {
+            InputStream inputStream = ResourcesUtils.getResourceAsStream("/META-INF/hasor-framework/hasor-spring-hello.txt");
+            List<String> helloText = IOUtils.readLines(inputStream, "utf-8");
+            StringBuilder builder = new StringBuilder("\n");
+            for (String msg : helloText) {
+                builder.append(msg).append("\n");
+            }
+            logger.info(builder.toString());
+        } catch (Exception e) { /**/ }
+        //
     }
 
     @Bean
@@ -145,7 +161,6 @@ public class BasicHasorConfiguration extends AbstractTypeSupplierTools implement
     }
 
     protected AppContext createAppContext(Object parentObject, ApplicationContext applicationContext) {
-        //
         try {
             return this.getBuildConfig().build(parentObject, applicationContext).build(apiBinder -> {
                 apiBinder.bindType(ApplicationContext.class).toInstance(applicationContext);

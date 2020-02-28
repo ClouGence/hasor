@@ -19,6 +19,7 @@ import net.hasor.spring.beans.AbstractTypeSupplierTools;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.web.startup.RuntimeFilter;
 import net.hasor.web.startup.RuntimeListener;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -63,7 +64,8 @@ public class WebHasorConfiguration extends AbstractTypeSupplierTools implements 
     }
 
     @Bean
-    public FilterRegistrationBean<RuntimeFilter> hasorRuntimeFilter() {
+    @ConditionalOnClass(name = "net.hasor.web.startup.RuntimeFilter")
+    public FilterRegistrationBean<?> hasorRuntimeFilter() {
         FilterRegistrationBean<RuntimeFilter> filterBean = //
                 new FilterRegistrationBean<>(new RuntimeFilter());
         filterBean.setUrlPatterns(Collections.singletonList(this.filterPath));
@@ -74,7 +76,8 @@ public class WebHasorConfiguration extends AbstractTypeSupplierTools implements 
     }
 
     @Bean
-    public ServletListenerRegistrationBean<RuntimeListener> hasorRuntimeListener(AppContext appContext) {
+    @ConditionalOnClass(name = "net.hasor.web.startup.RuntimeListener")
+    public ServletListenerRegistrationBean<?> hasorRuntimeListener(AppContext appContext) {
         appContext = Objects.requireNonNull(appContext, "AppContext is not inject.");
         ServletListenerRegistrationBean<RuntimeListener> listenerBean = //
                 new ServletListenerRegistrationBean<>(new RuntimeListener(appContext));
