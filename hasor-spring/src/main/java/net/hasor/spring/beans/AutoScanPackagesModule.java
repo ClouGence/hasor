@@ -28,6 +28,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * 负责处理 h:loadModule 标签上 autoScan 和 scanPackages 两个属性
@@ -35,11 +36,17 @@ import java.util.Set;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AutoScanPackagesModule extends AbstractTypeSupplierTools implements Module, ApplicationContextAware {
-    protected static Logger   logger             = LoggerFactory.getLogger(AutoScanPackagesModule.class);
-    private          String[] loadModulePackages = null;
+    protected static Logger              logger             = LoggerFactory.getLogger(AutoScanPackagesModule.class);
+    private          String[]            loadModulePackages = null;
+    private          Predicate<Class<?>> include;
 
     public AutoScanPackagesModule(String[] packages) {
+        this(packages, null);
+    }
+
+    public AutoScanPackagesModule(String[] packages, Predicate<Class<?>> include) {
         this.loadModulePackages = packages;
+        this.include = include == null ? Matchers.anyClass() : include;
     }
 
     @Override
@@ -66,6 +73,6 @@ public class AutoScanPackagesModule extends AbstractTypeSupplierTools implements
         //
         logger.info("loadModule autoScan='true' scanPackages=" + StringUtils.join(this.loadModulePackages, ","));
         Set<Class<?>> classSet = apiBinder.findClass(DimModule.class, loadModulePackages);
-        apiBinder.loadModule(classSet, Matchers.anyClass(), typeSupplier);
+        apiBinder.loadModule(classSet, include, typeSupplier);
     }
 }
