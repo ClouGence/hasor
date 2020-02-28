@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF Spring环境支持。
+ * RSF Spring 环境支持。
  */
 package net.hasor.spring.rsf;

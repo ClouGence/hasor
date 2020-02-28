@@ -18,6 +18,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
+import net.hasor.core.exts.aop.Matchers;
 import net.hasor.utils.ResourcesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +32,8 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * 在 Spring 中创建 Hasor 环境 使用。
@@ -46,6 +45,8 @@ public class ContextFactoryBean extends AbstractEnvironmentAware implements Fact
     protected static Logger             logger             = LoggerFactory.getLogger(Hasor.class);
     private          AppContext         realAppContext     = null;
     private          ApplicationContext applicationContext = null;
+    private          String[]           loadModules        = null;
+    private          String[]           scanPackages       = null;
     private          BuildConfig        buildConfig        = new BuildConfig();
     // ------------------------------------------------------------------------ getter/setter
 
@@ -68,8 +69,12 @@ public class ContextFactoryBean extends AbstractEnvironmentAware implements Fact
         this.buildConfig.customProperties.putAll(customProperties);
     }
 
-    public void setLoadModules(List<Module> loadModules) {
-        this.buildConfig.loadModules = loadModules;
+    public void setLoadModules(String[] loadModules) {
+        this.loadModules = loadModules;
+    }
+
+    public void setScanPackages(String[] scanPackages) {
+        this.scanPackages = scanPackages;
     }
 
     @Override
@@ -109,6 +114,22 @@ public class ContextFactoryBean extends AbstractEnvironmentAware implements Fact
                 parentObject = ((WebApplicationContext) this.applicationContext).getServletContext();
             }
         }
+        //
+        Set<Class<?>> needCheckRepeat = new HashSet<>();
+        if (loadModules != null) {
+            for (String name : loadModules) {
+                needCheckRepeat.add(this.applicationContext.getType(name));
+                buildConfig.loadModules.add((Module) this.applicationContext.getBean(name));
+            }
+        }
+        //
+        if (this.scanPackages != null && this.scanPackages.length > 0) {
+            Predicate<Class<?>> classPredicate = needCheckRepeat.isEmpty() ? Matchers.anyClass() : Matchers.anyClassExcludes(needCheckRepeat);
+            AutoScanPackagesModule autoScanModule = new AutoScanPackagesModule(this.scanPackages, classPredicate);
+            autoScanModule.setApplicationContext(Objects.requireNonNull(applicationContext));
+            buildConfig.loadModules.add(autoScanModule);
+        }
+        //
         this.realAppContext = this.buildConfig.build(parentObject, this.applicationContext).build(this);
         logger.info("hasor Spring factory inited.");
     }

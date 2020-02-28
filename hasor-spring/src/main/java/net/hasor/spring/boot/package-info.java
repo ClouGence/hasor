@@ -13,24 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.spring.boot;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * Hasor 属性
- * @version : 2020年02月27日
- * @author 赵永春 (zyc@hasor.net)
+ * 支持Hasor 对于 Spring Boot 方式启动。
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
-public @interface Property {
-    /** 属性名 */
-    public String name();
-
-    /** 属性值 */
-    public String value();
-}
-//    refProperties,
+package net.hasor.spring.boot;

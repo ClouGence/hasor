@@ -1,13 +1,17 @@
 package net.hasor.spring;
-import net.hasor.spring.boot.EnableHasor;
-import net.hasor.test.spring.mod1.TestDimModuleA;
-import net.hasor.test.spring.mod1.TestDimModuleB;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import net.hasor.test.spring.mod1.TestModuleA;
+import net.hasor.test.spring.mod1.TestModuleB;
+import net.hasor.test.spring.mod1.TestModuleC;
+import net.hasor.test.spring.mod1.TestModuleD;
+import org.junit.Before;
 
-@Configuration
-@ComponentScan(basePackages = { "net.hasor.test.spring.mod1" })
-@EnableHasor(autoScan = true, startWith = { TestDimModuleA.class, TestDimModuleB.class })
 public class AbstractTest {
+    @Before
+    public void clear() {
+        TestModuleA.reset();
+        TestModuleB.reset();
+        TestModuleC.reset();
+        TestModuleD.reset();
+    }
 }
 //  refProperties,

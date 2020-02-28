@@ -16,15 +16,16 @@
 package net.hasor.spring.xml;
 import net.hasor.rsf.InterAddress;
 import net.hasor.spring.SpringModule;
-import net.hasor.spring.beans.AutoScanPackagesModule;
 import net.hasor.spring.beans.ContextFactoryBean;
 import net.hasor.spring.rsf.RsfAddressPropertyEditor;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
-import net.hasor.utils.convert.ConverterUtils;
 import org.springframework.beans.factory.config.*;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
-import org.springframework.beans.factory.support.*;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
+import org.springframework.beans.factory.support.DefaultBeanNameGenerator;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.core.SpringVersion;
 import org.w3c.dom.Element;
@@ -138,42 +139,45 @@ class HasorDefinitionParser extends AbstractHasorDefinitionParser {
             }
         });
         //
+        //
         // 加载模块
-        ManagedList<Object> loadModules = new ManagedList<>();
-        loadModules.setSource(ArrayList.class);
-        loadModules.setMergeEnabled(false);
+        ArrayList<String> loadModules = new ArrayList<>();
         builder.addPropertyValue("loadModules", loadModules);
         String startWith = revertProperty(attributes, "startWith");
         String startWithRef = revertProperty(attributes, "startWithRef");
         if (StringUtils.isNotBlank(startWith) || StringUtils.isNotBlank(startWithRef)) {
+            String refName = null;
             if (StringUtils.isNotBlank(startWithRef)) {
                 //-startWithRef
-                loadModules.add(new RuntimeBeanReference(startWithRef));
+                loadModules.add(startWithRef);
             } else {
                 //-startWith
-                loadModules.add(createBeanHolder(startWith, parserContext));
+                BeanDefinitionHolder beanHolder = createBeanHolder(startWith, parserContext);
+                parserContext.getRegistry().registerBeanDefinition(beanHolder.getBeanName(), beanHolder.getBeanDefinition());
+                loadModules.add(beanHolder.getBeanName());
             }
         }
         exploreElement(element, "loadModule", node -> {
-            // @DimModule 的处理
-            String autoScan = node.getAttribute("autoScan");        // 是否启用对 @DimModule 注解的自动扫描
+            // scanPackages 的处理
             String scanPackages = node.getAttribute("scanPackages");// 扫描时使用的扫描路径
-            if ((Boolean) ConverterUtils.convert(autoScan, Boolean.TYPE) && StringUtils.isNotBlank(scanPackages)) {
+            if (StringUtils.isNotBlank(scanPackages)) {
                 String[] packages = Arrays.stream(scanPackages.split(","))//
                         .filter(StringUtils::isNotBlank)//
                         .toArray(String[]::new);
-                loadModules.add(createBeanHolder(AutoScanPackagesModule.class.getName(), parserContext, beanBuilder -> {
-                    beanBuilder.addConstructorArgValue(packages);
-                }));
+                if (packages.length > 0) {
+                    builder.addPropertyValue("scanPackages", packages);
+                }
             }
             // module 元素
             exploreElement(node, "module", eleMode -> {
                 String refBean = eleMode.getAttribute("refBean");// 来自一个Spring Bean
                 String classType = eleMode.getAttribute("class");// 来自一个类型
                 if (StringUtils.isNotBlank(refBean)) {
-                    loadModules.add(new RuntimeBeanReference(refBean));
+                    loadModules.add(refBean);
                 } else if (StringUtils.isNotBlank(classType)) {
-                    loadModules.add(createBeanHolder(classType, parserContext));
+                    BeanDefinitionHolder beanHolder = createBeanHolder(classType, parserContext);
+                    parserContext.getRegistry().registerBeanDefinition(beanHolder.getBeanName(), beanHolder.getBeanDefinition());
+                    loadModules.add(beanHolder.getBeanName());
                 }
             });
         });

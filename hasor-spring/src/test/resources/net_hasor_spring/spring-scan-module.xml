@@ -13,6 +13,6 @@
 
     <h:hasor>
         <!-- Hasor扫描 Module，类路径和component-scan相同 -->
-        <h:loadModule autoScan="true" scanPackages="net.hasor.test.spring.mod1.*"/>
+        <h:loadModule scanPackages="net.hasor.test.spring.mod1.*"/>
     </h:hasor>
 </beans>

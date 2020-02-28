@@ -21,6 +21,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * 启用 Hasor Web，这个插件会配置 Hasor 的全局拦截器和监听器。
+ * @version : 2020年02月27日
+ * @author 赵永春 (zyc@hasor.net)
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Import(value = { WebHasorConfiguration.class })

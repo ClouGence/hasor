@@ -40,6 +40,11 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Spring Boot 启动入口
+ * @version : 2020年02月27日
+ * @author 赵永春 (zyc@hasor.net)
+ */
 @Configuration(proxyBeanMethods = false)
 public class BasicHasorConfiguration extends AbstractTypeSupplierTools implements ImportAware {
     @Override

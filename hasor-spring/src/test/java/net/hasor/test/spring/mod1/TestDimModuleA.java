@@ -28,15 +28,9 @@ import org.springframework.context.ApplicationContext;
 @DimModule
 public class TestDimModuleA implements Module {
     @Autowired
-    private        ApplicationContext applicationContext;
-    private static boolean            init = false;
+    private ApplicationContext applicationContext;
 
-    public static void reset() {
-        init = false;
-    }
-
-    public static boolean isInit() {
-        return init;
+    public TestDimModuleA() {
     }
 
     public ApplicationContext getApplicationContext() {
@@ -49,7 +43,6 @@ public class TestDimModuleA implements Module {
 
     @Override
     public void loadModule(ApiBinder apiBinder) {
-        init = true;
         apiBinder.bindType(TestDimModuleA.class).toInstance(this);
     }
 }

@@ -30,7 +30,6 @@ public class RsfConsumerBean extends AbstractRsfBean {
     private boolean            onMessage;
     private Object             warpBean;
 
-    //
     public boolean isOnMessage() {
         return onMessage;
     }

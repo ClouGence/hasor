@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * 启用 Hasor
  * 关于 ComponentScan，首先 spring 的 ComponentScan 会扫描所有 Spring 的Bean。在此基础上如果这些 Bean 标记了 @DimModule 注解并且实现了 Module 接口。那么它们会被作为 Hasor 的初始化 Module。
  * 如果 scanPackages 配置的扫描范围超出了 ComponentScan，那么这些标记了 @DimModule 的 Module 接口实现类将会以 new 的形式进行创建。
  * */

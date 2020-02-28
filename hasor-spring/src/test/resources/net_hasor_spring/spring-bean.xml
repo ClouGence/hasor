@@ -11,7 +11,7 @@
         <h:mainConfig>classpath:net_hasor_spring/example-hconfig.xml</h:mainConfig>
         <h:property name="msg_1" value="msg_1"/>
         <h:property name="msg_2" value="msg_2"/>
-        <h:loadModule autoScan="true" scanPackages="net.hasor.test.spring.mod2.*"/>
+        <h:loadModule scanPackages="net.hasor.test.spring.mod2.*"/>
     </h:hasor>
 
     <!-- 声明一个 Spring Bean，名称为：helloString。该 Bean 是通过 AppContext.getInstance('helloWord') 获取。 -->

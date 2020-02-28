@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.spring.mod1;
+package net.hasor.test.spring.mod2;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.DimModule;
 import net.hasor.core.Module;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
 /**
  *
@@ -27,24 +24,9 @@ import org.springframework.stereotype.Component;
  * @author 赵永春 (zyc@hasor.net)
  */
 @DimModule
-@Component
-public class TestDimModuleB implements Module {
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    public TestDimModuleB() {
-    }
-
-    public ApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
-
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-
+public class TestDimModuleD implements Module {
     @Override
     public void loadModule(ApiBinder apiBinder) {
-        apiBinder.bindType(TestDimModuleB.class).toInstance(this);
+        apiBinder.bindType(String.class).idWith("helloWord").toInstance("Hello Word");
     }
 }

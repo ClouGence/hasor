@@ -43,7 +43,6 @@ public class RsfProviderBean extends AbstractRsfBean implements Supplier<Object>
         this.sharedThreadPool = sharedThreadPool;
     }
 
-    //
     @Override
     public Object getObject() throws Exception {
         return this.getTarget();

@@ -31,6 +31,11 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Spring Boot 下 Web 环境配置。
+ * @version : 2020年02月27日
+ * @author 赵永春 (zyc@hasor.net)
+ */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnWebApplication
 public class WebHasorConfiguration extends AbstractTypeSupplierTools implements ImportAware {
