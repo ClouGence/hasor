@@ -16,7 +16,6 @@
 package net.hasor.spring.rsf;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.*;
-import net.hasor.spring.ApplicationContextModule;
 import net.hasor.utils.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
@@ -157,7 +156,7 @@ public abstract class AbstractRsfBean implements FactoryBean<Object>, Applicatio
 
     public void init() throws Exception {
         if (StringUtils.isBlank(this.getFactoryID())) {
-            this.setFactoryID(ApplicationContextModule.DefaultHasorBeanName);
+            this.setFactoryID(AppContext.class.getName());
         }
         //
         String factoryID = this.getFactoryID();

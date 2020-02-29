@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.spring.xml;
-import net.hasor.spring.ApplicationContextModule;
+import net.hasor.core.AppContext;
 import net.hasor.spring.beans.TargetFactoryBean;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
@@ -64,7 +64,7 @@ class BeanDefinitionParser extends AbstractHasorDefinitionParser {
         builder.setLazyInit((Boolean) ConverterUtils.convert(lazy, Boolean.TYPE));
         //
         if (StringUtils.isBlank(factoryID)) {
-            factoryID = ApplicationContextModule.DefaultHasorBeanName;
+            factoryID = AppContext.class.getName();
         }
         if (StringUtils.isNotBlank(refID) || StringUtils.isNotBlank(refType)) {
             builder.addPropertyReference("factory", factoryID);

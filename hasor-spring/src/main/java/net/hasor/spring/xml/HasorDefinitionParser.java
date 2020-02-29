@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.spring.xml;
+import net.hasor.core.AppContext;
 import net.hasor.rsf.InterAddress;
-import net.hasor.spring.ApplicationContextModule;
 import net.hasor.spring.beans.ContextFactoryBean;
 import net.hasor.spring.rsf.RsfAddressPropertyEditor;
 import net.hasor.utils.ResourcesUtils;
@@ -50,7 +50,7 @@ class HasorDefinitionParser extends AbstractHasorDefinitionParser {
     protected String beanID(Element element, NamedNodeMap attributes) {
         String beanID = revertProperty(attributes, "id");
         if (StringUtils.isBlank(beanID)) {
-            beanID = ApplicationContextModule.DefaultHasorBeanName;
+            beanID = AppContext.class.getName();
         }
         return beanID.trim();
     }
