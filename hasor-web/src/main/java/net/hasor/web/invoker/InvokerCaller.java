@@ -48,9 +48,8 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller 
 
     /**
      * 调用目标
-     * @throws Throwable 异常抛出
      */
-    public Future<Object> invoke(final FilterChain chain) throws Throwable {
+    public Future<Object> invoke(final FilterChain chain) {
         Invoker invoker = this.invokerSupplier.get();
         Mapping ownerMapping = invoker.ownerMapping();
         HttpServletRequest httpRequest = invoker.getHttpRequest();

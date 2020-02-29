@@ -17,6 +17,7 @@ package net.hasor.web.render;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Settings;
+import net.hasor.utils.StringUtils;
 import net.hasor.web.*;
 import net.hasor.web.binder.RenderDef;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +88,18 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
             invoker.layoutEnable();
         } else {
             invoker.layoutDisable();
+        }
+        //
+        // 处理 RenderType
+        if (invoker.ownerMapping() != null) {
+            Method method = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
+            RenderType renderType = method.getAnnotation(RenderType.class);
+            if (renderType == null) {
+                renderType = method.getDeclaringClass().getAnnotation(RenderType.class);
+            }
+            if (renderType != null && StringUtils.isNotBlank(renderType.value())) {
+                invoker.renderType(renderType.value());
+            }
         }
         //
         // .执行过滤器
