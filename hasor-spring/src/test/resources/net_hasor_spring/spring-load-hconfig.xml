@@ -7,7 +7,7 @@
        http://www.hasor.net/schema/spring-hasor http://www.hasor.net/schema/spring-hasor/spring-hasor-4.1.2.xsd">
 
     <!-- 创建 Hasor 容器 -->
-    <h:hasor>
+    <h:hasor useProperties="true">
         <h:mainConfig>classpath:net_hasor_spring/example-hconfig.xml</h:mainConfig>
     </h:hasor>
 </beans>

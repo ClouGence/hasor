@@ -146,7 +146,6 @@ class HasorDefinitionParser extends AbstractHasorDefinitionParser {
         String startWith = revertProperty(attributes, "startWith");
         String startWithRef = revertProperty(attributes, "startWithRef");
         if (StringUtils.isNotBlank(startWith) || StringUtils.isNotBlank(startWithRef)) {
-            String refName = null;
             if (StringUtils.isNotBlank(startWithRef)) {
                 //-startWithRef
                 loadModules.add(startWithRef);

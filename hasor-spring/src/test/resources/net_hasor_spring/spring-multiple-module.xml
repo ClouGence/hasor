@@ -14,8 +14,6 @@
 
     <!-- 创建 Hasor 容器1 -->
     <h:hasor id="hasor_1" startWithRef="testModuleA">
-        <!-- 由于目前RSF是自动启动，因此在 hasor-spring 工程中需要避免两个 RSF 环境争抢同一个端口 -->
-        <h:property name="RSF_SERVICE_PORT" value="2180"/>
         <h:loadModule>
             <!-- 引用 Spring 容器中的 Module -->
             <h:module refBean="testModuleB"/>
@@ -25,8 +23,7 @@
     </h:hasor>
 
     <!-- 创建 Hasor 容器2 -->
-    <h:hasor id="hasor_2" startWith="net.hasor.test.spring.mod1.TestModuleD">
-        <!-- 由于目前RSF是自动启动，因此在 hasor-spring 工程中需要避免两个 RSF 环境争抢同一个端口 -->
-        <h:property name="RSF_SERVICE_PORT" value="2170"/>
-    </h:hasor>
+    <h:hasor id="hasor_2" startWith="net.hasor.test.spring.mod1.TestModuleD"/>
+
+    <h:bean id="aa" refID="abc" hasorID="hasor_1"/>
 </beans>
