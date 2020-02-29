@@ -15,94 +15,20 @@
  */
 package net.hasor.spring;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
 import net.hasor.core.Module;
-import net.hasor.core.provider.InstanceProvider;
-import net.hasor.utils.StringUtils;
+import net.hasor.spring.beans.SpringTypeSupplier;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
- * Hasor 集成 Spring插件
- * @version : 2016年2月15日
+ * Spring插件
+ * @version : 2020年2月29日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SpringModule implements Module {
-    public static   String                       DefaultHasorBeanName = AppContext.class.getName();
-    protected final Supplier<ApplicationContext> applicationContext;
-
-    public SpringModule(ApplicationContext applicationContext) {
-        this(InstanceProvider.of(Objects.requireNonNull(applicationContext, "spring applicationContext is null.")));
-    }
-
-    public SpringModule(Supplier<ApplicationContext> applicationContext) {
-        this.applicationContext = Objects.requireNonNull(applicationContext, "spring applicationContext is null.");
-    }
-
-    @Override
-    public final void loadModule(ApiBinder apiBinder) throws Throwable {
-        apiBinder.bindType(ApplicationContext.class).toProvider(this.applicationContext);
-        ApplicationContext app = this.applicationContext.get();
-        String[] names = app.getBeanDefinitionNames();
-        //
-        List<String> exportList = new ArrayList<>();
-        for (String name : names) {
-            if (this.isExportBean(name)) {
-                exportList.add(name);
-            }
-        }
-        exportList = this.exportBeanNames(exportList);
-        if (exportList != null) {
-            for (String name : exportList) {
-                if (app.containsBean(name)) {
-                    Class<?> beanType = Object.class;
-                    if (app instanceof ConfigurableApplicationContext) {
-                        String className = ((ConfigurableApplicationContext) app).getBeanFactory().getBeanDefinition(name).getBeanClassName();
-                        if (StringUtils.isNotBlank(className)) {
-                            beanType = app.getClassLoader().loadClass(className);
-                        }
-                    }
-                    apiBinder.bindType(beanType).idWith(name).toProvider(new SpringBeanAgent<>(name, this.applicationContext));
-                }
-            }
-        }
-        //
-    }
-
-    private static class SpringBeanAgent<T> implements Supplier<T> {
-        private String                       beanID;
-        private Supplier<ApplicationContext> applicationContext;
-
-        public SpringBeanAgent(String beanID, Supplier<ApplicationContext> applicationContext) {
-            this.beanID = beanID;
-            this.applicationContext = applicationContext;
-        }
-
-        @Override
-        public T get() {
-            return (T) applicationContext.get().getBean(this.beanID);
-        }
-    }
-
-    /**
-     * 判断该Bean是否可以被导出到Hasor
-     * @param beanName 将要被导出的Bean Name
-     * @return 是否导出到Hasor容器中。
-     */
-    protected boolean isExportBean(String beanName) {
-        return false;
-    }
-
-    /**
-     * 确认最终到导出到Hasor中的Bean列表。
-     * @param exportList 最终到导出到Hasor中的Bean列表
-     */
-    protected List<String> exportBeanNames(List<String> exportList) {
-        return exportList;
+public interface SpringModule extends Module {
+    public default SpringTypeSupplier getSpringTypeSupplier(ApiBinder apiBinder) {
+        Supplier<ApplicationContext> provider = apiBinder.getProvider(ApplicationContext.class);
+        return new SpringTypeSupplier(provider);
     }
 }

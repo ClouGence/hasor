@@ -50,19 +50,28 @@ public class RuntimeFilter implements Filter {
     private             SpiTrigger     spiTrigger                 = null;
     private             InvokerContext invokerContext             = null;
 
+    public RuntimeFilter() {
+        this(null);
+    }
+
+    public RuntimeFilter(AppContext appContext) {
+        this.appContext = appContext;
+    }
+
     public void init(FilterConfig filterConfig) throws ServletException {
         if (!this.inited.compareAndSet(false, true)) {
             return;
         }
         // .编码
-        AppContext appContext = RuntimeListener.getAppContext(filterConfig.getServletContext());
-        this.httpRequestEncoding = appContext.findBindingBean(HTTP_REQUEST_ENCODING_KEY, String.class);
-        this.httpResponseEncoding = appContext.findBindingBean(HTTP_RESPONSE_ENCODING_KEY, String.class);
+        if (this.appContext == null) {
+            this.appContext = RuntimeListener.getAppContext(filterConfig.getServletContext());
+        }
+        this.httpRequestEncoding = this.appContext.findBindingBean(HTTP_REQUEST_ENCODING_KEY, String.class);
+        this.httpResponseEncoding = this.appContext.findBindingBean(HTTP_RESPONSE_ENCODING_KEY, String.class);
         try {
-            this.appContext = appContext;
             this.spiTrigger = this.appContext.getInstance(SpiTrigger.class);
             this.invokerContext = new InvokerContext();
-            this.invokerContext.initContext(appContext, new OneConfig(filterConfig, () -> appContext));
+            this.invokerContext.initContext(this.appContext, new OneConfig(filterConfig, () -> appContext));
         } catch (ServletException e) {
             throw e;
         } catch (Throwable e) {

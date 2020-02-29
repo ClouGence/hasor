@@ -15,7 +15,7 @@
  */
 package net.hasor.spring.xml;
 import net.hasor.rsf.InterAddress;
-import net.hasor.spring.SpringModule;
+import net.hasor.spring.ApplicationContextModule;
 import net.hasor.spring.beans.ContextFactoryBean;
 import net.hasor.spring.rsf.RsfAddressPropertyEditor;
 import net.hasor.utils.ResourcesUtils;
@@ -50,7 +50,7 @@ class HasorDefinitionParser extends AbstractHasorDefinitionParser {
     protected String beanID(Element element, NamedNodeMap attributes) {
         String beanID = revertProperty(attributes, "id");
         if (StringUtils.isBlank(beanID)) {
-            beanID = SpringModule.DefaultHasorBeanName;
+            beanID = ApplicationContextModule.DefaultHasorBeanName;
         }
         return beanID.trim();
     }

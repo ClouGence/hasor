@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.objects;
-import net.hasor.utils.json.JSON;
+package net.hasor.test.spring.web;
+import com.alibaba.fastjson.JSONObject;
 import net.hasor.web.Invoker;
 import net.hasor.web.render.RenderEngine;
 import net.hasor.web.render.RenderInvoker;
@@ -29,8 +29,8 @@ import java.io.Writer;
 public class JsonRender implements RenderEngine {
     @Override
     public void process(RenderInvoker invoker, Writer writer) throws Throwable {
-        Object o = invoker.get(Invoker.ROOT_DATA_KEY);
-        writer.write(JSON.toString(o));
+        Object o = invoker.get(Invoker.RETURN_DATA_KEY);
+        writer.write(JSONObject.toJSONString(o));
     }
 
     @Override

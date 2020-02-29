@@ -15,7 +15,11 @@
  */
 package net.hasor.spring.beans;
 import net.hasor.core.TypeSupplier;
+import net.hasor.core.provider.InstanceProvider;
 import org.springframework.context.ApplicationContext;
+
+import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * Spring 的 TypeSupplier
@@ -23,19 +27,23 @@ import org.springframework.context.ApplicationContext;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SpringTypeSupplier implements TypeSupplier {
-    private ApplicationContext applicationContext;
+    private Supplier<ApplicationContext> applicationContext;
 
     public SpringTypeSupplier(ApplicationContext applicationContext) {
+        this(InstanceProvider.of(Objects.requireNonNull(applicationContext)));
+    }
+
+    public SpringTypeSupplier(Supplier<ApplicationContext> applicationContext) {
         this.applicationContext = applicationContext;
     }
 
     @Override
     public <T> T get(Class<? extends T> targetType) {
-        return applicationContext.getBean(targetType);
+        return applicationContext.get().getBean(targetType);
     }
 
     @Override
     public <T> boolean test(Class<? extends T> targetType) {
-        return applicationContext.getBeanNamesForType(targetType).length > 0;
+        return applicationContext.get().getBeanNamesForType(targetType).length > 0;
     }
 }

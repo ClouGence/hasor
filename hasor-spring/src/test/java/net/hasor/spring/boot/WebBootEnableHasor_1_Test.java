@@ -1,7 +1,9 @@
 package net.hasor.spring.boot;
+import com.alibaba.fastjson.JSONObject;
 import net.hasor.core.AppContext;
-import net.hasor.test.spring.mod1.*;
-import org.junit.Before;
+import net.hasor.web.binder.OneConfig;
+import net.hasor.web.startup.RuntimeFilter;
+import net.hasor.web.startup.RuntimeListener;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,30 +16,39 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+
 @WebAppConfiguration
 @SpringBootTest(classes = WebBootEnableHasor_1.class)
-public class WebBootEnableHasor_1_Tests {
+public class WebBootEnableHasor_1_Test {
     @Autowired
     private AppContext            appContext;
     @Autowired
     private WebApplicationContext applicationContext;
     private MockMvc               mockMvc;
 
-    @Before
-    public void before() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext).build();
-        TestModuleA.reset();
-        TestModuleB.reset();
-        TestModuleC.reset();
-        TestModuleD.reset();
-        TestDimModuleA.reset();
-        TestDimModuleB.reset();
+    public MockMvc mockMvc() throws Exception {
+        if (mockMvc != null) {
+            return mockMvc;
+        }
+        RuntimeListener runtimeListener = new RuntimeListener(this.appContext);
+        RuntimeFilter runtimeFilter = new RuntimeFilter(this.appContext);
+        //
+        mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext)//
+                .addFilter(runtimeFilter, "/*")//
+                .build();
+        //
+        ServletContext servletContext = mockMvc.getDispatcherServlet().getServletContext();
+        runtimeListener.contextInitialized(new ServletContextEvent(servletContext));
+        runtimeFilter.init(new OneConfig("abc", () -> appContext));
+        //
+        return mockMvc;
     }
 
     @Test
     public void login() throws Exception {
-        before();
-        String contentAsString = mockMvc.perform(MockMvcRequestBuilders//
+        String contentAsString = mockMvc().perform(MockMvcRequestBuilders//
                 .post("/hello")//
                 .contentType(MediaType.APPLICATION_JSON)//
                 .content("{}"))//
@@ -47,6 +58,9 @@ public class WebBootEnableHasor_1_Tests {
                 .andReturn()//
                 .getResponse()//
                 .getContentAsString();
-        System.out.println(contentAsString);
+        //
+        JSONObject jsonObject = JSONObject.parseObject(contentAsString);
+        assert jsonObject.getBoolean("spring");
+        assert jsonObject.getString("message").equals("HelloWord");
     }
 }
