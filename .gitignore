@@ -3,7 +3,7 @@ test-work
 bin
 .DS_Store
 _book
-hasor-all/dependency-reduced-pom.xml
+dependency-reduced-pom.xml
 
 # nodejs
 package-lock.json

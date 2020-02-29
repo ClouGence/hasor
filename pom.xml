@@ -240,10 +240,6 @@
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
     </distributionManagement>
 
     <!-- 使用“-P release”启用下面配置 -->
@@ -450,7 +446,6 @@
                 <artifactId>jsp-api</artifactId>
                 <version>2.2</version>
             </dependency>
-
 
             <!-- Spring & SpringBoot -->
             <dependency>
