@@ -70,6 +70,11 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
 
     @Override
     public synchronized void doStart(AppContext appContext) {
+        boolean enable = this.rsfEnvironment.getSettings().getBoolean("hasor.rsfConfig.enable", false);
+        if (!enable) {
+            logger.info("rsf framework disable -> 'hasor.rsfConfig.enable' is false");
+            return;
+        }
         //
         // .枚举 loadModule 期间注册的 Service
         this.appContext = appContext;
