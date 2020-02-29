@@ -12,7 +12,7 @@ DataQL Maven 插件的作用是，根据 DataQL 查询文件生成对应的查�
     <plugin>
         <groupId>net.hasor</groupId>
         <artifactId>dataql-maven-plugin</artifactId>
-        <version>4.1.1</version>
+        <version>4.1.2</version>
         <executions>
             <execution>
                 <goals>
