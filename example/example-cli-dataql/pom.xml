@@ -10,7 +10,7 @@
 
     <!-- Maven Info -->
     <groupId>net.hasor</groupId>
-    <artifactId>example-hasor</artifactId>
+    <artifactId>example-cli-dataql</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
