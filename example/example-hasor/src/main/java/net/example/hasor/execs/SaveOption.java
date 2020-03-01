@@ -1,13 +1,12 @@
-package net.example.hasor.commands;
+package net.example.hasor.execs;
 import net.hasor.tconsole.Tel;
 import net.hasor.tconsole.TelCommand;
-import net.hasor.utils.ResourcesUtils;
 
-@Tel("read")
-public class ReadOption extends AbstractTelExecutor {
+@Tel("save")
+public class SaveOption extends AbstractTelExecutor {
     @Override
     public String doCommand(TelCommand telCommand) throws Throwable {
         String[] commandArgs = telCommand.getCommandArgs();
-        return doQuery(new ReadOptionQuery(dataQL).execute(commandArgs));
+        return doQuery(new SaveOptionQuery(dataQL).execute(commandArgs));
     }
 }

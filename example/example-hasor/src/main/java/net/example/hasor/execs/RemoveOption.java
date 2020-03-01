@@ -1,7 +1,6 @@
-package net.example.hasor.commands;
+package net.example.hasor.execs;
 import net.hasor.tconsole.Tel;
 import net.hasor.tconsole.TelCommand;
-import net.hasor.utils.ResourcesUtils;
 
 @Tel("remove")
 public class RemoveOption extends AbstractTelExecutor {

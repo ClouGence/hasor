@@ -1,4 +1,4 @@
-package net.example.hasor.commands;
+package net.example.hasor.execs;
 import net.hasor.tconsole.Tel;
 import net.hasor.tconsole.TelCommand;
 

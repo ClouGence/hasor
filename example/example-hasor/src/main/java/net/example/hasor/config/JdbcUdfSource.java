@@ -1,4 +1,4 @@
-package net.example.hasor;
+package net.example.hasor.config;
 import net.hasor.dataql.DimUdfSource;
 import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.db.jdbc.core.JdbcTemplate;

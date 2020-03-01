@@ -1,7 +1,8 @@
-package net.example.hasor;
+package net.example.hasor.config;
 import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.DimModule;
 import net.hasor.core.Module;
 import net.hasor.dataql.DimFragment;
 import net.hasor.dataql.DimUdfSource;
@@ -11,9 +12,12 @@ import net.hasor.db.Level;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@DimModule
+@Component
 public class ExampleModule implements Module {
     protected static Logger logger = LoggerFactory.getLogger(ExampleModule.class);
 

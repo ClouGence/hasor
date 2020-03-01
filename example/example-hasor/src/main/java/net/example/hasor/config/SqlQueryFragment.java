@@ -1,4 +1,4 @@
-package net.example.hasor;
+package net.example.hasor.config;
 import net.hasor.dataql.DimFragment;
 import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Hints;
