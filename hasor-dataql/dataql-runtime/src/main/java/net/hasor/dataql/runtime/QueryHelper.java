@@ -34,10 +34,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * DataQL 小工具。
@@ -75,7 +72,7 @@ public class QueryHelper {
      * @param charset 读取字节流使用的字符集
      */
     public static QueryModel queryParser(InputStream inputStream, Charset charset) throws IOException {
-        return queryParser(CharStreams.fromStream(inputStream, charset));
+        return queryParser(CharStreams.fromStream(Objects.requireNonNull(inputStream), charset));
     }
 
     /**

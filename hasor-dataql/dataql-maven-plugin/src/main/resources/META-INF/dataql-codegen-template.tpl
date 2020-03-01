@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -34,7 +35,8 @@ public class %target_name% extends HintsSet implements Query {
 
     public %target_name%(Finder finder, Map<String, Supplier<?>> shareVarMap) throws IOException, ParseException {
         Set<String> keySet = shareVarMap.keySet();
-        QueryModel queryModel = QueryHelper.queryParser(ResourcesUtils.getResourceAsStream(sourceCode), Charset.forName("UTF-8"));
+        InputStream inputStream = Objects.requireNonNull(ResourcesUtils.getResourceAsStream(sourceCode), sourceCode);
+        QueryModel queryModel = QueryHelper.queryParser(inputStream, Charset.forName("UTF-8"));
         QIL queryQil = QueryHelper.queryCompiler(queryModel, keySet, finder);
         this.dataQuery = QueryHelper.createQuery(queryQil, finder);
         if (this.dataQuery instanceof CompilerVarQuery) {
