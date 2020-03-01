@@ -13,7 +13,7 @@
     <name>example-root</name>
 
     <modules>
-        <module>example-hasor</module>
+        <module>example-cli-dataql</module>
         <module>example-web</module>
         <!-- <module>example-rsf</module>-->
         <!-- <module>example-nutz</module>-->

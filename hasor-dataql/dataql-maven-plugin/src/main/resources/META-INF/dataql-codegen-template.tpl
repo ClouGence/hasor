@@ -7,6 +7,7 @@ import net.hasor.dataql.runtime.*;
 import net.hasor.utils.ResourcesUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
+
 
 // Generated from '%source_resource%'
 %inject_name%
