@@ -19,6 +19,7 @@ import net.hasor.utils.resource.ResourceLoader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -30,8 +31,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class MultiResourceLoader implements ResourceLoader {
-    private final List<ResourceLoader>                  loaders           = new CopyOnWriteArrayList<ResourceLoader>();
-    private final ConcurrentMap<String, ResourceLoader> lastLoaderForName = new ConcurrentHashMap<String, ResourceLoader>();
+    private final List<ResourceLoader>                  loaders           = new CopyOnWriteArrayList<>();
+    private final ConcurrentMap<String, ResourceLoader> lastLoaderForName = new ConcurrentHashMap<>();
 
     /** Creates a new empty multi resource Loader. */
     public MultiResourceLoader() {
@@ -40,12 +41,10 @@ public class MultiResourceLoader implements ResourceLoader {
 
     /**
      * Creates a new multi resource Loader that will use the specified loaders.
-     * @param loaders the loaders that are used to load resources. 
+     * @param loaders the loaders that are used to load resources.
      */
     public MultiResourceLoader(ResourceLoader[] loaders) {
-        for (int i = 0; i < loaders.length; i++) {
-            this.loaders.add(loaders[i]);
-        }
+        this.loaders.addAll(Arrays.asList(loaders));
     }
 
     /**添加一个{@link ResourceLoader}。*/
@@ -58,8 +57,7 @@ public class MultiResourceLoader implements ResourceLoader {
     public InputStream getResourceAsStream(String resourcePath) throws IOException {
         ResourceLoader loader = findLoader(resourcePath);
         if (loader != null) {
-            InputStream inStream = loader.getResourceAsStream(resourcePath);
-            return inStream;
+            return loader.getResourceAsStream(resourcePath);
         }
         return null;
     }
@@ -81,6 +79,15 @@ public class MultiResourceLoader implements ResourceLoader {
 
     public boolean exist(String resourcePath) throws IOException {
         return findLoader(resourcePath) != null;
+    }
+
+    @Override
+    public long getResourceSize(String resourcePath) throws IOException {
+        ResourceLoader loader = findLoader(resourcePath);
+        if (loader == null) {
+            return -1;
+        }
+        return loader.getResourceSize(resourcePath);
     }
 
     public URL getResource(String resourcePath) throws IOException {

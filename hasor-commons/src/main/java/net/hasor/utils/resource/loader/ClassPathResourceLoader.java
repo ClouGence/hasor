@@ -15,10 +15,15 @@
  */
 package net.hasor.utils.resource.loader;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.io.IOUtils;
 import net.hasor.utils.resource.ResourceLoader;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 用于创建一个可以从classpath中获取资源的ResourceLoader。
@@ -26,8 +31,9 @@ import java.net.URL;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ClassPathResourceLoader implements ResourceLoader {
-    private String      packageName = null;
-    private ClassLoader classLoader = null;
+    private String            packageName = null;
+    private ClassLoader       classLoader = null;
+    private Map<String, Long> sizeCache   = null;
 
     /***/
     public ClassPathResourceLoader(String packageName) {
@@ -72,7 +78,7 @@ public class ClassPathResourceLoader implements ResourceLoader {
             return false;
         }
         URL url = this.classLoader.getResource(formatResourcePath(resourcePath));
-        if (url.getProtocol().contains("file")) {
+        if (url != null && url.getProtocol().contains("file")) {
             return true;
         }
         return false;
@@ -86,7 +92,35 @@ public class ClassPathResourceLoader implements ResourceLoader {
         return !(url == null);
     }
 
+    @Override
+    public long getResourceSize(String resourcePath) throws IOException {
+        try (InputStream inputStream = getResourceAsStream(resourcePath)) {
+            SizeOutputStream sizeOutputStream = new SizeOutputStream();
+            IOUtils.copy(inputStream, sizeOutputStream);
+            return sizeOutputStream.currentSize();
+        }
+    }
+
     public URL getResource(String resourcePath) {
         return this.classLoader.getResource(formatResourcePath(resourcePath));
+    }
+
+    private static class SizeOutputStream extends OutputStream {
+        private AtomicLong atomicLong = new AtomicLong();
+
+        public long currentSize() {
+            return atomicLong.get();
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            this.atomicLong.incrementAndGet();
+        }
+
+        public void write(byte[] b) throws IOException {
+            if (b != null) {
+                this.atomicLong.addAndGet(b.length);
+            }
+        }
     }
 }

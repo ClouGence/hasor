@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -32,15 +32,16 @@ import java.util.zip.ZipFile;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ZipResourceLoader implements ResourceLoader {
-    private File        zipFile     = null;
-    private Set<String> zipEntrySet = new HashSet<>();
+    private File              zipFile     = null;
+    private Map<String, Long> zipEntrySet = new HashMap<>();
 
     public ZipResourceLoader(String zipFile) throws IOException {
         this.zipFile = new File(zipFile);
         ZipFile zipFileObj = new ZipFile(this.zipFile);
         Enumeration<? extends ZipEntry> entEnum = zipFileObj.entries();
         while (entEnum.hasMoreElements()) {
-            this.zipEntrySet.add(entEnum.nextElement().getName());
+            ZipEntry zipEntry = entEnum.nextElement();
+            this.zipEntrySet.put(zipEntry.getName(), zipEntry.getSize());
         }
         zipFileObj.close();
     }
@@ -64,7 +65,7 @@ public class ZipResourceLoader implements ResourceLoader {
         }
         //
         resourcePath = formatResourcePath(resourcePath);
-        if (!this.zipEntrySet.contains(resourcePath)) {
+        if (!this.zipEntrySet.containsKey(resourcePath)) {
             return null;
         }
         //
@@ -75,7 +76,15 @@ public class ZipResourceLoader implements ResourceLoader {
 
     public boolean exist(String resourcePath) {
         resourcePath = formatResourcePath(resourcePath);
-        return this.zipEntrySet.contains(resourcePath);
+        return this.zipEntrySet.containsKey(resourcePath);
+    }
+
+    @Override
+    public long getResourceSize(String resourcePath) {
+        if (!exist(resourcePath)) {
+            return -1;
+        }
+        return this.zipEntrySet.get(resourcePath);
     }
 
     public URL getResource(String resourcePath) throws IOException {
@@ -84,23 +93,21 @@ public class ZipResourceLoader implements ResourceLoader {
         }
         //
         resourcePath = formatResourcePath(resourcePath);
-        if (!this.zipEntrySet.contains(resourcePath)) {
+        if (!this.zipEntrySet.containsKey(resourcePath)) {
             return null;
         }
         return new URL(this.zipFile.toURI().toURL(), "@" + resourcePath);
     }
 
-    private class ZipEntryInputStream extends InputStream {
+    private static class ZipEntryInputStream extends InputStream {
         private InputStream targetInput;
         private ZipFile     zipFileObj;
 
-        //
         public ZipEntryInputStream(ZipFile zipFileObj, InputStream targetInput) {
             this.zipFileObj = zipFileObj;
             this.targetInput = targetInput;
         }
 
-        //
         public int read(byte[] b) throws IOException {
             return this.targetInput.read(b);
         }

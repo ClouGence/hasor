@@ -33,4 +33,6 @@ public interface ResourceLoader {
     public default boolean exist(String resourcePath) throws IOException {
         return getResource(resourcePath) != null;
     }
+
+    public long getResourceSize(String resourcePath) throws IOException;
 }

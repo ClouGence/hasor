@@ -55,6 +55,16 @@ public class PathResourceLoader implements ResourceLoader {
         return (file.exists() && file.isFile());
     }
 
+    @Override
+    public long getResourceSize(String resourcePath) {
+        resourcePath = formatResourcePath(resourcePath);
+        File file = new File(resourcePath);
+        if (file.isFile()) {
+            return file.length();
+        }
+        return -1;
+    }
+
     public URL getResource(String resourcePath) throws IOException {
         File file = new File(resourcePath);
         if (file.exists() && file.isFile()) {
