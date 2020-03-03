@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class WebBootEnableHasor_1 implements WebModule, SpringModule {
     @Override
     public void loadModule(WebApiBinder apiBinder) {
-        SpringTypeSupplier springTypeSupplier = getSpringTypeSupplier(apiBinder);
+        SpringTypeSupplier springTypeSupplier = springTypeSupplier(apiBinder);
         //Hello的创建使用 Spring，因为它已经被 Spring 托管了
         apiBinder.loadMappingTo(Hello.class, springTypeSupplier);
         apiBinder.addRender("json").toInstance(new JsonRender());

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.settings;
+import net.hasor.core.setting.ConfigSource;
 import net.hasor.core.setting.InputStreamSettings;
 import net.hasor.core.setting.StreamType;
 import org.junit.Test;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URL;
 
 /**
  *
@@ -38,11 +40,11 @@ public class LoadTest {
         assert inputStreamSettings.loadSettings() == 0;
         //
         StringReader ins = new StringReader(new String(new byte[] { 0, 0, 0 }));
-        assert inputStreamSettings.addReader(ins, StreamType.Xml);
-        assert !inputStreamSettings.addReader(ins, StreamType.Xml);
-        assert !inputStreamSettings.addReader(null, StreamType.Xml);
-        assert !inputStreamSettings.addReader(null, null);
-        assert !inputStreamSettings.addReader(ins, null);
+        assert inputStreamSettings.addReader(new ConfigSource(StreamType.Xml, ins));
+        assert !inputStreamSettings.addReader(new ConfigSource(StreamType.Xml, ins));
+        assert !inputStreamSettings.addReader(new ConfigSource(StreamType.Xml, (URL) null));
+        assert !inputStreamSettings.addReader(new ConfigSource(null, (URL) null));
+        assert !inputStreamSettings.addReader(new ConfigSource(null, ins));
         //
         try {
             inputStreamSettings.loadSettings();

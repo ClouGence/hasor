@@ -16,6 +16,7 @@
 package net.hasor.core.setting;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.xml.SaxXmlParser;
+import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
 import org.xml.sax.InputSource;
 
@@ -23,6 +24,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.LinkedList;
 import java.util.Map;
@@ -34,24 +36,27 @@ import java.util.Properties;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class InputStreamSettings extends AbstractSettings implements IOSettings {
-    private LinkedList<InputStreamEntity> pendingStream = new LinkedList<>();
+    private LinkedList<ConfigSource> pendingConfigSource = new LinkedList<>();
 
     /**子类决定如何添加资源*/
     public InputStreamSettings() {
     }
 
-    /**将一个输入流添加到待加载处理列表，使用load方法加载待处理列表中的流。
-     * 注意：待处理列表中的流一旦装载完毕将会从待处理列表中清除出去。*/
-    public synchronized boolean addReader(Reader inReader, StreamType streamType) {
-        if (inReader == null || streamType == null) {
+    /** 将一个配置源添加到列表，后面会通过 load 方法加载这些数据。
+     * 注意：待处理列表中的数据一旦装载完毕将会从待处理列表中清除出去。*/
+    public synchronized boolean addReader(ConfigSource configSource) {
+        if (configSource == null || configSource.getStreamType() == null) {
             return false;
         }
-        for (InputStreamEntity entity : this.pendingStream) {
-            if (entity.inReader == inReader) {
+        if (configSource.getResourceUrl() == null && configSource.getResourceUri() == null && configSource.getResourceReader() == null) {
+            return false;
+        }
+        for (ConfigSource cs : this.pendingConfigSource) {
+            if (cs.equals(configSource)) {
                 return false;
             }
         }
-        return this.pendingStream.add(new InputStreamEntity(inReader, streamType));
+        return this.pendingConfigSource.add(configSource);
     }
 
     /**load装载所有待处理的流，如果没有待处理流则直接return。*/
@@ -59,12 +64,12 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
     public synchronized int loadSettings() throws IOException {
         this.readyLoad();//准备装载
         int loadCount = 0;
-        if (this.pendingStream.isEmpty()) {
+        if (this.pendingConfigSource.isEmpty()) {
             logger.info("loadSettings finish -> there is no need to be load.");
             return 0;
         }
         //构建装载环境
-        InputStreamEntity entity = null;
+        ConfigSource entity = null;
         try {
             logger.debug("parsing...");
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -72,36 +77,62 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
             factory.setFeature("http://xml.org/sax/features/namespaces", true);
             SAXParser parser = factory.newSAXParser();
             SaxXmlParser handler = new SaxXmlParser(this);
-            while ((entity = this.pendingStream.removeFirst()) != null) {
+            while ((entity = this.pendingConfigSource.removeFirst()) != null) {
                 loadCount++;
-                //
-                //根据文件类型选择适合的解析器
-                if (StreamType.Xml.equals(entity.fileType)) {
-                    //加载xml
-                    InputSource inputSource = new InputSource(entity.inReader);
-                    parser.parse(inputSource, handler);
-                    entity.inReader.close();
-                } else if (StreamType.Properties.equals(entity.fileType)) {
-                    //加载属性文件
-                    Properties properties = new Properties();
-                    properties.load(entity.inReader);
-                    entity.inReader.close();
-                    if (!properties.isEmpty()) {
-                        //
-                        String namespace = (String) properties.get("namespace");
-                        if (StringUtils.isBlank(namespace)) {
-                            namespace = Settings.DefaultNameSpace;
+                Reader dataReader = null;
+                try {
+                    // 拿到Reader
+                    dataReader = entity.getResourceReader();
+                    if (dataReader == null && entity.getResourceUri() != null) {
+                        InputStream asStream = ResourcesUtils.getResourceAsStream(entity.getResourceUri());
+                        if (asStream != null) {
+                            dataReader = new InputStreamReader(asStream, Settings.DefaultCharset);
                         }
-                        for (Map.Entry<Object, Object> propEnt : properties.entrySet()) {
-                            String propKey = (String) propEnt.getKey();
-                            String propVal = (String) propEnt.getValue();
-                            if (StringUtils.isNotBlank(propVal)) {
-                                this.addSetting(propKey, propVal, namespace);
+                    }
+                    if (dataReader == null && entity.getResourceUrl() != null) {
+                        InputStream asStream = ResourcesUtils.getResourceAsStream(entity.getResourceUrl());
+                        if (asStream != null) {
+                            dataReader = new InputStreamReader(asStream, Settings.DefaultCharset);
+                        }
+                    }
+                    //
+                    if (dataReader == null) {
+                        continue;
+                    }
+                    //
+                    //根据文件类型选择适合的解析器
+                    if (StreamType.Xml.equals(entity.getStreamType())) {
+                        //加载xml
+                        InputSource inputSource = new InputSource(dataReader);
+                        parser.parse(inputSource, handler);
+                    } else if (StreamType.Properties.equals(entity.getStreamType())) {
+                        //加载属性文件
+                        Properties properties = new Properties();
+                        properties.load(dataReader);
+                        if (!properties.isEmpty()) {
+                            //
+                            String namespace = (String) properties.get("namespace");
+                            if (StringUtils.isBlank(namespace)) {
+                                namespace = Settings.DefaultNameSpace;
+                            }
+                            for (Map.Entry<Object, Object> propEnt : properties.entrySet()) {
+                                String propKey = (String) propEnt.getKey();
+                                String propVal = (String) propEnt.getValue();
+                                if (StringUtils.isNotBlank(propVal)) {
+                                    this.addSetting(propKey, propVal, namespace);
+                                }
                             }
                         }
                     }
+                } catch (Exception e) {
+                    logger.error("load Config " + entity.toString() + " failed -> " + e.getMessage());
+                    throw e;
+                } finally {
+                    if (dataReader != null) {
+                        dataReader.close();
+                    }
                 }
-                if (this.pendingStream.isEmpty()) {
+                if (this.pendingConfigSource.isEmpty()) {
                     break;
                 }
             }

@@ -16,10 +16,12 @@
 package net.hasor.core.setting;
 import net.hasor.core.Settings;
 import net.hasor.utils.ResourcesUtils;
-import net.hasor.utils.io.AutoCloseInputStream;
 import net.hasor.utils.io.IOUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -68,7 +70,7 @@ public class StandardContextSettings extends InputStreamSettings {
         if (mainSettings != null) {
             outInitLog("stream", mainSettings);
         }
-        this.addReader(mainSettings, type);
+        this.addReader(new ConfigSource(type, mainSettings));
         refresh();
     }
 
@@ -113,45 +115,53 @@ public class StandardContextSettings extends InputStreamSettings {
         for (URL schemaUrl : schemaUrlList) {
             InputStream schemaStream = ResourcesUtils.getResourceAsStream(schemaUrl);
             List<String> readLines = IOUtils.readLines(schemaStream, Settings.DefaultCharset);
-            if (readLines == null || readLines.isEmpty()) {
+            if (readLines.isEmpty()) {
                 logger.warn("found nothing , {}", schemaUrl.toString());
                 continue;
             }
-            for (String sechma : readLines) {
-                if (loadMatcher != null && !loadMatcher.test(sechma)) {
-                    logger.info("addConfig '{}' ignore.", sechma);
+            for (String schema : readLines) {
+                if (loadMatcher != null && !loadMatcher.test(schema)) {
+                    logger.info("addConfig '{}' ignore.", schema);
                     continue;
                 }
                 //
-                InputStream inputStream = ResourcesUtils.getResourceAsStream(sechma);
-                if (inputStream != null) {
-                    logger.info("addConfig '{}' in '{}'", sechma, schemaUrl.toString());
-                    _addStream(inputStream, sechma);
-                } else {
-                    logger.error("cannot be read '{}' in '{}'", sechma, schemaUrl.toString());
+                try (InputStream stream = ResourcesUtils.getResourceAsStream(schema)) {
+                    if (stream != null) {
+                        logger.info("addConfig '{}' in '{}'", schema, schemaUrl.toString());
+                        _addStream(ResourcesUtils.getResource(schema));
+                    } else {
+                        logger.error("cannot be read '{}' in '{}'", schema, schemaUrl.toString());
+                    }
                 }
             }
         }
         //2.装载 hconfig.xml
         URI settingConfig = getSettingURI();
         if (settingConfig != null) {
-            InputStream stream = ResourcesUtils.getResourceAsStream(settingConfig);
-            if (stream != null) {
-                logger.info("addConfig '{}'", settingConfig);
-                _addStream(stream, settingConfig.toString());
-            } else {
-                logger.error("cannot be read {}", settingConfig);
+            try (InputStream stream = ResourcesUtils.getResourceAsStream(settingConfig)) {
+                if (stream != null) {
+                    logger.info("addConfig '{}'", settingConfig);
+                    _addStream(settingConfig);
+                } else {
+                    logger.error("cannot be read {}", settingConfig);
+                }
             }
         }
     }
 
-    private void _addStream(InputStream inStream, String suffix) throws UnsupportedEncodingException {
-        inStream = new AutoCloseInputStream(inStream);
-        InputStreamReader streamReader = new InputStreamReader(inStream, Settings.DefaultCharset);
-        if (suffix != null && suffix.toLowerCase().endsWith(".xml")) {
-            this.addReader(streamReader, StreamType.Xml);
+    private void _addStream(URL resourceUrl) {
+        if (resourceUrl.toString().toLowerCase().endsWith(".xml")) {
+            this.addReader(new ConfigSource(StreamType.Xml, resourceUrl));
         } else {
-            this.addReader(streamReader, StreamType.Properties);
+            this.addReader(new ConfigSource(StreamType.Properties, resourceUrl));
+        }
+    }
+
+    private void _addStream(URI resourceUrl) {
+        if (resourceUrl.toString().toLowerCase().endsWith(".xml")) {
+            this.addReader(new ConfigSource(StreamType.Xml, resourceUrl));
+        } else {
+            this.addReader(new ConfigSource(StreamType.Properties, resourceUrl));
         }
     }
 

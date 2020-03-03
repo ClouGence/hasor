@@ -37,8 +37,7 @@ public interface Settings {
 
     /** 强制重新装载配置文件。 */
     public void refresh() throws IOException;
-    //
-
+     
     /** 设置参数，如果出现多个值，则会覆盖。 */
     public void setSetting(String key, Object value);
 

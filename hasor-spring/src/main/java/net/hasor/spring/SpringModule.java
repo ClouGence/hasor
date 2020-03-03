@@ -16,6 +16,7 @@
 package net.hasor.spring;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
+import net.hasor.core.Provider;
 import net.hasor.spring.beans.SpringTypeSupplier;
 import org.springframework.context.ApplicationContext;
 
@@ -27,8 +28,21 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface SpringModule extends Module {
-    public default SpringTypeSupplier getSpringTypeSupplier(ApiBinder apiBinder) {
+    /** 获取 SpringTypeSupplier */
+    public default SpringTypeSupplier springTypeSupplier(ApiBinder apiBinder) {
         Supplier<ApplicationContext> provider = apiBinder.getProvider(ApplicationContext.class);
         return new SpringTypeSupplier(provider);
+    }
+
+    /** 使用 Spring getBean(Class) 方式获取Bean。  */
+    public default <T> Supplier<T> getSupplierOfType(ApiBinder apiBinder, Class<T> targetType) {
+        Supplier<ApplicationContext> provider = apiBinder.getProvider(ApplicationContext.class);
+        return (Provider<T>) () -> provider.get().getBean(targetType);
+    }
+
+    /** 使用 Spring getBean(String) 方式获取Bean。  */
+    public default <T> Supplier<T> getSupplierOfName(ApiBinder apiBinder, String beanName) {
+        Supplier<ApplicationContext> provider = apiBinder.getProvider(ApplicationContext.class);
+        return (Provider<T>) () -> (T) provider.get().getBean(beanName);
     }
 }
