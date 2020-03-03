@@ -6,7 +6,8 @@
  - Spring Boot（提供 Boot 能力）
  - DataQL Maven 插件（生成 .ql 文件的 Java 调用代码）
  - tConsole（CLI框架）
-  
+ - Hasor-JDBC + Druid（完成数据库链接配置）
+
 用法：
 
 - java -jar ./target/example-hasor-1.0.jar list
