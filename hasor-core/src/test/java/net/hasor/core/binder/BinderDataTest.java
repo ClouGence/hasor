@@ -341,23 +341,6 @@ public class BinderDataTest extends AbstractBinderDataTest {
     }
 
     @Test
-    public void otherTest1() {
-        try {
-            binder.installModule(PowerMockito.mock(Module.class));
-            assert false;
-        } catch (Throwable e) {
-            assert "current state is not allowed.".equals(e.getMessage());
-        }
-        //
-        try {
-            binder.tryCast(TestBinder.class);
-            assert false;
-        } catch (Throwable e) {
-            assert "current state is not allowed.".equals(e.getMessage());
-        }
-    }
-
-    @Test
     public void otherTest2() {
         assert binder.findClass(null) == null;
         assert !binder.findClass(ApiBinder.class).isEmpty();
@@ -388,18 +371,6 @@ public class BinderDataTest extends AbstractBinderDataTest {
         BindInfo<Object> bindInfo2 = container.getBindInfoContainer().findBindInfo("bb");
         Supplier<Scope>[] collectScope2 = container.getScopeContainer().collectScope(bindInfo2);
         assert collectScope2[0].get() == myScope2;
-    }
-
-    @Test
-    public void otherTest4() {
-        try {
-            new ApiBinderWrap(binder).installModule(apiBinder -> {
-                //
-            });
-            assert false;
-        } catch (Throwable e) {
-            assert e.getMessage().equals("current state is not allowed.");
-        }
     }
 
     @Test

@@ -98,7 +98,6 @@ public class RenderLayoutTest extends AbstractTest {
         assert "/templates/myfiles".equals(templatePath);
         assert engineMap.size() == 1;
         assert engineMap.get("HTML") == renderEngine;
-        assert renderEngine.isInitEngine();
     }
 
     // 默认打开 layout

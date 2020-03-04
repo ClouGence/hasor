@@ -49,6 +49,16 @@ public class InvokerWrap implements Invoker {
     }
 
     @Override
+    public String contentType() {
+        return this.dataContext.contentType();
+    }
+
+    @Override
+    public void contentType(String contentType) {
+        this.dataContext.contentType(contentType);
+    }
+
+    @Override
     public Mapping ownerMapping() {
         return this.dataContext.ownerMapping();
     }

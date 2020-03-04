@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.test.web.render;
-import net.hasor.core.AppContext;
 import net.hasor.web.render.RenderEngine;
 import net.hasor.web.render.RenderInvoker;
 
@@ -26,13 +25,8 @@ import java.io.Writer;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SimpleRenderEngine implements RenderEngine {
-    private boolean initEngine;
     private boolean process;
     private boolean exist;
-
-    public boolean isInitEngine() {
-        return initEngine;
-    }
 
     public boolean isProcess() {
         return process;
@@ -40,11 +34,6 @@ public class SimpleRenderEngine implements RenderEngine {
 
     public boolean isExist() {
         return exist;
-    }
-
-    @Override
-    public void initEngine(AppContext appContext) throws Throwable {
-        this.initEngine = true;
     }
 
     @Override

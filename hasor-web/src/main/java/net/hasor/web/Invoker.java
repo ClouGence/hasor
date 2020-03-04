@@ -51,6 +51,12 @@ public interface Invoker extends MimeType {
     /** 获取 {@link HttpServletResponse} 对象。*/
     public HttpServletResponse getHttpResponse();
 
+    /** 设置内容类型类型，如果没有配置那么会通过 renderType 配置进行自动推断，若 @RenderType 也未配置，那么不会进行任何操作。*/
+    public String contentType();
+
+    /** 设置内容类型类型，如果没有配置那么会通过 renderType 配置进行自动推断，若 @RenderType 也未配置，那么不会进行任何操作。*/
+    public void contentType(String contentType);
+
     /** 本次请求的 Action，如果没有命中任何 Mapping 那么会返回空。例如在 InvokerFilter 拦截器中经常会看到空的 ownerMapping */
     public Mapping ownerMapping();
 

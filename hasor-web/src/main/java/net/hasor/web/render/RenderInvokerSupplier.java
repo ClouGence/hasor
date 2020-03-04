@@ -26,9 +26,9 @@ import java.util.Enumeration;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker {
-    private String  viewName   = null;    //模版名称
-    private String  renderType = null;    //渲染引擎
-    private boolean useLayout  = true;    //是否渲染布局
+    private String  viewName   = null;    // 模版名称
+    private String  renderType = null;    // 渲染引擎
+    private boolean useLayout  = true;    // 是否渲染布局
 
     protected RenderInvokerSupplier(Invoker invoker) {
         super(invoker);

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.render;
-import net.hasor.core.AppContext;
-
 import java.io.IOException;
 import java.io.Writer;
 
@@ -25,10 +23,6 @@ import java.io.Writer;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface RenderEngine {
-    /** 初始化引擎 */
-    public default void initEngine(AppContext appContext) throws Throwable {
-    }
-
     /** 执行模版引擎 */
     public void process(RenderInvoker invoker, Writer writer) throws Throwable;
 

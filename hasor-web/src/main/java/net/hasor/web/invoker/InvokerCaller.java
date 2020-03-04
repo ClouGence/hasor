@@ -36,19 +36,15 @@ import java.util.function.Supplier;
  */
 class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller {
     protected static Logger            logger          = LoggerFactory.getLogger(InvokerCaller.class);
-    private          Mapping           foundDefine     = null;
     private          FilterDef[]       filterArrays    = null;
     private          Supplier<Invoker> invokerSupplier = null;
 
-    public InvokerCaller(Mapping foundDefine, Supplier<Invoker> invokerSupplier, FilterDef[] filterArrays) {
-        this.foundDefine = foundDefine;
+    public InvokerCaller(Supplier<Invoker> invokerSupplier, FilterDef[] filterArrays) {
         this.invokerSupplier = invokerSupplier;
         this.filterArrays = (filterArrays == null) ? new FilterDef[0] : filterArrays;
     }
 
-    /**
-     * 调用目标
-     */
+    /** 调用目标 */
     public Future<Object> invoke(final FilterChain chain) {
         Invoker invoker = this.invokerSupplier.get();
         Mapping ownerMapping = invoker.ownerMapping();
@@ -88,19 +84,6 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller 
     /** 执行调用 */
     private Object invoke(final Method targetMethod, Invoker invoker) throws Throwable {
         //
-        // .初始化 contentType
-        String contentType = invoker.ownerMapping().getSpecialContentType(invoker.getHttpRequest().getMethod());
-        if (StringUtils.isBlank(contentType)) {
-            String viewName = invoker.getRequestPath();
-            int lastIndex = viewName.lastIndexOf(".");
-            if (lastIndex > 0) {
-                contentType = invoker.getMimeType(viewName.substring(lastIndex + 1));
-            }
-        }
-        if (StringUtils.isNotBlank(contentType)) {
-            invoker.getHttpResponse().setContentType(contentType);
-        }
-        //
         // .初始化 Controller
         final Object targetObject = invoker.getAppContext().getInstance(invoker.ownerMapping().getTargetType());
         if (targetObject instanceof Controller) {
@@ -112,8 +95,16 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller 
         //
         // .准备过滤器链
         final InvokerChain invokerChain = inv -> {
+            // 设置contentType
+            String contentType = inv.contentType();
+            if (StringUtils.isNotBlank(contentType)) {
+                if (!inv.getHttpResponse().isCommitted()) {
+                    inv.getHttpResponse().setContentType(contentType);
+                }
+            }
+            // 执行调用
             try {
-                final Object[] resolveParamsArrays = this.resolveParams(invoker, targetMethod);
+                final Object[] resolveParamsArrays = this.resolveParams(inv, targetMethod);
                 Object result = targetMethod.invoke(targetObject, resolveParamsArrays);
                 inv.put(Invoker.RETURN_DATA_KEY, result);
                 return result;

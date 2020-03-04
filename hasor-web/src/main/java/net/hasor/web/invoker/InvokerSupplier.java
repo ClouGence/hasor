@@ -35,6 +35,7 @@ public class InvokerSupplier implements Invoker {
     private HttpServletRequest  httpRequest    = null;
     private HttpServletResponse httpResponse   = null;
     private AppContext          appContext     = null;
+    private String              contentType    = null;    // 内容类型（如果指定了内容类型，那么会设置setContentType）
     private MimeType            mimeType       = null;
     private Mapping             ownerInMapping = null;
 
@@ -73,6 +74,28 @@ public class InvokerSupplier implements Invoker {
     @Override
     public Mapping ownerMapping() {
         return this.ownerInMapping;
+    }
+
+    @Override
+    public String contentType() {
+        if (StringUtils.isNotBlank(this.contentType)) {
+            return this.contentType;
+        } else {
+            String contentType = ownerMapping().getSpecialContentType(getHttpRequest().getMethod());
+            if (StringUtils.isBlank(contentType)) {
+                String viewName = getRequestPath();
+                int lastIndex = viewName.lastIndexOf(".");
+                if (lastIndex > 0) {
+                    contentType = getMimeType(viewName.substring(lastIndex + 1));
+                }
+            }
+            return contentType;
+        }
+    }
+
+    @Override
+    public void contentType(String contentType) {
+        this.contentType = contentType;
     }
 
     @Override

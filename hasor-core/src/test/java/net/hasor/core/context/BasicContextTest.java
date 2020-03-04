@@ -100,6 +100,7 @@ public class BasicContextTest {
         assert false;
     }
 
+    /*
     @Test
     public void joinTest3() throws Throwable {
         if (isWin()) {
@@ -115,7 +116,7 @@ public class BasicContextTest {
         //
         Thread thread = new Thread(() -> {
             try {
-                Thread.sleep(10000);
+                Thread.sleep(5000);
                 Runtime.getRuntime().exec("kill -15 " + pid);
                 Thread.sleep(10000);
                 if (appContext.isStart()) {
@@ -134,7 +135,7 @@ public class BasicContextTest {
             return;
         }
         assert false;
-    }
+    }*/
 
     @Test
     public void joinTest4() throws Throwable {

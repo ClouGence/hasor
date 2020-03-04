@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.render;
+import java.io.Writer;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -24,9 +25,23 @@ import java.lang.annotation.Target;
  * @version : 2020-02-29
  * @author 赵永春 (zyc@hasor.net)
  */
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RenderType {
-    /** 默认使用的渲染器名字 */
-    public String value();
+    /**
+     * 默认使用的渲染器名字。
+     * 提示：RenderWebPlugin 会根据渲染器名字尝试寻找对应的 ContentType。此时如果同时指定了 @Produces 注解那么会覆盖 @Produces。
+     * @see net.hasor.web.render.RenderWebPlugin */
+    public String value() default "";
+
+    /**
+     * 默认使用的渲染器类型，与 value 行为不同的是。是否处理 ContentType 取决于 engineType 的实现。
+     * @see net.hasor.web.render.RenderWebPlugin */
+    public Class<? extends RenderEngine> engineType() default DEFAULT.class;
+
+    public static class DEFAULT implements RenderEngine {
+        @Override
+        public void process(RenderInvoker invoker, Writer writer) {
+        }
+    }
 }

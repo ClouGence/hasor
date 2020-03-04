@@ -46,8 +46,6 @@ public class RenderDef {
     }
 
     public RenderEngine newEngine(AppContext appContext) throws Throwable {
-        RenderEngine engine = appContext.getInstance(this.bindInfo);
-        engine.initEngine(appContext);
-        return engine;
+        return appContext.getInstance(this.bindInfo);
     }
 }

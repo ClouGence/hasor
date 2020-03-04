@@ -29,10 +29,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * 渲染器插件。
@@ -82,6 +82,15 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
         }
     }
 
+    private static RenderType findRenderType(Annotation[] annotations) {
+        return Arrays.stream(annotations).map(annotation -> {
+            if (annotation instanceof RenderType) {
+                return (RenderType) annotation;
+            }
+            return annotation.annotationType().getAnnotation(RenderType.class);
+        }).filter((Predicate<Annotation>) Objects::nonNull).findFirst().orElse(null);
+    }
+
     public Object doRenderInvoker(RenderInvoker invoker, InvokerChain chain) throws Throwable {
         // Layout 预设
         if (this.useLayout) {
@@ -91,14 +100,22 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
         }
         //
         // 处理 RenderType
+        RenderEngine specialEngine = null;
         if (invoker.ownerMapping() != null) {
             Method method = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
-            RenderType renderType = method.getAnnotation(RenderType.class);
+            RenderType renderType = findRenderType(method.getAnnotations());
             if (renderType == null) {
-                renderType = method.getDeclaringClass().getAnnotation(RenderType.class);
+                renderType = findRenderType(method.getDeclaringClass().getAnnotations());
             }
             if (renderType != null && StringUtils.isNotBlank(renderType.value())) {
                 invoker.renderType(renderType.value());
+                String mimeType = invoker.getMimeType(renderType.value());
+                if (StringUtils.isNotBlank(mimeType)) {
+                    invoker.contentType(mimeType);
+                }
+            }
+            if (renderType != null && renderType.engineType() != RenderType.DEFAULT.class) {
+                specialEngine = invoker.getAppContext().getInstance(renderType.engineType());
             }
         }
         //
@@ -109,7 +126,7 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
         }
         //
         // .处理渲染
-        if (this.process(invoker)) {
+        if (this.process(invoker, specialEngine)) {
             return returnData;
         }
         // .如果处理渲染失败，但是isCommitted = false，那么做服务端转发 renderTo
@@ -124,11 +141,13 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
         return returnData;
     }
 
-    public boolean process(RenderInvoker render) throws Throwable {
-        String renderType = render.renderType();
-        RenderEngine engine = this.engineMap.get(renderType);
+    public boolean process(RenderInvoker render, RenderEngine engine) throws Throwable {
         if (engine == null) {
-            return false;
+            String renderType = render.renderType();
+            engine = this.engineMap.get(renderType);
+            if (engine == null) {
+                return false;
+            }
         }
         //
         String oriViewName = render.renderTo();
