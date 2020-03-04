@@ -1,9 +1,26 @@
 --------------------
 Release Hasor v4.x
 --------------------
-Hasor v4.1.2 (2020-02-?)
+Hasor v4.1.3 (2020-03-?)
 ------------------------------------
-    - .....
+...
+
+Hasor v4.1.2 (2020-03-04)
+------------------------------------
+**新增**
+    - 新增 Hasor-Spring 项目，让 Spring 更方便的使用 Hasor 功能，例如：hasor-dataql、hasor-web。
+    - Matchers 类，增加 anyClassInclude、anyClassExcludes 方法。
+    - 新增 RenderType 注解，用来标记默认使用的是哪一个渲染器。
+    - 新增 JsonRender 使用内置 JSON 工具(来源于jetty) 实现一个 json 渲染
+**优化**
+    - RenderEngine接口的initEngine方法删除。
+    - Invoker接口增加contentType 方法。
+    - 新增 ForwardTo、RedirectTo 两个注解用来处理返回值的 Forward和Redirect
+    - hasor-dataql-fx-basic 具备自己独立的jar包名。
+    - ApiBinderInvocationHandler 机制改变一下 为了兼容 ApiBinder 接口中调用 installModule方法。
+    - rsf 改为默认不启动。
+    - ResourceLoader 增加计算资源长度的方法。
+    - dataql-codegen-template.tpl、QueryHelper.java 两个文件中增加非空判断。
 
 Hasor v4.1.1 (2020-02-22)
 ------------------------------------
