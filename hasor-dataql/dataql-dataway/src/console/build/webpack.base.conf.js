@@ -5,9 +5,9 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 
-function resolve(dir) {
+function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
@@ -45,8 +45,8 @@ module.exports = {
     // make sure to include the plugin for the magic
     new VueLoaderPlugin(),
     new MonacoWebpackPlugin({
-      languages:["javascript","json"],
-      features:["coreCommands","find"]
+      languages: ['graphql', 'dataql', 'sql', 'json'],
+      features: ['coreCommands', 'find']
     })
   ],
   module: {

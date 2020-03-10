@@ -3,18 +3,18 @@
     <template slot="paneL">
       <el-table ref="interfaceTable" :data="tableData" height="100%"
                 :row-class-name="tableRowClassName"
-                @current-change="handleTableDataCurrent"
-                highlight-current-row border lazy >
+                @current-change="handleApiDataChange"
+                highlight-current-row border lazy>
         <el-table-column prop="id" width="24" :resizable='false'>
           <template slot-scope="scope">
-            <el-checkbox name="type" v-model="scope.row.checked" v-on:change="handleTableDataCurrent(scope.row)"/>
+            <el-checkbox name="type" v-model="scope.row.checked" v-on:change="handleApiDataChange(scope.row)"/>
           </template>
         </el-table-column>
         <el-table-column prop="path" label="Api" :show-overflow-tooltip="true">
           <template slot="header" slot-scope="scope">
             <el-input size="mini" v-model="apiSearch" placeholder="search Api">
               <template slot="prepend">Api</template>
-              <el-button slot="append" icon="el-icon-search"></el-button>
+              <el-button slot="append" icon="el-icon-search"/>
             </el-input>
           </template>
         </el-table-column>
@@ -24,35 +24,44 @@
       <split-pane v-on:resize="handleSplitResize" :min-percent='30' :default-percent='panelPercent' split="horizontal">
         <template slot="paneL">
           <div class="request-btns">
-            <el-button class="z-index-top" icon="el-icon-s-promotion" size="mini" type="success" plain></el-button>
+            <el-button class="z-index-top" icon="el-icon-s-promotion" size="mini" type="success" plain/>
             <el-button class="z-index-top" icon="el-icon-s-open" size="mini" type="warning"
-                       plain v-if="this.panelMode === 'req_parameters'"></el-button>
+                       plain v-if="this.panelMode === 'req_parameters'"
+                       @click.native='handleParametersFormatter'/>
             <el-button class="z-index-top" icon="el-icon-plus" size="mini" type="primary"
-                       plain v-if="this.panelMode === 'req_headers'"></el-button>
+                       plain v-if="this.panelMode === 'req_headers'"
+                       @click.native='handleHeaderAddNew'/>
           </div>
           <el-tabs class="request-tabs" type="card" v-model="panelMode">
             <el-tab-pane name="req_parameters" label="Parameters" lazy>
               <div id="requestBodyRef">
-                <codemirror v-model="requestBody" :options="defaultOption"></codemirror>
+                <codemirror v-model="requestBody" :options="defaultOption"/>
               </div>
             </el-tab-pane>
             <el-tab-pane name="req_headers" label="Headers" lazy>
-              <el-table ref="requestHeaderTable" :data="headerData" :height="headerPanelHeight"
-                        @select-all="handleApisSelectAll" border>
-                <el-table-column prop="checked" width="24" type="selection" :resizable='false'/>
+              <el-table ref="requestHeaderTable" :data="headerData" :height="headerPanelHeight" border>
+                <el-table-column prop="checked" width="24" :resizable='false'>
+                  <template slot="header" slot-scope="scope">
+                    <el-checkbox name="type" v-model='headerSelectAllStatus' :indeterminate='headerSelectIndeterminateStatus' @change="handleHeaderCheckAllChange"/>
+                  </template>
+                  <template slot-scope="scope">
+                    <el-checkbox name="type" v-model="scope.row.checked" @change="updateIndeterminate"/>
+                  </template>
+                </el-table-column>
                 <el-table-column prop="name" label="Key" min-width="30%">
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.name" size="mini" placeholder="key of Header"></el-input>
+                    <el-input v-model="scope.row.name" size="mini" placeholder="key of Header"/>
                   </template>
                 </el-table-column>
                 <el-table-column prop="value" label="Value" :resizable='false'>
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.value" size="mini" placeholder="value of Header"></el-input>
+                    <el-input v-model="scope.row.value" size="mini" placeholder="value of Header"/>
                   </template>
                 </el-table-column>
                 <el-table-column prop="name" width="38" :resizable='false'>
                   <template slot-scope="scope">
-                    <el-button size="mini" type="danger" icon="el-icon-delete" circle></el-button>
+                    <el-button size="mini" type="danger" icon="el-icon-delete"
+                               circle @click.native='handleHeaderDelete(scope.row)'/>
                   </template>
                 </el-table-column>
               </el-table>
@@ -61,13 +70,17 @@
         </template>
         <template slot="paneR">
           <div class="response-btns">
-            <el-button class="z-index-top" icon="el-icon-document-copy" size="mini" type="primary" plain></el-button>
-            <el-button class="z-index-top" icon="el-icon-s-open" size="mini" type="warning" plain></el-button>
+            <el-button class="z-index-top" icon="el-icon-document-copy" size="mini" type="primary" plain
+                       v-clipboard:copy="responseBody"
+                       v-clipboard:success="handleJsonResultCopySuccess"
+                       v-clipboard:error="handleJsonResultCopyError"/>
+            <el-button class="z-index-top" icon="el-icon-s-open" size="mini" type="warning" plain
+                       @click.native='handleJsonResultFormatter'/>
           </div>
           <el-tabs class="response-tabs" type="card">
             <el-tab-pane label="JsonResult">
               <div id="responseBodyRef">
-                <codemirror v-model="responseBody" :options="defaultOption"></codemirror>
+                <codemirror v-model="responseBody" :options="defaultOption"/>
               </div>
             </el-tab-pane>
           </el-tabs>
@@ -81,6 +94,7 @@ import '../../config/codemirror'
 
 export default {
   methods: {
+    // 面板大小改变，重新计算CodeMirror的高度
     handleSplitResize (data) {
       this.panelPercent = data
       let dataNum = data / 100
@@ -92,22 +106,96 @@ export default {
       let responseBody = document.querySelectorAll('#responseBodyRef .CodeMirror')[0]
       responseBody.style.height = (size * (1 - dataNum) - 36) + 'px'
     },
-    handleApisSelectAll (s) {
-      for (let j = 0; j < this.headerData.length; j++) {
-        this.headerData[j].checked = false
-        for (let i = 0; i < s.length; i++) {
-          if (s[i].name === this.headerData[j].name) {
-            this.headerData[j].checked = true
-          }
-        }
-      }
-    },
-    handleTableDataCurrent (row) {
+    // 选择了 Api 中的一个，确保只能选一个
+    handleApiDataChange (row) {
       for (let i = 0; i < this.tableData.length; i++) {
         this.tableData[i].checked = row.id === this.tableData[i].id
       }
     },
+    // Header 点击了全选
+    handleHeaderCheckAllChange (s) {
+      this.headerSelectAllStatus = s
+      this.headerSelectIndeterminateStatus = false
+      for (let i = 0; i < this.headerData.length; i++) {
+        this.headerData[i].checked = this.headerSelectAllStatus
+      }
+    },
+    // 请求参数格式化
+    handleParametersFormatter () {
+      try {
+        this.requestBody = JSON.stringify(JSON.parse(this.requestBody), null, 2)
+      } catch (e) {
+        this.$message.error('Parameters Format Error : ' + e)
+      }
+    },
+    // 响应结果格式化
+    handleJsonResultFormatter () {
+      try {
+        this.responseBody = JSON.stringify(JSON.parse(this.responseBody), null, 2)
+      } catch (e) {
+        this.$message.error('JsonResult Format Error : ' + e)
+      }
+    },
+    // Header 添加一个新的
+    handleHeaderAddNew () {
+      this.headerData.push({checked: true, name: '', value: ''})
+    },
+    // Header 删除
+    handleHeaderDelete (row) {
+      let newArrays = []
+      for (let i = 0; i < this.headerData.length; i++) {
+        if (this.headerData[i].name !== row.name) {
+          newArrays.push(this.headerData[i])
+        }
+      }
+      this.headerData = newArrays
+      this.updateIndeterminate()
+    },
+    // 拷贝结果
+    handleJsonResultCopySuccess () {
+      this.$message({message: 'JsonResult Copy to Copied', type: 'success'})
+    },
+    handleJsonResultCopyError () {
+      this.$message.error('JsonResult Copy to Copied Failed')
+    },
+    // // 选择了 Api 中的一个，确保只能选一个
+    // handleHeaderCheckChange (row) {
+    //   for (let i = 0; i < this.headerData.length; i++) {
+    //     if (row.name === this.headerData[i].name) {
+    //       this.headerData[i].checked = row.checked
+    //     }
+    //   }
+    //   this.updateIndeterminate()
+    // },
+    // handleApisSelectAll (s) {
+    //   for (let j = 0; j < this.headerData.length; j++) {
+    //     this.headerData[j].checked = false
+    //     for (let i = 0; i < s.length; i++) {
+    //       if (s[i].name === this.headerData[j].name) {
+    //         this.headerData[j].checked = true
+    //       }
+    //     }
+    //   }
+    // },
 
+    updateIndeterminate () {
+      let checkedCount = 0
+      for (let i = 0; i < this.headerData.length; i++) {
+        if (this.headerData[i].checked) {
+          checkedCount++
+        }
+      }
+      if (checkedCount !== 0 && checkedCount !== this.headerData.length) {
+        this.headerSelectIndeterminateStatus = true
+      } else {
+        this.headerSelectIndeterminateStatus = false
+        if (checkedCount > 0 && checkedCount === this.headerData.length) {
+          this.headerSelectAllStatus = true
+        } else if (checkedCount === 0) {
+          this.headerSelectAllStatus = false
+        }
+      }
+    },
     tableRowClassName ({row, rowIndex}) {
       if (rowIndex === 1) {
         return 'warning-row'
@@ -130,11 +218,21 @@ export default {
     })
     this.handleSplitResize(this.panelPercent)
   },
+  watch: {
+    'tableData': {
+      handler (newValue, oldValue) {
+        this.updateIndeterminate()
+      },
+      deep: true
+    }
+  },
   data () {
     return {
       headerPanelHeight: '100%',
       panelPercent: 50,
       panelMode: 'req_parameters',
+      headerSelectIndeterminateStatus: false,
+      headerSelectAllStatus: false,
       defaultOption: {
         tabSize: 4,
         styleActiveLine: true,
@@ -145,8 +243,8 @@ export default {
       //
       //
       apiSearch: '',
-      requestBody: '[1,2,3,45,6]',
-      responseBody: 'responseBody',
+      requestBody: '{}',
+      responseBody: '"empty."',
       //
       //
       tableData: [
