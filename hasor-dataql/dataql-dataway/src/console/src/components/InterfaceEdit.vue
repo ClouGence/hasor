@@ -35,6 +35,7 @@
               <RequestPanel id="editerRequestPanel" ref="editerRequestPanel"
                             :header-data="headerData"
                             :request-body="requestBody"
+                            :hide-run-btn="true"
                             @onHeaderChange="(data)=> { this.headerData = data}"
                             @onRequestBodyChange="(data)=> { this.requestBody = data}"/>
             </template>

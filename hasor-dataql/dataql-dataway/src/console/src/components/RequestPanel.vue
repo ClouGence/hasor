@@ -1,7 +1,9 @@
 <template>
   <div class="requestPanel">
     <div class="request-btns">
-      <el-button class="z-index-top" icon="el-icon-s-promotion" size="mini" type="success" plain/>
+      <el-button class="z-index-top" icon="el-icon-s-promotion" size="mini" type="success"
+                 plain v-if="this.hideRunBtn === false"
+                 @click.native='triggerRun'/>
       <el-button class="z-index-top" icon="el-icon-s-open" size="mini" type="warning"
                  plain v-if="this.panelMode === 'req_parameters'"
                  @click.native='handleParametersFormatter'/>
@@ -67,6 +69,12 @@ export default {
       type: Array,
       default: function () {
         return []
+      }
+    },
+    hideRunBtn: {
+      type: Boolean,
+      default: function () {
+        return false
       }
     }
     // onHeaderChange: () => {},
@@ -160,14 +168,16 @@ export default {
         }
       }
     },
-    //
+    // 触发执行
+    triggerRun () {
+      this.$emit('onRun')
+    },
     // 执行布局
     doLayout (height) {
       let requestBodyID = '#' + this.id + '_requestBodyRef'
       let requestBody = document.querySelectorAll(requestBodyID + ' .CodeMirror')[0]
       requestBody.style.height = (height - 31) + 'px'
       this.headerPanelHeight = (height - 31) + 'px'
-      this.$emit('dataxxxx', '')
     }
   }
 }

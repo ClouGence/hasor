@@ -30,6 +30,7 @@
           <RequestPanel id="listRequestPanel" ref="listRequestPanel"
                         :header-data="headerData"
                         :request-body="requestBody"
+                        @onRun="handleRun"
                         @onHeaderChange="(data)=> { this.headerData = data}"
                         @onRequestBodyChange="(data)=> { this.requestBody = data}"/>
         </template>
@@ -66,6 +67,10 @@ export default {
         this.tableData[i].checked = row.id === this.tableData[i].id
       }
     },
+    handleRun () {
+      this.$message({message: 'Run ->' + this.requestBody, type: 'success'})
+    },
+
     //
     tableRowTagClassName (row) {
       if (row.status === 0) {
