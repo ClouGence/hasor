@@ -30,3 +30,28 @@ body {
   padding: 1px;
 }
 
+
+.el-tabs--card > .el-tabs__header {
+  padding-left: 30px;
+}
+
+.el-table--border {
+  border: 0px !important;
+}
+
+.el-input--mini .el-input__inner {
+  height: 25px !important;
+  line-height: 25px !important;
+}
+
+.el-divider--horizontal {
+  margin: 0px !important;
+}
+
+.el-select .el-input {
+  width: 90px;
+}
+
+.input-with-select .el-input-group__prepend {
+  background-color: #fff;
+}

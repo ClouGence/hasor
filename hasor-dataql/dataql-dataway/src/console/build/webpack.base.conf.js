@@ -45,7 +45,7 @@ module.exports = {
     // make sure to include the plugin for the magic
     new VueLoaderPlugin(),
     new MonacoWebpackPlugin({
-      languages: ['graphql', 'dataql', 'sql', 'json'],
+      languages: [/*'graphql', 'dataql', 'sql', 'json'*/'typescript'],
       features: ['coreCommands', 'find']
     })
   ],
