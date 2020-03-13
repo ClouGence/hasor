@@ -80,7 +80,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
     @Override
     public T visitHintInst(HintInstContext ctx) {
-        this.instStack.push(ctx.IDENTIFIER().getText());
+        this.instStack.push(fixIdentifier(ctx.IDENTIFIER()));
         visitChildren(ctx);
         //
         PrimitiveVariable optValue = (PrimitiveVariable) this.instStack.pop();
@@ -96,7 +96,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         //
         ImportType importType = ImportType.ClassType;
         String importResource = fixString(ctx.STRING());
-        String asName = ctx.IDENTIFIER().getText();
+        String asName = fixIdentifier(ctx.IDENTIFIER());
         TerminalNode rouNode = ctx.ROU();
         if (rouNode != null) {
             if ("@".equals(rouNode.getText())) {
@@ -129,7 +129,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     public T visitVarInst(VarInstContext ctx) {
         visitChildren(ctx);
         //
-        VarInst varInst = new VarInst(ctx.IDENTIFIER().getText(), (Variable) this.instStack.pop());
+        VarInst varInst = new VarInst(fixIdentifier(ctx.IDENTIFIER()), (Variable) this.instStack.pop());
         ((InstSet) this.instStack.peek()).addInst(varInst);
         return null;
     }
@@ -211,7 +211,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         List<TerminalNode> identifierList = ctx.IDENTIFIER();
         if (identifierList != null) {
             for (TerminalNode terminalNode : identifierList) {
-                lambdaVariable.addParam(terminalNode.getText());
+                lambdaVariable.addParam(fixIdentifier(terminalNode));
             }
         }
         //
@@ -456,7 +456,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         String rouName = null;
         EnterRouteVariable enter = new EnterRouteVariable(RouteType.Params, special);
         if (identifier != null) {
-            rouName = identifier.getText();
+            rouName = fixIdentifier(identifier);
         } else {
             rouName = string.getText();
         }
@@ -555,7 +555,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             this.instStack.pop();
             parent = (RouteVariable) peek;
         }
-        String itemName = ctx.IDENTIFIER().getText();
+        String itemName = fixIdentifier(ctx.IDENTIFIER());
         this.instStack.push(new NameRouteVariable(parent, itemName));
         //
         List<RouteSubscriptContext> subList = ctx.routeSubscript();
@@ -689,7 +689,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
     @Override
     public T visitExtBlock(ExtBlockContext ctx) {
-        String fragmentName = ctx.IDENTIFIER().getText();
+        String fragmentName = fixIdentifier(ctx.IDENTIFIER());
         StringBuilder fragmentString = new StringBuilder();
         List<TerminalNode> chars = ctx.CHAR();
         if (chars != null) {
@@ -702,7 +702,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         ExtParamsContext paramsContext = ctx.extParams();
         if (paramsContext != null) {
             for (TerminalNode terminalNode : paramsContext.IDENTIFIER()) {
-                fragmentVariable.getParamList().add(terminalNode.getText());
+                fragmentVariable.getParamList().add(fixIdentifier(terminalNode));
             }
         }
         this.instStack.push(fragmentVariable);
@@ -737,6 +737,14 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
     private ParseException newParseException(Token token, String errorMessage) {
         return new ParseException(token.getLine(), token.getStartIndex(), errorMessage);
+    }
+
+    private String fixIdentifier(TerminalNode identifierNode) {
+        String string = identifierNode.getText();
+        if (string.charAt(0) == '`') {
+            string = string.substring(1, string.length() - 1);
+        }
+        return string;
     }
 
     private String fixString(TerminalNode stringNode) {

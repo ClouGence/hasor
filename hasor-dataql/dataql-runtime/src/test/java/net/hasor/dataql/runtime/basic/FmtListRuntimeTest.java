@@ -45,4 +45,17 @@ public class FmtListRuntimeTest extends AbstractTestResource implements HintValu
         assert ((ListModel) dataModel).size() == 1;
         assert ((ListModel) dataModel).getObject(0).getValue("name").asString().equals("马三_12");
     }
+
+    @Test
+    public void fmt_4_Test() throws Exception {
+        Map<String, Object> data = new HashMap<String, Object>() {{
+            put("abc-abc", "abc");
+        }};
+        Query compilerQL = compilerQL("return ${_0} => [ `abc-abc` ]");
+        DataModel dataModel = compilerQL.execute(new Object[] { data}).getData();
+        //
+        assert dataModel.isList();
+        assert ((ListModel) dataModel).size() == 1;
+        assert ((ListModel) dataModel).getValue(0).asString().equals("abc");
+    }
 }
