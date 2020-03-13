@@ -63,10 +63,10 @@
         <module>hasor-spring</module>
         <module>hasor-dataql/dataql-runtime</module>
         <module>hasor-dataql/dataql-fx-basic</module>
-        <!--        <module>hasor-dataql/dataql-dataway</module>-->
+        <module>hasor-dataql/dataql-dataway</module>
+        <module>hasor-dataql/dataql-maven-plugin</module>
         <!--        <module>hasor-dataql/dataql-fx-net</module>-->
         <!--        <module>hasor-dataql/dataql-fx-db</module>-->
-        <module>hasor-dataql/dataql-maven-plugin</module>
         <module>hasor-rsf/rsf-framework</module>
         <!--        <module>hasor-rsf/rsf-network</module>-->
         <!--        <module>hasor-rsf/rsf-gateway</module>-->
@@ -237,8 +237,10 @@
     <!-- 发布使用的版本库 -->
     <distributionManagement>
         <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <!--            <id>ossrh</id>-->
+            <!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+            <id>startdt</id>
+            <url>http://118.31.10.136:8081/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 

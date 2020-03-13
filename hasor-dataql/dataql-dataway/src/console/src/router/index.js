@@ -6,8 +6,8 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
-    {path: '/', name: 'InterfaceList', component: InterfaceList},
-    {path: '/new', name: 'InterfaceEdit', component: InterfaceEdit},
-    {path: '/edit', name: 'InterfaceEdit', component: InterfaceEdit}
+    {path: '/', name: 'root', component: InterfaceList},
+    {path: '/new', name: 'new', component: InterfaceEdit},
+    {path: '/edit/:id', name: 'edit', component: InterfaceEdit}
   ]
 })

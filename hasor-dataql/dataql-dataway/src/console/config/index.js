@@ -6,11 +6,18 @@ const path = require('path')
 
 module.exports = {
   dev: {
-
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '',
-    proxyTable: {},
+    proxyTable: {
+      '/interface-ui': {
+        target: 'http://localhost:8080/',//设置你调用的接口域名和端口号 别忘了加http
+        changeOrigin: true,//允许跨域
+        pathRewrite: {
+          '^/interface-ui': '/static/mock/interface-ui/' //这个是定义要访问的路径，名字随便写
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
@@ -28,10 +35,7 @@ module.exports = {
     // in the browser.
     showEslintErrorsInOverlay: false,
 
-    /**
-     * Source Maps
-     */
-
+    /** Source Maps */
     // https://webpack.js.org/configuration/devtool/#development
     devtool: 'cheap-module-eval-source-map',
 
@@ -39,7 +43,6 @@ module.exports = {
     // set this to false - it *may* help
     // https://vue-loader.vuejs.org/en/options.html#cachebusting
     cacheBusting: true,
-
     cssSourceMap: true
   },
 
@@ -52,10 +55,7 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '',
 
-    /**
-     * Source Maps
-     */
-
+    /** Source Maps */
     productionSourceMap: true,
     // https://webpack.js.org/configuration/devtool/#production
     devtool: '#source-map',

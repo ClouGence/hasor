@@ -1,29 +1,47 @@
 <template>
   <div>
     <div class="monacoEditorHeader">
-      <div style="width: 50%; margin-top: 2px;">
+      <div style="width: 50%; margin-top: 2px; display: inline-table;">
         <el-input placeholder="the path to access this Api" v-model="apiPath" class="input-with-select" size="mini">
           <el-select v-model="select" slot="prepend" placeholder="Choose">
             <el-option label="POST" value="POST"/>
             <el-option label="PUT" value="PUT"/>
             <el-option label="GET" value="GET"/>
           </el-select>
+          <el-button slot="append" icon="el-icon-edit"></el-button>
+          <el-button slot="append" icon="el-icon-check"></el-button>
         </el-input>
       </div>
-      <el-button-group>
-        <el-button size="mini" type="success" icon="el-icon-s-promotion"/>
-        <el-button size="mini" type="primary" icon="el-icon-edit"/>
-        <el-button size="mini" type="primary" icon="el-icon-edit"/>
-        <el-button size="mini" type="warning" icon="el-icon-s-open"/>
-        <el-button size="mini" type="primary" icon="el-icon-edit"/>
-      </el-button-group>
-      <el-radio-group v-model="codeType" size="mini">
-        <el-radio-button label="DataQL"/>
-        <el-radio-button label="SQL"/>
-        <el-radio-button label="Json"/>
-      </el-radio-group>
+      <div style="display: inline-table">
+        <el-radio-group v-model="codeType" size="mini">
+          <el-radio border label="DataQL"/>
+          <el-radio border label="SQL"/>
+          <el-radio border label="Json"/>
+        </el-radio-group>
+
+      </div>
+      <div style="float: right;">
+        <el-button-group>
+          <!-- 下线 -->
+          <!--          <el-button size="mini" type="danger" icon="iconfont iconjinyong"/>-->
+          <!-- 删除 -->
+          <el-button size="mini" type="danger" icon="iconfont iconshanchu" plain/>
+          <!-- 历史 -->
+          <el-button size="mini" type="primary" icon="iconfont iconlishi-copy" plain/>
+          <!-- 保存 -->
+          <el-button size="mini" type="primary" icon="iconfont iconsave"/>
+          <!-- 执行 -->
+          <el-button size="mini" type="primary" icon="el-icon-s-promotion"/>
+          <!-- 发布 -->
+          <el-button size="mini" type="primary" icon="iconfont iconrelease"/>
+          <!-- 冒烟 -->
+          <!--          <el-button size="mini" type="primary" icon="iconfont iconceshi3"/>-->
+          <!-- 格式化 -->
+          <!--          <el-button size="mini" type="primary" icon="el-icon-s-open"/>-->
+        </el-button-group>
+      </div>
     </div>
-    <el-divider></el-divider>
+    <el-divider/>
     <div :style="{height: panelHeight + 'px'}">
       <SplitPane v-on:resize="handleVerticalSplitResize" :min-percent='10' :default-percent='panelPercentVertical' split="vertical">
         <template slot="paneL">
@@ -51,6 +69,7 @@
   </div>
 </template>
 <script>
+import axios from 'axios'
 import * as monaco from 'monaco-editor'
 import RequestPanel from './RequestPanel'
 import ResponsePanel from './ResponsePanel'
@@ -60,6 +79,15 @@ export default {
     RequestPanel, ResponsePanel
   },
   mounted () {
+    this.apiID = this.$route.params.id
+    axios.get('/interface-ui/mock.json').then(response => {
+      console.log(response.data)
+    }, response => {
+      this.$alert(response.message, 'Error', {
+        confirmButtonText: 'OK'
+      })
+    })
+    //
     this.monacoEditor = monaco.editor.create(this.$refs.container, {
       value: this.codeValue,
       language: 'javascript',
@@ -92,7 +120,6 @@ export default {
       })()
     }
     window.addEventListener('resize', this._resize)
-
     // // 自定义键盘事件
     // self.monacoEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function () {
     //   self.$emit('onCommit', self.monacoEditor.getValue(), self.monacoEditor)
@@ -100,7 +127,6 @@ export default {
     // self.monacoEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_S, function () {
     //   // 自定义快捷操作
     // })
-    // this.initEditor()
   },
   beforeDestroy () {
     window.removeEventListener('resize', this._resize)
@@ -130,8 +156,10 @@ export default {
   },
   data () {
     return {
+      apiID: 1,
       select: 'POST',
       apiPath: '',
+      mockState: true,
       codeType: 'DataQL',
       codeValue: '<div>请编辑html内容</div>',
       requestBody: '{}',
@@ -167,12 +195,25 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
+<style scoped>
   .monacoEditorHeader {
-    display: flex;
-    justify-content: space-between;
-    justify-items: center;
+    /*display: flex;*/
+    /*justify-content: space-between;*/
+    /*justify-items: center;*/
     overflow-x: hidden;
     padding: 5px;
+  }
+
+  .el-radio {
+    margin-right: 1px;
+    width: 80px;
+  }
+
+  .el-radio--mini.is-bordered {
+    padding: 5px 10px 0 5px;
+  }
+
+  .el-radio.is-bordered + .el-radio.is-bordered {
+    margin-left: 1px;
   }
 </style>

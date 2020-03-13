@@ -12,14 +12,16 @@
         </el-table-column>
         <el-table-column prop="path" label="Api" :show-overflow-tooltip="true">
           <template slot="header" slot-scope="scope">
-            <el-input size="mini" v-model="apiSearch" placeholder="search Api">
-              <!-- <template slot="prepend">Api</template>-->
-              <!-- <el-button slot="append" icon="el-icon-d-caret" @click.native='handleApiDataSort'/> -->
-            </el-input>
+            <el-input size="mini" v-model="apiSearch" placeholder="search Api"/>
           </template>
           <template slot-scope="scope">
             <span>{{scope.row.path}}</span>
             <el-tag size="mini" style="float: right" :type="tableRowTagClassName(scope.row).css">{{tableRowTagClassName(scope.row).title}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="id" width="23" :resizable='false'>
+          <template slot-scope="scope">
+            <router-link :to="'/edit/' + scope.row.id"><el-link><i class="el-icon-edit"/></el-link></router-link>
           </template>
         </el-table-column>
       </el-table>
@@ -67,10 +69,10 @@ export default {
         this.tableData[i].checked = row.id === this.tableData[i].id
       }
     },
+    // 执行调用
     handleRun () {
       this.$message({message: 'Run ->' + this.requestBody, type: 'success'})
     },
-
     //
     tableRowTagClassName (row) {
       if (row.status === 0) {

@@ -1,0 +1,51 @@
+{
+  "id": "1681128",
+  "name": "hasor-dataql",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "Hasor-DataQL",
+  "glyphs": [
+    {
+      "icon_id": "8085926",
+      "name": "删 除",
+      "font_class": "shanchu",
+      "unicode": "e720",
+      "unicode_decimal": 59168
+    },
+    {
+      "icon_id": "6721603",
+      "name": "禁用",
+      "font_class": "jinyong",
+      "unicode": "e6a7",
+      "unicode_decimal": 59047
+    },
+    {
+      "icon_id": "4582088",
+      "name": "发布",
+      "font_class": "release",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "10104267",
+      "name": "save",
+      "font_class": "save",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "3484650",
+      "name": "历史",
+      "font_class": "lishi-copy",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "7002505",
+      "name": "测试",
+      "font_class": "ceshi3",
+      "unicode": "e6d1",
+      "unicode_decimal": 59089
+    }
+  ]
+}

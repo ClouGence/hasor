@@ -1,0 +1,65 @@
+{
+  "basicInfo": {
+    "id": 3,
+    "select": "POST",
+    "apiPath": "/demos/aa",
+    "codeType": "DataQL",
+    "codeValue": "<div>请编辑html内容</div>",
+    "requestBody": "{}",
+    "responseBody": "\"empty.\""
+  },
+  "devHeaderData": [
+    {
+      "checked": true,
+      "name": "name1",
+      "value": "value1"
+    },
+    {
+      "checked": false,
+      "name": "name2",
+      "value": "value2"
+    },
+    {
+      "checked": false,
+      "name": "name3",
+      "value": "value3"
+    },
+    {
+      "checked": false,
+      "name": "name4",
+      "value": "value4"
+    },
+    {
+      "checked": false,
+      "name": "name5",
+      "value": "value5"
+    }
+  ],
+  "testHeaderData": [
+    {
+      "checked": true,
+      "name": "name1",
+      "value": "value1"
+    },
+    {
+      "checked": false,
+      "name": "name2",
+      "value": "value2"
+    },
+    {
+      "checked": false,
+      "name": "name3",
+      "value": "value3"
+    },
+    {
+      "checked": false,
+      "name": "name4",
+      "value": "value4"
+    },
+    {
+      "checked": false,
+      "name": "name5",
+      "value": "value5"
+    }
+  ]
+}

@@ -11,12 +11,14 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "element-ui": "^2.13.0",
     "monaco-editor": "^0.20.0",
     "vue": "^2.5.2",
     "vue-clipboard2": "^0.3.1",
     "vue-codemirror": "^4.0.6",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vue-splitpane": "^1.0.6"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
