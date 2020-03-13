@@ -1,57 +1,57 @@
 body {
-  margin: 0px;
-  padding: 0px;
+    margin: 0px;
+    padding: 0px;
 }
 
 .el-table td, .el-table th {
-  padding: 2px 0 !important;
+    padding: 2px 0 !important;
 }
 
 .el-table .cell {
-  padding: 0px 4px !important;
+    padding: 0px 4px !important;
 }
 
 .el-tabs--border-card > .el-tabs__content, .el-tabs--card > .el-tabs__header {
-  margin: 0px;
-  padding-top: 3px;
+    margin: 0px;
+    padding-top: 3px;
 }
 
 .el-tabs--border-card {
-  height: 100% !important;
-  overflow-y: hidden !important;
+    height: 100% !important;
+    overflow-y: hidden !important;
 }
 
 .el-tabs__item {
-  height: 30px !important;
-  line-height: 30px !important;
+    height: 30px !important;
+    line-height: 30px !important;
 }
 
 .vue-splitter-container {
-  padding: 1px;
+    padding: 1px;
 }
 
 
 .el-tabs--card > .el-tabs__header {
-  padding-left: 30px;
+    padding-left: 30px;
 }
 
 .el-table--border {
-  border: 0px !important;
+    border: 0px !important;
 }
 
 .el-input--mini .el-input__inner {
-  height: 25px !important;
-  line-height: 25px !important;
+    height: 25px !important;
+    line-height: 25px !important;
 }
 
 .el-divider--horizontal {
-  margin: 0px !important;
+    margin: 0px !important;
 }
 
 .el-select .el-input {
-  width: 90px;
+    width: 90px;
 }
 
 .input-with-select .el-input-group__prepend {
-  background-color: #fff;
+    background-color: #fff;
 }
