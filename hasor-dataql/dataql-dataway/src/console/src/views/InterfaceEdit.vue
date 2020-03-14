@@ -69,7 +69,7 @@
     </div>
 </template>
 <script>
-    import axios from 'axios'
+    import request from "../utils/request";
     import * as monaco from 'monaco-editor'
     import RequestPanel from '../components/RequestPanel'
     import ResponsePanel from '../components/ResponsePanel'
@@ -79,14 +79,14 @@
             RequestPanel, ResponsePanel
         },
         mounted() {
-            this.apiID = this.$route.params.id
-            axios.get('/interface-ui/mock.json').then(response => {
+            this.apiID = this.$route.params.id;
+            request('/interface-ui/mock.json', {}, response => {
                 console.log(response.data)
             }, response => {
-                this.$alert(response.message, 'Error', {
+                this.$alert('Not Fount Api.', 'Error', {
                     confirmButtonText: 'OK'
                 })
-            })
+            });
             //
             this.monacoEditor = monaco.editor.create(this.$refs.container, {
                 value: this.codeValue,

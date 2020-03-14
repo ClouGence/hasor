@@ -13,6 +13,10 @@ module.exports = {
     rules: {
         'no-console': 'off',
         'no-debugger': 'off',
-        "no-unused-vars": "off"
+        "no-unused-vars": "off",
+        "vue/no-unused-vars": "off",
+        "generator-star-spacing": "off",
+        "no-tabs": "off",
+        "no-irregular-whitespace": "off",
     }
-}
+};

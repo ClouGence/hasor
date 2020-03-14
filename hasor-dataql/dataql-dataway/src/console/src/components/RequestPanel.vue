@@ -18,7 +18,7 @@
                 </div>
             </el-tab-pane>
             <el-tab-pane name="req_headers" label="Headers" lazy>
-                <el-table ref="requestHeaderTable" :data="headerDataCopy" :height="headerPanelHeight" border>
+                <el-table ref="requestHeaderTable" :data="headerDataCopy" :height="headerPanelHeight" border empty-text="No Header">
                     <el-table-column prop="checked" width="24" :resizable='false'>
                         <template slot="header" slot-scope="scope">
                             <el-checkbox name="type" v-model='headerSelectAllStatus' :indeterminate='headerSelectIndeterminateStatus' @change="handleHeaderCheckAllChange"/>
@@ -56,29 +56,27 @@
             id: {
                 type: String,
                 default: function () {
-                    return 'requestPanel'
+                    return 'requestPanel';
                 }
             },
             requestBody: {
                 type: String,
                 default: function () {
-                    return '{}'
+                    return '{}';
                 }
             },
             headerData: {
                 type: Array,
                 default: function () {
-                    return []
+                    return [];
                 }
             },
             hideRunBtn: {
                 type: Boolean,
                 default: function () {
-                    return false
+                    return false;
                 }
             }
-            // onHeaderChange: () => {},
-            // onRequestBodyChange: () => {}
         },
         data() {
             return {
@@ -99,85 +97,79 @@
             }
         },
         mounted() {
-            this.requestBodyCopy = this.requestBody
-            this.headerDataCopy = this.headerData
+            this.doUpdate();
         },
         watch: {
             'headerDataCopy': {
                 handler(val, oldVal) {
-                    this.updateIndeterminate()
-                    this.$emit('onHeaderChange', this.headerDataCopy)
+                    this.updateIndeterminate();
+                    this.$emit('onHeaderChange', this.headerDataCopy);
                 },
                 deep: true
             },
             'requestBodyCopy': {
                 handler(val, oldVal) {
-                    this.$emit('onRequestBodyChange', this.requestBodyCopy)
+                    this.$emit('onRequestBodyChange', this.requestBodyCopy);
                 }
             }
         },
         methods: {
             // Header 点击了全选
             handleHeaderCheckAllChange(s) {
-                this.headerSelectAllStatus = s
-                this.headerSelectIndeterminateStatus = false
                 for (let i = 0; i < this.headerDataCopy.length; i++) {
-                    this.headerDataCopy[i].checked = this.headerSelectAllStatus
+                    this.headerDataCopy[i].checked = s;
                 }
+                this.updateIndeterminate();
             },
             // 请求参数格式化
             handleParametersFormatter() {
                 try {
-                    this.requestBodyCopy = JSON.stringify(JSON.parse(this.requestBodyCopy), null, 2)
+                    this.requestBodyCopy = JSON.stringify(JSON.parse(this.requestBodyCopy), null, 2);
                 } catch (e) {
-                    this.$message.error('Parameters Format Error : ' + e)
+                    this.$message.error('Parameters Format Error : ' + e);
                 }
             },
             // Header 添加一个新的
             handleHeaderAddNew() {
-                this.headerDataCopy.push({checked: true, name: '', value: ''})
-                this.updateIndeterminate()
+                this.headerDataCopy.push({checked: true, name: '', value: ''});
+                this.updateIndeterminate();
             },
             // Header 删除
             handleHeaderDelete(row, rowIndex) {
-                let newArrays = []
+                let newArrays = [];
                 for (let i = 0; i < this.headerDataCopy.length; i++) {
                     if (i !== rowIndex) {
-                        newArrays.push(this.headerDataCopy[i])
+                        newArrays.push(this.headerDataCopy[i]);
                     }
                 }
-                this.headerDataCopy = newArrays
-                this.updateIndeterminate()
+                this.headerDataCopy = newArrays;
+                this.updateIndeterminate();
             },
             //
             updateIndeterminate() {
-                let checkedCount = 0
+                let checkedCount = 0;
                 for (let i = 0; i < this.headerDataCopy.length; i++) {
                     if (this.headerDataCopy[i].checked) {
-                        checkedCount++
+                        checkedCount++;
                     }
                 }
-                if (checkedCount !== 0 && checkedCount !== this.headerDataCopy.length) {
-                    this.headerSelectIndeterminateStatus = true
-                } else {
-                    this.headerSelectIndeterminateStatus = false
-                    if (checkedCount > 0 && checkedCount === this.headerDataCopy.length) {
-                        this.headerSelectAllStatus = true
-                    } else if (checkedCount === 0) {
-                        this.headerSelectAllStatus = false
-                    }
-                }
+                this.headerSelectAllStatus = checkedCount === this.headerDataCopy.length;
+                this.headerSelectIndeterminateStatus = checkedCount > 0 && checkedCount !== this.headerDataCopy.length;
             },
             // 触发执行
             triggerRun() {
-                this.$emit('onRun')
+                this.$emit('onRun');
             },
             // 执行布局
             doLayout(height) {
-                let requestBodyID = '#' + this.id + '_requestBodyRef'
-                let requestBody = document.querySelectorAll(requestBodyID + ' .CodeMirror')[0]
-                requestBody.style.height = (height - 31) + 'px'
-                this.headerPanelHeight = (height - 31) + 'px'
+                let requestBodyID = '#' + this.id + '_requestBodyRef';
+                let requestBody = document.querySelectorAll(requestBodyID + ' .CodeMirror')[0];
+                requestBody.style.height = (height - 31) + 'px';
+                this.headerPanelHeight = (height - 31) + 'px';
+            },
+            doUpdate() {
+                this.requestBodyCopy = this.requestBody;
+                this.headerDataCopy = this.headerData;
             }
         }
     }

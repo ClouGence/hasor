@@ -1,10 +1,10 @@
 <template>
     <SplitPane :min-percent='30' :default-percent='30' split="vertical">
         <template slot="paneL">
-            <el-table ref="interfaceTable" height="100%"
+            <el-table ref="interfaceTable" height="100%" v-loading="loading"
                       :data="tableData.filter(dat => !apiSearch || dat.path.toLowerCase().includes(apiSearch.toLowerCase()))"
-                      @current-change="handleApiDataChange" empty-text="No Data"
-                      highlight-current-row border lazy stripe>
+                      @current-change="handleApiDataChange"
+                      empty-text="No Api" highlight-current-row border lazy stripe>
                 <el-table-column prop="id" width="24" :resizable='false'>
                     <template slot-scope="scope">
                         <el-checkbox name="type" v-model="scope.row.checked" v-on:change="handleApiDataChange(scope.row)"/>
@@ -20,6 +20,9 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="id" width="23" :resizable='false'>
+                    <template slot="header">
+                        <el-link v-on:click="loadList"><i class="el-icon-refresh"/></el-link>
+                    </template>
                     <template slot-scope="scope">
                         <router-link :to="'/edit/' + scope.row.id">
                             <el-link><i class="el-icon-edit"/></el-link>
@@ -32,8 +35,8 @@
             <split-pane v-on:resize="handleSplitResize" :min-percent='30' :default-percent='panelPercent' split="horizontal">
                 <template slot="paneL">
                     <RequestPanel id="listRequestPanel" ref="listRequestPanel"
-                                  :header-data="headerData"
-                                  :request-body="requestBody"
+                                  v-bind:header-data="headerData"
+                                  v-bind:request-body="requestBody"
                                   @onRun="handleRun"
                                   @onHeaderChange="(data)=> { this.headerData = data}"
                                   @onRequestBodyChange="(data)=> { this.requestBody = data}"/>
@@ -50,103 +53,159 @@
 <script>
     import RequestPanel from '../components/RequestPanel'
     import ResponsePanel from '../components/ResponsePanel'
+    import request from "../utils/request";
+    import {ApiUrl} from "../utils/api-const"
 
     export default {
         components: {
             RequestPanel, ResponsePanel
         },
+        mounted() {
+            this.handleSplitResize(this.panelPercent);
+            //
+            let _this = this;
+            this._resize = () => {
+                return (() => {
+                    _this.handleSplitResize(_this.panelPercent);
+                })()
+            };
+            window.addEventListener('resize', this._resize);
+            this.loadList();
+        },
+        beforeDestroy() {
+            window.removeEventListener('resize', this._resize);
+        },
         methods: {
             // 面板大小改变，重新计算CodeMirror的高度
             handleSplitResize(data) {
-                this.panelPercent = data
-                let dataNum = data / 100
-                let size = document.documentElement.clientHeight - 60
+                this.panelPercent = data;
+                let dataNum = data / 100;
+                let size = document.documentElement.clientHeight - 60;
                 //
-                this.$refs.listRequestPanel.doLayout(size * dataNum)
-                this.$refs.listResponsePanel.doLayout(size * (1 - dataNum) + 10)
+                this.$refs.listRequestPanel.doLayout(size * dataNum);
+                this.$refs.listResponsePanel.doLayout(size * (1 - dataNum) + 10);
             },
             // 选择了 Api 中的一个，确保只能选一个
             handleApiDataChange(row) {
+                if (row === null || row === undefined) {
+                    return;
+                }
                 for (let i = 0; i < this.tableData.length; i++) {
-                    this.tableData[i].checked = row.id === this.tableData[i].id
+                    this.tableData[i].checked = row.id === this.tableData[i].id;
+                    if (this.tableData[i].checked) {
+                        this.loadApi(this.tableData[i]);
+                    }
                 }
             },
-            // 执行调用
-            handleRun() {
-                this.$message({message: 'Run ->' + this.requestBody, type: 'success'})
-            },
-            //
             tableRowTagClassName(row) {
                 if (row.status === 0) {
-                    return {'css': 'info', 'title': 'Editor'}
+                    return {'css': 'info', 'title': 'Editor'};
                 }
                 if (row.status === 1) {
-                    return {'css': 'success', 'title': 'Published'}
+                    return {'css': 'success', 'title': 'Published'};
                 }
                 if (row.status === 2) {
-                    return {'css': 'warning', 'title': 'Changes'}
+                    return {'css': 'warning', 'title': 'Changes'};
                 }
                 if (row.status === 3) {
-                    return {'css': 'danger', 'title': 'Disable'}
+                    return {'css': 'danger', 'title': 'Disable'};
                 }
-                return {'css': '', 'title': ''}
-            }
-        },
-        mounted() {
-            if (this.tableData || this.tableData.length > 0) {
-                this.tableData[0].checked = true
-                this.$refs.interfaceTable.setCurrentRow(this.tableData[0])
-            }
-            this.handleSplitResize(this.panelPercent)
+                return {'css': '', 'title': ''};
+            },
             //
-            let _this = this
-            this._resize = () => {
-                return (() => {
-                    _this.handleSplitResize(_this.panelPercent)
-                })()
-            }
-            window.addEventListener('resize', this._resize)
-        },
-        beforeDestroy() {
-            window.removeEventListener('resize', this._resize)
+            //
+            // 加载列表
+            loadList() {
+                this.loading = true;
+                request(ApiUrl.apiList, {
+                    "method": "GET"
+                }, response => {
+                    this.tableData = response.data;
+                    if (this.tableData && this.tableData.length > 0) {
+                        this.tableData[0].checked = true;
+                        this.$refs.interfaceTable.setCurrentRow(this.tableData[0]);
+                    }
+                    this.loading = false;
+                }, response => {
+                    this.$alert('Load Api List failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
+                    this.loading = false;
+                })
+            },
+            // 加载一个API
+            loadApi(row) {
+                if (row === null || row === undefined) {
+                    return;
+                }
+                request(ApiUrl.apiInfo + '?id=' + row.id, {
+                    "method": "GET"
+                }, response => {
+                    this.requestApiInfo = response.data;
+                    this.requestBody = response.data.requestBody;
+                    this.headerData = response.data.headerData;
+                    this.$nextTick(function () {
+                        this.$refs.listRequestPanel.doUpdate();
+                    });
+                }, response => {
+                    this.$alert('Load Api failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
+                });
+            },
+            // 执行API调用
+            handleRun() {
+                if (!(this.requestApiInfo.status === 1 || this.requestApiInfo.status === 2)) {
+                    this.$message.error('Api must be Published or Changes.');
+                    return;
+                }
+                //
+                let doRunParam = {};
+                try {
+                    doRunParam.paramMap = JSON.parse(this.requestBody);
+                } catch (e) {
+                    this.$message.error('Parameters Format Error : ' + e);
+                    return;
+                }
+                //
+                doRunParam.headerData = {};
+                for (let i = 0; i < this.headerData.length; i++) {
+                    if (this.headerData[i].checked) {
+                        doRunParam.headerData[this.headerData[i].name] = this.headerData[i].value;
+                    }
+                }
+                //
+                request(ApiUrl.execute + '?id=' + this.requestApiInfo.id, {
+                    "method": "POST",
+                    "data": doRunParam.paramMap,
+                    "headers": doRunParam.headerData
+                }, response => {
+                    this.requestApiInfo = response.data;
+                    this.requestBody = response.data.requestBody;
+                    this.headerData = response.data.headerData;
+                    this.$nextTick(function () {
+                        this.$refs.listRequestPanel.doUpdate();
+                        this.$message({message: 'Success.', type: 'success'});
+                    });
+                }, response => {
+                    this.$alert('Load Api failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
+                });
+            },
+
         },
         data() {
             return {
                 headerPanelHeight: '100%',
                 panelPercent: 50,
+                loading: false,
                 //
                 apiSearch: '',
+                tableData: [],
+                //
                 requestBody: '{}',
-                responseBody: '"empty."',
-                //
-                //
-                tableData: [
-                    {id: 1, checked: false, path: '/demos/db/show_tables/', status: 0, desc: '现实所有表。'}, // 编辑中 0
-                    {id: 2, checked: false, path: '/demos/db/show_tables/', status: 1, desc: '现实所有表。'}, // 已发布 1
-                    {id: 3, checked: false, path: '/demos/db/show_tables/', status: 2, desc: '现实所有表。'}, // 有变更 2
-                    {id: 4, checked: false, path: '/demos/db/show_tables/', status: 3, desc: '现实所有表。'}, // 不可用 3
-                    {id: 5, checked: false, path: '/demos/db/show_tables/', status: 0, desc: '现实所有表。'},
-                    {id: 6, checked: false, path: '/demos/db/show_tables/', status: 1, desc: '现实所有表。'},
-                    {id: 7, checked: false, path: '/demos/db/show_tables/', status: 2, desc: '现实所有表。'},
-                    {id: 8, checked: false, path: '/demos/db/show_tables/', status: 3, desc: '现实所有表。'},
-                    {id: 9, checked: false, path: '/demos/db/show_tables/', status: 0, desc: '现实所有表。'},
-                    {id: 0, checked: false, path: '/demos/db/show_tables/', status: 1, desc: '现实所有表。'},
-                    {id: 11, checked: false, path: '/demos/db/show_tables/', status: 2, desc: '现实所有表。'},
-                    {id: 12, checked: false, path: '/demos/db/show_tables/', status: 3, desc: '现实所有表。'},
-                    {id: 13, checked: false, path: '/demos/db/show_tables/', status: 0, desc: '现实所有表。'}
-                ],
-                headerData: [
-                    {checked: true, name: 'name1', value: 'value'},
-                    {checked: false, name: 'name2', value: 'value'},
-                    {checked: false, name: 'name3', value: 'value'},
-                    {checked: true, name: 'name4', value: 'value'},
-                    {checked: true, name: 'name5', value: 'value'}
-                ]
+                headerData: [],
+                requestApiInfo: {},
+                responseBody: '"empty."'
             }
         }
     }
 </script>
-
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 

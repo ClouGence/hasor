@@ -8,5 +8,8 @@ module.exports = {
         plugins: [
             new MonacoWebpackPlugin()
         ]
-    }
+    },
+    chainWebpack: config => {
+        config.output.filename('[name].[hash].js').end();
+    },
 }

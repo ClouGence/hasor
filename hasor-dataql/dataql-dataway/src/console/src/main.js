@@ -9,13 +9,12 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import './assets/public.css'
 
-
-Vue.config.productionTip = false
-Vue.use(ElementUI)
-Vue.use(codemirror)
-Vue.component('SplitPane', splitPane)
-Vue.use(VueClipboard)
+Vue.config.productionTip = false;
+Vue.use(ElementUI);
+Vue.use(codemirror);
+Vue.component('SplitPane', splitPane);
+Vue.use(VueClipboard);
 new Vue({
     router,
     render: h => h(App)
-}).$mount('#app')
+}).$mount('#app');
