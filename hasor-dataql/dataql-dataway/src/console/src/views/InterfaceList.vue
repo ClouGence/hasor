@@ -67,7 +67,7 @@
             this._resize = () => {
                 return (() => {
                     _this.handleSplitResize(_this.panelPercent);
-                })()
+                })();
             };
             window.addEventListener('resize', this._resize);
             this.loadList();
@@ -129,7 +129,7 @@
                 }, response => {
                     this.$alert('Load Api List failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
                     this.loading = false;
-                })
+                });
             },
             // 加载一个API
             loadApi(row) {
@@ -176,15 +176,13 @@
                     "data": doRunParam.paramMap,
                     "headers": doRunParam.headerData
                 }, response => {
-                    this.requestApiInfo = response.data;
-                    this.requestBody = response.data.requestBody;
-                    this.headerData = response.data.headerData;
+                    this.responseBody = JSON.stringify(response.data, null, 2)
                     this.$nextTick(function () {
-                        this.$refs.listRequestPanel.doUpdate();
+                        this.$refs.listResponsePanel.doUpdate();
                         this.$message({message: 'Success.', type: 'success'});
                     });
                 }, response => {
-                    this.$alert('Load Api failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
+                    this.$alert('Execute failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
                 });
             },
 
@@ -198,9 +196,9 @@
                 apiSearch: '',
                 tableData: [],
                 //
-                requestBody: '{}',
                 headerData: [],
                 requestApiInfo: {},
+                requestBody: '{}',
                 responseBody: '"empty."'
             }
         }
@@ -208,5 +206,4 @@
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
-
 </style>

@@ -79,6 +79,9 @@
                 let responseBodyID = '#' + this.id + '_responseBodyRef'
                 let responseBody = document.querySelectorAll(responseBodyID + ' .CodeMirror')[0]
                 responseBody.style.height = (height - 47) + 'px'
+            },
+            doUpdate() {
+                this.responseBodyCopy = this.responseBody;
             }
         }
     }

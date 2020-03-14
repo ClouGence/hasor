@@ -69,23 +69,30 @@
     </div>
 </template>
 <script>
-    import request from "../utils/request";
     import * as monaco from 'monaco-editor'
     import RequestPanel from '../components/RequestPanel'
     import ResponsePanel from '../components/ResponsePanel'
+    import request from "../utils/request";
+    import {ApiUrl} from "../utils/api-const"
 
     export default {
         components: {
             RequestPanel, ResponsePanel
         },
         mounted() {
+
             this.apiID = this.$route.params.id;
-            request('/interface-ui/mock.json', {}, response => {
-                console.log(response.data)
+            request(ApiUrl.apiDetail + "?id=" + this.apiID, {
+                "method": "GET"
+            }, response => {
+                //
+                this.loading = false;
             }, response => {
                 this.$alert('Not Fount Api.', 'Error', {
                     confirmButtonText: 'OK'
-                })
+                });
+
+                this.loading = false;
             });
             //
             this.monacoEditor = monaco.editor.create(this.$refs.container, {
