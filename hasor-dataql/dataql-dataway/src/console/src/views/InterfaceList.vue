@@ -1,5 +1,5 @@
 <template>
-    <SplitPane :min-percent='30' :default-percent='30' split="vertical">
+    <SplitPane :min-percent='30' :default-percent='50' split="vertical">
         <template slot="paneL">
             <el-table ref="interfaceTable" height="100%" v-loading="loading"
                       :data="tableData.filter(dat => !apiSearch || dat.path.toLowerCase().includes(apiSearch.toLowerCase()))"
@@ -12,12 +12,15 @@
                         </el-tooltip>
                     </template>
                 </el-table-column>
-                <el-table-column prop="path" label="Api" :show-overflow-tooltip="true">
+                <el-table-column prop="path" label="Api" :show-overflow-tooltip="true" :resizable='false'>
                     <template slot="header" slot-scope="scope">
                         <el-input size="mini" v-model="apiSearch" placeholder="search Api"/>
                     </template>
                     <template slot-scope="scope">
-                        <span>{{scope.row.path}}</span>
+                        <el-tooltip class="item" effect="dark" :content="scope.row.comment" placement="top">
+                            <span style="overflow-x: hidden;">{{scope.row.path}}</span>
+                            <!--                            <span style="display:inline;overflow-x: hidden;font-size: 12px;color: #6c6c6c;"> - ({{scope.row.comment}})</span>-->
+                        </el-tooltip>
                         <el-tag size="mini" style="float: right" :type="tableRowTagClassName(scope.row).css">{{tableRowTagClassName(scope.row).title}}</el-tag>
                     </template>
                 </el-table-column>
@@ -150,6 +153,7 @@
                     this.headerData = response.data.headerData;
                     this.$nextTick(function () {
                         this.$refs.listRequestPanel.doUpdate();
+                        this.$refs.listResponsePanel.doUpdate();
                     });
                 }, response => {
                     this.$alert('Load Api failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
@@ -173,8 +177,8 @@
                 //
                 let requestHeaderData = {};
                 for (let i = 0; i < this.headerData.length; i++) {
-                    if (this.headerData[i].checked) {
-                        requestHeaderData[this.headerData[i].name] = this.headerData[i].value;
+                    if (this.headerData[i].checked && this.headerData[i].name !== '') {
+                        requestHeaderData[this.headerData[i].name] = encodeURIComponent(this.headerData[i].value);
                     }
                 }
                 //
@@ -191,8 +195,7 @@
                 }, response => {
                     this.$alert('Execute failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
                 });
-            },
-
+            }
         },
         data() {
             return {

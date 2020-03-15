@@ -1,21 +1,34 @@
 <template>
     <div class="requestPanel">
         <div class="request-btns">
-            <el-tooltip class="item" effect="dark" content="Execute Query" placement="bottom-end">
-                <el-button class="z-index-top" icon="el-icon-s-promotion" size="mini" type="success"
-                           plain v-if="this.hideRunBtn === false"
-                           @click.native='triggerRun'/>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" v-if="this.panelMode === 'req_parameters'"
-                        placement="bottom-end" content="Format Parameters">
-                <el-button class="z-index-top" icon="el-icon-s-open" size="mini" type="warning"
-                           plain @click.native='handleParametersFormatter'/>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" v-if="this.panelMode === 'req_headers'"
-                        placement="bottom-end" content="Add Header">
-                <el-button class="z-index-top" icon="el-icon-plus" size="mini" type="primary"
-                           plain @click.native='handleHeaderAddNew'/>
-            </el-tooltip>
+            <el-button-group>
+                <el-tooltip class="item" effect="dark" content="Execute Query" placement="bottom-end">
+                    <el-button class="z-index-top" size="mini" round
+                               v-if="this.hideRunBtn === false" @click.native='triggerRun'>
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#iconexecute"></use>
+                        </svg>
+                    </el-button>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" v-if="this.panelMode === 'req_parameters'"
+                            placement="bottom-end" content="Format Parameters">
+                    <el-button class="z-index-top" size="mini" round
+                               @click.native='handleParametersFormatter'>
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#iconformat"></use>
+                        </svg>
+                    </el-button>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" v-if="this.panelMode === 'req_headers'"
+                            placement="bottom-end" content="Add Header">
+                    <el-button class="z-index-top" size="mini" round
+                               @click.native='handleHeaderAddNew'>
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#iconadd"></use>
+                        </svg>
+                    </el-button>
+                </el-tooltip>
+            </el-button-group>
         </div>
         <el-tabs class="request-tabs" type="card" v-model="panelMode">
             <el-tab-pane name="req_parameters" label="Parameters" lazy>
@@ -201,6 +214,6 @@
     }
 
     .z-index-top {
-        z-index: 10000;
+        z-index: 1000;
     }
 </style>

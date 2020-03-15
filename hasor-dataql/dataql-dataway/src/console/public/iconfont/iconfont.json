@@ -6,16 +6,51 @@
   "description": "Hasor-DataQL",
   "glyphs": [
     {
+      "icon_id": "6163418",
+      "name": "复制",
+      "font_class": "copy",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "12037510",
+      "name": "添加",
+      "font_class": "add",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "5806440",
+      "name": "格式化",
+      "font_class": "format",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "4699965",
+      "name": "调试",
+      "font_class": "debug",
+      "unicode": "e7c3",
+      "unicode_decimal": 59331
+    },
+    {
+      "icon_id": "9993194",
+      "name": "执行",
+      "font_class": "execute",
+      "unicode": "e70a",
+      "unicode_decimal": 59146
+    },
+    {
       "icon_id": "8085926",
       "name": "删 除",
-      "font_class": "shanchu",
+      "font_class": "delete",
       "unicode": "e720",
       "unicode_decimal": 59168
     },
     {
       "icon_id": "6721603",
       "name": "禁用",
-      "font_class": "jinyong",
+      "font_class": "disable",
       "unicode": "e6a7",
       "unicode_decimal": 59047
     },
@@ -36,14 +71,14 @@
     {
       "icon_id": "3484650",
       "name": "历史",
-      "font_class": "lishi-copy",
+      "font_class": "history",
       "unicode": "e603",
       "unicode_decimal": 58883
     },
     {
       "icon_id": "7002505",
       "name": "测试",
-      "font_class": "ceshi3",
+      "font_class": "test",
       "unicode": "e6d1",
       "unicode_decimal": 59089
     }

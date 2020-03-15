@@ -2,41 +2,83 @@
     <div>
         <div class="monacoEditorHeader">
             <div style="width: 50%; margin-top: 2px; display: inline-table;">
-                <el-input placeholder="the path to access this Api" v-model="apiPath" class="input-with-select" size="mini" :disabled="!apiPathEditor">
-                    <el-select v-model="select" slot="prepend" placeholder="Choose" :disabled="!apiPathEditor">
-                        <el-option label="POST" value="POST"/>
-                        <el-option label="PUT" value="PUT"/>
-                        <el-option label="GET" value="GET"/>
-                    </el-select>
-                    <el-button slot="append" icon="el-icon-edit" v-if="!apiPathEditor" @click.native="handleEnableEditPath"/>
-                    <el-button slot="append" icon="el-icon-check" v-if="apiPathEditor" @click.native="handleModifyEditPath"/>
-                    <el-button slot="append" icon="el-icon-close" v-if="apiPathEditor" @click.native="handleCancelEditPath"/>
+                <el-tooltip class="item" effect="dark" placement="bottom" :content="apiComment || defaultApiComment" :disabled="showComment">
+                    <el-input placeholder="the path to access this Api" v-model="apiPath" class="input-with-select" size="mini" :disabled="!apiPathEdit">
+                        <el-select v-model="select" slot="prepend" placeholder="Choose" :disabled="!apiPathEdit">
+                            <el-option label="POST" value="POST"/>
+                            <el-option label="PUT" value="PUT"/>
+                            <el-option label="GET" value="GET"/>
+                        </el-select>
+                        <el-button slot="append" icon="el-icon-edit" v-if="!newCode && !apiPathEdit" @click.native="handleEnableEditPath"/>
+                        <el-button slot="append" icon="el-icon-check" v-if="!newCode && apiPathEdit" @click.native="handleModifyEditPath"/>
+                        <el-button slot="append" icon="el-icon-close" v-if="!newCode && apiPathEdit" @click.native="handleCancelEditPath"/>
+                        <el-button slot="append" icon="el-icon-info" v-if="newCode && !showComment" @click.native="handleShowComment"/>
+                    </el-input>
+                </el-tooltip>
+            </div>
+            <div class="comment" v-if="showComment">
+                <el-input placeholder="Api's comment." size="mini" v-model="apiComment">
+                    <template slot="prepend">Comment</template>
+                    <el-button slot="append" icon="el-icon-check" v-if="newCode" @click.native="handleShowComment"/>
                 </el-input>
             </div>
             <div style="display: inline-table;padding-left: 5px;">
-                <el-radio-group v-model="codeType" size="mini">
-                    <el-radio border label="DataQL"/>
-                    <el-radio border label="SQL"/>
+                <el-radio-group v-model="codeType" size="mini" @change="loadEditorMode">
+                    <el-tooltip class="item" effect="dark" placement="bottom" content="DataQL language.">
+                        <el-radio border label="DataQL"/>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" placement="bottom" content="SQL language.">
+                        <el-radio border label="SQL"/>
+                    </el-tooltip>
                 </el-radio-group>
             </div>
             <div style="float: right;">
                 <el-button-group>
-                    <!-- 下线 -->
-                    <!--          <el-button size="mini" type="danger" icon="iconfont iconjinyong"/>-->
-                    <!-- 删除 -->
-                    <el-button size="mini" type="danger" icon="iconfont iconshanchu" plain/>
-                    <!-- 历史 -->
-                    <el-button size="mini" type="primary" icon="iconfont iconlishi-copy" plain/>
                     <!-- 保存 -->
-                    <el-button size="mini" type="primary" icon="iconfont iconsave"/>
+                    <el-button size="mini" round>
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#iconsave"></use>
+                        </svg>
+                    </el-button>
                     <!-- 执行 -->
-                    <el-button size="mini" type="primary" icon="el-icon-s-promotion"/>
+                    <el-button size="mini" round>
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#iconexecute"></use>
+                        </svg>
+                    </el-button>
                     <!-- 发布 -->
-                    <el-button size="mini" type="primary" icon="iconfont iconrelease"/>
+                    <el-button size="mini" round>
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#iconrelease"></use>
+                        </svg>
+                    </el-button>
+                </el-button-group>
+                <div style="padding-left: 10px;display: inline;"/>
+                <el-button-group>
+                    <!-- 下线 -->
+                    <el-button size="mini" round>
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#icondisable"></use>
+                        </svg>
+                    </el-button>
+                    <!-- 删除 -->
+                    <el-button size="mini" round>
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#icondelete"></use>
+                        </svg>
+                    </el-button>
+                    <!-- 历史 -->
+                    <el-button size="mini" round>
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#iconhistory"></use>
+                        </svg>
+                    </el-button>
                     <!-- 冒烟 -->
-                    <!--          <el-button size="mini" type="primary" icon="iconfont iconceshi3"/>-->
-                    <!-- 格式化 -->
-                    <!--          <el-button size="mini" type="primary" icon="el-icon-s-open"/>-->
+                    <el-button size="mini" round>
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#icontest"></use>
+                        </svg>
+                    </el-button>
                 </el-button-group>
             </div>
         </div>
@@ -79,11 +121,19 @@
             RequestPanel, ResponsePanel
         },
         mounted() {
-            this.loading = true;
-            this.apiPathEditor = true;
-            this.apiID = this.$route.params.id;
+            if (this.$route.path.startsWith('/new')) {
+                this.newCode = true;
+                this.apiPathEdit = true;
+                this.showComment = true;
+                this.apiID = -1;
+            } else {
+                this.newCode = false;
+                this.apiPathEdit = false;
+                this.showComment = false;
+                this.apiID = this.$route.params.id;
+                this.loadApiDetail();
+            }
             //
-            this.loadApiDetail();
             this.initMonacoEditor();
             this.layoutMonacoEditor();
             this._resize = () => {
@@ -122,23 +172,31 @@
             //
             // 激活编辑路径
             handleEnableEditPath() {
-                this.apiPathEditor = true;
                 this.tempPathInfo = {
                     select: this.select,
                     apiPath: this.apiPath,
+                    apiComment: this.apiComment
                 };
+                this.apiPathEdit = true;
+                this.showComment = true;
             },
             // 取消路径编辑
             handleCancelEditPath() {
                 this.select = this.tempPathInfo.select;
                 this.apiPath = this.tempPathInfo.apiPath;
-                this.apiPathEditor = false;
+                this.apiComment = this.tempPathInfo.apiComment;
+                this.apiPathEdit = false;
+                this.showComment = false;
             },
             // 递交路径修改的内容
             handleModifyEditPath() {
-                if (this.apiPath === this.tempPathInfo.apiPath && this.select === this.tempPathInfo.select) {
-                    this.apiPathEditor = false;
-                    this.$message({message: 'Api path has not changed.', type: 'success'})
+                if (this.apiPath.toLowerCase() === this.tempPathInfo.apiPath.toLowerCase() &&
+                    this.select === this.tempPathInfo.select &&
+                    this.apiComment === this.tempPathInfo.apiComment
+                ) {
+                    this.apiPathEdit = false;
+                    this.showComment = false;
+                    this.$message({message: 'Api path has not changed.', type: 'success'});
                     return
                 }
                 //
@@ -146,19 +204,24 @@
                     "method": "POST",
                     "data": {
                         "id": this.apiID,
-                        "newPath": this.apiPath,
-                        "newSelect": this.select
+                        "newPath": this.apiPath.toLowerCase(),
+                        "newSelect": this.select.toUpperCase()
                     }
                 }, response => {
                     if (response.data.result) {
-                        this.apiPathEditor = false;
-                        this.$message({message: 'Api path modified successfully.', type: 'success'})
+                        this.apiPathEdit = false;
+                        this.showComment = false;
+                        this.$message({message: 'Api path modified successfully.', type: 'success'});
                     } else {
                         this.$alert(response.data.message, 'Failed', {
                             confirmButtonText: 'OK'
                         });
                     }
                 });
+            },
+            // 显示隐藏Comment
+            handleShowComment() {
+                this.showComment = !this.showComment;
             },
             //
             // 初始化编辑器
@@ -202,17 +265,27 @@
                     lock: true,
                     text: 'Loading',
                     spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
+                    background: 'rgba(0, 0, 0, 0.5)'
                 });
                 request(ApiUrl.apiDetail + "?id=" + this.apiID, {
                     "method": "GET"
                 }, response => {
                     this.select = response.data.select;
                     this.apiPath = response.data.path;
-                    this.apiPathEditor = false;
+                    this.apiComment = response.data.apiComment;
+                    this.apiPathEdit = false;
                     this.codeType = response.data.codeType;
+                    this.codeValue = response.data.codeInfo.codeValue;
+                    this.requestBody = response.data.codeInfo.requestBody;
+                    this.responseBody = response.data.codeInfo.responseBody;
+                    this.headerData = response.data.codeInfo.headerData;
+                    this.loadEditorMode();
                     loading.close();
-                    this.loadEditorDetail();
+                    this.$nextTick(function () {
+                        this.monacoEditor.setValue(this.codeValue);
+                        this.$refs.editerRequestPanel.doUpdate();
+                        this.$refs.editerResponsePanel.doUpdate();
+                    });
                 }, response => {
                     this.$alert('Not Fount Api.', 'Error', {
                         confirmButtonText: 'OK'
@@ -220,21 +293,14 @@
                     loading.close();
                 });
             },
-            // 加载编辑器信息
-            loadEditorDetail() {
-                alert('编辑器信息加载.');
-                this.codeValue = 'json';
-                this.requestBody = '[1,2,3,4]';
-                this.headerData = [
-                    {checked: true, name: 'name1', value: 'value1'},
-                    {checked: false, name: 'name2', value: 'value2'},
-                    {checked: false, name: 'name3', value: 'value3'},
-                    {checked: true, name: 'name4', value: 'value4'},
-                    {checked: true, name: 'name5', value: 'value5'}
-                ];
-                this.$nextTick(function () {
-                    this.$refs.editerRequestPanel.doUpdate();
-                });
+            // 刷新编辑器模式
+            loadEditorMode() {
+                if (this.codeType.toLowerCase() === 'dataql') {
+                    this.monacoEditor.updateOptions({language: 'javascript'});
+                }
+                if (this.codeType.toLowerCase() === 'sql') {
+                    this.monacoEditor.updateOptions({language: 'sql'});
+                }
             }
         },
         data() {
@@ -242,14 +308,18 @@
                 apiID: 1,
                 select: 'POST',
                 apiPath: '',
-                apiPathEditor: true,
+                apiComment: '',
+                defaultApiComment: "There is no comment, Click 'info' icon to add comment",
+                showComment: false,
+                newCode: false,
+                apiPathEdit: true,
                 tempPathInfo: null,
                 codeType: 'DataQL',
                 responseBody: '"empty."',
                 //
                 //
-                codeValue: '',
-                requestBody: '{}',
+                codeValue: '// a new DataQL Query.\nreturn ${message};',
+                requestBody: '{"message":"Hello DataQL."}',
                 headerData: [],
                 //
                 //
@@ -276,11 +346,14 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     .monacoEditorHeader {
-        /*display: flex;*/
-        /*justify-content: space-between;*/
-        /*justify-items: center;*/
         overflow-x: hidden;
         padding: 5px;
+    }
+
+    .comment {
+        width: 50%;
+        position: absolute;
+        z-index: 1000;
     }
 
     .el-radio {
@@ -291,6 +364,10 @@
     .el-radio--mini.is-bordered {
         padding: 3px 10px 0 5px;
         height: 25px;
+    }
+
+    .el-input-group__append, .el-input-group__prepend {
+        padding: 0 13px !important;
     }
 
     .el-radio.is-bordered + .el-radio.is-bordered {
