@@ -1,12 +1,16 @@
 <template>
     <div class="responsePanel">
         <div class="response-btns">
-            <el-button class="z-index-top" icon="el-icon-document-copy" size="mini" type="primary" plain
-                       v-clipboard:copy="responseBodyCopy"
-                       v-clipboard:success="handleJsonResultCopySuccess"
-                       v-clipboard:error="handleJsonResultCopyError"/>
-            <el-button class="z-index-top" icon="el-icon-s-open" size="mini" type="warning" plain
-                       @click.native='handleJsonResultFormatter'/>
+            <el-tooltip class="item" effect="dark" content="Copy to Clipboard" placement="top-end">
+                <el-button class="z-index-top" icon="el-icon-document-copy" size="mini" type="primary" plain
+                           v-clipboard:copy="responseBodyCopy"
+                           v-clipboard:success="handleJsonResultCopySuccess"
+                           v-clipboard:error="handleJsonResultCopyError"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="Format Result" placement="top-end">
+                <el-button class="z-index-top" icon="el-icon-s-open" size="mini" type="warning" plain
+                           @click.native='handleJsonResultFormatter'/>
+            </el-tooltip>
         </div>
         <el-tabs class="response-tabs" type="card">
             <el-tab-pane label="JsonResult">

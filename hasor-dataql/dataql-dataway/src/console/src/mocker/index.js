@@ -1,3 +1,4 @@
+// GET 类
 const apiInfoData = {
     "id": 1,
     "path": "/demos/db/databases/",
@@ -26,6 +27,26 @@ const apiListData = [
     {"id": 12, "checked": false, "path": "/demos/power/power-id/", "status": 3, "desc": "现实所有表。"},
     {"id": 13, "checked": false, "path": "/demos/power/check/", "status": 0, "desc": "现实所有表。"}
 ];
+const apiDetailData = {
+    "id": 1,
+    "path": "/demos/db/databases/",
+    "status": 1,
+    "requestBody": '{"abc":true}',
+    "select": "POST",
+    "codeType": 'SQL'
+};
+//
+// codeValue: '<div>请编辑html内容</div>',
+// requestBody: '{}',
+// "headerData": [
+//     {"checked": true, "name": "name1", "value": "value"},
+//     {"checked": false, "name": "name2", "value": "value"},
+//     {"checked": false, "name": "name3", "value": "value"},
+//     {"checked": true, "name": "name4", "value": "value"},
+//     {"checked": true, "name": "name5", "value": "value"}
+// ]
+//
+// POST 类
 const executeData = {
     "id": 1,
     "paramMap": {
@@ -37,24 +58,25 @@ const executeData = {
         "name5": "value"
     }
 };
-const apiDetailData = {
-    "id": 1,
-    "path": "/demos/db/databases/",
-    "status": 1,
-    "requestBody": '{"abc":true}',
-    "headerData": [
-        {"checked": true, "name": "name1", "value": "value"},
-        {"checked": false, "name": "name2", "value": "value"},
-        {"checked": false, "name": "name3", "value": "value"},
-        {"checked": true, "name": "name4", "value": "value"},
-        {"checked": true, "name": "name5", "value": "value"}
-    ]
+const modifyPath_failed = {
+    "result": false,
+    "message": 'Another API is already in use.'
+};
+const modifyPath_ok = {
+    "result": true,
+    "message": 'ok.'
 };
 
 const proxy = {
     'GET /api/api-info.json': apiInfoData,
     'GET /api/api-list.json': apiListData,
-    'POST /api/execute': executeData,
-    'GET /api/api-detail.json': apiDetailData
+    'GET /api/api-detail.json': apiDetailData,
+
+    'POST /api/execute': (req, res) => {
+        res.send(executeData);
+    },
+    'POST /api/modify-path': (req, res) => {
+        res.send(modifyPath_failed);
+    },
 };
 module.exports = proxy;

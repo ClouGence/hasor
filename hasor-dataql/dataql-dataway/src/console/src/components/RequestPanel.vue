@@ -1,15 +1,21 @@
 <template>
     <div class="requestPanel">
         <div class="request-btns">
-            <el-button class="z-index-top" icon="el-icon-s-promotion" size="mini" type="success"
-                       plain v-if="this.hideRunBtn === false"
-                       @click.native='triggerRun'/>
-            <el-button class="z-index-top" icon="el-icon-s-open" size="mini" type="warning"
-                       plain v-if="this.panelMode === 'req_parameters'"
-                       @click.native='handleParametersFormatter'/>
-            <el-button class="z-index-top" icon="el-icon-plus" size="mini" type="primary"
-                       plain v-if="this.panelMode === 'req_headers'"
-                       @click.native='handleHeaderAddNew'/>
+            <el-tooltip class="item" effect="dark" content="Execute Query" placement="bottom-end">
+                <el-button class="z-index-top" icon="el-icon-s-promotion" size="mini" type="success"
+                           plain v-if="this.hideRunBtn === false"
+                           @click.native='triggerRun'/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" v-if="this.panelMode === 'req_parameters'"
+                        placement="bottom-end" content="Format Parameters">
+                <el-button class="z-index-top" icon="el-icon-s-open" size="mini" type="warning"
+                           plain @click.native='handleParametersFormatter'/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" v-if="this.panelMode === 'req_headers'"
+                        placement="bottom-end" content="Add Header">
+                <el-button class="z-index-top" icon="el-icon-plus" size="mini" type="primary"
+                           plain @click.native='handleHeaderAddNew'/>
+            </el-tooltip>
         </div>
         <el-tabs class="request-tabs" type="card" v-model="panelMode">
             <el-tab-pane name="req_parameters" label="Parameters" lazy>
@@ -39,8 +45,10 @@
                     </el-table-column>
                     <el-table-column prop="name" width="38" :resizable='false'>
                         <template slot-scope="scope">
-                            <el-button size="mini" type="danger" icon="el-icon-delete"
-                                       circle @click.native='handleHeaderDelete(scope.row,scope.$index)'/>
+                            <el-tooltip class="item" effect="dark" content="Delete" placement="left">
+                                <el-button size="mini" type="danger" icon="el-icon-delete"
+                                           circle @click.native='handleHeaderDelete(scope.row,scope.$index)'/>
+                            </el-tooltip>
                         </template>
                     </el-table-column>
                 </el-table>

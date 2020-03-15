@@ -7,7 +7,9 @@
                       empty-text="No Api" highlight-current-row border lazy stripe>
                 <el-table-column prop="id" width="24" :resizable='false'>
                     <template slot-scope="scope">
-                        <el-checkbox name="type" v-model="scope.row.checked" v-on:change="handleApiDataChange(scope.row)"/>
+                        <el-tooltip class="item" effect="dark" content="Choose to Test" placement="right">
+                            <el-checkbox name="type" v-model="scope.row.checked" v-on:change="handleApiDataChange(scope.row)"/>
+                        </el-tooltip>
                     </template>
                 </el-table-column>
                 <el-table-column prop="path" label="Api" :show-overflow-tooltip="true">
@@ -21,11 +23,15 @@
                 </el-table-column>
                 <el-table-column prop="id" width="23" :resizable='false'>
                     <template slot="header">
-                        <el-link v-on:click="loadList"><i class="el-icon-refresh"/></el-link>
+                        <el-tooltip class="item" effect="dark" content="reload Api List" placement="right">
+                            <el-link v-on:click="loadList"><i class="el-icon-refresh"/></el-link>
+                        </el-tooltip>
                     </template>
                     <template slot-scope="scope">
                         <router-link :to="'/edit/' + scope.row.id">
-                            <el-link><i class="el-icon-edit"/></el-link>
+                            <el-tooltip class="item" effect="dark" content="Edit" placement="right">
+                                <el-link><i class="el-icon-edit"/></el-link>
+                            </el-tooltip>
                         </router-link>
                     </template>
                 </el-table-column>
@@ -158,23 +164,24 @@
                 //
                 let doRunParam = {};
                 try {
+                    doRunParam.id = this.requestApiInfo.id;
                     doRunParam.paramMap = JSON.parse(this.requestBody);
                 } catch (e) {
                     this.$message.error('Parameters Format Error : ' + e);
                     return;
                 }
                 //
-                doRunParam.headerData = {};
+                let requestHeaderData = {};
                 for (let i = 0; i < this.headerData.length; i++) {
                     if (this.headerData[i].checked) {
-                        doRunParam.headerData[this.headerData[i].name] = this.headerData[i].value;
+                        requestHeaderData[this.headerData[i].name] = this.headerData[i].value;
                     }
                 }
                 //
-                request(ApiUrl.execute + '?id=' + this.requestApiInfo.id, {
+                request(ApiUrl.execute + '?id=' + doRunParam.id, {
                     "method": "POST",
                     "data": doRunParam.paramMap,
-                    "headers": doRunParam.headerData
+                    "headers": requestHeaderData
                 }, response => {
                     this.responseBody = JSON.stringify(response.data, null, 2)
                     this.$nextTick(function () {

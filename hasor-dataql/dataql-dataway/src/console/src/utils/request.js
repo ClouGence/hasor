@@ -60,7 +60,7 @@ export default function request(apiURL, options, successCallback, errorCallback)
         }
     }
     //
-    successCallback = (successCallback === null || errorCallback === undefined) ? () => {
+    successCallback = (successCallback === null || successCallback === undefined) ? () => {
     } : successCallback;
     errorCallback = (errorCallback === null || errorCallback === undefined) ? showMessage : errorCallback;
     return axios.request({
