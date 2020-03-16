@@ -35,6 +35,7 @@ const checkStatus = response => {
  */
 export default function request(apiURL, options, successCallback, errorCallback) {
     const defaultOptions = {
+        loading: true,
         credentials: 'include'
     };
     const newOptions = {
@@ -63,8 +64,23 @@ export default function request(apiURL, options, successCallback, errorCallback)
     successCallback = (successCallback === null || successCallback === undefined) ? () => {
     } : successCallback;
     errorCallback = (errorCallback === null || errorCallback === undefined) ? showMessage : errorCallback;
+    //
+    let finallyCallback = () => {
+        /**/
+    };
+    if (newOptions.loading) {
+        const loading = Vue.prototype.$loading({
+            lock: true,
+            text: 'Loading',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.5)'
+        });
+        finallyCallback = () => {
+            loading.close();
+        };
+    }
     return axios.request({
         ...newOptions,
         withCredentials: true,
-    }).then(checkStatus).then(successCallback).catch(errorCallback);
+    }).then(checkStatus).then(successCallback).catch(errorCallback).finally(finallyCallback);
 }

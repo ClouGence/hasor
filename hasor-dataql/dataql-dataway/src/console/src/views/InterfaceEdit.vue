@@ -2,9 +2,9 @@
     <div>
         <div class="monacoEditorHeader">
             <div style="width: 50%; margin-top: 2px; display: inline-table;">
-                <el-tooltip class="item" effect="dark" placement="bottom" :content="apiComment || defaultApiComment" :disabled="showComment">
-                    <el-input placeholder="the path to access this Api" v-model="apiPath" class="input-with-select" size="mini" :disabled="!apiPathEdit">
-                        <el-select v-model="select" slot="prepend" placeholder="Choose" :disabled="!apiPathEdit">
+                <el-tooltip class="item" effect="dark" placement="bottom" :content="apiInfo.comment || defaultComment" :disabled="showComment">
+                    <el-input placeholder="the path to access this Api" v-model="apiInfo.apiPath" class="input-with-select" size="mini" :disabled="!apiPathEdit">
+                        <el-select v-model="apiInfo.select" slot="prepend" placeholder="Choose" :disabled="!apiPathEdit">
                             <el-option label="POST" value="POST"/>
                             <el-option label="PUT" value="PUT"/>
                             <el-option label="GET" value="GET"/>
@@ -17,13 +17,13 @@
                 </el-tooltip>
             </div>
             <div class="comment" v-if="showComment">
-                <el-input placeholder="Api's comment." size="mini" v-model="apiComment">
+                <el-input placeholder="Api's comment." size="mini" v-model="apiInfo.comment">
                     <template slot="prepend">Comment</template>
                     <el-button slot="append" icon="el-icon-check" v-if="newCode" @click.native="handleShowComment"/>
                 </el-input>
             </div>
             <div style="display: inline-table;padding-left: 5px;">
-                <el-radio-group v-model="codeType" size="mini" @change="loadEditorMode">
+                <el-radio-group v-model="apiInfo.codeType" size="mini" @change="loadEditorMode">
                     <el-tooltip class="item" effect="dark" placement="bottom" content="DataQL language.">
                         <el-radio border label="DataQL"/>
                     </el-tooltip>
@@ -33,53 +33,12 @@
                 </el-radio-group>
             </div>
             <div style="float: right;">
-                <el-button-group>
-                    <!-- 保存 -->
-                    <el-button size="mini" round>
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#iconsave"></use>
-                        </svg>
-                    </el-button>
-                    <!-- 执行 -->
-                    <el-button size="mini" round>
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#iconexecute"></use>
-                        </svg>
-                    </el-button>
-                    <!-- 发布 -->
-                    <el-button size="mini" round>
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#iconrelease"></use>
-                        </svg>
-                    </el-button>
-                </el-button-group>
-                <div style="padding-left: 10px;display: inline;"/>
-                <el-button-group>
-                    <!-- 下线 -->
-                    <el-button size="mini" round>
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#icondisable"></use>
-                        </svg>
-                    </el-button>
-                    <!-- 删除 -->
-                    <el-button size="mini" round>
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#icondelete"></use>
-                        </svg>
-                    </el-button>
-                    <!-- 历史 -->
-                    <el-button size="mini" round>
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#iconhistory"></use>
-                        </svg>
-                    </el-button>
-                    <!-- 冒烟 -->
-                    <el-button size="mini" round>
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#icontest"></use>
-                        </svg>
-                    </el-button>
-                </el-button-group>
+                <EditerActions :api-info="apiInfo" :request-body="requestBody" :request-header="headerData" @onApiStatusChange="onApiStatusChange"/>
+                <div style="display: inline-table;padding-left: 5px;">
+                    <el-tooltip class="item" effect="dark" placement="top" content="Current Api Status">
+                        <el-tag size="mini" style="width: 65px;text-align: center;" :type="tagInfo.css">{{tagInfo.title}}</el-tag>
+                    </el-tooltip>
+                </div>
             </div>
         </div>
         <el-divider/>
@@ -111,26 +70,28 @@
 </template>
 <script>
     import * as monaco from 'monaco-editor';
+    import EditerActions from '../components/EditerActions';
     import RequestPanel from '../components/RequestPanel';
     import ResponsePanel from '../components/ResponsePanel';
     import request from "../utils/request";
     import {ApiUrl} from "../utils/api-const";
+    import {tagInfo} from "../utils/utils"
 
     export default {
         components: {
-            RequestPanel, ResponsePanel
+            RequestPanel, ResponsePanel, EditerActions
         },
         mounted() {
             if (this.$route.path.startsWith('/new')) {
+                this.apiInfo.apiID = -1;
                 this.newCode = true;
                 this.apiPathEdit = true;
                 this.showComment = true;
-                this.apiID = -1;
             } else {
+                this.apiInfo.apiID = this.$route.params.id;
                 this.newCode = false;
                 this.apiPathEdit = false;
                 this.showComment = false;
-                this.apiID = this.$route.params.id;
                 this.loadApiDetail();
             }
             //
@@ -144,7 +105,7 @@
             window.addEventListener('resize', this._resize);
         },
         beforeDestroy() {
-            window.removeEventListener('resize', this._resize)
+            window.removeEventListener('resize', this._resize);
         },
         methods: {
             // 页面大小调整
@@ -173,26 +134,26 @@
             // 激活编辑路径
             handleEnableEditPath() {
                 this.tempPathInfo = {
-                    select: this.select,
-                    apiPath: this.apiPath,
-                    apiComment: this.apiComment
+                    select: this.apiInfo.select,
+                    apiPath: this.apiInfo.apiPath,
+                    comment: this.apiInfo.comment
                 };
                 this.apiPathEdit = true;
                 this.showComment = true;
             },
             // 取消路径编辑
             handleCancelEditPath() {
-                this.select = this.tempPathInfo.select;
-                this.apiPath = this.tempPathInfo.apiPath;
-                this.apiComment = this.tempPathInfo.apiComment;
+                this.apiInfo.select = this.tempPathInfo.select;
+                this.apiInfo.apiPath = this.tempPathInfo.apiPath;
+                this.apiInfo.comment = this.tempPathInfo.comment;
                 this.apiPathEdit = false;
                 this.showComment = false;
             },
             // 递交路径修改的内容
             handleModifyEditPath() {
-                if (this.apiPath.toLowerCase() === this.tempPathInfo.apiPath.toLowerCase() &&
-                    this.select === this.tempPathInfo.select &&
-                    this.apiComment === this.tempPathInfo.apiComment
+                if (this.apiInfo.apiPath.toLowerCase() === this.tempPathInfo.apiPath.toLowerCase() &&
+                    this.apiInfo.select === this.tempPathInfo.select &&
+                    this.apiInfo.comment === this.tempPathInfo.comment
                 ) {
                     this.apiPathEdit = false;
                     this.showComment = false;
@@ -200,20 +161,21 @@
                     return
                 }
                 //
-                request(ApiUrl.modifyPath + "?id=" + this.apiID, {
+                const self = this;
+                request(ApiUrl.modifyPath + "?id=" + self.apiInfo.apiID, {
                     "method": "POST",
                     "data": {
-                        "id": this.apiID,
-                        "newPath": this.apiPath.toLowerCase(),
-                        "newSelect": this.select.toUpperCase()
+                        "id": self.apiInfo.apiID,
+                        "newPath": self.apiInfo.apiPath.toLowerCase(),
+                        "newSelect": self.apiInfo.select.toUpperCase()
                     }
                 }, response => {
                     if (response.data.result) {
-                        this.apiPathEdit = false;
-                        this.showComment = false;
-                        this.$message({message: 'Api path modified successfully.', type: 'success'});
+                        self.apiPathEdit = false;
+                        self.showComment = false;
+                        self.$message({message: 'Api path modified successfully.', type: 'success'});
                     } else {
-                        this.$alert(response.data.message, 'Failed', {
+                        self.$alert(response.data.message, 'Failed', {
                             confirmButtonText: 'OK'
                         });
                     }
@@ -227,7 +189,7 @@
             // 初始化编辑器
             initMonacoEditor() {
                 this.monacoEditor = monaco.editor.create(this.$refs.container, {
-                    value: this.codeValue,
+                    value: this.apiInfo.codeValue,
                     language: 'javascript',
                     theme: 'vs', // vs, hc-black, or vs-dark
                     editorOptions: this.monacoEditorOptions
@@ -243,13 +205,13 @@
                 });
                 monaco.editor.setTheme('selfTheme');
                 //
+                const self = this;
                 // let contextmenu = this.monacoEditor.getContribution('editor.contrib.contextmenu')
                 // let actions = this.monacoEditor.getActions()
                 this.monacoEditor.updateOptions({contextmenu: false});
                 this.monacoEditor.updateOptions({minimap: {enabled: false}});
-                let _this = this;
                 this.monacoEditor.onDidChangeModelContent(function (event) { // 编辑器内容changge事件
-                    _this.codeValue = _this.monacoEditor.getValue();
+                    self.apiInfo.codeValue = self.monacoEditor.getValue();
                 });
                 // // 自定义键盘事件
                 // self.monacoEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function () {
@@ -261,66 +223,76 @@
             },
             // 加载Api的基本信息
             loadApiDetail() {
-                const loading = this.$loading({
-                    lock: true,
-                    text: 'Loading',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.5)'
-                });
-                request(ApiUrl.apiDetail + "?id=" + this.apiID, {
+                const self = this;
+                request(ApiUrl.apiDetail + "?id=" + self.apiInfo.apiID, {
                     "method": "GET"
                 }, response => {
-                    this.select = response.data.select;
-                    this.apiPath = response.data.path;
-                    this.apiComment = response.data.apiComment;
-                    this.apiPathEdit = false;
-                    this.codeType = response.data.codeType;
-                    this.codeValue = response.data.codeInfo.codeValue;
-                    this.requestBody = response.data.codeInfo.requestBody;
-                    this.responseBody = response.data.codeInfo.responseBody;
-                    this.headerData = response.data.codeInfo.headerData;
-                    this.loadEditorMode();
-                    loading.close();
-                    this.$nextTick(function () {
-                        this.monacoEditor.setValue(this.codeValue);
-                        this.$refs.editerRequestPanel.doUpdate();
-                        this.$refs.editerResponsePanel.doUpdate();
+                    self.apiInfo.select = response.data.select;
+                    self.apiInfo.apiPath = response.data.path;
+                    self.apiInfo.comment = response.data.comment;
+                    self.apiInfo.apiStatus = response.data.status;
+                    self.apiInfo.codeType = response.data.codeType;
+                    self.apiInfo.codeValue = response.data.codeInfo.codeValue;
+                    //
+                    self.requestBody = response.data.codeInfo.requestBody;
+                    self.responseBody = response.data.codeInfo.responseBody;
+                    self.headerData = response.data.codeInfo.headerData;
+                    //
+                    self.apiPathEdit = false;
+                    self.tagInfo = tagInfo(self.apiInfo.apiStatus);
+                    self.loadEditorMode();
+                    //
+                    self.$nextTick(function () {
+                        self.monacoEditor.setValue(self.apiInfo.codeValue);
+                        self.$refs.editerRequestPanel.doUpdate();
+                        self.$refs.editerResponsePanel.doUpdate();
                     });
                 }, response => {
-                    this.$alert('Not Fount Api.', 'Error', {
+                    self.$alert('Not Fount Api.', 'Error', {
                         confirmButtonText: 'OK'
                     });
-                    loading.close();
                 });
             },
             // 刷新编辑器模式
             loadEditorMode() {
-                if (this.codeType.toLowerCase() === 'dataql') {
+                if (this.apiInfo.codeType.toLowerCase() === 'dataql') {
                     this.monacoEditor.updateOptions({language: 'javascript'});
                 }
-                if (this.codeType.toLowerCase() === 'sql') {
+                if (this.apiInfo.codeType.toLowerCase() === 'sql') {
                     this.monacoEditor.updateOptions({language: 'sql'});
                 }
+            },
+            //
+            onApiStatusChange(oldValue, newValue) {
+                const self = this;
+                this.$nextTick(function () {
+                    self.loadApiDetail();
+                });
             }
         },
         data() {
             return {
-                apiID: 1,
-                select: 'POST',
-                apiPath: '',
-                apiComment: '',
-                defaultApiComment: "There is no comment, Click 'info' icon to add comment",
+                apiInfo: {
+                    apiID: 1,
+                    select: 'POST',
+                    apiPath: '',
+                    comment: '',
+                    apiStatus: 0,
+                    codeType: 'DataQL',
+                    codeValue: '// a new DataQL Query.\nreturn ${message};',
+                },
+                //
+                tagInfo: {css: 'info', title: 'Editor'},
+                defaultComment: "There is no comment, Click 'info' icon to add comment",
                 showComment: false,
                 newCode: false,
                 apiPathEdit: true,
                 tempPathInfo: null,
-                codeType: 'DataQL',
-                responseBody: '"empty."',
                 //
                 //
-                codeValue: '// a new DataQL Query.\nreturn ${message};',
-                requestBody: '{"message":"Hello DataQL."}',
                 headerData: [],
+                requestBody: '{"message":"Hello DataQL."}',
+                responseBody: '"empty."',
                 //
                 //
                 panelPercentVertical: 70,

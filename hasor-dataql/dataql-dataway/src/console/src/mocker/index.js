@@ -60,13 +60,14 @@ const executeData = {
         "name5": "value"
     }
 };
-const modifyPath_failed = {
+const modifyPathData = {
     "result": false,
     "message": 'Another API is already in use.'
 };
-const modifyPath_ok = {
+const apiSaveData = {
     "result": true,
-    "message": 'ok.'
+    "status": 1,
+    "message": 'Another API is already in use.'
 };
 
 const proxy = {
@@ -78,7 +79,10 @@ const proxy = {
         res.send(executeData);
     },
     'POST /api/modify-path': (req, res) => {
-        res.send(modifyPath_failed);
+        res.send(modifyPathData);
     },
+    'POST /api/api-save': (req, res) => {
+        res.send(apiSaveData);
+    }
 };
 module.exports = proxy;

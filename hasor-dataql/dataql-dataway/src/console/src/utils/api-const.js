@@ -7,6 +7,7 @@ const ApiUrl = {
     //
     execute: `${BASE_URL}/api/execute`,
     modifyPath: `${BASE_URL}/api/modify-path`,
+    apiSave: `${BASE_URL}/api/api-save`,
 };
 
 export {

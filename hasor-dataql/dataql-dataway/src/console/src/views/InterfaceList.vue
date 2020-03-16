@@ -1,5 +1,5 @@
 <template>
-    <SplitPane :min-percent='30' :default-percent='50' split="vertical">
+    <SplitPane :min-percent='30' :default-percent='30' split="vertical">
         <template slot="paneL">
             <el-table ref="interfaceTable" height="100%" v-loading="loading"
                       :data="tableData.filter(dat => !apiSearch || dat.path.toLowerCase().includes(apiSearch.toLowerCase()))"
@@ -17,11 +17,10 @@
                         <el-input size="mini" v-model="apiSearch" placeholder="search Api"/>
                     </template>
                     <template slot-scope="scope">
-                        <el-tooltip class="item" effect="dark" :content="scope.row.comment" placement="top">
-                            <span style="overflow-x: hidden;">{{scope.row.path}}</span>
-                            <!--                            <span style="display:inline;overflow-x: hidden;font-size: 12px;color: #6c6c6c;"> - ({{scope.row.comment}})</span>-->
-                        </el-tooltip>
-                        <el-tag size="mini" style="float: right" :type="tableRowTagClassName(scope.row).css">{{tableRowTagClassName(scope.row).title}}</el-tag>
+                        <el-tag size="mini" style="float: left;width: 65px;text-align: center;" :type="tableRowTagClassName(scope.row).css">{{tableRowTagClassName(scope.row).title}}</el-tag>
+                        <span style="overflow-x: hidden;">
+                            {{scope.row.path}}<span style="color: #adadad;display: inline;float: right;">[{{scope.row.comment}}]</span>
+                        </span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="id" width="23" :resizable='false'>
@@ -64,6 +63,7 @@
     import ResponsePanel from '../components/ResponsePanel'
     import request from "../utils/request";
     import {ApiUrl} from "../utils/api-const"
+    import {tagInfo} from "../utils/utils"
 
     export default {
         components: {
@@ -72,10 +72,10 @@
         mounted() {
             this.handleSplitResize(this.panelPercent);
             //
-            let _this = this;
+            const self = this;
             this._resize = () => {
                 return (() => {
-                    _this.handleSplitResize(_this.panelPercent);
+                    self.handleSplitResize(self.panelPercent);
                 })();
             };
             window.addEventListener('resize', this._resize);
@@ -107,37 +107,27 @@
                 }
             },
             tableRowTagClassName(row) {
-                if (row.status === 0) {
-                    return {'css': 'info', 'title': 'Editor'};
-                }
-                if (row.status === 1) {
-                    return {'css': 'success', 'title': 'Published'};
-                }
-                if (row.status === 2) {
-                    return {'css': 'warning', 'title': 'Changes'};
-                }
-                if (row.status === 3) {
-                    return {'css': 'danger', 'title': 'Disable'};
-                }
-                return {'css': '', 'title': ''};
+                return tagInfo(row.status);
             },
             //
             //
             // 加载列表
             loadList() {
                 this.loading = true;
+                const self = this;
                 request(ApiUrl.apiList, {
-                    "method": "GET"
+                    "method": "GET",
+                    "loading": false
                 }, response => {
-                    this.tableData = response.data;
-                    if (this.tableData && this.tableData.length > 0) {
-                        this.tableData[0].checked = true;
-                        this.$refs.interfaceTable.setCurrentRow(this.tableData[0]);
+                    self.tableData = response.data;
+                    if (self.tableData && self.tableData.length > 0) {
+                        self.tableData[0].checked = true;
+                        self.$refs.interfaceTable.setCurrentRow(self.tableData[0]);
                     }
-                    this.loading = false;
+                    self.loading = false;
                 }, response => {
-                    this.$alert('Load Api List failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
-                    this.loading = false;
+                    self.$alert('Load Api List failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
+                    self.loading = false;
                 });
             },
             // 加载一个API
@@ -145,18 +135,20 @@
                 if (row === null || row === undefined) {
                     return;
                 }
+                const self = this;
                 request(ApiUrl.apiInfo + '?id=' + row.id, {
                     "method": "GET"
                 }, response => {
-                    this.requestApiInfo = response.data;
-                    this.requestBody = response.data.requestBody;
-                    this.headerData = response.data.headerData;
-                    this.$nextTick(function () {
-                        this.$refs.listRequestPanel.doUpdate();
-                        this.$refs.listResponsePanel.doUpdate();
+                    self.requestApiInfo = response.data;
+                    self.requestBody = response.data.requestBody;
+                    self.responseBody = response.data.responseBody;
+                    self.headerData = response.data.headerData;
+                    self.$nextTick(function () {
+                        self.$refs.listRequestPanel.doUpdate();
+                        self.$refs.listResponsePanel.doUpdate();
                     });
                 }, response => {
-                    this.$alert('Load Api failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
+                    self.$alert('Load Api failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
                 });
             },
             // 执行API调用
@@ -182,18 +174,19 @@
                     }
                 }
                 //
+                const self = this;
                 request(ApiUrl.execute + '?id=' + doRunParam.id, {
                     "method": "POST",
                     "data": doRunParam.paramMap,
                     "headers": requestHeaderData
                 }, response => {
-                    this.responseBody = JSON.stringify(response.data, null, 2)
-                    this.$nextTick(function () {
-                        this.$refs.listResponsePanel.doUpdate();
-                        this.$message({message: 'Success.', type: 'success'});
+                    self.responseBody = JSON.stringify(response.data, null, 2)
+                    self.$nextTick(function () {
+                        self.$refs.listResponsePanel.doUpdate();
+                        self.$message({message: 'Success.', type: 'success'});
                     });
                 }, response => {
-                    this.$alert('Execute failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
+                    self.$alert('Execute failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
                 });
             }
         },
@@ -215,5 +208,4 @@
     }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
-</style>
+<style lang="scss"/>
