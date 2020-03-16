@@ -2,25 +2,25 @@
     <div style="display: inline;">
         <el-button-group>
             <!-- 保存 -->
-            <el-button size="mini" round @click.native="handleSaveAction">
+            <el-button size="mini" round @click.native="handleSaveAction" :disabled="disabledBtn('saveAction')">
                 <svg class="icon" aria-hidden="true">
                     <use xlink:href="#iconsave"></use>
                 </svg>
             </el-button>
             <!-- 执行 -->
-            <el-button size="mini" round @click.native="handleExecuteAction">
+            <el-button size="mini" round @click.native="handleExecuteAction" :disabled="disabledBtn('executeAction')">
                 <svg class="icon" aria-hidden="true">
                     <use xlink:href="#iconexecute"></use>
                 </svg>
             </el-button>
             <!-- 冒烟 -->
-            <el-button size="mini" round @click.native="handleTestAction">
+            <el-button size="mini" round @click.native="handleTestAction" :disabled="disabledBtn('testAction')">
                 <svg class="icon" aria-hidden="true">
                     <use xlink:href="#icontest"></use>
                 </svg>
             </el-button>
             <!-- 发布 -->
-            <el-button size="mini" round @click.native="handlePublishAction" :disabled="this.apiInfo.apiStatus===1">
+            <el-button size="mini" round @click.native="handlePublishAction" :disabled="disabledBtn('publishAction')">
                 <svg class="icon" aria-hidden="true">
                     <use xlink:href="#iconrelease"></use>
                 </svg>
@@ -29,19 +29,21 @@
         <div style="padding-left: 10px;display: inline;"/>
         <el-button-group>
             <!-- 历史 -->
-            <el-button size="mini" round @click.native="handleHistoryAction">
+            <el-button size="mini" round @click.native="handleHistoryAction" :disabled="disabledBtn('historyAction')">
                 <svg class="icon" aria-hidden="true">
                     <use xlink:href="#iconhistory"></use>
                 </svg>
             </el-button>
             <!-- 下线 -->
-            <el-button size="mini" round @click.native="handleDisableAction" :disabled="!(this.apiInfo.apiStatus===1 || this.apiInfo.apiStatus===2)">
+            <el-button size="mini" round @click.native="handleDisableAction" :disabled="disabledBtn('disableAction')"
+                       v-if="apiInfo.apiStatus===1 || apiInfo.apiStatus===2">
                 <svg class="icon" aria-hidden="true">
                     <use xlink:href="#icondisable"></use>
                 </svg>
             </el-button>
             <!-- 删除 -->
-            <el-button size="mini" round @click.native="handleDeleteAction">
+            <el-button size="mini" round @click.native="handleDeleteAction" :disabled="disabledBtn('deleteAction')"
+                       v-if="apiInfo.apiStatus===0 || apiInfo.apiStatus===3">
                 <svg class="icon" aria-hidden="true">
                     <use xlink:href="#icondelete"></use>
                 </svg>
@@ -52,7 +54,6 @@
 <script>
     import request from "../utils/request";
     import {ApiUrl} from "../utils/api-const";
-    import {tagInfo} from "../utils/utils";
 
     export default {
         props: {
@@ -67,6 +68,7 @@
                         apiStatus: 0,
                         codeType: 'DataQL',
                         codeValue: 'return true;',
+                        editorSubmitted: true
                     }
                 }
             },
@@ -81,6 +83,12 @@
                 default: function () {
                     return []
                 }
+            },
+            newMode: {
+                type: Boolean,
+                default: function () {
+                    return true
+                }
             }
         },
         watch: {
@@ -90,13 +98,43 @@
                 },
                 deep: true
             },
-            // 'requestBodyCopy': {
-            //     handler(val, oldVal) {
-            //         this.$emit('onRequestBodyChange', this.requestBodyCopy);
-            //     }
-            // }
+            'apiInfo.editorSubmitted': {
+                handler(val, oldVal) {
+                    if (!this.apiInfo.editorSubmitted) {
+                        this.smokeTest = false;
+                    }
+                }
+            }
         },
         methods: {
+            disabledBtn(btnName) {
+                if ('saveAction' === btnName) {
+                    return this.newMode ? false : this.apiInfo.editorSubmitted;
+                }
+                if ('executeAction' === btnName) {
+                    return false;
+                }
+                if ('testAction' === btnName) {
+                    return this.newMode ||
+                        (this.apiInfo.editorSubmitted && this.apiInfo.apiStatus === 1) ||
+                        !(this.apiInfo.editorSubmitted && this.apiInfo.apiStatus !== 1 && !this.smokeTest);
+                }
+                if ('publishAction' === btnName) {
+                    return this.newMode ||
+                        !(this.apiInfo.apiStatus !== 1 && this.smokeTest);
+                }
+                if ('historyAction' === btnName) {
+                    return this.newMode;
+                }
+                if ('disableAction' === btnName) {
+                    return this.newMode ||
+                        !(this.apiInfo.apiStatus === 1 || this.apiInfo.apiStatus === 2);
+                }
+                if ('deleteAction' === btnName) {
+                    return this.newMode;
+                }
+                return false;
+            },
             // 保存按钮
             handleSaveAction() {
                 const self = this;
@@ -114,44 +152,70 @@
                     }
                 }, response => {
                     if (response.data.result) {
-                        self.$message({message: 'Save successfully.', type: 'success'});
-                        if (response.data.status !== self.apiInfo.apiStatus) {
-                            self.$emit('onApiStatusChange', self.apiInfo.apiStatus, response.data.status);
+                        if (!self.newMode) {
+                            self.$message({message: 'Save successfully.', type: 'success'});
+                            self.$emit('onAfterSave', self.apiInfo.apiStatus, response.data.status);
+                        } else {
+                            this.$router.push("/edit/" + response.data.id);
                         }
                     } else {
                         self.$alert(response.data.message, 'Failed', {
                             confirmButtonText: 'OK'
                         });
                     }
-                }, response => {
-                    self.$alert('Not Fount Api.', 'Error', {
-                        confirmButtonText: 'OK'
-                    });
                 });
             },
             // 执行按钮
             handleExecuteAction() {
-                request(ApiUrl.apiSave + "?id=" + this.apiInfo.apiID, {
+                let requestHeaderData = {};
+                for (let i = 0; i < this.requestHeader.length; i++) {
+                    if (this.requestHeader[i].checked && this.requestHeader[i].name !== '') {
+                        requestHeaderData[this.requestHeader[i].name] = encodeURIComponent(this.requestHeader[i].value);
+                    }
+                }
+                const self = this;
+                request(ApiUrl.perform + "?id=" + this.apiInfo.apiID, {
                     "method": "POST",
+                    "headers": requestHeaderData,
                     "data": {
-                        "apiID": this.apiID,
-                        "select": this.select,
-                        "apiPath": this.apiPath,
-                        "codeType": this.codeType,
-                        "codeValue": this.monacoEditor.getValue(),
-                        "requestBody": this.requestBody,
-                        "headerData": this.headerData
+                        "id": self.apiInfo.apiID,
+                        "select": self.apiInfo.select,
+                        "apiPath": self.apiInfo.apiPath,
+                        "comment": self.apiInfo.comment,
+                        "codeType": self.apiInfo.codeType,
+                        "codeValue": self.apiInfo.codeValue,
+                        "requestBody": self.requestBody,
                     }
                 }, response => {
-                    alert('');
-                }, response => {
-                    this.$alert('Not Fount Api.', 'Error', {
-                        confirmButtonText: 'OK'
-                    });
+                    self.$emit('onExecute', response.data);
                 });
             },
             // 冒烟按钮
             handleTestAction() {
+                let requestHeaderData = {};
+                for (let i = 0; i < this.requestHeader.length; i++) {
+                    if (this.requestHeader[i].checked && this.requestHeader[i].name !== '') {
+                        requestHeaderData[this.requestHeader[i].name] = encodeURIComponent(this.requestHeader[i].value);
+                    }
+                }
+                const self = this;
+                request(ApiUrl.smokeTest + "?id=" + this.apiInfo.apiID, {
+                    "method": "POST",
+                    "headers": requestHeaderData,
+                    "data": {
+                        "id": self.apiInfo.apiID,
+                        "requestBody": self.requestBody,
+                    }
+                }, response => {
+                    if (response.data.success === true) {
+                        this.smokeTest = true;
+                        self.$emit('onSmokeTest', response.data);
+                    } else {
+                        self.$alert('Smoke Test Failed, result success is false.', 'Error', {
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
             },
             // 发布按钮
             handlePublishAction() {
@@ -167,7 +231,9 @@
             }
         },
         data() {
-            return {}
+            return {
+                smokeTest: false
+            }
         }
     }
 </script>

@@ -174,13 +174,14 @@
                     }
                 }
                 //
+                debugger
                 const self = this;
                 request(ApiUrl.execute + '?id=' + doRunParam.id, {
                     "method": "POST",
-                    "data": doRunParam.paramMap,
-                    "headers": requestHeaderData
+                    "headers": requestHeaderData,
+                    "data": doRunParam.paramMap
                 }, response => {
-                    self.responseBody = JSON.stringify(response.data, null, 2)
+                    self.responseBody = JSON.stringify(response.data, null, 2);
                     self.$nextTick(function () {
                         self.$refs.listResponsePanel.doUpdate();
                         self.$message({message: 'Success.', type: 'success'});

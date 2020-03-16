@@ -33,7 +33,13 @@
                 </el-radio-group>
             </div>
             <div style="float: right;">
-                <EditerActions :api-info="apiInfo" :request-body="requestBody" :request-header="headerData" @onApiStatusChange="onApiStatusChange"/>
+                <EditerActions :api-info="apiInfo"
+                               :request-body="requestBody"
+                               :request-header="headerData"
+                               :new-mode="newCode"
+                               @onAfterSave="onAfterSave"
+                               @onSmokeTest="onExecute"
+                               @onExecute="onExecute"/>
                 <div style="display: inline-table;padding-left: 5px;">
                     <el-tooltip class="item" effect="dark" placement="top" content="Current Api Status">
                         <el-tag size="mini" style="width: 65px;text-align: center;" :type="tagInfo.css">{{tagInfo.title}}</el-tag>
@@ -99,7 +105,7 @@
             this.layoutMonacoEditor();
             this._resize = () => {
                 return (() => {
-                    this.layoutMonacoEditor()
+                    this.layoutMonacoEditor();
                 })();
             };
             window.addEventListener('resize', this._resize);
@@ -212,6 +218,7 @@
                 this.monacoEditor.updateOptions({minimap: {enabled: false}});
                 this.monacoEditor.onDidChangeModelContent(function (event) { // 编辑器内容changge事件
                     self.apiInfo.codeValue = self.monacoEditor.getValue();
+                    self.apiInfo.editorSubmitted = false;
                 });
                 // // 自定义键盘事件
                 // self.monacoEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function () {
@@ -235,7 +242,6 @@
                     self.apiInfo.codeValue = response.data.codeInfo.codeValue;
                     //
                     self.requestBody = response.data.codeInfo.requestBody;
-                    self.responseBody = response.data.codeInfo.responseBody;
                     self.headerData = response.data.codeInfo.headerData;
                     //
                     self.apiPathEdit = false;
@@ -244,6 +250,7 @@
                     //
                     self.$nextTick(function () {
                         self.monacoEditor.setValue(self.apiInfo.codeValue);
+                        self.apiInfo.editorSubmitted = true;
                         self.$refs.editerRequestPanel.doUpdate();
                         self.$refs.editerResponsePanel.doUpdate();
                     });
@@ -263,12 +270,19 @@
                 }
             },
             //
-            onApiStatusChange(oldValue, newValue) {
+            onAfterSave() {
                 const self = this;
                 this.$nextTick(function () {
                     self.loadApiDetail();
                 });
-            }
+            },
+            onExecute(resultValue) {
+                const self = this;
+                this.responseBody = JSON.stringify(resultValue, null, 2);
+                self.$nextTick(function () {
+                    self.$refs.editerResponsePanel.doUpdate();
+                });
+            },
         },
         data() {
             return {
@@ -280,6 +294,7 @@
                     apiStatus: 0,
                     codeType: 'DataQL',
                     codeValue: '// a new DataQL Query.\nreturn ${message};',
+                    editorSubmitted: true,
                 },
                 //
                 tagInfo: {css: 'info', title: 'Editor'},
