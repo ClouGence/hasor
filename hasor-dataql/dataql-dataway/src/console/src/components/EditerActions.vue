@@ -4,51 +4,65 @@
             <!-- 保存 -->
             <el-button size="mini" round @click.native="handleSaveAction" :disabled="disabledBtn('saveAction')">
                 <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#iconsave"></use>
+                    <use xlink:href="#iconsave"/>
                 </svg>
             </el-button>
             <!-- 执行 -->
             <el-button size="mini" round @click.native="handleExecuteAction" :disabled="disabledBtn('executeAction')">
                 <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#iconexecute"></use>
+                    <use xlink:href="#iconexecute"/>
                 </svg>
             </el-button>
             <!-- 冒烟 -->
             <el-button size="mini" round @click.native="handleTestAction" :disabled="disabledBtn('testAction')">
                 <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#icontest"></use>
+                    <use xlink:href="#icontest"/>
                 </svg>
             </el-button>
             <!-- 发布 -->
             <el-button size="mini" round @click.native="handlePublishAction" :disabled="disabledBtn('publishAction')">
                 <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#iconrelease"></use>
+                    <use xlink:href="#iconrelease"/>
                 </svg>
             </el-button>
         </el-button-group>
         <div style="padding-left: 10px;display: inline;"/>
         <el-button-group>
             <!-- 历史 -->
-            <el-button size="mini" round @click.native="handleHistoryAction" :disabled="disabledBtn('historyAction')">
+            <el-button size="mini" round @click.native="handleHistoryAction" :disabled="disabledBtn('historyAction')" v-popover:releaseHistoryPopover>
                 <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#iconhistory"></use>
+                    <use xlink:href="#iconhistory"/>
                 </svg>
             </el-button>
             <!-- 下线 -->
             <el-button size="mini" round @click.native="handleDisableAction" :disabled="disabledBtn('disableAction')"
                        v-if="apiInfo.apiStatus===1 || apiInfo.apiStatus===2">
                 <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#icondisable"></use>
+                    <use xlink:href="#icondisable"/>
                 </svg>
             </el-button>
             <!-- 删除 -->
             <el-button size="mini" round @click.native="handleDeleteAction" :disabled="disabledBtn('deleteAction')"
                        v-if="apiInfo.apiStatus===0 || apiInfo.apiStatus===3">
                 <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#icondelete"></use>
+                    <use xlink:href="#icondelete"/>
                 </svg>
             </el-button>
         </el-button-group>
+        <div style="display: block;position: absolute;z-index: 1000;">
+            <el-popover ref="releaseHistoryPopover" placement="bottom" title="Publish History" width="200">
+                <div>aaaaaa</div>
+                <div>aaaaaa</div>
+                <div>aaaaaa</div>
+                <div>aaaaaa</div>
+                <div>aaaaaa</div>
+                <div>aaaaaa</div>
+                <div>aaaaaa</div>
+                <div>aaaaaa</div>
+                <div>aaaaaa</div>
+                <div>aaaaaa</div>
+            </el-popover>
+        </div>
     </div>
 </template>
 <script>
@@ -222,6 +236,7 @@
             },
             // 历史按钮
             handleHistoryAction() {
+                //
             },
             // 禁用按钮
             handleDisableAction() {
@@ -232,7 +247,7 @@
         },
         data() {
             return {
-                smokeTest: false
+                smokeTest: false,
             }
         }
     }
