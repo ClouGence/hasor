@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import axios from 'axios';
+import {errorBox} from 'utils';
 
 const codeMessage = {
     200: 'ok.',
@@ -10,9 +11,7 @@ const codeMessage = {
 const showMessage = res => {
     let response = res.response;
     const errorText = codeMessage[response.status] || response.statusText;
-    Vue.prototype.$alert(`${response.status}: ${errorText}`, 'Error', {
-        confirmButtonText: 'OK'
-    })
+    errorBox(`${response.status}: ${errorText}`);
 };
 
 const checkStatus = response => {

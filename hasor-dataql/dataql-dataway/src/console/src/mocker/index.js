@@ -102,6 +102,16 @@ const proxy = {
             "message": 'Another API is already in use.',
         });
     },
+    'POST /api/publish': (req, res) => {
+        res.send({
+            "success": true,//Random.boolean(3, 5, false),
+            "result": {
+                "body": req.body,
+                "headers": req.headers
+            },
+            "message": 'Another API is already in use.',
+        });
+    },
     // 'GET /api/mock': (req, res) => {
     //     res.send(Mock.mock({
     //         'number1|1-100.1-10': 1,

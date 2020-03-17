@@ -225,7 +225,7 @@
                         this.smokeTest = true;
                         self.$emit('onSmokeTest', response.data);
                     } else {
-                        self.$alert('Smoke Test Failed, result success is false.', 'Error', {
+                        self.$alert('Smoke Test Failed, ' + response.data.message, 'Error', {
                             confirmButtonText: 'OK'
                         });
                     }
@@ -233,6 +233,21 @@
             },
             // 发布按钮
             handlePublishAction() {
+                const self = this;
+                request(ApiUrl.publish + "?id=" + this.apiInfo.apiID, {
+                    "method": "POST",
+                    "data": {
+                        "id": self.apiInfo.apiID,
+                    }
+                }, response => {
+                    if (response.data.success === true) {
+                        self.$emit('onPublish', response.data);
+                    } else {
+                        self.$alert('Publish Failed, ' + response.data.message, 'Error', {
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
             },
             // 历史按钮
             handleHistoryAction() {

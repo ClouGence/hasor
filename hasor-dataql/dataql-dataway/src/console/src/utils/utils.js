@@ -1,3 +1,6 @@
+import Vue from 'vue';
+
+
 /***/
 const tagInfo = (status) => {
     if (status === 0) {
@@ -15,6 +18,10 @@ const tagInfo = (status) => {
     return {'css': '', 'title': ''};
 };
 
+const errorBox = (msgType, content) => {
+    Vue.prototype.$alert(content, 'Error', {confirmButtonText: 'OK'});
+};
+
 export {
-    tagInfo,
+    tagInfo, errorBox
 };

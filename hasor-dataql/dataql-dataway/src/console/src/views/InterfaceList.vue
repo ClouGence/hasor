@@ -63,7 +63,7 @@
     import ResponsePanel from '../components/ResponsePanel'
     import request from "../utils/request";
     import {ApiUrl} from "../utils/api-const"
-    import {tagInfo} from "../utils/utils"
+    import {tagInfo, errorBox} from "../utils/utils"
 
     export default {
         components: {

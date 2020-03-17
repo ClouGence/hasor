@@ -10,6 +10,7 @@ const ApiUrl = {
     apiSave: `${BASE_URL}/api/api-save`,
     perform: `${BASE_URL}/api/perform`,
     smokeTest: `${BASE_URL}/api/smoke-test`,
+    publish: `${BASE_URL}/api/publish`,
 };
 
 export {
