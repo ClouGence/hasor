@@ -37,9 +37,9 @@
                                :request-body="requestBody"
                                :request-header="headerData"
                                :new-mode="newCode"
-                               @onAfterSave="onAfterSave"
-                               @onSmokeTest="onExecute"
-                               @onExecute="onExecute"/>
+                               @onAfterSave="onAfterSave" @onPublish="onAfterSave"
+                               @onExecute="onExecute" @onSmokeTest="onExecute"
+                />
                 <div style="display: inline-table;padding-left: 5px;">
                     <el-tooltip class="item" effect="dark" placement="top" content="Current Api Status">
                         <el-tag size="mini" style="width: 65px;text-align: center;" :type="tagInfo.css">{{tagInfo.title}}</el-tag>
@@ -234,15 +234,16 @@
                 request(ApiUrl.apiDetail + "?id=" + self.apiInfo.apiID, {
                     "method": "GET"
                 }, response => {
-                    self.apiInfo.select = response.data.select;
-                    self.apiInfo.apiPath = response.data.path;
-                    self.apiInfo.comment = response.data.comment;
-                    self.apiInfo.apiStatus = response.data.status;
-                    self.apiInfo.codeType = response.data.codeType;
-                    self.apiInfo.codeValue = response.data.codeInfo.codeValue;
+                    let data = response.data.result;
+                    self.apiInfo.select = data.select;
+                    self.apiInfo.apiPath = data.path;
+                    self.apiInfo.comment = data.comment;
+                    self.apiInfo.apiStatus = data.status;
+                    self.apiInfo.codeType = data.codeType;
+                    self.apiInfo.codeValue = data.codeInfo.codeValue;
                     //
-                    self.requestBody = response.data.codeInfo.requestBody;
-                    self.headerData = response.data.codeInfo.headerData;
+                    self.requestBody = data.codeInfo.requestBody;
+                    self.headerData = data.codeInfo.headerData;
                     //
                     self.apiPathEdit = false;
                     self.tagInfo = tagInfo(self.apiInfo.apiStatus);
@@ -253,10 +254,6 @@
                         self.apiInfo.editorSubmitted = true;
                         self.$refs.editerRequestPanel.doUpdate();
                         self.$refs.editerResponsePanel.doUpdate();
-                    });
-                }, response => {
-                    self.$alert('Not Fount Api.', 'Error', {
-                        confirmButtonText: 'OK'
                     });
                 });
             },

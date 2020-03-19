@@ -18,7 +18,7 @@ const tagInfo = (status) => {
     return {'css': '', 'title': ''};
 };
 
-const errorBox = (msgType, content) => {
+const errorBox = (content) => {
     Vue.prototype.$alert(content, 'Error', {confirmButtonText: 'OK'});
 };
 

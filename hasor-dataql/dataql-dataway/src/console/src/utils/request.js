@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import axios from 'axios';
-import {errorBox} from 'utils';
+import {errorBox} from './utils';
 
 const codeMessage = {
     200: 'ok.',
@@ -14,17 +14,6 @@ const showMessage = res => {
     errorBox(`${response.status}: ${errorText}`);
 };
 
-const checkStatus = response => {
-    if (response.status === 200 || response.status === 304) {
-        return response;
-    }
-    showMessage(response);
-    const errorText = codeMessage[response.status] || response.statusText;
-    const error = new Error(errorText);
-    error.name = response.status;
-    error.response = response;
-    throw error;
-};
 /**
  * Requests a URL, returning a promise.
  *
@@ -35,6 +24,7 @@ const checkStatus = response => {
 export default function request(apiURL, options, successCallback, errorCallback) {
     const defaultOptions = {
         loading: true,
+        direct: false,
         credentials: 'include'
     };
     const newOptions = {
@@ -60,9 +50,10 @@ export default function request(apiURL, options, successCallback, errorCallback)
         }
     }
     //
+    errorCallback = (errorCallback === null || errorCallback === undefined) ? () => {
+    } : errorCallback;
     successCallback = (successCallback === null || successCallback === undefined) ? () => {
     } : successCallback;
-    errorCallback = (errorCallback === null || errorCallback === undefined) ? showMessage : errorCallback;
     //
     let finallyCallback = () => {
         /**/
@@ -81,5 +72,12 @@ export default function request(apiURL, options, successCallback, errorCallback)
     return axios.request({
         ...newOptions,
         withCredentials: true,
-    }).then(checkStatus).then(successCallback).catch(errorCallback).finally(finallyCallback);
+    }).then((response) => {
+        if (newOptions.direct || response.data.success) {
+            successCallback(response);
+            return;
+        }
+        errorBox(`${response.data.code}: ${response.data.message}`);
+        errorCallback(response);
+    }).catch(errorCallback).finally(finallyCallback);
 }

@@ -50,17 +50,13 @@
             </el-button>
         </el-button-group>
         <div style="display: block;position: absolute;z-index: 1000;">
-            <el-popover ref="releaseHistoryPopover" placement="bottom" title="Publish History" width="200">
-                <div>aaaaaa</div>
-                <div>aaaaaa</div>
-                <div>aaaaaa</div>
-                <div>aaaaaa</div>
-                <div>aaaaaa</div>
-                <div>aaaaaa</div>
-                <div>aaaaaa</div>
-                <div>aaaaaa</div>
-                <div>aaaaaa</div>
-                <div>aaaaaa</div>
+            <el-popover ref="releaseHistoryPopover" placement="bottom" title="History Version" width="200">
+                <el-timeline style="max-height: 300px;overflow-y: scroll; padding-top: 5px;">
+                    <el-timeline-item v-for="history in historyList" v-bind:key="history.id" :hide-timestamp="true" size="large">
+                        <span>{{history.time}}</span>
+                        <el-button size="mini" circle @click.native="handleRecoverAction(history.id)" icon="el-icon-edit" style="float:right;margin-top: 5px;"/>
+                    </el-timeline-item>
+                </el-timeline>
             </el-popover>
         </div>
     </div>
@@ -165,17 +161,11 @@
                         "headerData": self.requestHeader
                     }
                 }, response => {
-                    if (response.data.result) {
-                        if (!self.newMode) {
-                            self.$message({message: 'Save successfully.', type: 'success'});
-                            self.$emit('onAfterSave', self.apiInfo.apiStatus, response.data.status);
-                        } else {
-                            this.$router.push("/edit/" + response.data.id);
-                        }
+                    if (!self.newMode) {
+                        self.$message({message: 'Save successfully.', type: 'success'});
+                        self.$emit('onAfterSave', self.apiInfo.apiStatus, response.data.status);
                     } else {
-                        self.$alert(response.data.message, 'Failed', {
-                            confirmButtonText: 'OK'
-                        });
+                        this.$router.push("/edit/" + response.data.result);
                     }
                 });
             },
@@ -201,7 +191,7 @@
                         "requestBody": self.requestBody,
                     }
                 }, response => {
-                    self.$emit('onExecute', response.data);
+                    self.$emit('onExecute', response.data.result);
                 });
             },
             // 冒烟按钮
@@ -221,14 +211,8 @@
                         "requestBody": self.requestBody,
                     }
                 }, response => {
-                    if (response.data.success === true) {
-                        this.smokeTest = true;
-                        self.$emit('onSmokeTest', response.data);
-                    } else {
-                        self.$alert('Smoke Test Failed, ' + response.data.message, 'Error', {
-                            confirmButtonText: 'OK'
-                        });
-                    }
+                    this.smokeTest = true;
+                    self.$emit('onSmokeTest', response.data.result);
                 });
             },
             // 发布按钮
@@ -240,29 +224,38 @@
                         "id": self.apiInfo.apiID,
                     }
                 }, response => {
-                    if (response.data.success === true) {
-                        self.$emit('onPublish', response.data);
-                    } else {
-                        self.$alert('Publish Failed, ' + response.data.message, 'Error', {
-                            confirmButtonText: 'OK'
-                        });
-                    }
+                    self.$emit('onPublish', response.data.result);
                 });
             },
             // 历史按钮
             handleHistoryAction() {
-                //
+                const self = this;
+                request(ApiUrl.apiHistory + "?id=" + this.apiInfo.apiID, {
+                    "method": "GET",
+                    "data": {
+                        "id": self.apiInfo.apiID,
+                    }
+                }, response => {
+                    self.historyList = response.data.result;
+                });
+            },
+            // 恢复历史的某个版本
+            handleRecoverAction(historyId) {
+                alert(historyId);
             },
             // 禁用按钮
             handleDisableAction() {
+                //
             },
             // 删除按钮
             handleDeleteAction() {
+                //
             }
         },
         data() {
             return {
                 smokeTest: false,
+                historyList: []
             }
         }
     }
@@ -274,4 +267,18 @@
         -webkit-filter: grayscale(1); /* Webkit */
         filter: grayscale(1); /* W3C */
     }
+
+    .el-timeline-item {
+        padding-bottom: 15px !important;
+    }
+
+    .el-timeline-item:hover {
+        background-color: #f7f7f7;
+        padding-bottom: 15px !important;
+    }
+
+    .el-timeline {
+        padding-inline-start: 5px !important;
+    }
+
 </style>

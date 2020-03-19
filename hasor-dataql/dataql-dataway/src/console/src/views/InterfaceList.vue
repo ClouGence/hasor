@@ -1,7 +1,7 @@
 <template>
     <SplitPane :min-percent='30' :default-percent='30' split="vertical">
         <template slot="paneL">
-            <el-table ref="interfaceTable" height="100%" v-loading="loading"
+            <el-table ref="interfaceTable" height="100%"
                       :data="tableData.filter(dat => !apiSearch || dat.path.toLowerCase().includes(apiSearch.toLowerCase()))"
                       @current-change="handleApiDataChange"
                       empty-text="No Api" highlight-current-row border lazy stripe>
@@ -113,21 +113,15 @@
             //
             // 加载列表
             loadList() {
-                this.loading = true;
                 const self = this;
                 request(ApiUrl.apiList, {
                     "method": "GET",
-                    "loading": false
                 }, response => {
-                    self.tableData = response.data;
+                    self.tableData = response.data.result;
                     if (self.tableData && self.tableData.length > 0) {
                         self.tableData[0].checked = true;
                         self.$refs.interfaceTable.setCurrentRow(self.tableData[0]);
                     }
-                    self.loading = false;
-                }, response => {
-                    self.$alert('Load Api List failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
-                    self.loading = false;
                 });
             },
             // 加载一个API
@@ -139,16 +133,15 @@
                 request(ApiUrl.apiInfo + '?id=' + row.id, {
                     "method": "GET"
                 }, response => {
-                    self.requestApiInfo = response.data;
-                    self.requestBody = response.data.requestBody;
-                    self.responseBody = response.data.responseBody;
-                    self.headerData = response.data.headerData;
+                    let data = response.data.result;
+                    self.requestApiInfo = data;
+                    self.requestBody = data.requestBody;
+                    self.responseBody = data.responseBody;
+                    self.headerData = data.headerData;
                     self.$nextTick(function () {
                         self.$refs.listRequestPanel.doUpdate();
                         self.$refs.listResponsePanel.doUpdate();
                     });
-                }, response => {
-                    self.$alert('Load Api failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
                 });
             },
             // 执行API调用
@@ -174,20 +167,17 @@
                     }
                 }
                 //
-                debugger
                 const self = this;
                 request(ApiUrl.execute + '?id=' + doRunParam.id, {
                     "method": "POST",
                     "headers": requestHeaderData,
                     "data": doRunParam.paramMap
                 }, response => {
-                    self.responseBody = JSON.stringify(response.data, null, 2);
+                    self.responseBody = JSON.stringify(response.data.result, null, 2);
                     self.$nextTick(function () {
                         self.$refs.listResponsePanel.doUpdate();
                         self.$message({message: 'Success.', type: 'success'});
                     });
-                }, response => {
-                    self.$alert('Execute failed ->' + response.message, 'Error', {confirmButtonText: 'OK'});
                 });
             }
         },
