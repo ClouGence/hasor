@@ -37,9 +37,9 @@
                                :request-body="requestBody"
                                :request-header="headerData"
                                :new-mode="newCode"
-                               @onAfterSave="onAfterSave" @onPublish="onAfterSave"
+                               @onAfterSave="onAfterSave" @onPublish="onAfterSave" @onDisable="onAfterSave"
                                @onExecute="onExecute" @onSmokeTest="onExecute"
-                />
+                               @onRecover="onRecover"/>
                 <div style="display: inline-table;padding-left: 5px;">
                     <el-tooltip class="item" effect="dark" placement="top" content="Current Api Status">
                         <el-tag size="mini" style="width: 65px;text-align: center;" :type="tagInfo.css">{{tagInfo.title}}</el-tag>
@@ -280,6 +280,27 @@
                     self.$refs.editerResponsePanel.doUpdate();
                 });
             },
+            onRecover(historyId) {
+                const self = this;
+                request(ApiUrl.apiHistoryInfo + "?historyId=" + historyId, {
+                    "method": "GET"
+                }, response => {
+                    let data = response.data.result;
+                    self.apiInfo.select = data.select;
+                    self.apiInfo.codeType = data.codeType;
+                    self.apiInfo.codeValue = data.codeInfo.codeValue;
+                    self.requestBody = data.codeInfo.requestBody;
+                    self.headerData = data.codeInfo.headerData;
+                    //
+                    self.loadEditorMode();
+                    self.$nextTick(function () {
+                        self.monacoEditor.setValue(self.apiInfo.codeValue);
+                        self.apiInfo.editorSubmitted = true;
+                        self.$refs.editerRequestPanel.doUpdate();
+                        self.$refs.editerResponsePanel.doUpdate();
+                    });
+                });
+            }
         },
         data() {
             return {

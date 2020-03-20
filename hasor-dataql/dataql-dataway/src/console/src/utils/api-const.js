@@ -5,6 +5,7 @@ const ApiUrl = {
     apiList: `${BASE_URL}/api/api-list`,
     apiDetail: `${BASE_URL}/api/api-detail`,
     apiHistory: `${BASE_URL}/api/api-history`,
+    apiHistoryInfo: `${BASE_URL}/api/get-history`,
     //
     execute: `${BASE_URL}/api/execute`,
     modifyPath: `${BASE_URL}/api/modify-path`,
@@ -12,6 +13,7 @@ const ApiUrl = {
     perform: `${BASE_URL}/api/perform`,
     smokeTest: `${BASE_URL}/api/smoke`,
     publish: `${BASE_URL}/api/publish`,
+    disable: `${BASE_URL}/api/disable`,
 };
 
 export {

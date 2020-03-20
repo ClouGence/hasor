@@ -2,29 +2,37 @@
     <div style="display: inline;">
         <el-button-group>
             <!-- 保存 -->
-            <el-button size="mini" round @click.native="handleSaveAction" :disabled="disabledBtn('saveAction')">
-                <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#iconsave"/>
-                </svg>
-            </el-button>
+            <el-tooltip class="item" effect="dark" content="Save" placement="bottom-end">
+                <el-button size="mini" round @click.native="handleSaveAction" :disabled="disabledBtn('saveAction')">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#iconsave"/>
+                    </svg>
+                </el-button>
+            </el-tooltip>
             <!-- 执行 -->
-            <el-button size="mini" round @click.native="handleExecuteAction" :disabled="disabledBtn('executeAction')">
-                <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#iconexecute"/>
-                </svg>
-            </el-button>
+            <el-tooltip class="item" effect="dark" content="Execute Query" placement="bottom-end">
+                <el-button size="mini" round @click.native="handleExecuteAction" :disabled="disabledBtn('executeAction')">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#iconexecute"/>
+                    </svg>
+                </el-button>
+            </el-tooltip>
             <!-- 冒烟 -->
-            <el-button size="mini" round @click.native="handleTestAction" :disabled="disabledBtn('testAction')">
-                <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#icontest"/>
-                </svg>
-            </el-button>
+            <el-tooltip class="item" effect="dark" content="Smoke Test" placement="bottom-end">
+                <el-button size="mini" round @click.native="handleTestAction" :disabled="disabledBtn('testAction')">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icontest"/>
+                    </svg>
+                </el-button>
+            </el-tooltip>
             <!-- 发布 -->
-            <el-button size="mini" round @click.native="handlePublishAction" :disabled="disabledBtn('publishAction')">
-                <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#iconrelease"/>
-                </svg>
-            </el-button>
+            <el-tooltip class="item" effect="dark" content="Publish" placement="bottom-end">
+                <el-button size="mini" round @click.native="handlePublishAction" :disabled="disabledBtn('publishAction')">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#iconrelease"/>
+                    </svg>
+                </el-button>
+            </el-tooltip>
         </el-button-group>
         <div style="padding-left: 10px;display: inline;"/>
         <el-button-group>
@@ -104,7 +112,7 @@
         watch: {
             'apiInfo': {
                 handler(val, oldVal) {
-                    //this.updateBasicInfo();
+                    this.smokeTest = false;
                 },
                 deep: true
             },
@@ -241,11 +249,19 @@
             },
             // 恢复历史的某个版本
             handleRecoverAction(historyId) {
-                alert(historyId);
+                this.$emit('onRecover', historyId);
             },
             // 禁用按钮
             handleDisableAction() {
-                //
+                const self = this;
+                request(ApiUrl.disable + "?id=" + this.apiInfo.apiID, {
+                    "method": "POST",
+                    "data": {
+                        "id": self.apiInfo.apiID,
+                    }
+                }, response => {
+                    self.$emit('onDisable', response.data.result);
+                });
             },
             // 删除按钮
             handleDeleteAction() {

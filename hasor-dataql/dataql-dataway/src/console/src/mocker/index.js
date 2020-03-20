@@ -97,6 +97,28 @@ const proxy = {
             ]
         }));
     },
+    'GET /api/get-history': (req, res) => {
+        res.send(Mock.mock({
+            "success": true,//Random.boolean(3, 5, false),
+            "code": 500,
+            "message": 'Another API is already in use.',
+            "result": {
+                "select": "POST",
+                "codeType": 'SQL',
+                "codeInfo": {
+                    "codeValue": '<div>111111111</div>',
+                    "requestBody": '{"abc":false}',
+                    "headerData": [
+                        {"checked": true, "name": "name1", "value": "value1"},
+                        {"checked": false, "name": "name2", "value": "value2"},
+                        {"checked": false, "name": "name3", "value": "value3"},
+                        {"checked": true, "name": "name4", "value": "value4"},
+                        {"checked": true, "name": "name5", "value": "value5"}
+                    ]
+                }
+            }
+        }));
+    },
 
     'POST /api/execute': (req, res) => {
         res.send(Mock.mock({
@@ -156,6 +178,14 @@ const proxy = {
         }));
     },
     'POST /api/publish': (req, res) => {
+        res.send(Mock.mock({
+            "success": Random.boolean(3, 5, false),
+            "message": 'Save Failed.',
+            "code": 500,
+            "result": true,
+        }));
+    },
+    'POST /api/disable': (req, res) => {
         res.send(Mock.mock({
             "success": Random.boolean(3, 5, false),
             "message": 'Save Failed.',
