@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  */
 @MappingToUrl("/api/api-list")
-@RenderType(engineType = JsonRenderEngine.class)
+@RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class ApiListController {
     @Get
     public Result apiList(Invoker invoker) {

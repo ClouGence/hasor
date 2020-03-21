@@ -14,21 +14,27 @@ import java.util.Map;
 /**
  *
  */
-@MappingToUrl("/api/api-info")
+@MappingToUrl("/api/api-detail")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
-public class ApiInfoController {
+public class ApiDetailController {
     @Get
-    public Result apiInfo(@QueryParameter("id") String apiId, Invoker invoker) {
+    public Result apiDetail(@QueryParameter("id") String apiId, Invoker invoker) {
         return Result.of(new HashMap<String, Object>() {{
             put("id", apiId);
             put("path", "/demos/db/databases/");
+            put("apiComment", "API注释API注释API注释API注释");
             put("status", 1);
-            put("requestBody", "{'abc':true}");
-            put("headerData", new ArrayList<Map<String, Object>>() {{
-                add(newData(false, "key1", "value-1"));
-                add(newData(true, "key2", "value-2"));
-                add(newData(true, "key3", "value-3"));
-                add(newData(false, "key4", "value-4"));
+            put("select", "POST");
+            put("codeType", "DataQL");
+            put("codeInfo", new HashMap<String, Object>() {{
+                put("codeValue", "<div>请编辑html内容</div>" + apiId);
+                put("requestBody", "{'abc':" + apiId + "}");
+                put("headerData", new ArrayList<Map<String, Object>>() {{
+                    add(newData(true, "key1", "value-1"));
+                    add(newData(true, "key2", "value-2"));
+                    add(newData(true, "key3", "value-3"));
+                    add(newData(false, "key4", "value-4"));
+                }});
             }});
         }});
     }
