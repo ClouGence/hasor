@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.hasor.net/sechma/dataway">
+    <hasor.environmentVar>
+        <HASOR_DATAQL_DATAWAY>false</HASOR_DATAQL_DATAWAY>
+    </hasor.environmentVar>
+
+    <hasor>
+        <loadPackages>net.hasor.dataway.*</loadPackages>
+        <modules>
+            <module>net.hasor.dataway.config.DatawayModule</module>
+        </modules>
+    </hasor>
+</config>

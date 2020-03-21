@@ -4,6 +4,8 @@ const path = require('path');
 
 module.exports = {
     assetsDir: 'static',
+    publicPath: './',
+    outputDir: 'dist/META-INF/hasor-framework/dataway-ui',
     runtimeCompiler: true,
     productionSourceMap: false,
     configureWebpack: {
