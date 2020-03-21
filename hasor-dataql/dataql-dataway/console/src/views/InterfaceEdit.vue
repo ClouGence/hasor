@@ -237,7 +237,7 @@
                     let data = response.data.result;
                     self.apiInfo.select = data.select;
                     self.apiInfo.apiPath = data.path;
-                    self.apiInfo.comment = data.comment;
+                    self.apiInfo.comment = data.apiComment;
                     self.apiInfo.apiStatus = data.status;
                     self.apiInfo.codeType = data.codeType;
                     self.apiInfo.codeValue = data.codeInfo.codeValue;
@@ -295,7 +295,7 @@
                     self.loadEditorMode();
                     self.$nextTick(function () {
                         self.monacoEditor.setValue(self.apiInfo.codeValue);
-                        self.apiInfo.editorSubmitted = true;
+                        self.apiInfo.editorSubmitted = false;
                         self.$refs.editerRequestPanel.doUpdate();
                         self.$refs.editerResponsePanel.doUpdate();
                     });

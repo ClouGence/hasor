@@ -35,6 +35,11 @@
             <artifactId>hasor-all</artifactId>
             <version>${hasor.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-dataql-dataway</artifactId>
+            <version>${hasor.version}</version>
+        </dependency>
 
         <!-- database -->
         <dependency>

@@ -58,11 +58,11 @@
             </el-button>
         </el-button-group>
         <div style="display: block;position: absolute;z-index: 1000;">
-            <el-popover ref="releaseHistoryPopover" placement="bottom" title="History Version" width="200">
+            <el-popover ref="releaseHistoryPopover" placement="bottom" title="History Version" width="250">
                 <el-timeline style="max-height: 300px;overflow-y: scroll; padding-top: 5px;">
-                    <el-timeline-item v-for="history in historyList" v-bind:key="history.id" :hide-timestamp="true" size="large">
+                    <el-timeline-item v-for="history in historyList" v-bind:key="history.historyId" :hide-timestamp="true" size="large">
                         <span>{{history.time}}</span>
-                        <el-button size="mini" circle @click.native="handleRecoverAction(history.id)" icon="el-icon-edit" style="float:right;margin-top: 5px;"/>
+                        <el-button size="mini" circle @click.native="handleRecoverAction(history.historyId)" icon="el-icon-edit" style="float:right;margin-top: 5px;"/>
                     </el-timeline-item>
                 </el-timeline>
             </el-popover>
@@ -240,9 +240,6 @@
                 const self = this;
                 request(ApiUrl.apiHistory + "?id=" + this.apiInfo.apiID, {
                     "method": "GET",
-                    "data": {
-                        "id": self.apiInfo.apiID,
-                    }
                 }, response => {
                     self.historyList = response.data.result;
                 });
