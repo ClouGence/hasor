@@ -143,7 +143,7 @@ public class StandardContextSettings extends InputStreamSettings {
                     logger.info("addConfig '{}'", settingConfig);
                     _addStream(settingConfig);
                 } else {
-                    logger.error("cannot be read {}", settingConfig);
+                    logger.error("not found {}", settingConfig);
                 }
             }
         }

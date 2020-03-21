@@ -17,10 +17,10 @@ import java.io.PrintWriter;
 import static net.hasor.dataway.config.DatawayModule.fixUrl;
 
 class InterfaceUiFilter implements InvokerFilter {
-    private String baseUri;
-    private String baseApiUri;
-    private String resourceBaseUri  = "/META-INF/hasor-framework/dataway-ui/";
-    private String resourceIndexUri = null;
+    private              String baseUri;
+    private              String baseApiUri;
+    private static final String resourceBaseUri  = "/META-INF/hasor-framework/dataway-ui/";
+    private              String resourceIndexUri = null;
 
     public InterfaceUiFilter(String baseUri) {
         this.baseUri = baseUri;
