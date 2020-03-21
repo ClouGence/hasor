@@ -3,6 +3,8 @@
     <hasor.environmentVar>
         <!-- 是否启用 Dataway 功能，默认不启用 -->
         <HASOR_DATAQL_DATAWAY>false</HASOR_DATAQL_DATAWAY>
+        <!-- 是否开启 Dataway 后台管理界面（注意生产环境建议设置为 false） -->
+        <HASOR_DATAQL_DATAWAY_ADMIN>true</HASOR_DATAQL_DATAWAY_ADMIN>
         <!-- dataway-ui 的工作路径 -->
         <HASOR_DATAQL_DATAWAY_UI_URL>/interface-ui/</HASOR_DATAQL_DATAWAY_UI_URL>
     </hasor.environmentVar>
