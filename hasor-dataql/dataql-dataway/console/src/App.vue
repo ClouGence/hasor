@@ -18,12 +18,12 @@
             </el-menu>
             <div class="gitStyle">
                 <!-- Github -->
-                <a target="_blank" class="github-button" href="https://github.com/zycgit/hasor" data-show-count="true" aria-label="Star zycgit/hasor on GitHub">Star</a>
-                <a target="_blank" class="github-button" href="https://github.com/zycgit/hasor/fork" data-show-count="true" aria-label="Fork zycgit/hasor on GitHub">Fork</a>
+                <span><a target="_blank" class="github-button" href="https://github.com/zycgit/hasor" data-show-count="true" aria-label="Star zycgit/hasor on GitHub">Star</a></span>
+                <span><a href='https://gitee.com/zycgit/hasor/stargazers'><img src='https://gitee.com/zycgit/hasor/badge/star.svg?theme=white' alt='star'/></a></span>
                 <br/>
                 <!-- gitee -->
-                <a target="_blank" class="git-source" href='https://gitee.com/zycgit/hasor/stargazers'><img src='https://gitee.com/zycgit/hasor/badge/star.svg?theme=dark' alt='star'/></a>
-                <a target="_blank" class="git-source" href='https://gitee.com/zycgit/hasor/members'><img src='https://gitee.com/zycgit/hasor/badge/fork.svg?theme=dark' alt='fork'/></a>
+                <span><a target="_blank" class="github-button" href="https://github.com/zycgit/hasor/fork" data-show-count="true" aria-label="Fork zycgit/hasor on GitHub">Fork</a></span>
+                <span><a href='https://gitee.com/zycgit/hasor/members'><img src='https://gitee.com/zycgit/hasor/badge/fork.svg?theme=white' alt='fork'/></a></span>
             </div>
         </el-header>
         <el-main>
@@ -43,10 +43,10 @@
             }
         },
         mounted() {
-            this.fullHeight = document.documentElement.clientHeight - 60
+            this.fullHeight = document.documentElement.clientHeight - 60;
             window.addEventListener('resize', () => {
                 return (() => {
-                    this.fullHeight = document.documentElement.clientHeight - 60
+                    this.fullHeight = document.documentElement.clientHeight - 60;
                 })()
             })
         }
@@ -59,8 +59,13 @@
 
     .gitStyle {
         float: right;
-        top: -50px;
+        top: -55px;
         position: relative;
-        padding-right: 10px;
+        padding-right: 20px;
+    }
+
+    .gitStyle span {
+        display: inline-block;
+        width: 90px;
     }
 </style>
