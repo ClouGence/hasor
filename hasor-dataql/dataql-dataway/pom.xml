@@ -65,7 +65,7 @@
                             <arguments>
                                 <argument>install</argument>
                             </arguments>
-                            <workingDirectory>${basedir}/console</workingDirectory>
+                            <workingDirectory>${basedir}/src/console</workingDirectory>
                         </configuration>
                     </execution>
                     <execution>
@@ -80,7 +80,7 @@
                                 <argument>run</argument>
                                 <argument>build</argument>
                             </arguments>
-                            <workingDirectory>${basedir}/console</workingDirectory>
+                            <workingDirectory>${basedir}/src/console</workingDirectory>
                         </configuration>
                     </execution>
 
@@ -99,7 +99,7 @@
                         <configuration>
                             <resources>
                                 <resource>
-                                    <directory>console/dist</directory>
+                                    <directory>src/console/dist</directory>
                                     <includes>
                                         <include>**/*</include>
                                     </includes>
