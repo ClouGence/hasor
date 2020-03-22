@@ -39,7 +39,7 @@
                                :new-mode="newCode"
                                @onAfterSave="onAfterSave" @onPublish="onAfterSave" @onDisable="onAfterSave"
                                @onExecute="onExecute" @onSmokeTest="onExecute"
-                               @onRecover="onRecover"/>
+                               @onRecover="onRecover" @onDelete="onDelete"/>
                 <div style="display: inline-table;padding-left: 5px;">
                     <el-tooltip class="item" effect="dark" placement="top" content="Current Api Status">
                         <el-tag size="mini" style="width: 65px;text-align: center;" :type="tagInfo.css">{{tagInfo.title}}</el-tag>
@@ -299,7 +299,23 @@
                         self.$refs.editerResponsePanel.doUpdate();
                     });
                 });
-            }
+            },
+            onDelete(apiId) {
+                const self = this;
+                request(ApiUrl.deleteApi + "?id=" + apiId, {
+                    "method": "POST",
+                    "data": {
+                        "id": apiId,
+                    }
+                }, response => {
+                    if (response.data.result) {
+                        self.$message({message: 'Api Delete finish.', type: 'success'});
+                        this.$router.push("/");
+                    } else {
+                        self.$alert('result is false.', 'Failed', {confirmButtonText: 'OK'});
+                    }
+                });
+            },
         },
         data() {
             return {

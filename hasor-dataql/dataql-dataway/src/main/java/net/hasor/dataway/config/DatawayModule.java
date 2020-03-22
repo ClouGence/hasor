@@ -26,7 +26,8 @@ public class DatawayModule implements WebModule {
             SaveApiController.class,    //
             PublishController.class,    //
             PerformController.class,    //
-            CheckPathController.class, //
+            CheckPathController.class,  //
+            DeleteController.class,     //
     };
 
     @Override

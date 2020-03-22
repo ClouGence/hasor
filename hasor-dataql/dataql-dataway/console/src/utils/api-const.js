@@ -22,6 +22,7 @@ const ApiUrl = {
     smokeTest: fixUrl(`/api/smoke`),
     publish: fixUrl(`/api/publish`),
     disable: fixUrl(`/api/disable`),
+    deleteApi: fixUrl(`/api/delete`),
 };
 
 export {

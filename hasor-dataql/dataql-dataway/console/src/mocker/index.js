@@ -193,5 +193,13 @@ const proxy = {
             "result": true,
         }));
     },
+    'POST /api/delete': (req, res) => {
+        res.send(Mock.mock({
+            "success": Random.boolean(3, 5, false),
+            "message": 'Save Failed.',
+            "code": 500,
+            "result": true,
+        }));
+    },
 };
 module.exports = proxy;

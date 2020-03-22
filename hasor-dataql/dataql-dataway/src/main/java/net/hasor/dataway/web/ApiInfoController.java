@@ -22,7 +22,7 @@ public class ApiInfoController {
         return Result.of(new HashMap<String, Object>() {{
             put("id", apiId);
             put("path", "/demos/db/databases/");
-            put("status", 1);
+            put("status", 0);
             put("requestBody", "{'abc':true}");
             put("headerData", new ArrayList<Map<String, Object>>() {{
                 add(newData(false, "key1", "value-1"));

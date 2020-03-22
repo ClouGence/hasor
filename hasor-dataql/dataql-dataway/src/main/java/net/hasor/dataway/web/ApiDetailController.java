@@ -23,7 +23,7 @@ public class ApiDetailController {
             put("id", apiId);
             put("path", "/demos/db/databases/");
             put("apiComment", "API注释API注释API注释API注释");
-            put("status", 1);
+            put("status", 0);
             put("select", "POST");
             put("codeType", "DataQL");
             put("codeInfo", new HashMap<String, Object>() {{

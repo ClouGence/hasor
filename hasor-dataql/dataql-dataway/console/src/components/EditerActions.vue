@@ -261,7 +261,7 @@
             },
             // 删除按钮
             handleDeleteAction() {
-                //
+                this.$emit('onDelete', this.apiInfo.apiID);
             }
         },
         data() {
