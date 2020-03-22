@@ -23,7 +23,7 @@
                         </span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="id" width="23" :resizable='false'>
+                <el-table-column prop="id" width="24" :resizable='false'>
                     <template slot="header">
                         <el-tooltip class="item" effect="dark" content="reload Api List" placement="right">
                             <el-link v-on:click="loadList"><i class="el-icon-refresh"/></el-link>

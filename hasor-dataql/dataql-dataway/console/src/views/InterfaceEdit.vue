@@ -352,6 +352,7 @@
 <style scoped>
     .monacoEditorHeader {
         overflow-x: hidden;
+        overflow-y: hidden;
         padding: 5px;
     }
 
