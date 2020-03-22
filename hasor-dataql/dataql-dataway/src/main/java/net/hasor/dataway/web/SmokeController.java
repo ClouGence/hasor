@@ -3,7 +3,6 @@ import net.hasor.dataway.config.JsonRenderEngine;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.web.Invoker;
-import net.hasor.web.annotation.Get;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
@@ -16,17 +15,23 @@ import java.util.Map;
 /**
  *
  */
-@MappingToUrl("/api/execute")
+@MappingToUrl("/api/smoke")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
-public class ExecuteController {
+public class SmokeController {
     @Post
-    public Result doExecute(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody, Invoker invoker) {
+    public Result doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody, Invoker invoker) {
+        boolean hasId = requestBody.containsKey("id");
+        boolean hasRequestBody = requestBody.containsKey("requestBody");
+        hasId = hasId && apiId.equalsIgnoreCase(requestBody.get("id").toString());
+        //
+        boolean ok = hasId && hasRequestBody;
         return Result.of(new HashMap<String, Object>() {{
-            put("executionTime", System.currentTimeMillis());
-            put("data", new HashMap<String, Object>() {{
-                put("body", "<div>请编辑html内容</div>" + apiId);
-                put("headers", "{'abc':" + apiId + "}");
-                put("headerData", new ArrayList<Map<String, Object>>() {{
+            put("success", ok);
+            put("code", 500);
+            put("executionTime", 1000);
+            put("value", new HashMap<String, Object>() {{
+                put("body", "<div>ssss</div>" + apiId);
+                put("headers", new ArrayList<Map<String, Object>>() {{
                     add(newData(true, "key1", "value-1"));
                     add(newData(true, "key2", "value-2"));
                     add(newData(true, "key3", "value-3"));

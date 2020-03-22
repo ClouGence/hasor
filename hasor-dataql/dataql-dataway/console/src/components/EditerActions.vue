@@ -193,7 +193,6 @@
                         "id": self.apiInfo.apiID,
                         "select": self.apiInfo.select,
                         "apiPath": self.apiInfo.apiPath,
-                        "comment": self.apiInfo.comment,
                         "codeType": self.apiInfo.codeType,
                         "codeValue": self.apiInfo.codeValue,
                         "requestBody": self.requestBody,

@@ -16,7 +16,7 @@ const ApiUrl = {
     apiHistoryInfo: fixUrl(`/api/get-history`),
     //
     execute: fixUrl(`/api/execute`),
-    modifyPath: fixUrl(`/api/modify-path`),
+    checkPath: fixUrl(`/api/check-path`),
     apiSave: fixUrl(`/api/save-api`),
     perform: fixUrl(`/api/perform`),
     smokeTest: fixUrl(`/api/smoke`),

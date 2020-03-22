@@ -134,7 +134,7 @@ const proxy = {
             }
         }));
     },
-    'POST /api/modify-path': (req, res) => {
+    'POST /api/check-path': (req, res) => {
         res.send(Mock.mock({
             "success": Random.boolean(3, 5, false),
             "message": 'Another API is already in use.',

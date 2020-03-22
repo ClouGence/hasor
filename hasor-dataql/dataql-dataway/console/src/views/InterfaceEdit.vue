@@ -168,10 +168,9 @@
                 }
                 //
                 const self = this;
-                request(ApiUrl.modifyPath + "?id=" + self.apiInfo.apiID, {
+                request(ApiUrl.checkPath + "?id=" + self.apiInfo.apiID, {
                     "method": "POST",
                     "data": {
-                        "id": self.apiInfo.apiID,
                         "newPath": self.apiInfo.apiPath.toLowerCase(),
                         "newSelect": self.apiInfo.select.toUpperCase()
                     }
@@ -179,11 +178,10 @@
                     if (response.data.result) {
                         self.apiPathEdit = false;
                         self.showComment = false;
-                        self.$message({message: 'Api path modified successfully.', type: 'success'});
+                        self.apiInfo.editorSubmitted = false;
+                        self.$message({message: 'Api path verify pass.', type: 'success'});
                     } else {
-                        self.$alert(response.data.message, 'Failed', {
-                            confirmButtonText: 'OK'
-                        });
+                        self.$alert('result is false.', 'Failed', {confirmButtonText: 'OK'});
                     }
                 });
             },
@@ -259,6 +257,7 @@
             },
             // 刷新编辑器模式
             loadEditorMode() {
+                this.apiInfo.editorSubmitted = false;
                 if (this.apiInfo.codeType.toLowerCase() === 'dataql') {
                     this.monacoEditor.updateOptions({language: 'javascript'});
                 }
