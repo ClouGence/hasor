@@ -18,7 +18,15 @@ public class DatawayModule implements WebModule {
             ApiHistoryController.class, //
             ApiInfoController.class,    //
             ApiListController.class,    //
-            GetHistoryController.class  //
+            GetHistoryController.class, //
+            //
+            DisableController.class,    //
+            ExecuteController.class,    //
+            SmokeController.class,      //
+            SaveApiController.class,    //
+            PublishController.class,    //
+            PerformController.class,    //
+            ModifyPathController.class, //
     };
 
     @Override
