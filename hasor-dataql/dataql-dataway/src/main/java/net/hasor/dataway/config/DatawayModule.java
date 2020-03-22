@@ -32,32 +32,37 @@ public class DatawayModule implements WebModule {
 
     @Override
     public void loadModule(WebApiBinder apiBinder) {
+        //
         // .是否启用 Dataway
         Environment environment = apiBinder.getEnvironment();
         if (!Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY"))) {
             logger.info("dataway is disable.");
             return;
         }
-        // .Api接口
         //
+        // .Api接口
+        String apiBaseUri = environment.getVariable("HASOR_DATAQL_DATAWAY_API_URL");
+        if (StringUtils.isBlank(apiBaseUri)) {
+            apiBaseUri = "/api/";
+        }
+        logger.info("dataway api workAt " + apiBaseUri);
+        apiBinder.filter(fixUrl(apiBaseUri + "/*")).through(new InterfaceApiFilter(apiBaseUri));
         //
         // .Dataway 后台管理界面
         if (!Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY_ADMIN"))) {
             logger.info("dataway admin is disable.");
             return;
         }
-        String baseUri = environment.getVariable("HASOR_DATAQL_DATAWAY_UI_URL");
-        if (StringUtils.isBlank(baseUri)) {
-            baseUri = "/interface-ui/";
+        String uiBaseUri = environment.getVariable("HASOR_DATAQL_DATAWAY_UI_URL");
+        if (StringUtils.isBlank(uiBaseUri)) {
+            uiBaseUri = "/interface-ui/";
         }
-        logger.info("dataway admin workAt " + baseUri);
+        logger.info("dataway admin workAt " + uiBaseUri);
         for (Class<?> aClass : controllerSet) {
             MappingToUrl toUrl = aClass.getAnnotation(MappingToUrl.class);
-            apiBinder.mappingTo(fixUrl(baseUri + "/" + toUrl.value())).with(aClass);
+            apiBinder.mappingTo(fixUrl(uiBaseUri + "/" + toUrl.value())).with(aClass);
         }
-        //
-        apiBinder.setEncodingCharacter("UTF-8", "UTF-8");
-        apiBinder.filter(fixUrl(baseUri + "/*")).through(new InterfaceUiFilter(baseUri));
+        apiBinder.filter(fixUrl(uiBaseUri + "/*")).through(new InterfaceUiFilter(apiBaseUri, uiBaseUri));
     }
 
     static String fixUrl(String url) {

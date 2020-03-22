@@ -80,8 +80,8 @@
     import RequestPanel from '../components/RequestPanel';
     import ResponsePanel from '../components/ResponsePanel';
     import request from "../utils/request";
-    import {ApiUrl} from "../utils/api-const";
-    import {tagInfo} from "../utils/utils"
+    import {apiBaseUrl, ApiUrl} from "../utils/api-const";
+    import {errorBox, tagInfo} from "../utils/utils"
 
     export default {
         components: {
@@ -90,6 +90,7 @@
         mounted() {
             if (this.$route.path.startsWith('/new')) {
                 this.apiInfo.apiID = -1;
+                this.apiInfo.apiPath = this.apiBaseUrl;
                 this.newCode = true;
                 this.apiPathEdit = true;
                 this.showComment = true;
@@ -167,6 +168,11 @@
                     return
                 }
                 //
+                if (!this.apiInfo.apiPath.toLowerCase().startsWith(this.apiBaseUrl.toLowerCase())) {
+                    errorBox('The prefix must be ' + this.apiBaseUrl);
+                    return
+                }
+                //
                 const self = this;
                 request(ApiUrl.checkPath + "?id=" + self.apiInfo.apiID, {
                     "method": "POST",
@@ -181,7 +187,7 @@
                         self.apiInfo.editorSubmitted = false;
                         self.$message({message: 'Api path verify pass.', type: 'success'});
                     } else {
-                        self.$alert('result is false.', 'Failed', {confirmButtonText: 'OK'});
+                        errorBox('result is false.');
                     }
                 });
             },
@@ -312,7 +318,7 @@
                         self.$message({message: 'Api Delete finish.', type: 'success'});
                         this.$router.push("/");
                     } else {
-                        self.$alert('result is false.', 'Failed', {confirmButtonText: 'OK'});
+                        errorBox('result is false.');
                     }
                 });
             },
@@ -336,6 +342,7 @@
                 newCode: false,
                 apiPathEdit: true,
                 tempPathInfo: null,
+                apiBaseUrl: apiBaseUrl('/'),
                 //
                 //
                 headerData: [],

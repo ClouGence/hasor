@@ -63,7 +63,7 @@
     import ResponsePanel from '../components/ResponsePanel'
     import request from "../utils/request";
     import {ApiUrl} from "../utils/api-const"
-    import {tagInfo, errorBox} from "../utils/utils"
+    import {errorBox, tagInfo} from "../utils/utils"
 
     export default {
         components: {
@@ -159,6 +159,19 @@
                     this.$message.error('Parameters Format Error : ' + e);
                     return;
                 }
+                if (this.requestApiInfo.select === 'GET') {
+                    if (Object.prototype.toString.call(doRunParam.paramMap) !== '[object Object]') {
+                        this.$message.error('In GET , The request parameters must be Map.');
+                        return;
+                    }
+                    for (let key in doRunParam.paramMap) {
+                        let typeStr = Object.prototype.toString.call(doRunParam.paramMap[key]);
+                        if (typeStr === '[object Object]' || typeStr === '[object Array]') {
+                            this.$message.error('In GET , can\'t have complex structure parameters.');
+                            return;
+                        }
+                    }
+                }
                 //
                 let requestHeaderData = {};
                 for (let i = 0; i < this.headerData.length; i++) {
@@ -168,16 +181,21 @@
                 }
                 //
                 const self = this;
-                request(ApiUrl.execute + '?id=' + doRunParam.id, {
-                    "method": "POST",
+                let requestURL = (ApiUrl.execute + "/").replace("//", "/");
+                requestURL = (requestURL + this.requestApiInfo.path).replace("//", "/");
+                request(requestURL, {
+                    "direct": true,
+                    "method": this.requestApiInfo.select,
                     "headers": requestHeaderData,
                     "data": doRunParam.paramMap
                 }, response => {
-                    self.responseBody = JSON.stringify(response.data.result, null, 2);
+                    self.responseBody = JSON.stringify(response.data, null, 2);
                     self.$nextTick(function () {
                         self.$refs.listResponsePanel.doUpdate();
                         self.$message({message: 'Success.', type: 'success'});
                     });
+                }, response => {
+                    errorBox(`${response.data.code}: ${response.data.message}`);
                 });
             }
         },

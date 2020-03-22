@@ -10,6 +10,7 @@ const proxy = {
             "result": {
                 "id": 1,
                 "path": "/demos/db/databases/",
+                "select": "GET",
                 "status": 1,
                 "requestBody": '{"abc":true}',
                 "headerData": [

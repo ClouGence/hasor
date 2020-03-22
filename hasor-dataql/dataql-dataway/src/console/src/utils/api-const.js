@@ -1,30 +1,30 @@
-const fixBaseUrl = () => {
-    if (window.API_BASE_URL === '{API_BASE_URL}') {
-        return '/';
-    }
-    return window.API_BASE_URL;
+const apiBaseUrl = (oriUrl) => {
+    let baseUrl = (window.API_BASE_URL === '{API_BASE_URL}') ? '/' : window.API_BASE_URL;
+    return (baseUrl + oriUrl).replace("//", "/");
 };
-const fixUrl = (oriUrl) => {
-    return (fixBaseUrl() + oriUrl).replace("//", "/");
+
+const adminBaseUrl = (oriUrl) => {
+    let baseUrl = (window.ADMIN_BASE_URL === '{ADMIN_BASE_URL}') ? '/' : window.ADMIN_BASE_URL;
+    return (baseUrl + oriUrl).replace("//", "/");
 };
 // 通用查 配置
 const ApiUrl = {
-    apiInfo: fixUrl(`/api/api-info`),
-    apiList: fixUrl(`/api/api-list`),
-    apiDetail: fixUrl(`/api/api-detail`),
-    apiHistory: fixUrl(`/api/api-history`),
-    apiHistoryInfo: fixUrl(`/api/get-history`),
+    apiInfo: adminBaseUrl(`/api/api-info`),
+    apiList: adminBaseUrl(`/api/api-list`),
+    apiDetail: adminBaseUrl(`/api/api-detail`),
+    apiHistory: adminBaseUrl(`/api/api-history`),
+    apiHistoryInfo: adminBaseUrl(`/api/get-history`),
     //
-    execute: fixUrl(`/api/execute`),
-    checkPath: fixUrl(`/api/check-path`),
-    apiSave: fixUrl(`/api/save-api`),
-    perform: fixUrl(`/api/perform`),
-    smokeTest: fixUrl(`/api/smoke`),
-    publish: fixUrl(`/api/publish`),
-    disable: fixUrl(`/api/disable`),
-    deleteApi: fixUrl(`/api/delete`),
+    execute: apiBaseUrl(`/`),
+    checkPath: adminBaseUrl(`/api/check-path`),
+    apiSave: adminBaseUrl(`/api/save-api`),
+    perform: adminBaseUrl(`/api/perform`),
+    smokeTest: adminBaseUrl(`/api/smoke`),
+    publish: adminBaseUrl(`/api/publish`),
+    disable: adminBaseUrl(`/api/disable`),
+    deleteApi: adminBaseUrl(`/api/delete`),
 };
 
 export {
-    ApiUrl,
+    ApiUrl, apiBaseUrl
 };
