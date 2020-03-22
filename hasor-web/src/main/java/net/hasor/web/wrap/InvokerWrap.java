@@ -64,6 +64,11 @@ public class InvokerWrap implements Invoker {
     }
 
     @Override
+    public String getJsonBodyString() {
+        return this.dataContext.getJsonBodyString();
+    }
+
+    @Override
     public <T> T fillForm(Class<? extends T> formType, T bean) {
         return this.dataContext.fillForm(formType, bean);
     }

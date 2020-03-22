@@ -16,12 +16,17 @@
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.io.IOUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.Mapping;
 import net.hasor.web.MimeType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,13 +36,16 @@ import java.util.Set;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InvokerSupplier implements Invoker {
-    private Set<String>         lockKeys       = new HashSet<>();
-    private HttpServletRequest  httpRequest    = null;
-    private HttpServletResponse httpResponse   = null;
-    private AppContext          appContext     = null;
-    private String              contentType    = null;    // 内容类型（如果指定了内容类型，那么会设置setContentType）
-    private MimeType            mimeType       = null;
-    private Mapping             ownerInMapping = null;
+    protected static Logger              logger          = LoggerFactory.getLogger(InvokerSupplier.class);
+    private          Set<String>         lockKeys        = new HashSet<>();
+    private          HttpServletRequest  httpRequest     = null;
+    private          HttpServletResponse httpResponse    = null;
+    private          AppContext          appContext      = null;
+    private          String              contentType     = null;    // 内容类型（如果指定了内容类型，那么会设置setContentType）
+    private          MimeType            mimeType        = null;
+    private          Mapping             ownerInMapping  = null;
+    private          boolean             jsonBodyBoolean = false;
+    private          String              jsonBody        = null;
 
     protected InvokerSupplier(Mapping ownerInMapping, AppContext appContext, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         //
@@ -74,6 +82,25 @@ public class InvokerSupplier implements Invoker {
     @Override
     public Mapping ownerMapping() {
         return this.ownerInMapping;
+    }
+
+    @Override
+    public String getJsonBodyString() {
+        if (this.jsonBodyBoolean) {
+            return this.jsonBody;
+        }
+        HttpServletRequest httpRequest = getHttpRequest();
+        if ("application/json".equalsIgnoreCase(httpRequest.getContentType())) {
+            try (Reader reader = httpRequest.getReader()) {
+                StringWriter writer = new StringWriter();
+                IOUtils.copy(reader, writer);
+                this.jsonBody = writer.toString();
+                this.jsonBodyBoolean = true;
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return this.jsonBody;
     }
 
     @Override

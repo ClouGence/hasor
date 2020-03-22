@@ -1,4 +1,5 @@
 package net.hasor.web.invoker;
+import com.alibaba.fastjson.JSON;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
@@ -32,7 +33,6 @@ public class InvokerCallerParamsBuilder {
     private          Map<String, Object>       pathParamsLocal = null;
 
     public Object[] resolveParams(Invoker invoker, Method targetMethod) throws Throwable {
-        //
         Class<?>[] targetParamClass = targetMethod.getParameterTypes();
         Annotation[][] targetParamAnno = targetMethod.getParameterAnnotations();
         targetParamAnno = (targetParamAnno == null) ? new Annotation[0][0] : targetParamAnno;
@@ -115,6 +115,18 @@ public class InvokerCallerParamsBuilder {
             atData = this.getPathParam(invoker, (PathParameter) pAnno);
         } else if (pAnno instanceof RequestParameter) {
             atData = invoker.getHttpRequest().getParameterValues(((RequestParameter) pAnno).value());
+        } else if (pAnno instanceof RequestBody) {
+            if (paramClass == String.class) {
+                atData = invoker.getJsonBodyString();
+            } else if (paramClass == Map.class) {
+                atData = JSON.parseObject(invoker.getJsonBodyString());
+            } else if (paramClass == List.class) {
+                atData = JSON.parseArray(invoker.getJsonBodyString(), ArrayList.class);
+            } else if (paramClass == Set.class) {
+                atData = JSON.parseArray(invoker.getJsonBodyString(), HashSet.class);
+            } else {
+                atData = JSON.parseObject(invoker.getJsonBodyString(), paramClass);
+            }
         } else if (pAnno instanceof ParameterGroup) {
             try {
                 atData = invoker.getAppContext().justInject(paramClass.newInstance());

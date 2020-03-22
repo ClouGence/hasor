@@ -60,6 +60,9 @@ public interface Invoker extends MimeType {
     /** 本次请求的 Action，如果没有命中任何 Mapping 那么会返回空。例如在 InvokerFilter 拦截器中经常会看到空的 ownerMapping */
     public Mapping ownerMapping();
 
+    /** 如果请求是 application/json 类型的，那么可以通过这个方法获取 Json 数据 */
+    public String getJsonBodyString();
+
     /** 获取数据容器中已经保存的数据 keys 。*/
     public default Set<String> keySet() {
         Enumeration<String> names = this.getHttpRequest().getAttributeNames();

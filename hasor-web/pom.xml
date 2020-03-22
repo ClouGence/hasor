@@ -31,6 +31,11 @@
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Web环境下的编译依赖，最终由web容器提供依赖(最小版本servlet 2.3) -->
         <dependency>
