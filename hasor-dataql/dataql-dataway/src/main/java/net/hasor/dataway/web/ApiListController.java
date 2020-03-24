@@ -1,49 +1,49 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.hasor.dataway.web;
+import net.hasor.dataql.DataQL;
+import net.hasor.dataql.QueryResult;
 import net.hasor.dataway.config.JsonRenderEngine;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
+import net.hasor.dataway.daos.ApiListQuery;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Get;
 import net.hasor.web.render.RenderType;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.HashMap;
 
 /**
- *
+ * Api 列表
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-03-24
  */
 @MappingToUrl("/api/api-list")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class ApiListController {
+    @Inject
+    private DataQL dataQL;
+
     @Get
-    public Result apiList(Invoker invoker) {
-        List<Map<String, Object>> mockData = new ArrayList<Map<String, Object>>() {{
-            add(newData(0, "/demos/db/databases/"));
-            add(newData(1, "/demos/db/tables/"));
-            add(newData(2, "/demos/db/select/"));
-            add(newData(3, "/demos/user/user-list/"));
-            add(newData(0, "/demos/user/add-user/"));
-            add(newData(1, "/demos/user/delete-user/"));
-            add(newData(2, "/demos/role/role-list/"));
-            add(newData(3, "/demos/role/add-role/"));
-            add(newData(0, "/demos/role/delete-role/"));
-            add(newData(1, "/demos/role/update-role/"));
-            add(newData(2, "/demos/power/poser-list/"));
-            add(newData(3, "/demos/power/power-id/"));
-            add(newData(0, "/demos/power/check/"));
-        }};
-        return Result.of(mockData);
-    }
-
-    private static AtomicInteger atomicInteger = new AtomicInteger(0);
-
-    private HashMap<String, Object> newData(int status, String pathInfo) {
-        return new HashMap<String, Object>() {{
-            put("id", atomicInteger.incrementAndGet());
-            put("checked", false);
-            put("path", pathInfo);
-            put("status", status);
-            put("comment", "现实所有表。");
-        }};
+    public Result apiList(Invoker invoker) throws IOException {
+        QueryResult queryResult = new ApiListQuery(this.dataQL).execute(new HashMap<String, String>() {{
+            //
+        }});
+        return Result.of(queryResult.getData().unwrap());
     }
 }
