@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.dataway.config;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
 /**
- * 控制器映射的地址，没有直接使用 MappingTo 的原因是想和 MappingTo 隔离开。
- * @version : 2013-3-26
+ * Dataway 使用的数据源类型
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-20
  */
-@Retention(RetentionPolicy.RUNTIME)
-public @interface MappingToUrl {
-    /**请求地址*/
-    public String value();
+public enum DataBaseType {
+    Mysql
 }

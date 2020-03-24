@@ -50,6 +50,7 @@
 
     <build>
         <plugins>
+            <!-- npm install && npm run build -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -86,6 +87,7 @@
 
                 </executions>
             </plugin>
+            <!-- console dist add to resources -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -109,6 +111,22 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- DataQL introspection -->
+            <plugin>
+                <groupId>net.hasor</groupId>
+                <artifactId>dataql-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>dataql</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <ignoreError>true</ignoreError>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -123,6 +141,10 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-db</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>net.hasor</groupId>
@@ -131,15 +153,6 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-dataql-fx-basic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-db</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
         </dependency>
     </dependencies>
 </project>
