@@ -88,12 +88,10 @@
                 this.apiInfo.apiID = -1;
                 this.apiInfo.apiPath = this.apiBaseUrl;
                 this.newCode = true;
-                this.apiPathEdit = true;
                 this.showComment = true;
             } else {
                 this.apiInfo.apiID = this.$route.params.id;
                 this.newCode = false;
-                this.apiPathEdit = false;
                 this.showComment = false;
                 this.loadApiDetail();
             }

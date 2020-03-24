@@ -1,6 +1,25 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.hasor.dataway.web;
+import net.hasor.dataql.DataQL;
+import net.hasor.dataql.Query;
+import net.hasor.dataql.QueryResult;
 import net.hasor.dataway.config.JsonRenderEngine;
 import net.hasor.dataway.config.MappingToUrl;
+import net.hasor.dataway.config.RequestUtils;
 import net.hasor.dataway.config.Result;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
@@ -8,48 +27,44 @@ import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
 import net.hasor.web.render.RenderType;
 
-import java.util.ArrayList;
+import javax.inject.Inject;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * 编辑页面中预执行
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-03-24
  */
 @MappingToUrl("/api/perform")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class PerformController {
-    @Post
-    public Result doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody, Invoker invoker) {
-        boolean hasId = requestBody.containsKey("id");
-        boolean hasSelect = requestBody.containsKey("select");
-        boolean hasApiPath = requestBody.containsKey("apiPath");
-        boolean hasCodeType = requestBody.containsKey("codeType");
-        boolean hasCodeValue = requestBody.containsKey("codeValue");
-        boolean hasRequestBody = requestBody.containsKey("requestBody");
-        hasId = hasId && apiId.equalsIgnoreCase(requestBody.get("id").toString());
-        //
-        boolean ok = hasId && hasSelect && hasApiPath && hasCodeType && hasCodeValue && hasRequestBody;
-        return Result.of(new HashMap<String, Object>() {{
-            put("success", ok);
-            put("code", 500);
-            put("executionTime", 1000);
-            put("value", new HashMap<String, Object>() {{
-                put("body", requestBody);
-                put("headers", new ArrayList<Map<String, Object>>() {{
-                    add(newData(true, "key1", "value-1"));
-                    add(newData(true, "key2", "value-2"));
-                    add(newData(true, "key3", "value-3"));
-                    add(newData(false, "key4", "value-4"));
-                }});
-            }});
-        }});
-    }
+    @Inject
+    private DataQL dataQL;
 
-    private HashMap<String, Object> newData(boolean checked, String key, String value) {
-        return new HashMap<String, Object>() {{
-            put("checked", checked);
-            put("name", key);
-            put("value", value);
-        }};
+    @Post
+    public Result doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody, Invoker invoker) throws IOException {
+        Map<String, List<String>> headerMap = RequestUtils.headerMap(invoker);
+        Map<String, List<String>> cookieMap = RequestUtils.headerMap(invoker);
+        //
+        //
+        String strCodeType = requestBody.get("codeType").toString();
+        String strCodeValue = requestBody.get("codeValue").toString();
+        Map<String, Object> strRequestBody = (Map<String, Object>) requestBody.get("requestBody");
+        if ("sql".equalsIgnoreCase(strCodeType)) {
+            strCodeValue = RequestUtils.evalCodeValueForSQL(strCodeValue, strRequestBody);
+        }
+        //
+        Query dataQLQuery = this.dataQL.createQuery(strCodeValue);
+        QueryResult queryResult = dataQLQuery.execute(strRequestBody);
+        //
+        return Result.of(new HashMap<String, Object>() {{
+            put("success", true);
+            put("code", queryResult.getCode());
+            put("executionTime", queryResult.executionTime());
+            put("value", queryResult.getData().unwrap());
+        }});
     }
 }

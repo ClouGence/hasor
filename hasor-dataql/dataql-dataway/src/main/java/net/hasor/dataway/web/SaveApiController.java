@@ -35,7 +35,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * 把编辑的结果保存起来。
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-03-24
  */
 @MappingToUrl("/api/save-api")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)

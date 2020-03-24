@@ -17,7 +17,6 @@ package net.hasor.dataway.config;
 import net.hasor.core.AppContext;
 import net.hasor.dataql.binder.AppContextFinder;
 import net.hasor.dataway.daos.ApiQuery;
-import net.hasor.dataway.daos.InterfaceReleaseDO;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
 
@@ -42,7 +41,7 @@ public class DatawayFinder extends AppContextFinder {
 
     /** 负责处理 <code>import @"/net/hasor/demo.ql" as demo;</code>方式中 ‘/net/hasor/demo.ql’ 资源的加载 */
     public InputStream findResource(String resourceName) {
-        InterfaceReleaseDO queryInfo = apiQuery.queryApi(resourceName);
+        String queryInfo = apiQuery.queryApi(resourceName);
         //        if (queryInfo==null || queryInfo.)
         //
         //

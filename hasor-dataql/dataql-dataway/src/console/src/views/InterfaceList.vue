@@ -63,7 +63,7 @@
     import ResponsePanel from '../components/ResponsePanel'
     import request from "../utils/request";
     import {ApiUrl} from "../utils/api-const"
-    import {errorBox, tagInfo} from "../utils/utils"
+    import {checkRequestBody, errorBox, headerData, tagInfo} from "../utils/utils"
 
     export default {
         components: {
@@ -151,33 +151,9 @@
                     return;
                 }
                 //
-                let doRunParam = {};
-                try {
-                    doRunParam.id = this.requestApiInfo.id;
-                    doRunParam.paramMap = JSON.parse(this.requestBody);
-                } catch (e) {
-                    this.$message.error('Parameters Format Error : ' + e);
+                let testResult = checkRequestBody(this.requestApiInfo.select, this.requestApiInfo.codeType, this.requestBody);
+                if (!testResult) {
                     return;
-                }
-                if (this.requestApiInfo.select === 'GET') {
-                    if (Object.prototype.toString.call(doRunParam.paramMap) !== '[object Object]') {
-                        this.$message.error('In GET , The request parameters must be Map.');
-                        return;
-                    }
-                    for (let key in doRunParam.paramMap) {
-                        let typeStr = Object.prototype.toString.call(doRunParam.paramMap[key]);
-                        if (typeStr === '[object Object]' || typeStr === '[object Array]') {
-                            this.$message.error('In GET , can\'t have complex structure parameters.');
-                            return;
-                        }
-                    }
-                }
-                //
-                let requestHeaderData = {};
-                for (let i = 0; i < this.headerData.length; i++) {
-                    if (this.headerData[i].checked && this.headerData[i].name !== '') {
-                        requestHeaderData[this.headerData[i].name] = encodeURIComponent(this.headerData[i].value);
-                    }
                 }
                 //
                 const self = this;
@@ -186,8 +162,8 @@
                 request(requestURL, {
                     "direct": true,
                     "method": this.requestApiInfo.select,
-                    "headers": requestHeaderData,
-                    "data": doRunParam.paramMap
+                    "headers": headerData(this.headerData),
+                    "data": JSON.parse(this.requestBody)
                 }, response => {
                     self.responseBody = JSON.stringify(response.data, null, 2);
                     self.$nextTick(function () {

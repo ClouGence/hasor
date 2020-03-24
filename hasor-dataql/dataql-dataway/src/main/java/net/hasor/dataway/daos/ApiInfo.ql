@@ -16,6 +16,7 @@ return queryMap[`net.hasor.dataway.config.DataBaseType`](${apiId}) => {
     "select"      : api_method,
     "path"        : api_path,
     "status"      : api_status,
+    "codeType"    : api_type,
     "requestBody" : json.fromJson(api_sample).requestBody,
     "headerData"  : collect.filter(json.fromJson(api_sample).headerData, dataFilter) => [
         {

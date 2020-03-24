@@ -11,6 +11,7 @@ const proxy = {
                 "id": 1,
                 "path": "/demos/db/databases/",
                 "select": "GET",
+                "codeType": "SQL",
                 "status": 1,
                 "requestBody": '{"abc":true}',
                 "headerData": [
@@ -121,20 +122,6 @@ const proxy = {
         }));
     },
 
-    'POST /api/execute': (req, res) => {
-        res.send(Mock.mock({
-            "success": Random.boolean(3, 5, false),
-            "message": 'Another API is already in use.',
-            "code": 500,
-            "result": {
-                "executionTime": -1,
-                "data": {
-                    "body": req.body,
-                    "headers": req.headers
-                }
-            }
-        }));
-    },
     'POST /api/save-api': (req, res) => {
         res.send(Mock.mock({
             "success": Random.boolean(3, 5, false),

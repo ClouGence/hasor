@@ -72,6 +72,7 @@
 <script>
     import request from "../utils/request";
     import {ApiUrl} from "../utils/api-const";
+    import {checkRequestBody, headerData} from "../utils/utils";
 
     export default {
         props: {
@@ -179,23 +180,23 @@
             },
             // 执行按钮
             handleExecuteAction() {
-                let requestHeaderData = {};
-                for (let i = 0; i < this.requestHeader.length; i++) {
-                    if (this.requestHeader[i].checked && this.requestHeader[i].name !== '') {
-                        requestHeaderData[this.requestHeader[i].name] = encodeURIComponent(this.requestHeader[i].value);
-                    }
+                // test
+                let testResult = checkRequestBody(this.apiInfo.select, this.apiInfo.codeType, this.requestBody);
+                if (!testResult) {
+                    return;
                 }
+                //
                 const self = this;
                 request(ApiUrl.perform + "?id=" + this.apiInfo.apiID, {
                     "method": "POST",
-                    "headers": requestHeaderData,
+                    "headers": headerData(this.requestHeader),
                     "data": {
                         "id": self.apiInfo.apiID,
                         "select": self.apiInfo.select,
                         "apiPath": self.apiInfo.apiPath,
                         "codeType": self.apiInfo.codeType,
                         "codeValue": self.apiInfo.codeValue,
-                        "requestBody": self.requestBody,
+                        "requestBody": JSON.parse(self.requestBody),
                     }
                 }, response => {
                     self.$emit('onExecute', response.data.result);
@@ -203,19 +204,19 @@
             },
             // 冒烟按钮
             handleTestAction() {
-                let requestHeaderData = {};
-                for (let i = 0; i < this.requestHeader.length; i++) {
-                    if (this.requestHeader[i].checked && this.requestHeader[i].name !== '') {
-                        requestHeaderData[this.requestHeader[i].name] = encodeURIComponent(this.requestHeader[i].value);
-                    }
+                // test
+                let testResult = checkRequestBody(this.apiInfo.select, this.apiInfo.codeType, this.requestBody);
+                if (!testResult) {
+                    return;
                 }
+                //
                 const self = this;
                 request(ApiUrl.smokeTest + "?id=" + this.apiInfo.apiID, {
                     "method": "POST",
-                    "headers": requestHeaderData,
+                    "headers": headerData(this.requestHeader),
                     "data": {
-                        "id": self.apiInfo.apiID,
-                        "requestBody": self.requestBody,
+                        "id": this.apiInfo.apiID,
+                        "requestBody": JSON.parse(this.requestBody),
                     }
                 }, response => {
                     this.smokeTest = true;
