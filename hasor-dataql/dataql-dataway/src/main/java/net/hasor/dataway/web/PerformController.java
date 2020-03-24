@@ -17,6 +17,7 @@ package net.hasor.dataway.web;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
+import net.hasor.dataql.runtime.ThrowRuntimeException;
 import net.hasor.dataway.config.JsonRenderEngine;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.RequestUtils;
@@ -57,14 +58,31 @@ public class PerformController {
             strCodeValue = RequestUtils.evalCodeValueForSQL(strCodeValue, strRequestBody);
         }
         //
-        Query dataQLQuery = this.dataQL.createQuery(strCodeValue);
-        QueryResult queryResult = dataQLQuery.execute(strRequestBody);
-        //
-        return Result.of(new HashMap<String, Object>() {{
-            put("success", true);
-            put("code", queryResult.getCode());
-            put("executionTime", queryResult.executionTime());
-            put("value", queryResult.getData().unwrap());
-        }});
+        try {
+            Query dataQLQuery = this.dataQL.createQuery(strCodeValue);
+            QueryResult queryResult = dataQLQuery.execute(strRequestBody);
+            return Result.of(new HashMap<String, Object>() {{
+                put("success", true);
+                put("code", queryResult.getCode());
+                put("executionTime", queryResult.executionTime());
+                put("value", queryResult.getData().unwrap());
+            }});
+        } catch (Exception e) {
+            if (e instanceof ThrowRuntimeException) {
+                return Result.of(new HashMap<String, Object>() {{
+                    put("success", false);
+                    put("code", ((ThrowRuntimeException) e).getThrowCode());
+                    put("executionTime", ((ThrowRuntimeException) e).getExecutionTime());
+                    put("value", ((ThrowRuntimeException) e).getResult().unwrap());
+                }});
+            } else {
+                return Result.of(new HashMap<String, Object>() {{
+                    put("success", false);
+                    put("code", 500);
+                    put("executionTime", -1);
+                    put("value", e.getMessage());
+                }});
+            }
+        }
     }
 }

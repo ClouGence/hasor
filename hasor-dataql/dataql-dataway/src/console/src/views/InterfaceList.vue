@@ -19,7 +19,7 @@
                     <template slot-scope="scope">
                         <el-tag size="mini" style="float: left;width: 65px;text-align: center;" :type="tableRowTagClassName(scope.row).css">{{tableRowTagClassName(scope.row).title}}</el-tag>
                         <span style="overflow-x: hidden;">
-                            {{scope.row.path}}<span style="color: #adadad;display: inline;float: right;">[{{scope.row.comment}}]</span>
+                            {{scope.row.path}}<span style="color: #adadad;display: inline;float: right; overflow-x: hidden;">[{{scope.row.comment}}]</span>
                         </span>
                     </template>
                 </el-table-column>

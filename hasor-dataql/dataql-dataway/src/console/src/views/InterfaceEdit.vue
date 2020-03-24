@@ -14,7 +14,7 @@
                 </el-tooltip>
             </div>
             <div class="comment" v-if="showComment">
-                <el-input placeholder="Api's comment." size="mini" v-model="apiInfo.comment">
+                <el-input placeholder="Api's comment." size="mini" v-model="apiInfo.comment" @input="handleCommentOnchange">
                     <template slot="prepend">Comment</template>
                 </el-input>
             </div>
@@ -135,6 +135,9 @@
             // 显示隐藏Comment
             handleShowComment() {
                 this.showComment = !this.showComment;
+            },
+            handleCommentOnchange() {
+                this.apiInfo.editorSubmitted = false;
             },
             //
             // 初始化编辑器
