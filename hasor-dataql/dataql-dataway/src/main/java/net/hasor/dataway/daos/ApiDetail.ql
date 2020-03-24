@@ -1,4 +1,3 @@
-import 'net.hasor.dataql.fx.CollectionUdfSource' as collect
 import 'net.hasor.dataql.fx.JsonUdfSource' as json
 
 var queryMap = {
@@ -12,14 +11,11 @@ return queryMap[`net.hasor.dataway.config.DataBaseType`](${apiId}) => {
     "select"      : api_method,
     "path"        : api_path,
     "status"      : api_status,
-    "requestBody" : json.fromJson(api_sample).requestBody,
-    "headerData"  : collect.filter(  json.fromJson(api_sample).headerData,
-                                     (dat) -> { return dat.checked != null && dat.checked; }
-                    ) => [
-        {
-            "checked" : true,
-            "name"    : name,
-            "value"   : value
-        }
-    ]
+    "apiComment"  : api_comment,
+    "codeType"    : api_type,
+    "codeInfo"    : {
+        "codeValue"   : api_script,
+        "requestBody" : json.fromJson(api_sample).requestBody,
+        "headerData"  : json.fromJson(api_sample).headerData
+    }
 };
