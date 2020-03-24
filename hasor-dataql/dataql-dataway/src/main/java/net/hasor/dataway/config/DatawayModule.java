@@ -90,7 +90,7 @@ public class DatawayModule implements WebModule {
         // Finder,实现引用其它定义的 DataQL
         Supplier<DatawayFinder> finderSupplier = apiBinder.getProvider(DatawayFinder.class);
         apiBinder.tryCast(QueryApiBinder.class).bindFinder(finderSupplier);
-        apiBinder.tryCast(QueryApiBinder.class).bindFragment("inner_dataway_sql_exec", SqlQueryFragment.class);
+        apiBinder.tryCast(QueryApiBinder.class).bindFragment("inner_dataway_sql", SqlQueryFragment.class);
     }
 
     @Override
