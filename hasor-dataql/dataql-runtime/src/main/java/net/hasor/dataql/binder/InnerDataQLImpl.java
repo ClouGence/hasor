@@ -40,9 +40,9 @@ import java.util.function.Supplier;
  * @version : 2017-03-23
  */
 class InnerDataQLImpl extends HintsSet implements DataQL {
-    private Map<String, Supplier<?>> compilerVarMap = new HashMap<>();
-    private AppContext               appContext;
-    private Finder                   finderObject;
+    private Map<String, Supplier<?>>   compilerVarMap = new HashMap<>();
+    private AppContext                 appContext;
+    private Supplier<? extends Finder> finderObject;
 
     public void initConfig(AppContext appContext) {
         this.appContext = appContext;
@@ -51,17 +51,18 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
             compilerVarMap.put(shareVar.getName(), shareVar);
         });
         if (this.finderObject == null) {
-            this.finderObject = new AppContextFinder(appContext);
+            AppContextFinder contextFinder = new AppContextFinder(appContext);
+            this.finderObject = () -> contextFinder;
         }
     }
 
-    public void setFinder(Finder finder) {
+    public void setFinder(Supplier<? extends Finder> finder) {
         this.finderObject = finder;
     }
 
     @Override
     public <T> DataQL addShareVar(String name, Class<? extends T> implementation) {
-        this.compilerVarMap.put(name, () -> finderObject.findBean(implementation));
+        this.compilerVarMap.put(name, () -> finderObject.get().findBean(implementation));
         return this;
     }
 
@@ -78,7 +79,7 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
 
     @Override
     public <T extends FragmentProcess> DataQL addFragmentProcess(String name, BindInfo<T> bindInfo) {
-        if (this.finderObject instanceof AppContextFinder) {
+        if (this.finderObject.get() instanceof AppContextFinder) {
             return addFragmentProcess(name, this.appContext.getProvider(bindInfo));
         }
         throw new UnsupportedOperationException("custom Finder Unsupported. ");
@@ -86,7 +87,7 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
 
     @Override
     public <T extends FragmentProcess> DataQL addFragmentProcess(String name, Class<T> implementation) {
-        if (this.finderObject instanceof AppContextFinder) {
+        if (this.finderObject.get() instanceof AppContextFinder) {
             return addFragmentProcess(name, this.appContext.getProvider(implementation));
         }
         throw new UnsupportedOperationException("custom Finder Unsupported. ");
@@ -94,8 +95,8 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
 
     @Override
     public <T extends FragmentProcess> DataQL addFragmentProcess(String name, Supplier<T> provider) {
-        if (this.finderObject instanceof AppContextFinder) {
-            ((AppContextFinder) this.finderObject).addFragmentProcess(name, provider);
+        if (this.finderObject.get() instanceof AppContextFinder) {
+            ((AppContextFinder) this.finderObject.get()).addFragmentProcess(name, provider);
             return this;
         }
         throw new UnsupportedOperationException("custom Finder Unsupported. ");
@@ -103,7 +104,7 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
 
     @Override
     public Finder getFinder() {
-        return this.finderObject;
+        return this.finderObject.get();
     }
 
     @Override
@@ -118,7 +119,7 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
 
     @Override
     public Query createQuery(QIL compilerQIL) {
-        Query query = QueryHelper.createQuery(compilerQIL, this.finderObject);
+        Query query = QueryHelper.createQuery(compilerQIL, this.finderObject.get());
         if (query instanceof CompilerVarQuery) {
             CompilerVarQuery varQuery = (CompilerVarQuery) query;
             this.compilerVarMap.forEach(varQuery::setCompilerVar);

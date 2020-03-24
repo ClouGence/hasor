@@ -20,7 +20,6 @@ import net.hasor.dataway.config.JsonRenderEngine;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiDetailQuery;
-import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Get;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.render.RenderType;
@@ -30,7 +29,9 @@ import java.io.IOException;
 import java.util.HashMap;
 
 /**
- *
+ * Api 详情数据
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-03-24
  */
 @MappingToUrl("/api/api-detail")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
@@ -39,7 +40,7 @@ public class ApiDetailController {
     private DataQL dataQL;
 
     @Get
-    public Result apiDetail(@QueryParameter("id") String apiId, Invoker invoker) throws IOException {
+    public Result apiDetail(@QueryParameter("id") String apiId) throws IOException {
         QueryResult queryResult = new ApiDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
             put("apiId", apiId);
         }});

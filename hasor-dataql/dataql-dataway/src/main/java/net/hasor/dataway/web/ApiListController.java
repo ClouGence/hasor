@@ -20,7 +20,6 @@ import net.hasor.dataway.config.JsonRenderEngine;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiListQuery;
-import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Get;
 import net.hasor.web.render.RenderType;
 
@@ -40,7 +39,7 @@ public class ApiListController {
     private DataQL dataQL;
 
     @Get
-    public Result apiList(Invoker invoker) throws IOException {
+    public Result apiList() throws IOException {
         QueryResult queryResult = new ApiListQuery(this.dataQL).execute(new HashMap<String, String>() {{
             //
         }});

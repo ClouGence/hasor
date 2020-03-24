@@ -7,6 +7,7 @@ import net.hasor.core.exts.aop.Matchers;
 import net.hasor.dataql.DimFragment;
 import net.hasor.dataql.DimUdfSource;
 import net.hasor.dataql.QueryApiBinder;
+import net.hasor.dataway.config.DataBaseType;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -52,6 +53,7 @@ public class ExampleModule implements SpringModule {
                 Matchers.anyClass(),//
                 springTypeSupplier(apiBinder)//
         );
+        apiBinder.bindType(DataBaseType.class).toInstance(DataBaseType.Mysql);
     }
 
     @Override

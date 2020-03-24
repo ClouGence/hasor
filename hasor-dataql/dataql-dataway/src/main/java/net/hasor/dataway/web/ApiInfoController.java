@@ -20,8 +20,6 @@ import net.hasor.dataway.config.JsonRenderEngine;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiInfoQuery;
-import net.hasor.dataway.daos.ApiListQuery;
-import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Get;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.render.RenderType;
@@ -42,7 +40,7 @@ public class ApiInfoController {
     private DataQL dataQL;
 
     @Get
-    public Result apiInfo(@QueryParameter("id") String apiId, Invoker invoker) throws IOException {
+    public Result apiInfo(@QueryParameter("id") String apiId) throws IOException {
         QueryResult queryResult = new ApiInfoQuery(this.dataQL).execute(new HashMap<String, String>() {{
             put("apiId", apiId);
         }});

@@ -81,8 +81,8 @@ public class QueryApiBinderCreater implements ApiBinderCreater {
         }
 
         @Override
-        public QueryApiBinder bindFinder(Finder finder) {
-            this.innerDqlConfig.setFinder(finder);
+        public QueryApiBinder bindFinder(Supplier<? extends Finder> finderSupplier) {
+            this.innerDqlConfig.setFinder(finderSupplier);
             return this;
         }
     }

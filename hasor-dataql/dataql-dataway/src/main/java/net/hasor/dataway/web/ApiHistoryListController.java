@@ -20,7 +20,6 @@ import net.hasor.dataway.config.JsonRenderEngine;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiHistoryListQuery;
-import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Get;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.render.RenderType;
@@ -30,7 +29,9 @@ import java.io.IOException;
 import java.util.HashMap;
 
 /**
- *
+ * Api 历史列表
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-03-24
  */
 @MappingToUrl("/api/api-history")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
@@ -39,7 +40,7 @@ public class ApiHistoryListController {
     private DataQL dataQL;
 
     @Get
-    public Result apiHistory(@QueryParameter("id") String apiId, Invoker invoker) throws IOException {
+    public Result apiHistory(@QueryParameter("id") String apiId) throws IOException {
         QueryResult queryResult = new ApiHistoryListQuery(this.dataQL).execute(new HashMap<String, String>() {{
             put("apiId", apiId);
         }});

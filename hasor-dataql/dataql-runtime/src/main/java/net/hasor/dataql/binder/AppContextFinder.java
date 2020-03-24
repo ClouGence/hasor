@@ -22,6 +22,7 @@ import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class AppContextFinder implements Finder {
         }
     }
 
-    public InputStream findResource(String resourceName) {
+    public InputStream findResource(String resourceName) throws IOException {
         InputStream inputStream = null;
         try {
             ClassLoader classLoader = this.appContext.getEnvironment().getClassLoader();
@@ -64,7 +65,7 @@ public class AppContextFinder implements Finder {
         }
         return inputStream;
     }
- 
+
     public Object findBean(Class<?> beanType) {
         return this.appContext.getInstance(beanType);
     }

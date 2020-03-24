@@ -202,7 +202,7 @@ public interface QueryApiBinder extends ApiBinder, Hints {
     /** 添加全局变量（等同于 compilerVar） */
     public <T> QueryApiBinder addShareVar(String name, Supplier<T> provider);
 
-    public QueryApiBinder bindFinder(Finder finder);
+    public QueryApiBinder bindFinder(Supplier<? extends Finder> finderSupplier);
 
     /** 注册 FragmentProcess */
     public default QueryApiBinder bindFragment(String fragmentType, FragmentProcess instance) {
