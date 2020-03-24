@@ -1,7 +1,7 @@
 var queryMap = {
-    "mysql"  : @@sql_exec()<% select * from interface_info order by api_create_time asc; %>,
-    "pg"     : @@sql_exec()<% s %>,
-    "oracle" : @@sql_exec()<% s %>
+    "mysql"  : @@inner_dataway_sql_exec()<% select * from interface_info order by api_create_time asc; %>,
+    "pg"     : @@inner_dataway_sql_exec()<% s %>,
+    "oracle" : @@inner_dataway_sql_exec()<% s %>
 };
 
 return queryMap[`net.hasor.dataway.config.DataBaseType`]() => [

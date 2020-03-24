@@ -1,9 +1,9 @@
 import 'net.hasor.dataql.fx.JsonUdfSource' as json;
 
 var queryMap = {
-    "mysql"  : @@sql_exec(historyId)<% select * from interface_release where pub_api_id= :historyId; %>,
-    "pg"     : @@sql_exec()<% s %>,
-    "oracle" : @@sql_exec()<% s %>
+    "mysql"  : @@inner_dataway_sql_exec(historyId)<% select * from interface_release where pub_api_id= :historyId; %>,
+    "pg"     : @@inner_dataway_sql_exec()<% s %>,
+    "oracle" : @@inner_dataway_sql_exec()<% s %>
 };
 
 return queryMap[`net.hasor.dataway.config.DataBaseType`](${historyId}) => {
