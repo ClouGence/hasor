@@ -56,7 +56,20 @@ class InterfaceApiFilter implements InvokerFilter {
         if (!requestURI.startsWith(this.apiBaseUri)) {
             return chain.doNext(invoker);
         }
+        //        //        Map<String, List<String>> headerMap = RequestUtils.headerMap(invoker);
+        //        Map<String, List<String>> cookieMap = RequestUtils.headerMap(invoker);
         //
+        //            put("executionTime", System.currentTimeMillis());
+        //            put("data", new HashMap<String, Object>() {{
+        //                put("body", "<div>请编辑html内容</div>" + apiId);
+        //                put("headers", "{'abc':" + apiId + "}");
+        //                put("headerData", new ArrayList<Map<String, Object>>() {{
+        //                    add(newData(true, "key1", "value-1"));
+        //                    add(newData(true, "key2", "value-2"));
+        //                    add(newData(true, "key3", "value-3"));
+        //                    add(newData(false, "key4", "value-4"));
+        //                }});
+        //            }});
         httpRequest.setCharacterEncoding("UTF-8");
         httpResponse.setCharacterEncoding("UTF-8");
         String requestUrl = invoker.getRequestPath();

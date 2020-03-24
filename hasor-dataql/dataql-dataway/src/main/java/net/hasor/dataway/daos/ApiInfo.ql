@@ -2,9 +2,9 @@ import 'net.hasor.dataql.fx.CollectionUdfSource' as collect;
 import 'net.hasor.dataql.fx.JsonUdfSource' as json;
 
 var queryMap = {
-    "mysql"  : @@inner_dataway_sql(apiId)<% select * from interface_info where api_id= :apiId; %>,
-    "pg"     : @@inner_dataway_sql()<% s %>,
-    "oracle" : @@inner_dataway_sql()<% s %>
+    "mysql"     : @@inner_dataway_sql(apiId)<% select * from interface_info where api_id= :apiId; %>,
+    "postgresql": @@inner_dataway_sql(apiId)<% select * from interface_info where api_id= :apiId; %>,
+    "oracle"    : @@inner_dataway_sql(apiId)<% select * from interface_info where api_id= :apiId; %>
 };
 
 var dataFilter = (dat) -> {

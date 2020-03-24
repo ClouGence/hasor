@@ -49,10 +49,10 @@ public class SmokeController {
     private DataQL dataQL;
 
     @Post
-    public Result doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody, Invoker invoker) throws IOException {
-        Map<String, List<String>> headerMap = RequestUtils.headerMap(invoker);
-        Map<String, List<String>> cookieMap = RequestUtils.headerMap(invoker);
-        //
+    public Result doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
+        if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
+            throw new IllegalArgumentException("id Parameters of the ambiguity.");
+        }
         //
         QueryResult queryDetail = new ApiDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
             put("apiId", apiId);

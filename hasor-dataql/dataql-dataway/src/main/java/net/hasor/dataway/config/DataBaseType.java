@@ -20,5 +20,5 @@ package net.hasor.dataway.config;
  * @version : 2020-03-20
  */
 public enum DataBaseType {
-    Mysql
+    Mysql, Oracle, PostgreSQL
 }

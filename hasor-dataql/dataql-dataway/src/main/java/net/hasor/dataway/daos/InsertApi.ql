@@ -1,8 +1,8 @@
 import 'net.hasor.dataql.fx.JsonUdfSource' as json;
 
 var insertMap = {
-    "mysql"  : @@inner_dataway_sql(apiMethod, apiPath, apiStatus, apiComment, apiType, apiScript, apiSchema, apiSample)<%
-        insert into interface_info(
+    "mysql"     : @@inner_dataway_sql(apiMethod, apiPath, apiStatus, apiComment, apiType, apiScript, apiSchema, apiSample)<%
+        insert into interface_info (
             api_method,     api_path,   api_status, api_comment,
             api_type,       api_script, api_schema, api_sample,
             api_create_time,api_gmt_time
@@ -12,11 +12,27 @@ var insertMap = {
             now(),          now()
         );
     %>,
-    "pg"     : @@inner_dataway_sql()<%
-        xxxxxx RETURNING id;
+    "postgresql": @@inner_dataway_sql(apiMethod, apiPath, apiStatus, apiComment, apiType, apiScript, apiSchema, apiSample)<%
+        insert into interface_info (
+            api_method,     api_path,   api_status, api_comment,
+            api_type,       api_script, api_schema, api_sample,
+            api_create_time,api_gmt_time
+        ) values (
+            :apiMethod,     :apiPath,   :apiStatus, :apiComment,
+            :apiType,       :apiScript, :apiSchema, :apiSample,
+            now(),          now()
+        );
     %>,
-    "oracle" : @@inner_dataway_sql()<%
-        xxxxx ;select seq_atable.currval from dual;
+    "oracle"    : @@inner_dataway_sql(apiMethod, apiPath, apiStatus, apiComment, apiType, apiScript, apiSchema, apiSample)<%
+        insert into interface_info (
+            api_method,     api_path,   api_status, api_comment,
+            api_type,       api_script, api_schema, api_sample,
+            api_create_time,api_gmt_time
+        ) values (
+            :apiMethod,     :apiPath,   :apiStatus, :apiComment,
+            :apiType,       :apiScript, :apiSchema, :apiSample,
+            now(),          now()
+        );
     %>
 };
 
@@ -35,9 +51,9 @@ var res = insertMap[`net.hasor.dataway.config.DataBaseType`](
 );
 
 var queryMap = {
-    "mysql"  : @@inner_dataway_sql(apiMethod, apiPath)<% select api_id from interface_info where api_method= :apiMethod and api_path = :apiPath limit 1; %>,
-    "pg"     : @@inner_dataway_sql()<% s %>,
-    "oracle" : @@inner_dataway_sql()<% s %>
+    "mysql"     : @@inner_dataway_sql(apiMethod, apiPath)<% select api_id from interface_info where api_method= :apiMethod and api_path = :apiPath limit 1; %>,
+    "postgresql": @@inner_dataway_sql(apiMethod, apiPath)<% select api_id from interface_info where api_method= :apiMethod and api_path = :apiPath limit 1; %>,
+    "oracle"    : @@inner_dataway_sql(apiMethod, apiPath)<% select api_id from interface_info where api_method= :apiMethod and api_path = :apiPath limit 1; %>
 };
 
 if (res == 1) {

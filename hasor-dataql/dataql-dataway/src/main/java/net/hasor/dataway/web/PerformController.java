@@ -22,7 +22,6 @@ import net.hasor.dataway.config.JsonRenderEngine;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.RequestUtils;
 import net.hasor.dataway.config.Result;
-import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
@@ -31,7 +30,6 @@ import net.hasor.web.render.RenderType;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,10 +44,10 @@ public class PerformController {
     private DataQL dataQL;
 
     @Post
-    public Result doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody, Invoker invoker) throws IOException {
-        Map<String, List<String>> headerMap = RequestUtils.headerMap(invoker);
-        Map<String, List<String>> cookieMap = RequestUtils.headerMap(invoker);
-        //
+    public Result doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) {
+        if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
+            throw new IllegalArgumentException("id Parameters of the ambiguity.");
+        }
         //
         String strCodeType = requestBody.get("codeType").toString();
         String strCodeValue = requestBody.get("codeValue").toString();

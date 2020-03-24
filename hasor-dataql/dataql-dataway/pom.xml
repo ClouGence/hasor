@@ -145,7 +145,6 @@
             <groupId>net.hasor</groupId>
             <artifactId>hasor-db</artifactId>
         </dependency>
-
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-dataql</artifactId>

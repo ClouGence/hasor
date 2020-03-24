@@ -74,7 +74,6 @@ public class DatawayModule implements WebModule {
                 ApiHistoryGetController.class, //
                 //
                 DisableController.class,    //
-                ExecuteController.class,    //
                 SmokeController.class,      //
                 SaveApiController.class,    //
                 PublishController.class,    //
