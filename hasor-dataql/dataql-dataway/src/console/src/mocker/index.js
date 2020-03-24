@@ -135,14 +135,6 @@ const proxy = {
             }
         }));
     },
-    'POST /api/check-path': (req, res) => {
-        res.send(Mock.mock({
-            "success": Random.boolean(3, 5, false),
-            "message": 'Another API is already in use.',
-            "code": 500,
-            "result": true
-        }));
-    },
     'POST /api/save-api': (req, res) => {
         res.send(Mock.mock({
             "success": Random.boolean(3, 5, false),

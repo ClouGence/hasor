@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.tconsole.commands;
-import net.hasor.core.Singleton;
 import net.hasor.tconsole.TelCommand;
 import net.hasor.tconsole.TelExecutorVoid;
 import net.hasor.utils.StringUtils;
+
+import javax.inject.Singleton;
 
 /**
  * 在本次 tConsole 会话中获取/设置 Session 变量。

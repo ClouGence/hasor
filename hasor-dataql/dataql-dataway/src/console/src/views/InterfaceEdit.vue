@@ -3,23 +3,19 @@
         <div class="monacoEditorHeader">
             <div style="width: 50%; margin-top: 2px; display: inline-table;">
                 <el-tooltip class="item" effect="dark" placement="bottom" :content="apiInfo.comment || defaultComment" :disabled="showComment">
-                    <el-input placeholder="the path to access this Api" v-model="apiInfo.apiPath" class="input-with-select" size="mini" :disabled="!apiPathEdit">
-                        <el-select v-model="apiInfo.select" slot="prepend" placeholder="Choose" :disabled="!apiPathEdit">
+                    <el-input placeholder="the path to access this Api" v-model="apiInfo.apiPath" class="input-with-select" size="mini" :disabled="!newCode">
+                        <el-select v-model="apiInfo.select" slot="prepend" placeholder="Choose" :disabled="!newCode">
                             <el-option label="POST" value="POST"/>
                             <el-option label="PUT" value="PUT"/>
                             <el-option label="GET" value="GET"/>
                         </el-select>
-                        <el-button slot="append" icon="el-icon-edit" v-if="!newCode && !apiPathEdit" @click.native="handleEnableEditPath"/>
-                        <el-button slot="append" icon="el-icon-check" v-if="!newCode && apiPathEdit" @click.native="handleModifyEditPath"/>
-                        <el-button slot="append" icon="el-icon-close" v-if="!newCode && apiPathEdit" @click.native="handleCancelEditPath"/>
-                        <el-button slot="append" icon="el-icon-info" v-if="newCode && !showComment" @click.native="handleShowComment"/>
+                        <el-button slot="append" icon="el-icon-info" @click.native="handleShowComment"/>
                     </el-input>
                 </el-tooltip>
             </div>
             <div class="comment" v-if="showComment">
                 <el-input placeholder="Api's comment." size="mini" v-model="apiInfo.comment">
                     <template slot="prepend">Comment</template>
-                    <el-button slot="append" icon="el-icon-check" v-if="newCode" @click.native="handleShowComment"/>
                 </el-input>
             </div>
             <div style="display: inline-table;padding-left: 5px;">
@@ -138,59 +134,6 @@
                 this.layoutMonacoEditor();
             },
             //
-            // 激活编辑路径
-            handleEnableEditPath() {
-                this.tempPathInfo = {
-                    select: this.apiInfo.select,
-                    apiPath: this.apiInfo.apiPath,
-                    comment: this.apiInfo.comment
-                };
-                this.apiPathEdit = true;
-                this.showComment = true;
-            },
-            // 取消路径编辑
-            handleCancelEditPath() {
-                this.apiInfo.select = this.tempPathInfo.select;
-                this.apiInfo.apiPath = this.tempPathInfo.apiPath;
-                this.apiInfo.comment = this.tempPathInfo.comment;
-                this.apiPathEdit = false;
-                this.showComment = false;
-            },
-            // 递交路径修改的内容
-            handleModifyEditPath() {
-                if (this.apiInfo.apiPath.toLowerCase() === this.tempPathInfo.apiPath.toLowerCase() &&
-                    this.apiInfo.select === this.tempPathInfo.select &&
-                    this.apiInfo.comment === this.tempPathInfo.comment
-                ) {
-                    this.apiPathEdit = false;
-                    this.showComment = false;
-                    this.$message({message: 'Api path has not changed.', type: 'success'});
-                    return
-                }
-                //
-                if (!this.apiInfo.apiPath.toLowerCase().startsWith(this.apiBaseUrl.toLowerCase())) {
-                    errorBox('The prefix must be ' + this.apiBaseUrl);
-                    return
-                }
-                //
-                const self = this;
-                request(ApiUrl.checkPath + "?id=" + self.apiInfo.apiID, {
-                    "method": "POST",
-                    "data": {
-                        "newPath": self.apiInfo.apiPath.toLowerCase(),
-                        "newSelect": self.apiInfo.select.toUpperCase()
-                    }
-                }, response => {
-                    if (response.data.result) {
-                        self.apiPathEdit = false;
-                        self.showComment = false;
-                        self.apiInfo.editorSubmitted = false;
-                        self.$message({message: 'Api path verify pass.', type: 'success'});
-                    } else {
-                        errorBox('result is false.');
-                    }
-                });
-            },
             // 显示隐藏Comment
             handleShowComment() {
                 this.showComment = !this.showComment;
@@ -249,7 +192,6 @@
                     self.requestBody = data.codeInfo.requestBody;
                     self.headerData = data.codeInfo.headerData;
                     //
-                    self.apiPathEdit = false;
                     self.tagInfo = tagInfo(self.apiInfo.apiStatus);
                     self.loadEditorMode();
                     //
@@ -340,8 +282,6 @@
                 defaultComment: "There is no comment, Click 'info' icon to add comment",
                 showComment: false,
                 newCode: false,
-                apiPathEdit: true,
-                tempPathInfo: null,
                 apiBaseUrl: apiBaseUrl('/'),
                 //
                 //

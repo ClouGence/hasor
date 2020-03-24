@@ -17,7 +17,6 @@ package net.hasor.dataway.config;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.dataql.DataQL;
-import net.hasor.dataql.Finder;
 import net.hasor.dataql.QueryApiBinder;
 import net.hasor.dataway.web.*;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -69,10 +68,10 @@ public class DatawayModule implements WebModule {
         // 使用 findClass 虽然可以降低代码复杂度，但是会因为引入代码扫描而增加初始化时间
         Class<?>[] controllerSet = new Class<?>[] {//
                 ApiDetailController.class,  //
-                ApiHistoryController.class, //
+                ApiHistoryListController.class, //
                 ApiInfoController.class,    //
                 ApiListController.class,    //
-                GetHistoryController.class, //
+                ApiHistoryGetController.class, //
                 //
                 DisableController.class,    //
                 ExecuteController.class,    //

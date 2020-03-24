@@ -35,6 +35,9 @@
 </template>
 
 <script>
+    import request from "./utils/request";
+    import {ApiUrl} from "./utils/api-const";
+
     export default {
         name: 'App',
         data: function () {
@@ -47,8 +50,19 @@
             window.addEventListener('resize', () => {
                 return (() => {
                     this.fullHeight = document.documentElement.clientHeight - 60;
-                })()
-            })
+                })();
+            });
+            //
+            if (window.ALL_MAC !== '{ALL_MAC}') {
+                const self = this;
+                request(ApiUrl.report, {
+                    "method": "POST",
+                    "loading": false,
+                    "data": window.ALL_MAC
+                }, response => {
+                }, response => {
+                },);
+            }
         }
     }
 </script>

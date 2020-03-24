@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.tconsole.commands;
-import net.hasor.core.Singleton;
 import net.hasor.tconsole.TelCommand;
 import net.hasor.tconsole.TelExecutorVoid;
 import net.hasor.tconsole.TelOptions;
+
+import javax.inject.Singleton;
 
 /**
  * 关闭 tConsole session。

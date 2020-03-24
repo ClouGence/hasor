@@ -1,5 +1,4 @@
-CREATE TABLE `interface_info`
-(
+CREATE TABLE `interface_info` (
     `api_id`          int(11)      NOT NULL AUTO_INCREMENT   COMMENT 'ID',
     `api_method`      varchar(12)  NOT NULL                  COMMENT 'HttpMethod：GET、PUT、POST',
     `api_path`        varchar(512) NOT NULL                  COMMENT '拦截路径',
