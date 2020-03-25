@@ -44,16 +44,16 @@ public class ExampleModule implements SpringModule {
         dataSource.setMinIdle(1);
         dataSource.setMaxActive(5);
         apiBinder.installModule(new JdbcModule(Level.Full, dataSource));
-        // .DataQL
+        // .DataQL & Dataway
         apiBinder.tryCast(QueryApiBinder.class).loadFragment(apiBinder.findClass(DimFragment.class));
         apiBinder.tryCast(QueryApiBinder.class).loadUdfSource(apiBinder.findClass(DimUdfSource.class));
+        apiBinder.bindType(DataBaseType.class).toInstance(DataBaseType.Mysql);
         // .Web
         apiBinder.tryCast(WebApiBinder.class).loadMappingTo(//
                 apiBinder.findClass(MappingTo.class),//
                 Matchers.anyClass(),//
                 springTypeSupplier(apiBinder)//
         );
-        apiBinder.bindType(DataBaseType.class).toInstance(DataBaseType.Mysql);
     }
 
     @Override

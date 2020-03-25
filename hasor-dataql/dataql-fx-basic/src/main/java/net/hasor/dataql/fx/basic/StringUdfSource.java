@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx;
+package net.hasor.dataql.fx.basic;
 import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.utils.StringUtils;
 
@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 字符串函数 <code>import 'net.hasor.dataql.udfs.StringUdfSource' as string;</code>
+ * 字符串函数 <code>import 'net.hasor.dataql.fx.basic.StringUdfSource' as string;</code>
  * @version : 2019-12-12
  */
 public class StringUdfSource extends StringUtils implements UdfSourceAssembly {

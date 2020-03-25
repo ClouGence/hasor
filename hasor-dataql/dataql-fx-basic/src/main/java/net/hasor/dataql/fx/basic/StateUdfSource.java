@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx;
+package net.hasor.dataql.fx.basic;
 import net.hasor.dataql.Udf;
 import net.hasor.dataql.UdfSourceAssembly;
 
@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * 状态函数 <code>import 'net.hasor.dataql.udfs.StateUdfSource' as state;</code>
+ * 状态函数 <code>import 'net.hasor.dataql.fx.basic.StateUdfSource' as state;</code>
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */

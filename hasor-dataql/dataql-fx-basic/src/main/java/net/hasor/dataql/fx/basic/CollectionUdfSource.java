@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx;
+package net.hasor.dataql.fx.basic;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.Udf;
@@ -30,7 +30,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * 集合函数。函数库引入 <code>import 'net.hasor.dataql.udfs.CollectionUdfSource' as collect;</code>
+ * 集合函数。函数库引入 <code>import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;</code>
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */

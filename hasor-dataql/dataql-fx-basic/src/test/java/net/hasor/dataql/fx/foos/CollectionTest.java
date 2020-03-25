@@ -17,7 +17,7 @@ public class CollectionTest extends AbstractTestResource {
     @Test
     public void merge() throws IOException, InstructRuntimeException {
         String qlString = "";
-        qlString = qlString + "import 'net.hasor.dataql.fx.CollectionUdfSource' as collect;";
+        qlString = qlString + "import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;";
         qlString = qlString + "return collect.merge(0,[1,2],[3,4],5,6,[7,8],[9])";
         //
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
@@ -31,7 +31,7 @@ public class CollectionTest extends AbstractTestResource {
     @Test
     public void filter() throws IOException, InstructRuntimeException {
         String qlString = "";
-        qlString = qlString + "import 'net.hasor.dataql.fx.CollectionUdfSource' as collect;";
+        qlString = qlString + "import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;";
         qlString = qlString + "var dat = [0,1,2,3,4,5,6,7,8,9]; return collect.filter(dat,(obj) -> { return (obj >5) ? true : false })";
         //
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
@@ -48,7 +48,7 @@ public class CollectionTest extends AbstractTestResource {
     @Test
     public void limit() throws IOException, InstructRuntimeException {
         String qlString = "";
-        qlString = qlString + "import 'net.hasor.dataql.fx.CollectionUdfSource' as collect;";
+        qlString = qlString + "import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;";
         qlString = qlString + "var dat = [0,1,2,3,4,5,6,7,8,9]; return collect.limit(dat,3,3)";
         //
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
@@ -64,7 +64,7 @@ public class CollectionTest extends AbstractTestResource {
     @Test
     public void list2map() throws IOException, InstructRuntimeException {
         String qlString = "";
-        qlString = qlString + "import 'net.hasor.dataql.fx.CollectionUdfSource' as collect;";
+        qlString = qlString + "import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;";
         qlString = qlString + "import 'net.hasor.test.dataql.beans.UserOrderUdfSource' as data;";
         qlString = qlString + "return collect.list2map(data.userList(),'userID')";
         //
@@ -82,7 +82,7 @@ public class CollectionTest extends AbstractTestResource {
     @Test
     public void map2list() throws IOException, InstructRuntimeException {
         String qlString = "";
-        qlString = qlString + "import 'net.hasor.dataql.fx.CollectionUdfSource' as collect;";
+        qlString = qlString + "import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;";
         qlString = qlString + "import 'net.hasor.test.dataql.beans.UserOrderUdfSource' as data;";
         qlString = qlString + "return collect.map2list(data.userList()[0])";
         //
@@ -98,7 +98,7 @@ public class CollectionTest extends AbstractTestResource {
     @Test
     public void empty() throws IOException, InstructRuntimeException {
         String qlString = "";
-        qlString = qlString + "import 'net.hasor.dataql.fx.CollectionUdfSource' as collect;";
+        qlString = qlString + "import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;";
         qlString = qlString + "return collect.isEmpty([])";
         //
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
@@ -110,7 +110,7 @@ public class CollectionTest extends AbstractTestResource {
     @Test
     public void empty2() throws IOException, InstructRuntimeException {
         String qlString = "";
-        qlString = qlString + "import 'net.hasor.dataql.fx.CollectionUdfSource' as collect;";
+        qlString = qlString + "import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;";
         qlString = qlString + "if (collect.isEmpty([])) return true else return false;";
         //
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);

@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx;
+package net.hasor.dataql.fx.basic;
 import net.hasor.dataql.UdfSourceAssembly;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 带有状态的集合。函数库引入 <code>import 'net.hasor.dataql.udfs.CollectionUdfSource' as collect; var arr = collect.new</code>
+ * 带有状态的集合。函数库引入 <code>import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect; var arr = collect.new</code>
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */

@@ -16,7 +16,7 @@ public class TimeTest extends AbstractTestResource {
     @Test
     public void now() throws IOException, InstructRuntimeException {
         String qlString = "";
-        qlString = qlString + "import 'net.hasor.dataql.fx.DateTimeUdfSource' as time;";
+        qlString = qlString + "import 'net.hasor.dataql.fx.basic.DateTimeUdfSource' as time;";
         qlString = qlString + "return time.now()";
         //
         long t1 = System.currentTimeMillis();
@@ -31,7 +31,7 @@ public class TimeTest extends AbstractTestResource {
     @Test
     public void time() throws IOException, InstructRuntimeException {
         String qlString = "";
-        qlString = qlString + "import 'net.hasor.dataql.fx.DateTimeUdfSource' as time;";
+        qlString = qlString + "import 'net.hasor.dataql.fx.basic.DateTimeUdfSource' as time;";
         qlString = qlString + "var now = time.now() ; return (time.year(now) + '-' + time.month(now) + '-' + time.day(now))";
         //
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
@@ -45,7 +45,7 @@ public class TimeTest extends AbstractTestResource {
     @Test
     public void format() throws IOException, InstructRuntimeException {
         String qlString = "";
-        qlString = qlString + "import 'net.hasor.dataql.fx.DateTimeUdfSource' as time;";
+        qlString = qlString + "import 'net.hasor.dataql.fx.basic.DateTimeUdfSource' as time;";
         qlString = qlString + "return time.format(time.now(),'yyyy-MM-dd')";
         //
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
@@ -59,7 +59,7 @@ public class TimeTest extends AbstractTestResource {
     @Test
     public void parse() throws IOException, InstructRuntimeException, ParseException {
         String qlString = "";
-        qlString = qlString + "import 'net.hasor.dataql.fx.DateTimeUdfSource' as time;";
+        qlString = qlString + "import 'net.hasor.dataql.fx.basic.DateTimeUdfSource' as time;";
         qlString = qlString + "return time.parser('2017-03-15 12:44:56','yyyy-MM-dd hh:mm:ss')";
         //
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);

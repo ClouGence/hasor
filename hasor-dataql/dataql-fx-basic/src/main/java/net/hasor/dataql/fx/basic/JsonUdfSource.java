@@ -13,24 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx;
+package net.hasor.dataql.fx.basic;
+import com.alibaba.fastjson.JSON;
 import net.hasor.dataql.UdfSourceAssembly;
 
-import java.util.UUID;
-
 /**
- * ID函数。函数库引入 <code>import 'net.hasor.dataql.udfs.IdentifierUdfSource' as ids;</code>
+ * Json函数。函数库引入 <code>import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;</code>
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
-public class IdentifierUdfSource implements UdfSourceAssembly {
-    /** 返回一个完整格式的 UUID 字符串。  */
-    public static String uuid() {
-        return UUID.randomUUID().toString();
+public class JsonUdfSource implements UdfSourceAssembly {
+    /** 把对象 JSON 序列化 */
+    public String toJson(Object data) {
+        return JSON.toJSONString(data);
     }
 
-    /** 返回一个不含"-" 符号的 UUID 字符串 */
-    public static String uuid2() {
-        return UUID.randomUUID().toString().replace("-", "");
+    /** 把对象 JSON 序列化（带格式） */
+    public String toFmtJson(Object data) {
+        return JSON.toJSONString(data, true);
+    }
+
+    /** 解析 JSON 序列化（带格式） */
+    public Object fromJson(String data) {
+        if (data == null) {
+            return null;
+        }
+        return JSON.parse(data);
     }
 }

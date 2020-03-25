@@ -1,6 +1,6 @@
 // 递归：利用有状态集合，把一个多维数组打平成为一维数组
 
-import 'net.hasor.dataql.fx.CollectionUdfSource' as collect;
+import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;
 
 var data = [
     [1,2,3,[4,5]],

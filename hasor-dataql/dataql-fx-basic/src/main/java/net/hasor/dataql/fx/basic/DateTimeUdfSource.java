@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx;
+package net.hasor.dataql.fx.basic;
 import net.hasor.dataql.UdfSourceAssembly;
 
 import java.text.ParseException;
@@ -22,7 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * 时间函数。函数库引入 <code>import 'net.hasor.dataql.udfs.DateTimeUdfSource' as time;</code>
+ * 时间函数。函数库引入 <code>import 'net.hasor.dataql.fx.basic.DateTimeUdfSource' as time;</code>
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */

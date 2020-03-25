@@ -1,4 +1,4 @@
-import 'net.hasor.dataql.fx.JsonUdfSource' as json;
+import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 
 var updateMap = {
     "mysql"     : @@inner_dataway_sql(apiID, apiStatus, apiComment, apiType, apiScript, apiSample)<%

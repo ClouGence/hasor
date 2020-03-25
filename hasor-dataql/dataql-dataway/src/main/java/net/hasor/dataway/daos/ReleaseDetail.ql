@@ -1,5 +1,5 @@
-import 'net.hasor.dataql.fx.CollectionUdfSource' as collect;
-import 'net.hasor.dataql.fx.JsonUdfSource' as json;
+import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;
+import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 
 var queryMap = {
     "mysql"     : @@inner_dataway_sql(apiMethod, apiPath)<%select * from interface_release where pub_method = :apiMethod and pub_path = :apiPath and pub_status = 0 order by pub_release_time desc limit 1;%>,

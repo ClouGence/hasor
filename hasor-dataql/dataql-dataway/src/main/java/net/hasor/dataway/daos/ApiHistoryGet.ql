@@ -1,4 +1,4 @@
-import 'net.hasor.dataql.fx.JsonUdfSource' as json;
+import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 
 var queryMap = {
     "mysql"     : @@inner_dataway_sql(historyId)<% select * from interface_release where pub_id= :historyId; %>,

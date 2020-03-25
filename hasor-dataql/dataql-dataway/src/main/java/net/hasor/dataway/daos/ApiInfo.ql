@@ -1,5 +1,5 @@
-import 'net.hasor.dataql.fx.CollectionUdfSource' as collect;
-import 'net.hasor.dataql.fx.JsonUdfSource' as json;
+import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;
+import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 
 var queryMap = {
     "mysql"     : @@inner_dataway_sql(apiId)<% select * from interface_info where api_id= :apiId; %>,
