@@ -24,7 +24,6 @@ import net.hasor.dataway.config.RequestUtils;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiDetailQuery;
 import net.hasor.dataway.daos.PublishApiQuery;
-import net.hasor.dataway.service.CheckService;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
@@ -45,9 +44,7 @@ import java.util.Map;
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class PublishController {
     @Inject
-    private DataQL       dataQL;
-    @Inject
-    private CheckService checkService;
+    private DataQL dataQL;
 
     @Post
     public Result<Object> doPublish(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
@@ -58,7 +55,6 @@ public class PublishController {
         QueryResult queryDetail = new ApiDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
             put("apiId", apiId);
         }});
-        this.checkService.checkApi(((ObjectModel) queryDetail.getData()).getValue("path").asString());
         String strCodeType = ((ObjectModel) queryDetail.getData()).getValue("codeType").asString();
         String strCodeValue = ((ObjectModel) queryDetail.getData()).getObject("codeInfo").getValue("codeValue").asString();
         String requestBodyJson = ((ObjectModel) queryDetail.getData()).getObject("codeInfo").getValue("requestBody").asString();

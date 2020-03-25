@@ -24,7 +24,6 @@ import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.RequestUtils;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiDetailQuery;
-import net.hasor.dataway.service.CheckService;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
@@ -45,8 +44,6 @@ import java.util.Map;
 public class SmokeController {
     @Inject
     private DataQL       dataQL;
-    @Inject
-    private CheckService checkService;
 
     @Post
     public Result<Map<String, Object>> doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
@@ -57,7 +54,6 @@ public class SmokeController {
         QueryResult queryDetail = new ApiDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
             put("apiId", apiId);
         }});
-        this.checkService.checkApi(((ObjectModel) queryDetail.getData()).getValue("path").asString());
         String strCodeType = ((ObjectModel) queryDetail.getData()).getValue("codeType").asString();
         String strCodeValue = ((ObjectModel) queryDetail.getData()).getObject("codeInfo").getValue("codeValue").asString();
         Map<String, Object> strRequestBody = (Map<String, Object>) requestBody.get("requestBody");
