@@ -20,6 +20,7 @@ import net.hasor.dataql.HintNames;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.domain.DataModel;
+import net.hasor.dataql.domain.ValueModel;
 import net.hasor.dataql.runtime.inset.OpcodesPool;
 import net.hasor.dataql.runtime.mem.*;
 
@@ -102,7 +103,11 @@ class QueryImpl extends HintsSet implements CompilerVarQuery {
         if (ExitType.Exit == exitType) {
             return new QueryResultImpl(true, resultCode, result, executionTime);
         } else if (ExitType.Throw == exitType) {
-            throw new ThrowRuntimeException("udf or lambda failed.", resultCode, executionTime, result);
+            String message = "udf or lambda failed.";
+            if (result instanceof ValueModel) {
+                message = resultCode + " : " + ((ValueModel) result).asString();
+            }
+            throw new ThrowRuntimeException(message, resultCode, executionTime, result);
         } else if (ExitType.Return == exitType) {
             return new QueryResultImpl(false, resultCode, result, executionTime);
         } else {
