@@ -19,13 +19,12 @@ import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ObjectModel;
-import net.hasor.dataql.runtime.ThrowRuntimeException;
 import net.hasor.dataway.config.JsonRenderEngine;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.RequestUtils;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiDetailQuery;
-import net.hasor.web.Invoker;
+import net.hasor.dataway.service.CheckService;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
@@ -34,7 +33,6 @@ import net.hasor.web.render.RenderType;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,10 +44,12 @@ import java.util.Map;
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class SmokeController {
     @Inject
-    private DataQL dataQL;
+    private DataQL       dataQL;
+    @Inject
+    private CheckService checkService;
 
     @Post
-    public Result doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
+    public Result<Map<String, Object>> doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
@@ -57,6 +57,7 @@ public class SmokeController {
         QueryResult queryDetail = new ApiDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
             put("apiId", apiId);
         }});
+        this.checkService.checkApi(((ObjectModel) queryDetail.getData()).getValue("path").asString());
         String strCodeType = ((ObjectModel) queryDetail.getData()).getValue("codeType").asString();
         String strCodeValue = ((ObjectModel) queryDetail.getData()).getObject("codeInfo").getValue("codeValue").asString();
         Map<String, Object> strRequestBody = (Map<String, Object>) requestBody.get("requestBody");
@@ -68,7 +69,7 @@ public class SmokeController {
             Query dataQLQuery = this.dataQL.createQuery(strCodeValue);
             QueryResult queryResult = dataQLQuery.execute(strRequestBody);
             DataModel resultData = queryResult.getData();
-            Result result = Result.of(new HashMap<String, Object>() {{
+            Result<Map<String, Object>> result = Result.of(new HashMap<String, Object>() {{
                 put("success", true);
                 put("code", queryResult.getCode());
                 put("executionTime", queryResult.executionTime());
@@ -78,21 +79,7 @@ public class SmokeController {
             this.updateSchema(apiId, strRequestBody, resultData);
             return result;
         } catch (Exception e) {
-            if (e instanceof ThrowRuntimeException) {
-                return Result.of(new HashMap<String, Object>() {{
-                    put("success", false);
-                    put("code", ((ThrowRuntimeException) e).getThrowCode());
-                    put("executionTime", ((ThrowRuntimeException) e).getExecutionTime());
-                    put("value", ((ThrowRuntimeException) e).getResult().unwrap());
-                }});
-            } else {
-                return Result.of(new HashMap<String, Object>() {{
-                    put("success", false);
-                    put("code", 500);
-                    put("executionTime", -1);
-                    put("value", e.getMessage());
-                }});
-            }
+            return RequestUtils.exceptionToResult(e);
         }
     }
 

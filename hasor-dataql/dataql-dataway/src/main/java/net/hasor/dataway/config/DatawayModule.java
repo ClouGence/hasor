@@ -52,6 +52,7 @@ public class DatawayModule implements WebModule {
             apiBaseUri = "/api/";
         }
         logger.info("dataway api workAt " + apiBaseUri);
+        environment.addVariable("HASOR_DATAQL_DATAWAY_API_URL", apiBaseUri);
         apiBinder.filter(fixUrl(apiBaseUri + "/*")).through(new InterfaceApiFilter(apiBaseUri));
         //
         // .Dataway 后台管理界面

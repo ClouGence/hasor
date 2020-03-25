@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataway.config;
+import com.alibaba.fastjson.JSON;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.FilenameUtils;
@@ -32,6 +33,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static net.hasor.dataway.config.DatawayModule.fixUrl;
@@ -63,7 +65,15 @@ class InterfaceUiFilter implements InvokerFilter {
         httpResponse.setCharacterEncoding("UTF-8");
         String requestURI = httpRequest.getRequestURI();
         if (requestURI.startsWith(this.uiAdminBaseUri)) {
-            return chain.doNext(invoker);
+            try {
+                return chain.doNext(invoker);
+            } catch (Exception e) {
+                Map<String, Object> objectMap = RequestUtils.exceptionToError(e).getResult();
+                PrintWriter writer = httpResponse.getWriter();
+                writer.write(JSON.toJSONString(objectMap));
+                writer.flush();
+                return objectMap;
+            }
         }
         //
         // 处理 index.html

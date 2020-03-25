@@ -1,9 +1,9 @@
 import 'net.hasor.dataql.fx.JsonUdfSource' as json;
 
 var queryMap = {
-    "mysql"     : @@inner_dataway_sql(historyId)<% select * from interface_release where pub_api_id= :historyId; %>,
-    "postgresql": @@inner_dataway_sql(historyId)<% select * from interface_release where pub_api_id= :historyId; %>,
-    "oracle"    : @@inner_dataway_sql(historyId)<% select * from interface_release where pub_api_id= :historyId; %>
+    "mysql"     : @@inner_dataway_sql(historyId)<% select * from interface_release where pub_id= :historyId; %>,
+    "postgresql": @@inner_dataway_sql(historyId)<% select * from interface_release where pub_id= :historyId; %>,
+    "oracle"    : @@inner_dataway_sql(historyId)<% select * from interface_release where pub_id= :historyId; %>
 };
 
 return queryMap[`net.hasor.dataway.config.DataBaseType`](${historyId}) => {

@@ -15,9 +15,12 @@
  */
 package net.hasor.dataway.config;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
-import net.hasor.dataway.daos.ApiQuery;
+import net.hasor.dataql.domain.ObjectModel;
+import net.hasor.dataway.daos.ReleaseDetailQuery;
+import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerConfig;
@@ -26,6 +29,9 @@ import net.hasor.web.InvokerFilter;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 负责处理 API 的执行
@@ -34,10 +40,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 class InterfaceApiFilter implements InvokerFilter {
     @Inject
-    private DataQL   dataQL;
-    @Inject
-    private ApiQuery apiQuery;
-    private String   apiBaseUri;
+    private DataQL dataQL;
+    private String apiBaseUri;
 
     public InterfaceApiFilter(String apiBaseUri) {
         this.apiBaseUri = apiBaseUri;
@@ -56,28 +60,58 @@ class InterfaceApiFilter implements InvokerFilter {
         if (!requestURI.startsWith(this.apiBaseUri)) {
             return chain.doNext(invoker);
         }
-        //        //        Map<String, List<String>> headerMap = RequestUtils.headerMap(invoker);
-        //        Map<String, List<String>> cookieMap = RequestUtils.headerMap(invoker);
         //
-        //            put("executionTime", System.currentTimeMillis());
-        //            put("data", new HashMap<String, Object>() {{
-        //                put("body", "<div>请编辑html内容</div>" + apiId);
-        //                put("headers", "{'abc':" + apiId + "}");
-        //                put("headerData", new ArrayList<Map<String, Object>>() {{
-        //                    add(newData(true, "key1", "value-1"));
-        //                    add(newData(true, "key2", "value-2"));
-        //                    add(newData(true, "key3", "value-3"));
-        //                    add(newData(false, "key4", "value-4"));
-        //                }});
-        //            }});
         httpRequest.setCharacterEncoding("UTF-8");
         httpResponse.setCharacterEncoding("UTF-8");
-        String requestUrl = invoker.getRequestPath();
-        String queryApi = "return true;";//apiQuery.queryApi(requestUrl);
-        QueryResult execute = dataQL.createQuery(queryApi).execute();
+        String httpMethod = httpRequest.getMethod().toUpperCase().trim();
+        Map<String, List<String>> headerMap = RequestUtils.headerMap(invoker);
+        Map<String, List<String>> cookieMap = RequestUtils.headerMap(invoker);
         //
-        httpResponse.getWriter().write(JSON.toJSONString(execute.getData().unwrap()));
         //
-        return null;
+        String script = null;
+        try {
+            QueryResult queryResult = new ReleaseDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
+                put("apiMethod", httpMethod);
+                put("apiPath", requestURI);
+            }});
+            ObjectModel dataModel = (ObjectModel) queryResult.getData();
+            script = dataModel.getValue("script").asString();
+            //    "releaseID" : pub_id,
+            //    "apiID"     : pub_api_id,
+            //    "apiMethod" : pub_method,
+            //    "apiPath"   : pub_path,
+            //    "script"    : pub_script
+        } catch (Exception e) {
+            Map<String, Object> objectMap = RequestUtils.exceptionToResult(e).getResult();
+            httpResponse.getWriter().write(JSON.toJSONString(objectMap));
+            return objectMap;
+        }
+        //
+        try {
+            Map<String, ?> jsonParam;
+            if ("GET".equalsIgnoreCase(httpMethod)) {
+                jsonParam = httpRequest.getParameterMap();
+            } else {
+                String jsonBody = invoker.getJsonBodyString();
+                if (StringUtils.isNotBlank(jsonBody)) {
+                    jsonParam = JSON.parseObject(jsonBody);
+                } else {
+                    jsonParam = new HashMap<>();
+                }
+            }
+            QueryResult execute = dataQL.createQuery(script).execute(jsonParam);
+            HashMap<String, Object> hashMap = new HashMap<String, Object>() {{
+                put("success", true);
+                put("code", execute.getCode());
+                put("executionTime", execute.executionTime());
+                put("value", execute.getData().unwrap());
+            }};
+            httpResponse.getWriter().write(JSON.toJSONString(hashMap, SerializerFeature.WriteMapNullValue));
+            return hashMap;
+        } catch (Exception e) {
+            Map<String, Object> objectMap = RequestUtils.exceptionToResult(e).getResult();
+            httpResponse.getWriter().write(JSON.toJSONString(objectMap, SerializerFeature.WriteMapNullValue));
+            return objectMap;
+        }
     }
 }

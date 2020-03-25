@@ -19,14 +19,14 @@ package net.hasor.dataway.config;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-20
  */
-public class Result {
+public class Result<T> {
     private boolean success;
     private int     code;
     private String  message;
-    private Object  result;
+    private T       result;
 
-    public static Result of(Object obj) {
-        Result result = new Result();
+    public static <T> Result<T> of(T obj) {
+        Result<T> result = new Result<>();
         result.setSuccess(true);
         result.setCode(200);
         result.setMessage("OK");
@@ -34,8 +34,8 @@ public class Result {
         return result;
     }
 
-    public static Result of(int code, String message) {
-        Result result = new Result();
+    public static <T> Result<T> of(int code, String message) {
+        Result<T> result = new Result<>();
         result.setSuccess(false);
         result.setCode(code);
         result.setMessage(message);
@@ -67,11 +67,11 @@ public class Result {
         this.message = message;
     }
 
-    public Object getResult() {
+    public T getResult() {
         return result;
     }
 
-    public void setResult(Object result) {
+    public void setResult(T result) {
         this.result = result;
     }
 }

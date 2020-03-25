@@ -17,7 +17,6 @@ package net.hasor.dataway.web;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
-import net.hasor.dataql.runtime.ThrowRuntimeException;
 import net.hasor.dataway.config.JsonRenderEngine;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.RequestUtils;
@@ -28,7 +27,6 @@ import net.hasor.web.annotation.RequestBody;
 import net.hasor.web.render.RenderType;
 
 import javax.inject.Inject;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +42,7 @@ public class PerformController {
     private DataQL dataQL;
 
     @Post
-    public Result doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) {
+    public Result<Map<String, Object>> doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
@@ -66,21 +64,7 @@ public class PerformController {
                 put("value", queryResult.getData().unwrap());
             }});
         } catch (Exception e) {
-            if (e instanceof ThrowRuntimeException) {
-                return Result.of(new HashMap<String, Object>() {{
-                    put("success", false);
-                    put("code", ((ThrowRuntimeException) e).getThrowCode());
-                    put("executionTime", ((ThrowRuntimeException) e).getExecutionTime());
-                    put("value", ((ThrowRuntimeException) e).getResult().unwrap());
-                }});
-            } else {
-                return Result.of(new HashMap<String, Object>() {{
-                    put("success", false);
-                    put("code", 500);
-                    put("executionTime", -1);
-                    put("value", e.getMessage());
-                }});
-            }
+            return RequestUtils.exceptionToResult(e);
         }
     }
 }

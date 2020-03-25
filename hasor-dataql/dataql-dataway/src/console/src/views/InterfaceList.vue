@@ -156,8 +156,7 @@
                 }
                 //
                 const self = this;
-                let requestURL = (ApiUrl.execute + "/").replace("//", "/");
-                requestURL = (requestURL + this.requestApiInfo.path).replace("//", "/");
+                let requestURL = ("/" + this.requestApiInfo.path).replace("//", "/");
                 request(requestURL, {
                     "direct": true,
                     "method": this.requestApiInfo.select,

@@ -24,6 +24,7 @@ import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiInfoQuery;
 import net.hasor.dataway.daos.InsertApiQuery;
 import net.hasor.dataway.daos.UpdateApiQuery;
+import net.hasor.dataway.service.CheckService;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
@@ -43,13 +44,16 @@ import java.util.Map;
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class SaveApiController {
     @Inject
-    private DataQL dataQL;
+    private DataQL       dataQL;
+    @Inject
+    private CheckService checkService;
 
     @Post
-    public Result doSave(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
+    public Result<Object> doSave(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
+        this.checkService.checkApi((String) requestBody.get("apiPath"));
         //
         Query query = null;
         if ("-1".equalsIgnoreCase(apiId)) {

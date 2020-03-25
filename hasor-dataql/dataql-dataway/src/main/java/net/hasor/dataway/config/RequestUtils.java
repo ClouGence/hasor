@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataway.config;
+import net.hasor.dataql.runtime.ThrowRuntimeException;
 import net.hasor.web.Invoker;
 
 import javax.servlet.http.Cookie;
@@ -70,5 +71,43 @@ public class RequestUtils {
         strCodeValue = "var tempCall = @@inner_dataway_sql(" + paramKeyBuilder.toString() + ")<%" + strCodeValue + "%>;\n";
         strCodeValue = strCodeValue + "return tempCall(" + callKeyBuilder.toString() + ");";
         return strCodeValue;
+    }
+
+    public static Result<Map<String, Object>> exceptionToError(Exception e) {
+        if (e instanceof ThrowRuntimeException) {
+            return Result.of(new HashMap<String, Object>() {{
+                put("success", false);
+                put("message", e.getMessage());
+                put("code", ((ThrowRuntimeException) e).getThrowCode());
+                put("executionTime", ((ThrowRuntimeException) e).getExecutionTime());
+                put("value", ((ThrowRuntimeException) e).getResult().unwrap());
+            }});
+        } else {
+            return Result.of(new HashMap<String, Object>() {{
+                put("success", false);
+                put("message", e.getMessage());
+                put("code", 500);
+                put("executionTime", -1);
+                put("value", e.getMessage());
+            }});
+        }
+    }
+
+    public static Result<Map<String, Object>> exceptionToResult(Exception e) {
+        if (e instanceof ThrowRuntimeException) {
+            return Result.of(new HashMap<String, Object>() {{
+                put("success", false);
+                put("code", ((ThrowRuntimeException) e).getThrowCode());
+                put("executionTime", ((ThrowRuntimeException) e).getExecutionTime());
+                put("value", ((ThrowRuntimeException) e).getResult().unwrap());
+            }});
+        } else {
+            return Result.of(new HashMap<String, Object>() {{
+                put("success", false);
+                put("code", 500);
+                put("executionTime", -1);
+                put("value", e.getMessage());
+            }});
+        }
     }
 }

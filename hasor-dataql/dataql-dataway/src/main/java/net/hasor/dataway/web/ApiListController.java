@@ -39,7 +39,7 @@ public class ApiListController {
     private DataQL dataQL;
 
     @Get
-    public Result apiList() throws IOException {
+    public Result<Object> apiList() throws IOException {
         QueryResult queryResult = new ApiListQuery(this.dataQL).execute(new HashMap<String, String>() {{
             //
         }});

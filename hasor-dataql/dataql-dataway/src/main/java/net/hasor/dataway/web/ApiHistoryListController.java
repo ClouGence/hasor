@@ -40,7 +40,7 @@ public class ApiHistoryListController {
     private DataQL dataQL;
 
     @Get
-    public Result apiHistory(@QueryParameter("id") String apiId) throws IOException {
+    public Result<Object> apiHistory(@QueryParameter("id") String apiId) throws IOException {
         QueryResult queryResult = new ApiHistoryListQuery(this.dataQL).execute(new HashMap<String, String>() {{
             put("apiId", apiId);
         }});

@@ -40,7 +40,7 @@ public class ApiDetailController {
     private DataQL dataQL;
 
     @Get
-    public Result apiDetail(@QueryParameter("id") String apiId) throws IOException {
+    public Result<Object> apiDetail(@QueryParameter("id") String apiId) throws IOException {
         QueryResult queryResult = new ApiDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
             put("apiId", apiId);
         }});

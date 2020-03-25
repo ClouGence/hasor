@@ -15,14 +15,19 @@
  */
 package net.hasor.dataway.config;
 import net.hasor.core.AppContext;
+import net.hasor.dataql.DataQL;
+import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.binder.AppContextFinder;
-import net.hasor.dataway.daos.ApiQuery;
+import net.hasor.dataql.domain.ValueModel;
+import net.hasor.dataway.daos.GetScriptByPathQuery;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.HashMap;
 
 /**
  * Dataway 启动入口
@@ -31,27 +36,29 @@ import java.io.InputStream;
  */
 @Singleton
 public class DatawayFinder extends AppContextFinder {
-    @Inject
-    private ApiQuery apiQuery;
+    private DataQL dataQL;
 
     @Inject
-    public DatawayFinder(AppContext appContext) {
+    public DatawayFinder(AppContext appContext, DataQL dataQL) {
         super(appContext);
+        this.dataQL = dataQL;
     }
 
     /** 负责处理 <code>import @"/net/hasor/demo.ql" as demo;</code>方式中 ‘/net/hasor/demo.ql’ 资源的加载 */
-    public InputStream findResource(String resourceName) {
-        String queryInfo = apiQuery.queryApi(resourceName);
-        //        if (queryInfo==null || queryInfo.)
-        //
-        //
-        // .加载资源
-        InputStream inputStream = null;
+    public InputStream findResource(final String resourceName) {
         try {
-            inputStream = ResourcesUtils.getResourceAsStream(resourceName);
+            if (resourceName.toLowerCase().startsWith("classpath:")) {
+                String newResourceName = resourceName.substring("classpath:".length());
+                return ResourcesUtils.getResourceAsStream(newResourceName);
+            } else {
+                QueryResult queryResult = new GetScriptByPathQuery(this.dataQL).execute(new HashMap<String, String>() {{
+                    put("apiPath", resourceName);
+                }});
+                String scriptBody = ((ValueModel) queryResult.getData()).asString();
+                return new ByteArrayInputStream(scriptBody.getBytes());
+            }
         } catch (Exception e) {
             throw ExceptionUtils.toRuntimeException(e, throwable -> new RuntimeException("import compiler failed -> '" + resourceName + "' not found.", throwable));
         }
-        return inputStream;
     }
 }
