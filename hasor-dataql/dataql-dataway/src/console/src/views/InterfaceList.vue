@@ -18,9 +18,8 @@
                     </template>
                     <template slot-scope="scope">
                         <el-tag size="mini" style="float: left;width: 65px;text-align: center;" :type="tableRowTagClassName(scope.row).css">{{tableRowTagClassName(scope.row).title}}</el-tag>
-                        <span style="overflow-x: hidden;">
-                            {{scope.row.path}}<span style="color: #adadad;display: inline;float: right; overflow-x: hidden;">[{{scope.row.comment}}]</span>
-                        </span>
+                        <span style="overflow-x: hidden;">{{scope.row.path}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <span style="color: #adadad;display: contents;float: right; overflow-x: hidden;">[{{scope.row.comment}}]</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="id" width="24" :resizable='false'>
