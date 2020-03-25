@@ -17,10 +17,7 @@ package net.hasor.dataway.config;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import net.hasor.dataql.DataQL;
-import net.hasor.dataql.QueryResult;
-import net.hasor.dataql.domain.ObjectModel;
-import net.hasor.dataway.daos.ReleaseDetailQuery;
-import net.hasor.utils.StringUtils;
+import net.hasor.dataway.service.ApiCallService;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerConfig;
@@ -29,7 +26,7 @@ import net.hasor.web.InvokerFilter;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -40,8 +37,8 @@ import java.util.Map;
  */
 class InterfaceApiFilter implements InvokerFilter {
     @Inject
-    private DataQL dataQL;
-    private String apiBaseUri;
+    private ApiCallService apiCallService;
+    private String         apiBaseUri;
 
     public InterfaceApiFilter(String apiBaseUri) {
         this.apiBaseUri = apiBaseUri;
@@ -63,55 +60,13 @@ class InterfaceApiFilter implements InvokerFilter {
         //
         httpRequest.setCharacterEncoding("UTF-8");
         httpResponse.setCharacterEncoding("UTF-8");
-        String httpMethod = httpRequest.getMethod().toUpperCase().trim();
         Map<String, List<String>> headerMap = RequestUtils.headerMap(invoker);
-        Map<String, List<String>> cookieMap = RequestUtils.headerMap(invoker);
+        Map<String, List<String>> cookieMap = RequestUtils.cookieMap(invoker);
         //
-        //
-        String script = null;
-        try {
-            QueryResult queryResult = new ReleaseDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
-                put("apiMethod", httpMethod);
-                put("apiPath", requestURI);
-            }});
-            ObjectModel dataModel = (ObjectModel) queryResult.getData();
-            script = dataModel.getValue("script").asString();
-            //    "releaseID" : pub_id,
-            //    "apiID"     : pub_api_id,
-            //    "apiMethod" : pub_method,
-            //    "apiPath"   : pub_path,
-            //    "script"    : pub_script
-        } catch (Exception e) {
-            Map<String, Object> objectMap = RequestUtils.exceptionToResult(e).getResult();
-            httpResponse.getWriter().write(JSON.toJSONString(objectMap));
-            return objectMap;
-        }
-        //
-        try {
-            Map<String, ?> jsonParam;
-            if ("GET".equalsIgnoreCase(httpMethod)) {
-                jsonParam = httpRequest.getParameterMap();
-            } else {
-                String jsonBody = invoker.getJsonBodyString();
-                if (StringUtils.isNotBlank(jsonBody)) {
-                    jsonParam = JSON.parseObject(jsonBody);
-                } else {
-                    jsonParam = new HashMap<>();
-                }
-            }
-            QueryResult execute = dataQL.createQuery(script).execute(jsonParam);
-            HashMap<String, Object> hashMap = new HashMap<String, Object>() {{
-                put("success", true);
-                put("code", execute.getCode());
-                put("executionTime", execute.executionTime());
-                put("value", execute.getData().unwrap());
-            }};
-            httpResponse.getWriter().write(JSON.toJSONString(hashMap, SerializerFeature.WriteMapNullValue));
-            return hashMap;
-        } catch (Exception e) {
-            Map<String, Object> objectMap = RequestUtils.exceptionToResult(e).getResult();
-            httpResponse.getWriter().write(JSON.toJSONString(objectMap, SerializerFeature.WriteMapNullValue));
-            return objectMap;
-        }
+        Map<String, Object> objectMap = apiCallService.doCall(invoker);
+        PrintWriter printWriter = httpResponse.getWriter();
+        printWriter.write(JSON.toJSONString(objectMap, SerializerFeature.WriteMapNullValue));
+        printWriter.flush();
+        return objectMap;
     }
 }
