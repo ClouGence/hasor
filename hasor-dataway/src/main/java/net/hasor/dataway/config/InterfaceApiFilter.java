@@ -60,8 +60,6 @@ class InterfaceApiFilter implements InvokerFilter {
         //
         httpRequest.setCharacterEncoding("UTF-8");
         httpResponse.setCharacterEncoding("UTF-8");
-        Map<String, List<String>> headerMap = RequestUtils.headerMap(invoker);
-        Map<String, List<String>> cookieMap = RequestUtils.cookieMap(invoker);
         //
         Map<String, Object> objectMap = apiCallService.doCall(invoker);
         PrintWriter printWriter = httpResponse.getWriter();
