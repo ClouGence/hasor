@@ -56,9 +56,9 @@ public class SaveApiController {
         //
         Query query = null;
         if ("-1".equalsIgnoreCase(apiId)) {
+            this.checkService.checkApi((String) requestBody.get("apiPath"));
             query = new InsertApiQuery(this.dataQL);
         } else {
-            this.checkService.checkApi((String) requestBody.get("apiPath"));
             QueryResult queryResult = new ApiInfoQuery(this.dataQL).execute(new HashMap<String, String>() {{
                 put("apiId", apiId);
             }});
