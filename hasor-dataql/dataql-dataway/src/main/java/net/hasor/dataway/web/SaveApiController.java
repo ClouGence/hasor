@@ -18,7 +18,6 @@ import net.hasor.dataql.DataQL;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ObjectModel;
-import net.hasor.dataway.config.JsonRenderEngine;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiInfoQuery;
@@ -28,6 +27,7 @@ import net.hasor.dataway.service.CheckService;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
+import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
 import javax.inject.Inject;

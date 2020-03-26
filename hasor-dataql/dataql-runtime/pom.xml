@@ -92,11 +92,6 @@
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
         </dependency>
-        <!-- Commons -->
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-commons</artifactId>
-        </dependency>
         <!-- Hasor-Core -->
         <dependency>
             <groupId>net.hasor</groupId>

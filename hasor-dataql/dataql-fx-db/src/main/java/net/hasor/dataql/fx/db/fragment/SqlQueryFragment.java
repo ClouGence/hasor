@@ -1,5 +1,4 @@
-package net.hasor.dataql.fragment;
-import net.hasor.dataql.DimFragment;
+package net.hasor.dataql.fx.db.fragment;
 import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Hints;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -24,6 +23,7 @@ public class SqlQueryFragment implements FragmentProcess {
 
     @Override
     public Object runFragment(Hints hint, Map<String, Object> paramMap, String fragmentString) throws Throwable {
+        //
         List<String> readLines = IOUtils.readLines(new StringReader(fragmentString));
         SqlMode sqlMode = null;
         boolean multipleLines = false;

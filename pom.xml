@@ -368,6 +368,16 @@
             </dependency>
             <dependency>
                 <groupId>net.hasor</groupId>
+                <artifactId>hasor-dataql-fx-db</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.hasor</groupId>
+                <artifactId>hasor-dataql-dataway</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.hasor</groupId>
                 <artifactId>hasor-tconsole</artifactId>
                 <version>${project.version}</version>
             </dependency>
