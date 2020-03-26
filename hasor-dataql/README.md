@@ -1,9 +1,9 @@
 # DataQL 数据查询引擎
 
 &emsp;&emsp;DataQL（Data Query Language）DataQL 是一种查询语言。旨在通过提供直观、灵活的语法来描述客户端应用程序的数据需求和交互。
-            
+
 &emsp;&emsp;数据的存储根据其业务形式通常是较为简单的，并不适合直接在页面上进行展示。因此开发页面的前端工程师需要为此做大量的工作，这就是 DataQL 极力解决的问题。
-            
+
 &emsp;&emsp;例如：下面这个 DataQL 从 user 函数中查询 id 为 4 的用户相关信息并返回给应用。
 
 ```js

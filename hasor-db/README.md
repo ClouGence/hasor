@@ -1,6 +1,6 @@
 # JDBC 框架
 
-&emsp;&emsp;Hasor-DB 是一款基于jdbc的数据库框架，针对 Spring-JDBC 做了80% 缩减之后在进行大量重构才有了它。
+&emsp;&emsp;Hasor-DB 是一款基于jdbc的数据库框架，针对 Spring-JDBC 做了80% 缩减之后在进行大量重构才有了它。可以说是翻版的 SpringJDBC。
 
 ----------
 ## 特性
