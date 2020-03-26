@@ -53,12 +53,12 @@ public class SaveApiController {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
-        this.checkService.checkApi((String) requestBody.get("apiPath"));
         //
         Query query = null;
         if ("-1".equalsIgnoreCase(apiId)) {
             query = new InsertApiQuery(this.dataQL);
         } else {
+            this.checkService.checkApi((String) requestBody.get("apiPath"));
             QueryResult queryResult = new ApiInfoQuery(this.dataQL).execute(new HashMap<String, String>() {{
                 put("apiId", apiId);
             }});
