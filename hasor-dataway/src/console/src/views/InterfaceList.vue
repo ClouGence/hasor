@@ -2,7 +2,7 @@
     <SplitPane :min-percent='30' :default-percent='30' split="vertical">
         <template slot="paneL">
             <el-table ref="interfaceTable" height="100%"
-                      :data="tableData.filter(dat => !apiSearch || dat.path.toLowerCase().includes(apiSearch.toLowerCase()))"
+                      :data="tableData.filter(dat => !apiSearch || dat.path.toLowerCase().includes(apiSearch.toLowerCase()) || dat.comment.toLowerCase().includes(apiSearch.toLowerCase()))"
                       @current-change="handleApiDataChange"
                       empty-text="No Api" highlight-current-row border lazy stripe>
                 <el-table-column prop="id" width="24" :resizable='false'>

@@ -48,9 +48,6 @@ public class CheckService {
         if (!apiPath.matches("[\\$\\(\\)\\*\\+\\-\\.!#&',/:;=?@_~0-9a-zA-Z]+")) {
             throw new IllegalArgumentException("Allowed characters： !  #  $  &  '  (  )  *  +  ,  -  .  /  :  ;  =  ?  @  _  ~  0-9  a-z  A-Z");
         }
-        if (!apiPath.endsWith("/")) {
-            throw new IllegalArgumentException("The API must '/' end");
-        }
         //
         QueryResult queryResult = new TestPathQuery(this.dataQL).execute(new HashMap<String, String>() {{
             put("apiPath", apiPath);
