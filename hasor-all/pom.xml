@@ -44,17 +44,12 @@
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
-            <artifactId>hasor-dataql-fx-basic</artifactId>
+            <artifactId>hasor-dataql-fx</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
-            <artifactId>hasor-dataql-fx-db</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-dataql-dataway</artifactId>
+            <artifactId>hasor-dataway</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>

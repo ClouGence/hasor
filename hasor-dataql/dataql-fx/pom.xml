@@ -9,11 +9,11 @@
     </parent>
 
     <!-- Maven Info -->
-    <artifactId>hasor-dataql-fx-db</artifactId>
+    <artifactId>hasor-dataql-fx</artifactId>
     <packaging>jar</packaging>
 
     <!-- Project Info -->
-    <name>Hasor-DataQL/FunctionX-DataBase</name>
+    <name>Hasor-DataQL/FunctionX</name>
     <description>the hasor DataQL project.</description>
 
     <developers>
@@ -38,7 +38,7 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <artifactSet>
                                 <includes>
-                                    <include>net.hasor:hasor-dataql-fx-db</include>
+                                    <include>net.hasor:hasor-dataql-fx</include>
                                     <include>ognl:ognl</include>
                                     <include>org.javassist:javassist</include>
                                 </includes>
@@ -69,6 +69,14 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-db</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
         </dependency>
 
         <dependency>

@@ -62,11 +62,9 @@
         <module>hasor-tconsole</module>
         <module>hasor-spring</module>
         <module>hasor-dataql/dataql-runtime</module>
-        <module>hasor-dataql/dataql-fx-basic</module>
-        <module>hasor-dataql/dataql-fx-db</module>
-        <!--        <module>hasor-dataql/dataql-fx-net</module>-->
-        <module>hasor-dataql/dataql-dataway</module>
         <module>hasor-dataql/dataql-maven-plugin</module>
+        <module>hasor-dataql/dataql-fx</module>
+        <module>hasor-dataway</module>
         <module>hasor-rsf/rsf-framework</module>
         <!--        <module>hasor-rsf/rsf-network</module>-->
         <!--        <module>hasor-rsf/rsf-gateway</module>-->
@@ -363,17 +361,12 @@
             </dependency>
             <dependency>
                 <groupId>net.hasor</groupId>
-                <artifactId>hasor-dataql-fx-basic</artifactId>
+                <artifactId>hasor-dataql-fx</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>net.hasor</groupId>
-                <artifactId>hasor-dataql-fx-db</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.hasor</groupId>
-                <artifactId>hasor-dataql-dataway</artifactId>
+                <artifactId>hasor-dataway</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

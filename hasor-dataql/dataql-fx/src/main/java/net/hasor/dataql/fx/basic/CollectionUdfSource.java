@@ -133,8 +133,7 @@ public class CollectionUdfSource implements UdfSourceAssembly {
         return finalList;
     }
 
-    /** 创建一个有状态的 Array 对象
-     * @return*/
+    /** 创建一个有状态的 Array 对象 */
     @UdfName("new")
     public static Map<String, Udf> newArray(Object mabeCollection) {
         List<Object> initData = new ArrayList<>();
