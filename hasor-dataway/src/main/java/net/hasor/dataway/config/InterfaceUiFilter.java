@@ -106,11 +106,14 @@ class InterfaceUiFilter implements InvokerFilter {
             }
             //
             String resourceName = fixUrl(resourceBaseUri + requestURI.substring(this.uiBaseUri.length()));
-            //${host}
-            try (OutputStream outputStream = httpResponse.getOutputStream();) {
+            try (OutputStream outputStream = httpResponse.getOutputStream()) {
+                ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
                 try (InputStream inputStream = ResourcesUtils.getResourceAsStream(resourceName)) {
-                    IOUtils.copy(inputStream, outputStream);
+                    IOUtils.copy(inputStream, tempStream);
                 }
+                byte[] bytes = tempStream.toByteArray();
+                httpResponse.setContentLength(bytes.length);
+                outputStream.write(bytes);
                 outputStream.flush();
             }
             return null;
