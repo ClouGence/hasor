@@ -12,6 +12,7 @@ if (!collect.isEmpty(dataTmp)) {
         "apiID"     : pub_api_id,
         "apiMethod" : pub_method,
         "apiPath"   : pub_path,
+        "scriptType": pub_type,
         "script"    : pub_script
     };
 } else {

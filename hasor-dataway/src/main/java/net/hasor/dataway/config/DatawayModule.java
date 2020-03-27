@@ -66,6 +66,9 @@ public class DatawayModule implements WebModule {
         if (StringUtils.isBlank(uiBaseUri)) {
             uiBaseUri = "/interface-ui/";
         }
+        if (!uiBaseUri.endsWith("/")) {
+            uiBaseUri = uiBaseUri + "/";
+        }
         logger.info("dataway admin workAt " + uiBaseUri);
         //
         // 使用 findClass 虽然可以降低代码复杂度，但是会因为引入代码扫描而增加初始化时间
@@ -104,15 +107,18 @@ public class DatawayModule implements WebModule {
             throw new IllegalStateException("jdbcTemplate is not init.");
         }
         //
-        String databaseProductName = jdbcTemplate.execute((ConnectionCallback<String>) con -> {
-            return con.getMetaData().getDatabaseProductName();
-        });
+        String databaseProductName = appContext.getEnvironment().getVariable("HASOR_DATAQL_DATAWAY_FORCE_DBTYPE");
+        if (StringUtils.isBlank(databaseProductName)) {
+            databaseProductName = jdbcTemplate.execute((ConnectionCallback<String>) con -> {
+                return con.getMetaData().getDatabaseProductName();
+            });
+        }
         DataBaseMapping dataBaseType = DataBaseMapping.formName(databaseProductName);
         if (dataBaseType == null) {
             throw new IllegalStateException("unknown DataBaseType -> " + databaseProductName);
         }
         //
-        logger.info("dataway dbMapping to " + dataBaseType.mappingType());
+        logger.info("dataway dbMapping {} to {}", databaseProductName, dataBaseType.mappingType());
         appContext.findBindingBean(ISOLATION_CONTEXT, DataQL.class).addShareVarInstance("dbMapping", dataBaseType.mappingType().toLowerCase());
     }
 

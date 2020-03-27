@@ -3,11 +3,19 @@
     <hasor.environmentVar>
         <!-- 是否启用 Dataway 功能，默认不启用 -->
         <HASOR_DATAQL_DATAWAY>false</HASOR_DATAQL_DATAWAY>
+        <!--
+            强制指定 DB Type，该配置值会被用来通过 DataBaseMapping 枚举找到映射的 mappingType。
+            目前可选的配置值有：MySQL、Oracle、PostgreSQL。默认为空，表示使用自动探测
+
+            请注意：仅当 Dataway 无法通过 Connection 的 getDatabaseProductName() 正确识别数据库时使用进行配置。
+                   在配置前还需要确认 Dataway 是否支持这个数据库。
+        -->
+        <HASOR_DATAQL_DATAWAY_FORCE_DBTYPE></HASOR_DATAQL_DATAWAY_FORCE_DBTYPE>
         <!-- dataway  API工作路径 -->
         <HASOR_DATAQL_DATAWAY_API_URL>/api/</HASOR_DATAQL_DATAWAY_API_URL>
-        <!-- 是否开启 Dataway 后台管理界面（注意生产环境建议设置为 false） -->
+        <!-- 是否开启 dataway-ui 管理功能（注意生产环境要设置为 false） -->
         <HASOR_DATAQL_DATAWAY_ADMIN>true</HASOR_DATAQL_DATAWAY_ADMIN>
-        <!-- dataway-ui 的工作路径 -->
+        <!-- dataway-ui 的工作路径，必须开启管理功能 -->
         <HASOR_DATAQL_DATAWAY_UI_URL>/interface-ui/</HASOR_DATAQL_DATAWAY_UI_URL>
     </hasor.environmentVar>
 

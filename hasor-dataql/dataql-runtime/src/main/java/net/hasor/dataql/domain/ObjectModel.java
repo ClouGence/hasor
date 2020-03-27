@@ -77,6 +77,9 @@ public class ObjectModel implements DataModel {
         if (dataItem instanceof ValueModel) {
             return (ValueModel) dataItem;
         }
+        if (dataItem == null) {
+            return null;
+        }
         throw new ClassCastException(dataItem.getClass() + " not Cast to ValueModel.");
     }
 

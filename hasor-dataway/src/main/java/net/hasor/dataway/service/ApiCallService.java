@@ -19,9 +19,12 @@ import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataway.config.DatawayUtils;
+import net.hasor.dataway.config.LoggerUtils;
 import net.hasor.dataway.daos.ReleaseDetailQuery;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -39,16 +42,22 @@ import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
  */
 @Singleton
 public class ApiCallService {
+    protected static Logger logger = LoggerFactory.getLogger(ApiCallService.class);
     @Inject
     @Named(ISOLATION_CONTEXT)
-    private DataQL dataQL;
+    private          DataQL dataQL;
     @Inject
-    private DataQL executeDataQL;
+    private          DataQL executeDataQL;
 
     public Map<String, Object> doCall(Invoker invoker) {
+        long requestTime = System.currentTimeMillis();
+        LoggerUtils loggerUtils = LoggerUtils.create();
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         String httpMethod = httpRequest.getMethod().toUpperCase().trim();
         String requestURI = httpRequest.getRequestURI();
+        loggerUtils.addLog("apiMethod", httpMethod);
+        loggerUtils.addLog("apiPath", requestURI);
+        //
         String script = null;
         try {
             QueryResult queryResult = new ReleaseDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
@@ -57,12 +66,11 @@ public class ApiCallService {
             }});
             ObjectModel dataModel = (ObjectModel) queryResult.getData();
             script = dataModel.getValue("script").asString();
-            //    "releaseID" : pub_id,
-            //    "apiID"     : pub_api_id,
-            //    "apiMethod" : pub_method,
-            //    "apiPath"   : pub_path,
-            //    "script"    : pub_script
+            loggerUtils.addLog("scriptType", dataModel.getValue("scriptType").asString());
+            loggerUtils.addLog("releaseID", dataModel.getValue("releaseID").asString());
+            loggerUtils.addLog("apiID", dataModel.getValue("apiID").asString());
         } catch (Exception e) {
+            logger.error("requestFailed - " + loggerUtils.logException(e).toJson());
             return DatawayUtils.exceptionToResult(e).getResult();
         }
         //
@@ -78,7 +86,15 @@ public class ApiCallService {
                     jsonParam = new HashMap<>();
                 }
             }
+            if (jsonParam != null) {
+                loggerUtils.addLog("paramRootKeys", jsonParam.keySet());
+            }
             QueryResult execute = this.executeDataQL.createQuery(script).execute(jsonParam);
+            //
+            loggerUtils.addLog("code", execute.getCode());
+            loggerUtils.addLog("fullRequestTime", System.currentTimeMillis() - requestTime);
+            loggerUtils.addLog("executionTime", execute.executionTime());
+            logger.info("requestSuccess - " + loggerUtils.toJson());
             return new HashMap<String, Object>() {{
                 put("success", true);
                 put("code", execute.getCode());
@@ -86,6 +102,7 @@ public class ApiCallService {
                 put("value", execute.getData().unwrap());
             }};
         } catch (Exception e) {
+            logger.error("requestFailed - " + loggerUtils.logException(e).toJson());
             return DatawayUtils.exceptionToResult(e).getResult();
         }
     }
