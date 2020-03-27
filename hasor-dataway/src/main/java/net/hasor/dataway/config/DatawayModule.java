@@ -19,12 +19,15 @@ import net.hasor.core.Environment;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryApiBinder;
 import net.hasor.dataway.web.*;
+import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
 
 /**
  * Dataway 启动入口
@@ -95,18 +98,22 @@ public class DatawayModule implements WebModule {
     }
 
     @Override
-    public void onStart(AppContext appContext) {
+    public void onStart(AppContext appContext) throws SQLException {
         JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
         if (jdbcTemplate == null) {
             throw new IllegalStateException("jdbcTemplate is not init.");
         }
         //
-        DataBaseType dataBaseType = appContext.getInstance(DataBaseType.class);
+        String databaseProductName = jdbcTemplate.execute((ConnectionCallback<String>) con -> {
+            return con.getMetaData().getDatabaseProductName();
+        });
+        DataBaseMapping dataBaseType = DataBaseMapping.formName(databaseProductName);
         if (dataBaseType == null) {
-            throw new IllegalStateException("unknown DataBaseType.");
+            throw new IllegalStateException("unknown DataBaseType -> " + databaseProductName);
         }
-        appContext.getInstance(DataQL.class).addShareVar(DataBaseType.class.getName(), () -> dataBaseType.name().toLowerCase());
-        appContext.findBindingBean(ISOLATION_CONTEXT, DataQL.class).addShareVar(DataBaseType.class.getName(), () -> dataBaseType.name().toLowerCase());
+        //
+        logger.info("dataway dbMapping to " + dataBaseType.mappingType());
+        appContext.findBindingBean(ISOLATION_CONTEXT, DataQL.class).addShareVarInstance("dbMapping", dataBaseType.mappingType().toLowerCase());
     }
 
     static String fixUrl(String url) {

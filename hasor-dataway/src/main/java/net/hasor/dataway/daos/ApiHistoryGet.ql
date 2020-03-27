@@ -1,12 +1,10 @@
 import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 
 var queryMap = {
-    "mysql"     : @@inner_dataway_sql(historyId)<% select * from interface_release where pub_id= :historyId; %>,
-    "postgresql": @@inner_dataway_sql(historyId)<% select * from interface_release where pub_id= :historyId; %>,
-    "oracle"    : @@inner_dataway_sql(historyId)<% select * from interface_release where pub_id= :historyId; %>
+    "default"   : @@inner_dataway_sql(historyId)<% select * from interface_release where pub_id= :historyId; %>
 };
 
-return queryMap[`net.hasor.dataway.config.DataBaseType`](${historyId}) => {
+return queryMap[dbMapping](${historyId}) => {
     "select"    : pub_method,
     "codeType"  : pub_type,
     "codeInfo"  : {

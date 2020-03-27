@@ -18,7 +18,7 @@ import com.alibaba.fastjson.JSON;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataway.config.MappingToUrl;
-import net.hasor.dataway.config.RequestUtils;
+import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiDetailQuery;
 import net.hasor.dataway.daos.PublishApiQuery;
@@ -58,7 +58,7 @@ public class PublishController extends BasicController {
         }
         Map<String, Object> strRequestBody = JSON.parseObject(requestBodyJson);
         if ("sql".equalsIgnoreCase(strCodeType)) {
-            strCodeValue = RequestUtils.evalCodeValueForSQL(strCodeValue, strRequestBody);
+            strCodeValue = DatawayUtils.evalCodeValueForSQL(strCodeValue, strRequestBody);
         }
         //
         String finalStrCodeValue = strCodeValue;

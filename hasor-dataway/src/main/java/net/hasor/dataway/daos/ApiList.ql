@@ -1,10 +1,8 @@
 var queryMap = {
-    "mysql"     : @@inner_dataway_sql()<% select * from interface_info order by api_create_time asc; %>,
-    "postgresql": @@inner_dataway_sql()<% select * from interface_info order by api_create_time asc; %>,
-    "oracle"    : @@inner_dataway_sql()<% select * from interface_info order by api_create_time asc; %>
+    "default"   : @@inner_dataway_sql()<% select * from interface_info order by api_create_time asc; %>
 };
 
-return queryMap[`net.hasor.dataway.config.DataBaseType`]() => [
+return queryMap[dbMapping]() => [
     {
         "id"      : api_id,
         "checked" : false,

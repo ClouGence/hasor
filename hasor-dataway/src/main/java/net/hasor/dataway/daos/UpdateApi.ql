@@ -1,29 +1,7 @@
 import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 
 var updateMap = {
-    "mysql"     : @@inner_dataway_sql(apiID, apiStatus, apiComment, apiType, apiScript, apiSample)<%
-        update interface_info set
-            api_status   = :apiStatus,
-            api_comment  = :apiComment,
-            api_type     = :apiType,
-            api_script   = :apiScript,
-            api_sample   = :apiSample,
-            api_gmt_time = now()
-        where
-            api_id       = :apiID
-    %>,
-    "postgresql": @@inner_dataway_sql(apiID, apiStatus, apiComment, apiType, apiScript, apiSample)<%
-        update interface_info set
-            api_status   = :apiStatus,
-            api_comment  = :apiComment,
-            api_type     = :apiType,
-            api_script   = :apiScript,
-            api_sample   = :apiSample,
-            api_gmt_time = now()
-        where
-            api_id       = :apiID
-    %>,
-    "oracle"    : @@inner_dataway_sql(apiID, apiStatus, apiComment, apiType, apiScript, apiSample)<%
+    "default"   : @@inner_dataway_sql(apiID, apiStatus, apiComment, apiType, apiScript, apiSample)<%
         update interface_info set
             api_status   = :apiStatus,
             api_comment  = :apiComment,
@@ -36,7 +14,7 @@ var updateMap = {
     %>
 };
 
-var res = updateMap[`net.hasor.dataway.config.DataBaseType`](
+var res = updateMap[dbMapping](
     ${postData}.id,
     ${postData}.newStatus,
     ${postData}.comment,

@@ -20,7 +20,7 @@ import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataway.config.MappingToUrl;
-import net.hasor.dataway.config.RequestUtils;
+import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiDetailQuery;
 import net.hasor.web.annotation.Post;
@@ -58,7 +58,7 @@ public class SmokeController extends BasicController {
         String strCodeValue = ((ObjectModel) queryDetail.getData()).getObject("codeInfo").getValue("codeValue").asString();
         Map<String, Object> strRequestBody = (Map<String, Object>) requestBody.get("requestBody");
         if ("sql".equalsIgnoreCase(strCodeType)) {
-            strCodeValue = RequestUtils.evalCodeValueForSQL(strCodeValue, strRequestBody);
+            strCodeValue = DatawayUtils.evalCodeValueForSQL(strCodeValue, strRequestBody);
         }
         //
         try {
@@ -75,7 +75,7 @@ public class SmokeController extends BasicController {
             this.updateSchema(apiId, strRequestBody, resultData);
             return result;
         } catch (Exception e) {
-            return RequestUtils.exceptionToResult(e);
+            return DatawayUtils.exceptionToResult(e);
         }
     }
 

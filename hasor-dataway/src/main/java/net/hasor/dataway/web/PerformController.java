@@ -18,7 +18,7 @@ import net.hasor.dataql.DataQL;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataway.config.MappingToUrl;
-import net.hasor.dataway.config.RequestUtils;
+import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.Result;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
@@ -51,7 +51,7 @@ public class PerformController extends BasicController {
         String strCodeValue = requestBody.get("codeValue").toString();
         Map<String, Object> strRequestBody = (Map<String, Object>) requestBody.get("requestBody");
         if ("sql".equalsIgnoreCase(strCodeType)) {
-            strCodeValue = RequestUtils.evalCodeValueForSQL(strCodeValue, strRequestBody);
+            strCodeValue = DatawayUtils.evalCodeValueForSQL(strCodeValue, strRequestBody);
         }
         //
         try {
@@ -64,7 +64,7 @@ public class PerformController extends BasicController {
                 put("value", queryResult.getData().unwrap());
             }});
         } catch (Exception e) {
-            return RequestUtils.exceptionToResult(e);
+            return DatawayUtils.exceptionToResult(e);
         }
     }
 }

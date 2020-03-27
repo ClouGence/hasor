@@ -72,7 +72,7 @@ class InterfaceUiFilter implements InvokerFilter {
                 return chain.doNext(invoker);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
-                Map<String, Object> objectMap = RequestUtils.exceptionToError(e).getResult();
+                Map<String, Object> objectMap = DatawayUtils.exceptionToError(e).getResult();
                 PrintWriter writer = httpResponse.getWriter();
                 writer.write(JSON.toJSONString(objectMap));
                 writer.flush();

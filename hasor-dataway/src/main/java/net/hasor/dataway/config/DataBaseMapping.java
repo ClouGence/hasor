@@ -19,6 +19,30 @@ package net.hasor.dataway.config;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-20
  */
-public enum DataBaseType {
-    Mysql, Oracle, PostgreSQL
+public enum DataBaseMapping {
+    Mysql("MySQL", "default"),//
+    Oracle("Oracle", "default"),//
+    PostgreSQL("PostgreSQL", "default");
+    //
+    //
+    private String dbProductName;
+    private String mappingType;
+
+    DataBaseMapping(String dbProductName, String mappingType) {
+        this.dbProductName = dbProductName;
+        this.mappingType = mappingType;
+    }
+
+    public static DataBaseMapping formName(String productName) {
+        for (DataBaseMapping mapping : DataBaseMapping.values()) {
+            if (mapping.dbProductName.equalsIgnoreCase(productName)) {
+                return mapping;
+            }
+        }
+        return null;
+    }
+
+    public String mappingType() {
+        return this.mappingType;
+    }
 }

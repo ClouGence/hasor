@@ -15,48 +15,16 @@
  */
 package net.hasor.dataway.config;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
-import net.hasor.web.Invoker;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 工具。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-20
  */
-public class RequestUtils {
-    public static Map<String, List<String>> headerMap(Invoker invoker) {
-        HttpServletRequest httpRequest = invoker.getHttpRequest();
-        Enumeration<String> headerNames = httpRequest.getHeaderNames();
-        Map<String, List<String>> headerMap = new HashMap<>();
-        while (headerNames.hasMoreElements()) {
-            String header = headerNames.nextElement();
-            Enumeration<String> headers = httpRequest.getHeaders(header);
-            List<String> headerValue = new ArrayList<>();
-            while (headers.hasMoreElements()) {
-                headerValue.add(headers.nextElement());
-            }
-            headerMap.put(header, headerValue);
-        }
-        return headerMap;
-    }
-
-    public static Map<String, List<String>> cookieMap(Invoker invoker) {
-        Map<String, List<String>> cookieMap = new HashMap<>();
-        HttpServletRequest httpRequest = invoker.getHttpRequest();
-        Cookie[] cookies = httpRequest.getCookies();
-        for (Cookie cookie : cookies) {
-            String cookieName = cookie.getName();
-            List<String> cookieValue = cookieMap.computeIfAbsent(cookieName, key -> {
-                return new ArrayList<>();
-            });
-            cookieValue.add(cookie.getValue());
-        }
-        return cookieMap;
-    }
-
+public class DatawayUtils {
     public static String evalCodeValueForSQL(String strCodeValue, Map<String, Object> strRequestBody) {
         StringBuilder paramKeyBuilder = new StringBuilder("");
         StringBuilder callKeyBuilder = new StringBuilder("");

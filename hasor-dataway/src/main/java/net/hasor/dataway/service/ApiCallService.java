@@ -18,7 +18,7 @@ import com.alibaba.fastjson.JSON;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ObjectModel;
-import net.hasor.dataway.config.RequestUtils;
+import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.daos.ReleaseDetailQuery;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
@@ -63,7 +63,7 @@ public class ApiCallService {
             //    "apiPath"   : pub_path,
             //    "script"    : pub_script
         } catch (Exception e) {
-            return RequestUtils.exceptionToResult(e).getResult();
+            return DatawayUtils.exceptionToResult(e).getResult();
         }
         //
         try {
@@ -78,16 +78,15 @@ public class ApiCallService {
                     jsonParam = new HashMap<>();
                 }
             }
-            QueryResult execute = dataQL.createQuery(script).execute(jsonParam);
-            HashMap<String, Object> hashMap = new HashMap<String, Object>() {{
+            QueryResult execute = this.executeDataQL.createQuery(script).execute(jsonParam);
+            return new HashMap<String, Object>() {{
                 put("success", true);
                 put("code", execute.getCode());
                 put("executionTime", execute.executionTime());
                 put("value", execute.getData().unwrap());
             }};
-            return hashMap;
         } catch (Exception e) {
-            return RequestUtils.exceptionToResult(e).getResult();
+            return DatawayUtils.exceptionToResult(e).getResult();
         }
     }
 }
