@@ -30,7 +30,6 @@ import org.antlr.v4.runtime.CharStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -46,10 +45,6 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
 
     public void initConfig(AppContext appContext) {
         this.appContext = appContext;
-        List<ShareVar> shareVars = appContext.findBindingBean(ShareVar.class);
-        shareVars.forEach(shareVar -> {
-            compilerVarMap.put(shareVar.getName(), shareVar);
-        });
         if (this.finderObject == null) {
             AppContextFinder contextFinder = new AppContextFinder(appContext);
             this.finderObject = () -> contextFinder;

@@ -22,6 +22,7 @@ import net.hasor.core.binder.ApiBinderCreator;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.Finder;
+import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.QueryApiBinder;
 import net.hasor.utils.StringUtils;
 
@@ -40,9 +41,11 @@ public class QueryApiBinderCreator implements ApiBinderCreator<QueryApiBinder> {
 
     private static class QueryApiBinderImpl extends ApiBinderWrap implements QueryApiBinder {
         private InnerDataQLImpl innerDqlConfig = new InnerDataQLImpl();
+        private String          contextName    = null;
 
         private QueryApiBinderImpl(boolean isDefault, String contextName, ApiBinder apiBinder) {
             super(apiBinder);
+            this.contextName = contextName;
             if (!isDefault) {
                 if (StringUtils.isBlank(contextName)) {
                     throw new IllegalArgumentException("the context name is empty.");
@@ -61,6 +64,11 @@ public class QueryApiBinderCreator implements ApiBinderCreator<QueryApiBinder> {
 
         public QueryApiBinderImpl(String contextName, ApiBinder apiBinder) {
             this(false, contextName, apiBinder);
+        }
+
+        @Override
+        public String isolation() {
+            return this.contextName;
         }
 
         @Override
@@ -100,14 +108,21 @@ public class QueryApiBinderCreator implements ApiBinderCreator<QueryApiBinder> {
 
         @Override
         public <T> QueryApiBinder addShareVar(String name, Supplier<T> provider) {
-            ShareVar shareVar = new ShareVar(name, provider);
-            bindType(ShareVar.class).nameWith(name).toInstance(shareVar);
+            this.innerDqlConfig.addShareVar(name, provider);
             return this;
         }
 
         @Override
         public QueryApiBinder bindFinder(Supplier<? extends Finder> finderSupplier) {
             this.innerDqlConfig.setFinder(finderSupplier);
+            return this;
+        }
+
+        @Override
+        public <T extends FragmentProcess> QueryApiBinder bindFragment(String fragmentType, Supplier<T> provider) {
+            HasorUtils.pushStartListener(getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
+                innerDqlConfig.addFragmentProcess(fragmentType, provider);
+            });
             return this;
         }
     }
