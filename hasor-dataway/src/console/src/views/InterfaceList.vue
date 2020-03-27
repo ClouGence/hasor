@@ -134,9 +134,9 @@
                 }, response => {
                     let data = response.data.result;
                     self.requestApiInfo = data;
-                    self.requestBody = data.requestBody;
-                    self.responseBody = data.responseBody;
-                    self.headerData = data.headerData;
+                    self.requestBody = data.requestBody || "{}";
+                    self.responseBody = data.responseBody || '"empty."';
+                    self.headerData = data.headerData || [];
                     self.$nextTick(function () {
                         self.$refs.listRequestPanel.doUpdate();
                         self.$refs.listResponsePanel.doUpdate();

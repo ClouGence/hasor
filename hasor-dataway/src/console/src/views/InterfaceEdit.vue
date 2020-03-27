@@ -188,10 +188,10 @@
                     self.apiInfo.comment = data.apiComment;
                     self.apiInfo.apiStatus = data.status;
                     self.apiInfo.codeType = data.codeType;
-                    self.apiInfo.codeValue = data.codeInfo.codeValue;
+                    self.apiInfo.codeValue = data.codeInfo.codeValue || "";
                     //
-                    self.requestBody = data.codeInfo.requestBody;
-                    self.headerData = data.codeInfo.headerData;
+                    self.requestBody = data.codeInfo.requestBody || "{}";
+                    self.headerData = data.codeInfo.headerData || [];
                     //
                     self.tagInfo = tagInfo(self.apiInfo.apiStatus);
                     self.loadEditorMode();
@@ -236,9 +236,9 @@
                     let data = response.data.result;
                     self.apiInfo.select = data.select;
                     self.apiInfo.codeType = data.codeType;
-                    self.apiInfo.codeValue = data.codeInfo.codeValue;
-                    self.requestBody = data.codeInfo.requestBody;
-                    self.headerData = data.codeInfo.headerData;
+                    self.apiInfo.codeValue = data.codeInfo.codeValue || "";
+                    self.requestBody = data.codeInfo.requestBody || "{}";
+                    self.headerData = data.codeInfo.headerData || [];
                     //
                     self.loadEditorMode();
                     self.$nextTick(function () {
