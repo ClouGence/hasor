@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
@@ -23,7 +22,6 @@ import net.hasor.web.annotation.Get;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -34,10 +32,7 @@ import java.util.HashMap;
  */
 @MappingToUrl("/api/api-list")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
-public class ApiListController {
-    @Inject
-    private DataQL dataQL;
-
+public class ApiListController extends BasicController {
     @Get
     public Result<Object> apiList() throws IOException {
         QueryResult queryResult = new ApiListQuery(this.dataQL).execute(new HashMap<String, String>() {{

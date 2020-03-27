@@ -26,15 +26,14 @@ import net.hasor.web.WebModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.function.Supplier;
-
 /**
  * Dataway 启动入口
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-20
  */
 public class DatawayModule implements WebModule {
-    protected static Logger logger = LoggerFactory.getLogger(DatawayModule.class);
+    protected static    Logger logger            = LoggerFactory.getLogger(DatawayModule.class);
+    public static final String ISOLATION_CONTEXT = "net.hasor.dataway.config.DatawayModule";
 
     @Override
     public void loadModule(WebApiBinder apiBinder) {
@@ -68,18 +67,18 @@ public class DatawayModule implements WebModule {
         //
         // 使用 findClass 虽然可以降低代码复杂度，但是会因为引入代码扫描而增加初始化时间
         Class<?>[] controllerSet = new Class<?>[] {//
-                ApiDetailController.class,  //
+                ApiDetailController.class,      //
                 ApiHistoryListController.class, //
-                ApiInfoController.class,    //
-                ApiListController.class,    //
-                ApiHistoryGetController.class, //
+                ApiInfoController.class,        //
+                ApiListController.class,        //
+                ApiHistoryGetController.class,  //
                 //
-                DisableController.class,    //
-                SmokeController.class,      //
-                SaveApiController.class,    //
-                PublishController.class,    //
-                PerformController.class,    //
-                DeleteController.class,     //
+                DisableController.class,        //
+                SmokeController.class,          //
+                SaveApiController.class,        //
+                PublishController.class,        //
+                PerformController.class,        //
+                DeleteController.class,         //
         };
         for (Class<?> aClass : controllerSet) {
             MappingToUrl toUrl = aClass.getAnnotation(MappingToUrl.class);
@@ -87,10 +86,12 @@ public class DatawayModule implements WebModule {
         }
         apiBinder.filter(fixUrl(uiBaseUri + "/*")).through(new InterfaceUiFilter(apiBaseUri, uiBaseUri));
         //
-        // Finder,实现引用其它定义的 DataQL
-        Supplier<DatawayFinder> finderSupplier = apiBinder.getProvider(DatawayFinder.class);
-        apiBinder.tryCast(QueryApiBinder.class).bindFinder(finderSupplier);
-        apiBinder.tryCast(QueryApiBinder.class).bindFragment("inner_dataway_sql", SqlQueryFragment.class);
+        // .Finder,实现引用其它定义的 DataQL
+        QueryApiBinder defaultContext = apiBinder.tryCast(QueryApiBinder.class);
+        defaultContext.bindFinder(apiBinder.getProvider(DatawayFinder.class));
+        // .Dataway 自身使用的隔离环境
+        QueryApiBinder isolation = defaultContext.isolation(ISOLATION_CONTEXT);
+        isolation.bindFragment("inner_dataway_sql", InnerSqlExecFragment.class);
     }
 
     @Override
@@ -105,6 +106,7 @@ public class DatawayModule implements WebModule {
             throw new IllegalStateException("unknown DataBaseType.");
         }
         appContext.getInstance(DataQL.class).addShareVar(DataBaseType.class.getName(), () -> dataBaseType.name().toLowerCase());
+        appContext.findBindingBean(ISOLATION_CONTEXT, DataQL.class).addShareVar(DataBaseType.class.getName(), () -> dataBaseType.name().toLowerCase());
     }
 
     static String fixUrl(String url) {

@@ -16,7 +16,7 @@
 package net.hasor.web.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
-import net.hasor.core.binder.ApiBinderCreater;
+import net.hasor.core.binder.ApiBinderCreator;
 import net.hasor.web.MimeType;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
@@ -33,7 +33,7 @@ import java.io.IOException;
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InvokerWebApiBinderCreater implements ApiBinderCreater<WebApiBinder> {
+public class InvokerWebApiBinderCreator implements ApiBinderCreator<WebApiBinder> {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override

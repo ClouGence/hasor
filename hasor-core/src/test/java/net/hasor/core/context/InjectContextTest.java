@@ -41,24 +41,24 @@ public class InjectContextTest {
         AppContext appContext2 = new AppContextWarp(new StatusAppContext(env));
         PojoBean mockBean = new PojoBean();
         appContext2.start(apiBinder -> {
-            apiBinder.bindType(PojoBean.class).idWith("pojobean").toInstance(mockBean);
+            apiBinder.bindType(PojoBean.class).idWith("pojoBean").toInstance(mockBean);
             apiBinder.bindType(SingleConstructorPojoBeanRef.class)//
                     .toConstructor(SingleConstructorPojoBeanRef.class.getConstructor(PojoBean.class))//
                     .injectValue(0, new PojoBean());
         });
         //
-        assert appContext2.getBindInfo("pojobean") != null;
-        assert appContext2.getBindInfo("pojobean").getBindType().equals(PojoBean.class);
-        assert appContext2.getBeanType("pojobean") == PojoBean.class;
+        assert appContext2.getBindInfo("pojoBean") != null;
+        assert appContext2.getBindInfo("pojoBean").getBindType().equals(PojoBean.class);
+        assert appContext2.getBeanType("pojoBean") == PojoBean.class;
         assert appContext2.getBeanType("abc") == null;
         //
-        assert appContext2.containsBindID("pojobean");
+        assert appContext2.containsBindID("pojoBean");
         assert !appContext2.containsBindID("abc");
         //
-        assert appContext2.getProvider("pojobean").get() instanceof PojoBean;
+        assert appContext2.getProvider("pojoBean").get() instanceof PojoBean;
         assert appContext2.getProvider("abc") == null;
         //
-        BindInfo<Object> bindInfo = appContext2.getBindInfo("pojobean");
+        BindInfo<Object> bindInfo = appContext2.getBindInfo("pojoBean");
         assert appContext2.getProvider(bindInfo).get() == mockBean;
         assert appContext2.getProvider((BindInfo) null) == null;
         assert appContext2.getProvider(PojoBean.class).get() == mockBean;

@@ -41,9 +41,9 @@ import java.util.Map;
  */
 @MappingToUrl("/api/smoke")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
-public class SmokeController {
+public class SmokeController extends BasicController {
     @Inject
-    private DataQL dataQL;
+    private DataQL executeDataQL;
 
     @Post
     public Result<Map<String, Object>> doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
@@ -62,7 +62,7 @@ public class SmokeController {
         }
         //
         try {
-            Query dataQLQuery = this.dataQL.createQuery(strCodeValue);
+            Query dataQLQuery = this.executeDataQL.createQuery(strCodeValue);
             QueryResult queryResult = dataQLQuery.execute(strRequestBody);
             DataModel resultData = queryResult.getData();
             Result<Map<String, Object>> result = Result.of(new HashMap<String, Object>() {{

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
@@ -24,7 +23,6 @@ import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -35,10 +33,7 @@ import java.util.HashMap;
  */
 @MappingToUrl("/api/get-history")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
-public class ApiHistoryGetController {
-    @Inject
-    private DataQL dataQL;
-
+public class ApiHistoryGetController extends BasicController {
     @Get
     public Result<Object> getHistory(@QueryParameter("historyId") String historyId) throws IOException {
         QueryResult queryResult = new ApiHistoryGetQuery(this.dataQL).execute(new HashMap<String, String>() {{

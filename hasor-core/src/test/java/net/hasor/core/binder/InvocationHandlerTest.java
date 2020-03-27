@@ -18,7 +18,7 @@ import net.hasor.core.*;
 import net.hasor.core.container.BeanContainer;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.test.core.binder.TestBinder;
-import net.hasor.test.core.binder.TestBinderCreater;
+import net.hasor.test.core.binder.TestBinderCreator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -82,7 +82,7 @@ public class InvocationHandlerTest extends AbstractBinderDataTest {
         //
         Map<Class<?>, Object> supportMap = new HashMap<>();
         supportMap.put(ApiBinder.class, binder);
-        supportMap.put(TestBinder.class, new TestBinderCreater().createBinder(binder));
+        supportMap.put(TestBinder.class, new TestBinderCreator().createBinder(binder));
         //
         ApiBinder binderProxy = (ApiBinder) Proxy.newProxyInstance(  //
                 Thread.currentThread().getContextClassLoader(), //

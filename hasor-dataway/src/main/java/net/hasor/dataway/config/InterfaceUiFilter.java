@@ -23,6 +23,8 @@ import net.hasor.utils.io.output.ByteArrayOutputStream;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +46,7 @@ import static net.hasor.dataway.config.DatawayModule.fixUrl;
  * @version : 2020-03-20
  */
 class InterfaceUiFilter implements InvokerFilter {
+    protected static     Logger logger           = LoggerFactory.getLogger(InterfaceUiFilter.class);
     private static final String resourceBaseUri  = "/META-INF/hasor-framework/dataway-ui/";
     private              String resourceIndexUri = null;
     private              String apiBaseUri;
@@ -68,6 +71,7 @@ class InterfaceUiFilter implements InvokerFilter {
             try {
                 return chain.doNext(invoker);
             } catch (Exception e) {
+                logger.error(e.getMessage(), e);
                 Map<String, Object> objectMap = RequestUtils.exceptionToError(e).getResult();
                 PrintWriter writer = httpResponse.getWriter();
                 writer.write(JSON.toJSONString(objectMap));

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataql.DataQL;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ObjectModel;
@@ -42,9 +41,7 @@ import java.util.Map;
  */
 @MappingToUrl("/api/save-api")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
-public class SaveApiController {
-    @Inject
-    private DataQL       dataQL;
+public class SaveApiController extends BasicController {
     @Inject
     private CheckService checkService;
 

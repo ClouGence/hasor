@@ -36,6 +36,14 @@ import java.util.function.Supplier;
  * @version : 2017-03-23
  */
 public interface QueryApiBinder extends ApiBinder, Hints {
+    /** 创建一个隔离环境，隔离环境不会共享当前 QueryApiBinder 中的任何配置。 */
+    public default QueryApiBinder isolation(Class<?> contextType) {
+        return isolation(contextType.getName());
+    }
+
+    /** 创建一个隔离环境，隔离环境不会共享当前 QueryApiBinder 中的任何配置。 */
+    public QueryApiBinder isolation(String contextName);
+
     /** 加载带有 @DimFragment 注解的类 */
     public default QueryApiBinder loadFragment(Set<Class<?>> fragmentTypeSet) {
         return this.loadFragment(fragmentTypeSet, Matchers.anyClass(), null);

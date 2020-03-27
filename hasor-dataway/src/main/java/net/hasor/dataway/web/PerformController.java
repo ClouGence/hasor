@@ -37,9 +37,9 @@ import java.util.Map;
  */
 @MappingToUrl("/api/perform")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
-public class PerformController {
+public class PerformController extends BasicController {
     @Inject
-    private DataQL dataQL;
+    private DataQL executeDataQL;
 
     @Post
     public Result<Map<String, Object>> doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) {
@@ -55,7 +55,7 @@ public class PerformController {
         }
         //
         try {
-            Query dataQLQuery = this.dataQL.createQuery(strCodeValue);
+            Query dataQLQuery = this.executeDataQL.createQuery(strCodeValue);
             QueryResult queryResult = dataQLQuery.execute(strRequestBody);
             return Result.of(new HashMap<String, Object>() {{
                 put("success", true);

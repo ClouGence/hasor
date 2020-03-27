@@ -18,13 +18,17 @@ import net.hasor.core.InjectSettings;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ValueModel;
+import net.hasor.dataway.config.DatawayModule;
 import net.hasor.dataway.daos.TestPathQuery;
 import net.hasor.utils.StringUtils;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.HashMap;
+
+import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
 
 /**
  * 检测服务。
@@ -36,6 +40,7 @@ public class CheckService {
     @InjectSettings("${HASOR_DATAQL_DATAWAY_API_URL}")
     private String apiUrl;
     @Inject
+    @Named(ISOLATION_CONTEXT)
     private DataQL dataQL;
 
     public void checkApi(String apiPath) throws IOException {

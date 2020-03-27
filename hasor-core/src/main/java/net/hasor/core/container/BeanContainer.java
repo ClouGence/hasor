@@ -25,10 +25,7 @@ import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.provider.SingleProvider;
 import net.hasor.core.scope.PrototypeScope;
 import net.hasor.core.spi.*;
-import net.hasor.utils.ArrayUtils;
-import net.hasor.utils.BeanUtils;
-import net.hasor.utils.ClassUtils;
-import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.*;
 import net.hasor.utils.convert.ConverterUtils;
 
 import javax.inject.Named;
@@ -174,10 +171,12 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         return (Supplier<T>) () -> createObject(targetType, constructorSupplier, parameterSupplier, bindInfo, appContext);
     }
 
-    /**
-     * 仅通过 Annotation 来创建Bean。targetType 作为参考类型。
-     */
+    /** 仅通过 Annotation 来创建Bean。targetType 作为参考类型。 */
     public <T> Supplier<? extends T> providerOnlyAnnotation(Class<T> targetType, Annotation anno, AppContext appContext) {
+        return providerOnlyAnnotation(null, targetType, anno, appContext);
+    }
+
+    public <T> Supplier<? extends T> providerOnlyAnnotation(String contextName, Class<T> targetType, Annotation anno, AppContext appContext) {
         if (anno == null) {
             return null;
         }
@@ -188,7 +187,22 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
             return () -> appContext.getInstance(((ID) anno).value());
         }
         if (anno instanceof javax.inject.Named) {
-            BindInfo<T> bindInfo = getBindInfoContainer().findBindInfo(((Named) anno).value(), targetType);
+            String nameWith = ((Named) anno).value();
+            BindInfo<T> bindInfo = null;
+            if (StringUtils.isBlank(nameWith)) {
+                if (StringUtils.isNotBlank(contextName)) {
+                    bindInfo = getBindInfoContainer().findBindInfo(contextName);
+                }
+                if (bindInfo == null) {
+                    bindInfo = getBindInfoContainer().findBindInfo(contextName, targetType);
+                }
+            } else {
+                bindInfo = getBindInfoContainer().findBindInfo(nameWith);
+            }
+            if (bindInfo == null) {
+                bindInfo = getBindInfoContainer().findBindInfo(nameWith, targetType);
+            }
+            //
             if (bindInfo != null) {
                 return providerOnlyBindInfo(bindInfo, appContext);
             } else {
@@ -198,9 +212,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         throw new UnsupportedOperationException(anno.annotationType() + " Annotation is not support.");
     }
 
-    /**
-     * 创建一个构造方法对应的参数Supplier
-     */
+    /** 创建一个构造方法对应的参数Supplier */
     private Supplier<Object[]> parameterSupplier(Supplier<Executable> executableSupplier, AppContext appContext, Object[] params, boolean alwaysInject) {
         return new SingleProvider<>(() -> {
             // .基础数据
@@ -471,7 +483,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
-            invokeField(field, targetBean, providerOnlyAnnotation(field.getType(), injectInfo, appContext).get());
+            invokeField(field, targetBean, providerOnlyAnnotation(field.getName(), field.getType(), injectInfo, appContext).get());
             injectFileds.add(field.getName());
         }
         // c.方法注入

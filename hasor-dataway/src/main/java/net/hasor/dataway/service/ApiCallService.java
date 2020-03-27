@@ -24,10 +24,13 @@ import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+
+import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
 
 /**
  * 服务调用。
@@ -37,7 +40,10 @@ import java.util.Map;
 @Singleton
 public class ApiCallService {
     @Inject
+    @Named(ISOLATION_CONTEXT)
     private DataQL dataQL;
+    @Inject
+    private DataQL executeDataQL;
 
     public Map<String, Object> doCall(Invoker invoker) {
         HttpServletRequest httpRequest = invoker.getHttpRequest();

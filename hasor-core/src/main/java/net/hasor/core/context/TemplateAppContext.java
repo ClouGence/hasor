@@ -17,7 +17,7 @@ package net.hasor.core.context;
 import net.hasor.core.EventListener;
 import net.hasor.core.*;
 import net.hasor.core.binder.AbstractBinder;
-import net.hasor.core.binder.ApiBinderCreater;
+import net.hasor.core.binder.ApiBinderCreator;
 import net.hasor.core.binder.ApiBinderInvocationHandler;
 import net.hasor.core.binder.BindInfoBuilderFactory;
 import net.hasor.core.container.BeanContainer;
@@ -320,7 +320,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
             if (implMap.containsKey(implKey)) {
                 continue;
             }
-            ApiBinderCreater creater = (ApiBinderCreater) implKey.newInstance();
+            ApiBinderCreator creater = (ApiBinderCreator) implKey.newInstance();
             Object exter = creater.createBinder(binder);
             if (exter != null) {
                 implMap.put(implKey, exter);

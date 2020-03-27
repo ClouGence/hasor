@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.valid;
+package net.hasor.web.render;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerCreater;
 
 /**
- * 表单验证器，Invoker扩展。
+ *
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ValidInvokerCreater implements InvokerCreater {
+public class RenderInvokerCreator implements InvokerCreater {
     @Override
     public Invoker createExt(Invoker dataContext) {
-        ValidInvokerSupplier supplier = new ValidInvokerSupplier(dataContext);
-        supplier.put(ValidInvoker.VALID_DATA_KEY, supplier.getValidData());
-        supplier.lockKey(ValidInvoker.VALID_DATA_KEY);
-        return supplier;
+        return new RenderInvokerSupplier(dataContext);
     }
 }

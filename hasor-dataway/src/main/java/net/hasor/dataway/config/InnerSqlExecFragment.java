@@ -34,7 +34,7 @@ import java.util.Set;
  * @version : 2020-03-24
  */
 @Singleton
-public class SqlQueryFragment implements FragmentProcess {
+public class InnerSqlExecFragment implements FragmentProcess {
     @Inject
     private JdbcTemplate jdbcTemplate;
 

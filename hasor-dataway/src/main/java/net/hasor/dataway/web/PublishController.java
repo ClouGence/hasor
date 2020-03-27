@@ -15,7 +15,6 @@
  */
 package net.hasor.dataway.web;
 import com.alibaba.fastjson.JSON;
-import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataway.config.MappingToUrl;
@@ -30,7 +29,6 @@ import net.hasor.web.annotation.RequestBody;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,10 +40,7 @@ import java.util.Map;
  */
 @MappingToUrl("/api/publish")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
-public class PublishController {
-    @Inject
-    private DataQL dataQL;
-
+public class PublishController extends BasicController {
     @Post
     public Result<Object> doPublish(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {

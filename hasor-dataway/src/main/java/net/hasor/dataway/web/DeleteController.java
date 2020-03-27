@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
@@ -25,7 +24,6 @@ import net.hasor.web.annotation.RequestBody;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,10 +35,7 @@ import java.util.Map;
  */
 @MappingToUrl("/api/delete")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
-public class DeleteController {
-    @Inject
-    private DataQL dataQL;
-
+public class DeleteController extends BasicController {
     @Post
     public Result<Object> doDelete(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {

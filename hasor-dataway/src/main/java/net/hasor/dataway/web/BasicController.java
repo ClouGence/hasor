@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
-import net.hasor.core.ApiBinder;
+package net.hasor.dataway.web;
+import net.hasor.dataql.DataQL;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
 
 /**
- * Binder 扩展接口
- * @version : 2016-12-16
+ * 基础
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-03-24
  */
-public interface ApiBinderCreater<T extends ApiBinder> {
-    /**
-     * 创建Beander 扩展接口实现类 {@link ApiBinder}
-     * @return return {@link ApiBinder}
-     */
-    public T createBinder(ApiBinder apiBinder) throws Throwable;
+public abstract class BasicController {
+    @Inject
+    @Named(ISOLATION_CONTEXT)
+    protected DataQL dataQL;
 }

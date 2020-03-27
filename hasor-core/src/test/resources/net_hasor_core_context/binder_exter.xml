@@ -2,7 +2,7 @@
 <config xmlns="http://www.hasor.net/sechma/main">
 
     <hasor.apiBinderSet>
-        <binder type="net.hasor.test.core.binder.TestBinder">net.hasor.test.core.binder.TestBinderCreater</binder>
+        <binder type="net.hasor.test.core.binder.TestBinder">net.hasor.test.core.binder.TestBinderCreator</binder>
     </hasor.apiBinderSet>
 
 </config>

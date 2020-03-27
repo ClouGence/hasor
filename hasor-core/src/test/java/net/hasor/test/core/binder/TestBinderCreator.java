@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.tconsole.binder;
+package net.hasor.test.core.binder;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.binder.ApiBinderCreater;
-import net.hasor.tconsole.ConsoleApiBinder;
-import net.hasor.tconsole.TelContext;
+import net.hasor.core.binder.ApiBinderCreator;
 
 /**
- * tConsole Hasor plugin 负责提供 ConsoleApiBinder。
- * @version : 2019年10月30日
+ * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ConsoleApiBinderCreater implements ApiBinderCreater<ConsoleApiBinder> {
+public class TestBinderCreator implements ApiBinderCreator<TestBinder> {
     @Override
-    public ConsoleApiBinder createBinder(final ApiBinder apiBinder) {
-        InnerExecutorManager executorManager = new InnerExecutorManager();
-        apiBinder.bindType(InnerExecutorManager.class).toInstance(executorManager);
-        apiBinder.bindType(TelContext.class).toProvider(executorManager);
-        return new InnerConsoleApiBinder(executorManager, apiBinder);
+    public TestBinder createBinder(ApiBinder apiBinder) {
+        return new TestBinderImpl(apiBinder);
     }
 }

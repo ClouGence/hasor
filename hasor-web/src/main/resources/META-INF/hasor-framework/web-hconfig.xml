@@ -26,13 +26,13 @@
 
         <!-- ApiBinder 扩展（多个 type 可以指定同一个实现类，Hasor 会自动映射到同一个实例对象上） -->
         <apiBinderSet>
-            <binder type="net.hasor.web.WebApiBinder">net.hasor.web.binder.InvokerWebApiBinderCreater</binder>
+            <binder type="net.hasor.web.WebApiBinder">net.hasor.web.binder.InvokerWebApiBinderCreator</binder>
         </apiBinderSet>
 
         <!-- Invoker 扩展（多个 type 可以指定同一个实现类，Hasor 会自动映射到同一个实例对象上） -->
         <invokerCreaterSet>
-            <invokerCreater type="net.hasor.web.valid.ValidInvoker">net.hasor.web.valid.ValidInvokerCreater</invokerCreater>
-            <invokerCreater type="net.hasor.web.render.RenderInvoker">net.hasor.web.render.RenderInvokerCreater</invokerCreater>
+            <invokerCreater type="net.hasor.web.valid.ValidInvoker">net.hasor.web.valid.ValidInvokerCreator</invokerCreater>
+            <invokerCreater type="net.hasor.web.render.RenderInvoker">net.hasor.web.render.RenderInvokerCreator</invokerCreater>
         </invokerCreaterSet>
 
         <!-- 文件上传 -->

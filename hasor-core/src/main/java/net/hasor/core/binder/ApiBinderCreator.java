@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.core.binder;
+package net.hasor.core.binder;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.binder.ApiBinderCreater;
 
 /**
+ * Binder 扩展接口
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TestBinderCreater implements ApiBinderCreater<TestBinder> {
-    @Override
-    public TestBinder createBinder(ApiBinder apiBinder) {
-        return new TestBinderImpl(apiBinder);
-    }
+public interface ApiBinderCreator<T extends ApiBinder> {
+    /**
+     * 创建Beander 扩展接口实现类 {@link ApiBinder}
+     * @return return {@link ApiBinder}
+     */
+    public T createBinder(ApiBinder apiBinder) throws Throwable;
 }
