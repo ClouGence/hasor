@@ -62,28 +62,21 @@
 
     <!-- 引用依赖 -->
     <dependencies>
+        <!-- basic -->
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-dataql</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-db</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-web</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
+        <!-- database -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-db</artifactId>
+        </dependency>
         <dependency>
             <groupId>ognl</groupId>
             <artifactId>ognl</artifactId>
@@ -91,12 +84,16 @@
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
+
+        <!-- web -->
         <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>3.27.0-GA</version>
-            <scope>compile</scope>
-            <optional>true</optional>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

@@ -30,7 +30,12 @@
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
-            <artifactId>hasor-all</artifactId>
+            <artifactId>hasor-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-dataql</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

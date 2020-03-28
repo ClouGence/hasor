@@ -15,25 +15,20 @@
  */
 package net.hasor.spring.xml;
 import net.hasor.core.AppContext;
-import net.hasor.rsf.InterAddress;
 import net.hasor.spring.beans.ContextFactoryBean;
-import net.hasor.spring.rsf.RsfAddressPropertyEditor;
-import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
-import org.springframework.beans.factory.config.*;
-import org.springframework.beans.factory.parsing.BeanComponentDefinition;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanDefinitionHolder;
+import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.DefaultBeanNameGenerator;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.core.SpringVersion;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import java.beans.PropertyEditor;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -55,44 +50,8 @@ class HasorDefinitionParser extends AbstractHasorDefinitionParser {
         return beanID.trim();
     }
 
-    private void parsePropertyEditor(ParserContext parserContext) throws IOException {
-        if (ResourcesUtils.getResourceAsStream("net.hasor.rsf.InterAddress".replace('.', '/') + ".class") == null) {
-            return;
-        }
-        //
-        // Spring 版本兼容
-        String version = SpringVersion.getVersion();
-        version = StringUtils.isBlank(version) ? "?" : version;
-        Map customEditors = null;
-        if (version.charAt(0) == '4' || version.charAt(0) == '5') {
-            customEditors = new HashMap<Class<?>, Class<? extends PropertyEditor>>();
-            customEditors.put(InterAddress.class, RsfAddressPropertyEditor.class);
-        } else {
-            customEditors = new HashMap();
-            customEditors.put("net.hasor.rsf.InterAddress", new RsfAddressPropertyEditor());
-        }
-        //
-        // .属性编辑器 Bean 定义
-        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition();
-        builder.getRawBeanDefinition().setBeanClass(CustomEditorConfigurer.class);
-        builder.setScope(BeanDefinition.SCOPE_SINGLETON);//单例
-        builder.addPropertyValue("customEditors", customEditors);
-        //
-        //  .注册这个属性编辑器,BeanID 为：net.hasor.rsf.spring.RsfAddressPropertyEditor
-        AbstractBeanDefinition propEditors = builder.getBeanDefinition();
-        String beanID = RsfAddressPropertyEditor.class.getName();
-        BeanDefinitionHolder holder = new BeanDefinitionHolder(propEditors, beanID);
-        BeanDefinitionReaderUtils.registerBeanDefinition(holder, parserContext.getRegistry());
-        parserContext.registerComponent(new BeanComponentDefinition(holder));
-    }
-
     @Override
     protected AbstractBeanDefinition parse(Element element, NamedNodeMap attributes, ParserContext parserContext) {
-        try {
-            this.parsePropertyEditor(parserContext);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition();
         builder.getRawBeanDefinition().setBeanClass(ContextFactoryBean.class);
         builder.setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_AUTODETECT);

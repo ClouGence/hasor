@@ -32,9 +32,14 @@
         <!-- hasor -->
         <dependency>
             <groupId>net.hasor</groupId>
-            <artifactId>hasor-all</artifactId>
+            <artifactId>hasor-dataway</artifactId>
             <version>${hasor.version}</version>
         </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>net.hasor</groupId>-->
+        <!--            <artifactId>hasor-all</artifactId>-->
+        <!--            <version>${hasor.version}</version>-->
+        <!--        </dependency>-->
 
         <!-- database -->
         <dependency>
