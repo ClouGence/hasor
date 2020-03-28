@@ -46,7 +46,7 @@ import java.util.Stack;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-11-07
  */
-public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> implements net.hasor.dataql.compiler.parser.DataQLParserVisitor<T> {
+public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> implements DataQLParserVisitor<T> {
     private Stack<Object> instStack = new Stack<>();
 
     @Override
@@ -86,7 +86,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         PrimitiveVariable optValue = (PrimitiveVariable) this.instStack.pop();
         String optKey = (String) this.instStack.pop();
         HintInst hintInst = new HintInst(optKey, optValue);
-        ((RootBlockSet) this.instStack.peek()).addOptionInst(hintInst);
+        ((InstSet) this.instStack.peek()).addOptionInst(hintInst);
         return null;
     }
 
@@ -698,7 +698,8 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             });
         }
         //
-        FragmentVariable fragmentVariable = new FragmentVariable(fragmentName, fragmentString.toString());
+        boolean isBatch = ctx.LSBT() != null;
+        FragmentVariable fragmentVariable = new FragmentVariable(fragmentName, fragmentString.toString(), isBatch);
         ExtParamsContext paramsContext = ctx.extParams();
         if (paramsContext != null) {
             for (TerminalNode terminalNode : paramsContext.IDENTIFIER()) {

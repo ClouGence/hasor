@@ -33,6 +33,7 @@ public class FragmentVariableInstCompiler implements InstCompiler<FragmentVariab
     public void doCompiler(FragmentVariable astInst, InstQueue queue, CompilerContext compilerContext) {
         InstQueue newMethodInst = queue.newMethodInst();
         List<String> paramList = astInst.getParamList();
+        boolean isBatch = astInst.isBatchMode();
         compilerContext.newFrame();
         // .LOCAL 变量表
         for (int i = 0; i < paramList.size(); i++) {
@@ -41,7 +42,7 @@ public class FragmentVariableInstCompiler implements InstCompiler<FragmentVariab
             newMethodInst.inst(LOCAL, i, index, name);  //为栈中某个位置的变量命名
         }
         // .声明片段入口
-        newMethodInst.inst(M_FRAG, astInst.getFragmentName());
+        newMethodInst.inst(M_FRAG, isBatch, astInst.getFragmentName());
         //  .加载入参变量
         newMethodInst.inst(NEW_O);
         for (int i = 0; i < paramList.size(); i++) {

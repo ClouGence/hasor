@@ -100,5 +100,5 @@ ternaryExpr     : QUE expr COLON expr;
 atomExpr        : primitiveValue | funcCall | routeMapping;
 
 /* 外部语句块块 */
-extBlock        : AT IDENTIFIER LBT extParams? RBT '<%' CHAR* '%>';
+extBlock        : AT IDENTIFIER (LSBT RSBT)?  LBT extParams? RBT '<%' CHAR* '%>';
 extParams       : IDENTIFIER (COMMA IDENTIFIER)*;

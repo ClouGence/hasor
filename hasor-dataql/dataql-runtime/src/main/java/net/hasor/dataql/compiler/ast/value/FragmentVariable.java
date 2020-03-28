@@ -30,10 +30,12 @@ public class FragmentVariable implements Inst, Variable {
     private String       fragmentName;
     private List<String> paramList = new ArrayList<>();
     private String       fragmentString;
+    private boolean      batchMode;
 
-    public FragmentVariable(String fragmentName, String fragmentString) {
+    public FragmentVariable(String fragmentName, String fragmentString, boolean batchMode) {
         this.fragmentName = fragmentName;
         this.fragmentString = fragmentString;
+        this.batchMode = batchMode;
     }
 
     public String getFragmentName() {
@@ -46,6 +48,10 @@ public class FragmentVariable implements Inst, Variable {
 
     public List<String> getParamList() {
         return paramList;
+    }
+
+    public boolean isBatchMode() {
+        return this.batchMode;
     }
 
     @Override

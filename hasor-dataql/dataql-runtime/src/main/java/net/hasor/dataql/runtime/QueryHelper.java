@@ -19,10 +19,7 @@ import net.hasor.dataql.Query;
 import net.hasor.dataql.compiler.ParseException;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.ast.inst.RootBlockSet;
-import net.hasor.dataql.compiler.parser.DataQLLexer;
-import net.hasor.dataql.compiler.parser.DataQLParser;
-import net.hasor.dataql.compiler.parser.DefaultDataQLVisitor;
-import net.hasor.dataql.compiler.parser.ThrowingErrorListener;
+import net.hasor.dataql.compiler.parser.*;
 import net.hasor.dataql.compiler.qil.*;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -151,7 +148,7 @@ public class QueryHelper {
         DataQLParser qlParser = new DataQLParser(new CommonTokenStream(lexer));
         qlParser.removeErrorListeners();
         qlParser.addErrorListener(ThrowingErrorListener.INSTANCE);
-        net.hasor.dataql.compiler.parser.DataQLParserVisitor visitor = new DefaultDataQLVisitor();
+        DataQLParserVisitor visitor = new DefaultDataQLVisitor();
         return (RootBlockSet) visitor.visit(qlParser.rootInstSet());
     }
 

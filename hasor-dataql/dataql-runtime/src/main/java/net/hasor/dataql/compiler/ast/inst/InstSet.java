@@ -22,6 +22,8 @@ import net.hasor.dataql.compiler.ast.InstVisitorContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 指令序列
@@ -29,6 +31,17 @@ import java.util.ArrayList;
  * @version : 2017-03-23
  */
 public class InstSet extends ArrayList<Inst> implements Inst {
+    private List<HintInst> optionSet = new ArrayList<>();
+
+    /** 添加选项 */
+    public void addOptionInst(HintInst inst) {
+        this.optionSet.add(Objects.requireNonNull(inst, "option inst npe."));
+    }
+
+    public List<HintInst> getOptionSet() {
+        return optionSet;
+    }
+
     /** 批量添加指令集 */
     public void addInstSet(InstSet inst) {
         this.addAll(inst);
@@ -46,6 +59,9 @@ public class InstSet extends ArrayList<Inst> implements Inst {
         astVisitor.visitInst(new InstVisitorContext(this) {
             @Override
             public void visitChildren(AstVisitor astVisitor) {
+                for (HintInst inst : getOptionSet()) {
+                    inst.accept(astVisitor);
+                }
                 for (Inst inst : InstSet.this) {
                     inst.accept(astVisitor);
                 }

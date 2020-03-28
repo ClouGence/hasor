@@ -23,8 +23,68 @@
         </developer>
     </developers>
 
+
+    <properties>
+        <antlr4.visitor>true</antlr4.visitor>
+    </properties>
+
     <build>
         <plugins>
+            <!-- 把 antlr4 目录的 g4 文件生源代码到 target/generated-sources/antlr4 目录下 -->
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>4.7.2</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <visitor>true</visitor>
+                        </configuration>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 把 target/generated-sources/antlr4 目录加入到源码 -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>target/generated-sources/antlr4</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 把 target/generated-sources/antlr4 目录下生成的两个 DataQL tokens 文件放回到 g4 目录（为了 IDE 插件） -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <configuration>
+                            <target>
+                                <copy file="${basedir}/target/generated-sources/antlr4/FxSQLLexer.tokens" tofile="${basedir}/src/main/antlr4/net/hasor/dataql/fx/db/parser/FxSQLLexer.tokens"/>
+                                <copy file="${basedir}/target/generated-sources/antlr4/FxSQLParser.tokens" tofile="${basedir}/src/main/antlr4/net/hasor/dataql/fx/db/parser/FxSQLParser.tokens"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 把 javassist、ognl 的源码和 class 集成到 hasor-dataql-fx 项目 中 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -76,6 +136,10 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-db</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
         </dependency>
         <dependency>
             <groupId>ognl</groupId>

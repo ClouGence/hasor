@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
  * 执行外部代码片段
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2019-12-14
+ * @version : 2020-03-28
  */
 public interface FragmentProcess {
+    /** 批量执行 */
+    public default List<Object> batchRunFragment(Hints hint, List<Map<String, Object>> params, String fragmentString) throws Throwable {
+        List<Object> resultList = new ArrayList<>(params.size());
+        for (Map<String, Object> paramItem : params) {
+            resultList.add(this.runFragment(hint, paramItem, fragmentString));
+        }
+        return resultList;
+    }
+
+    /** 常规执行 */
     public Object runFragment(Hints hint, Map<String, Object> params, String fragmentString) throws Throwable;
 }
-
-
-

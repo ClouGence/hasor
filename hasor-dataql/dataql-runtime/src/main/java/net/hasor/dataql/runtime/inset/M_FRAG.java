@@ -38,11 +38,13 @@ class M_FRAG implements InsetProcess {
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
-        String fragmentType = sequence.currentInst().getString(0);
+        boolean isBach = sequence.currentInst().getBoolean(0);
+        String fragmentType = sequence.currentInst().getString(1);
         FragmentProcess loadObject = context.findFragmentProcess(fragmentType);
         if (loadObject == null) {
             throw new InstructRuntimeException(fragmentType + " fragment undefine.");
         }
-        dataStack.push(new RefCall(true, new RefFragmentCall(loadObject)));
+        //
+        dataStack.push(new RefCall(true, new RefFragmentCall(isBach, loadObject)));
     }
 }

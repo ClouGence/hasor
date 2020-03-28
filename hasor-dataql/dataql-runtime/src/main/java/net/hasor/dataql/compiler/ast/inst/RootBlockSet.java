@@ -33,21 +33,11 @@ import java.util.Objects;
  * @version : 2019-11-07
  */
 public class RootBlockSet extends InstSet implements QueryModel {
-    private List<HintInst>   optionSet = new ArrayList<>();
     private List<ImportInst> importSet = new ArrayList<>();
-
-    /** 添加选项 */
-    public void addOptionInst(HintInst inst) {
-        this.optionSet.add(Objects.requireNonNull(inst, "option inst npe."));
-    }
 
     /** 添加导入 */
     public void addImportInst(ImportInst inst) {
         this.importSet.add(Objects.requireNonNull(inst, "import inst npe."));
-    }
-
-    public List<HintInst> getOptionSet() {
-        return optionSet;
     }
 
     public List<ImportInst> getImportSet() {
@@ -59,7 +49,7 @@ public class RootBlockSet extends InstSet implements QueryModel {
         astVisitor.visitInst(new InstVisitorContext(this) {
             @Override
             public void visitChildren(AstVisitor astVisitor) {
-                for (HintInst inst : optionSet) {
+                for (HintInst inst : getOptionSet()) {
                     inst.accept(astVisitor);
                 }
                 for (ImportInst inst : importSet) {
@@ -76,7 +66,7 @@ public class RootBlockSet extends InstSet implements QueryModel {
     public void toQueryString(HintsSet formatOptions, Writer writer) throws IOException {
         formatOptions = (formatOptions == null) ? new HintsSet() : formatOptions;
         //
-        for (HintInst opt : this.optionSet) {
+        for (HintInst opt : this.getOptionSet()) {
             opt.doFormat(0, formatOptions, new FormatWriter(writer));
         }
         for (ImportInst opt : this.importSet) {

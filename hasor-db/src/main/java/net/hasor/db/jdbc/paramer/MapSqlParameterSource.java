@@ -18,9 +18,10 @@ import net.hasor.db.jdbc.SqlParameterSource;
 import net.hasor.db.jdbc.core.ParameterDisposer;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
- *
+ * 一个 Map 到 SqlParameterSource 的桥，同时支持自动识别 Supplier 接口以获取具体参数。
  * @version : 2014-3-31
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -38,7 +39,11 @@ public class MapSqlParameterSource implements SqlParameterSource, ParameterDispo
 
     @Override
     public Object getValue(final String paramName) throws IllegalArgumentException {
-        return this.values.get(paramName);
+        Object object = this.values.get(paramName);
+        if (object instanceof Supplier) {
+            object = ((Supplier<?>) object).get();
+        }
+        return object;
     }
 
     @Override
