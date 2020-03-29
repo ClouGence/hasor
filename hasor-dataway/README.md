@@ -18,24 +18,36 @@
 ----------
 ## 主打场景
 
+&emsp;&emsp;主打场景并不是说 Dataway 适用范围仅限于此，而是经过多次项目实践。我们认为下面这些场景会有非常好的预期效果。
+比如说 ``取数据`` 在一些报表、看板项目中即便是取数据逻辑在复杂。我们依然做到了真正的 零 开发，所有取数逻辑全部通过 DataQL + SQL 的方式满足。
+对比往期项目对于后端技术人员的需求从 3～5 人的苦逼通宵加班，直接缩减为 1人配置化搞定。
+
+&emsp;&emsp;再比如，某个内部类 ERP 项目，20多个表单页面，后端部分仅有 1000 行左右的核心代码。其它数据存取逻辑全部配置化完成。
+
+
 01. 取数据
     - 如果你只想从数据库或者服务中获取某类数据，不需要： VO、BO、Convert、DO、Mapper 这类东西。
 02. 存数据
     - 如果是从页面表单递交数据到数据库或者服务，免去 BO、FormBean、DO、Mapper 这类东西。
+03. 数据聚合
+    - 基于服务调用结果经过结构转换并响应给前端。
+    - 将数据库和服务等多个结果进行汇聚然后返回给前端。
 
 ----------
 ## 技术架构
 
 ![avatar](https://www.hasor.net/web/_images/CC2_B633_6D5C_MK4L.png)
 
+&emsp;&emsp;刚一接触 DataQL 可能会有一种错觉认为 DataQL 是一个高级别的 ORM 工具。
+这一点需要澄清。DataQL 的竞品应是 GraphQL，而非 ORM 框架。
 
 &emsp;&emsp;ORM 类框架有一个最大的特点是具有 Mapping 过程，然后通过框架在进行 CURD 操作。
 例如：Mybatis、Hibernate。其中有一些甚至做到了更高级的界面化例如： apijson，但其本质依然是 ORM。
 
-&emsp;&emsp;这与 DataQL 有很大不同。虽然 DataQL 提供了非常出色的基于 SQL 数据存取能力。但从技术架构上来审视，可以看出它并不是 ORM 框架。
+&emsp;&emsp;而 DataQL 有很大不同。虽然 DataQL 提供了非常出色的基于 SQL 数据存取能力。但从技术架构上来审视，可以看出它并不是 ORM 框架。
 它没有 ORM 中最关键的 Mapping 过程。DataQL 专注的是：结果转换、数据和服务的聚合查询。
 
-&emsp;&emsp;DataQL 的数据库的存取能力也只是充分利用 Udf 和 Fragment 奇妙的组合而已。
+&emsp;&emsp;造成 ORM 错觉的是由于 DataQL 充分利用 Udf 和 Fragment 奇妙的组合，提供了更便捷的数据库存储逻辑配置化而已。
 
 ----------
 ## Spring 中使用 Dataway
