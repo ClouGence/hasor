@@ -15,12 +15,14 @@
  */
 package net.hasor.dataql.fx.basic;
 import net.hasor.dataql.UdfSourceAssembly;
+import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.CommonCodeUtils;
 import net.hasor.utils.ExceptionUtils;
 
 import javax.inject.Singleton;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.List;
 
 /**
  * 编解码函数库。函数库引入 <code>import 'net.hasor.dataql.fx.basic.CodecUdfSource' as codec;</code>
@@ -30,12 +32,13 @@ import java.nio.charset.Charset;
 @Singleton
 public class CodecUdfSource implements UdfSourceAssembly {
     /** 计算字节数组的MD5 */
-    public static String byteMD5(byte[] content) {
+    public static String byteMD5(List<Byte> content) {
         if (content == null) {
             return null;
         }
         try {
-            return CommonCodeUtils.MD5.getMD5(content);
+            Byte[] bytes = content.toArray(new Byte[0]);
+            return CommonCodeUtils.MD5.getMD5(ArrayUtils.toPrimitive(bytes));
         } catch (Exception e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
@@ -63,12 +66,13 @@ public class CodecUdfSource implements UdfSourceAssembly {
     }
 
     /** 对字节数组 Base64 进行编码 */
-    public static String byteEncodeBase64(byte[] content) {
-        if (content == null || content.length == 0) {
+    public static String byteEncodeBase64(List<Byte> content) {
+        if (content == null || content.size() == 0) {
             return null;
         }
         try {
-            return CommonCodeUtils.Base64.base64EncodeFoArray(content);
+            Byte[] bytes = content.toArray(new Byte[0]);
+            return CommonCodeUtils.Base64.base64EncodeFoArray(ArrayUtils.toPrimitive(bytes));
         } catch (Exception e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
@@ -96,11 +100,12 @@ public class CodecUdfSource implements UdfSourceAssembly {
     }
 
     /** 将二进制数据转换为 16进制字符串 */
-    public static String byteToHex(byte[] content) {
-        if (content == null || content.length == 0) {
+    public static String byteToHex(List<Byte> content) {
+        if (content == null || content.size() == 0) {
             return null;
         }
-        return CommonCodeUtils.HexConversion.byte2HexStr(content);
+        Byte[] bytes = content.toArray(new Byte[0]);
+        return CommonCodeUtils.HexConversion.byte2HexStr(ArrayUtils.toPrimitive(bytes));
     }
 
     /** 将二进制数据转换为 16进制字符串 */
@@ -112,11 +117,12 @@ public class CodecUdfSource implements UdfSourceAssembly {
     }
 
     /** 二进制数据转换为字符串 */
-    public static String byteToString(byte[] content, String charset) {
-        if (content == null || content.length == 0) {
+    public static String byteToString(List<Byte> content, String charset) {
+        if (content == null || content.size() == 0) {
             return null;
         }
-        return new String(content, Charset.forName(charset));
+        Byte[] bytes = content.toArray(new Byte[0]);
+        return new String(ArrayUtils.toPrimitive(bytes), Charset.forName(charset));
     }
 
     /** 字符串转换为二进制数据 */

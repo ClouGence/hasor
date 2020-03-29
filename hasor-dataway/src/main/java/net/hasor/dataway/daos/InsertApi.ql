@@ -8,8 +8,8 @@ var insertMap = {
             api_schema,     api_sample,
             api_create_time,api_gmt_time
         ) values (
-            #{data.select}, #{data.apiPath} ,0,
-            #{data.comment},#{data.codeType},#{data.codeValue}
+            #{data.select}, #{data.apiPath},    0,
+            #{data.comment},#{data.codeType},   #{data.codeValue},
             '{}',           #{apiSample},
             now(),          now()
         );

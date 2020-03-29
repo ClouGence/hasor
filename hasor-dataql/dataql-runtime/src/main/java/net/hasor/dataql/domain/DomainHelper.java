@@ -16,6 +16,7 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.Udf;
 import net.hasor.dataql.runtime.operator.OperatorUtils;
+import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.ref.BeanMap;
 
 import java.util.*;
@@ -70,7 +71,30 @@ public class DomainHelper {
             return objectModel;
         } else if (object.getClass().isArray()) {
             // 外部类型：数组 -> ListModel
-            return new ListModel(Arrays.asList((Object[]) object));
+            Class<?> componentType = object.getClass().getComponentType();
+            Object[] objectArrays = null;
+            if (componentType.isPrimitive()) {
+                /**  */if (Boolean.TYPE == componentType) {
+                    objectArrays = ArrayUtils.toObject((boolean[]) object);
+                } else if (Byte.TYPE == componentType) {
+                    objectArrays = ArrayUtils.toObject((byte[]) object);
+                } else if (Short.TYPE == componentType) {
+                    objectArrays = ArrayUtils.toObject((short[]) object);
+                } else if (Integer.TYPE == componentType) {
+                    objectArrays = ArrayUtils.toObject((int[]) object);
+                } else if (Long.TYPE == componentType) {
+                    objectArrays = ArrayUtils.toObject((long[]) object);
+                } else if (Character.TYPE == componentType) {
+                    objectArrays = ArrayUtils.toObject((char[]) object);
+                } else if (Float.TYPE == componentType) {
+                    objectArrays = ArrayUtils.toObject((float[]) object);
+                } else if (Double.TYPE == componentType) {
+                    objectArrays = ArrayUtils.toObject((double[]) object);
+                } else {
+                    objectArrays = (Object[]) object;
+                }
+            }
+            return new ListModel(Arrays.asList(objectArrays));
         } else if (object instanceof Collection) {
             // 外部类型：集合 -> ListModel
             return new ListModel((Collection<?>) object);

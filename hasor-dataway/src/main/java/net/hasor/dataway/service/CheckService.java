@@ -18,7 +18,6 @@ import net.hasor.core.InjectSettings;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ValueModel;
-import net.hasor.dataway.config.DatawayModule;
 import net.hasor.dataway.daos.TestPathQuery;
 import net.hasor.utils.StringUtils;
 
