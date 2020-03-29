@@ -14,7 +14,7 @@
         <!-- dataway  API工作路径 -->
         <HASOR_DATAQL_DATAWAY_API_URL>/api/</HASOR_DATAQL_DATAWAY_API_URL>
         <!-- 是否开启 dataway-ui 管理功能（注意生产环境要设置为 false） -->
-        <HASOR_DATAQL_DATAWAY_ADMIN>true</HASOR_DATAQL_DATAWAY_ADMIN>
+        <HASOR_DATAQL_DATAWAY_ADMIN>false</HASOR_DATAQL_DATAWAY_ADMIN>
         <!-- dataway-ui 的工作路径，必须开启管理功能 -->
         <HASOR_DATAQL_DATAWAY_UI_URL>/interface-ui/</HASOR_DATAQL_DATAWAY_UI_URL>
     </hasor.environmentVar>

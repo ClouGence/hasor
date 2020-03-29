@@ -29,7 +29,12 @@
     </build>
 
     <dependencies>
-        <!-- hasor -->
+        <!-- dataway -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-spring</artifactId>
+            <version>${hasor.version}</version>
+        </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-dataway</artifactId>
@@ -52,6 +57,15 @@
             <artifactId>druid</artifactId>
             <version>1.1.21</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>1.1.10</version>
+        </dependency>
 
         <!-- utils -->
         <dependency>
@@ -60,9 +74,9 @@
             <version>1.2.47</version>
         </dependency>
         <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-core</artifactId>
-            <version>1.6.0</version>
+            <groupId>ognl</groupId>
+            <artifactId>ognl</artifactId>
+            <version>3.2.14</version>
         </dependency>
 
         <!-- logger -->
@@ -72,25 +86,18 @@
             <version>1.2.3</version>
         </dependency>
 
-        <!-- Spring -->
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-spring</artifactId>
-            <version>${hasor.version}</version>
-        </dependency>
+        <!-- web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-freemarker</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <!-- junit test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

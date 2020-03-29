@@ -18,6 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryApiBinder;
+import net.hasor.dataql.fx.db.SqlFragment;
 import net.hasor.dataway.web.*;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -97,7 +98,7 @@ public class DatawayModule implements WebModule {
         defaultContext.bindFinder(apiBinder.getProvider(DatawayFinder.class));
         // .Dataway 自身使用的隔离环境
         QueryApiBinder isolation = defaultContext.isolation(ISOLATION_CONTEXT);
-        isolation.bindFragment("inner_dataway_sql", InnerSqlExecFragment.class);
+        isolation.bindFragment("inner_dataway_sql", SqlFragment.class);
     }
 
     @Override

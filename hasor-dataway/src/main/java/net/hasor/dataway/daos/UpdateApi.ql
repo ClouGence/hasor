@@ -1,25 +1,21 @@
 import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 
 var updateMap = {
-    "default"   : @@inner_dataway_sql(apiID, apiStatus, apiComment, apiType, apiScript, apiSample)<%
+    "default"   : @@inner_dataway_sql(data, apiSample)<%
         update interface_info set
-            api_status   = :apiStatus,
-            api_comment  = :apiComment,
-            api_type     = :apiType,
-            api_script   = :apiScript,
-            api_sample   = :apiSample,
+            api_status   = #{data.newStatus},
+            api_comment  = #{data.comment},
+            api_type     = #{data.codeType},
+            api_script   = #{data.codeValue},
+            api_sample   = #{apiSample},
             api_gmt_time = now()
         where
-            api_id       = :apiID
+            api_id       = #{data.id}
     %>
 };
 
 var res = updateMap[dbMapping](
-    ${postData}.id,
-    ${postData}.newStatus,
-    ${postData}.comment,
-    ${postData}.codeType,
-    ${postData}.codeValue,
+    ${postData},
     json.toJson({
         "requestBody" : ${postData}.requestBody,
         "headerData"  : ${postData}.headerData => [ # ]
