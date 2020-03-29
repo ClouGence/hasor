@@ -56,7 +56,7 @@ public class DatawayModule implements WebModule {
         }
         logger.info("dataway api workAt " + apiBaseUri);
         environment.addVariable("HASOR_DATAQL_DATAWAY_API_URL", apiBaseUri);
-        apiBinder.filter(fixUrl(apiBaseUri + "/*")).through(new InterfaceApiFilter(apiBaseUri));
+        apiBinder.filter(fixUrl(apiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceApiFilter(apiBaseUri));
         //
         // .Dataway 后台管理界面
         if (!Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY_ADMIN"))) {
@@ -91,7 +91,7 @@ public class DatawayModule implements WebModule {
             MappingToUrl toUrl = aClass.getAnnotation(MappingToUrl.class);
             apiBinder.mappingTo(fixUrl(uiBaseUri + "/" + toUrl.value())).with(aClass);
         }
-        apiBinder.filter(fixUrl(uiBaseUri + "/*")).through(new InterfaceUiFilter(apiBaseUri, uiBaseUri));
+        apiBinder.filter(fixUrl(uiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceUiFilter(apiBaseUri, uiBaseUri));
         //
         // .Finder,实现引用其它定义的 DataQL
         QueryApiBinder defaultContext = apiBinder.tryCast(QueryApiBinder.class);

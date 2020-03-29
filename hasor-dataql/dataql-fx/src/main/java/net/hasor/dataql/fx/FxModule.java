@@ -16,9 +16,11 @@
 package net.hasor.dataql.fx;
 import net.hasor.dataql.QueryApiBinder;
 import net.hasor.dataql.QueryModule;
-import net.hasor.dataql.fx.db.TransactionUdfSource;
 import net.hasor.dataql.fx.db.SqlFragment;
 import net.hasor.dataql.fx.db.SqlPageFragment;
+import net.hasor.dataql.fx.web.InvokerInterceptor;
+import net.hasor.utils.ResourcesUtils;
+import net.hasor.web.WebApiBinder;
 
 /**
  * Fx 函数包的自动配置
@@ -28,9 +30,17 @@ import net.hasor.dataql.fx.db.SqlPageFragment;
 public class FxModule implements QueryModule {
     @Override
     public void loadModule(QueryApiBinder apiBinder) throws Throwable {
+        //
+        // .外部代码片段执行器
         apiBinder.bindFragment("sql", SqlFragment.class);
         apiBinder.bindFragment("sql_page", SqlPageFragment.class);
         //
-        apiBinder.bindType(TransactionUdfSource.class).asEagerSingleton();
+        // .如果是 Web 环境那么初始化 web 相关的 函数包。
+        if (ResourcesUtils.getResource("/net/hasor/web/WebApiBinder.class") != null) {
+            WebApiBinder webApiBinder = apiBinder.tryCast(WebApiBinder.class);
+            if (webApiBinder != null) {
+                webApiBinder.filter("/*").through(Integer.MAX_VALUE - 1, InvokerInterceptor.class);
+            }
+        }
     }
 }
