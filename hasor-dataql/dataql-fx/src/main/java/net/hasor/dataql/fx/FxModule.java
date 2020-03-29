@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx.basic;
-import net.hasor.dataql.UdfSourceAssembly;
-
-import javax.inject.Singleton;
-import java.util.UUID;
+package net.hasor.dataql.fx;
+import net.hasor.dataql.QueryApiBinder;
+import net.hasor.dataql.QueryModule;
+import net.hasor.dataql.fx.db.TransactionUdfSource;
+import net.hasor.dataql.fx.db.SqlFragment;
+import net.hasor.dataql.fx.db.SqlPageFragment;
 
 /**
- * ID函数。函数库引入 <code>import 'net.hasor.dataql.fx.basic.IdentifierUdfSource' as ids;</code>
+ * Fx 函数包的自动配置
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2019-12-12
+ * @version : 2020-03-29
  */
-@Singleton
-public class IdentifierUdfSource implements UdfSourceAssembly {
-    /** 返回一个完整格式的 UUID 字符串。  */
-    public static String uuid() {
-        return UUID.randomUUID().toString();
-    }
-
-    /** 返回一个不含"-" 符号的 UUID 字符串 */
-    public static String uuid2() {
-        return UUID.randomUUID().toString().replace("-", "");
+public class FxModule implements QueryModule {
+    @Override
+    public void loadModule(QueryApiBinder apiBinder) throws Throwable {
+        apiBinder.bindFragment("sql", SqlFragment.class);
+        apiBinder.bindFragment("sql_page", SqlPageFragment.class);
+        //
+        apiBinder.bindType(TransactionUdfSource.class).asEagerSingleton();
     }
 }

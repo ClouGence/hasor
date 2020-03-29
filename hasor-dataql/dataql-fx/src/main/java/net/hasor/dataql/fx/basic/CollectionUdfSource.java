@@ -24,6 +24,7 @@ import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.utils.ExceptionUtils;
 
+import javax.inject.Singleton;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
+@Singleton
 public class CollectionUdfSource implements UdfSourceAssembly {
     /** 循环遍历函数 */
     protected static Collection<Object> foreach(Object collection) {

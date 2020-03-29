@@ -17,14 +17,16 @@ package net.hasor.dataway.web;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
-import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.DatawayUtils;
+import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -38,8 +40,9 @@ import java.util.Map;
 @MappingToUrl("/api/perform")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class PerformController extends BasicController {
+    protected static Logger logger = LoggerFactory.getLogger(PerformController.class);
     @Inject
-    private DataQL executeDataQL;
+    private          DataQL executeDataQL;
 
     @Post
     public Result<Map<String, Object>> doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) {
@@ -64,6 +67,7 @@ public class PerformController extends BasicController {
                 put("value", queryResult.getData().unwrap());
             }});
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             return DatawayUtils.exceptionToResult(e);
         }
     }

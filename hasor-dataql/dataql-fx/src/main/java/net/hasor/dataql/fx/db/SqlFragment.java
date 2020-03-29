@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  */
 public class SqlFragment implements FragmentProcess {
     @Inject
-    private JdbcTemplate jdbcTemplate;
+    protected JdbcTemplate jdbcTemplate;
 
     private static enum SqlMode {
         /** DML：insert、update、delete、replace */

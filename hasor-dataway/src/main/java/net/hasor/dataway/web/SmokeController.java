@@ -19,8 +19,8 @@ import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ObjectModel;
-import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.DatawayUtils;
+import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiDetailQuery;
 import net.hasor.web.annotation.Post;
@@ -28,6 +28,8 @@ import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -42,8 +44,9 @@ import java.util.Map;
 @MappingToUrl("/api/smoke")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class SmokeController extends BasicController {
+    protected static Logger logger = LoggerFactory.getLogger(SmokeController.class);
     @Inject
-    private DataQL executeDataQL;
+    private          DataQL executeDataQL;
 
     @Post
     public Result<Map<String, Object>> doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
@@ -75,6 +78,7 @@ public class SmokeController extends BasicController {
             this.updateSchema(apiId, strRequestBody, resultData);
             return result;
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             return DatawayUtils.exceptionToResult(e);
         }
     }

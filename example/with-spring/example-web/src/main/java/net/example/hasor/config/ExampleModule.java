@@ -1,8 +1,6 @@
 package net.example.hasor.config;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.DimModule;
-import net.hasor.dataql.QueryApiBinder;
-import net.hasor.dataql.fx.db.SqlFragment;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
 import net.hasor.spring.SpringModule;
@@ -23,6 +21,5 @@ public class ExampleModule implements SpringModule {
         apiBinder.installModule(new JdbcModule(Level.Full, this.dataSource));
         // .custom DataQL
         //apiBinder.tryCast(QueryApiBinder.class).loadUdfSource(apiBinder.findClass(DimUdfSource.class));
-        apiBinder.tryCast(QueryApiBinder.class).bindFragment("sql", SqlFragment.class);
     }
 }

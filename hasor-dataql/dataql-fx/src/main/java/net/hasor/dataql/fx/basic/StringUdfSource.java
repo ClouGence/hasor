@@ -17,6 +17,7 @@ package net.hasor.dataql.fx.basic;
 import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.utils.StringUtils;
 
+import javax.inject.Singleton;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +25,7 @@ import java.util.regex.Pattern;
  * 字符串函数 <code>import 'net.hasor.dataql.fx.basic.StringUdfSource' as string;</code>
  * @version : 2019-12-12
  */
+@Singleton
 public class StringUdfSource extends StringUtils implements UdfSourceAssembly {
     private static Pattern linePattern = Pattern.compile("_(\\w)");
 

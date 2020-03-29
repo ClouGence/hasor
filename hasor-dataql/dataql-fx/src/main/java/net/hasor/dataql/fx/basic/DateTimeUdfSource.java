@@ -16,6 +16,7 @@
 package net.hasor.dataql.fx.basic;
 import net.hasor.dataql.UdfSourceAssembly;
 
+import javax.inject.Singleton;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,6 +27,7 @@ import java.util.Date;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
+@Singleton
 public class DateTimeUdfSource implements UdfSourceAssembly {
     /** 返回当前时间戳 long 格式 */
     public static long now() {

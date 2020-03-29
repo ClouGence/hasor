@@ -17,11 +17,14 @@ package net.hasor.dataql.fx.basic;
 import com.alibaba.fastjson.JSON;
 import net.hasor.dataql.UdfSourceAssembly;
 
+import javax.inject.Singleton;
+
 /**
  * Json函数。函数库引入 <code>import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;</code>
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
+@Singleton
 public class JsonUdfSource implements UdfSourceAssembly {
     /** 把对象 JSON 序列化 */
     public String toJson(Object data) {

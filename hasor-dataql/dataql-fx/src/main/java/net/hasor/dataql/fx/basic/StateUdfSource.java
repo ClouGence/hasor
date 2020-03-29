@@ -17,6 +17,7 @@ package net.hasor.dataql.fx.basic;
 import net.hasor.dataql.Udf;
 import net.hasor.dataql.UdfSourceAssembly;
 
+import javax.inject.Singleton;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -25,6 +26,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
+@Singleton
 public class StateUdfSource implements UdfSourceAssembly {
     /** 返回一个自增的 int，每次调用函数获取值都会自增 1。 */
     public static Udf decInt(int initValue) {
