@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.utils;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 
 /**
@@ -45,12 +46,7 @@ public class CommonCodeUtils {
                 return s;
             }
             byte[] b = null;
-            try {
-                b = s.getBytes("UTF-8");
-            } catch (java.io.UnsupportedEncodingException e) {
-                e.printStackTrace();
-                return s;
-            }
+            b = s.getBytes(StandardCharsets.UTF_8);
             return Base64.base64EncodeFoArray(b);
         }
 
@@ -101,12 +97,7 @@ public class CommonCodeUtils {
             if (b.length == 0) {
                 return "";
             }
-            try {
-                return new String(b, "UTF-8");
-            } catch (java.io.UnsupportedEncodingException e) {
-                e.printStackTrace();
-                return null;
-            }
+            return new String(b, StandardCharsets.UTF_8);
         }
 
         /** Decoding a string to a byte array follow the Base64 regular */

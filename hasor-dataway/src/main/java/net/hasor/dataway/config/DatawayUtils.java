@@ -74,7 +74,7 @@ public class DatawayUtils {
                 put("success", false);
                 put("code", 500);
                 put("executionTime", -1);
-                put("value", e.getMessage());
+                put("value", e.getClass().getName() + ": " + e.getMessage());
             }});
         }
     }

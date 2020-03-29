@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.fx.web;
 import net.hasor.dataql.UdfSourceAssembly;
+import net.hasor.utils.StringUtils;
 
 import javax.inject.Singleton;
 import javax.servlet.http.Cookie;
@@ -37,6 +38,22 @@ public class CookieUdfSource implements UdfSourceAssembly {
     /** cookieMap,Value是数组 */
     public static Map<String, List<String>> arrayMap() {
         return InvokerInterceptor.cookieArrayMap();
+    }
+
+    /** 获取Cookie */
+    public static String get(String cookieName) {
+        if (StringUtils.isBlank(cookieName)) {
+            return null;
+        }
+        return map().get(cookieName);
+    }
+
+    /** 获取所有名字相同的 Cookie */
+    public static List<String> getArray(String cookieName) {
+        if (StringUtils.isBlank(cookieName)) {
+            return null;
+        }
+        return arrayMap().get(cookieName);
     }
 
     /** 设置 Cookie,MaxAge = -1 */

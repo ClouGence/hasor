@@ -19,6 +19,8 @@ import net.hasor.utils.StringUtils;
 
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -39,13 +41,25 @@ public class HeaderUdfSource implements UdfSourceAssembly {
         return InvokerInterceptor.headerArrayMap();
     }
 
-    /** 添加 Header */
-    public static boolean add(String headerName, String value) {
+    /** 获取 Header */
+    public static String get(String headerName) {
         if (StringUtils.isBlank(headerName)) {
-            return false;
+            return null;
         }
-        InvokerInterceptor.invoker().getHttpResponse().addHeader(headerName, value);
-        return true;
+        return InvokerInterceptor.invoker().getHttpRequest().getHeader(headerName);
+    }
+
+    /** 获取所有名字相同的 Header */
+    public static List<String> getArray(String headerName) {
+        if (StringUtils.isBlank(headerName)) {
+            return null;
+        }
+        List<String> headerList = new ArrayList<>();
+        Enumeration<String> headers = InvokerInterceptor.invoker().getHttpRequest().getHeaders(headerName);
+        while (headers.hasMoreElements()) {
+            headerList.add(headers.nextElement());
+        }
+        return headerList;
     }
 
     /** 设置 Header */
@@ -54,6 +68,15 @@ public class HeaderUdfSource implements UdfSourceAssembly {
             return false;
         }
         InvokerInterceptor.invoker().getHttpResponse().setHeader(headerName, value);
+        return true;
+    }
+
+    /** 添加 Header */
+    public static boolean add(String headerName, String value) {
+        if (StringUtils.isBlank(headerName)) {
+            return false;
+        }
+        InvokerInterceptor.invoker().getHttpResponse().addHeader(headerName, value);
         return true;
     }
 
