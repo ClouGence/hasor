@@ -16,6 +16,7 @@ Welcome to Hasor Framework
     config/index
     web/index
     dataql/index
+    dataway/index
     jdbc/index
     rsf/index
     tconsole/index

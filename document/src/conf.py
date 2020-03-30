@@ -23,9 +23,9 @@ copyright = u'2020, 赵永春'
 author = u'赵永春'
 
 # The short X.Y version
-version = u'4.1.2'
+version = u'4.1.3'
 # The full version, including alpha/beta/rc tags
-release = u'Release.Hasor-4.1.2'
+release = u'Release.Hasor-4.1.3'
 
 
 # -- General configuration ---------------------------------------------------

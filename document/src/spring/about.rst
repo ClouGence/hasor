@@ -28,5 +28,5 @@ Spring版本说明
     <dependency>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-spring</artifactId>
-        <version>4.1.2</version>
+        <version>4.1.3</version>
     </dependency>
