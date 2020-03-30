@@ -111,21 +111,6 @@ public class SqlFragment implements FragmentProcess {
         throw new SQLException("Unknown SqlMode.");//不可能走到这里
     }
 
-    protected Object afterQuery(List<Map<String, Object>> mapList) {
-        if (mapList != null && mapList.size() == 1) {
-            Map<String, Object> objectMap = mapList.get(0);
-            if (objectMap != null && objectMap.size() == 1) {
-                Set<Map.Entry<String, Object>> entrySet = objectMap.entrySet();
-                Map.Entry<String, Object> objectEntry = entrySet.iterator().next();
-                return objectEntry.getValue();
-            } else {
-                return objectMap;
-            }
-        } else {
-            return mapList;
-        }
-    }
-
     private static FxSql analysisSQL(String fragmentString) {
         FxSQLLexer lexer = new FxSQLLexer(CharStreams.fromString(fragmentString));
         lexer.removeErrorListeners();
