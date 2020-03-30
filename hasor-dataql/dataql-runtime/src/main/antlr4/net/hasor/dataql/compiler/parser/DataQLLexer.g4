@@ -86,7 +86,7 @@ DECIMAL_NUM     : '-'? (([0-9]* '.' [0-9]+) | [1-9]+)   // 浮点数
 
 /* 标识符 */
 IDENTIFIER      : ([_a-zA-Z] [_0-9a-zA-Z]*) | ID_EXT;
-fragment ID_EXT : '`' (~["\r\n] | '``' | TRANS)* '`';
+fragment ID_EXT : '`' (~[`\r\n] | '``' | TRANS)* '`';
 
 /* 扩展代码块 */
 mode EXT_INSTR;
