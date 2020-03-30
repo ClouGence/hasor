@@ -36,7 +36,7 @@ public class DatawayUtils {
             paramKeyBuilder.deleteCharAt(paramKeyBuilder.length() - 1);
             callKeyBuilder.deleteCharAt(callKeyBuilder.length() - 1);
         }
-        strCodeValue = "var tempCall = @@inner_dataway_sql(" + paramKeyBuilder.toString() + ")<%" + strCodeValue + "%>;\n";
+        strCodeValue = "var tempCall = @@sql(" + paramKeyBuilder.toString() + ")<%" + strCodeValue + "%>;\n";
         strCodeValue = strCodeValue + "return tempCall(" + callKeyBuilder.toString() + ");";
         return strCodeValue;
     }
