@@ -117,7 +117,7 @@ DataQL 查询
 
 模拟 SQL 的 left join
 ------------------------------------
-有两个数据集 ``year2019``、``year2018`` 通过 mapjoin 的方式将两个数据联合在一起，并计算同比
+有两个数据集 ``year2019``、``year2018`` 通过 mapJoin 的方式将两个数据联合在一起，并计算同比
 
 .. code-block:: js
     :linenos:
@@ -140,7 +140,7 @@ DataQL 查询
     ];
 
     // 求同比
-    return collect.mapjoin(year2019,year2018, { "item_code":"item_code" }) => [
+    return collect.mapJoin(year2019,year2018, { "item_code":"item_code" }) => [
         {
             "商品Code": data1.item_code,
             "去年同期": data2.sum_price,

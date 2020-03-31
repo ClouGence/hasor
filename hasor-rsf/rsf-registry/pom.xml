@@ -36,7 +36,6 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.58</version>
         </dependency>
 
         <!-- 存储 -->
@@ -47,12 +46,10 @@
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
-            <version>3.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>2.5.0</version>
         </dependency>
     </dependencies>
 
@@ -98,7 +95,6 @@
                 <dependency>
                     <groupId>com.alibaba</groupId>
                     <artifactId>fastjson</artifactId>
-                    <version>1.2.58</version>
                 </dependency>
             </dependencies>
         </profile>

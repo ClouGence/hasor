@@ -18,6 +18,7 @@ import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.utils.StringUtils;
 
 import javax.inject.Singleton;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,5 +58,12 @@ public class StringUdfSource extends StringUtils implements UdfSourceAssembly {
         }
         matcher.appendTail(sb);
         return sb.toString();
+    }
+
+    public static String join(List<Object> array, String separator) {
+        if (array == null) {
+            return null;
+        }
+        return StringUtils.join(array.toArray(), separator);
     }
 }

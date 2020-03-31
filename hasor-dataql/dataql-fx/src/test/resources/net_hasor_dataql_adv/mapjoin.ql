@@ -16,7 +16,7 @@ var year2018 = [
 ];
 
 // 求同比
-return collect.mapjoin(year2019,year2018, { "item_code":"item_code" }) => [
+return collect.mapJoin(year2019,year2018, { "item_code":"item_code" }) => [
     {
         "商品Code": data1.item_code,
         "去年同期": data2.sum_price,

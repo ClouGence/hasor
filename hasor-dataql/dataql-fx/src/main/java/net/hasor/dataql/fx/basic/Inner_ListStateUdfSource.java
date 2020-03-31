@@ -20,14 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 带有状态的集合。函数库引入 <code>import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect; var arr = collect.new</code>
+ * 带有状态的集合。函数库引入 <code>import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect; var arr = collect.newList()</code>
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
-class InnerCollectionStateUdfSource implements UdfSourceAssembly {
+class Inner_ListStateUdfSource implements UdfSourceAssembly {
     private List<Object> objectArrayList;
 
-    public InnerCollectionStateUdfSource(List<Object> initData) {
+    public Inner_ListStateUdfSource(List<Object> initData) {
         if (initData != null) {
             objectArrayList = initData;
         } else {

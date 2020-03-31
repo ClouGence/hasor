@@ -37,24 +37,15 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public class CollectionUdfSource implements UdfSourceAssembly {
-    /** 循环遍历函数 */
-    protected static Collection<Object> foreach(Object collection) {
-        Collection<Object> listData = null;
-        if (collection == null) {
-            listData = new ArrayList<>();
-        } else {
-            if (!(collection instanceof Collection)) {
-                if (collection.getClass().isArray()) {
-                    listData = new ArrayList<>();
-                    Collections.addAll(listData, (Object[]) collection);
-                } else {
-                    listData = Collections.singletonList(collection);
-                }
-            } else {
-                listData = (Collection<Object>) collection;
-            }
+    /** 集合 或 Map 是否为空 */
+    public static boolean isEmpty(Object collection) {
+        if (collection instanceof List) {
+            return ((List) collection).isEmpty();
         }
-        return listData;
+        if (collection instanceof Map) {
+            return ((Map) collection).isEmpty();
+        }
+        return false;
     }
 
     /** 合并多个对象或者集合成为一个新的集合 */
@@ -73,41 +64,93 @@ public class CollectionUdfSource implements UdfSourceAssembly {
         return dataList;
     }
 
+    /** 合并多个对象合成为一个新的对象（冲突Key会被覆盖） */
+    public static Map<String, Object> mergeMap(UdfParams dataArrays) {
+        if (dataArrays == null) {
+            return Collections.emptyMap();
+        }
+        Map<String, Object> finalMap = new LinkedHashMap<>();
+        Object[] allParams = dataArrays.allParams();
+        for (int i = 0; i < allParams.length; i++) {
+            Object object = allParams[i];
+            if (object instanceof Map) {
+                ((Map) object).forEach((o, o2) -> {
+                    finalMap.put(o.toString(), o2);
+                });
+            }
+            object = DomainHelper.convertTo(object);
+            if (object instanceof ObjectModel) {
+                finalMap.putAll(((ObjectModel) object).unwrap());
+            } else {
+                throw new IllegalArgumentException("param must be Map.");
+            }
+        }
+        return finalMap;
+    }
+
     /**
      * 对集合进行过滤
      * @param valueList 集合数据
      * @param filter 过滤器 Predicate or 返回值为 Boolean 的 UDF
-     * @param option 选项
+     * @param hints 选项
      */
-    public static Object filter(List<Object> valueList, Object filter, Hints option) {
+    public static Object filter(List<Object> valueList, Udf filter, Hints hints) {
         if (valueList == null || valueList.isEmpty()) {
             return null;
         }
         if (filter == null) {
             return valueList;
         }
+        // Udf to Predicate
+        AtomicReference<Predicate<Object>> refPredicate = new AtomicReference<>(o -> {
+            try {
+                return (boolean) filter.call(hints, o);
+            } catch (Throwable e) {
+                throw ExceptionUtils.toRuntimeException(e);
+            }
+        });
         //
-        AtomicReference<Predicate<Object>> predicateAtomicReference = new AtomicReference<>();
-        if (filter instanceof Predicate) {
-            predicateAtomicReference.set((Predicate<Object>) filter);
-        } else if (filter instanceof Udf) {
-            predicateAtomicReference.set(o -> {
-                try {
-                    return (boolean) ((Udf) filter).call(option, o);
-                } catch (Throwable e) {
-                    throw ExceptionUtils.toRuntimeException(e);
-                }
-            });
-        } else {
-            throw new NullPointerException("filter is null or Type is not Predicate or Udf.");
-        }
-        //
-        return valueList.stream().filter(predicateAtomicReference.get()).collect(Collectors.toList());
+        return valueList.stream().filter(refPredicate.get()).collect(Collectors.toList());
     }
 
-    /** 集合是否为空 */
-    public static boolean isEmpty(List<Object> valueList) {
-        return valueList == null || valueList.isEmpty();
+    /**
+     * 对Map进行过滤
+     * @param mapData 集合数据
+     * @param keyFilter key过滤器
+     * @param hints 选项
+     */
+    public static Map<String, Object> filterMap(Map<String, Object> mapData, Udf keyFilter, Hints hints) throws Throwable {
+        if (keyFilter == null || mapData.isEmpty()) {
+            return mapData;
+        }
+        Map<String, Object> finalMap = new LinkedHashMap<>();
+        for (String key : mapData.keySet()) {
+            if ((boolean) keyFilter.call(hints, key)) {
+                finalMap.put(key, mapData.get(key));
+            }
+        }
+        return finalMap;
+    }
+    // -------------------------------------------------------------------------------------------------------------------------- List
+
+    /** 循环遍历函数 */
+    protected static Collection<Object> foreach(Object collection) {
+        Collection<Object> listData = null;
+        if (collection == null) {
+            listData = new ArrayList<>();
+        } else {
+            if (!(collection instanceof Collection)) {
+                if (collection.getClass().isArray()) {
+                    listData = new ArrayList<>();
+                    Collections.addAll(listData, (Object[]) collection);
+                } else {
+                    listData = Collections.singletonList(collection);
+                }
+            } else {
+                listData = (Collection<Object>) collection;
+            }
+        }
+        return listData;
     }
 
     /** 截取一部分，返回一个集合 */
@@ -136,17 +179,40 @@ public class CollectionUdfSource implements UdfSourceAssembly {
     }
 
     /** 创建一个有状态的 Array 对象 */
-    @UdfName("new")
-    public static Map<String, Udf> newArray(Object mabeCollection) {
+    public static Map<String, Udf> newList(Object mabeCollection) {
         List<Object> initData = new ArrayList<>();
         if (mabeCollection != null) {
             initData.addAll(foreach(mabeCollection));
         }
-        return new InnerCollectionStateUdfSource(initData).getUdfResource(Finder.DEFAULT).get();
+        return new Inner_ListStateUdfSource(initData).getUdfResource(Finder.DEFAULT).get();
+    }
+
+    /** 对 List 进行排序 */
+    public static List<Object> listSort(List<Object> listData, Udf sortUdf, Hints hints) {
+        if (listData == null) {
+            return Collections.emptyList();
+        }
+        if (sortUdf == null) {
+            listData.sort((o1, o2) -> {
+                int hc1 = (o1 == null) ? 0 : o1.hashCode();
+                int hc2 = (o2 == null) ? 0 : o2.hashCode();
+                return Integer.compare(hc1, hc2);
+            });
+            return listData;
+        } else {
+            listData.sort((o1, o2) -> {
+                try {
+                    return (Integer) sortUdf.call(hints, new Object[] { o1, o2 });
+                } catch (Throwable e) {
+                    throw ExceptionUtils.toRuntimeException(e);
+                }
+            });
+            return listData;
+        }
     }
 
     /** List 转为 Map */
-    public static Map<String, Object> list2map(List<Object> valueList, String key, Udf convert, Hints option) throws Throwable {
+    public static Map<String, Object> list2map(List<Object> valueList, String key, Udf convert, Hints hints) throws Throwable {
         ListModel convertTo = (ListModel) DomainHelper.convertTo(valueList);
         if (convertTo == null || convertTo.size() == 0) {
             return Collections.emptyMap();
@@ -162,7 +228,7 @@ public class CollectionUdfSource implements UdfSourceAssembly {
                 if (keyValue != null) {
                     if (keyValue.isValue()) {
                         if (convert != null) {
-                            Object call = convert.call(option, objectModel);
+                            Object call = convert.call(hints, objectModel);
                             objectModel = DomainHelper.convertTo(call);
                         }
                         mapData.put(keyValue.unwrap().toString(), objectModel);
@@ -199,26 +265,7 @@ public class CollectionUdfSource implements UdfSourceAssembly {
         return mapData;
     }
 
-    /** Map 转为 List */
-    public static List<Object> map2list(Object mapValue, Udf convert, Hints option) throws Throwable {
-        ObjectModel convertTo = (ObjectModel) DomainHelper.convertTo(mapValue);
-        if (convertTo == null || convertTo.size() == 0) {
-            return Collections.emptyList();
-        }
-        ArrayList<Object> listData = new ArrayList<>();
-        Set<Map.Entry<String, DataModel>> entrySet = convertTo.asOri().entrySet();
-        for (Map.Entry<String, DataModel> entry : entrySet) {
-            DataModel objectModel = DomainHelper.newObject();
-            ((ObjectModel) objectModel).put("key", entry.getKey());
-            ((ObjectModel) objectModel).put("value", entry.getValue());
-            if (convert != null) {
-                objectModel = DomainHelper.convertTo(convert.call(option, objectModel));
-            }
-            listData.add(objectModel);
-        }
-        return listData;
-    }
-
+    // -------------------------------------------------------------------------------------------------------------------------- Map
     private static String evalJoinKey(Object data, String[] joinField) {
         ObjectModel objectModel = (ObjectModel) DomainHelper.convertTo(data);
         StringBuilder joinKey = new StringBuilder("");
@@ -231,8 +278,7 @@ public class CollectionUdfSource implements UdfSourceAssembly {
     }
 
     /** 将两个 Map List 进行链接，行为和 sql 中的 left join 相同 */
-    public static List<Map<String, Object>> mapjoin(List<Object> data1, List<Object> data2, Map<String, String> join, Hints option) {
-        //
+    public static List<Map<String, Object>> mapJoin(List<Object> data1, List<Object> data2, Map<String, String> join) {
         LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<>(join);
         String[] joinKey1 = linkedHashMap.keySet().toArray(new String[0]);
         String[] joinKey2 = linkedHashMap.values().toArray(new String[0]);
@@ -252,5 +298,73 @@ public class CollectionUdfSource implements UdfSourceAssembly {
             }});
         }
         return returnData;
+    }
+
+    /** 提取 Map 的 Key */
+    public static List<String> mapKeys(Map<String, Object> map) {
+        if (map == null) {
+            return Collections.emptyList();
+        }
+        return new ArrayList<>(map.keySet());
+    }
+
+    /** 提取 Map 的 values */
+    public static List<Object> mapValues(Map<String, Object> map) {
+        if (map == null) {
+            return Collections.emptyList();
+        }
+        return new ArrayList<>(map.values());
+    }
+
+    /** 对 Map 进行排序 */
+    public static Map<String, Object> mapSort(Map<String, Object> mapData, Udf sortUdf, Hints hints) {
+        if (mapData == null) {
+            return Collections.emptyMap();
+        }
+        List<Object> keySort = listSort(new ArrayList<>(mapData.keySet()), sortUdf, hints);
+        Map<String, Object> newMap = new LinkedHashMap<>();
+        for (Object key : keySort) {
+            String keyStr = key.toString();
+            newMap.put(keyStr, mapData.get(keyStr));
+        }
+        return newMap;
+    }
+
+    /** Map 转为 List */
+    public static List<Object> map2list(Object mapValue, Udf convert, Hints hints) throws Throwable {
+        ObjectModel convertTo = (ObjectModel) DomainHelper.convertTo(mapValue);
+        if (convertTo == null || convertTo.size() == 0) {
+            return Collections.emptyList();
+        }
+        ArrayList<Object> listData = new ArrayList<>();
+        Set<Map.Entry<String, DataModel>> entrySet = convertTo.asOri().entrySet();
+        for (Map.Entry<String, DataModel> entry : entrySet) {
+            DataModel objectModel = DomainHelper.newObject();
+            ((ObjectModel) objectModel).put("key", entry.getKey());
+            ((ObjectModel) objectModel).put("value", entry.getValue());
+            if (convert != null) {
+                objectModel = DomainHelper.convertTo(convert.call(hints, objectModel));
+            }
+            listData.add(objectModel);
+        }
+        return listData;
+    }
+
+    /** Map 转为字符串 */
+    public static String map2string(Map<String, Object> mapValue, String joinStr, Udf convert, Hints hints) throws Throwable {
+        if (mapValue == null || mapValue.size() == 0) {
+            return "";
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String key : mapValue.keySet()) {
+            Object value = mapValue.get(key);
+            stringBuilder.append(convert.call(hints, key, value));
+            stringBuilder.append(joinStr);
+        }
+        if (stringBuilder.length() > 0) {
+            int joinLength = joinStr.length();
+            return stringBuilder.substring(0, stringBuilder.length() - joinLength);
+        }
+        return stringBuilder.toString();
     }
 }

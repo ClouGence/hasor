@@ -31,7 +31,7 @@ var year2018 = [
     { "pt":2018, "item_code":"code_4", "sum_price":1234.0 }
 ];
 
-return collect.mapjoin(year2019,year2018, { "item_code":"item_code" }) => [
+return collect.mapJoin(year2019,year2018, { "item_code":"item_code" }) => [
     {
         "商品Code": data1.item_code,
         "去年同期": data2.sum_price,
