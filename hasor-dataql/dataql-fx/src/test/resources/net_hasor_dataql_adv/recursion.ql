@@ -17,4 +17,4 @@ var foo = (dat, arrayObj) -> {
     return arrayObj;
 }
 
-return foo(data,collect.new()).data();
+return foo(data,collect.newList()).data();

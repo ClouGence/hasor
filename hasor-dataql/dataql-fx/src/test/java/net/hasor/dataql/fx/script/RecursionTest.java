@@ -38,4 +38,9 @@ public class RecursionTest extends AbstractTestResource {
     public void mapjoin_test() throws IOException {
         queryTest("mapjoin");
     }
+
+    @Test
+    public void datav_url_test() throws IOException {
+        queryTest("datav_url");
+    }
 }
