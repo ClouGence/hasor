@@ -66,13 +66,18 @@ class DO implements InsetProcess {
                 String msg = (fstExpData == null) ? "is null." : "must number.";
                 throw new InstructRuntimeException("DO -> first data " + msg);
             }
-            if (secExpData == null) {
-                if (isPositive) {
-                    dataStack.push(Double.POSITIVE_INFINITY); // 除数为整数数，被除数为0 -> 正无穷大
-                } else {
-                    dataStack.push(Double.NEGATIVE_INFINITY); // 除数为负数，被除数为0 -> 负无穷大
+            if (secExpData == null){
+                secExpData = 0 ;
+            }
+            if (OperatorUtils.isNumber(secExpData)){
+                if (OperatorUtils.eq((Number) secExpData, 0)) {
+                    if (isPositive) {
+                        dataStack.push(Double.POSITIVE_INFINITY); // 除数为整数数，被除数为0 -> 正无穷大
+                    } else {
+                        dataStack.push(Double.NEGATIVE_INFINITY); // 除数为负数，被除数为0 -> 负无穷大
+                    }
+                    return;
                 }
-                return;
             }
         }
         //

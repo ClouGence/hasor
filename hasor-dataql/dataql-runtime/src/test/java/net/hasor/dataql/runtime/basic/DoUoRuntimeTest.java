@@ -131,4 +131,14 @@ public class DoUoRuntimeTest extends AbstractTestResource implements HintValue {
         assert ((ValueModel) dataModel).isBoolean();
         assert !((ValueModel) dataModel).asBoolean();
     }
+
+    @Test
+    public void do_div_1_Test() throws Exception {
+        Query compilerQL = compilerQL("hint MIN_DECIMAL_WIDTH ='big' ; hint MIN_INTEGER_WIDTH = 'big' ;return 0.0 / 0;");
+        DataModel dataModel = compilerQL.execute().getData();
+        //
+        assert dataModel.isValue();
+        assert ((ValueModel) dataModel).isNumber();
+        assert ((ValueModel) dataModel).asString().equals("Infinity");
+    }
 }
