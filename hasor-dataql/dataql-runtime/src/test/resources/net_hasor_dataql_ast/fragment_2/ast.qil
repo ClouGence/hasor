@@ -42,7 +42,7 @@
 [1]
   #00  LOCAL     0, 0, itemCode
   #01  LOCAL     1, 1, status
-  #02  M_FRAG    false, sql
+  #02  M_FRAG    true, sql
   #03  NEW_O
   #04  LOAD      0, 0
   #05  PUT       itemCode

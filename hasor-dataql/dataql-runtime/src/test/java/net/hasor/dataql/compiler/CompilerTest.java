@@ -251,6 +251,11 @@ public class CompilerTest extends AbstractTestResource {
     }
 
     @Test
+    public void fragment2_ast_format_test() throws IOException {
+        astTest("fragment_2");
+    }
+
+    @Test
     public void error_ast_format_test() throws IOException {
         try {
             QueryHelper.queryParser("return [1,2,3,4,5,6] => [ # ]"); // 不支持的语法

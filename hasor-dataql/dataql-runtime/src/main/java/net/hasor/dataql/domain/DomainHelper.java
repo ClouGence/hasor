@@ -93,6 +93,8 @@ public class DomainHelper {
                 } else {
                     objectArrays = (Object[]) object;
                 }
+            } else {
+                objectArrays = (Object[]) object;
             }
             return new ListModel(Arrays.asList(objectArrays));
         } else if (object instanceof Collection) {

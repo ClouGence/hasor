@@ -66,6 +66,9 @@ public class FragmentVariable implements Inst, Variable {
     @Override
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
         writer.write("@@" + this.fragmentName);
+        if (batchMode) {
+            writer.write("[]");
+        }
         writer.write("(");
         for (int i = 0; i < this.paramList.size(); i++) {
             if (i == 0) {
