@@ -16,6 +16,8 @@
 package net.hasor.dataql.fx.db;
 import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Hints;
+import net.hasor.dataql.fx.FxHintNames;
+import net.hasor.dataql.fx.FxHintValue;
 import net.hasor.dataql.fx.db.parser.*;
 import net.hasor.db.jdbc.SqlParameterSource;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -90,17 +92,35 @@ public class SqlFragment implements FragmentProcess {
         //
         if (SqlMode.Query == sqlMode) {
             List<Map<String, Object>> mapList = this.jdbcTemplate.queryForList(fragmentString, source);
-            if (mapList != null && mapList.size() == 1) {
-                Map<String, Object> objectMap = mapList.get(0);
-                if (objectMap != null && objectMap.size() == 1) {
-                    Set<Map.Entry<String, Object>> entrySet = objectMap.entrySet();
-                    Map.Entry<String, Object> objectEntry = entrySet.iterator().next();
-                    return objectEntry.getValue();
+            String openPackage = hint.getOrDefault(FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.name(), FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.getDefaultVal()).toString();
+            //
+            // .结果有多条记录,或者模式为 off，那么直接返回List
+            boolean packageOff = FxHintValue.FRAGMENT_SQL_OPEN_PACKAGE_OFF.equalsIgnoreCase(openPackage);
+            if (packageOff || (mapList != null && mapList.size() > 1)) {
+                return mapList;
+            }
+            // .为空或者结果为空，那么看看是返回 null 或者 空对象
+            if (mapList == null || mapList.isEmpty()) {
+                if (FxHintValue.FRAGMENT_SQL_OPEN_PACKAGE_COLUMN.equalsIgnoreCase(openPackage)) {
+                    return null;
                 } else {
-                    return objectMap;
+                    return Collections.emptyMap();
                 }
             }
-            return mapList;
+            // .只有1条记录
+            Map<String, Object> rowObject = mapList.get(0);
+            if (FxHintValue.FRAGMENT_SQL_OPEN_PACKAGE_COLUMN.equalsIgnoreCase(openPackage)) {
+                if (rowObject == null) {
+                    return null;
+                }
+                if (rowObject.size() == 1) {
+                    Set<Map.Entry<String, Object>> entrySet = rowObject.entrySet();
+                    Map.Entry<String, Object> objectEntry = entrySet.iterator().next();
+                    return objectEntry.getValue();
+                }
+            }
+            return rowObject;
+            //
         } else if (SqlMode.Execute == sqlMode) {
             return this.jdbcTemplate.executeUpdate(fragmentString, source);
         } else if (SqlMode.Procedure == sqlMode) {

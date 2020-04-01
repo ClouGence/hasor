@@ -18,16 +18,18 @@ import net.hasor.core.AppContext;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.binder.AppContextFinder;
-import net.hasor.dataql.domain.ValueModel;
+import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataway.daos.GetScriptByPathQuery;
-import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+
+import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
 
 /**
  * Dataway 启动入口
@@ -39,26 +41,27 @@ public class DatawayFinder extends AppContextFinder {
     private DataQL dataQL;
 
     @Inject
-    public DatawayFinder(AppContext appContext, DataQL dataQL) {
+    public DatawayFinder(AppContext appContext) {
         super(appContext);
-        this.dataQL = dataQL;
+        this.dataQL = appContext.findBindingBean(ISOLATION_CONTEXT, DataQL.class);
     }
 
     /** 负责处理 <code>import @"/net/hasor/demo.ql" as demo;</code>方式中 ‘/net/hasor/demo.ql’ 资源的加载 */
-    public InputStream findResource(final String resourceName) {
-        try {
-            if (resourceName.toLowerCase().startsWith("classpath:")) {
-                String newResourceName = resourceName.substring("classpath:".length());
-                return ResourcesUtils.getResourceAsStream(newResourceName);
-            } else {
-                QueryResult queryResult = new GetScriptByPathQuery(this.dataQL).execute(new HashMap<String, String>() {{
-                    put("apiPath", resourceName);
-                }});
-                String scriptBody = ((ValueModel) queryResult.getData()).asString();
-                return new ByteArrayInputStream(scriptBody.getBytes());
+    public InputStream findResource(final String resourceName) throws IOException {
+        if (resourceName.toLowerCase().startsWith("classpath:")) {
+            String newResourceName = resourceName.substring("classpath:".length());
+            return ResourcesUtils.getResourceAsStream(newResourceName);
+        } else {
+            QueryResult queryResult = new GetScriptByPathQuery(this.dataQL).execute(new HashMap<String, String>() {{
+                put("apiPath", resourceName);
+            }});
+            //pub_script
+            ListModel listModel = (ListModel) queryResult.getData();
+            if (listModel == null || listModel.size() == 0) {
+                throw new NullPointerException("import compiler failed -> '" + resourceName + "' not found.");
             }
-        } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e, throwable -> new RuntimeException("import compiler failed -> '" + resourceName + "' not found.", throwable));
+            String scriptBody = listModel.getObject(0).getValue("pub_script").asString();
+            return new ByteArrayInputStream(scriptBody.getBytes());
         }
     }
 }
