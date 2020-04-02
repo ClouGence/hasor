@@ -35,7 +35,14 @@ DataQL 引擎
     guide/global_var
     guide/udf_dataql
     guide/ext_dataql
-    guide/maven_plugin
+    guide/hints
+
+Maven插件
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    maven/maven_plugin
 
 内置函数库(SDK)
 ------------------------------------
@@ -56,6 +63,7 @@ QIL指令集
 .. toctree::
     :maxdepth: 3
 
+    runtime/mnemonics
     runtime/create_instset
     runtime/store_instset
     runtime/exit_instset
@@ -63,11 +71,3 @@ QIL指令集
     runtime/control_instset
     runtime/fun_instset
     runtime/other_instset
-
-附录
-------------------------------------
-.. toctree::
-    :maxdepth: 3
-
-    moreinfo/mnemonics
-    moreinfo/hints
