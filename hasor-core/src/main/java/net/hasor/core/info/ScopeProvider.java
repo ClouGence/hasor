@@ -24,7 +24,6 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface ScopeProvider {
-    /**获取Provider对象，可以直接取得对象实例。
-     * @return*/
+    /**获取Provider对象，可以直接取得对象实例。*/
     public Supplier[] getCustomerScopeProvider();
 }

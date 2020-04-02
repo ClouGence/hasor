@@ -42,11 +42,11 @@
             <artifactId>hasor-dataql</artifactId>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-dataql-fx</artifactId>
-            <scope>compile</scope>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>net.hasor</groupId>-->
+        <!--            <artifactId>hasor-dataql-fx</artifactId>-->
+        <!--            <scope>compile</scope>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-spring</artifactId>
@@ -56,6 +56,43 @@
             <groupId>net.hasor</groupId>
             <artifactId>hasor-rsf</artifactId>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+
+        <!-- optional libs -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
@@ -146,45 +183,6 @@
                     <docencoding>UTF-8</docencoding>
                     <header><![CDATA[ [<a target="_blank" href="http://www.hasor.net">Web Site</a>] ]]></header>
                     <bottom>${javadocs.bottom}</bottom>
-                    <additionalDependencies>
-                        <!-- hasor-web -->
-                        <dependency>
-                            <groupId>javax.servlet</groupId>
-                            <artifactId>javax.servlet-api</artifactId>
-                            <version>3.1.0</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>javax.servlet.jsp</groupId>
-                            <artifactId>jsp-api</artifactId>
-                            <version>2.2</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>com.alibaba</groupId>
-                            <artifactId>fastjson</artifactId>
-                        </dependency>
-                        <!-- hasor-db -->
-                        <dependency>
-                            <groupId>org.mybatis</groupId>
-                            <artifactId>mybatis</artifactId>
-                            <version>3.5.3</version>
-                        </dependency>
-                        <!-- hasor-spring -->
-                        <dependency>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-autoconfigure</artifactId>
-                            <version>${spring.boot.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.springframework</groupId>
-                            <artifactId>spring-context</artifactId>
-                            <version>${spring.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.springframework</groupId>
-                            <artifactId>spring-web</artifactId>
-                            <version>${spring.version}</version>
-                        </dependency>
-                    </additionalDependencies>
                 </configuration>
                 <executions>
                     <execution>
@@ -208,7 +206,7 @@
                         <configuration>
                             <classifier>sources</classifier>
                             <includes>net/hasor/**</includes>
-                            <includeScope>runtime</includeScope>
+                            <includeScope>compile</includeScope>
                             <includeGroupIds>${project.groupId}</includeGroupIds>
                             <outputDirectory>${generatedSourceDir}</outputDirectory>
                         </configuration>

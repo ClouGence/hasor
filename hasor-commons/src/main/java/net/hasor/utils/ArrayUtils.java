@@ -18,8 +18,9 @@ package net.hasor.utils;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
 /**
  * <p>Operations on arrays, primitive arrays (like <code>int[]</code>) and
  * primitive wrapper arrays (like <code>Integer[]</code>).</p>
@@ -88,6 +89,7 @@ public class ArrayUtils {
      * various method from {@link java.util.List}.
      */
     public static final int         INDEX_NOT_FOUND              = -1;
+
     /**
      * <p>ArrayUtils instances should NOT be constructed in standard programming.
      * Instead, the class should be used as <code>ArrayUtils.clone(new int[] {2})</code>.</p>
@@ -99,9 +101,10 @@ public class ArrayUtils {
         super();
     }
     //-----------------------------------------------------------------------
+
     /**
      * <p>Converts the given array into a {@link Map}. Each element of the array
-     * must be either a {@link Map.Entry} or an Array, containing at least two
+     * must be either a {@link Entry} or an Array, containing at least two
      * elements, where the first element is used as key and the second as
      * value.</p>
      *
@@ -116,13 +119,13 @@ public class ArrayUtils {
      *
      * <p>This method returns <code>null</code> for a <code>null</code> input array.</p>
      *
-     * @param array  an array whose elements are either a {@link Map.Entry} or
+     * @param array  an array whose elements are either a {@link Entry} or
      *  an Array containing at least two elements, may be <code>null</code>
      * @return a <code>Map</code> that was created from the array
      * @throws IllegalArgumentException  if one element of this Array is
      *  itself an Array containing less then two elements
      * @throws IllegalArgumentException  if the array contains elements other
-     *  than {@link Map.Entry} and an Array
+     *  than {@link Entry} and an Array
      */
     public static Map toMap(final Object[] array) {
         if (array == null) {
@@ -131,8 +134,8 @@ public class ArrayUtils {
         final Map map = new HashMap((int) (array.length * 1.5));
         for (int i = 0; i < array.length; i++) {
             Object object = array[i];
-            if (object instanceof Map.Entry) {
-                Map.Entry entry = (Map.Entry) object;
+            if (object instanceof Entry) {
+                Entry entry = (Entry) object;
                 map.put(entry.getKey(), entry.getValue());
             } else if (object instanceof Object[]) {
                 Object[] entry = (Object[]) object;
@@ -148,6 +151,7 @@ public class ArrayUtils {
     }
     // Clone
     //-----------------------------------------------------------------------
+
     /**
      * <p>Shallow clones an array returning a typecast result and handling
      * <code>null</code>.</p>
@@ -166,6 +170,7 @@ public class ArrayUtils {
         }
         return array.clone();
     }
+
     /**
      * <p>Clones an array returning a typecast result and handling
      * <code>null</code>.</p>
@@ -181,6 +186,7 @@ public class ArrayUtils {
         }
         return array.clone();
     }
+
     /**
      * <p>Clones an array returning a typecast result and handling
      * <code>null</code>.</p>
@@ -196,6 +202,7 @@ public class ArrayUtils {
         }
         return array.clone();
     }
+
     /**
      * <p>Clones an array returning a typecast result and handling
      * <code>null</code>.</p>
@@ -211,6 +218,7 @@ public class ArrayUtils {
         }
         return array.clone();
     }
+
     /**
      * <p>Clones an array returning a typecast result and handling
      * <code>null</code>.</p>
@@ -226,6 +234,7 @@ public class ArrayUtils {
         }
         return array.clone();
     }
+
     /**
      * <p>Clones an array returning a typecast result and handling
      * <code>null</code>.</p>
@@ -241,6 +250,7 @@ public class ArrayUtils {
         }
         return array.clone();
     }
+
     /**
      * <p>Clones an array returning a typecast result and handling
      * <code>null</code>.</p>
@@ -256,6 +266,7 @@ public class ArrayUtils {
         }
         return array.clone();
     }
+
     /**
      * <p>Clones an array returning a typecast result and handling
      * <code>null</code>.</p>
@@ -271,6 +282,7 @@ public class ArrayUtils {
         }
         return array.clone();
     }
+
     /**
      * <p>Clones an array returning a typecast result and handling
      * <code>null</code>.</p>
@@ -288,6 +300,7 @@ public class ArrayUtils {
     }
     // nullToEmpty
     //-----------------------------------------------------------------------
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -307,6 +320,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -326,6 +340,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -345,6 +360,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -364,6 +380,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -383,6 +400,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -402,6 +420,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -421,6 +440,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -440,6 +460,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -459,6 +480,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -478,6 +500,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -497,6 +520,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -516,6 +540,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -535,6 +560,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -554,6 +580,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -573,6 +600,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -592,6 +620,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -611,6 +640,7 @@ public class ArrayUtils {
         }
         return array;
     }
+
     /**
      * <p>Defensive programming technique to change a <code>null</code>
      * reference to an empty one.</p>
@@ -632,6 +662,7 @@ public class ArrayUtils {
     }
     // Subarrays
     //-----------------------------------------------------------------------
+
     /**
      * <p>Produces a new array containing the elements between
      * the start and end indices.</p>
@@ -678,6 +709,7 @@ public class ArrayUtils {
         System.arraycopy(array, startIndexInclusive, subarray, 0, newSize);
         return subarray;
     }
+
     /**
      * <p>Produces a new <code>long</code> array containing the elements
      * between the start and end indices.</p>
@@ -715,6 +747,7 @@ public class ArrayUtils {
         System.arraycopy(array, startIndexInclusive, subarray, 0, newSize);
         return subarray;
     }
+
     /**
      * <p>Produces a new <code>int</code> array containing the elements
      * between the start and end indices.</p>
@@ -752,6 +785,7 @@ public class ArrayUtils {
         System.arraycopy(array, startIndexInclusive, subarray, 0, newSize);
         return subarray;
     }
+
     /**
      * <p>Produces a new <code>short</code> array containing the elements
      * between the start and end indices.</p>
@@ -789,6 +823,7 @@ public class ArrayUtils {
         System.arraycopy(array, startIndexInclusive, subarray, 0, newSize);
         return subarray;
     }
+
     /**
      * <p>Produces a new <code>char</code> array containing the elements
      * between the start and end indices.</p>
@@ -826,6 +861,7 @@ public class ArrayUtils {
         System.arraycopy(array, startIndexInclusive, subarray, 0, newSize);
         return subarray;
     }
+
     /**
      * <p>Produces a new <code>byte</code> array containing the elements
      * between the start and end indices.</p>
@@ -863,6 +899,7 @@ public class ArrayUtils {
         System.arraycopy(array, startIndexInclusive, subarray, 0, newSize);
         return subarray;
     }
+
     /**
      * <p>Produces a new <code>double</code> array containing the elements
      * between the start and end indices.</p>
@@ -900,6 +937,7 @@ public class ArrayUtils {
         System.arraycopy(array, startIndexInclusive, subarray, 0, newSize);
         return subarray;
     }
+
     /**
      * <p>Produces a new <code>float</code> array containing the elements
      * between the start and end indices.</p>
@@ -937,6 +975,7 @@ public class ArrayUtils {
         System.arraycopy(array, startIndexInclusive, subarray, 0, newSize);
         return subarray;
     }
+
     /**
      * <p>Produces a new <code>boolean</code> array containing the elements
      * between the start and end indices.</p>
@@ -976,6 +1015,7 @@ public class ArrayUtils {
     }
     // Is same length
     //-----------------------------------------------------------------------
+
     /**
      * <p>Checks whether two arrays are the same length, treating
      * <code>null</code> arrays as length <code>0</code>.
@@ -993,6 +1033,7 @@ public class ArrayUtils {
         }
         return true;
     }
+
     /**
      * <p>Checks whether two arrays are the same length, treating
      * <code>null</code> arrays as length <code>0</code>.</p>
@@ -1008,6 +1049,7 @@ public class ArrayUtils {
         }
         return true;
     }
+
     /**
      * <p>Checks whether two arrays are the same length, treating
      * <code>null</code> arrays as length <code>0</code>.</p>
@@ -1023,6 +1065,7 @@ public class ArrayUtils {
         }
         return true;
     }
+
     /**
      * <p>Checks whether two arrays are the same length, treating
      * <code>null</code> arrays as length <code>0</code>.</p>
@@ -1038,6 +1081,7 @@ public class ArrayUtils {
         }
         return true;
     }
+
     /**
      * <p>Checks whether two arrays are the same length, treating
      * <code>null</code> arrays as length <code>0</code>.</p>
@@ -1053,6 +1097,7 @@ public class ArrayUtils {
         }
         return true;
     }
+
     /**
      * <p>Checks whether two arrays are the same length, treating
      * <code>null</code> arrays as length <code>0</code>.</p>
@@ -1068,6 +1113,7 @@ public class ArrayUtils {
         }
         return true;
     }
+
     /**
      * <p>Checks whether two arrays are the same length, treating
      * <code>null</code> arrays as length <code>0</code>.</p>
@@ -1083,6 +1129,7 @@ public class ArrayUtils {
         }
         return true;
     }
+
     /**
      * <p>Checks whether two arrays are the same length, treating
      * <code>null</code> arrays as length <code>0</code>.</p>
@@ -1098,6 +1145,7 @@ public class ArrayUtils {
         }
         return true;
     }
+
     /**
      * <p>Checks whether two arrays are the same length, treating
      * <code>null</code> arrays as length <code>0</code>.</p>
@@ -1114,6 +1162,7 @@ public class ArrayUtils {
         return true;
     }
     //-----------------------------------------------------------------------
+
     /**
      * <p>Returns the length of the specified array.
      * This method can deal with <code>Object</code> arrays and with primitive arrays.</p>
@@ -1140,6 +1189,7 @@ public class ArrayUtils {
         }
         return Array.getLength(array);
     }
+
     /**
      * <p>Checks whether two arrays are the same type taking into account
      * multi-dimensional arrays.</p>
@@ -1157,6 +1207,7 @@ public class ArrayUtils {
     }
     // Reverse
     //-----------------------------------------------------------------------
+
     /**
      * <p>Reverses the order of the given array.</p>
      *
@@ -1181,6 +1232,7 @@ public class ArrayUtils {
             i++;
         }
     }
+
     /**
      * <p>Reverses the order of the given array.</p>
      *
@@ -1203,6 +1255,7 @@ public class ArrayUtils {
             i++;
         }
     }
+
     /**
      * <p>Reverses the order of the given array.</p>
      *
@@ -1225,6 +1278,7 @@ public class ArrayUtils {
             i++;
         }
     }
+
     /**
      * <p>Reverses the order of the given array.</p>
      *
@@ -1247,6 +1301,7 @@ public class ArrayUtils {
             i++;
         }
     }
+
     /**
      * <p>Reverses the order of the given array.</p>
      *
@@ -1269,6 +1324,7 @@ public class ArrayUtils {
             i++;
         }
     }
+
     /**
      * <p>Reverses the order of the given array.</p>
      *
@@ -1291,6 +1347,7 @@ public class ArrayUtils {
             i++;
         }
     }
+
     /**
      * <p>Reverses the order of the given array.</p>
      *
@@ -1313,6 +1370,7 @@ public class ArrayUtils {
             i++;
         }
     }
+
     /**
      * <p>Reverses the order of the given array.</p>
      *
@@ -1335,6 +1393,7 @@ public class ArrayUtils {
             i++;
         }
     }
+
     /**
      * <p>Reverses the order of the given array.</p>
      *
@@ -1361,6 +1420,7 @@ public class ArrayUtils {
     // ----------------------------------------------------------------------
     // Object IndexOf
     //-----------------------------------------------------------------------
+
     /**
      * <p>Finds the index of the given object in the array.</p>
      *
@@ -1374,6 +1434,7 @@ public class ArrayUtils {
     public static int indexOf(final Object[] array, final Object objectToFind) {
         return ArrayUtils.indexOf(array, objectToFind, 0);
     }
+
     /**
      * <p>Finds the index of the given object in the array starting at the given index.</p>
      *
@@ -1410,6 +1471,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Finds the last index of the given object within the array.</p>
      *
@@ -1423,6 +1485,7 @@ public class ArrayUtils {
     public static int lastIndexOf(final Object[] array, final Object objectToFind) {
         return ArrayUtils.lastIndexOf(array, objectToFind, Integer.MAX_VALUE);
     }
+
     /**
      * <p>Finds the last index of the given object in the array starting at the given index.</p>
      *
@@ -1461,6 +1524,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Checks if the object is in the given array.</p>
      *
@@ -1475,6 +1539,7 @@ public class ArrayUtils {
     }
     // long IndexOf
     //-----------------------------------------------------------------------
+
     /**
      * <p>Finds the index of the given value in the array.</p>
      *
@@ -1488,6 +1553,7 @@ public class ArrayUtils {
     public static int indexOf(final long[] array, final long valueToFind) {
         return ArrayUtils.indexOf(array, valueToFind, 0);
     }
+
     /**
      * <p>Finds the index of the given value in the array starting at the given index.</p>
      *
@@ -1516,6 +1582,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Finds the last index of the given value within the array.</p>
      *
@@ -1529,6 +1596,7 @@ public class ArrayUtils {
     public static int lastIndexOf(final long[] array, final long valueToFind) {
         return ArrayUtils.lastIndexOf(array, valueToFind, Integer.MAX_VALUE);
     }
+
     /**
      * <p>Finds the last index of the given value in the array starting at the given index.</p>
      *
@@ -1559,6 +1627,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Checks if the value is in the given array.</p>
      *
@@ -1573,6 +1642,7 @@ public class ArrayUtils {
     }
     // int IndexOf
     //-----------------------------------------------------------------------
+
     /**
      * <p>Finds the index of the given value in the array.</p>
      *
@@ -1586,6 +1656,7 @@ public class ArrayUtils {
     public static int indexOf(final int[] array, final int valueToFind) {
         return ArrayUtils.indexOf(array, valueToFind, 0);
     }
+
     /**
      * <p>Finds the index of the given value in the array starting at the given index.</p>
      *
@@ -1614,6 +1685,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Finds the last index of the given value within the array.</p>
      *
@@ -1627,6 +1699,7 @@ public class ArrayUtils {
     public static int lastIndexOf(final int[] array, final int valueToFind) {
         return ArrayUtils.lastIndexOf(array, valueToFind, Integer.MAX_VALUE);
     }
+
     /**
      * <p>Finds the last index of the given value in the array starting at the given index.</p>
      *
@@ -1657,6 +1730,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Checks if the value is in the given array.</p>
      *
@@ -1671,6 +1745,7 @@ public class ArrayUtils {
     }
     // short IndexOf
     //-----------------------------------------------------------------------
+
     /**
      * <p>Finds the index of the given value in the array.</p>
      *
@@ -1684,6 +1759,7 @@ public class ArrayUtils {
     public static int indexOf(final short[] array, final short valueToFind) {
         return ArrayUtils.indexOf(array, valueToFind, 0);
     }
+
     /**
      * <p>Finds the index of the given value in the array starting at the given index.</p>
      *
@@ -1712,6 +1788,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Finds the last index of the given value within the array.</p>
      *
@@ -1725,6 +1802,7 @@ public class ArrayUtils {
     public static int lastIndexOf(final short[] array, final short valueToFind) {
         return ArrayUtils.lastIndexOf(array, valueToFind, Integer.MAX_VALUE);
     }
+
     /**
      * <p>Finds the last index of the given value in the array starting at the given index.</p>
      *
@@ -1755,6 +1833,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Checks if the value is in the given array.</p>
      *
@@ -1769,6 +1848,7 @@ public class ArrayUtils {
     }
     // char IndexOf
     //-----------------------------------------------------------------------
+
     /**
      * <p>Finds the index of the given value in the array.</p>
      *
@@ -1783,6 +1863,7 @@ public class ArrayUtils {
     public static int indexOf(final char[] array, final char valueToFind) {
         return ArrayUtils.indexOf(array, valueToFind, 0);
     }
+
     /**
      * <p>Finds the index of the given value in the array starting at the given index.</p>
      *
@@ -1812,6 +1893,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Finds the last index of the given value within the array.</p>
      *
@@ -1826,6 +1908,7 @@ public class ArrayUtils {
     public static int lastIndexOf(final char[] array, final char valueToFind) {
         return ArrayUtils.lastIndexOf(array, valueToFind, Integer.MAX_VALUE);
     }
+
     /**
      * <p>Finds the last index of the given value in the array starting at the given index.</p>
      *
@@ -1857,6 +1940,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Checks if the value is in the given array.</p>
      *
@@ -1872,6 +1956,7 @@ public class ArrayUtils {
     }
     // byte IndexOf
     //-----------------------------------------------------------------------
+
     /**
      * <p>Finds the index of the given value in the array.</p>
      *
@@ -1885,6 +1970,7 @@ public class ArrayUtils {
     public static int indexOf(final byte[] array, final byte valueToFind) {
         return ArrayUtils.indexOf(array, valueToFind, 0);
     }
+
     /**
      * <p>Finds the index of the given value in the array starting at the given index.</p>
      *
@@ -1913,6 +1999,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Finds the last index of the given value within the array.</p>
      *
@@ -1926,6 +2013,7 @@ public class ArrayUtils {
     public static int lastIndexOf(final byte[] array, final byte valueToFind) {
         return ArrayUtils.lastIndexOf(array, valueToFind, Integer.MAX_VALUE);
     }
+
     /**
      * <p>Finds the last index of the given value in the array starting at the given index.</p>
      *
@@ -1956,6 +2044,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Checks if the value is in the given array.</p>
      *
@@ -1970,6 +2059,7 @@ public class ArrayUtils {
     }
     // double IndexOf
     //-----------------------------------------------------------------------
+
     /**
      * <p>Finds the index of the given value in the array.</p>
      *
@@ -1983,6 +2073,7 @@ public class ArrayUtils {
     public static int indexOf(final double[] array, final double valueToFind) {
         return ArrayUtils.indexOf(array, valueToFind, 0);
     }
+
     /**
      * <p>Finds the index of the given value within a given tolerance in the array.
      * This method will return the index of the first value which falls between the region
@@ -1999,6 +2090,7 @@ public class ArrayUtils {
     public static int indexOf(final double[] array, final double valueToFind, final double tolerance) {
         return ArrayUtils.indexOf(array, valueToFind, 0, tolerance);
     }
+
     /**
      * <p>Finds the index of the given value in the array starting at the given index.</p>
      *
@@ -2027,6 +2119,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Finds the index of the given value in the array starting at the given index.
      * This method will return the index of the first value which falls between the region
@@ -2060,6 +2153,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Finds the last index of the given value within the array.</p>
      *
@@ -2073,6 +2167,7 @@ public class ArrayUtils {
     public static int lastIndexOf(final double[] array, final double valueToFind) {
         return ArrayUtils.lastIndexOf(array, valueToFind, Integer.MAX_VALUE);
     }
+
     /**
      * <p>Finds the last index of the given value within a given tolerance in the array.
      * This method will return the index of the last value which falls between the region
@@ -2089,6 +2184,7 @@ public class ArrayUtils {
     public static int lastIndexOf(final double[] array, final double valueToFind, final double tolerance) {
         return ArrayUtils.lastIndexOf(array, valueToFind, Integer.MAX_VALUE, tolerance);
     }
+
     /**
      * <p>Finds the last index of the given value in the array starting at the given index.</p>
      *
@@ -2119,6 +2215,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Finds the last index of the given value in the array starting at the given index.
      * This method will return the index of the last value which falls between the region
@@ -2154,6 +2251,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Checks if the value is in the given array.</p>
      *
@@ -2166,6 +2264,7 @@ public class ArrayUtils {
     public static boolean contains(final double[] array, final double valueToFind) {
         return ArrayUtils.indexOf(array, valueToFind) != ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Checks if a value falling within the given tolerance is in the
      * given array.  If the array contains a value within the inclusive range
@@ -2184,6 +2283,7 @@ public class ArrayUtils {
     }
     // float IndexOf
     //-----------------------------------------------------------------------
+
     /**
      * <p>Finds the index of the given value in the array.</p>
      *
@@ -2197,6 +2297,7 @@ public class ArrayUtils {
     public static int indexOf(final float[] array, final float valueToFind) {
         return ArrayUtils.indexOf(array, valueToFind, 0);
     }
+
     /**
      * <p>Finds the index of the given value in the array starting at the given index.</p>
      *
@@ -2225,6 +2326,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Finds the last index of the given value within the array.</p>
      *
@@ -2238,6 +2340,7 @@ public class ArrayUtils {
     public static int lastIndexOf(final float[] array, final float valueToFind) {
         return ArrayUtils.lastIndexOf(array, valueToFind, Integer.MAX_VALUE);
     }
+
     /**
      * <p>Finds the last index of the given value in the array starting at the given index.</p>
      *
@@ -2268,6 +2371,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Checks if the value is in the given array.</p>
      *
@@ -2282,6 +2386,7 @@ public class ArrayUtils {
     }
     // boolean IndexOf
     //-----------------------------------------------------------------------
+
     /**
      * <p>Finds the index of the given value in the array.</p>
      *
@@ -2295,6 +2400,7 @@ public class ArrayUtils {
     public static int indexOf(final boolean[] array, final boolean valueToFind) {
         return ArrayUtils.indexOf(array, valueToFind, 0);
     }
+
     /**
      * <p>Finds the index of the given value in the array starting at the given index.</p>
      *
@@ -2324,6 +2430,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Finds the last index of the given value within the array.</p>
      *
@@ -2338,6 +2445,7 @@ public class ArrayUtils {
     public static int lastIndexOf(final boolean[] array, final boolean valueToFind) {
         return ArrayUtils.lastIndexOf(array, valueToFind, Integer.MAX_VALUE);
     }
+
     /**
      * <p>Finds the last index of the given value in the array starting at the given index.</p>
      *
@@ -2368,6 +2476,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Checks if the value is in the given array.</p>
      *
@@ -2384,6 +2493,7 @@ public class ArrayUtils {
     // ----------------------------------------------------------------------
     // Character array converters
     // ----------------------------------------------------------------------
+
     /**
      * <p>Converts an array of object Characters to primitives.</p>
      *
@@ -2405,6 +2515,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of object Character to primitives handling <code>null</code>.</p>
      *
@@ -2427,6 +2538,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of primitive chars to objects.</p>
      *
@@ -2449,6 +2561,7 @@ public class ArrayUtils {
     }
     // Long array converters
     // ----------------------------------------------------------------------
+
     /**
      * <p>Converts an array of object Longs to primitives.</p>
      *
@@ -2470,6 +2583,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of object Long to primitives handling <code>null</code>.</p>
      *
@@ -2492,6 +2606,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of primitive longs to objects.</p>
      *
@@ -2514,6 +2629,7 @@ public class ArrayUtils {
     }
     // Int array converters
     // ----------------------------------------------------------------------
+
     /**
      * <p>Converts an array of object Integers to primitives.</p>
      *
@@ -2535,6 +2651,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of object Integer to primitives handling <code>null</code>.</p>
      *
@@ -2557,6 +2674,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of primitive ints to objects.</p>
      *
@@ -2579,6 +2697,7 @@ public class ArrayUtils {
     }
     // Short array converters
     // ----------------------------------------------------------------------
+
     /**
      * <p>Converts an array of object Shorts to primitives.</p>
      *
@@ -2600,6 +2719,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of object Short to primitives handling <code>null</code>.</p>
      *
@@ -2622,6 +2742,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of primitive shorts to objects.</p>
      *
@@ -2644,6 +2765,7 @@ public class ArrayUtils {
     }
     // Byte array converters
     // ----------------------------------------------------------------------
+
     /**
      * <p>Converts an array of object Bytes to primitives.</p>
      *
@@ -2665,6 +2787,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of object Bytes to primitives handling <code>null</code>.</p>
      *
@@ -2687,6 +2810,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of primitive bytes to objects.</p>
      *
@@ -2709,6 +2833,7 @@ public class ArrayUtils {
     }
     // Double array converters
     // ----------------------------------------------------------------------
+
     /**
      * <p>Converts an array of object Doubles to primitives.</p>
      *
@@ -2730,6 +2855,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of object Doubles to primitives handling <code>null</code>.</p>
      *
@@ -2752,6 +2878,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of primitive doubles to objects.</p>
      *
@@ -2774,6 +2901,7 @@ public class ArrayUtils {
     }
     //   Float array converters
     // ----------------------------------------------------------------------
+
     /**
      * <p>Converts an array of object Floats to primitives.</p>
      *
@@ -2795,6 +2923,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of object Floats to primitives handling <code>null</code>.</p>
      *
@@ -2817,6 +2946,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of primitive floats to objects.</p>
      *
@@ -2839,6 +2969,7 @@ public class ArrayUtils {
     }
     // Boolean array converters
     // ----------------------------------------------------------------------
+
     /**
      * <p>Converts an array of object Booleans to primitives.</p>
      *
@@ -2860,6 +2991,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of object Booleans to primitives handling <code>null</code>.</p>
      *
@@ -2882,6 +3014,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Converts an array of primitive booleans to objects.</p>
      *
@@ -2903,6 +3036,7 @@ public class ArrayUtils {
         return result;
     }
     // ----------------------------------------------------------------------
+
     /**
      * <p>Checks if an array of Objects is empty or <code>null</code>.</p>
      *
@@ -2913,6 +3047,7 @@ public class ArrayUtils {
     public static boolean isEmpty(final Object[] array) {
         return array == null || array.length == 0;
     }
+
     /**
      * <p>Checks if an array of primitive longs is empty or <code>null</code>.</p>
      *
@@ -2923,6 +3058,7 @@ public class ArrayUtils {
     public static boolean isEmpty(final long[] array) {
         return array == null || array.length == 0;
     }
+
     /**
      * <p>Checks if an array of primitive ints is empty or <code>null</code>.</p>
      *
@@ -2933,6 +3069,7 @@ public class ArrayUtils {
     public static boolean isEmpty(final int[] array) {
         return array == null || array.length == 0;
     }
+
     /**
      * <p>Checks if an array of primitive shorts is empty or <code>null</code>.</p>
      *
@@ -2943,6 +3080,7 @@ public class ArrayUtils {
     public static boolean isEmpty(final short[] array) {
         return array == null || array.length == 0;
     }
+
     /**
      * <p>Checks if an array of primitive chars is empty or <code>null</code>.</p>
      *
@@ -2953,6 +3091,7 @@ public class ArrayUtils {
     public static boolean isEmpty(final char[] array) {
         return array == null || array.length == 0;
     }
+
     /**
      * <p>Checks if an array of primitive bytes is empty or <code>null</code>.</p>
      *
@@ -2963,6 +3102,7 @@ public class ArrayUtils {
     public static boolean isEmpty(final byte[] array) {
         return array == null || array.length == 0;
     }
+
     /**
      * <p>Checks if an array of primitive doubles is empty or <code>null</code>.</p>
      *
@@ -2973,6 +3113,7 @@ public class ArrayUtils {
     public static boolean isEmpty(final double[] array) {
         return array == null || array.length == 0;
     }
+
     /**
      * <p>Checks if an array of primitive floats is empty or <code>null</code>.</p>
      *
@@ -2983,6 +3124,7 @@ public class ArrayUtils {
     public static boolean isEmpty(final float[] array) {
         return array == null || array.length == 0;
     }
+
     /**
      * <p>Checks if an array of primitive booleans is empty or <code>null</code>.</p>
      *
@@ -2994,6 +3136,7 @@ public class ArrayUtils {
         return array == null || array.length == 0;
     }
     // ----------------------------------------------------------------------
+
     /**
      * <p>Checks if an array of Objects is not empty or not <code>null</code>.</p>
      *
@@ -3004,6 +3147,7 @@ public class ArrayUtils {
     public static boolean isNotEmpty(final Object[] array) {
         return array != null && array.length != 0;
     }
+
     /**
      * <p>Checks if an array of primitive longs is not empty or not <code>null</code>.</p>
      *
@@ -3014,6 +3158,7 @@ public class ArrayUtils {
     public static boolean isNotEmpty(final long[] array) {
         return array != null && array.length != 0;
     }
+
     /**
      * <p>Checks if an array of primitive ints is not empty or not <code>null</code>.</p>
      *
@@ -3024,6 +3169,7 @@ public class ArrayUtils {
     public static boolean isNotEmpty(final int[] array) {
         return array != null && array.length != 0;
     }
+
     /**
      * <p>Checks if an array of primitive shorts is not empty or not <code>null</code>.</p>
      *
@@ -3034,6 +3180,7 @@ public class ArrayUtils {
     public static boolean isNotEmpty(final short[] array) {
         return array != null && array.length != 0;
     }
+
     /**
      * <p>Checks if an array of primitive chars is not empty or not <code>null</code>.</p>
      *
@@ -3044,6 +3191,7 @@ public class ArrayUtils {
     public static boolean isNotEmpty(final char[] array) {
         return array != null && array.length != 0;
     }
+
     /**
      * <p>Checks if an array of primitive bytes is not empty or not <code>null</code>.</p>
      *
@@ -3054,6 +3202,7 @@ public class ArrayUtils {
     public static boolean isNotEmpty(final byte[] array) {
         return array != null && array.length != 0;
     }
+
     /**
      * <p>Checks if an array of primitive doubles is not empty or not <code>null</code>.</p>
      *
@@ -3064,6 +3213,7 @@ public class ArrayUtils {
     public static boolean isNotEmpty(final double[] array) {
         return array != null && array.length != 0;
     }
+
     /**
      * <p>Checks if an array of primitive floats is not empty or not <code>null</code>.</p>
      *
@@ -3074,6 +3224,7 @@ public class ArrayUtils {
     public static boolean isNotEmpty(final float[] array) {
         return array != null && array.length != 0;
     }
+
     /**
      * <p>Checks if an array of primitive booleans is not empty or not <code>null</code>.</p>
      *
@@ -3084,6 +3235,7 @@ public class ArrayUtils {
     public static boolean isNotEmpty(final boolean[] array) {
         return array != null && array.length != 0;
     }
+
     /**
      * <p>Adds all the elements of the given arrays into a new array.</p>
      * <p>The new array contains all of the element of <code>array1</code> followed
@@ -3133,6 +3285,7 @@ public class ArrayUtils {
         }
         return joinedArray;
     }
+
     /**
      * <p>Adds all the elements of the given arrays into a new array.</p>
      * <p>The new array contains all of the element of <code>array1</code> followed
@@ -3161,6 +3314,7 @@ public class ArrayUtils {
         System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
         return joinedArray;
     }
+
     /**
      * <p>Adds all the elements of the given arrays into a new array.</p>
      * <p>The new array contains all of the element of <code>array1</code> followed
@@ -3189,6 +3343,7 @@ public class ArrayUtils {
         System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
         return joinedArray;
     }
+
     /**
      * <p>Adds all the elements of the given arrays into a new array.</p>
      * <p>The new array contains all of the element of <code>array1</code> followed
@@ -3217,6 +3372,7 @@ public class ArrayUtils {
         System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
         return joinedArray;
     }
+
     /**
      * <p>Adds all the elements of the given arrays into a new array.</p>
      * <p>The new array contains all of the element of <code>array1</code> followed
@@ -3245,6 +3401,7 @@ public class ArrayUtils {
         System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
         return joinedArray;
     }
+
     /**
      * <p>Adds all the elements of the given arrays into a new array.</p>
      * <p>The new array contains all of the element of <code>array1</code> followed
@@ -3273,6 +3430,7 @@ public class ArrayUtils {
         System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
         return joinedArray;
     }
+
     /**
      * <p>Adds all the elements of the given arrays into a new array.</p>
      * <p>The new array contains all of the element of <code>array1</code> followed
@@ -3301,6 +3459,7 @@ public class ArrayUtils {
         System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
         return joinedArray;
     }
+
     /**
      * <p>Adds all the elements of the given arrays into a new array.</p>
      * <p>The new array contains all of the element of <code>array1</code> followed
@@ -3329,6 +3488,7 @@ public class ArrayUtils {
         System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
         return joinedArray;
     }
+
     /**
      * <p>Adds all the elements of the given arrays into a new array.</p>
      * <p>The new array contains all of the element of <code>array1</code> followed
@@ -3357,6 +3517,7 @@ public class ArrayUtils {
         System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
         return joinedArray;
     }
+
     /**
      * <p>Copies the given array and adds the given element at the end of the new array.</p>
      *
@@ -3396,6 +3557,7 @@ public class ArrayUtils {
         newArray[newArray.length - 1] = element;
         return newArray;
     }
+
     /**
      * <p>Copies the given array and adds the given element at the end of the new array.</p>
      *
@@ -3422,6 +3584,7 @@ public class ArrayUtils {
         newArray[newArray.length - 1] = element;
         return newArray;
     }
+
     /**
      * <p>Copies the given array and adds the given element at the end of the new array.</p>
      *
@@ -3448,6 +3611,7 @@ public class ArrayUtils {
         newArray[newArray.length - 1] = element;
         return newArray;
     }
+
     /**
      * <p>Copies the given array and adds the given element at the end of the new array.</p>
      *
@@ -3474,6 +3638,7 @@ public class ArrayUtils {
         newArray[newArray.length - 1] = element;
         return newArray;
     }
+
     /**
      * <p>Copies the given array and adds the given element at the end of the new array.</p>
      *
@@ -3500,6 +3665,7 @@ public class ArrayUtils {
         newArray[newArray.length - 1] = element;
         return newArray;
     }
+
     /**
      * <p>Copies the given array and adds the given element at the end of the new array.</p>
      *
@@ -3526,6 +3692,7 @@ public class ArrayUtils {
         newArray[newArray.length - 1] = element;
         return newArray;
     }
+
     /**
      * <p>Copies the given array and adds the given element at the end of the new array.</p>
      *
@@ -3552,6 +3719,7 @@ public class ArrayUtils {
         newArray[newArray.length - 1] = element;
         return newArray;
     }
+
     /**
      * <p>Copies the given array and adds the given element at the end of the new array.</p>
      *
@@ -3578,6 +3746,7 @@ public class ArrayUtils {
         newArray[newArray.length - 1] = element;
         return newArray;
     }
+
     /**
      * <p>Copies the given array and adds the given element at the end of the new array.</p>
      *
@@ -3604,6 +3773,7 @@ public class ArrayUtils {
         newArray[newArray.length - 1] = element;
         return newArray;
     }
+
     /**
      * Returns a copy of the given array of size 1 greater than the argument.
      * The last value of the array is left to the default value.
@@ -3622,6 +3792,7 @@ public class ArrayUtils {
         }
         return Array.newInstance(newArrayComponentType, 1);
     }
+
     /**
      * <p>Inserts the specified element at the specified position in the array.
      * Shifts the element currently at that position (if any) and any subsequent
@@ -3660,6 +3831,7 @@ public class ArrayUtils {
         }
         return (Object[]) ArrayUtils.add(array, index, element, clss);
     }
+
     /**
      * <p>Inserts the specified element at the specified position in the array.
      * Shifts the element currently at that position (if any) and any subsequent
@@ -3691,6 +3863,7 @@ public class ArrayUtils {
         Boolean booElement = element ? Boolean.TRUE : Boolean.FALSE;
         return (boolean[]) ArrayUtils.add(array, index, booElement, Boolean.TYPE);
     }
+
     /**
      * <p>Inserts the specified element at the specified position in the array.
      * Shifts the element currently at that position (if any) and any subsequent
@@ -3722,6 +3895,7 @@ public class ArrayUtils {
     public static char[] add(final char[] array, final int index, final char element) {
         return (char[]) ArrayUtils.add(array, index, new Character(element), Character.TYPE);
     }
+
     /**
      * <p>Inserts the specified element at the specified position in the array.
      * Shifts the element currently at that position (if any) and any subsequent
@@ -3752,6 +3926,7 @@ public class ArrayUtils {
     public static byte[] add(final byte[] array, final int index, final byte element) {
         return (byte[]) ArrayUtils.add(array, index, new Byte(element), Byte.TYPE);
     }
+
     /**
      * <p>Inserts the specified element at the specified position in the array.
      * Shifts the element currently at that position (if any) and any subsequent
@@ -3782,6 +3957,7 @@ public class ArrayUtils {
     public static short[] add(final short[] array, final int index, final short element) {
         return (short[]) ArrayUtils.add(array, index, new Short(element), Short.TYPE);
     }
+
     /**
      * <p>Inserts the specified element at the specified position in the array.
      * Shifts the element currently at that position (if any) and any subsequent
@@ -3812,6 +3988,7 @@ public class ArrayUtils {
     public static int[] add(final int[] array, final int index, final int element) {
         return (int[]) ArrayUtils.add(array, index, new Integer(element), Integer.TYPE);
     }
+
     /**
      * <p>Inserts the specified element at the specified position in the array.
      * Shifts the element currently at that position (if any) and any subsequent
@@ -3842,6 +4019,7 @@ public class ArrayUtils {
     public static long[] add(final long[] array, final int index, final long element) {
         return (long[]) ArrayUtils.add(array, index, new Long(element), Long.TYPE);
     }
+
     /**
      * <p>Inserts the specified element at the specified position in the array.
      * Shifts the element currently at that position (if any) and any subsequent
@@ -3872,6 +4050,7 @@ public class ArrayUtils {
     public static float[] add(final float[] array, final int index, final float element) {
         return (float[]) ArrayUtils.add(array, index, new Float(element), Float.TYPE);
     }
+
     /**
      * <p>Inserts the specified element at the specified position in the array.
      * Shifts the element currently at that position (if any) and any subsequent
@@ -3902,6 +4081,7 @@ public class ArrayUtils {
     public static double[] add(final double[] array, final int index, final double element) {
         return (double[]) ArrayUtils.add(array, index, new Double(element), Double.TYPE);
     }
+
     /**
      * Underlying implementation of add(array, index, element) methods.
      * The last parameter is the class, which may not equal element.getClass
@@ -3934,6 +4114,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**
      * <p>Removes the element at the specified position from the specified array.
      * All subsequent elements are shifted to the left (substracts one from
@@ -3965,6 +4146,7 @@ public class ArrayUtils {
     public static Object[] remove(final Object[] array, final int index) {
         return (Object[]) ArrayUtils.remove((Object) array, index);
     }
+
     /**
      * <p>Removes the first occurrence of the specified element from the
      * specified array. All subsequent elements are shifted to the left
@@ -3997,6 +4179,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.remove(array, index);
     }
+
     /**
      * <p>Removes the element at the specified position from the specified array.
      * All subsequent elements are shifted to the left (substracts one from
@@ -4028,6 +4211,7 @@ public class ArrayUtils {
     public static boolean[] remove(final boolean[] array, final int index) {
         return (boolean[]) ArrayUtils.remove((Object) array, index);
     }
+
     /**
      * <p>Removes the first occurrence of the specified element from the
      * specified array. All subsequent elements are shifted to the left
@@ -4060,6 +4244,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.remove(array, index);
     }
+
     /**
      * <p>Removes the element at the specified position from the specified array.
      * All subsequent elements are shifted to the left (substracts one from
@@ -4091,6 +4276,7 @@ public class ArrayUtils {
     public static byte[] remove(final byte[] array, final int index) {
         return (byte[]) ArrayUtils.remove((Object) array, index);
     }
+
     /**
      * <p>Removes the first occurrence of the specified element from the
      * specified array. All subsequent elements are shifted to the left
@@ -4123,6 +4309,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.remove(array, index);
     }
+
     /**
      * <p>Removes the element at the specified position from the specified array.
      * All subsequent elements are shifted to the left (substracts one from
@@ -4154,6 +4341,7 @@ public class ArrayUtils {
     public static char[] remove(final char[] array, final int index) {
         return (char[]) ArrayUtils.remove((Object) array, index);
     }
+
     /**
      * <p>Removes the first occurrence of the specified element from the
      * specified array. All subsequent elements are shifted to the left
@@ -4186,6 +4374,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.remove(array, index);
     }
+
     /**
      * <p>Removes the element at the specified position from the specified array.
      * All subsequent elements are shifted to the left (substracts one from
@@ -4217,6 +4406,7 @@ public class ArrayUtils {
     public static double[] remove(final double[] array, final int index) {
         return (double[]) ArrayUtils.remove((Object) array, index);
     }
+
     /**
      * <p>Removes the first occurrence of the specified element from the
      * specified array. All subsequent elements are shifted to the left
@@ -4249,6 +4439,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.remove(array, index);
     }
+
     /**
      * <p>Removes the element at the specified position from the specified array.
      * All subsequent elements are shifted to the left (substracts one from
@@ -4280,6 +4471,7 @@ public class ArrayUtils {
     public static float[] remove(final float[] array, final int index) {
         return (float[]) ArrayUtils.remove((Object) array, index);
     }
+
     /**
      * <p>Removes the first occurrence of the specified element from the
      * specified array. All subsequent elements are shifted to the left
@@ -4312,6 +4504,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.remove(array, index);
     }
+
     /**
      * <p>Removes the element at the specified position from the specified array.
      * All subsequent elements are shifted to the left (substracts one from
@@ -4343,6 +4536,7 @@ public class ArrayUtils {
     public static int[] remove(final int[] array, final int index) {
         return (int[]) ArrayUtils.remove((Object) array, index);
     }
+
     /**
      * <p>Removes the first occurrence of the specified element from the
      * specified array. All subsequent elements are shifted to the left
@@ -4375,6 +4569,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.remove(array, index);
     }
+
     /**
      * <p>Removes the element at the specified position from the specified array.
      * All subsequent elements are shifted to the left (substracts one from
@@ -4406,6 +4601,7 @@ public class ArrayUtils {
     public static long[] remove(final long[] array, final int index) {
         return (long[]) ArrayUtils.remove((Object) array, index);
     }
+
     /**
      * <p>Removes the first occurrence of the specified element from the
      * specified array. All subsequent elements are shifted to the left
@@ -4438,6 +4634,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.remove(array, index);
     }
+
     /**
      * <p>Removes the element at the specified position from the specified array.
      * All subsequent elements are shifted to the left (substracts one from
@@ -4469,6 +4666,7 @@ public class ArrayUtils {
     public static short[] remove(final short[] array, final int index) {
         return (short[]) ArrayUtils.remove((Object) array, index);
     }
+
     /**
      * <p>Removes the first occurrence of the specified element from the
      * specified array. All subsequent elements are shifted to the left
@@ -4501,6 +4699,7 @@ public class ArrayUtils {
         }
         return ArrayUtils.remove(array, index);
     }
+
     /**
      * <p>Removes the element at the specified position from the specified array.
      * All subsequent elements are shifted to the left (substracts one from
@@ -4534,6 +4733,7 @@ public class ArrayUtils {
         }
         return result;
     }
+
     /**删除数组中空元素*/
     public static Object[] clearNull(final Object[] arr) {
         ArrayList<Object> list = new ArrayList<Object>();
