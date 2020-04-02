@@ -17,6 +17,7 @@ package net.hasor.dataway.service;
 import com.alibaba.fastjson.JSON;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
+import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataql.runtime.QueryHelper;
@@ -34,6 +35,7 @@ import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
 
@@ -93,7 +95,9 @@ public class ApiCallService {
                 loggerUtils.addLog("paramRootKeys", jsonParam.keySet());
             }
             // .编译查询
-            QIL compiler = QueryHelper.queryCompiler(script, this.executeDataQL.getFinder());
+            Set<String> varNames = this.executeDataQL.getShareVarMap().keySet();
+            QueryModel queryModel = QueryHelper.queryParser(script);
+            QIL compiler = QueryHelper.queryCompiler(queryModel, varNames, this.executeDataQL.getFinder());
             loggerUtils.addLog("compilerTime", DatawayUtils.currentLostTime());
             // .执行查询
             QueryResult execute = this.executeDataQL.createQuery(compiler).execute(jsonParam);
@@ -103,7 +107,7 @@ public class ApiCallService {
             logger.info("requestSuccess - " + loggerUtils.toJson());
             return DatawayUtils.queryResultToResult(execute).getResult();
         } catch (Exception e) {
-            logger.error("requestFailed - " + loggerUtils.logException(e).toJson());
+            logger.error("requestFailed - " + loggerUtils.logException(e).toJson(), e);
             return DatawayUtils.exceptionToResult(e).getResult();
         }
     }
