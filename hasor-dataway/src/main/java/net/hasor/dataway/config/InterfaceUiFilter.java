@@ -69,10 +69,11 @@ class InterfaceUiFilter implements InvokerFilter {
         String requestURI = httpRequest.getRequestURI();
         if (requestURI.startsWith(this.uiAdminBaseUri)) {
             try {
+                DatawayUtils.resetLocalTime();
                 return chain.doNext(invoker);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
-                Map<String, Object> objectMap = DatawayUtils.exceptionToError(e).getResult();
+                Map<String, Object> objectMap = DatawayUtils.exceptionToResult(e).getResult();
                 PrintWriter writer = httpResponse.getWriter();
                 writer.write(JSON.toJSONString(objectMap));
                 writer.flush();

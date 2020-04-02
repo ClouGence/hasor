@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataway.config;
+import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -41,40 +42,46 @@ public class DatawayUtils {
         return strCodeValue;
     }
 
-    public static Result<Map<String, Object>> exceptionToError(Exception e) {
-        if (e instanceof ThrowRuntimeException) {
-            return Result.of(new HashMap<String, Object>() {{
-                put("success", false);
-                put("message", e.getMessage());
-                put("code", ((ThrowRuntimeException) e).getThrowCode());
-                put("executionTime", ((ThrowRuntimeException) e).getExecutionTime());
-                put("value", ((ThrowRuntimeException) e).getResult().unwrap());
-            }});
-        } else {
-            return Result.of(new HashMap<String, Object>() {{
-                put("success", false);
-                put("message", e.getMessage());
-                put("code", 500);
-                put("executionTime", -1);
-                put("value", e.getMessage());
-            }});
-        }
+    private static final ThreadLocal<Long> localRequestTime = ThreadLocal.withInitial(System::currentTimeMillis);
+
+    public static void resetLocalTime() {
+        localRequestTime.remove();
+        localRequestTime.set(System.currentTimeMillis());
+    }
+
+    public static long currentLostTime() {
+        return System.currentTimeMillis() - localRequestTime.get();
+    }
+
+    public static Result<Map<String, Object>> queryResultToResult(QueryResult queryResult) {
+        return Result.of(new LinkedHashMap<String, Object>() {{
+            put("success", true);
+            put("message", "OK");
+            put("code", queryResult.getCode());
+            put("lifeCycleTime", currentLostTime());
+            put("executionTime", queryResult.executionTime());
+            put("value", queryResult.getData().unwrap());
+        }});
     }
 
     public static Result<Map<String, Object>> exceptionToResult(Exception e) {
         if (e instanceof ThrowRuntimeException) {
-            return Result.of(new HashMap<String, Object>() {{
+            return Result.of(new LinkedHashMap<String, Object>() {{
                 put("success", false);
+                put("message", e.getMessage());
                 put("code", ((ThrowRuntimeException) e).getThrowCode());
+                put("lifeCycleTime", currentLostTime());
                 put("executionTime", ((ThrowRuntimeException) e).getExecutionTime());
                 put("value", ((ThrowRuntimeException) e).getResult().unwrap());
             }});
         } else {
-            return Result.of(new HashMap<String, Object>() {{
+            return Result.of(new LinkedHashMap<String, Object>() {{
                 put("success", false);
+                put("message", e.getMessage());
                 put("code", 500);
+                put("lifeCycleTime", currentLostTime());
                 put("executionTime", -1);
-                put("value", e.getClass().getName() + ": " + e.getMessage());
+                put("value", e.getMessage());
             }});
         }
     }

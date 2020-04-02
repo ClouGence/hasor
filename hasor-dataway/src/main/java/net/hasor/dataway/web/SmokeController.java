@@ -68,15 +68,8 @@ public class SmokeController extends BasicController {
             Query dataQLQuery = this.executeDataQL.createQuery(strCodeValue);
             QueryResult queryResult = dataQLQuery.execute(strRequestBody);
             DataModel resultData = queryResult.getData();
-            Result<Map<String, Object>> result = Result.of(new HashMap<String, Object>() {{
-                put("success", true);
-                put("code", queryResult.getCode());
-                put("executionTime", queryResult.executionTime());
-                put("value", resultData.unwrap());
-            }});
-            //
             this.updateSchema(apiId, strRequestBody, resultData);
-            return result;
+            return DatawayUtils.queryResultToResult(queryResult);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return DatawayUtils.exceptionToResult(e);

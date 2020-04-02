@@ -27,3 +27,9 @@ target
 *.njsproj
 *.sln
 pom.xml.versionsBackup
+
+# codes
+gen/
+logs/*
+hasor-dataql/logs/*
+hasor-rsf/logs/*

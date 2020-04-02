@@ -17,7 +17,9 @@ package net.hasor.dataway.service;
 import com.alibaba.fastjson.JSON;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
+import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.domain.ObjectModel;
+import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.LoggerUtils;
 import net.hasor.dataway.daos.ReleaseDetailQuery;
@@ -50,7 +52,7 @@ public class ApiCallService {
     private          DataQL executeDataQL;
 
     public Map<String, Object> doCall(Invoker invoker) {
-        long requestTime = System.currentTimeMillis();
+        DatawayUtils.resetLocalTime();
         LoggerUtils loggerUtils = LoggerUtils.create();
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         String httpMethod = httpRequest.getMethod().toUpperCase().trim();
@@ -75,6 +77,7 @@ public class ApiCallService {
         }
         //
         try {
+            // .准备参数
             Map<String, ?> jsonParam;
             if ("GET".equalsIgnoreCase(httpMethod)) {
                 jsonParam = httpRequest.getParameterMap();
@@ -89,18 +92,16 @@ public class ApiCallService {
             if (jsonParam != null) {
                 loggerUtils.addLog("paramRootKeys", jsonParam.keySet());
             }
-            QueryResult execute = this.executeDataQL.createQuery(script).execute(jsonParam);
-            //
-            loggerUtils.addLog("code", execute.getCode());
-            loggerUtils.addLog("fullRequestTime", System.currentTimeMillis() - requestTime);
+            // .编译查询
+            QIL compiler = QueryHelper.queryCompiler(script, this.executeDataQL.getFinder());
+            loggerUtils.addLog("compilerTime", DatawayUtils.currentLostTime());
+            // .执行查询
+            QueryResult execute = this.executeDataQL.createQuery(compiler).execute(jsonParam);
             loggerUtils.addLog("executionTime", execute.executionTime());
+            loggerUtils.addLog("lifeCycleTime", DatawayUtils.currentLostTime());
+            loggerUtils.addLog("code", execute.getCode());
             logger.info("requestSuccess - " + loggerUtils.toJson());
-            return new HashMap<String, Object>() {{
-                put("success", true);
-                put("code", execute.getCode());
-                put("executionTime", execute.executionTime());
-                put("value", execute.getData().unwrap());
-            }};
+            return DatawayUtils.queryResultToResult(execute).getResult();
         } catch (Exception e) {
             logger.error("requestFailed - " + loggerUtils.logException(e).toJson());
             return DatawayUtils.exceptionToResult(e).getResult();

@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -60,12 +59,7 @@ public class PerformController extends BasicController {
         try {
             Query dataQLQuery = this.executeDataQL.createQuery(strCodeValue);
             QueryResult queryResult = dataQLQuery.execute(strRequestBody);
-            return Result.of(new HashMap<String, Object>() {{
-                put("success", true);
-                put("code", queryResult.getCode());
-                put("executionTime", queryResult.executionTime());
-                put("value", queryResult.getData().unwrap());
-            }});
+            return DatawayUtils.queryResultToResult(queryResult);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return DatawayUtils.exceptionToResult(e);
