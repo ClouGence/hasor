@@ -90,7 +90,7 @@ public class InvokerSupplier implements Invoker {
             return this.jsonBody;
         }
         HttpServletRequest httpRequest = getHttpRequest();
-        if (httpRequest.getContentType().contains("application/json")) {
+        if (httpRequest.getContentType() != null && httpRequest.getContentType().contains("application/json")) {
             try (Reader reader = httpRequest.getReader()) {
                 StringWriter writer = new StringWriter();
                 IOUtils.copy(reader, writer);
