@@ -33,7 +33,7 @@ import java.util.List;
 public class SessionUdfSource implements UdfSourceAssembly {
     /** sessionKeys */
     public static List<String> keys() {
-        HttpSession httpSession = InvokerInterceptor.servletSession();
+        HttpSession httpSession = FxWebInterceptor.servletSession();
         if (httpSession == null) {
             return Collections.emptyList();
         }
@@ -50,7 +50,7 @@ public class SessionUdfSource implements UdfSourceAssembly {
         if (StringUtils.isBlank(key)) {
             return null;
         }
-        HttpSession httpSession = InvokerInterceptor.servletSession();
+        HttpSession httpSession = FxWebInterceptor.servletSession();
         if (httpSession == null) {
             return null;
         }
@@ -62,9 +62,9 @@ public class SessionUdfSource implements UdfSourceAssembly {
         if (StringUtils.isBlank(key)) {
             return null;
         }
-        HttpSession httpSession = InvokerInterceptor.servletSession();
+        HttpSession httpSession = FxWebInterceptor.servletSession();
         if (httpSession == null) {
-            httpSession = InvokerInterceptor.invoker().getHttpRequest().getSession(true);
+            httpSession = FxWebInterceptor.invoker().getHttpRequest().getSession(true);
         }
         Object oldValue = httpSession.getAttribute(key);
         httpSession.setAttribute(key, newValue);
@@ -76,7 +76,7 @@ public class SessionUdfSource implements UdfSourceAssembly {
         if (StringUtils.isBlank(key)) {
             return false;
         }
-        HttpSession httpSession = InvokerInterceptor.servletSession();
+        HttpSession httpSession = FxWebInterceptor.servletSession();
         if (httpSession == null) {
             return false;
         }
@@ -86,7 +86,7 @@ public class SessionUdfSource implements UdfSourceAssembly {
 
     /** 删除所有Key */
     public static boolean clean() {
-        HttpSession httpSession = InvokerInterceptor.servletSession();
+        HttpSession httpSession = FxWebInterceptor.servletSession();
         if (httpSession == null) {
             return false;
         }
@@ -99,7 +99,7 @@ public class SessionUdfSource implements UdfSourceAssembly {
 
     /** Invalidates this session then unbinds any objects bound to it. */
     public static boolean invalidate() {
-        HttpSession httpSession = InvokerInterceptor.servletSession();
+        HttpSession httpSession = FxWebInterceptor.servletSession();
         if (httpSession == null) {
             return false;
         }
@@ -109,7 +109,7 @@ public class SessionUdfSource implements UdfSourceAssembly {
 
     /** Session ID. */
     public static String id() {
-        HttpSession httpSession = InvokerInterceptor.servletSession();
+        HttpSession httpSession = FxWebInterceptor.servletSession();
         if (httpSession == null) {
             return null;
         }
@@ -118,7 +118,7 @@ public class SessionUdfSource implements UdfSourceAssembly {
 
     /** 返回客户端发送与之关联的请求的最后一次时间. */
     public static long lastAccessedTime() {
-        HttpSession httpSession = InvokerInterceptor.servletSession();
+        HttpSession httpSession = FxWebInterceptor.servletSession();
         if (httpSession == null) {
             return 0;
         }

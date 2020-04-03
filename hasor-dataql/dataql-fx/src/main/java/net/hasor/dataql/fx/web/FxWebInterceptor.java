@@ -30,7 +30,7 @@ import java.util.*;
  * @version : 2020-03-20
  */
 @Singleton
-public class InvokerInterceptor implements InvokerFilter {
+public class FxWebInterceptor implements InvokerFilter {
     private static ThreadLocal<Invoker> invokerThreadLocal = new ThreadLocal<>();
 
     @Override

@@ -33,12 +33,12 @@ import java.util.Map;
 public class HeaderUdfSource implements UdfSourceAssembly {
     /** headerMap */
     public static Map<String, String> map() {
-        return InvokerInterceptor.headerMap();
+        return FxWebInterceptor.headerMap();
     }
 
     /** headerMap,Value是数组 */
     public static Map<String, List<String>> arrayMap() {
-        return InvokerInterceptor.headerArrayMap();
+        return FxWebInterceptor.headerArrayMap();
     }
 
     /** 获取 Header */
@@ -46,7 +46,7 @@ public class HeaderUdfSource implements UdfSourceAssembly {
         if (StringUtils.isBlank(headerName)) {
             return null;
         }
-        return InvokerInterceptor.invoker().getHttpRequest().getHeader(headerName);
+        return FxWebInterceptor.invoker().getHttpRequest().getHeader(headerName);
     }
 
     /** 获取所有名字相同的 Header */
@@ -55,7 +55,7 @@ public class HeaderUdfSource implements UdfSourceAssembly {
             return null;
         }
         List<String> headerList = new ArrayList<>();
-        Enumeration<String> headers = InvokerInterceptor.invoker().getHttpRequest().getHeaders(headerName);
+        Enumeration<String> headers = FxWebInterceptor.invoker().getHttpRequest().getHeaders(headerName);
         while (headers.hasMoreElements()) {
             headerList.add(headers.nextElement());
         }
@@ -67,7 +67,7 @@ public class HeaderUdfSource implements UdfSourceAssembly {
         if (StringUtils.isBlank(headerName)) {
             return false;
         }
-        InvokerInterceptor.invoker().getHttpResponse().setHeader(headerName, value);
+        FxWebInterceptor.invoker().getHttpResponse().setHeader(headerName, value);
         return true;
     }
 
@@ -76,14 +76,14 @@ public class HeaderUdfSource implements UdfSourceAssembly {
         if (StringUtils.isBlank(headerName)) {
             return false;
         }
-        InvokerInterceptor.invoker().getHttpResponse().addHeader(headerName, value);
+        FxWebInterceptor.invoker().getHttpResponse().addHeader(headerName, value);
         return true;
     }
 
     /** 设置 HeaderMap */
     public static boolean addAll(Map<String, String> headerMap) {
         if (headerMap != null) {
-            HttpServletResponse httpResponse = InvokerInterceptor.invoker().getHttpResponse();
+            HttpServletResponse httpResponse = FxWebInterceptor.invoker().getHttpResponse();
             headerMap.forEach(httpResponse::setHeader);
             return true;
         }

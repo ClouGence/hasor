@@ -32,12 +32,12 @@ import java.util.Map;
 public class CookieUdfSource implements UdfSourceAssembly {
     /** cookieMap */
     public static Map<String, String> map() {
-        return InvokerInterceptor.cookieMap();
+        return FxWebInterceptor.cookieMap();
     }
 
     /** cookieMap,Value是数组 */
     public static Map<String, List<String>> arrayMap() {
-        return InvokerInterceptor.cookieArrayMap();
+        return FxWebInterceptor.cookieArrayMap();
     }
 
     /** 获取Cookie */
@@ -58,7 +58,7 @@ public class CookieUdfSource implements UdfSourceAssembly {
 
     /** 设置 Cookie,MaxAge = -1 */
     public static boolean add(String cookieName, String value) {
-        HttpServletResponse httpResponse = InvokerInterceptor.invoker().getHttpResponse();
+        HttpServletResponse httpResponse = FxWebInterceptor.invoker().getHttpResponse();
         Cookie cookie = new Cookie(cookieName, value);
         cookie.setMaxAge(-1);
         httpResponse.addCookie(cookie);
@@ -76,7 +76,7 @@ public class CookieUdfSource implements UdfSourceAssembly {
 
     /** 存储 Cookie */
     public static boolean store(String cookieName, String value, int maxAge) {
-        HttpServletResponse httpResponse = InvokerInterceptor.invoker().getHttpResponse();
+        HttpServletResponse httpResponse = FxWebInterceptor.invoker().getHttpResponse();
         Cookie cookie = new Cookie(cookieName, value);
         if (maxAge <= 0) {
             maxAge = -1;
@@ -99,7 +99,7 @@ public class CookieUdfSource implements UdfSourceAssembly {
 
     /** 删除 Cookie */
     public static boolean remove(String cookieName) {
-        HttpServletResponse httpResponse = InvokerInterceptor.invoker().getHttpResponse();
+        HttpServletResponse httpResponse = FxWebInterceptor.invoker().getHttpResponse();
         Cookie cookie = new Cookie(cookieName, "");
         cookie.setMaxAge(0);
         httpResponse.addCookie(cookie);

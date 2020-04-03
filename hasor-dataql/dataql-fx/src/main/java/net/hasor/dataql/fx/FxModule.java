@@ -17,7 +17,7 @@ package net.hasor.dataql.fx;
 import net.hasor.dataql.QueryApiBinder;
 import net.hasor.dataql.QueryModule;
 import net.hasor.dataql.fx.db.SqlFragment;
-import net.hasor.dataql.fx.web.InvokerInterceptor;
+import net.hasor.dataql.fx.web.FxWebInterceptor;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.web.WebApiBinder;
 
@@ -38,7 +38,7 @@ public class FxModule implements QueryModule {
         if (ResourcesUtils.getResource("/net/hasor/web/WebApiBinder.class") != null) {
             WebApiBinder webApiBinder = apiBinder.tryCast(WebApiBinder.class);
             if (webApiBinder != null) {
-                webApiBinder.filter("/*").through(Integer.MAX_VALUE - 1, InvokerInterceptor.class);
+                webApiBinder.filter("/*").through(Integer.MAX_VALUE - 1, FxWebInterceptor.class);
             }
         }
     }
