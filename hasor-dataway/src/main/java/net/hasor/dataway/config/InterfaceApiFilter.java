@@ -23,9 +23,9 @@ import net.hasor.web.InvokerConfig;
 import net.hasor.web.InvokerFilter;
 
 import javax.inject.Inject;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
 import java.util.Map;
 
 /**
@@ -61,9 +61,15 @@ class InterfaceApiFilter implements InvokerFilter {
         //
         Map<String, Object> objectMap = apiCallService.doCall(invoker);
         if (!httpResponse.isCommitted()) {
-            PrintWriter printWriter = httpResponse.getWriter();
-            printWriter.write(JSON.toJSONString(objectMap, SerializerFeature.WriteMapNullValue));
-            printWriter.flush();
+            String body = JSON.toJSONString(objectMap, SerializerFeature.WriteMapNullValue);
+            byte[] bodyByte = body.getBytes();
+            //
+            httpResponse.setContentType(invoker.getMimeType("json"));
+            httpResponse.setContentLength(bodyByte.length);
+            ServletOutputStream output = httpResponse.getOutputStream();
+            output.write(bodyByte);
+            output.flush();
+            output.close();
         }
         return objectMap;
     }

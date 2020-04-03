@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -161,6 +162,7 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
             layoutFile = findLayout(engine, oriViewName);
         }
         //
+        StringWriter finalWriter = new StringWriter();
         if (layoutFile != null) {
             //先执行目标页面,然后在渲染layout
             StringWriter tmpWriter = new StringWriter();
@@ -174,20 +176,30 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
             render.put(this.placeholder, tmpWriter.toString());
             if (engine.exist(layoutFile)) {
                 render.renderTo(layoutFile);
-                engine.process(render, render.getHttpResponse().getWriter());
-                return true;
+                engine.process(render, finalWriter);
+                return writerToResponse(finalWriter.toString(), render.getHttpResponse());
             } else {
                 throw new IOException("layout '" + layoutFile + "' file is missing.");//不可能发生这个错误。
             }
         } else {
             if (engine.exist(newViewName)) {
                 render.renderTo(newViewName);
-                engine.process(render, render.getHttpResponse().getWriter());
-                return true;
+                engine.process(render, finalWriter);
+                return writerToResponse(finalWriter.toString(), render.getHttpResponse());
             } else {
                 return false;//没有执行模版
             }
         }
+    }
+
+    private boolean writerToResponse(String toString, HttpServletResponse httpResponse) throws IOException {
+        byte[] finalBytes = toString.getBytes();
+        httpResponse.setContentLength(finalBytes.length);
+        ServletOutputStream outputStream = httpResponse.getOutputStream();
+        outputStream.write(finalBytes);
+        outputStream.flush();
+        outputStream.close();
+        return true;
     }
 
     protected String findLayout(RenderEngine engine, String tempFile) throws IOException {
