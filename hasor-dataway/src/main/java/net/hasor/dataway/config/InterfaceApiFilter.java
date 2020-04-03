@@ -16,7 +16,6 @@
 package net.hasor.dataway.config;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import net.hasor.dataql.DataQL;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
@@ -27,7 +26,6 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -62,9 +60,11 @@ class InterfaceApiFilter implements InvokerFilter {
         httpResponse.setCharacterEncoding("UTF-8");
         //
         Map<String, Object> objectMap = apiCallService.doCall(invoker);
-        PrintWriter printWriter = httpResponse.getWriter();
-        printWriter.write(JSON.toJSONString(objectMap, SerializerFeature.WriteMapNullValue));
-        printWriter.flush();
+        if (!httpResponse.isCommitted()) {
+            PrintWriter printWriter = httpResponse.getWriter();
+            printWriter.write(JSON.toJSONString(objectMap, SerializerFeature.WriteMapNullValue));
+            printWriter.flush();
+        }
         return objectMap;
     }
 }

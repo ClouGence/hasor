@@ -43,7 +43,7 @@ public class FxWebInterceptor implements InvokerFilter {
         }
     }
 
-    protected static Invoker invoker() {
+    public static Invoker invoker() {
         return invokerThreadLocal.get();
     }
 
