@@ -42,11 +42,11 @@
             <artifactId>hasor-dataql</artifactId>
             <scope>compile</scope>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>net.hasor</groupId>-->
-        <!--            <artifactId>hasor-dataql-fx</artifactId>-->
-        <!--            <scope>compile</scope>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-dataql-fx</artifactId>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-spring</artifactId>

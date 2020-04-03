@@ -46,15 +46,15 @@ public class FxSql implements Supplier<Object> {
     }
 
     /** 添加一个 SQL 参数，最终这个参数会通过 PreparedStatement 形式传递。 */
-    public void appendValueExpr(String ognlExpr) {
+    public void appendValueExpr(String exprString) {
         String paramKey = "param_" + this.atomicInteger.incrementAndGet();
         this.sqlStringPlan.add(":" + paramKey);
-        this.paramMapping.put(paramKey, ognlExpr);
+        this.paramMapping.put(paramKey, exprString);
     }
 
     /** 追加一个动态字符串，动态字符串是指字符串本身内容需要经过表达式计算之后才知道。 */
-    public void appendPlaceholderExpr(String ognlExpr) {
-        this.sqlStringPlan.add(new EvalCharSequence(ognlExpr, this));
+    public void appendPlaceholderExpr(String exprString) {
+        this.sqlStringPlan.add(new EvalCharSequence(exprString, this));
         this.havePlaceholder = true;
     }
 
@@ -79,33 +79,33 @@ public class FxSql implements Supplier<Object> {
 
     public SqlParameterSource buildParameterSource(Object context) {
         Map<String, Supplier<?>> parameterMap = new HashMap<>();
-        this.paramMapping.forEach((paramKey, ognlExpr) -> {
+        this.paramMapping.forEach((paramKey, exprString) -> {
             parameterMap.put(paramKey, () -> {
-                return evalOgnl(ognlExpr, context);
+                return evalOgnl(exprString, context);
             });
         });
         return new MapSqlParameterSource(parameterMap);
     }
 
     private static class EvalCharSequence {
-        private String           ognlExpr;
-        private Supplier<Object> ognlContext;
+        private String           exprString;
+        private Supplier<Object> exprContext;
 
-        public EvalCharSequence(String ognlExpr, Supplier<Object> ognlContext) {
-            this.ognlExpr = ognlExpr;
-            this.ognlContext = ognlContext;
+        public EvalCharSequence(String exprString, Supplier<Object> exprContext) {
+            this.exprString = exprString;
+            this.exprContext = exprContext;
         }
 
         @Override
         public String toString() {
-            return String.valueOf(evalOgnl(this.ognlExpr, this.ognlContext.get()));
+            return String.valueOf(evalOgnl(this.exprString, this.exprContext.get()));
         }
     }
 
-    private static Object evalOgnl(String ognlExpr, Object root) {
+    private static Object evalOgnl(String exprString, Object root) {
         try {
             OgnlContext context = new OgnlContext(null, null, new DefaultMemberAccess(true));
-            return Ognl.getValue(ognlExpr, context, root);
+            return Ognl.getValue(exprString, context, root);
         } catch (Exception e) {
             throw ExceptionUtils.toRuntimeException(e);
         }

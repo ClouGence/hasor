@@ -54,11 +54,10 @@
             });
             //
             if (window.ALL_MAC !== '{ALL_MAC}') {
-                const self = this;
                 request(ApiUrl.report, {
                     "method": "POST",
                     "loading": false,
-                    "data": window.ALL_MAC
+                    "data": {info: window.ALL_MAC}
                 }, response => {
                 }, response => {
                 },);

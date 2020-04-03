@@ -8,7 +8,7 @@ const adminBaseUrl = (oriUrl) => {
 };
 // 通用查 配置
 const ApiUrl = {
-    report: "//www.hasor.net/apis/report",
+    report: "//apis.hasor.net/projects/hasor-dataway/report",
     //
     apiInfo: adminBaseUrl(`/api/api-info`),
     apiList: adminBaseUrl(`/api/api-list`),
