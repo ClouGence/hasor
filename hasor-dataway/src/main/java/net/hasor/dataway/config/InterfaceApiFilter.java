@@ -58,6 +58,7 @@ class InterfaceApiFilter implements InvokerFilter {
         //
         httpRequest.setCharacterEncoding("UTF-8");
         httpResponse.setCharacterEncoding("UTF-8");
+        CorsUtils.setup(invoker);
         //
         Map<String, Object> objectMap = apiCallService.doCall(invoker);
         if (!httpResponse.isCommitted()) {

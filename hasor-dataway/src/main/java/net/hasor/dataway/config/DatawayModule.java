@@ -36,15 +36,18 @@ import java.sql.SQLException;
  * @version : 2020-03-20
  */
 public class DatawayModule implements WebModule {
-    protected static    Logger logger            = LoggerFactory.getLogger(DatawayModule.class);
-    public static final String ISOLATION_CONTEXT = "net.hasor.dataway.config.DatawayModule";
+    protected static    Logger  logger            = LoggerFactory.getLogger(DatawayModule.class);
+    public static final String  ISOLATION_CONTEXT = "net.hasor.dataway.config.DatawayModule";
+    private             boolean datawayAdmin;
 
     @Override
     public void loadModule(WebApiBinder apiBinder) {
         //
         // .是否启用 Dataway
         Environment environment = apiBinder.getEnvironment();
-        if (!Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY"))) {
+        boolean datawayApi = Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY"));
+        this.datawayAdmin = Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY_ADMIN"));
+        if (!datawayApi) {
             logger.info("dataway is disable.");
             return;
         }
@@ -59,7 +62,7 @@ public class DatawayModule implements WebModule {
         apiBinder.filter(fixUrl(apiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceApiFilter(apiBaseUri));
         //
         // .Dataway 后台管理界面
-        if (!Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY_ADMIN"))) {
+        if (!this.datawayAdmin) {
             logger.info("dataway admin is disable.");
             return;
         }
@@ -103,6 +106,9 @@ public class DatawayModule implements WebModule {
 
     @Override
     public void onStart(AppContext appContext) throws SQLException {
+        if (!this.datawayAdmin) {
+            return;
+        }
         JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
         if (jdbcTemplate == null) {
             throw new IllegalStateException("jdbcTemplate is not init.");
