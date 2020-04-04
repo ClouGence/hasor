@@ -32,14 +32,8 @@ export default function request(apiURL, options, successCallback, errorCallback)
         ...options,
         url: apiURL
     };
-    //
-    var origin = window.location.protocol + "//" + window.location.hostname;
-    if (window.location.port !== '') {
-        origin = origin + ":" + window.location.port
-    }
     newOptions.headers = {
         'Accept': 'application/json',
-        'Origin': origin,
         ...newOptions.headers,
     };
     //
