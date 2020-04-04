@@ -74,7 +74,7 @@ public class ApiCallService {
             loggerUtils.addLog("releaseID", dataModel.getValue("releaseID").asString());
             loggerUtils.addLog("apiID", dataModel.getValue("apiID").asString());
         } catch (Exception e) {
-            logger.error("requestFailed - " + loggerUtils.logException(e).toJson());
+            logger.error("requestFailed - " + loggerUtils.logException(e).toJson(), e);
             return DatawayUtils.exceptionToResult(e).getResult();
         }
         //

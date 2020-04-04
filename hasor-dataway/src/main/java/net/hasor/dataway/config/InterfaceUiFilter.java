@@ -114,7 +114,13 @@ class InterfaceUiFilter implements InvokerFilter {
             //${host}
             try (OutputStream outputStream = httpResponse.getOutputStream()) {
                 try (InputStream inputStream = ResourcesUtils.getResourceAsStream(resourceName)) {
+                    if (inputStream == null) {
+                        httpResponse.sendError(404, "not found " + requestURI);
+                        return null;
+                    }
                     IOUtils.copy(inputStream, outputStream);
+                } catch (Exception e) {
+                    logger.error("load " + resourceName + " failed -> " + e.getMessage(), e);
                 }
                 outputStream.flush();
             }
