@@ -33,6 +33,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -66,7 +67,7 @@ public class ApiCallService {
         try {
             QueryResult queryResult = new ReleaseDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
                 put("apiMethod", httpMethod);
-                put("apiPath", requestURI);
+                put("apiPath", URLDecoder.decode(requestURI, "UTF-8"));
             }});
             ObjectModel dataModel = (ObjectModel) queryResult.getData();
             script = dataModel.getValue("script").asString();

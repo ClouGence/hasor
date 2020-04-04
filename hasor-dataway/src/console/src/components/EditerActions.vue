@@ -37,25 +37,31 @@
         <div style="padding-left: 10px;display: inline;"/>
         <el-button-group>
             <!-- 历史 -->
-            <el-button size="mini" round @click.native="handleHistoryAction" :disabled="disabledBtn('historyAction')" v-popover:releaseHistoryPopover>
-                <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#iconhistory"/>
-                </svg>
-            </el-button>
+            <el-tooltip class="item" effect="dark" content="Release History List" placement="bottom-end">
+                <el-button size="mini" round @click.native="handleHistoryAction" :disabled="disabledBtn('historyAction')" v-popover:releaseHistoryPopover>
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#iconhistory"/>
+                    </svg>
+                </el-button>
+            </el-tooltip>
             <!-- 下线 -->
-            <el-button size="mini" round @click.native="handleDisableAction" :disabled="disabledBtn('disableAction')"
-                       v-if="apiInfo.apiStatus===1 || apiInfo.apiStatus===2">
-                <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#icondisable"/>
-                </svg>
-            </el-button>
+            <el-tooltip class="item" effect="dark" content="Disable the published Api." placement="bottom-end">
+                <el-button size="mini" round @click.native="handleDisableAction" :disabled="disabledBtn('disableAction')"
+                           v-if="apiInfo.apiStatus===1 || apiInfo.apiStatus===2">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icondisable"/>
+                    </svg>
+                </el-button>
+            </el-tooltip>
             <!-- 删除 -->
-            <el-button size="mini" round @click.native="handleDeleteAction" :disabled="disabledBtn('deleteAction')"
-                       v-if="apiInfo.apiStatus===0 || apiInfo.apiStatus===3">
-                <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#icondelete"/>
-                </svg>
-            </el-button>
+            <el-tooltip class="item" effect="dark" content="Permanently delete the Api but keep release history." placement="bottom-end">
+                <el-button size="mini" round @click.native="handleDeleteAction" :disabled="disabledBtn('deleteAction')"
+                           v-if="apiInfo.apiStatus===0 || apiInfo.apiStatus===3">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icondelete"/>
+                    </svg>
+                </el-button>
+            </el-tooltip>
         </el-button-group>
         <div style="display: block;position: absolute;z-index: 1000;">
             <el-popover ref="releaseHistoryPopover" placement="bottom" title="History Version" width="250">

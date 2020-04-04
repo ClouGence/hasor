@@ -8,6 +8,7 @@
                             <el-option label="POST" value="POST"/>
                             <el-option label="PUT" value="PUT"/>
                             <el-option label="GET" value="GET"/>
+                            <el-option label="DELETE" value="DELETE"/>
                         </el-select>
                         <el-button slot="append" icon="el-icon-info" @click.native="handleShowComment"/>
                     </el-input>

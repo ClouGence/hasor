@@ -113,10 +113,20 @@ Dataway 是 Hasor 生态中的一员，使用 Dataway 第一步需要通过 `has
     }
 
 
-使用UI配置接口
+启动工程
 ------------------------------------
-启动工程，访问 `http://<yourIP>:<yourProt>/interface-ui/` 就可以看到配置页面了
+在启动日志中看到下列信息输出就表示 Dataway 已经可以正常访问了。
 
-.. image:: ../_static/CC2_C633_6D5C_MK4L.png
+.. code-block:: java
+    :linenos:
 
-.. image:: ../_static/CC2_D633_6D5C_MK4L.png
+    2020-04-01 09:13:18.502 [main] INFO  n.h.core.context.TemplateAppContext - loadModule class net.hasor.dataway.config.DatawayModule
+    2020-04-01 09:13:18.502 [main] INFO  n.hasor.dataway.config.DatawayModule - dataway api workAt /api/
+    2020-04-01 09:13:18.502 [main] INFO  n.h.c.e.AbstractEnvironment - var -> HASOR_DATAQL_DATAWAY_API_URL = /api/.
+    2020-04-01 09:13:18.515 [main] INFO  n.hasor.dataway.config.DatawayModule - dataway admin workAt /interface-ui/
+
+
+- ``dataway api workAt /api/`` 表示 API 的工作路径。
+- ``dataway admin workAt /interface-ui/`` 表示 管理配置界面的地址。
+
+此时访问：`http://<yourIP>:<yourProt>/interface-ui/` 就可以看到配置页面了。

@@ -49,4 +49,3 @@ ORM误区
   - ORM 最大的特点是具有 Mapping 过程，然后通过框架进行 CURD 操作。例如：Mybatis、Hibernate，其中有一些甚至做到了更高级的界面化例如： apijson，但其本质依然是 ORM。
   - DataQL 有很大不同，虽然 DataQL 提供了非常出色的基于 SQL 数据存取能力。但是无论从任何角度去看它都没有 ORM 中最关键的 Mapping 过程。能够看到最接近的只有 DataQL 对数据的结果转换能力。
   - 造成 ORM 错觉的是由于 DataQL 充分利用 Udf 和 Fragment 奇妙的组合，提供了更便捷的数据库存储逻辑配置化。但从技术架构上来审视它并不是 ORM。
-
