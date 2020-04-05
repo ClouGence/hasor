@@ -11,18 +11,15 @@ Welcome to Hasor Framework
     :numbered: 2
 
     overview/catalog
-    basic/index
-    event/index
-    config/index
+    container/index
     web/index
+
     dataql/index
     dataway/index
-    jdbc/index
-    rsf/index
     tconsole/index
     spring/index
-    extends/index
 
+    extends/index
     changelog/index
 
 Indices and tables

@@ -1,8 +1,8 @@
 --------------------
-Bean容器
+容器框架(IoC/Aop)
 --------------------
 
-创建Hasor容器
+引入
 ------------------------------------
 .. toctree::
     :maxdepth: 3
@@ -49,3 +49,29 @@ Bean管理
     :maxdepth: 3
 
     beans/id_name
+
+环境与配置
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    config/use_env
+    config/settings
+    config/xml_parser
+
+事件
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    event/about_event
+
+框架扩展
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    extends/about_extends
+    extends/ext_module
+    extends/ext_binder
+    extends/ext_hconfig
