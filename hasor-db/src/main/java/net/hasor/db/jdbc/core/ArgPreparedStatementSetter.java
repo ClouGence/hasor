@@ -23,10 +23,10 @@ import java.sql.SQLException;
  * Simple adapter for PreparedStatementSetter that applies a given array of arguments.
  * @author Juergen Hoeller
  */
-class InnerArgPreparedStatementSetter implements PreparedStatementSetter, ParameterDisposer {
+public class ArgPreparedStatementSetter implements PreparedStatementSetter, ParameterDisposer {
     private final Object[] args;
 
-    InnerArgPreparedStatementSetter(final Object[] args) {
+    public ArgPreparedStatementSetter(final Object[] args) {
         this.args = args;
     }
 

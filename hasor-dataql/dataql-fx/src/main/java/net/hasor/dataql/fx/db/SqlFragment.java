@@ -18,17 +18,18 @@ import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.fx.FxHintNames;
 import net.hasor.dataql.fx.FxHintValue;
-import net.hasor.dataql.fx.db.parser.*;
-import net.hasor.db.jdbc.SqlParameterSource;
+import net.hasor.dataql.fx.db.parser.FxSql;
+import net.hasor.db.jdbc.BatchPreparedStatementSetter;
+import net.hasor.db.jdbc.PreparedStatementSetter;
+import net.hasor.db.jdbc.core.ArgPreparedStatementSetter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
 
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.StringReader;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,7 +46,7 @@ public class SqlFragment implements FragmentProcess {
     @Inject
     protected JdbcTemplate jdbcTemplate;
 
-    private static enum SqlMode {
+    protected static enum SqlMode {
         /** DML：insert、update、delete、replace */
         Execute,
         /** DML：exec */
@@ -60,38 +61,54 @@ public class SqlFragment implements FragmentProcess {
 
     public List<Object> batchRunFragment(Hints hint, List<Map<String, Object>> params, String fragmentString) throws Throwable {
         // 如果批量参数为空或者只有一个时，自动退化为非批量
-        if (params.size() == 0) {
+        if (params == null || params.size() == 0) {
             return Collections.singletonList(this.runFragment(hint, Collections.emptyMap(), fragmentString));
         }
         if (params.size() == 1) {
             return Collections.singletonList(this.runFragment(hint, params.get(0), fragmentString));
         }
         //
-        if (SqlMode.Execute == evalSqlMode(fragmentString)) {
-            FxSql fxSql = analysisSQL(fragmentString);
-            if (!fxSql.isHavePlaceholder()) {
-                fragmentString = fxSql.buildSqlString(params.get(0));
-                SqlParameterSource[] parameterArrays = new SqlParameterSource[params.size()];
-                for (int i = 0; i < params.size(); i++) {
-                    parameterArrays[i] = fxSql.buildParameterSource(params.get(i));
-                }
-                //
-                int[] executeBatch = this.jdbcTemplate.executeBatch(fragmentString, parameterArrays);
-                return Arrays.stream(executeBatch).boxed().collect(Collectors.toList());
+        SqlMode sqlMode = evalSqlMode(fragmentString);
+        FxSql fxSql = FxSql.analysisSQL(fragmentString);
+        if (SqlMode.Execute == sqlMode && !fxSql.isHavePlaceholder()) {
+            fragmentString = fxSql.buildSqlString(params.get(0));
+            PreparedStatementSetter[] parameterArrays = new PreparedStatementSetter[params.size()];
+            for (int i = 0; i < params.size(); i++) {
+                parameterArrays[i] = new ArgPreparedStatementSetter(fxSql.buildParameterSource(params.get(i)).toArray());
             }
+            //
+            int[] executeBatch = this.jdbcTemplate.executeBatch(fragmentString, new BatchPreparedStatementSetter() {
+                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                    parameterArrays[i].setValues(ps);
+                }
+
+                public int getBatchSize() {
+                    return parameterArrays.length;
+                }
+            });
+            return Arrays.stream(executeBatch).boxed().collect(Collectors.toList());
+        } else {
+            List<Object> resultList = new ArrayList<>(params.size());
+            for (Map<String, Object> paramItem : params) {
+                resultList.add(this.doFragment(fxSql, sqlMode, hint, paramItem));
+            }
+            return resultList;
         }
-        return FragmentProcess.super.batchRunFragment(hint, params, fragmentString);
     }
 
     @Override
     public Object runFragment(Hints hint, Map<String, Object> paramMap, String fragmentString) throws Throwable {
         SqlMode sqlMode = evalSqlMode(fragmentString);
-        FxSql fxSql = analysisSQL(fragmentString);
-        fragmentString = fxSql.buildSqlString(paramMap);
-        SqlParameterSource source = fxSql.buildParameterSource(paramMap);
+        FxSql fxSql = FxSql.analysisSQL(fragmentString);
+        return this.doFragment(fxSql, sqlMode, hint, paramMap);
+    }
+
+    protected Object doFragment(FxSql fxSql, SqlMode sqlMode, Hints hint, Map<String, Object> paramMap) throws Throwable {
+        String fragmentString = fxSql.buildSqlString(paramMap);
+        List<Object> source = fxSql.buildParameterSource(paramMap);
         //
         if (SqlMode.Query == sqlMode) {
-            List<Map<String, Object>> mapList = this.jdbcTemplate.queryForList(fragmentString, source);
+            List<Map<String, Object>> mapList = this.jdbcTemplate.queryForList(fragmentString, source.toArray());
             String openPackage = hint.getOrDefault(FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.name(), FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.getDefaultVal()).toString();
             //
             // .结果有多条记录,或者模式为 off，那么直接返回List
@@ -129,18 +146,6 @@ public class SqlFragment implements FragmentProcess {
             return this.jdbcTemplate.executeUpdate(fragmentString, source);
         }
         throw new SQLException("Unknown SqlMode.");//不可能走到这里
-    }
-
-    private static FxSql analysisSQL(String fragmentString) {
-        FxSQLLexer lexer = new FxSQLLexer(CharStreams.fromString(fragmentString));
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
-        //
-        FxSQLParser qlParser = new FxSQLParser(new CommonTokenStream(lexer));
-        qlParser.removeErrorListeners();
-        qlParser.addErrorListener(ThrowingErrorListener.INSTANCE);
-        FxSQLParserVisitor visitor = new DefaultFxSQLVisitor();
-        return (FxSql) visitor.visit(qlParser.rootInstSet());
     }
 
     private static SqlMode evalSqlMode(String fragmentString) throws SQLException, IOException {

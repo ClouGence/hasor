@@ -314,6 +314,9 @@ public interface JdbcOperations {
     public List<Map<String, Object>> queryForList(String sql, Object... args) throws SQLException;
 
     /**查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询记录将会使用 Map 保存，并封装到 List 中。*/
+    public List<Map<String, Object>> queryForList(String sql, PreparedStatementSetter args) throws SQLException;
+
+    /**查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询记录将会使用 Map 保存，并封装到 List 中。*/
     public List<Map<String, Object>> queryForList(String sql, SqlParameterSource paramSource) throws SQLException;
 
     /**查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询记录将会使用 Map 保存，并封装到 List 中。*/

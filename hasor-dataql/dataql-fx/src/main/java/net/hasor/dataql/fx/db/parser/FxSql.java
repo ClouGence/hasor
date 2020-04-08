@@ -14,53 +14,72 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db.parser;
-import net.hasor.db.jdbc.SqlParameterSource;
-import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import ognl.Ognl;
 import ognl.OgnlContext;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * SQL 文本处理器，兼容 #{...}、${...} 两种写法。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-28
  */
-public class FxSql implements Supplier<Object> {
-    private List<Object>        sqlStringPlan   = new ArrayList<>();
-    private Map<String, String> paramMapping    = new HashMap<>();
-    private AtomicInteger       atomicInteger   = new AtomicInteger();
-    private boolean             havePlaceholder = false;
-    private Object              tempObject      = null;
+public class FxSql implements Cloneable {
+    private StringBuilder           sqlStringOri    = new StringBuilder("");
+    private List<Object>            sqlStringPlan   = new ArrayList<>();
+    private List<String>            paramEl         = new ArrayList<>();
+    private boolean                 havePlaceholder = false;
+    private AtomicReference<Object> tempObject      = new AtomicReference<>();
+    private Supplier<Object>        objectSupplier  = () -> {
+        return tempObject.get();
+    };
+
+    /** 插入一个字符串 */
+    public void insertString(String append) {
+        this.sqlStringOri.insert(0, append);
+        this.sqlStringPlan.add(0, append);
+    }
 
     /** 追加一个字符串 */
     public void appendString(String append) {
+        this.sqlStringOri.append(append);
         this.sqlStringPlan.add(append);
+    }
+
+    /** 插入一个 SQL 参数，最终这个参数会通过 PreparedStatement 形式传递。 */
+    public void insertValueExpr(String exprString) {
+        this.sqlStringOri.insert(0, "#{" + exprString + "}");
+        this.sqlStringPlan.add("?");
+        this.paramEl.add(exprString);
     }
 
     /** 添加一个 SQL 参数，最终这个参数会通过 PreparedStatement 形式传递。 */
     public void appendValueExpr(String exprString) {
-        String paramKey = "param_" + this.atomicInteger.incrementAndGet();
-        this.sqlStringPlan.add(":" + paramKey);
-        this.paramMapping.put(paramKey, exprString);
+        this.sqlStringOri.append("#{" + exprString + "}");
+        this.sqlStringPlan.add("?");
+        this.paramEl.add(exprString);
+    }
+
+    /** 插入一个动态字符串，动态字符串是指字符串本身内容需要经过表达式计算之后才知道。 */
+    public void insertPlaceholderExpr(String exprString) {
+        this.sqlStringOri.insert(0, "${" + exprString + "}");
+        this.sqlStringPlan.add(0, new EvalCharSequence(exprString, this.objectSupplier));
+        this.havePlaceholder = true;
     }
 
     /** 追加一个动态字符串，动态字符串是指字符串本身内容需要经过表达式计算之后才知道。 */
     public void appendPlaceholderExpr(String exprString) {
-        this.sqlStringPlan.add(new EvalCharSequence(exprString, this));
+        this.sqlStringOri.append("${" + exprString + "}");
+        this.sqlStringPlan.add(new EvalCharSequence(exprString, this.objectSupplier));
         this.havePlaceholder = true;
-    }
-
-    @Override
-    public Object get() {
-        return this.tempObject;
     }
 
     /** 是否包含替换占位符，如果包含替换占位符那么不能使用批量模式 */
@@ -68,23 +87,23 @@ public class FxSql implements Supplier<Object> {
         return this.havePlaceholder;
     }
 
+    public StringBuilder getOriSqlString() {
+        return this.sqlStringOri;
+    }
+
     public String buildSqlString(Object context) {
         try {
-            this.tempObject = context;
+            this.tempObject.set(context);
             return StringUtils.join(this.sqlStringPlan.toArray());
         } finally {
-            this.tempObject = null;
+            this.tempObject.set(null);
         }
     }
 
-    public SqlParameterSource buildParameterSource(Object context) {
-        Map<String, Supplier<?>> parameterMap = new HashMap<>();
-        this.paramMapping.forEach((paramKey, exprString) -> {
-            parameterMap.put(paramKey, () -> {
-                return evalOgnl(exprString, context);
-            });
-        });
-        return new MapSqlParameterSource(parameterMap);
+    public List<Object> buildParameterSource(Object context) {
+        return this.paramEl.stream().map(exprString -> {
+            return evalOgnl(exprString, context);
+        }).collect(Collectors.toList());
     }
 
     private static class EvalCharSequence {
@@ -109,5 +128,21 @@ public class FxSql implements Supplier<Object> {
         } catch (Exception e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
+    }
+
+    public static FxSql analysisSQL(String fragmentString) {
+        FxSQLLexer lexer = new FxSQLLexer(CharStreams.fromString(fragmentString));
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
+        //
+        FxSQLParser qlParser = new FxSQLParser(new CommonTokenStream(lexer));
+        qlParser.removeErrorListeners();
+        qlParser.addErrorListener(ThrowingErrorListener.INSTANCE);
+        return (FxSql) new DefaultFxSQLVisitor().visit(qlParser.rootInstSet());
+    }
+
+    @Override
+    public FxSql clone() {
+        return FxSql.analysisSQL(this.sqlStringOri.toString());
     }
 }

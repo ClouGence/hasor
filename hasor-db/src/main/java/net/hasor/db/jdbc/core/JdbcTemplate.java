@@ -512,6 +512,11 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
 
     @Override
+    public List<Map<String, Object>> queryForList(final String sql, final PreparedStatementSetter args) throws SQLException {
+        return this.query(sql, args, this.getColumnMapRowMapper());
+    }
+
+    @Override
     public List<Map<String, Object>> queryForList(final String sql, final SqlParameterSource paramSource) throws SQLException {
         return this.query(sql, paramSource, this.getColumnMapRowMapper());
     }
@@ -763,7 +768,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
 
     /** Create a new PreparedStatementSetter.*/
     protected PreparedStatementSetter newArgPreparedStatementSetter(final Object[] args) throws SQLException {
-        return new InnerArgPreparedStatementSetter(args);
+        return new ArgPreparedStatementSetter(args);
     }
 
     /**
