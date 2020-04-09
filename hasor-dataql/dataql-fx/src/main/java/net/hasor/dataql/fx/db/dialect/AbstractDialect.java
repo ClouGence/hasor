@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db.dialect;
-import net.hasor.dataql.fx.db.SqlPageDialect;
 import net.hasor.dataql.fx.db.parser.FxSql;
 
 import java.util.List;
 import java.util.Map;
 
 /**
+ * 方言基类
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-08
  */
 public abstract class AbstractDialect implements SqlPageDialect {
     @Override
-    public SqlPageQuery getCountSql(FxSql fxSql, Map<String, Object> paramMap) {
+    public BoundSql getCountSql(FxSql fxSql, Map<String, Object> paramMap) {
         String buildSqlString = fxSql.buildSqlString(paramMap);
         List<Object> paramArrays = fxSql.buildParameterSource(paramMap);
         //
@@ -34,6 +34,6 @@ public abstract class AbstractDialect implements SqlPageDialect {
         sqlBuilder.append("SELECT COUNT(*) FROM (");
         sqlBuilder.append(buildSqlString);
         sqlBuilder.append(") as TEMP_T");
-        return new SqlPageQuery(sqlBuilder.toString(), paramArrays.toArray());
+        return new BoundSql(sqlBuilder.toString(), paramArrays.toArray());
     }
 }

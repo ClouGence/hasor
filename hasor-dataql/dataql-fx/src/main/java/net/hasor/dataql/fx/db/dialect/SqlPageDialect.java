@@ -13,30 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx.db;
+package net.hasor.dataql.fx.db.dialect;
 import net.hasor.dataql.fx.db.parser.FxSql;
-import net.hasor.db.jdbc.PreparedStatementSetter;
-import net.hasor.db.jdbc.core.ArgPreparedStatementSetter;
 
 import java.util.Map;
 
 /**
- * 数据库方言，针对不同数据库进行实现
+ * 数据库方言，针对不同数据库进行实现分页方言
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-08
  */
 public interface SqlPageDialect {
-    /** 生成 count 查询 sql */
-    public SqlPageQuery getCountSql(FxSql fxSql, Map<String, Object> paramMap);
+    /** 生成 count 查询 SQL */
+    public BoundSql getCountSql(FxSql fxSql, Map<String, Object> paramMap);
 
-    /** 生成分页查询 sql */
-    public SqlPageQuery getPageSql(FxSql fxSql, Map<String, Object> paramMap, int start, int limit);
+    /** 生成分页查询 SQL */
+    public BoundSql getPageSql(FxSql fxSql, Map<String, Object> paramMap, int start, int limit);
 
-    public static class SqlPageQuery {
+    /** SQL */
+    public static class BoundSql {
         private String   sqlString;
         private Object[] paramArray;
 
-        public SqlPageQuery(String sqlString, Object[] paramArray) {
+        public BoundSql(String sqlString, Object[] paramArray) {
             this.sqlString = sqlString;
             this.paramArray = paramArray;
         }
@@ -45,8 +44,8 @@ public interface SqlPageDialect {
             return this.sqlString;
         }
 
-        public PreparedStatementSetter getParamMap() {
-            return new ArgPreparedStatementSetter(this.paramArray);
+        public Object[] getParamMap() {
+            return this.paramArray;
         }
     }
 }

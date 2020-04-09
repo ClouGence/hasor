@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db;
+import net.hasor.core.AppContext;
 import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.fx.FxHintNames;
@@ -43,6 +44,8 @@ import java.util.stream.Collectors;
  * @version : 2020-03-28
  */
 public class SqlFragment implements FragmentProcess {
+    @Inject
+    protected AppContext   appContext;
     @Inject
     protected JdbcTemplate jdbcTemplate;
 

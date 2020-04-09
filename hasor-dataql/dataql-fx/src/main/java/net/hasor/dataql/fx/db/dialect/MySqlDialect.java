@@ -25,15 +25,15 @@ import java.util.Map;
  */
 public class MySqlDialect extends AbstractDialect {
     @Override
-    public SqlPageQuery getPageSql(FxSql fxSql, Map<String, Object> paramMap, int start, int limit) {
+    public BoundSql getPageSql(FxSql fxSql, Map<String, Object> paramMap, int start, int limit) {
         String buildSqlString = fxSql.buildSqlString(paramMap);
         List<Object> paramArrays = fxSql.buildParameterSource(paramMap);
         //
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append(buildSqlString);
-        if (start == 0) {
+        if (start <= 0) {
             sqlBuilder.append(" LIMIT ? ");
-            paramArrays.add(start);
+            paramArrays.add(limit);
         } else {
             sqlBuilder.append(" LIMIT ?, ? ");
             paramArrays.add(start);
@@ -41,6 +41,6 @@ public class MySqlDialect extends AbstractDialect {
         }
         //
         buildSqlString = sqlBuilder.toString();
-        return new SqlPageQuery(buildSqlString, paramArrays.toArray());
+        return new BoundSql(buildSqlString, paramArrays.toArray());
     }
 }

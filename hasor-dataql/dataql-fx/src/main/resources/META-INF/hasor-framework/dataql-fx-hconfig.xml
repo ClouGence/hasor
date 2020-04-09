@@ -5,5 +5,29 @@
         <loadPackages>net.hasor.dataql.fx.*</loadPackages>
         <!-- 入口 -->
         <modules.module>net.hasor.dataql.fx.FxModule</modules.module>
+
+        <environmentVar>
+            <!-- SQL 方言，默认为空。使用时必须设置 -->
+            <HASOR_DATAQL_FX_SQL_DIALECT></HASOR_DATAQL_FX_SQL_DIALECT>
+        </environmentVar>
+
+        <!-- 分页查询数据库方言 -->
+        <dataql-fx>
+            <sqlPageDialectSet sqlDialect="${HASOR_DATAQL_FX_SQL_DIALECT}">
+                <dialect name="h2" mappingTo="net.hasor.dataql.fx.db.page.dialect.HsqldbDialect"/>
+                <dialect name="hsqldb" mappingTo="net.hasor.dataql.fx.db.page.dialect.HsqldbDialect"/>
+                <dialect name="postgresql" mappingTo="net.hasor.dataql.fx.db.page.dialect.HsqldbDialect"/>
+                <dialect name="phoenix" mappingTo="net.hasor.dataql.fx.db.page.dialect.HsqldbDialect"/>
+
+                <dialect name="mysql" mappingTo="net.hasor.dataql.fx.db.page.dialect.MySqlDialect"/>
+                <dialect name="herddb" mappingTo="net.hasor.dataql.fx.db.page.dialect.MySqlDialect"/>
+                <dialect name="mariadb" mappingTo="net.hasor.dataql.fx.db.page.dialect.MySqlDialect"/>
+                <dialect name="sqlite" mappingTo="net.hasor.dataql.fx.db.page.dialect.MySqlDialect"/>
+
+                <dialect name="sqlserver2012" mappingTo="net.hasor.dataql.fx.db.page.dialect.SqlServer2012Dialect"/>
+
+                <dialect name="oracle" mappingTo="net.hasor.dataql.fx.db.page.dialect.OracleDialect"/>
+            </sqlPageDialectSet>
+        </dataql-fx>
     </hasor>
 </config>

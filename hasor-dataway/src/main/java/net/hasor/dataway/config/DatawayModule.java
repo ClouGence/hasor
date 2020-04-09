@@ -76,19 +76,19 @@ public class DatawayModule implements WebModule {
         logger.info("dataway admin workAt " + uiBaseUri);
         //
         // 使用 findClass 虽然可以降低代码复杂度，但是会因为引入代码扫描而增加初始化时间
-        Class<?>[] controllerSet = new Class<?>[] {//
-                ApiDetailController.class,      //
-                ApiHistoryListController.class, //
-                ApiInfoController.class,        //
-                ApiListController.class,        //
-                ApiHistoryGetController.class,  //
+        Class<?>[] controllerSet = new Class<?>[] { //
+                ApiDetailController.class,          //
+                ApiHistoryListController.class,     //
+                ApiInfoController.class,            //
+                ApiListController.class,            //
+                ApiHistoryGetController.class,      //
                 //
-                DisableController.class,        //
-                SmokeController.class,          //
-                SaveApiController.class,        //
-                PublishController.class,        //
-                PerformController.class,        //
-                DeleteController.class,         //
+                DisableController.class,            //
+                SmokeController.class,              //
+                SaveApiController.class,            //
+                PublishController.class,            //
+                PerformController.class,            //
+                DeleteController.class,             //
         };
         for (Class<?> aClass : controllerSet) {
             MappingToUrl toUrl = aClass.getAnnotation(MappingToUrl.class);

@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class Db2Dialect extends AbstractDialect {
     @Override
-    public SqlPageQuery getPageSql(FxSql fxSql, Map<String, Object> paramMap, int start, int limit) {
+    public BoundSql getPageSql(FxSql fxSql, Map<String, Object> paramMap, int start, int limit) {
         String buildSqlString = fxSql.buildSqlString(paramMap);
         List<Object> paramArrays = fxSql.buildParameterSource(paramMap);
         //
@@ -36,6 +36,6 @@ public class Db2Dialect extends AbstractDialect {
         //
         paramArrays.add(start);
         paramArrays.add(limit);
-        return new SqlPageQuery(sqlBuilder.toString(), paramArrays.toArray());
+        return new BoundSql(sqlBuilder.toString(), paramArrays.toArray());
     }
 }

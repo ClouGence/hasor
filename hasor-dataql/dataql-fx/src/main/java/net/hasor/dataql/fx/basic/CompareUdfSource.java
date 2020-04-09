@@ -25,14 +25,14 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class CompareUdfSource implements UdfSourceAssembly {
-    /** 集合 或 Map 是否为空 */
+    /** 比较两个字符串 */
     public static int compareString(String str1, String str2) {
         str1 = str1 == null ? "" : str1;
         str2 = str2 == null ? "" : str2;
         return str1.compareTo(str2);
     }
 
-    /** 集合 或 Map 是否为空 */
+    /** 比较两个字符串 */
     public static int compareStringIgnoreCase(String str1, String str2) {
         str1 = str1 == null ? "" : str1;
         str2 = str2 == null ? "" : str2;
