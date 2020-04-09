@@ -72,7 +72,7 @@
     </div>
 </template>
 <script>
-    import * as monaco from 'monaco-editor';
+    import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
     import EditerActions from '../components/EditerActions';
     import RequestPanel from '../components/RequestPanel';
     import ResponsePanel from '../components/ResponsePanel';
@@ -163,7 +163,7 @@
                 const self = this;
                 // let contextmenu = this.monacoEditor.getContribution('editor.contrib.contextmenu')
                 // let actions = this.monacoEditor.getActions()
-                this.monacoEditor.updateOptions({contextmenu: false});
+                // this.monacoEditor.updateOptions({contextmenu: false});
                 this.monacoEditor.updateOptions({minimap: {enabled: false}});
                 this.monacoEditor.onDidChangeModelContent(function (event) { // 编辑器内容changge事件
                     self.apiInfo.codeValue = self.monacoEditor.getValue();
@@ -305,7 +305,7 @@
                     useTabStops: false,
                     fontSize: 14, // 字体大小
                     autoIndent: true, // 自动布局
-                    contextmenu: false
+                    contextmenu: true
                     // quickSuggestionsDelay: 500,   //代码提示延时
                 }
             }

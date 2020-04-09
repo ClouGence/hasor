@@ -11,7 +11,7 @@ const proxy = {
                 "id": 1,
                 "path": "/demos/db/databases/",
                 "select": "GET",
-                "codeType": "SQL",
+                "codeType": "DataQL",
                 "status": 1,
                 "requestBody": '{"abc":true}',
                 "headerData": [
@@ -57,9 +57,9 @@ const proxy = {
                 "apiComment": "",
                 "status": 3,//Random.integer(0, 3),
                 "select": "POST",
-                "codeType": 'SQL',
+                "codeType": 'DataQL',
                 "codeInfo": {
-                    "codeValue": '<div>请编辑html内容</div>',
+                    "codeValue": 'return ${abc}.test',
                     "requestBody": '{"abc":true}',
                     "headerData": [
                         {"checked": true, "name": "name1", "value": "value1"},
@@ -106,9 +106,9 @@ const proxy = {
             "message": 'Another API is already in use.',
             "result": {
                 "select": "POST",
-                "codeType": 'SQL',
+                "codeType": 'DataQL',
                 "codeInfo": {
-                    "codeValue": '<div>111111111</div>',
+                    "codeValue": 'return ${ccc}.ttt',
                     "requestBody": '{"abc":false}',
                     "headerData": [
                         {"checked": true, "name": "name1", "value": "value1"},
