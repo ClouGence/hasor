@@ -1,11 +1,11 @@
-import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;
+import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;
 
 if (${_0} == null) {
     return "wrong args number."
 }
 
-var dataQuery = @@sql_exec(dataKey)<%
-    select * from my_option where `key` = :dataKey
+var dataQuery = @@sql(dataKey)<%
+    select * from my_option where `key` = #{dataKey}
 %>
 var data = dataQuery(${_0}) => [ # ];
 

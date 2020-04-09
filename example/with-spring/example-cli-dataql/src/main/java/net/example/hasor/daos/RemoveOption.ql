@@ -1,8 +1,8 @@
-import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;
+import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;
 
 // 查询是否还存在
-var dataQuery = @@sql_exec(optKey)<%
-    select * from my_option where key = :optKey
+var dataQuery = @@sql(optKey)<%
+    select * from my_option where key = #{optKey}
 %>
 var data = dataQuery(${_0}) => [ # ];
 
@@ -11,7 +11,7 @@ if ( collect.isEmpty(data) ) {
 }
 
 // 删除
-var dataDelete = @@sql_exec(optKey)<%
+var dataDelete = @@sql(optKey)<%
     delete from my_option where `key` =:optKey
 %>
 run dataDelete(${_0})

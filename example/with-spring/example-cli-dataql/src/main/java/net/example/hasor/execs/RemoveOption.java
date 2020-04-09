@@ -1,4 +1,5 @@
 package net.example.hasor.execs;
+import net.example.hasor.daos.RemoveOptionQuery;
 import net.hasor.tconsole.Tel;
 import net.hasor.tconsole.TelCommand;
 

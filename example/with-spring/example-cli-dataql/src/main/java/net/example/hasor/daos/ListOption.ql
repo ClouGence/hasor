@@ -1,4 +1,4 @@
-var dataQuery = @@sql_exec()<%
+var dataQuery = @@sql()<%
     select * from my_option
 %>
 

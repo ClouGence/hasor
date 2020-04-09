@@ -1,10 +1,10 @@
-import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;
-import 'net.hasor.dataql.sdk.IdentifierUdfSource' as ids;
-import 'net.hasor.dataql.sdk.DateTimeUdfSource' as time;
+import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;
+import 'net.hasor.dataql.fx.basic.IdentifierUdfSource' as ids;
+import 'net.hasor.dataql.fx.basic.DateTimeUdfSource' as time;
 import @'ReadOption.ql' as readOption
 
 
-var insertData = @@sql_exec(data)<%
+var insertData = @@sql(data)<%
     insert into my_option (
         `id`,`key`,`value`,`desc`,`create_time`,`modify_time`
     ) values (

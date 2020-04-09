@@ -3,9 +3,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.DimModule;
-import net.hasor.dataql.DimFragment;
-import net.hasor.dataql.DimUdfSource;
-import net.hasor.dataql.QueryApiBinder;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -47,8 +44,8 @@ public class ExampleModule implements SpringModule {
         dataSource.setMaxActive(5);
         apiBinder.installModule(new JdbcModule(Level.Full, dataSource));
         // .DataQL
-        apiBinder.tryCast(QueryApiBinder.class).loadFragment(apiBinder.findClass(DimFragment.class));
-        apiBinder.tryCast(QueryApiBinder.class).loadUdfSource(apiBinder.findClass(DimUdfSource.class));
+        //        apiBinder.tryCast(QueryApiBinder.class).loadFragment(apiBinder.findClass(DimFragment.class));
+        //        apiBinder.tryCast(QueryApiBinder.class).loadUdfSource(apiBinder.findClass(DimUdfSource.class));
         //
         ConsoleApiBinder.HostBuilder hostBuilder = apiBinder.tryCast(ConsoleApiBinder.class).asHostWithSTDO().answerExit();
         hostBuilder.preCommand(this.applicationArguments.getSourceArgs()).loadExecutor(apiBinder.findClass(Tel.class));
