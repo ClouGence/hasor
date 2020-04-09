@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.fx;
 import static net.hasor.dataql.fx.FxHintValue.FRAGMENT_SQL_OPEN_PACKAGE_COLUMN;
+import static net.hasor.dataql.fx.FxHintValue.FRAGMENT_SQL_QUERY_BY_PAGE_DISABLE;
 
 /**
  * Hint 的 keys 定义。
@@ -23,7 +24,11 @@ import static net.hasor.dataql.fx.FxHintValue.FRAGMENT_SQL_OPEN_PACKAGE_COLUMN;
  */
 public enum FxHintNames {
     /** SqlFragment 返回值，拆开方式 */
-    FRAGMENT_SQL_OPEN_PACKAGE(FRAGMENT_SQL_OPEN_PACKAGE_COLUMN);
+    FRAGMENT_SQL_OPEN_PACKAGE(FRAGMENT_SQL_OPEN_PACKAGE_COLUMN),
+    /** SqlFragment 查询执行是否使用分页模式（默认：不使用） */
+    FRAGMENT_SQL_QUERY_BY_PAGE(FRAGMENT_SQL_QUERY_BY_PAGE_DISABLE),
+    /** SqlFragment 分页查询在改写分页查询语句时使用的方言（默认：空，需要明确指定） */
+    FRAGMENT_SQL_PAGE_DIALECT("");
     //
     private String defaultVal;
 

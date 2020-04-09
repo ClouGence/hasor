@@ -5,16 +5,24 @@ public interface FxHintValue extends HintValue {
     /**
      * SqlFragment 返回值不拆开，无论返回数据，都以 List/Map 形式返回。
      */
-    public static final String FRAGMENT_SQL_OPEN_PACKAGE_OFF    = "off";
+    public static final String FRAGMENT_SQL_OPEN_PACKAGE_OFF      = "off";
     /**
      * SqlFragment 返回值拆分到行，如果返回值是多条记录那么行为和 off 相同。
      *  - 如果是 1条记录，那么返回一个 Object。
      */
-    public static final String FRAGMENT_SQL_OPEN_PACKAGE_ROW    = "row";
+    public static final String FRAGMENT_SQL_OPEN_PACKAGE_ROW      = "row";
     /**
      * SqlFragment 返回值拆分到行，如果返回值是多条记录那么行为和 off 相同。
      *  - 如果返回值是 1条记录并且具有多个字段值，那么行为和 row 相同。
      *  - 一条记录中如果只有一个字段，那么会忽略字段名直接返回这个字段的值。
      *  - 如果查询结果为空集合，那么返回 null 值。 */
-    public static final String FRAGMENT_SQL_OPEN_PACKAGE_COLUMN = "column";
+    public static final String FRAGMENT_SQL_OPEN_PACKAGE_COLUMN   = "column";
+    /**
+     * SqlFragment 在执行 select 语句时采用分页模式执行，获取数据的步骤：1先获取查询对象，2.设置分页参数，3.获取分页之后的数据。
+     */
+    public static final String FRAGMENT_SQL_QUERY_BY_PAGE_ENABLE  = "true";
+    /**
+     * SqlFragment 在执行 select 语句时不分页，获取数据的步骤：1先获取查询对象，2.获取SQL执行的数据。
+     */
+    public static final String FRAGMENT_SQL_QUERY_BY_PAGE_DISABLE = "false";
 }
