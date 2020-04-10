@@ -38,12 +38,18 @@ import java.util.stream.Collectors;
 @Singleton
 public class CollectionUdfSource implements UdfSourceAssembly {
     /** 集合 或 Map 是否为空 */
-    public static boolean isEmpty(Object collection) {
-        if (collection instanceof List) {
-            return ((List) collection).isEmpty();
+    public static boolean isEmpty(Object target) {
+        if (target instanceof List) {
+            return ((List) target).isEmpty();
         }
-        if (collection instanceof Map) {
-            return ((Map) collection).isEmpty();
+        if (target instanceof ListModel) {
+            return ((ListModel) target).size() == 0;
+        }
+        if (target instanceof Map) {
+            return ((Map) target).isEmpty();
+        }
+        if (target instanceof ObjectModel) {
+            return ((ObjectModel) target).size() == 0;
         }
         return false;
     }
@@ -82,7 +88,7 @@ public class CollectionUdfSource implements UdfSourceAssembly {
             if (object instanceof ObjectModel) {
                 finalMap.putAll(((ObjectModel) object).unwrap());
             } else {
-                throw new IllegalArgumentException("param must be Map.");
+                throw new IllegalArgumentException("all args must be Map.");
             }
         }
         return finalMap;
@@ -94,7 +100,7 @@ public class CollectionUdfSource implements UdfSourceAssembly {
      * @param filter 过滤器 Predicate or 返回值为 Boolean 的 UDF
      * @param hints 选项
      */
-    public static Object filter(List<Object> valueList, Udf filter, Hints hints) {
+    public static List<Object> filter(List<Object> valueList, Udf filter, Hints hints) {
         if (valueList == null || valueList.isEmpty()) {
             return null;
         }
@@ -212,41 +218,71 @@ public class CollectionUdfSource implements UdfSourceAssembly {
     }
 
     /** List 转为 Map */
-    public static Map<String, Object> list2map(List<Object> valueList, String key, Udf convert, Hints hints) throws Throwable {
+    public static Map<String, Object> list2map(List<Object> valueList, Object key, Udf convert, Hints hints) throws Throwable {
+        if (key == null) {
+            throw new IllegalArgumentException("The key parameter cannot be null");
+        }
+        if (!(key instanceof String || key instanceof Udf)) {
+            throw new IllegalArgumentException("key arg must be Udf or String");
+        }
+        if (key instanceof String) {
+            return list2map_string(valueList, key.toString(), convert, hints);
+        } else {
+            return list2map_udf(valueList, (Udf) key, convert, hints);
+        }
+    }
+
+    private static Map<String, Object> list2map_string(List<Object> valueList, String key, Udf convert, Hints hints) throws Throwable {
+        return list2map_udf(valueList, (readOnly, params) -> {
+            int rowNumber = (int) params[0];
+            if (params[1] == null) {
+                throw new NullPointerException("element " + rowNumber + " data is null");
+            }
+            DataModel rowData = DomainHelper.convertTo(params[1]);
+            if (!rowData.isObject()) {
+                throw new NullPointerException("element " + rowNumber + " type is not Object");
+            }
+            DataModel keyValue = ((ObjectModel) rowData).get(key);
+            if (keyValue == null) {
+                throw new NullPointerException("element " + rowNumber + " key '" + key + "' is not exist");
+            }
+            if (!keyValue.isValue()) {
+                throw new NullPointerException("element " + rowNumber + " key '" + key + "' type must primary");
+            }
+            return String.valueOf(keyValue.unwrap());
+        }, convert, hints);
+    }
+
+    private static Map<String, Object> list2map_udf(List<Object> valueList, Udf extractKey, Udf convert, Hints hints) throws Throwable {
         ListModel convertTo = (ListModel) DomainHelper.convertTo(valueList);
         if (convertTo == null || convertTo.size() == 0) {
             return Collections.emptyMap();
         }
+        if (extractKey == null) {
+            throw new IllegalArgumentException("extractKey Udf is null"); // Key 提取函数丢失了
+        }
+        //
         Map<String, Object> mapData = new LinkedHashMap<>();
         Map<String, Object> errorData = new LinkedHashMap<>();
         for (int i = 0; i < convertTo.size(); i++) {
-            DataModel dataModel = convertTo.get(i);
-            String errorMessage = "";
-            if (dataModel.isObject()) {
-                DataModel objectModel = dataModel;
-                DataModel keyValue = ((ObjectModel) objectModel).get(key);
-                if (keyValue != null) {
-                    if (keyValue.isValue()) {
-                        if (convert != null) {
-                            Object call = convert.call(hints, objectModel);
-                            objectModel = DomainHelper.convertTo(call);
-                        }
-                        mapData.put(keyValue.unwrap().toString(), objectModel);
-                        continue;
-                    } else {
-                        errorMessage = "element key '" + key + "' type must primary.";
-                    }
-                } else {
-                    errorMessage = "element key '" + key + "' is not exist.";
+            DataModel valueData = convertTo.get(i);
+            try {
+                DataModel keyData = DomainHelper.convertTo(extractKey.call(hints, i, valueData));
+                if (!keyData.isValue()) {
+                    throw new NullPointerException("element " + i + " key type must primary");
                 }
-            } else {
-                errorMessage = "element type is not Object.";
+                String unwrapKey = String.valueOf(keyData.unwrap());
+                if (convert != null) {
+                    Object mapValue = convert.call(hints, i, valueData);
+                    valueData = DomainHelper.convertTo(mapValue);
+                }
+                mapData.put(unwrapKey, valueData);
+            } catch (Exception e) {
+                LinkedHashMap<String, Object> hashMap = new LinkedHashMap<>();
+                hashMap.put("errorMsg", e.getMessage());
+                hashMap.put("errorData", valueData);
+                errorData.put("idx_" + i, hashMap);
             }
-            //
-            LinkedHashMap<String, Object> hashMap = new LinkedHashMap<>();
-            hashMap.put("errorMsg", errorMessage);
-            hashMap.put("errorData", dataModel);
-            errorData.put("idx_" + i, hashMap);
         }
         //
         if (!errorData.isEmpty()) {
@@ -331,21 +367,21 @@ public class CollectionUdfSource implements UdfSourceAssembly {
     }
 
     /** Map 转为 List */
-    public static List<Object> map2list(Object mapValue, Udf convert, Hints hints) throws Throwable {
-        ObjectModel convertTo = (ObjectModel) DomainHelper.convertTo(mapValue);
-        if (convertTo == null || convertTo.size() == 0) {
+    public static List<Object> map2list(Map<String, Object> mapValue, Udf convert, Hints hints) throws Throwable {
+        if (mapValue == null || mapValue.isEmpty()) {
             return Collections.emptyList();
         }
         ArrayList<Object> listData = new ArrayList<>();
-        Set<Map.Entry<String, DataModel>> entrySet = convertTo.asOri().entrySet();
-        for (Map.Entry<String, DataModel> entry : entrySet) {
-            DataModel objectModel = DomainHelper.newObject();
-            ((ObjectModel) objectModel).put("key", entry.getKey());
-            ((ObjectModel) objectModel).put("value", entry.getValue());
+        Set<Map.Entry<String, Object>> entrySet = mapValue.entrySet();
+        for (Map.Entry<String, Object> entry : entrySet) {
             if (convert != null) {
-                objectModel = DomainHelper.convertTo(convert.call(hints, objectModel));
+                listData.add(convert.call(hints, entry.getKey(), entry.getValue()));
+            } else {
+                ObjectModel objectModel = DomainHelper.newObject();
+                objectModel.put("key", entry.getKey());
+                objectModel.put("value", entry.getValue());
+                listData.add(objectModel);
             }
-            listData.add(objectModel);
         }
         return listData;
     }

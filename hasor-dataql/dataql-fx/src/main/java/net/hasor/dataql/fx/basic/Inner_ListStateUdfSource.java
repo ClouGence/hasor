@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.basic;
+import net.hasor.dataql.Udf;
 import net.hasor.dataql.UdfSourceAssembly;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * 带有状态的集合。函数库引入 <code>import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect; var arr = collect.newList()</code>
@@ -25,7 +29,8 @@ import java.util.List;
  * @version : 2019-12-12
  */
 class Inner_ListStateUdfSource implements UdfSourceAssembly {
-    private List<Object> objectArrayList;
+    private List<Object>     objectArrayList;
+    private Map<String, Udf> self;
 
     public Inner_ListStateUdfSource(List<Object> initData) {
         if (initData != null) {
@@ -33,26 +38,31 @@ class Inner_ListStateUdfSource implements UdfSourceAssembly {
         } else {
             objectArrayList = new ArrayList<>();
         }
+        //
+        Class<?> targetType = getClass();
+        Predicate<Method> predicate = getPredicate(targetType);
+        Inner_ListStateUdfSource target = this;
+        this.self = new TypeUdfMap(targetType, () -> target, predicate);
     }
 
     /** 把参数数据加到开头 */
-    public List<Object> addFirst(Object dataArrays) {
+    public Map<String, Udf> addFirst(Object dataArrays) {
         if (dataArrays != null) {
             this.objectArrayList = CollectionUdfSource.merge(() -> {
                 return new Object[] { dataArrays, objectArrayList };
             });
         }
-        return this.objectArrayList;
+        return this.self;
     }
 
     /** 把参数数据加到末尾 */
-    public List<Object> addLast(Object dataArrays) {
+    public Map<String, Udf> addLast(Object dataArrays) {
         if (dataArrays != null) {
             this.objectArrayList = CollectionUdfSource.merge(() -> {
                 return new Object[] { objectArrayList, dataArrays };
             });
         }
-        return this.objectArrayList;
+        return this.self;
     }
 
     /** 有状态集合的数据 */

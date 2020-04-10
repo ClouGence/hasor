@@ -43,12 +43,33 @@ DataQL 引擎
     guide/ext_dataql
     guide/hints
 
-FX库
+FunctionX库函数
 ------------------------------------
 .. toctree::
     :maxdepth: 3
 
-    fx/inner_sdk
+    fx/about_fx
+    fx/basic/fx_collect
+    fx/basic/fx_compare
+    fx/basic/fx_datetime
+    fx/basic/fx_json
+    fx/basic/fx_string
+    fx/basic/fx_string
+    fx/encryt/fx_codec
+    fx/encryt/fx_digest
+    fx/encryt/fx_hex
+    fx/encryt/fx_hmac
+    fx/web/fx_cookie
+    fx/web/fx_web
+    fx/web/fx_header
+    fx/web/fx_session
+
+SQL执行器
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    fragment/sql_fragment
 
 Hint说明手册
 ------------------------------------
