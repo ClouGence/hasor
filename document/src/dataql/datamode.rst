@@ -1,6 +1,3 @@
---------------------
-数据模型
---------------------
 DataQL 的数据模型是通过 ``net.hasor.dataql.domain.DataModel`` 接口表示的，共计有4个实现类。
 其中：String、Number、Boolean、Null 四个类型同时使用 ValueModel 来表示。
 

@@ -25,17 +25,37 @@ DataQL 引擎
     grammar/statement
     grammar/params
 
-使用手册
+数据模型
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    datamode
+
+开发手册
 ------------------------------------
 .. toctree::
     :maxdepth: 3
 
     guide/use_dataql
-    guide/datamode
     guide/global_var
     guide/udf_dataql
     guide/ext_dataql
     guide/hints
+
+FX库
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    fx/inner_sdk
+
+Hint说明手册
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    hints
 
 Maven插件
 ------------------------------------
@@ -44,14 +64,7 @@ Maven插件
 
     maven/maven_plugin
 
-内置函数库(SDK)
-------------------------------------
-.. toctree::
-    :maxdepth: 3
-
-    sdk/inner_sdk
-
-样例集锦
+样例集
 ------------------------------------
 .. toctree::
     :maxdepth: 3

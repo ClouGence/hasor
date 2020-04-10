@@ -1,13 +1,6 @@
 --------------------
-外部整合及工具
+整合及工具
 --------------------
-
-tConsole CLI框架
-------------------------------------
-.. toctree::
-    :maxdepth: 3
-
-    tconsole/what_is_tconsole
 
 集成到 Spring
 ------------------------------------
@@ -17,3 +10,10 @@ tConsole CLI框架
     spring/about
     spring/for_boot
     spring/for_xml
+
+tConsole CLI框架
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    tconsole/what_is_tconsole
