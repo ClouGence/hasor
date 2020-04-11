@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.web;
+import com.alibaba.fastjson.JSON;
 import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.utils.StringUtils;
+import net.hasor.web.Invoker;
 
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +33,15 @@ import java.util.Map;
  */
 @Singleton
 public class HeaderUdfSource implements UdfSourceAssembly {
+    /** jsonBody */
+    public static Object jsonBody() {
+        Invoker invoker = FxWebInterceptor.invoker();
+        if (invoker == null) {
+            return null;
+        }
+        return JSON.parse(invoker.getJsonBodyString());
+    }
+
     /** headerMap */
     public static Map<String, String> map() {
         return FxWebInterceptor.headerMap();

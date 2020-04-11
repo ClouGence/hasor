@@ -41,7 +41,14 @@ DataQL 引擎
     guide/global_var
     guide/udf_dataql
     guide/ext_dataql
-    guide/hints
+
+SQL执行器
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    fragment/sql/about_sql
+    fragment/sql/execute
 
 FunctionX库函数
 ------------------------------------
@@ -64,21 +71,12 @@ FunctionX库函数
     fx/web/fx_header
     fx/web/fx_session
 
-SQL执行器
+作为Dao层
 ------------------------------------
 .. toctree::
     :maxdepth: 3
 
-    fragment/sql/about_sql
-    fragment/sql/execute
-
-Dao层方案
-------------------------------------
-.. toctree::
-    :maxdepth: 3
-
-    daos/maven_plugin
-    daos/qlfiles
+    dataql-on-dao
 
 Hint说明手册
 ------------------------------------

@@ -8,7 +8,7 @@ public interface FxHintValue extends HintValue {
     public static final String FRAGMENT_SQL_OPEN_PACKAGE_OFF      = "off";
     /**
      * SqlFragment 返回值拆分到行，如果返回值是多条记录那么行为和 off 相同。
-     *  - 如果是 1条记录，那么返回一个 Object。
+     *  - 当返回 0 或 1 条记录时，自动解开最外层的 List，返回一个 Object。
      */
     public static final String FRAGMENT_SQL_OPEN_PACKAGE_ROW      = "row";
     /**
