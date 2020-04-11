@@ -145,9 +145,10 @@ public class SqlPageObject implements UdfSourceAssembly {
             put("recordPosition", firstRecordPosition());
         }};
     }
+    // ----------------------------------------------------------------------------------
 
     /** 获取分页的页大小 */
-    public boolean updatePage(Map<String, Object> pageInfo) {
+    public boolean setPageInfo(Map<String, Object> pageInfo) {
         if (pageInfo == null || pageInfo.isEmpty()) {
             return false;
         }

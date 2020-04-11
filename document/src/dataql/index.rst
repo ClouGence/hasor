@@ -69,7 +69,16 @@ SQL执行器
 .. toctree::
     :maxdepth: 3
 
-    fragment/sql_fragment
+    fragment/sql/about_sql
+    fragment/sql/execute
+
+Dao层方案
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    daos/maven_plugin
+    daos/qlfiles
 
 Hint说明手册
 ------------------------------------
@@ -77,13 +86,6 @@ Hint说明手册
     :maxdepth: 3
 
     hints
-
-Maven插件
-------------------------------------
-.. toctree::
-    :maxdepth: 3
-
-    maven/maven_plugin
 
 样例集
 ------------------------------------
