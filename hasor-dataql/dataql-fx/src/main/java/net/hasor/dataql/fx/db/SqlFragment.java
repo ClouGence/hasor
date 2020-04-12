@@ -55,14 +55,12 @@ public class SqlFragment implements FragmentProcess {
     protected JdbcTemplate jdbcTemplate;
 
     protected static enum SqlMode {
-        /** DML：insert、update、delete、replace */
-        Execute,
-        /** DML：exec */
-        Procedure,
+        /** DML：insert、update、delete、replace、exec */
+        Insert, Update, Delete, Procedure,
         /** DML：select */
         Query,
         /** DDL：create、drop、alter */
-        DDL,
+        Create, Drop, Alter,
         /** Other */
         Unknown,
     }
@@ -78,7 +76,7 @@ public class SqlFragment implements FragmentProcess {
         //
         SqlMode sqlMode = evalSqlMode(fragmentString);
         FxSql fxSql = FxSql.analysisSQL(fragmentString);
-        if (SqlMode.Execute == sqlMode && !fxSql.isHavePlaceholder()) {
+        if ((SqlMode.Insert == sqlMode || SqlMode.Update == sqlMode || SqlMode.Delete == sqlMode) && !fxSql.isHavePlaceholder()) {
             fragmentString = fxSql.buildSqlString(params.get(0));
             PreparedStatementSetter[] parameterArrays = new PreparedStatementSetter[params.size()];
             for (int i = 0; i < params.size(); i++) {
@@ -185,11 +183,11 @@ public class SqlFragment implements FragmentProcess {
             }
             return rowObject;
             //
-        } else if (SqlMode.Execute == sqlMode) {
+        } else if (SqlMode.Insert == sqlMode || SqlMode.Update == sqlMode || SqlMode.Delete == sqlMode) {
             return this.jdbcTemplate.executeUpdate(fragmentString, source);
         } else if (SqlMode.Procedure == sqlMode) {
             throw new SQLException("Procedure not support.");
-        } else if (SqlMode.DDL == sqlMode) {
+        } else if (SqlMode.Create == sqlMode || SqlMode.Drop == sqlMode || SqlMode.Alter == sqlMode) {
             return this.jdbcTemplate.executeUpdate(fragmentString, source);
         }
         throw new SQLException("Unknown SqlMode.");//不可能走到这里
@@ -234,14 +232,22 @@ public class SqlFragment implements FragmentProcess {
             }
             //
             tempLine = tempLine.toLowerCase();
-            if (tempLine.startsWith("insert") || tempLine.startsWith("update") || tempLine.startsWith("delete") || tempLine.startsWith("replace")) {
-                sqlMode = SqlMode.Execute;
+            if (tempLine.startsWith("insert") || tempLine.startsWith("replace")) {
+                sqlMode = SqlMode.Insert;
+            } else if (tempLine.startsWith("update")) {
+                sqlMode = SqlMode.Update;
+            } else if (tempLine.startsWith("delete")) {
+                sqlMode = SqlMode.Delete;
             } else if (tempLine.startsWith("exec")) {
                 sqlMode = SqlMode.Procedure;
             } else if (tempLine.startsWith("select")) {
                 sqlMode = SqlMode.Query;
-            } else if (tempLine.startsWith("create") || tempLine.startsWith("drop") || tempLine.startsWith("alter")) {
-                sqlMode = SqlMode.DDL;
+            } else if (tempLine.startsWith("create")) {
+                sqlMode = SqlMode.Create;
+            } else if (tempLine.startsWith("drop")) {
+                sqlMode = SqlMode.Drop;
+            } else if (tempLine.startsWith("alter")) {
+                sqlMode = SqlMode.Alter;
             } else {
                 sqlMode = SqlMode.Unknown;
             }
