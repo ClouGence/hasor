@@ -18,10 +18,8 @@ import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import ognl.Ognl;
 import ognl.OgnlContext;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -34,8 +32,8 @@ import java.util.stream.Collectors;
  */
 public class FxSql implements Cloneable {
     private StringBuilder           sqlStringOri    = new StringBuilder("");
-    private List<Object>            sqlStringPlan   = new ArrayList<>();
-    private List<String>            paramEl         = new ArrayList<>();
+    private List<Object>            sqlStringPlan   = new LinkedList<>();
+    private List<String>            paramEl         = new LinkedList<>();
     private boolean                 havePlaceholder = false;
     private AtomicReference<Object> tempObject      = new AtomicReference<>();
     private Supplier<Object>        objectSupplier  = () -> {
@@ -51,7 +49,14 @@ public class FxSql implements Cloneable {
     /** 追加一个字符串 */
     public void appendString(String append) {
         this.sqlStringOri.append(append);
-        this.sqlStringPlan.add(append);
+        if (!this.sqlStringPlan.isEmpty()) {
+            Object ss = this.sqlStringPlan.get(this.sqlStringPlan.size() - 1);
+            if (ss instanceof StringBuilder) {
+                ((StringBuilder) ss).append(append);
+                return;
+            }
+        }
+        this.sqlStringPlan.add(new StringBuilder(append));
     }
 
     /** 插入一个 SQL 参数，最终这个参数会通过 PreparedStatement 形式传递。 */
@@ -131,14 +136,20 @@ public class FxSql implements Cloneable {
     }
 
     public static FxSql analysisSQL(String fragmentString) {
-        FxSQLLexer lexer = new FxSQLLexer(CharStreams.fromString(fragmentString));
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
-        //
-        FxSQLParser qlParser = new FxSQLParser(new CommonTokenStream(lexer));
-        qlParser.removeErrorListeners();
-        qlParser.addErrorListener(ThrowingErrorListener.INSTANCE);
-        return (FxSql) new DefaultFxSQLVisitor().visit(qlParser.rootInstSet());
+        final FxSql fxSql = new FxSql();
+        final String result = new GenericTokenParser(new String[] { "#{", "${" }, "}", (builder, token, content) -> {
+            fxSql.appendString(builder.toString());
+            if (token.equalsIgnoreCase("${")) {
+                fxSql.appendPlaceholderExpr(content);
+            }
+            if (token.equalsIgnoreCase("#{")) {
+                fxSql.appendValueExpr(content);
+            }
+            builder.delete(0, builder.length());
+            return "";
+        }).parse(fragmentString);
+        fxSql.appendString(result);
+        return fxSql;
     }
 
     @Override
