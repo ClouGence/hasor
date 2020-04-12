@@ -150,10 +150,10 @@ public class SqlFragment implements FragmentProcess {
 
     protected Object noPageFragment(FxSql fxSql, SqlMode sqlMode, Hints hint, Map<String, Object> paramMap) throws Throwable {
         String fragmentString = fxSql.buildSqlString(paramMap);
-        List<Object> source = fxSql.buildParameterSource(paramMap);
+        Object[] source = fxSql.buildParameterSource(paramMap).toArray();
         //
         if (SqlMode.Query == sqlMode) {
-            List<Map<String, Object>> mapList = this.jdbcTemplate.queryForList(fragmentString, source.toArray());
+            List<Map<String, Object>> mapList = this.jdbcTemplate.queryForList(fragmentString, source);
             String openPackage = hint.getOrDefault(FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.name(), FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.getDefaultVal()).toString();
             //
             // .结果有多条记录,或者模式为 off，那么直接返回List
