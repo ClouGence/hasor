@@ -236,10 +236,8 @@
     <!-- 发布使用的版本库 -->
     <distributionManagement>
         <snapshotRepository>
-            <!--            <id>ossrh</id>-->
-            <!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
-            <id>startdt</id>
-            <url>http://118.31.10.136:8081/nexus/content/repositories/snapshots/</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
