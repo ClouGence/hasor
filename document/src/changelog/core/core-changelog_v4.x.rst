@@ -1,9 +1,28 @@
 --------------------
 Release Hasor v4.x
 --------------------
-Hasor v4.1.3 (2020-03-?)
+Hasor v4.1.4 (2020-05-?)
 ------------------------------------
-...
+
+Hasor v4.1.3 (2020-04-13)
+------------------------------------
+**新增**
+    - 新增 Dataway 框架
+    - dataway 通过数据库探测机制来实现确定 SQL 执行方案。
+    - DataQL 增加可以构建多个独立的环境。其中 dataway 使用独立的环境。
+    - DataQL 新增 SQL 代码片段执行器，开启 DataQL + SQL 模式。支持分页模式，并兼容多种数据库。
+    - CorsFilter web框架增加一个跨域的 Filter 工具类。
+    - **DataQL-fx** DataQL FragmentProcess 接口新增批量处理能力。
+    - **DataQL-fx** 增加完成事物函数库，完整支持 7种事务传播属性。
+    - **DataQL-fx** 增加 web 相关的 函数库
+    - **DataQL-fx** 增加 加密解密 udf 工具。
+**优化**
+    - DataQL 语法解析器新增支持 标识符可以通过 `` 来囊括特殊字符例如：+、-、*、/ 等符号
+    - DataQL QueryApiBinder 的 bindFinder 支持 Supplier了。
+    - 修复 ApiBinderCreater 拼写错误 ApiBinderCreator。
+    - 2.mapjoin 函数名改为 mapJoin。
+**修复**
+    - Hasor-web：InvokerSupplier，修复 npe 问题。
 
 Hasor v4.1.2 (2020-03-04)
 ------------------------------------
