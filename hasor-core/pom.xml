@@ -6,7 +6,7 @@
         <artifactId>hasor-parent</artifactId>
         <version>4.1.4-SNAPSHOT</version>
     </parent>
-
+    
     <!-- Maven Info -->
     <artifactId>hasor-core</artifactId>
     <packaging>jar</packaging>
