@@ -34,6 +34,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -81,9 +82,15 @@ public class ApiCallService {
         //
         try {
             // .准备参数
-            Map<String, ?> jsonParam;
+            Map<String, Object> jsonParam;
             if ("GET".equalsIgnoreCase(httpMethod)) {
-                jsonParam = httpRequest.getParameterMap();
+                jsonParam = new HashMap<>();
+                Enumeration<String> parameterNames = httpRequest.getParameterNames();
+                while (parameterNames.hasMoreElements()) {
+                    String paramName = parameterNames.nextElement();
+                    jsonParam.put(paramName + "Arrays", httpRequest.getParameterValues(paramName));
+                    jsonParam.put(paramName, httpRequest.getParameter(paramName));
+                }
             } else {
                 String jsonBody = invoker.getJsonBodyString();
                 if (StringUtils.isNotBlank(jsonBody)) {
