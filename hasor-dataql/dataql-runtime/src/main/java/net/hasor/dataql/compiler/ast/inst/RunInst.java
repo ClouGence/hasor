@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.value.LambdaVariable;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
@@ -52,6 +53,6 @@ public class RunInst implements Inst {
         //
         writer.write(fixedString + "run ");
         this.value.doFormat(depth, formatOption, writer);
-        writer.write(";\n");
+        writer.write((this.value instanceof LambdaVariable) ? "\n" : ";\n");
     }
 }

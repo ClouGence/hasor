@@ -1,7 +1,7 @@
 
 var a = () -> return true
 
-return (a,b) -> return false
+return (a,b) -> { return false }
 
 
 throw 123, () -> {

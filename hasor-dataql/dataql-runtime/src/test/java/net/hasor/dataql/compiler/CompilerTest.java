@@ -71,6 +71,11 @@ public class CompilerTest extends AbstractTestResource {
     }
 
     @Test
+    public void hint3_ast_format_test() throws IOException {
+        astTest("hint_3");
+    }
+
+    @Test
     public void import1_ast_format_test() throws IOException {
         astTest("import_1");
     }
@@ -133,6 +138,11 @@ public class CompilerTest extends AbstractTestResource {
     @Test
     public void switch4_ast_format_test() throws IOException {
         astTest("switch_4");
+    }
+
+    @Test
+    public void switch5_ast_format_test() throws IOException {
+        astTest("switch_5");
     }
 
     @Test

@@ -21,4 +21,25 @@
   #19  RETURN    0
   #20  GOTO      21
   #21  LABEL     21
-
+  #22  LDC_B     true
+  #23  IF        29
+  #24  LDC_D     11
+  #25  STORE     0
+  #26  LDC_D     11
+  #27  STORE     1
+  #28  GOTO      43
+  #29  LABEL     29
+  #30  LDC_B     true
+  #31  IF        35
+  #32  LDC_D     22
+  #33  STORE     2
+  #34  GOTO      43
+  #35  LABEL     35
+  #36  LDC_D     33
+  #37  STORE     3
+  #38  LDC_D     3456
+  #39  STORE     4
+  #40  LDC_S
+  #41  RETURN    0
+  #42  GOTO      43
+  #43  LABEL     43

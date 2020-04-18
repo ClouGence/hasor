@@ -35,6 +35,10 @@ import java.util.Objects;
 public class RootBlockSet extends InstSet implements QueryModel {
     private List<ImportInst> importSet = new ArrayList<>();
 
+    public RootBlockSet() {
+        super(true);
+    }
+
     /** 添加导入 */
     public void addImportInst(ImportInst inst) {
         this.importSet.add(Objects.requireNonNull(inst, "import inst npe."));
@@ -64,16 +68,23 @@ public class RootBlockSet extends InstSet implements QueryModel {
 
     @Override
     public void toQueryString(HintsSet formatOptions, Writer writer) throws IOException {
+        FormatWriter formatWriter = new FormatWriter(writer);
         formatOptions = (formatOptions == null) ? new HintsSet() : formatOptions;
         //
         for (HintInst opt : this.getOptionSet()) {
-            opt.doFormat(0, formatOptions, new FormatWriter(writer));
+            opt.doFormat(0, formatOptions, formatWriter);
         }
         for (ImportInst opt : this.importSet) {
-            opt.doFormat(0, formatOptions, new FormatWriter(writer));
+            opt.doFormat(0, formatOptions, formatWriter);
         }
         writer.write("\n");
-        super.doFormat(0, formatOptions, new FormatWriter(writer));
+        for (int i = 0; i < this.size(); i++) {
+            Inst inst = this.get(i);
+            inst.doFormat(0, formatOptions, formatWriter);
+            if (inst instanceof InstSet) {
+                writer.write("\n");
+            }
+        }
         writer.flush();
     }
 }

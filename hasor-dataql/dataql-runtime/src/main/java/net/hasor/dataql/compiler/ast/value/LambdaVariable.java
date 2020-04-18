@@ -17,7 +17,6 @@ package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.ast.inst.InstSet;
-import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +29,10 @@ import java.util.List;
  */
 public class LambdaVariable extends InstSet implements Variable {
     private List<String> paramList = new ArrayList<>();
+
+    public LambdaVariable() {
+        super(true);
+    }
 
     /** 添加入参 */
     public void addParam(String name) {
@@ -64,9 +67,11 @@ public class LambdaVariable extends InstSet implements Variable {
             }
             writer.write(this.paramList.get(i));
         }
-        writer.write(") -> {\n");
-        super.doFormat(depth + 1, formatOption, writer);
-        String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
-        writer.write(fixedString + "}");
+        writer.write(") -> ");
+        if (this.isMultipleInst()) {
+            super.doFormat(depth - 1, formatOption, writer);
+        } else {
+            super.doFormat(0, formatOption, writer);
+        }
     }
 }

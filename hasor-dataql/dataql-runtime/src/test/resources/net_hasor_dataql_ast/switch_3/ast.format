@@ -1,5 +1,5 @@
 
-if (a == a)
+if (a == a) {
     var ab = 11;
-else if (true)
+} else if (true)
     var ac = 22;

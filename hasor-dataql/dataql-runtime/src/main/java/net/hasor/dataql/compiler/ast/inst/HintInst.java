@@ -20,6 +20,7 @@ import net.hasor.dataql.compiler.ast.FormatWriter;
 import net.hasor.dataql.compiler.ast.Inst;
 import net.hasor.dataql.compiler.ast.InstVisitorContext;
 import net.hasor.dataql.compiler.ast.value.PrimitiveVariable;
+import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
 
@@ -57,7 +58,8 @@ public class HintInst implements Inst {
 
     @Override
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
-        String opt = "hint " + this.hint + " = ";
+        String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
+        String opt = fixedString + "hint " + this.hint + " = ";
         writer.write(opt);
         this.value.doFormat(depth + 1, formatOption, writer);
         writer.write(";\n");

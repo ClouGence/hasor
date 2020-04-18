@@ -1,0 +1,20 @@
+IN - RootBlockSet
+    IN - SwitchInst
+        IN - AtomExpression
+            IN - PrimitiveVariable
+            OUT - PrimitiveVariable
+        OUT - AtomExpression
+        IN - InstSet
+            IN - ReturnInst
+                IN - PrimitiveVariable
+                OUT - PrimitiveVariable
+            OUT - ReturnInst
+        OUT - InstSet
+        IN - InstSet
+            IN - ReturnInst
+                IN - PrimitiveVariable
+                OUT - PrimitiveVariable
+            OUT - ReturnInst
+        OUT - InstSet
+    OUT - SwitchInst
+OUT - RootBlockSet

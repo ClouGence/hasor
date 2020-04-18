@@ -16,7 +16,6 @@
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.CustomizeScope;
 import net.hasor.dataql.Finder;
-import net.hasor.dataql.HintNames;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.domain.DataModel;
@@ -71,9 +70,6 @@ class QueryImpl extends HintsSet implements CompilerVarQuery {
         InsetProcessContext processContext = new InsetProcessContext(customize, this.finder);
         // .汇总Option
         processContext.setHints(this);
-        for (HintNames optionKey : HintNames.values()) {
-            processContext.putIfAbsent(optionKey.name(), optionKey.getDefaultVal());
-        }
         // .创建堆栈
         DataStack dataStack = new DataStack();  // 指令执行 - 栈
         DataHeap dataHeap = new DataHeap();     // 指令执行 - 堆

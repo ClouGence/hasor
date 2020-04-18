@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.value.LambdaVariable;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
@@ -62,6 +63,6 @@ public class ThrowInst implements Inst {
             writer.write(fixedString + "throw ");
         }
         this.throwData.doFormat(depth + 1, formatOption, writer);
-        writer.write(";\n");
+        writer.write((this.throwData instanceof LambdaVariable) ? "\n" : ";\n");
     }
 }

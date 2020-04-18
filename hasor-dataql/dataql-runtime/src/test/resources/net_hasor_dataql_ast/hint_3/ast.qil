@@ -1,0 +1,19 @@
+[0]
+  #00  LDC_S     a
+  #01  LDC_D     134
+  #02  HINT
+  #03  LDC_S     a
+  #04  LDC_D     -134
+  #05  HINT
+  #06  LDC_S     e
+  #07  LDC_D     1322
+  #08  HINT
+  #09  E_LOAD    #
+  #10  GET       aaa
+  #11  STORE     0
+  #12  E_LOAD    #
+  #13  GET       ss
+  #14  STORE     0
+  #15  LDC_D     1
+  #16  RETURN    0
+

@@ -1,0 +1,16 @@
+hint a=  134
+hint a=  -134
+
+hint e=0b10100101010
+
+var abc = aaa
+
+{
+hint f=0o1234567
+hint g=0x1234567890abcdef;
+hint h=999999999999999999999999999999999999999999999999999999999999;
+
+var abc =ss
+}
+
+return 1;

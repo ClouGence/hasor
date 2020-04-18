@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.value.LambdaVariable;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
@@ -58,6 +59,9 @@ public class VarInst implements Inst {
         //
         writer.write(fixedString + String.format("var %s = ", this.varName));
         this.value.doFormat(depth, formatOption, writer);
+        if (this.value instanceof LambdaVariable) {
+            return;
+        }
         writer.write(";\n");
     }
 }

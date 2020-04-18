@@ -32,6 +32,11 @@ import java.util.Objects;
  */
 public class InstSet extends ArrayList<Inst> implements Inst {
     private List<HintInst> optionSet = new ArrayList<>();
+    private boolean        multipleInst;
+
+    public InstSet(boolean multipleInst) {
+        this.multipleInst = multipleInst;
+    }
 
     /** 添加选项 */
     public void addOptionInst(HintInst inst) {
@@ -40,6 +45,14 @@ public class InstSet extends ArrayList<Inst> implements Inst {
 
     public List<HintInst> getOptionSet() {
         return optionSet;
+    }
+
+    public void setMultipleInst(boolean multipleInst) {
+        this.multipleInst = multipleInst;
+    }
+
+    public boolean isMultipleInst() {
+        return this.multipleInst;
     }
 
     /** 批量添加指令集 */
@@ -71,9 +84,30 @@ public class InstSet extends ArrayList<Inst> implements Inst {
 
     @Override
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
+        int size = this.size();
+        if (this.getOptionSet().isEmpty() && size <= 1 && !this.isMultipleInst()) {
+            if (size == 0) {
+                return;
+            } else {
+                Inst inst = this.get(0);
+                inst.doFormat(depth, formatOption, writer);
+                return;
+            }
+        }
+        writer.write("{\n");
+        for (HintInst opt : this.getOptionSet()) {
+            opt.doFormat(depth + 1, formatOption, writer);
+        }
+        if (!this.getOptionSet().isEmpty()) {
+            writer.write("\n");
+        }
         for (int i = 0; i < this.size(); i++) {
             Inst inst = this.get(i);
-            inst.doFormat(depth, formatOption, writer);
+            inst.doFormat(depth + 1, formatOption, writer);
+            if (inst instanceof InstSet) {
+                writer.write("\n");
+            }
         }
+        writer.write("}");
     }
 }

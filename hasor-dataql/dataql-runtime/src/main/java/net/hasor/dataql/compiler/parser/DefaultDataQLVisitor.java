@@ -71,7 +71,11 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
                 blockSet.accept(this);
                 InstSet instSet = (InstSet) this.instStack.pop();
                 RootBlockSet rootBlockSet = (RootBlockSet) this.instStack.peek();
-                rootBlockSet.addInstSet(instSet);
+                if (instSet.isMultipleInst()) {
+                    rootBlockSet.add(instSet);
+                } else {
+                    rootBlockSet.addInstSet(instSet);
+                }
             }
         }
         //
@@ -113,14 +117,14 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
     @Override
     public T visitMultipleInst(MultipleInstContext ctx) {
-        this.instStack.push(new InstSet());
+        this.instStack.push(new InstSet(true));
         visitChildren(ctx);
         return null;
     }
 
     @Override
     public T visitSingleInst(SingleInstContext ctx) {
-        this.instStack.push(new InstSet());
+        this.instStack.push(new InstSet(false));
         visitChildren(ctx);
         return null;
     }
@@ -219,6 +223,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         //
         ctx.blockSet().accept(this);
         InstSet instSet = (InstSet) this.instStack.pop();
+        ((LambdaVariable) this.instStack.peek()).setMultipleInst(instSet.isMultipleInst());
         ((LambdaVariable) this.instStack.peek()).addInstSet(instSet);
         return null;
     }

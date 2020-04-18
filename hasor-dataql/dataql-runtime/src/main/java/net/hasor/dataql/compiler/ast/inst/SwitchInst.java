@@ -76,62 +76,46 @@ public class SwitchInst implements Inst {
     @Override
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
         String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
-        boolean useMultiple = false;
-        if (this.elseBlockSet != null && this.elseBlockSet.size() > 1) {
-            useMultiple = true;
-        }
-        for (SwitchExpression switchExpr : this.testBlockSet) {
-            if (useMultiple) {
-                break;
-            }
-            useMultiple = switchExpr.instBlockSet.size() > 1;
-        }
-        //
         //
         writer.write(fixedString + "if (");
         SwitchExpression switchExpr = this.testBlockSet.get(0);
         switchExpr.testExpression.doFormat(depth + 1, formatOption, writer);
-        if (useMultiple) {
-            writer.write(") {\n");
+        //
+        if (switchExpr.instBlockSet.isMultipleInst()) {
+            writer.write(") ");
+            switchExpr.instBlockSet.doFormat(depth, formatOption, writer);
         } else {
             writer.write(")\n");
+            switchExpr.instBlockSet.doFormat(depth + 1, formatOption, writer);
         }
-        switchExpr.instBlockSet.doFormat(depth + 1, formatOption, writer);
         //
         //
         for (int i = 1; i < this.testBlockSet.size(); i++) {
             switchExpr = this.testBlockSet.get(i);
             //
-            if (useMultiple) {
-                writer.write(fixedString + "} else if (");
-            } else {
-                writer.write(fixedString + "else if (");
-            }
+            writer.write(" else if (");
             switchExpr.testExpression.doFormat(depth + 1, formatOption, writer);
-            if (useMultiple) {
-                writer.write(") {\n");
+            //
+            if (switchExpr.instBlockSet.isMultipleInst()) {
+                writer.write(") ");
+                switchExpr.instBlockSet.doFormat(depth, formatOption, writer);
+                writer.write(" ");
             } else {
                 writer.write(")\n");
+                switchExpr.instBlockSet.doFormat(depth + 1, formatOption, writer);
             }
-            switchExpr.instBlockSet.doFormat(depth + 1, formatOption, writer);
         }
         if (this.elseBlockSet == null) {
-            if (useMultiple) {
-                writer.write("}\n");
-            }
             return;
         }
         //
-        if (useMultiple) {
-            writer.write(fixedString + "} else {\n");
+        if (elseBlockSet.isMultipleInst()) {
+            writer.write(fixedString + "else ");
+            this.elseBlockSet.doFormat(depth, formatOption, writer);
+            writer.write("\n");
         } else {
             writer.write(fixedString + "else\n");
-        }
-        this.elseBlockSet.doFormat(depth + 1, formatOption, writer);
-        if (useMultiple) {
-            writer.write("}\n");
-        } else {
-            writer.write("\n");
+            this.elseBlockSet.doFormat(depth + 1, formatOption, writer);
         }
     }
 }
