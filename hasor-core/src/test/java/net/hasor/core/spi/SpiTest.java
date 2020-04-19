@@ -16,8 +16,11 @@
 package net.hasor.core.spi;
 import net.hasor.core.*;
 import net.hasor.test.core.event.AppContextListener;
+import net.hasor.test.core.spi.TestSpi;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -80,5 +83,105 @@ public class SpiTest {
         assert listener2.getAppContext() == appContext;
         assert listener1.getCount() == 1;
         assert listener2.getCount() == 1;
+    }
+
+    @Test
+    public void spiJudgeTest1() {
+        final String defaultResult = "ORI";
+        final String spiResultA = "ResultA";
+        final String spiResultB = "ResultB";
+        //
+        ArrayList<String> call = new ArrayList<>();
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            apiBinder.bindSpiListener(TestSpi.class, () -> {
+                call.add(spiResultA);
+                return spiResultA;
+            });
+            apiBinder.bindSpiListener(TestSpi.class, () -> {
+                call.add(spiResultB);
+                return spiResultB;
+            });
+        });
+        //
+        SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
+        Object resultSpi = spiTrigger.callResultSpi(TestSpi.class, TestSpi::doSpi, defaultResult);
+        //
+        assert call.size() == 2;
+        assert call.contains(spiResultA);
+        assert call.contains(spiResultB);
+        assert resultSpi.equals(spiResultB);
+    }
+
+    @Test
+    public void spiChainTest2() {
+        //
+        SpiJudge spiJudge = new SpiJudge() {
+            @Override
+            public <R> R judgeSpiResult(List<R> result, R defaultResult) {
+                return result.get(0);
+            }
+        };
+        //
+        final String defaultResult = "ORI";
+        final String spiResultA = "ResultA";
+        final String spiResultB = "ResultB";
+        //
+        ArrayList<String> call = new ArrayList<>();
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            apiBinder.bindSpiJudge(TestSpi.class, spiJudge);
+            apiBinder.bindSpiListener(TestSpi.class, () -> {
+                call.add(spiResultA);
+                return spiResultA;
+            });
+            apiBinder.bindSpiListener(TestSpi.class, () -> {
+                call.add(spiResultB);
+                return spiResultB;
+            });
+        });
+        //
+        SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
+        Object resultSpi = spiTrigger.callResultSpi(TestSpi.class, TestSpi::doSpi, defaultResult);
+        //
+        assert call.size() == 2;
+        assert call.contains(spiResultA);
+        assert call.contains(spiResultB);
+        assert resultSpi.equals(spiResultA);
+    }
+
+    @Test
+    public void spiChainTest3() {
+        //
+        final String defaultResult = "ORI";
+        final String spiResultA = "ResultA";
+        final String spiResultB = "ResultB";
+        final List<String> call = new ArrayList<>();
+        //
+        TestSpi testSpiA = () -> {
+            call.add(spiResultA);
+            return spiResultA;
+        };
+        TestSpi testSpiB = () -> {
+            call.add(spiResultB);
+            return spiResultB;
+        };
+        //
+        //
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            apiBinder.bindSpiJudge(TestSpi.class, new SpiJudge() {
+                public <T extends java.util.EventListener> boolean judgeSpiCall(T spiListener) {
+                    return spiListener == testSpiA;
+                }
+            });
+            apiBinder.bindSpiListener(TestSpi.class, testSpiA);
+            apiBinder.bindSpiListener(TestSpi.class, testSpiB);
+        });
+        //
+        SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
+        Object resultSpi = spiTrigger.callResultSpi(TestSpi.class, TestSpi::doSpi, defaultResult);
+        //
+        assert call.size() == 1;
+        assert call.contains(spiResultA);
+        assert !call.contains(spiResultB);
+        assert resultSpi.equals(spiResultA);
     }
 }

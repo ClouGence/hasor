@@ -15,14 +15,12 @@
  */
 package net.hasor.core.container;
 import net.hasor.core.spi.SpiCaller;
-import net.hasor.core.spi.SpiInterceptor;
+import net.hasor.core.spi.SpiJudge;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.utils.ExceptionUtils;
-import net.hasor.core.spi.SpiInterceptor.SpiChainInvocation;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -34,46 +32,45 @@ import java.util.stream.Stream;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SpiCallerContainer extends AbstractContainer implements SpiTrigger {
-    private ConcurrentHashMap<Class<?>, List<Supplier<EventListener>>> spiListener      = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<Class<?>, Supplier<SpiInterceptor>>      spiChainListener = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Class<?>, List<Supplier<EventListener>>> spiListener = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Class<?>, Supplier<SpiJudge>>            spiSpiJudge = new ConcurrentHashMap<>();
 
     /** 执行 SPI */
     @Override
     public <R, T extends EventListener> R callResultSpi(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult) {
         List<Supplier<EventListener>> listeners = this.spiListener.get(spiType);
+        // .没有 SPI 监听器，那么返回默认值
         if (listeners == null || listeners.isEmpty()) {
             return defaultResult;
         }
-        // .得到 SpiChainProcessor
-        SpiInterceptor spiChain = null;
-        if (spiChainListener.get(spiType) != null) {
-            spiChain = spiChainListener.get(spiType).get();
-        }
-        //
-        AtomicReference<R> result = new AtomicReference<>(defaultResult);
-        for (Supplier<EventListener> listener : listeners) {
+        // .只有一个 SPI 监听器，那么选用监听器的值
+        if (listeners.size() == 1) {
             try {
-                if (spiChain == null) {
-                    result.set(spiCaller.doResultSpi((T) listener.get()));
-                } else {
-                    Object spiResult = spiChain.doSpi(new SpiChainInvocation() {
-                        @Override
-                        public Object defaultValue() {
-                            return result.get();
-                        }
-
-                        @Override
-                        public Object doSpi() throws Throwable {
-                            return spiCaller.doResultSpi((T) listener.get());
-                        }
-                    });
-                    result.set((R) spiResult);
-                }
+                return spiCaller.doResultSpi((T) listeners.get(0).get());
             } catch (Throwable e) {
                 throw ExceptionUtils.toRuntimeException(e);
             }
         }
-        return result.get();
+        // .多个 SPI 监听器情况下，需要仲裁来裁决。
+        SpiJudge spiJudge = SpiJudge.DEFAULT;
+        if (this.spiSpiJudge.containsKey(spiType)) {
+            spiJudge = this.spiSpiJudge.get(spiType).get(); // 有仲裁
+            spiJudge = Objects.requireNonNull(spiJudge, "spi '" + spiType.getName() + "' SpiJudge is null.");
+        }
+        //
+        try {
+            List<R> list = new ArrayList<>();
+            for (Supplier<EventListener> listener : listeners) {
+                EventListener spiListener = listener.get();
+                if (spiJudge.judgeSpiCall(spiListener)) {
+                    list.add(spiCaller.doResultSpi((T) spiListener));
+                }
+            }
+            //
+            return spiJudge.judgeSpiResult(list, defaultResult);
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
     }
 
     /** 获取某个类型 SPI 下面的所有监听器。 */
@@ -105,17 +102,17 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
         listenerList.add((Supplier<EventListener>) spiListener);
     }
 
-    /** 注册一个 SPI 调用拦截器 */
-    public synchronized <T extends EventListener> void bindSpiInterceptor(Class<T> spiType, Supplier<SpiInterceptor> spiInterceptorSupplier) {
+    /** 注册一个 SPI 仲裁 */
+    public synchronized <T extends EventListener> void bindSpiJudge(Class<T> spiType, Supplier<SpiJudge> spiSpiJudgeSupplier) {
         Objects.requireNonNull(spiType, "spiType is null.");
-        Objects.requireNonNull(spiListener, "spiInterceptorSupplier is null.");
-        this.spiChainListener.put(spiType, spiInterceptorSupplier);
+        Objects.requireNonNull(spiSpiJudgeSupplier, "spiSpiJudgeSupplier is null.");
+        this.spiSpiJudge.put(spiType, spiSpiJudgeSupplier);
     }
 
     /** 遍历所有 Listener */
     public void forEachListener(Consumer<Map.Entry<Class<?>, EventListener>> action) {
         Objects.requireNonNull(action);
-        for (Map.Entry<Class<?>, List<Supplier<EventListener>>> entryList : spiListener.entrySet()) {
+        for (Map.Entry<Class<?>, List<Supplier<EventListener>>> entryList : this.spiListener.entrySet()) {
             Class<?> listenerKey = entryList.getKey();
             for (Supplier<EventListener> entry : entryList.getValue()) {
                 action.accept(new MapEntry(listenerKey, entry.get()));

@@ -15,7 +15,7 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.*;
-import net.hasor.core.spi.SpiInterceptor;
+import net.hasor.core.spi.SpiJudge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,8 +110,8 @@ public class ApiBinderWrap implements ApiBinder {
     }
 
     @Override
-    public <T extends EventListener> void bindSpiInterceptor(Class<T> spiType, Supplier<SpiInterceptor> chainProcessorSupplier) {
-        this.apiBinder.bindSpiInterceptor(spiType, chainProcessorSupplier);
+    public <T extends EventListener> void bindSpiJudge(Class<T> spiType, Supplier<SpiJudge> spiJudgeSupplier) {
+        this.apiBinder.bindSpiJudge(spiType, spiJudgeSupplier);
     }
 
     public <T extends Scope> Supplier<T> bindScope(String scopeName, Supplier<T> scopeProvider) {

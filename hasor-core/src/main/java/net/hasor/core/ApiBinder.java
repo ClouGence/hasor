@@ -18,7 +18,7 @@ import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.AppContextAware;
-import net.hasor.core.spi.SpiInterceptor;
+import net.hasor.core.spi.SpiJudge;
 import net.hasor.utils.ExceptionUtils;
 
 import javax.inject.Singleton;
@@ -293,13 +293,13 @@ public interface ApiBinder {
     /** 添加SPI监听器 */
     public <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<T> listener);
 
-    /** 绑定SPI监听器处理器，一个SPI只能注册一个拦截器 */
-    public default <T extends EventListener> void bindSpiInterceptor(Class<T> spiType, SpiInterceptor spiInterceptorSupplier) {
-        this.bindSpiInterceptor(spiType, InstanceProvider.of(spiInterceptorSupplier));
+    /** 设置一个 SPI 仲裁，一个SPI只能注册一个仲裁 */
+    public default <T extends EventListener> void bindSpiJudge(Class<T> spiType, SpiJudge spiJudgeSupplier) {
+        this.bindSpiJudge(spiType, InstanceProvider.of(spiJudgeSupplier));
     }
 
-    /** 绑定SPI监听器处理器，一个SPI只能注册一个拦截器 */
-    public <T extends EventListener> void bindSpiInterceptor(Class<T> spiType, Supplier<SpiInterceptor> spiInterceptorSupplier);
+    /** 设置一个 SPI 仲裁，一个SPI只能注册一个仲裁 */
+    public <T extends EventListener> void bindSpiJudge(Class<T> spiType, Supplier<SpiJudge> spiJudgeSupplier);
 
     /**
      * 注册作用域。

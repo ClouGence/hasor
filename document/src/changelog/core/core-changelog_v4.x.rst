@@ -9,6 +9,7 @@ Hasor v4.1.4 (2020-05-?)
 **优化**
     - 改进 Dataway 在处理 GET 请求时，多个同名参数获取的问题。之前只能拿到数组形态，在于 POST 模式进行对比的时容易产生奇异造成认为是 Bug 的假象。
     - hasor-dataql-fx 项目中 ognl 内嵌到 jar包中，减少两个外部依赖 jar。
+    - SpiInterceptor 机制有些说不清，改为 SpiJudge（仲裁机制：SPI 仲裁：当同一个 SPI bind 了多个监听器时，仲裁可以决定哪些 SPI 会被调用）
 **修复**
     - Dateway 4.1.3 版本资源文件缺失问题.
 
