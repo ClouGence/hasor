@@ -21,14 +21,18 @@ import net.hasor.dataql.Finder;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.domain.DataModel;
+import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataql.domain.ObjectModel;
+import net.hasor.dataql.runtime.ThrowRuntimeException;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.LoggerUtils;
 import net.hasor.dataway.daos.ReleaseDetailQuery;
 import net.hasor.dataway.spi.ApiCompilerListener;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.ApiResultListener;
+import net.hasor.dataway.spi.PreExecuteListener;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.future.BasicFuture;
 import net.hasor.web.Invoker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +66,7 @@ public class ApiCallService {
     private          DataQL     executeDataQL;
 
     public Map<String, Object> doCall(Invoker invoker) {
-        DatawayUtils.resetLocalTime();
+        long resetLocalTime = DatawayUtils.resetLocalTime();
         LoggerUtils loggerUtils = LoggerUtils.create();
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         String httpMethod = httpRequest.getMethod().toUpperCase().trim();
@@ -90,28 +94,37 @@ public class ApiCallService {
             return DatawayUtils.exceptionToResult(e).getResult();
         }
         //
-        try {
-            // .准备参数
-            Map<String, Object> jsonParam;
-            if ("GET".equalsIgnoreCase(httpMethod)) {
-                jsonParam = new HashMap<>();
-                Enumeration<String> parameterNames = httpRequest.getParameterNames();
-                while (parameterNames.hasMoreElements()) {
-                    String paramName = parameterNames.nextElement();
-                    jsonParam.put(paramName + "Arrays", httpRequest.getParameterValues(paramName));
-                    jsonParam.put(paramName, httpRequest.getParameter(paramName));
-                }
+        // .准备参数
+        Map<String, Object> jsonParam;
+        if ("GET".equalsIgnoreCase(httpMethod)) {
+            jsonParam = new HashMap<>();
+            Enumeration<String> parameterNames = httpRequest.getParameterNames();
+            while (parameterNames.hasMoreElements()) {
+                String paramName = parameterNames.nextElement();
+                jsonParam.put(paramName + "Arrays", httpRequest.getParameterValues(paramName));
+                jsonParam.put(paramName, httpRequest.getParameter(paramName));
+            }
+        } else {
+            String jsonBody = invoker.getJsonBodyString();
+            if (StringUtils.isNotBlank(jsonBody)) {
+                jsonParam = JSON.parseObject(jsonBody);
             } else {
-                String jsonBody = invoker.getJsonBodyString();
-                if (StringUtils.isNotBlank(jsonBody)) {
-                    jsonParam = JSON.parseObject(jsonBody);
-                } else {
-                    jsonParam = new HashMap<>();
-                }
+                jsonParam = new HashMap<>();
             }
-            if (jsonParam != null) {
-                loggerUtils.addLog("paramRootKeys", jsonParam.keySet());
-            }
+        }
+        if (jsonParam != null) {
+            loggerUtils.addLog("paramRootKeys", jsonParam.keySet());
+        }
+        ApiInfo apiInfo = new ApiInfo() {{
+            setStartTime(resetLocalTime);
+            setApiID(apiID);
+            setReleaseID(releaseID);
+            setMethod(httpMethod);
+            setApiPath(requestURI);
+            setParameterMap(jsonParam);
+        }};
+        //
+        try {
             // .编译查询
             final Set<String> varNames = this.executeDataQL.getShareVarMap().keySet();
             final Finder finder = this.executeDataQL.getFinder();
@@ -122,31 +135,54 @@ public class ApiCallService {
                 compiler = ApiCompilerListener.DEFAULT.compiler(script, varNames, finder);
             }
             loggerUtils.addLog("compilerTime", DatawayUtils.currentLostTime());
+            //
             // .执行查询
-            QueryResult execute = this.executeDataQL.createQuery(compiler).execute(jsonParam);
+            BasicFuture<Object> newResult = new BasicFuture<>();
+            this.spiTrigger.callSpi(PreExecuteListener.class, listener -> {
+                listener.preExecute(apiInfo, newResult);
+            });
+            QueryResult execute = null;
+            if (newResult.isDone()) {
+                // 使用preExecute的结果
+                Object data = newResult.get();
+                if (data instanceof QueryResult) {
+                    execute = (QueryResult) data;
+                } else {
+                    execute = QueryResultInfo.of(           //
+                            0,                    // 状态码
+                            DomainHelper.convertTo(data),   // 结果
+                            DatawayUtils.currentLostTime()  // 耗时
+                    );
+                }
+            } else {
+                // 发起真正的调用
+                execute = this.executeDataQL.createQuery(compiler).execute(jsonParam);
+            }
             loggerUtils.addLog("executionTime", execute.executionTime());
             loggerUtils.addLog("lifeCycleTime", DatawayUtils.currentLostTime());
             loggerUtils.addLog("code", execute.getCode());
             logger.info("requestSuccess - " + loggerUtils.toJson());
             //
-            // .AfterApiCall
-            ApiInfo apiInfo = new ApiInfo() {{
-                setApiID(apiID);
-                setReleaseID(releaseID);
-                setMethod(httpMethod);
-                setApiPath(requestURI);
-                setParameterMap(jsonParam);
-            }};
+            // .callAfter
             DataModel data = execute.getData();
             Object resultData = this.spiTrigger.callResultSpi(ApiResultListener.class, listener -> {
-                return listener.afterCall(apiInfo, data);
+                return listener.callAfter(apiInfo, data);
             }, data);
             //
             // .返回值
             return DatawayUtils.queryResultToResultWithSpecialValue(execute, resultData).getResult();
         } catch (Exception e) {
+            Object value = null;
+            if (e instanceof ThrowRuntimeException) {
+                value = ((ThrowRuntimeException) e).getResult().unwrap();
+            } else {
+                value = e.getMessage();
+            }
             logger.error("requestFailed - " + loggerUtils.logException(e).toJson(), e);
-            return DatawayUtils.exceptionToResult(e).getResult();
+            value = this.spiTrigger.callResultSpi(ApiResultListener.class, listener -> {
+                return listener.callError(apiInfo, e);
+            }, value);
+            return DatawayUtils.exceptionToResultWithSpecialValue(e, value).getResult();
         }
     }
 }

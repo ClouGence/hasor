@@ -45,9 +45,11 @@ public class DatawayUtils {
 
     private static final ThreadLocal<Long> localRequestTime = ThreadLocal.withInitial(System::currentTimeMillis);
 
-    public static void resetLocalTime() {
+    public static long resetLocalTime() {
+        long currentTimeMillis = System.currentTimeMillis();
         localRequestTime.remove();
-        localRequestTime.set(System.currentTimeMillis());
+        localRequestTime.set(currentTimeMillis);
+        return currentTimeMillis;
     }
 
     public static long currentLostTime() {
@@ -76,13 +78,21 @@ public class DatawayUtils {
 
     public static Result<Map<String, Object>> exceptionToResult(Exception e) {
         if (e instanceof ThrowRuntimeException) {
+            return exceptionToResultWithSpecialValue(e, ((ThrowRuntimeException) e).getResult().unwrap());
+        } else {
+            return exceptionToResultWithSpecialValue(e, e.getMessage());
+        }
+    }
+
+    public static Result<Map<String, Object>> exceptionToResultWithSpecialValue(Exception e, Object specialValue) {
+        if (e instanceof ThrowRuntimeException) {
             return Result.of(new LinkedHashMap<String, Object>() {{
                 put("success", false);
                 put("message", e.getMessage());
                 put("code", ((ThrowRuntimeException) e).getThrowCode());
                 put("lifeCycleTime", currentLostTime());
                 put("executionTime", ((ThrowRuntimeException) e).getExecutionTime());
-                put("value", ((ThrowRuntimeException) e).getResult().unwrap());
+                put("value", specialValue);
             }});
         } else {
             return Result.of(new LinkedHashMap<String, Object>() {{
@@ -91,7 +101,7 @@ public class DatawayUtils {
                 put("code", 500);
                 put("lifeCycleTime", currentLostTime());
                 put("executionTime", -1);
-                put("value", e.getMessage());
+                put("value", specialValue);
             }});
         }
     }
