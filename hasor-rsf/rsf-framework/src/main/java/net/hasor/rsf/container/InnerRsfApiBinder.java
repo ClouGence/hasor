@@ -16,7 +16,7 @@
 package net.hasor.rsf.container;
 import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.core.spi.SpiInterceptor;
+import net.hasor.core.spi.SpiJudge;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfEnvironment;
@@ -151,8 +151,8 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
     }
 
     @Override
-    public <T extends EventListener> void bindSpiInterceptor(Class<T> spiType, Supplier<SpiInterceptor> spiInterceptorSupplier) {
-        this.apiBinder.bindSpiInterceptor(spiType, spiInterceptorSupplier);
+    public <T extends EventListener> void bindSpiJudge(Class<T> spiType, Supplier<SpiJudge> spiJudgeSupplier) {
+        this.apiBinder.bindSpiJudge(spiType, spiJudgeSupplier);
     }
 
     @Override

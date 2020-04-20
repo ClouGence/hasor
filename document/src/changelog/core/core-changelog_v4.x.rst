@@ -6,6 +6,8 @@ Hasor v4.1.4 (2020-05-?)
 **新增**
     - 接口可以跨域访问。
     - 支持局部化 Hint。
+    - Dataway 增加 ApiCompilerListener 扩展点，可以自定义 DataQL 编译过程。
+    - Dataway 增加 ApiResultListener 扩展点，可以对DataQL执行的结果进行二次处理。
 **优化**
     - 改进 Dataway 在处理 GET 请求时，多个同名参数获取的问题。之前只能拿到数组形态，在于 POST 模式进行对比的时容易产生奇异造成认为是 Bug 的假象。
     - hasor-dataql-fx 项目中 ognl 内嵌到 jar包中，减少两个外部依赖 jar。

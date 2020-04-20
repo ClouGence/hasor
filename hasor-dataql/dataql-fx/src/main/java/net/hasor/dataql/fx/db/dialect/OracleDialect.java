@@ -36,7 +36,7 @@ public class OracleDialect extends AbstractDialect {
         sqlBuilder.append(" ) TMP_PAGE)");
         sqlBuilder.append(" WHERE ROW_ID > ? AND ROW_ID <= ?");
         paramArrays.add(start);
-        paramArrays.add(limit);
+        paramArrays.add(start + limit);
         //
         buildSqlString = sqlBuilder.toString();
         return new BoundSql(buildSqlString, paramArrays.toArray());

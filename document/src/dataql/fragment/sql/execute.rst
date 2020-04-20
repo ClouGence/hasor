@@ -155,6 +155,7 @@ DataQL 的 SQL 执行器支持批量 ``Insert\Update\Delete\Select`` 操作，�
 
 打开分页查询之后执行 SQL 操作需要经过3个步骤。
 
+- 定义分页SQL
 - 创建分页查询对象
 - 设置分页信息
 - 执行分页查询
@@ -163,7 +164,7 @@ DataQL 的 SQL 执行器支持批量 ``Insert\Update\Delete\Select`` 操作，�
     :linenos:
 
     // SQL 执行器切换为分页模式
-    hint FRAGMENT_SQL_QUERY_BY_PAGE = true"
+    hint FRAGMENT_SQL_QUERY_BY_PAGE = true
     // 定义查询SQL
     var dataSet = @@sql() <%
         select * from category
@@ -186,7 +187,7 @@ DataQL 的 SQL 执行器支持批量 ``Insert\Update\Delete\Select`` 操作，�
     :linenos:
 
     // SQL 执行器切换为分页模式
-    hint FRAGMENT_SQL_QUERY_BY_PAGE = true"
+    hint FRAGMENT_SQL_QUERY_BY_PAGE = true
     // 定义查询SQL
     var dataSet = @@sql() <%
         select * from category

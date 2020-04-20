@@ -15,6 +15,7 @@
  */
 package net.hasor.dataway.config;
 import net.hasor.dataql.QueryResult;
+import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
 
 import java.util.LinkedHashMap;
@@ -54,13 +55,22 @@ public class DatawayUtils {
     }
 
     public static Result<Map<String, Object>> queryResultToResult(QueryResult queryResult) {
+        return queryResultToResultWithSpecialValue(queryResult, queryResult.getData());
+    }
+
+    public static Result<Map<String, Object>> queryResultToResultWithSpecialValue(QueryResult queryResult, Object specialValue) {
         return Result.of(new LinkedHashMap<String, Object>() {{
             put("success", true);
             put("message", "OK");
             put("code", queryResult.getCode());
             put("lifeCycleTime", currentLostTime());
             put("executionTime", queryResult.executionTime());
-            put("value", queryResult.getData().unwrap());
+            //
+            if (specialValue instanceof DataModel) {
+                put("value", ((DataModel) specialValue).unwrap());
+            } else {
+                put("value", specialValue);
+            }
         }});
     }
 
