@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.dataway.spi;
+import net.hasor.utils.future.BasicFuture;
+
 import java.util.EventListener;
-import java.util.concurrent.Future;
 
 /**
  * SPI 在接口执行之前触发。通过这个这个 SPI 可以拦截API调用，并做自己的处理。
@@ -31,5 +32,5 @@ public interface PreExecuteListener extends EventListener {
      * @param apiInfo API 请求信息。
      * @param future 可以提前响应结果。
      */
-    public void preExecute(ApiInfo apiInfo, Future<Object> future);
+    public void preExecute(ApiInfo apiInfo, BasicFuture<Object> future);
 }
