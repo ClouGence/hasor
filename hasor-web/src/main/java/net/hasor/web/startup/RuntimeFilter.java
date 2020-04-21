@@ -146,13 +146,13 @@ public class RuntimeFilter implements Filter {
         return result;
     }
 
-    /**在filter请求处理之前。*/
+    /** 在filter请求处理之前 */
     protected void beforeRequest(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
-        this.spiTrigger.callSpi(BeforeRequestListener.class, listener -> listener.doListener(appContext, httpReq, httpRes));
+        this.spiTrigger.notifySpiWithoutResult(BeforeRequestListener.class, listener -> listener.doListener(appContext, httpReq, httpRes));
     }
 
-    /**在filter请求处理之后。*/
+    /** 在filter请求处理之后 */
     protected void afterResponse(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes, Object result) {
-        this.spiTrigger.callSpi(AfterResponseListener.class, listener -> listener.doListener(appContext, httpReq, httpRes, result));
+        this.spiTrigger.notifySpiWithoutResult(AfterResponseListener.class, listener -> listener.doListener(appContext, httpReq, httpRes, result));
     }
 }

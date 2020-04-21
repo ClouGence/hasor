@@ -140,12 +140,16 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         logger.info("ServletContext Attribut is " + RuntimeListener.AppContextName);
         servletContextEvent.getServletContext().setAttribute(RuntimeListener.AppContextName, this.appContext.get());
         //
-        this.spiTrigger.callSpi(ServletContextListener.class, listener -> listener.contextInitialized(servletContextEvent));
+        this.spiTrigger.notifySpiWithoutResult(ServletContextListener.class, listener -> {
+            listener.contextInitialized(servletContextEvent);
+        });
     }
 
     @Override
     public final void contextDestroyed(final ServletContextEvent servletContextEvent) {
-        this.spiTrigger.callSpi(ServletContextListener.class, listener -> listener.contextDestroyed(servletContextEvent));
+        this.spiTrigger.notifySpiWithoutResult(ServletContextListener.class, listener -> {
+            listener.contextDestroyed(servletContextEvent);
+        });
         if (!this.contextIsOutsite) {
             this.appContext.get().shutdown();
             this.logger.info("shutdown.");
@@ -154,21 +158,29 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
 
     @Override
     public void sessionCreated(final HttpSessionEvent se) {
-        this.spiTrigger.callSpi(HttpSessionListener.class, listener -> listener.sessionCreated(se));
+        this.spiTrigger.notifySpiWithoutResult(HttpSessionListener.class, listener -> {
+            listener.sessionCreated(se);
+        });
     }
 
     @Override
     public void sessionDestroyed(final HttpSessionEvent se) {
-        this.spiTrigger.callSpi(HttpSessionListener.class, listener -> listener.sessionDestroyed(se));
+        this.spiTrigger.notifySpiWithoutResult(HttpSessionListener.class, listener -> {
+            listener.sessionDestroyed(se);
+        });
     }
 
     @Override
     public void requestDestroyed(ServletRequestEvent sre) {
-        this.spiTrigger.callSpi(ServletRequestListener.class, listener -> listener.requestDestroyed(sre));
+        this.spiTrigger.notifySpiWithoutResult(ServletRequestListener.class, listener -> {
+            listener.requestDestroyed(sre);
+        });
     }
 
     @Override
     public void requestInitialized(ServletRequestEvent sre) {
-        this.spiTrigger.callSpi(ServletRequestListener.class, listener -> listener.requestInitialized(sre));
+        this.spiTrigger.notifySpiWithoutResult(ServletRequestListener.class, listener -> {
+            listener.requestInitialized(sre);
+        });
     }
 }

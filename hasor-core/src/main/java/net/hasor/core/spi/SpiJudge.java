@@ -18,8 +18,9 @@ import java.util.EventListener;
 import java.util.List;
 
 /**
- * SPI 仲裁：当同一个 SPI bind 了多个 SpiListener 时，仲裁可以决定哪些 SPI 会被调用。
- * 带返回值的 SPI 调用在仲裁的帮助下可以决定，使用具体的哪个 SpiListener 返回值。
+ * SPI 仲裁：当同一个 SPI bind 了多个 SpiListener 就可以利用仲裁处理更多需求。
+ *  - notify 方式下，仲裁帮助决定哪些 SPI 可以被调用。同时可以决定那个 SPI 的返回值被最终采用。
+ *  - chain 方式下，仲裁帮助决定哪些 SPI 可以被调用，和 SPI 的调用顺序。
  * @version : 2020-04-19
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -29,12 +30,12 @@ public interface SpiJudge {
     };
 
     /** 调用仲裁 */
-    public default <T extends EventListener> boolean judgeSpiCall(T spiListener) {
-        return true;
+    public default <T extends EventListener> List<T> judgeSpi(List<T> spiList) {
+        return spiList;
     }
 
     /** 结果仲裁 */
-    public default <R> R judgeSpiResult(List<R> result, R defaultResult) {
+    public default <R> R judgeResult(List<R> result, R defaultResult) {
         return (result == null || result.isEmpty()) ? defaultResult : result.get(result.size() - 1);
     }
 }

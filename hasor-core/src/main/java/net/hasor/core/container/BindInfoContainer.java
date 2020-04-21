@@ -122,7 +122,7 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
         adapter.addObserver(this);
         adapter.setBindID(adapter.getBindID());
         // .触发 SPI
-        this.spiCallerContainer.callSpi(BindInfoProvisionListener.class, listener -> {
+        this.spiCallerContainer.notifySpiWithoutResult(BindInfoProvisionListener.class, listener -> {
             listener.newBindInfo(adapter, apiBinder);
         });
         return adapter;

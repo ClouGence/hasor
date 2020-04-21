@@ -20,6 +20,7 @@ import net.hasor.test.core.spi.TestSpi;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -104,7 +105,9 @@ public class SpiTest {
         });
         //
         SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
-        Object resultSpi = spiTrigger.callResultSpi(TestSpi.class, TestSpi::doSpi, defaultResult);
+        Object resultSpi = spiTrigger.notifySpi(TestSpi.class, (SpiCaller<TestSpi, Object>) (listener, lastResult) -> {
+            return listener.doSpi();
+        }, defaultResult);
         //
         assert call.size() == 2;
         assert call.contains(spiResultA);
@@ -117,7 +120,7 @@ public class SpiTest {
         //
         SpiJudge spiJudge = new SpiJudge() {
             @Override
-            public <R> R judgeSpiResult(List<R> result, R defaultResult) {
+            public <R> R judgeResult(List<R> result, R defaultResult) {
                 return result.get(0);
             }
         };
@@ -140,7 +143,9 @@ public class SpiTest {
         });
         //
         SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
-        Object resultSpi = spiTrigger.callResultSpi(TestSpi.class, TestSpi::doSpi, defaultResult);
+        Object resultSpi = spiTrigger.notifySpi(TestSpi.class, (SpiCaller<TestSpi, Object>) (listener, lastResult) -> {
+            return listener.doSpi();
+        }, defaultResult);
         //
         assert call.size() == 2;
         assert call.contains(spiResultA);
@@ -168,8 +173,12 @@ public class SpiTest {
         //
         AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.bindSpiJudge(TestSpi.class, new SpiJudge() {
-                public <T extends java.util.EventListener> boolean judgeSpiCall(T spiListener) {
-                    return spiListener == testSpiA;
+                public <T extends java.util.EventListener> List<T> judgeSpi(List<T> spiListener) {
+                    if (spiListener.contains(testSpiA)) {
+                        return (List<T>) Collections.singletonList(testSpiA);
+                    } else {
+                        return Collections.emptyList();
+                    }
                 }
             });
             apiBinder.bindSpiListener(TestSpi.class, testSpiA);
@@ -177,7 +186,9 @@ public class SpiTest {
         });
         //
         SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
-        Object resultSpi = spiTrigger.callResultSpi(TestSpi.class, TestSpi::doSpi, defaultResult);
+        Object resultSpi = spiTrigger.notifySpi(TestSpi.class, (SpiCaller<TestSpi, Object>) (listener, lastResult) -> {
+            return listener.doSpi();
+        }, defaultResult);
         //
         assert call.size() == 1;
         assert call.contains(spiResultA);

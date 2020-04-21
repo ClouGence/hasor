@@ -280,14 +280,13 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         if (ArrayUtils.isEmpty(scopeProvider)) {
             scopeProvider = this.scopeContainer.collectScope(targetType);
         }
-        Supplier<Scope>[] tmpScopeProvider = scopeProvider;
-        scopeProvider = this.spiCallerContainer.callResultSpi(CollectScopeListener.class, listener -> {
+        scopeProvider = this.spiCallerContainer.chainSpi(CollectScopeListener.class, (listener, lastResult) -> {
             if (bindInfo != null) {
-                return listener.collectScope(bindInfo, appContext, tmpScopeProvider);
+                return listener.collectScope(bindInfo, appContext, lastResult);
             } else {
-                return listener.collectScope(targetType, appContext, tmpScopeProvider);
+                return listener.collectScope(targetType, appContext, lastResult);
             }
-        }, tmpScopeProvider);
+        }, scopeProvider);
         //
         Scope[] scope = null;
         if (ArrayUtils.isNotEmpty(scopeProvider)) {
@@ -332,7 +331,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
                 doLife(targetObject, bindInfo, appContext);
                 //
                 T finalTargetObject = targetObject;
-                spiCallerContainer.callSpi(CreaterProvisionListener.class, listener -> {
+                spiCallerContainer.notifySpiWithoutResult(CreaterProvisionListener.class, listener -> {
                     listener.beanCreated(finalTargetObject, bindInfo);
                 });
                 return targetObject;

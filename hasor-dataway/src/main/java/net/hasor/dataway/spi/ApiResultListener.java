@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataway.spi;
-import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
 
 import java.util.EventListener;
@@ -26,7 +25,7 @@ import java.util.EventListener;
  */
 public interface ApiResultListener extends EventListener {
     /** 成功完成调用 */
-    public default Object callAfter(ApiInfo apiInfo, DataModel result) {
+    public default Object callAfter(ApiInfo apiInfo, Object result) {
         return result;
     }
 

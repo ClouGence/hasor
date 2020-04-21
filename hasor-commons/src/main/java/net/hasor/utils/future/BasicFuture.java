@@ -36,6 +36,12 @@ public class BasicFuture<T> implements Future<T>, Cancellable {
         this.callback = null;
     }
 
+    public BasicFuture(T value) {
+        this();
+        this.completed = true;
+        this.result = value;
+    }
+
     public BasicFuture(final FutureCallback<T> callback) {
         super();
         this.callback = callback;

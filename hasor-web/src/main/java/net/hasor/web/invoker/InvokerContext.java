@@ -59,7 +59,7 @@ public class InvokerContext {
         // .discover
         SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
         for (Mapping mapping : invokeArray) {
-            spiTrigger.callSpi(MappingDiscoverer.class, listener -> {
+            spiTrigger.notifySpiWithoutResult(MappingDiscoverer.class, listener -> {
                 listener.discover(mapping);
             });
         }

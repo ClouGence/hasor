@@ -87,7 +87,7 @@ public class ScopeContainer extends AbstractContainer {
             oldScope = scopeProvider;
         }
         // .触发 SPI
-        this.spiContainer.callSpi(ScopeProvisionListener.class, listener -> {
+        this.spiContainer.notifySpiWithoutResult(ScopeProvisionListener.class, listener -> {
             listener.newScope(scopeName, scopeProvider);
         });
         return (Supplier<T>) oldScope;

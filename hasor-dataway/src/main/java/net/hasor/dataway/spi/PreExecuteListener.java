@@ -18,13 +18,16 @@ import java.util.EventListener;
 import java.util.concurrent.Future;
 
 /**
- * 在接口执行之前，可以通过这个 SPI 实现接口缓存。
+ * SPI 在接口执行之前触发。通过这个这个 SPI 可以拦截API调用，并做自己的处理。
+ *  - 例如：接口缓存、接口权限。
+ *  - 当 Future 被设置后，后面的 PreExecuteListener 会自动失效（无需仲裁参与）
+ *  - 当 Future 被设置后，不在会发起真正调用
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-19
  */
 public interface PreExecuteListener extends EventListener {
     /**
-     * 当接口被正式调用之前触发。
+     * 在接口执行之前，可以通过这个 SPI 实现接口缓存
      * @param apiInfo API 请求信息。
      * @param future 可以提前响应结果。
      */

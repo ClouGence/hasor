@@ -15,12 +15,12 @@
  */
 package net.hasor.dataway.service;
 import com.alibaba.fastjson.JSON;
+import net.hasor.core.provider.SingleProvider;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.compiler.qil.QIL;
-import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
@@ -46,6 +46,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
 
@@ -71,6 +72,7 @@ public class ApiCallService {
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         String httpMethod = httpRequest.getMethod().toUpperCase().trim();
         String requestURI = httpRequest.getRequestURI();
+        //
         loggerUtils.addLog("apiMethod", httpMethod);
         loggerUtils.addLog("apiPath", requestURI);
         //
@@ -128,18 +130,28 @@ public class ApiCallService {
             // .编译查询
             final Set<String> varNames = this.executeDataQL.getShareVarMap().keySet();
             final Finder finder = this.executeDataQL.getFinder();
-            QIL compiler = this.spiTrigger.callResultSpi(ApiCompilerListener.class, listener -> {
+            QIL compiler = this.spiTrigger.chainSpi(ApiCompilerListener.class, (listener, lastResult) -> {
                 return listener.compiler(script, varNames, finder);
-            }, null);
+            });
             if (compiler == null) {
                 compiler = ApiCompilerListener.DEFAULT.compiler(script, varNames, finder);
             }
             loggerUtils.addLog("compilerTime", DatawayUtils.currentLostTime());
             //
             // .执行查询
+            //  - 1.首先将 API 调用封装为 单例的 Supplier
+            //  - 2.准备一个 Future 然后，触发 PreExecuteListener SPI。
+            //  - 3.如果 Future 被设置那么获取设置的值，否则就用之前封装好的 Supplier 中取值
+            QIL finalCompiler = compiler;
+            Supplier<QueryResult> queryResult = SingleProvider.of(() -> {
+                return this.executeDataQL.createQuery(finalCompiler).execute(jsonParam);
+            });
             BasicFuture<Object> newResult = new BasicFuture<>();
-            this.spiTrigger.callSpi(PreExecuteListener.class, listener -> {
-                listener.preExecute(apiInfo, newResult);
+            this.spiTrigger.chainSpi(PreExecuteListener.class, (listener, lastResult) -> {
+                if (!newResult.isDone()) {
+                    listener.preExecute(apiInfo, newResult);
+                }
+                return lastResult;
             });
             QueryResult execute = null;
             if (newResult.isDone()) {
@@ -155,8 +167,7 @@ public class ApiCallService {
                     );
                 }
             } else {
-                // 发起真正的调用
-                execute = this.executeDataQL.createQuery(compiler).execute(jsonParam);
+                execute = queryResult.get(); // 发起真正的调用
             }
             loggerUtils.addLog("executionTime", execute.executionTime());
             loggerUtils.addLog("lifeCycleTime", DatawayUtils.currentLostTime());
@@ -164,10 +175,9 @@ public class ApiCallService {
             logger.info("requestSuccess - " + loggerUtils.toJson());
             //
             // .callAfter
-            DataModel data = execute.getData();
-            Object resultData = this.spiTrigger.callResultSpi(ApiResultListener.class, listener -> {
-                return listener.callAfter(apiInfo, data);
-            }, data);
+            Object resultData = this.spiTrigger.chainSpi(ApiResultListener.class, (listener, lastResult) -> {
+                return listener.callAfter(apiInfo, lastResult);
+            }, execute.getData().unwrap());
             //
             // .返回值
             return DatawayUtils.queryResultToResultWithSpecialValue(execute, resultData).getResult();
@@ -179,7 +189,7 @@ public class ApiCallService {
                 value = e.getMessage();
             }
             logger.error("requestFailed - " + loggerUtils.logException(e).toJson(), e);
-            value = this.spiTrigger.callResultSpi(ApiResultListener.class, listener -> {
+            value = this.spiTrigger.chainSpi(ApiResultListener.class, (listener, lastResult) -> {
                 return listener.callError(apiInfo, e);
             }, value);
             return DatawayUtils.exceptionToResultWithSpecialValue(e, value).getResult();

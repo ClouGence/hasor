@@ -95,12 +95,12 @@ public class SpiTest extends AbstractTest {
         ServletContextEvent event_2 = PowerMockito.mock(ServletContextEvent.class);
         ServletRequestEvent event_3 = PowerMockito.mock(ServletRequestEvent.class);
         //
-        spiTrigger.callSpi(HttpSessionListener.class, listener -> listener.sessionCreated(event_1));
-        spiTrigger.callSpi(HttpSessionListener.class, listener -> listener.sessionDestroyed(event_1));
-        spiTrigger.callSpi(ServletContextListener.class, listener -> listener.contextInitialized(event_2));
-        spiTrigger.callSpi(ServletContextListener.class, listener -> listener.contextDestroyed(event_2));
-        spiTrigger.callSpi(ServletRequestListener.class, listener -> listener.requestInitialized(event_3));
-        spiTrigger.callSpi(ServletRequestListener.class, listener -> listener.requestDestroyed(event_3));
+        spiTrigger.notifySpiWithoutResult(HttpSessionListener.class, listener -> listener.sessionCreated(event_1));
+        spiTrigger.notifySpiWithoutResult(HttpSessionListener.class, listener -> listener.sessionDestroyed(event_1));
+        spiTrigger.notifySpiWithoutResult(ServletContextListener.class, listener -> listener.contextInitialized(event_2));
+        spiTrigger.notifySpiWithoutResult(ServletContextListener.class, listener -> listener.contextDestroyed(event_2));
+        spiTrigger.notifySpiWithoutResult(ServletRequestListener.class, listener -> listener.requestInitialized(event_3));
+        spiTrigger.notifySpiWithoutResult(ServletRequestListener.class, listener -> listener.requestDestroyed(event_3));
         //
         assert sessionListener1.isSessionCreated();
         assert sessionListener2.isSessionCreated();

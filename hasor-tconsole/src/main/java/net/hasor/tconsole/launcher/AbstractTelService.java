@@ -88,7 +88,7 @@ public abstract class AbstractTelService extends AbstractContainer implements Te
     protected void doInitialize() {
         // .触发SPI
         logger.info("tConsole -> trigger TelStartContextListener.onStart");
-        this.spiTrigger.callSpi(TelStartContextListener.class, listener -> {
+        this.spiTrigger.notifySpiWithoutResult(TelStartContextListener.class, listener -> {
             listener.onStart(AbstractTelService.this);
         });
         //
@@ -118,7 +118,7 @@ public abstract class AbstractTelService extends AbstractContainer implements Te
         this.telExecutorMap.clear();
         // .触发SPI
         logger.info("tConsole -> trigger TelStopContextListener.onStop");
-        this.spiTrigger.callSpi(TelStopContextListener.class, listener -> {
+        this.spiTrigger.notifySpiWithoutResult(TelStopContextListener.class, listener -> {
             listener.onStop(AbstractTelService.this);
         });
     }

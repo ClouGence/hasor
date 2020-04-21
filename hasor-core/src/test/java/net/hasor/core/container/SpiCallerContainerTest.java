@@ -74,7 +74,7 @@ public class SpiCallerContainerTest {
         assert receive.size() == 0;
         //
         Supplier<? extends Scope> mockScope = PowerMockito.mock(Supplier.class);
-        spiCallerContainer.callSpi(ScopeProvisionListener.class, listener -> {
+        spiCallerContainer.notifySpiWithoutResult(ScopeProvisionListener.class, listener -> {
             listener.newScope("xxxx", mockScope);
         });
         //

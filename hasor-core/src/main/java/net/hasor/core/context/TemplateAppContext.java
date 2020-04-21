@@ -224,35 +224,35 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
 
     /**初始化过程完成.*/
     protected void doInitializeCompleted() {
-        getContainer().getSpiContainer().callSpi(ContextInitializeListener.class, listener -> {
+        getContainer().getSpiContainer().notifySpiWithoutResult(ContextInitializeListener.class, listener -> {
             listener.doInitializeCompleted(TemplateAppContext.this);
         });
     }
 
     /**开始进入容器启动过程.*/
     protected void doStart() {
-        getContainer().getSpiContainer().callSpi(ContextStartListener.class, listener -> {
+        getContainer().getSpiContainer().notifySpiWithoutResult(ContextStartListener.class, listener -> {
             listener.doStart(TemplateAppContext.this);
         });
     }
 
     /**容器启动完成。*/
     protected void doStartCompleted() {
-        getContainer().getSpiContainer().callSpi(ContextStartListener.class, listener -> {
+        getContainer().getSpiContainer().notifySpiWithoutResult(ContextStartListener.class, listener -> {
             listener.doStartCompleted(TemplateAppContext.this);
         });
     }
 
     /**开始进入容器停止.*/
     protected void doShutdown() {
-        getContainer().getSpiContainer().callSpi(ContextShutdownListener.class, listener -> {
+        getContainer().getSpiContainer().notifySpiWithoutResult(ContextShutdownListener.class, listener -> {
             listener.doShutdown(TemplateAppContext.this);
         });
     }
 
     /**容器启动停止。*/
     protected void doShutdownCompleted() {
-        getContainer().getSpiContainer().callSpi(ContextShutdownListener.class, listener -> {
+        getContainer().getSpiContainer().notifySpiWithoutResult(ContextShutdownListener.class, listener -> {
             listener.doShutdownCompleted(TemplateAppContext.this);
         });
     }

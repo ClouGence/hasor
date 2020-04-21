@@ -129,7 +129,7 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
         //
         // .创建Session
         logger.info("tConsole -> trigger TelSessionListener.sessionCreated");
-        this.getSpiTrigger().callSpi(TelSessionCreateListener.class, listener -> {
+        this.getSpiTrigger().notifySpiWithoutResult(TelSessionCreateListener.class, listener -> {
             listener.sessionCreated(this.telSession);
         });
     }
@@ -138,7 +138,7 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
     protected void doClose() {
         // .销毁Session
         logger.info("tConsole -> trigger TelSessionDestroyListener.sessionDestroyed");
-        this.getSpiTrigger().callSpi(TelSessionDestroyListener.class, listener -> {
+        this.getSpiTrigger().notifySpiWithoutResult(TelSessionDestroyListener.class, listener -> {
             listener.sessionDestroyed(this.telSession);
         });
         super.doClose();

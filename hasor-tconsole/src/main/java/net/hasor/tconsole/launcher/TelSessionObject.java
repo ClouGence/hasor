@@ -139,12 +139,12 @@ public abstract class TelSessionObject extends AttributeObject implements TelSes
         //
         // .执行命令
         try {
-            this.telContext.getSpiTrigger().callSpi(TelBeforeExecutorListener.class, listener -> {
+            this.telContext.getSpiTrigger().notifySpiWithoutResult(TelBeforeExecutorListener.class, listener -> {
                 listener.beforeExecCommand(this.curentCommand);
             });
             this.execCommand(this.curentCommand);
         } finally {
-            this.telContext.getSpiTrigger().callSpi(TelAfterExecutorListener.class, listener -> {
+            this.telContext.getSpiTrigger().notifySpiWithoutResult(TelAfterExecutorListener.class, listener -> {
                 listener.afterExecCommand(this.curentCommand);
             });
         }

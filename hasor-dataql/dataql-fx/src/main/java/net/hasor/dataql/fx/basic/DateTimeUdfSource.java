@@ -76,6 +76,34 @@ public class DateTimeUdfSource implements UdfSourceAssembly {
         return date.get(Calendar.SECOND);
     }
 
+    /** 这个日期在这一年中是第几天，起始数为：1 */
+    public static int dayOfYear(long time) {
+        Calendar date = Calendar.getInstance();
+        date.setTime(new Date(time));
+        return date.get(Calendar.DAY_OF_YEAR);
+    }
+
+    /** 这个日期在这一月中是第几天，起始数为：1 */
+    public static int dayOfMonth(long time) {
+        Calendar date = Calendar.getInstance();
+        date.setTime(new Date(time));
+        return date.get(Calendar.DAY_OF_MONTH);
+    }
+
+    /** 这个日期在这一周中是第几天。*/
+    public static int dayOfWeek(long time) {
+        Calendar date = Calendar.getInstance();
+        date.setTime(new Date(time));
+        return date.get(Calendar.DAY_OF_WEEK);
+    }
+
+    /** 这个日期所在的周月中是第几周。*/
+    public static int weekOfMonth(long time) {
+        Calendar date = Calendar.getInstance();
+        date.setTime(new Date(time));
+        return date.get(Calendar.WEEK_OF_MONTH);
+    }
+
     /** 格式化指定时间 */
     public static String format(long time, String pattern) {
         return new SimpleDateFormat(pattern).format(new Date(time));

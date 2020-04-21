@@ -97,7 +97,7 @@ class TelNettyHandler extends SimpleChannelInboundHandler<String> {
         //
         // .创建Session
         logger.info("tConsole -> trigger TelSessionListener.sessionCreated");
-        this.telContext.getSpiTrigger().callSpi(TelSessionCreateListener.class, listener -> {
+        this.telContext.getSpiTrigger().notifySpiWithoutResult(TelSessionCreateListener.class, listener -> {
             listener.sessionCreated(this.telSession);
         });
     }
@@ -156,7 +156,7 @@ class TelNettyHandler extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         logger.info("tConsole -> trigger TelSessionDestroyListener.sessionDestroyed");
-        this.telContext.getSpiTrigger().callSpi(TelSessionDestroyListener.class, listener -> {
+        this.telContext.getSpiTrigger().notifySpiWithoutResult(TelSessionDestroyListener.class, listener -> {
             listener.sessionDestroyed(this.telSession); // .销毁Session
         });
     }
