@@ -45,7 +45,7 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller 
     }
 
     /** 调用目标 */
-    public Future<Object> invoke(final FilterChain chain) {
+    public Future<Object> invoke(FilterChain chain) {
         Invoker invoker = this.invokerSupplier.get();
         Mapping ownerMapping = invoker.ownerMapping();
         HttpServletRequest httpRequest = invoker.getHttpRequest();

@@ -28,7 +28,10 @@ import java.util.Properties;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractEnvironmentAware {
+    protected Environment environment;
+
     public Properties setupEnvironment(Environment environment) {
+        this.environment = environment;
         Properties envProperties = new Properties();
         Iterator<PropertySource<?>> propertySourceIterator = ((StandardEnvironment) environment).getPropertySources().iterator();
         while (propertySourceIterator.hasNext()) {
