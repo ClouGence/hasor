@@ -32,7 +32,7 @@ public interface ApiCompilerListener extends EventListener {
     public static final ApiCompilerListener DEFAULT = new ApiCompilerListener() {
     };
 
-    public default QIL compiler(String query, Set<String> varNames, Finder finder) throws IOException {
+    public default QIL compiler(ApiInfo apiInfo, String query, Set<String> varNames, Finder finder) throws IOException {
         QueryModel queryModel = QueryHelper.queryParser(query);
         return QueryHelper.queryCompiler(queryModel, varNames, finder);
     }

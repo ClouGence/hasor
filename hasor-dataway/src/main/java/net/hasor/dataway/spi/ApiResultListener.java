@@ -25,7 +25,7 @@ import java.util.EventListener;
  */
 public interface ApiResultListener extends EventListener {
     /** 成功完成调用 */
-    public default Object callAfter(ApiInfo apiInfo, Object result) {
+    public default Object callAfter(ApiInfo apiInfo, boolean fromPre, Object result) {
         return result;
     }
 

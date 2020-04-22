@@ -131,10 +131,10 @@ public class ApiCallService {
             final Set<String> varNames = this.executeDataQL.getShareVarMap().keySet();
             final Finder finder = this.executeDataQL.getFinder();
             QIL compiler = this.spiTrigger.chainSpi(ApiCompilerListener.class, (listener, lastResult) -> {
-                return listener.compiler(script, varNames, finder);
+                return listener.compiler(apiInfo, script, varNames, finder);
             });
             if (compiler == null) {
-                compiler = ApiCompilerListener.DEFAULT.compiler(script, varNames, finder);
+                compiler = ApiCompilerListener.DEFAULT.compiler(apiInfo, script, varNames, finder);
             }
             loggerUtils.addLog("compilerTime", DatawayUtils.currentLostTime());
             //
@@ -175,9 +175,10 @@ public class ApiCallService {
             logger.info("requestSuccess - " + loggerUtils.toJson());
             //
             // .callAfter
-            Object resultData = this.spiTrigger.chainSpi(ApiResultListener.class, (listener, lastResult) -> {
-                return listener.callAfter(apiInfo, lastResult);
-            }, execute.getData().unwrap());
+            Object resultData = execute.getData();
+            resultData = this.spiTrigger.chainSpi(ApiResultListener.class, (listener, lastResult) -> {
+                return listener.callAfter(apiInfo, newResult.isDone(), lastResult);
+            }, resultData);
             //
             // .返回值
             return DatawayUtils.queryResultToResultWithSpecialValue(execute, resultData).getResult();
