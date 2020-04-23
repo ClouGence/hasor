@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public interface ParseParameterChainSpi extends EventListener {
     /**
-     * 执行SPI
+     * 执行SPI，改写请求参数。将改写之后的参数 作为返回值返回即可。
      * @param perform 是否为 UI 页面中发起的
      * @param apiInfo api信息
      * @param invoker Invoker对象

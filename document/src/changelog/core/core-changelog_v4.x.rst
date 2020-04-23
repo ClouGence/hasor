@@ -5,17 +5,19 @@ Hasor v4.1.4 (2020-05-?)
 ------------------------------------
 **新增**
     - 接口可以跨域访问。
-    - 支持局部化 Hint。
-    - Dataway 增加 ApiCompilerListener 扩展点，可以自定义 DataQL 编译过程。
-    - Dataway 增加 PreExecuteListener 扩展点，可以在 DataQL 执行之前进行干预。配合ApiResultListener 可以实现缓存和权限。
-    - Dataway 增加 ApiResultListener 扩展点，可以对DataQL执行的结果进行二次处理。
+    - Dataway 增加 CompilerSpiListener 扩展点，可以自定义 DataQL 编译过程。
+    - Dataway 增加 ParseParameterChainSpi 扩展点，可以在 DataQL 执行之前对请求参数进行干预和改写。
+    - Dataway 增加 PreExecuteChainSpi 扩展点，可以在 DataQL 执行之前进行干预。配合 ResultProcessChainSpi 可以实现缓存和权限。
+    - Dataway 增加 ResultProcessChainSpi 扩展点，可以对DataQL执行的结果进行二次处理。
     - hasor-spring 做整合的时，Hasor-web可以工作在 Filter模式下也可以工作在 SpringWebMVC 拦截器模式下
 **优化**
     - 改进 Dataway 在处理 GET 请求时，多个同名参数获取的问题。之前只能拿到数组形态，在于 POST 模式进行对比的时容易产生奇异造成认为是 Bug 的假象。
     - hasor-dataql-fx 项目中 ognl 内嵌到 jar包中，减少两个外部依赖 jar。
     - SpiInterceptor 机制有些说不清，改为 SpiJudge（仲裁机制：SPI 仲裁：当同一个 SPI bind 了多个监听器时，仲裁可以决定哪些 SPI 会被调用）
 **修复**
-    - Dateway 4.1.3 版本资源文件缺失问题。
+    - Dateway 4.1.3 版本资源文件缺失问题。`issue <https://gitee.com/zycgit/hasor/issues/I1EM2V>`_
+    - Dataway 当关闭 UI 功能之后接口调用报 NPE 问题。Bug 原因是 Dataway 内置 DataQL 的环境是一个隔离环境，隔离环境的初始化是在 UI 之后。
+    - Dataway 修复 spring boot context_path 不支持的问题。`issue <https://gitee.com/zycgit/hasor/issues/I1FD95>`_
 
 Hasor v4.1.3 (2020-04-13)
 ------------------------------------
