@@ -34,8 +34,8 @@ import java.util.stream.Stream;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SpiCallerContainer extends AbstractContainer implements SpiTrigger {
-    private ConcurrentHashMap<Class<?>, List<Supplier<EventListener>>> spiListener = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<Class<?>, Supplier<SpiJudge>>            spiSpiJudge = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Class<?>, List<Supplier<EventListener>>> spiListener = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Class<?>, Supplier<SpiJudge>>            spiSpiJudge = new ConcurrentHashMap<>();
 
     @Override
     public <R, T extends EventListener> R notifySpi(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult) {
@@ -68,7 +68,7 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
         SpiJudge spiJudge = SpiJudge.DEFAULT;
         if (this.spiSpiJudge.containsKey(spiType)) {
             spiJudge = this.spiSpiJudge.get(spiType).get(); // 有仲裁，但是仲裁不能为空
-            spiJudge = Objects.requireNonNull(spiJudge, "spi '" + spiType.getName() + "' SpiJudge is null.");
+            Objects.requireNonNull(spiJudge, "spi '" + spiType.getName() + "' SpiJudge is null.");
         }
         List<EventListener> collect = listeners.stream().map(Supplier::get).collect(Collectors.toList());
         collect = spiJudge.judgeSpi(collect);
@@ -141,9 +141,9 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
     }
 
     /** A single entry in the map. */
-    private final class MapEntry implements Map.Entry<Class<?>, EventListener> {
-        private Class<?>      listenerKey;
-        private EventListener listenerEntry;
+    private static final class MapEntry implements Map.Entry<Class<?>, EventListener> {
+        private final Class<?>      listenerKey;
+        private final EventListener listenerEntry;
 
         public MapEntry(Class<?> listenerKey, EventListener listenerEntry) {
             this.listenerKey = listenerKey;

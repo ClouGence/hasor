@@ -29,6 +29,8 @@ import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerConfig;
 import net.hasor.web.InvokerFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -49,14 +51,15 @@ import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
  * @version : 2020-03-20
  */
 class InterfaceApiFilter implements InvokerFilter {
+    protected static Logger         logger = LoggerFactory.getLogger(InterfaceApiFilter.class);
     @Inject
     @Named(ISOLATION_CONTEXT)
-    private DataQL         dataQL;
+    private          DataQL         dataQL;
     @Inject
-    private ApiCallService callService;
+    private          ApiCallService callService;
     @Inject
-    private SpiTrigger     spiTrigger;
-    private String         apiBaseUri;
+    private          SpiTrigger     spiTrigger;
+    private          String         apiBaseUri;
 
     public InterfaceApiFilter(String apiBaseUri) {
         this.apiBaseUri = apiBaseUri;
@@ -98,6 +101,7 @@ class InterfaceApiFilter implements InvokerFilter {
             apiInfo.setApiPath(requestURI);
             script = dataModel.getValue("script").asString();
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             Map<String, Object> result = DatawayUtils.exceptionToResult(e).getResult();
             return responseData(mimeType, httpResponse, result);
         }
@@ -130,6 +134,7 @@ class InterfaceApiFilter implements InvokerFilter {
             Map<String, Object> objectMap = this.callService.doCall(apiInfo, script, jsonParam);
             return responseData(mimeType, httpResponse, objectMap);
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             Map<String, Object> result = DatawayUtils.exceptionToResult(e).getResult();
             return responseData(mimeType, httpResponse, result);
         }

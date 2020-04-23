@@ -60,7 +60,7 @@ public class InvocationHandlerTest extends AbstractBinderDataTest {
         }
     }
 
-    @Test
+    //    @Test
     public void binderTest() throws Throwable {
         PowerMockito.mockStatic(HasorUtils.class);
         ArrayList<Object> ref1 = new ArrayList<>();

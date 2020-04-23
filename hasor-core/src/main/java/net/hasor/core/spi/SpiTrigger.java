@@ -33,7 +33,7 @@ public interface SpiTrigger {
      * @param spiType SPI 接口类型
      * @param spiCaller spiCaller
      */
-    public default <R, T extends EventListener> void notifySpiWithoutResult(Class<T> spiType, SpiCallerWithoutResult<T> spiCaller) {
+    public default <T extends EventListener> void notifySpiWithoutResult(Class<T> spiType, SpiCallerWithoutResult<T> spiCaller) {
         notifySpi(spiType, spiCaller, null);
     }
 
