@@ -37,7 +37,8 @@ import java.sql.SQLException;
  */
 public class DatawayModule implements WebModule {
     protected static    Logger  logger            = LoggerFactory.getLogger(DatawayModule.class);
-    public static final String  ISOLATION_CONTEXT = "net.hasor.dataway.config.DatawayModule";
+    public static final String  ISOLATION_CONTEXT = DatawayModule.class.getName();
+    private             boolean datawayApi;
     private             boolean datawayAdmin;
 
     @Override
@@ -45,9 +46,9 @@ public class DatawayModule implements WebModule {
         //
         // .是否启用 Dataway
         Environment environment = apiBinder.getEnvironment();
-        boolean datawayApi = Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY"));
+        this.datawayApi = Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY"));
         this.datawayAdmin = Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY_ADMIN"));
-        if (!datawayApi) {
+        if (!this.datawayApi) {
             logger.info("dataway is disable.");
             return;
         }
@@ -60,6 +61,14 @@ public class DatawayModule implements WebModule {
         logger.info("dataway api workAt " + apiBaseUri);
         environment.addVariable("HASOR_DATAQL_DATAWAY_API_URL", apiBaseUri);
         apiBinder.filter(fixUrl(apiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceApiFilter(apiBaseUri));
+        //
+        // .Finder,实现引用其它定义的 DataQL
+        QueryApiBinder defaultContext = apiBinder.tryCast(QueryApiBinder.class);
+        defaultContext.bindFinder(apiBinder.getProvider(DatawayFinder.class));
+        // .Dataway 自身使用的隔离环境
+        logger.info("dataway self isolation ->" + ISOLATION_CONTEXT);
+        QueryApiBinder isolation = defaultContext.isolation(ISOLATION_CONTEXT);
+        isolation.bindFragment("sql", SqlFragment.class);
         //
         // .Dataway 后台管理界面
         if (!this.datawayAdmin) {
@@ -95,18 +104,11 @@ public class DatawayModule implements WebModule {
             apiBinder.mappingTo(fixUrl(uiBaseUri + "/" + toUrl.value())).with(aClass);
         }
         apiBinder.filter(fixUrl(uiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceUiFilter(apiBaseUri, uiBaseUri));
-        //
-        // .Finder,实现引用其它定义的 DataQL
-        QueryApiBinder defaultContext = apiBinder.tryCast(QueryApiBinder.class);
-        defaultContext.bindFinder(apiBinder.getProvider(DatawayFinder.class));
-        // .Dataway 自身使用的隔离环境
-        QueryApiBinder isolation = defaultContext.isolation(ISOLATION_CONTEXT);
-        isolation.bindFragment("inner_dataway_sql", SqlFragment.class);
     }
 
     @Override
     public void onStart(AppContext appContext) throws SQLException {
-        if (!this.datawayAdmin) {
+        if (!this.datawayApi) {
             return;
         }
         JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);

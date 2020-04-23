@@ -1,7 +1,7 @@
 import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 
 var queryMap = {
-    "default"   : @@inner_dataway_sql(apiId)<% select * from interface_info where api_id= #{apiId}; %>
+    "default"   : @@sql(apiId)<% select * from interface_info where api_id= #{apiId}; %>
 };
 
 return queryMap[dbMapping](${apiId}) => {

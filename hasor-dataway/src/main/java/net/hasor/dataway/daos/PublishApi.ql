@@ -1,5 +1,5 @@
 var copyDataMap = {
-    "default"   : @@inner_dataway_sql(apiId,newScript)<%
+    "default"   : @@sql(apiId,newScript)<%
         insert into interface_release (
             pub_api_id, pub_method, pub_path,   pub_status,
             pub_type,   pub_script, pub_schema, pub_sample,
@@ -14,7 +14,7 @@ var copyDataMap = {
 };
 
 var updatePublishMap = {
-    "default"   : @@inner_dataway_sql(apiId)<% update interface_info set api_status = 1, api_gmt_time = now() where api_id = #{apiId} %>
+    "default"   : @@sql(apiId)<% update interface_info set api_status = 1, api_gmt_time = now() where api_id = #{apiId} %>
 };
 
 var res = copyDataMap[dbMapping](${apiId},${newScript});

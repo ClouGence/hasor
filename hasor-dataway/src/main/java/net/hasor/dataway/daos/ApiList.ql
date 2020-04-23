@@ -1,5 +1,5 @@
 var queryMap = {
-    "default"   : @@inner_dataway_sql()<% select * from interface_info order by api_create_time asc; %>
+    "default"   : @@sql()<% select * from interface_info order by api_create_time asc; %>
 };
 
 return queryMap[dbMapping]() => [

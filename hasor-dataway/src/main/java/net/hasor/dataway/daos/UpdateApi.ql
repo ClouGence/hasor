@@ -1,7 +1,7 @@
 import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 
 var updateMap = {
-    "default"   : @@inner_dataway_sql(data, apiSample)<%
+    "default"   : @@sql(data, apiSample)<%
         update interface_info set
             api_status   = #{data.newStatus},
             api_comment  = #{data.comment},
