@@ -42,6 +42,7 @@ import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
 
@@ -68,6 +69,7 @@ class InterfaceApiFilter implements InvokerFilter {
     @Override
     public void init(InvokerConfig config) {
         config.getAppContext().justInject(this);
+        Objects.requireNonNull(this.dataQL, "dataQL init failed");
     }
 
     @Override

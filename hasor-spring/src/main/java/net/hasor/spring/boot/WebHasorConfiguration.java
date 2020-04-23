@@ -88,9 +88,10 @@ public class WebHasorConfiguration extends AbstractTypeSupplierTools//
     @ConditionalOnWebApplication
     @ConditionalOnClass(name = "net.hasor.web.startup.RuntimeFilter")
     public FilterRegistrationBean<?> hasorRuntimeFilter() {
+        Objects.requireNonNull(this.appContext, "AppContext is not inject.");
         Filter runtimeFilter = null;
         if (this.filterWorkAt == WorkAt.Filter) {
-            runtimeFilter = new RuntimeFilter();    // 过滤器模式
+            runtimeFilter = new RuntimeFilter(this.appContext);    // 过滤器模式
         } else {
             runtimeFilter = new EmptyFilter();      // 拦截器模式
         }
@@ -106,6 +107,7 @@ public class WebHasorConfiguration extends AbstractTypeSupplierTools//
     /** 拦截器模式下，添加Spring 拦截器 */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        Objects.requireNonNull(this.appContext, "AppContext is not inject.");
         if (this.filterWorkAt != WorkAt.Interceptor) {
             return;
         }
