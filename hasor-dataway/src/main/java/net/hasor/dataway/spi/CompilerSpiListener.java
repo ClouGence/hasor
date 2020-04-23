@@ -28,8 +28,8 @@ import java.util.Set;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-19
  */
-public interface ApiCompilerListener extends EventListener {
-    public static final ApiCompilerListener DEFAULT = new ApiCompilerListener() {
+public interface CompilerSpiListener extends EventListener {
+    public static final CompilerSpiListener DEFAULT = new CompilerSpiListener() {
     };
 
     public default QIL compiler(ApiInfo apiInfo, String query, Set<String> varNames, Finder finder) throws IOException {

@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataql.DataQL;
-import net.hasor.dataql.Query;
+import com.alibaba.fastjson.JSON;
+import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.QueryResult;
-import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiDetailQuery;
+import net.hasor.dataway.service.ApiCallService;
+import net.hasor.dataway.spi.ApiInfo;
+import net.hasor.dataway.spi.ParseParameterSpiListener;
+import net.hasor.utils.StringUtils;
+import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
@@ -44,39 +48,59 @@ import java.util.Map;
 @MappingToUrl("/api/smoke")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class SmokeController extends BasicController {
-    protected static Logger logger = LoggerFactory.getLogger(SmokeController.class);
+    protected static Logger         logger = LoggerFactory.getLogger(SmokeController.class);
     @Inject
-    private          DataQL executeDataQL;
+    private          ApiCallService apiCallService;
+    @Inject
+    private          SpiTrigger     spiTrigger;
 
     @Post
-    public Result<Map<String, Object>> doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
+    public Result<Map<String, Object>> doSmoke(Invoker invoker, @QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
         //
+        // .查询接口数据
         QueryResult queryDetail = new ApiDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
             put("apiId", apiId);
         }});
-        String strCodeType = ((ObjectModel) queryDetail.getData()).getValue("codeType").asString();
-        String strCodeValue = ((ObjectModel) queryDetail.getData()).getObject("codeInfo").getValue("codeValue").asString();
-        Map<String, Object> strRequestBody = (Map<String, Object>) requestBody.get("requestBody");
+        ObjectModel objectModel = ((ObjectModel) queryDetail.getData());
+        //
+        // .获取API信息
+        ApiInfo apiInfo = new ApiInfo();
+        apiInfo.setApiID(apiId);
+        apiInfo.setReleaseID("");
+        apiInfo.setMethod(objectModel.getValue("select").asString());
+        apiInfo.setApiPath(objectModel.getValue("path").asString());
+        String strCodeType = objectModel.getValue("codeType").asString();
+        String strCodeValue = objectModel.getObject("codeInfo").getValue("codeValue").asString();
+        //
+        // .准备参数
+        String jsonParamValue = objectModel.getObject("codeInfo").getValue("requestBody").asString();
+        jsonParamValue = (StringUtils.isBlank(jsonParamValue)) ? "{}" : jsonParamValue;
+        Map<String, Object> jsonParamOri = JSON.parseObject(jsonParamValue);
+        Map<String, Object> jsonParam = this.spiTrigger.chainSpi(ParseParameterSpiListener.class, (listener, lastResult) -> {
+            return listener.parseParameter(true, apiInfo, invoker, lastResult);
+        }, jsonParamOri);
+        apiInfo.setParameterMap(JSON.parseObject(jsonParamValue));
+        //
+        // .如果是 SQL 还需要进行代码替换
         if ("sql".equalsIgnoreCase(strCodeType)) {
-            strCodeValue = DatawayUtils.evalCodeValueForSQL(strCodeValue, strRequestBody);
+            strCodeValue = DatawayUtils.evalCodeValueForSQL(strCodeValue, jsonParam);
         }
         //
+        // .执行调用
         try {
-            Query dataQLQuery = this.executeDataQL.createQuery(strCodeValue);
-            QueryResult queryResult = dataQLQuery.execute(strRequestBody);
-            DataModel resultData = queryResult.getData();
-            this.updateSchema(apiId, strRequestBody, resultData);
-            return DatawayUtils.queryResultToResult(queryResult);
+            Map<String, Object> objectMap = this.apiCallService.doCall(apiInfo, strCodeValue, jsonParam);
+            this.updateSchema(apiId, jsonParamOri, objectMap);
+            return Result.of(objectMap);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return DatawayUtils.exceptionToResult(e);
         }
     }
 
-    private void updateSchema(String apiID, Map<String, Object> requestData, DataModel responseData) {
+    private void updateSchema(String apiID, Map<String, Object> requestData, Map<String, Object> responseData) {
         //
     }
 }

@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 package net.hasor.dataway.spi;
-import net.hasor.dataql.runtime.ThrowRuntimeException;
+import net.hasor.utils.future.BasicFuture;
 
 import java.util.EventListener;
 
 /**
- * Dataway API 调用之后的结果二次处理，常用用于对 QL 执行的结果做二次封装。
+ * SPI 在接口执行之前触发。通过这个这个 SPI 可以拦截API调用，并做自己的处理。
+ *  - 例如：接口缓存、接口权限。
+ *  - 当 Future 被设置后，后面的 PreExecuteListener 会自动失效（无需仲裁参与）
+ *  - 当 Future 被设置后，不在会发起真正调用
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-19
  */
-public interface ApiResultListener extends EventListener {
-    /** 成功完成调用 */
-    public default Object callAfter(ApiInfo apiInfo, boolean fromPre, Object result) {
-        return result;
-    }
-
-    /** 调用发生异常 */
-    public default Object callError(ApiInfo apiInfo, Exception e) {
-        if (e instanceof ThrowRuntimeException) {
-            return ((ThrowRuntimeException) e).getResult().unwrap();
-        } else {
-            return e.getMessage();
-        }
-    }
+public interface PreExecuteSpiListener extends EventListener {
+    /**
+     * 在接口执行之前，可以通过这个 SPI 实现接口缓存
+     * @param apiInfo API 请求信息。
+     * @param future 可以提前响应结果。
+     */
+    public void preExecute(ApiInfo apiInfo, BasicFuture<Object> future);
 }

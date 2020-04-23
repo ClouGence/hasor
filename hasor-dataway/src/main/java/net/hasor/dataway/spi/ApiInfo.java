@@ -22,20 +22,11 @@ import java.util.Map;
  * @version : 2020-04-19
  */
 public class ApiInfo {
-    private long                startTime;      // request 起始时间
     private String              apiID;          // API ID
     private String              releaseID;      // 发布的版本ID
     private String              method;         // Http Method
     private String              apiPath;        // Path
     private Map<String, Object> parameterMap;   // 请求参数
-
-    public long getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
-    }
 
     public String getApiID() {
         return apiID;

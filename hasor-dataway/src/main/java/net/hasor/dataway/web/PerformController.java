@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataql.DataQL;
-import net.hasor.dataql.Query;
-import net.hasor.dataql.QueryResult;
+import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
+import net.hasor.dataway.service.ApiCallService;
+import net.hasor.dataway.spi.ApiInfo;
+import net.hasor.dataway.spi.ParseParameterSpiListener;
+import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
@@ -39,27 +41,39 @@ import java.util.Map;
 @MappingToUrl("/api/perform")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class PerformController extends BasicController {
-    protected static Logger logger = LoggerFactory.getLogger(PerformController.class);
+    protected static Logger         logger = LoggerFactory.getLogger(PerformController.class);
     @Inject
-    private          DataQL executeDataQL;
+    private          ApiCallService apiCallService;
+    @Inject
+    private          SpiTrigger     spiTrigger;
 
     @Post
-    public Result<Map<String, Object>> doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) {
+    public Result<Map<String, Object>> doPerform(Invoker invoker, @QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
         //
+        // .准备参数
+        Map<String, Object> jsonParam = (Map<String, Object>) requestBody.get("requestBody");
+        ApiInfo apiInfo = new ApiInfo();
+        apiInfo.setApiID(apiId);
+        apiInfo.setReleaseID("");
+        apiInfo.setMethod(requestBody.get("select").toString());
+        apiInfo.setApiPath(requestBody.get("apiPath").toString());
+        apiInfo.setParameterMap(jsonParam);
+        jsonParam = this.spiTrigger.chainSpi(ParseParameterSpiListener.class, (listener, lastResult) -> {
+            return listener.parseParameter(true, apiInfo, invoker, lastResult);
+        }, jsonParam);
+        //
         String strCodeType = requestBody.get("codeType").toString();
         String strCodeValue = requestBody.get("codeValue").toString();
-        Map<String, Object> strRequestBody = (Map<String, Object>) requestBody.get("requestBody");
         if ("sql".equalsIgnoreCase(strCodeType)) {
-            strCodeValue = DatawayUtils.evalCodeValueForSQL(strCodeValue, strRequestBody);
+            strCodeValue = DatawayUtils.evalCodeValueForSQL(strCodeValue, jsonParam);
         }
-        //
+        // .执行调用
         try {
-            Query dataQLQuery = this.executeDataQL.createQuery(strCodeValue);
-            QueryResult queryResult = dataQLQuery.execute(strRequestBody);
-            return DatawayUtils.queryResultToResult(queryResult);
+            Map<String, Object> objectMap = this.apiCallService.doCall(apiInfo, strCodeValue, jsonParam);
+            return Result.of(objectMap);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return DatawayUtils.exceptionToResult(e);

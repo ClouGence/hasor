@@ -16,17 +16,32 @@
 package net.hasor.dataway.config;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import net.hasor.core.spi.SpiTrigger;
+import net.hasor.dataql.DataQL;
+import net.hasor.dataql.QueryResult;
+import net.hasor.dataql.domain.ObjectModel;
+import net.hasor.dataway.daos.ReleaseDetailQuery;
 import net.hasor.dataway.service.ApiCallService;
+import net.hasor.dataway.spi.ApiInfo;
+import net.hasor.dataway.spi.ParseParameterSpiListener;
+import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerConfig;
 import net.hasor.web.InvokerFilter;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
+
+import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
 
 /**
  * 负责处理 API 的执行
@@ -35,7 +50,12 @@ import java.util.Map;
  */
 class InterfaceApiFilter implements InvokerFilter {
     @Inject
-    private ApiCallService apiCallService;
+    @Named(ISOLATION_CONTEXT)
+    private DataQL         dataQL;
+    @Inject
+    private ApiCallService callService;
+    @Inject
+    private SpiTrigger     spiTrigger;
     private String         apiBaseUri;
 
     public InterfaceApiFilter(String apiBaseUri) {
@@ -52,20 +72,74 @@ class InterfaceApiFilter implements InvokerFilter {
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         HttpServletResponse httpResponse = invoker.getHttpResponse();
         String requestURI = httpRequest.getRequestURI();
+        String httpMethod = httpRequest.getMethod().toUpperCase().trim();
         if (!requestURI.startsWith(this.apiBaseUri)) {
             return chain.doNext(invoker);
         }
         //
+        String mimeType = invoker.getMimeType("json");
         httpRequest.setCharacterEncoding("UTF-8");
         httpResponse.setCharacterEncoding("UTF-8");
         CorsUtils.setup(invoker);
         //
-        Map<String, Object> objectMap = apiCallService.doCall(invoker);
+        // .查询接口数据
+        ApiInfo apiInfo = new ApiInfo();
+        String script = null;
+        try {
+            QueryResult queryResult = new ReleaseDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
+                put("apiMethod", httpMethod);
+                put("apiPath", URLDecoder.decode(requestURI, "UTF-8"));
+            }});
+            ObjectModel dataModel = (ObjectModel) queryResult.getData();
+            apiInfo.setApiID(dataModel.getValue("apiID").asString());
+            apiInfo.setReleaseID(dataModel.getValue("releaseID").asString());
+            apiInfo.setMethod(httpMethod);
+            apiInfo.setApiPath(requestURI);
+            script = dataModel.getValue("script").asString();
+        } catch (Exception e) {
+            Map<String, Object> result = DatawayUtils.exceptionToResult(e).getResult();
+            return responseData(mimeType, httpResponse, result);
+        }
+        //
+        // .准备参数
+        Map<String, Object> jsonParam;
+        if ("GET".equalsIgnoreCase(httpMethod)) {
+            jsonParam = new HashMap<>();
+            Enumeration<String> parameterNames = httpRequest.getParameterNames();
+            while (parameterNames.hasMoreElements()) {
+                String paramName = parameterNames.nextElement();
+                jsonParam.put(paramName + "Arrays", httpRequest.getParameterValues(paramName));
+                jsonParam.put(paramName, httpRequest.getParameter(paramName));
+            }
+        } else {
+            String jsonBody = invoker.getJsonBodyString();
+            if (StringUtils.isNotBlank(jsonBody)) {
+                jsonParam = JSON.parseObject(jsonBody);
+            } else {
+                jsonParam = new HashMap<>();
+            }
+        }
+        apiInfo.setParameterMap(jsonParam);
+        jsonParam = this.spiTrigger.chainSpi(ParseParameterSpiListener.class, (listener, lastResult) -> {
+            return listener.parseParameter(false, apiInfo, invoker, lastResult);
+        }, jsonParam);
+        //
+        // .执行调用
+        try {
+            Map<String, Object> objectMap = this.callService.doCall(apiInfo, script, jsonParam);
+            return responseData(mimeType, httpResponse, objectMap);
+        } catch (Exception e) {
+            Map<String, Object> result = DatawayUtils.exceptionToResult(e).getResult();
+            return responseData(mimeType, httpResponse, result);
+        }
+    }
+
+    private Map<String, Object> responseData(String mimeType, HttpServletResponse httpResponse, Map<String, Object> objectMap) throws IOException {
         if (!httpResponse.isCommitted()) {
             String body = JSON.toJSONString(objectMap, SerializerFeature.WriteMapNullValue);
             byte[] bodyByte = body.getBytes();
             //
-            httpResponse.setContentType(invoker.getMimeType("json"));
+            httpResponse.setContentType(mimeType);
             httpResponse.setContentLength(bodyByte.length);
             ServletOutputStream output = httpResponse.getOutputStream();
             output.write(bodyByte);
