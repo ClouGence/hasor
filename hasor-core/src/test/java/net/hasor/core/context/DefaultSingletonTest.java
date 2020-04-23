@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Scope;
-import net.hasor.core.spi.CollectScopeListener;
+import net.hasor.core.spi.CollectScopeChainSpi;
 import net.hasor.test.core.basic.pojo.PojoBean;
 import net.hasor.utils.ArrayUtils;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class DefaultSingletonTest {
     public void builderTest1() throws Throwable {
         AppContext appContext = Hasor.create().build(apiBinder -> {
             // 为每一个 apiBinder 声明的对象都设置单例
-            apiBinder.bindSpiListener(CollectScopeListener.class, new CollectScopeListener() {
+            apiBinder.bindSpiListener(CollectScopeChainSpi.class, new CollectScopeChainSpi() {
                 public Supplier<Scope>[] collectScope(BindInfo<?> bindInfo, AppContext appContext, Supplier<Scope>[] suppliers) {
                     return ArrayUtils.add(suppliers, appContext.findScope(Singleton.class));
                 }
@@ -53,7 +53,7 @@ public class DefaultSingletonTest {
     }
 }
 
-class MyCollectScopeListener implements CollectScopeListener {
+class MyCollectScopeListener implements CollectScopeChainSpi {
     public Supplier<Scope>[] collectScope(BindInfo<?> bindInfo, AppContext appContext, Supplier<Scope>[] suppliers) {
         return ArrayUtils.add(suppliers, appContext.findScope(Singleton.class));
     }

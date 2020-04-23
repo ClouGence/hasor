@@ -280,7 +280,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         if (ArrayUtils.isEmpty(scopeProvider)) {
             scopeProvider = this.scopeContainer.collectScope(targetType);
         }
-        scopeProvider = this.spiCallerContainer.chainSpi(CollectScopeListener.class, (listener, lastResult) -> {
+        scopeProvider = this.spiCallerContainer.chainSpi(CollectScopeChainSpi.class, (listener, lastResult) -> {
             if (bindInfo != null) {
                 return listener.collectScope(bindInfo, appContext, lastResult);
             } else {

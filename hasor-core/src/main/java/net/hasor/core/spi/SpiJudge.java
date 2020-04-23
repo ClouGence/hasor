@@ -18,7 +18,7 @@ import java.util.EventListener;
 import java.util.List;
 
 /**
- * SPI 仲裁：当同一个 SPI bind 了多个 SpiListener 就可以利用仲裁处理更多需求。
+ * SPI 仲裁器：当同一个 SPI bind 了多个 SpiListener 就可以利用仲裁处理更多需求。
  *  - notify 方式下，仲裁帮助决定哪些 SPI 可以被调用。同时可以决定那个 SPI 的返回值被最终采用。
  *  - chain 方式下，仲裁帮助决定哪些 SPI 可以被调用，和 SPI 的调用顺序。
  * @version : 2020-04-19

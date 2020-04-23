@@ -25,7 +25,7 @@ import java.util.function.Supplier;
  * @version : 2020-01-06
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface CollectScopeListener extends java.util.EventListener {
+public interface CollectScopeChainSpi extends java.util.EventListener {
     /**
      * 查找目标使用的作用域。
      * @param bindInfo 正在被创建的 BindInfo

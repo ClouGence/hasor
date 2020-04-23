@@ -17,14 +17,12 @@ package net.hasor.core.spi;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 
-import java.util.EventListener;
-
 /**
  * Scope 注册监听器
  * @version : 2013-11-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface BindInfoProvisionListener extends EventListener {
+public interface BindInfoProvisionListener extends java.util.EventListener {
     /**
      * 注入AppContext。
      * @param bindInfo 新对象的 BindInfo
