@@ -77,6 +77,7 @@ class InterfaceApiFilter implements InvokerFilter {
             return chain.doNext(invoker);
         }
         //
+        DatawayUtils.resetLocalTime();
         String mimeType = invoker.getMimeType("json");
         httpRequest.setCharacterEncoding("UTF-8");
         httpResponse.setCharacterEncoding("UTF-8");
