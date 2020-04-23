@@ -19,7 +19,7 @@ import net.hasor.utils.future.BasicFuture;
 import java.util.EventListener;
 
 /**
- * SPI 在接口执行之前触发。通过这个这个 SPI 可以拦截API调用，并做自己的处理。
+ * SPI 在接口执行之前触发。通过这个这个 SPI 可以拦截API调用，并做自己的处理。（is chainSpi）
  *  - 例如：接口缓存、接口权限。
  *  - 当 Future 被设置后，后面的 PreExecuteListener 会自动失效（无需仲裁参与）
  *  - 当 Future 被设置后，不在会发起真正调用

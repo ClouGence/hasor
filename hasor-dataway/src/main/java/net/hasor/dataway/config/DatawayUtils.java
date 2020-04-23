@@ -56,10 +56,6 @@ public class DatawayUtils {
         return System.currentTimeMillis() - localRequestTime.get();
     }
 
-    public static Result<Map<String, Object>> queryResultToResult(QueryResult queryResult) {
-        return queryResultToResultWithSpecialValue(queryResult, queryResult.getData());
-    }
-
     public static Result<Map<String, Object>> queryResultToResultWithSpecialValue(QueryResult queryResult, Object specialValue) {
         return Result.of(new LinkedHashMap<String, Object>() {{
             put("success", true);

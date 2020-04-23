@@ -20,7 +20,7 @@ import java.util.EventListener;
 import java.util.Map;
 
 /**
- * 参数解析 SPI，可以通过这个 SPI 对 Api 的入参进行控制和改写。
+ * 参数解析 SPI，可以通过这个 SPI 对 Api 的入参进行控制和改写。（is chainSpi）
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-22
  */

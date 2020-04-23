@@ -66,9 +66,9 @@ public class ApiCallService {
         try {
             final Set<String> varNames = this.executeDataQL.getShareVarMap().keySet();
             final Finder finder = this.executeDataQL.getFinder();
-            compiler = this.spiTrigger.chainSpi(CompilerSpiListener.class, (listener, lastResult) -> {
+            compiler = this.spiTrigger.notifySpi(CompilerSpiListener.class, (listener, lastResult) -> {
                 return listener.compiler(apiInfo, script, varNames, finder);
-            });
+            }, null);
             if (compiler == null) {
                 compiler = CompilerSpiListener.DEFAULT.compiler(apiInfo, script, varNames, finder);
             }

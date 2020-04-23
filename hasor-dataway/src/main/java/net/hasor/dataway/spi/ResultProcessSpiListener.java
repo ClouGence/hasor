@@ -19,7 +19,7 @@ import net.hasor.dataql.runtime.ThrowRuntimeException;
 import java.util.EventListener;
 
 /**
- * Dataway API 调用之后的结果二次处理，常用用于对 QL 执行的结果做二次封装。
+ * Dataway API 调用之后的结果二次处理，常用用于对 QL 执行的结果做二次封装。（is chainSpi）
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-19
  */

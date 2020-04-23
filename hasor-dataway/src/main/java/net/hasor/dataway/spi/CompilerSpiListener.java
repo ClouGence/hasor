@@ -24,7 +24,7 @@ import java.util.EventListener;
 import java.util.Set;
 
 /**
- * DataQL 编译，默认实现了编译。
+ * DataQL 编译，默认实现了编译。（is notifySpi）
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-19
  */
