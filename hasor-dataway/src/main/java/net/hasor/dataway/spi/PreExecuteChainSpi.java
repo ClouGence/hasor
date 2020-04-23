@@ -26,7 +26,7 @@ import java.util.EventListener;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-19
  */
-public interface PreExecuteSpiListener extends EventListener {
+public interface PreExecuteChainSpi extends EventListener {
     /**
      * 在接口执行之前，可以通过这个 SPI 实现接口缓存
      * @param apiInfo API 请求信息。

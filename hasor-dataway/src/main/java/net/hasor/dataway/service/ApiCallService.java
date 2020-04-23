@@ -26,8 +26,8 @@ import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.LoggerUtils;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.CompilerSpiListener;
-import net.hasor.dataway.spi.PreExecuteSpiListener;
-import net.hasor.dataway.spi.ResultProcessSpiListener;
+import net.hasor.dataway.spi.PreExecuteChainSpi;
+import net.hasor.dataway.spi.ResultProcessChainSpi;
 import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +88,7 @@ public class ApiCallService {
             Supplier<QueryResult> queryResult = SingleProvider.of(() -> {
                 return this.executeDataQL.createQuery(finalCompiler).execute(jsonParam);
             });
-            this.spiTrigger.chainSpi(PreExecuteSpiListener.class, (listener, lastResult) -> {
+            this.spiTrigger.chainSpi(PreExecuteChainSpi.class, (listener, lastResult) -> {
                 if (!newResult.isDone()) {
                     listener.preExecute(apiInfo, newResult);
                 }
@@ -118,7 +118,7 @@ public class ApiCallService {
         //
         // .返回值
         Object resultData = execute.getData();
-        resultData = this.spiTrigger.chainSpi(ResultProcessSpiListener.class, (listener, lastResult) -> {
+        resultData = this.spiTrigger.chainSpi(ResultProcessChainSpi.class, (listener, lastResult) -> {
             return listener.callAfter(apiInfo, newResult.isDone(), lastResult);
         }, resultData);
         return DatawayUtils.queryResultToResultWithSpecialValue(execute, resultData).getResult();
@@ -132,7 +132,7 @@ public class ApiCallService {
             value = e.getMessage();
         }
         logger.error("requestFailed - " + loggerUtils.logException(e).toJson(), e);
-        value = this.spiTrigger.chainSpi(ResultProcessSpiListener.class, (listener, lastResult) -> {
+        value = this.spiTrigger.chainSpi(ResultProcessChainSpi.class, (listener, lastResult) -> {
             return listener.callError(apiInfo, e);
         }, value);
         return DatawayUtils.exceptionToResultWithSpecialValue(e, value).getResult();

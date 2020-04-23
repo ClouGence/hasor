@@ -23,7 +23,7 @@ import java.util.EventListener;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-19
  */
-public interface ResultProcessSpiListener extends EventListener {
+public interface ResultProcessChainSpi extends EventListener {
     /** 成功完成调用 */
     public default Object callAfter(ApiInfo apiInfo, boolean fromPre, Object result) {
         return result;

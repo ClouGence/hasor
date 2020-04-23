@@ -24,7 +24,7 @@ import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiDetailQuery;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
-import net.hasor.dataway.spi.ParseParameterSpiListener;
+import net.hasor.dataway.spi.ParseParameterChainSpi;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
@@ -79,7 +79,7 @@ public class SmokeController extends BasicController {
         String jsonParamValue = objectModel.getObject("codeInfo").getValue("requestBody").asString();
         jsonParamValue = (StringUtils.isBlank(jsonParamValue)) ? "{}" : jsonParamValue;
         Map<String, Object> jsonParamOri = JSON.parseObject(jsonParamValue);
-        Map<String, Object> jsonParam = this.spiTrigger.chainSpi(ParseParameterSpiListener.class, (listener, lastResult) -> {
+        Map<String, Object> jsonParam = this.spiTrigger.chainSpi(ParseParameterChainSpi.class, (listener, lastResult) -> {
             return listener.parseParameter(true, apiInfo, invoker, lastResult);
         }, jsonParamOri);
         apiInfo.setParameterMap(JSON.parseObject(jsonParamValue));

@@ -23,7 +23,7 @@ import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataway.daos.ReleaseDetailQuery;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
-import net.hasor.dataway.spi.ParseParameterSpiListener;
+import net.hasor.dataway.spi.ParseParameterChainSpi;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
@@ -76,7 +76,7 @@ class InterfaceApiFilter implements InvokerFilter {
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         HttpServletResponse httpResponse = invoker.getHttpResponse();
-        String requestURI = httpRequest.getRequestURI();
+        String requestURI = invoker.getRequestPath();
         String httpMethod = httpRequest.getMethod().toUpperCase().trim();
         if (!requestURI.startsWith(this.apiBaseUri)) {
             return chain.doNext(invoker);
@@ -127,7 +127,7 @@ class InterfaceApiFilter implements InvokerFilter {
             }
         }
         apiInfo.setParameterMap(jsonParam);
-        jsonParam = this.spiTrigger.chainSpi(ParseParameterSpiListener.class, (listener, lastResult) -> {
+        jsonParam = this.spiTrigger.chainSpi(ParseParameterChainSpi.class, (listener, lastResult) -> {
             return listener.parseParameter(false, apiInfo, invoker, lastResult);
         }, jsonParam);
         //

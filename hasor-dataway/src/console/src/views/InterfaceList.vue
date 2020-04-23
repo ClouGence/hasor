@@ -18,7 +18,7 @@
                     </template>
                     <template slot-scope="scope">
                         <el-tag size="mini" style="float: left;width: 65px;text-align: center;" :type="tableRowTagClassName(scope.row).css">{{tableRowTagClassName(scope.row).title}}</el-tag>
-                        <span style="overflow-x: hidden;">{{scope.row.path}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <span style="overflow-x: hidden;">{{requestPath(scope.row.path)}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
                         <span style="color: #adadad;display: contents;float: right; overflow-x: hidden;">[{{scope.row.comment}}]</span>
                     </template>
                 </el-table-column>
@@ -61,7 +61,7 @@
     import RequestPanel from '../components/RequestPanel'
     import ResponsePanel from '../components/ResponsePanel'
     import request from "../utils/request";
-    import {ApiUrl} from "../utils/api-const"
+    import {ApiUrl, contextPath} from "../utils/api-const"
     import {checkRequestBody, errorBox, headerData, tagInfo} from "../utils/utils"
 
     export default {
@@ -84,6 +84,9 @@
             window.removeEventListener('resize', this._resize);
         },
         methods: {
+            requestPath(apiPath) {
+                return contextPath() + apiPath;
+            },
             // 面板大小改变，重新计算CodeMirror的高度
             handleSplitResize(data) {
                 this.panelPercent = data;
@@ -156,7 +159,7 @@
                 }
                 //
                 const self = this;
-                let requestURL = ("/" + this.requestApiInfo.path).replace("//", "/");
+                let requestURL = contextPath() + ("/" + this.requestApiInfo.path).replace("//", "/");
                 request(requestURL, {
                     "direct": true,
                     "method": this.requestApiInfo.select,

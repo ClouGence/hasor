@@ -66,7 +66,7 @@ class InterfaceUiFilter implements InvokerFilter {
         HttpServletResponse httpResponse = invoker.getHttpResponse();
         httpRequest.setCharacterEncoding("UTF-8");
         httpResponse.setCharacterEncoding("UTF-8");
-        String requestURI = httpRequest.getRequestURI();
+        String requestURI = invoker.getRequestPath();
         if (requestURI.startsWith(this.uiAdminBaseUri)) {
             try {
                 DatawayUtils.resetLocalTime();
@@ -91,7 +91,15 @@ class InterfaceUiFilter implements InvokerFilter {
                 IOUtils.copy(inputStream, outputStream);
             }
             //
+            String contextPath = httpRequest.getContextPath();
+            if (StringUtils.isBlank(contextPath)) {
+                contextPath = "/";
+            }
+            if (contextPath.endsWith("/")) {
+                contextPath = contextPath.substring(0, contextPath.length() - 1);
+            }
             String htmlBody = new String(outputStream.toByteArray());
+            htmlBody = htmlBody.replace("{CONTEXT_PATH}", contextPath);
             htmlBody = htmlBody.replace("{API_BASE_URL}", fixUrl(this.apiBaseUri));
             htmlBody = htmlBody.replace("{ADMIN_BASE_URL}", fixUrl(this.uiBaseUri));
             htmlBody = htmlBody.replace("{ALL_MAC}", allLocalMac());

@@ -24,7 +24,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-22
  */
-public interface ParseParameterSpiListener extends EventListener {
+public interface ParseParameterChainSpi extends EventListener {
     /**
      * 执行SPI
      * @param perform 是否为 UI 页面中发起的

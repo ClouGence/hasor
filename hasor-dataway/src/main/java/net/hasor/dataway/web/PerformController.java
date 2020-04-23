@@ -20,7 +20,7 @@ import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
-import net.hasor.dataway.spi.ParseParameterSpiListener;
+import net.hasor.dataway.spi.ParseParameterChainSpi;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
@@ -61,7 +61,7 @@ public class PerformController extends BasicController {
         apiInfo.setMethod(requestBody.get("select").toString());
         apiInfo.setApiPath(requestBody.get("apiPath").toString());
         apiInfo.setParameterMap(jsonParam);
-        jsonParam = this.spiTrigger.chainSpi(ParseParameterSpiListener.class, (listener, lastResult) -> {
+        jsonParam = this.spiTrigger.chainSpi(ParseParameterChainSpi.class, (listener, lastResult) -> {
             return listener.parseParameter(true, apiInfo, invoker, lastResult);
         }, jsonParam);
         //

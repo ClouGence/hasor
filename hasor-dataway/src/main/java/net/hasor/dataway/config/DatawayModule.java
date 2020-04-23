@@ -37,7 +37,7 @@ import java.sql.SQLException;
  */
 public class DatawayModule implements WebModule {
     protected static    Logger  logger            = LoggerFactory.getLogger(DatawayModule.class);
-    public static final String  ISOLATION_CONTEXT = DatawayModule.class.getName();
+    public static final String  ISOLATION_CONTEXT = "net.hasor.dataway.config.DatawayModule";
     private             boolean datawayApi;
     private             boolean datawayAdmin;
 
