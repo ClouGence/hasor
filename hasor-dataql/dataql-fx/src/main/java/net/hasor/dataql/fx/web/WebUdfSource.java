@@ -68,8 +68,8 @@ public class WebUdfSource implements UdfSourceAssembly {
         return cookieArrayMap().get(cookieName);
     }
 
-    /** 设置 Cookie,MaxAge = -1 */
-    public static boolean addCookie(String cookieName, String value) {
+    /** 临时 Cookie。临时 Cookie 的 MaxAge = -1 */
+    public static boolean tempCookie(String cookieName, String value) {
         HttpServletResponse httpResponse = FxWebInterceptor.invoker().getHttpResponse();
         Cookie cookie = new Cookie(cookieName, value);
         cookie.setMaxAge(-1);
@@ -77,10 +77,10 @@ public class WebUdfSource implements UdfSourceAssembly {
         return true;
     }
 
-    /** 批量设置 Cookie */
-    public static boolean addCookieAll(Map<String, String> cookieMap) {
+    /** 批量设置临时 Cookie。临时 Cookie 的 MaxAge = -1 */
+    public static boolean tempCookieAll(Map<String, String> cookieMap) {
         if (cookieMap != null) {
-            cookieMap.forEach(WebUdfSource::addCookie);
+            cookieMap.forEach(WebUdfSource::tempCookie);
             return true;
         }
         return false;
