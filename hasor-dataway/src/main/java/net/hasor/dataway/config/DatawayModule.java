@@ -19,6 +19,8 @@ import net.hasor.core.Environment;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryApiBinder;
 import net.hasor.dataql.fx.db.SqlFragment;
+import net.hasor.dataway.DatawayService;
+import net.hasor.dataway.service.DatawayServiceImpl;
 import net.hasor.dataway.web.*;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -65,10 +67,14 @@ public class DatawayModule implements WebModule {
         // .Finder,实现引用其它定义的 DataQL
         QueryApiBinder defaultContext = apiBinder.tryCast(QueryApiBinder.class);
         defaultContext.bindFinder(apiBinder.getProvider(DatawayFinder.class));
+        //
         // .Dataway 自身使用的隔离环境
         logger.info("dataway self isolation ->" + ISOLATION_CONTEXT);
         QueryApiBinder isolation = defaultContext.isolation(ISOLATION_CONTEXT);
         isolation.bindFragment("sql", SqlFragment.class);
+        //
+        // .注册 DatawayService接口
+        apiBinder.bindType(DatawayService.class).to(DatawayServiceImpl.class);
         //
         // .Dataway 后台管理界面
         if (!this.datawayAdmin) {

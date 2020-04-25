@@ -1,6 +1,9 @@
 package net.example.hasor.config;
+import com.alibaba.fastjson.JSONObject;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
 import net.hasor.core.DimModule;
+import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.spi.ParseParameterChainSpi;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
@@ -9,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 @DimModule
 @Component
@@ -26,5 +31,15 @@ public class ExampleModule implements SpringModule {
             parameter.put("self", "me");
             return parameter;
         });
+    }
+
+    @Override
+    public void onStart(AppContext appContext) throws Throwable {
+        DatawayService datawayService = appContext.getInstance(DatawayService.class);
+        Map<String, Object> objectMap = datawayService.invokeApi("post", "/api/demos/find_user_by_name", new HashMap<String, Object>() {{
+            put("userName", "1");
+        }});
+        //
+        System.out.println(JSONObject.toJSONString(objectMap));
     }
 }

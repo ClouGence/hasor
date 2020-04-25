@@ -51,7 +51,7 @@ public class ApiCallService {
     @Inject
     private          DataQL     executeDataQL;
 
-    public Map<String, Object> doCall(ApiInfo apiInfo, String script, Map<String, Object> jsonParam) {
+    public Map<String, Object> doCall(ApiInfo apiInfo, String script, Map<String, ?> jsonParam) {
         LoggerUtils loggerUtils = LoggerUtils.create();
         loggerUtils.addLog("apiMethod", apiInfo.getMethod());
         loggerUtils.addLog("apiPath", apiInfo.getApiPath());
