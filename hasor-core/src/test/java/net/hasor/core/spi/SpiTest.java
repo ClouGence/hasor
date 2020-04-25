@@ -171,11 +171,6 @@ public class SpiTest {
         //
         AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.bindSpiJudge(TestSpi.class, new SpiJudge() {
-                @Override
-                public <R> R judgeResult(List<R> result, R defaultResult) {
-                    return null;
-                }
-
                 public <T extends java.util.EventListener> List<T> judgeSpi(List<T> spiListener) {
                     if (spiListener.contains(testSpiA)) {
                         return (List<T>) Collections.singletonList(testSpiA);

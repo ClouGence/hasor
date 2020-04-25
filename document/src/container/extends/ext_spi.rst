@@ -75,11 +75,11 @@ SPI 监听器
 +-----------+--------------------------------------------------+----------+
 | NotifySpi | net.hasor.web.spi.MappingDiscoverer              | web      |
 +-----------+--------------------------------------------------+----------+
-| NotifySpi | net.hasor.web.spi.ServletContextListener         | j2ee     |
+| NotifySpi | javax.servlet.ServletContextListener             | j2ee     |
 +-----------+--------------------------------------------------+----------+
-| NotifySpi | net.hasor.web.spi.HttpSessionListener            | j2ee     |
+| NotifySpi | javax.servlet.http.HttpSessionListener           | j2ee     |
 +-----------+--------------------------------------------------+----------+
-| NotifySpi | net.hasor.web.spi.ServletRequestListener         | j2ee     |
+| NotifySpi | javax.servlet.ServletRequestListener             | j2ee     |
 +-----------+--------------------------------------------------+----------+
 
 
