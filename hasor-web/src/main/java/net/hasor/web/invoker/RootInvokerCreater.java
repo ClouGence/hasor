@@ -20,7 +20,7 @@ import net.hasor.core.XmlNode;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
-import net.hasor.web.InvokerCreater;
+import net.hasor.web.InvokerCreator;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -34,8 +34,8 @@ import java.util.Map;
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-class RootInvokerCreater implements InvokerCreater {
-    protected Map<Class<?>, InvokerCreater> createrMap = new HashMap<>();
+class RootInvokerCreater implements InvokerCreator {
+    protected Map<Class<?>, InvokerCreator> createrMap = new HashMap<>();
     protected Map<Class<?>, Class<?>>       extMapping = new HashMap<>();
 
     public RootInvokerCreater(AppContext appContext) throws Exception {
@@ -79,7 +79,7 @@ class RootInvokerCreater implements InvokerCreater {
             if (this.createrMap.containsKey(createrType)) {
                 continue;
             }
-            InvokerCreater creater = (InvokerCreater) createrType.newInstance();
+            InvokerCreator creater = (InvokerCreator) createrType.newInstance();
             this.createrMap.put(createrType, creater);
         }
     }
@@ -89,9 +89,9 @@ class RootInvokerCreater implements InvokerCreater {
     public Invoker createExt(Invoker dataContext) {
         //
         Map<Class<?>, Object> extMap = new HashMap<>();
-        for (Map.Entry<Class<?>, InvokerCreater> ent : this.createrMap.entrySet()) {
+        for (Map.Entry<Class<?>, InvokerCreator> ent : this.createrMap.entrySet()) {
             Class<?> extType = ent.getKey();
-            InvokerCreater creater = ent.getValue();
+            InvokerCreator creater = ent.getValue();
             Object extObject = (creater != null) ? creater.createExt(dataContext) : null;
             if (extType != null && extObject != null) {
                 extMap.put(extType, extObject);

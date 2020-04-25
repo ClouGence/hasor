@@ -20,7 +20,7 @@ package net.hasor.web;
  * @author 赵永春 (zyc@hasor.net)
  */
 @FunctionalInterface
-public interface InvokerCreater {
+public interface InvokerCreator {
     /**
      * 创建 {@link Invoker} 扩展
      * @param invoker 原始的 Invoker

@@ -15,14 +15,14 @@
  */
 package net.hasor.web.render;
 import net.hasor.web.Invoker;
-import net.hasor.web.InvokerCreater;
+import net.hasor.web.InvokerCreator;
 
 /**
  *
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RenderInvokerCreator implements InvokerCreater {
+public class RenderInvokerCreator implements InvokerCreator {
     @Override
     public Invoker createExt(Invoker dataContext) {
         return new RenderInvokerSupplier(dataContext);

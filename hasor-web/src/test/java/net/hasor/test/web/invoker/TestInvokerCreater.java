@@ -15,10 +15,10 @@
  */
 package net.hasor.test.web.invoker;
 import net.hasor.web.Invoker;
-import net.hasor.web.InvokerCreater;
+import net.hasor.web.InvokerCreator;
 import org.powermock.api.mockito.PowerMockito;
 
-public class TestInvokerCreater implements InvokerCreater {
+public class TestInvokerCreater implements InvokerCreator {
     @Override
     public Invoker createExt(Invoker invoker) {
         TestInvoker2 inv = PowerMockito.mock(TestInvoker2.class);

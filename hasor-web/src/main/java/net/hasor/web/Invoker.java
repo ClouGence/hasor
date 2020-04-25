@@ -146,7 +146,7 @@ public interface Invoker extends MimeType {
         if (requestPath.startsWith(contextPath)) {
             requestPath = requestPath.substring(contextPath.length());
         }
-        return requestPath;
+        return requestPath.replaceAll("[/]{2,}", "/");
     }
 
     /**

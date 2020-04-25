@@ -15,14 +15,14 @@
  */
 package net.hasor.web.valid;
 import net.hasor.web.Invoker;
-import net.hasor.web.InvokerCreater;
+import net.hasor.web.InvokerCreator;
 
 /**
  * 表单验证器，Invoker扩展。
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ValidInvokerCreator implements InvokerCreater {
+public class ValidInvokerCreator implements InvokerCreator {
     @Override
     public Invoker createExt(Invoker dataContext) {
         ValidInvokerSupplier supplier = new ValidInvokerSupplier(dataContext);
