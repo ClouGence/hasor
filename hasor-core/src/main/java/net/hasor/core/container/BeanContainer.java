@@ -41,9 +41,8 @@ import static net.hasor.core.container.ContainerUtils.*;
 
 /**
  * 负责创建 Bean
- *
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2015年11月25日
+ * @version : 2015-11-25
  */
 public class BeanContainer extends AbstractContainer implements BindInfoBuilderFactory {
     private Environment                                 environment        = null;
@@ -331,7 +330,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
                 doLife(targetObject, bindInfo, appContext);
                 //
                 T finalTargetObject = targetObject;
-                spiCallerContainer.notifySpiWithoutResult(CreaterProvisionListener.class, listener -> {
+                spiCallerContainer.notifySpiWithoutResult(CreatorProvisionListener.class, listener -> {
                     listener.beanCreated(finalTargetObject, bindInfo);
                 });
                 return targetObject;

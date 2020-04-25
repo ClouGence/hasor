@@ -23,7 +23,7 @@ import java.util.EventListener;
  * @version : 2013-11-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface CreaterProvisionListener extends EventListener {
+public interface CreatorProvisionListener extends EventListener {
     /**
      * 注入AppContext。
      * @param newObject 新对象。

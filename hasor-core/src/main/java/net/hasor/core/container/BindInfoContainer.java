@@ -32,14 +32,14 @@ import java.util.function.Consumer;
  * 负责管理 Bean 的元信息
  *
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2019年06月20日
+ * @version : 2019-06-20
  */
 public class BindInfoContainer extends AbstractContainer implements Observer {
-    protected static Logger                                  logger             = LoggerFactory.getLogger(BindInfoContainer.class);
-    private          List<BindInfo<?>>                       allBindInfoList    = new ArrayList<>();
-    private          ConcurrentHashMap<String, List<String>> indexTypeMapping   = new ConcurrentHashMap<>();
-    private          ConcurrentHashMap<String, BindInfo<?>>  idDataSource       = new ConcurrentHashMap<>();
-    private          SpiCallerContainer                      spiCallerContainer = null;
+    protected static Logger                                  logger           = LoggerFactory.getLogger(BindInfoContainer.class);
+    private final    List<BindInfo<?>>                       allBindInfoList  = new ArrayList<>();
+    private final    ConcurrentHashMap<String, List<String>> indexTypeMapping = new ConcurrentHashMap<>();
+    private final    ConcurrentHashMap<String, BindInfo<?>>  idDataSource     = new ConcurrentHashMap<>();
+    private final    SpiCallerContainer                      spiCallerContainer;
 
     public BindInfoContainer(SpiCallerContainer spiCallerContainer) {
         this.spiCallerContainer = spiCallerContainer;
@@ -123,7 +123,7 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
         adapter.setBindID(adapter.getBindID());
         // .触发 SPI
         this.spiCallerContainer.notifySpiWithoutResult(BindInfoProvisionListener.class, listener -> {
-            listener.newBindInfo(adapter, apiBinder);
+            listener.newBindInfo(adapter);
         });
         return adapter;
     }

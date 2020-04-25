@@ -18,7 +18,6 @@ import net.hasor.core.spi.SpiCaller;
 import net.hasor.core.spi.SpiJudge;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.utils.ExceptionUtils;
-import net.hasor.utils.future.BasicFuture;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,7 +53,6 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
             return defaultResult;
         }
         // .只有一个 SPI 监听器，那么选用监听器的值
-        BasicFuture<R> future = new BasicFuture<>();
         if (listeners.size() == 1) {
             try {
                 T listener = (T) listeners.get(0).get();

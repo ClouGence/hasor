@@ -28,23 +28,13 @@ import java.util.EventListener;
  */
 public interface SpiTrigger {
     /**
-     * 通知型 SPI：保证所有 SPI 都会被触发。
+     * 通知型 SPI：保证所有 SPI 都会被触发，每一个SPI监听器 都可以拿到最初的值。
      *  - 也可以理解是异步工作思想
      * @param spiType SPI 接口类型
      * @param spiCaller spiCaller
      */
     public default <T extends EventListener> void notifySpiWithoutResult(Class<T> spiType, SpiCallerWithoutResult<T> spiCaller) {
         notifySpi(spiType, spiCaller, null);
-    }
-
-    /**
-     * 通知型 SPI：保证所有 SPI 都会被触发，每一个SPI监听器 都可以拿到最初的值。
-     *  - 也可以理解是异步工作思想
-     * @param spiType SPI 接口类型
-     * @param spiCaller spiCaller
-     */
-    public default <R, T extends EventListener> void notifySpiWithoutResult(Class<T> spiType, SpiCallerWithoutResult<T> spiCaller, R defaultResult) {
-        notifySpi(spiType, spiCaller, defaultResult);
     }
 
     /**

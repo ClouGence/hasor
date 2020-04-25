@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.core.spi;
-import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 
 /**
- * Scope 注册监听器
+ * 新的 BindInfo。
  * @version : 2013-11-8
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -26,7 +25,6 @@ public interface BindInfoProvisionListener extends java.util.EventListener {
     /**
      * 注入AppContext。
      * @param bindInfo 新对象的 BindInfo
-     * @param apiBinder 声明这个 BindInfo 时使用的 ApiBinder
      */
-    public void newBindInfo(BindInfo<?> bindInfo, ApiBinder apiBinder) throws Throwable;
+    public void newBindInfo(BindInfo<?> bindInfo) throws Throwable;
 }
