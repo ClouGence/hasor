@@ -1,13 +1,19 @@
-ApiBinder 扩展机制存在的意义在于，可以帮助应用或工具框架在 init 阶段构建自己的交互接口。
-
+--------------------
+ApiBinder 机制
+--------------------
 .. HINT::
     ApiBinder 扩展机制是从 Hasor 2.3 之后加入的。
+
+ApiBinder 扩展机制可以帮助应用或工具框架在 init 阶段构建自己的交互接口。这个交互接口完全由扩展工具自己决定。
+
+它存在最大的意义在于可以统一开发体验，即基于 ApiBinder 的扩展的程序，其加载和初始化方式可以融合在 Module 之中。
+这种能力使得扩展工具即便是第三方工具。使用者在使用的时候感受犹如 Hasor 原生一般。
 
 原理
 ------------------------------------
 在 Hasor init 过程的 newApiBinder 阶段，Hasor 会从配置文件中收集所有 ApiBinder 扩展点并创建它们。
 
-.. image:: ../_static/CC2_E1VA_864B_GCI5.png
+.. image:: ../../_static/CC2_E1VA_864B_GCI5.png
 
 被创建的扩展点对象会存放在一个叫 supportMap 的 Map 中，Map 的 key 是用户自定义的 ApiBinder 接口。
 在下面例子中这个类型是 `net.test.binder.TestBinder`。
@@ -31,7 +37,7 @@ ApiBinder 扩展机制存在的意义在于，可以帮助应用或工具框架�
 
 其中地址 `http://helloword.youhosts.com/sechma/main` 是一个虚拟存在的地址，这个地址被用作 Xml 命名空间。
 
-TestBinderCreater 实现如下：
+TestBinderCreator 实现如下：
 
 .. code-block:: java
     :linenos:
@@ -47,7 +53,7 @@ TestBinderCreater 实现如下：
             System.out.println("Hello Binder");
         }
     }
-    public class TestBinderCreater implements ApiBinderCreater {
+    public class TestBinderCreator implements ApiBinderCreator {
         public TestBinder createBinder(ApiBinder apiBinder) {
             return new TestBinderImpl(apiBinder);
         }

@@ -74,4 +74,5 @@ Bean管理
     extends/about_extends
     extends/ext_module
     extends/ext_binder
+    extends/ext_spi
     extends/ext_hconfig
