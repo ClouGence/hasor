@@ -30,7 +30,7 @@ public interface ResultProcessChainSpi extends EventListener {
     }
 
     /** 调用发生异常 */
-    public default Object callError(ApiInfo apiInfo, Exception e) {
+    public default Object callError(ApiInfo apiInfo, Throwable e) {
         if (e instanceof ThrowRuntimeException) {
             return ((ThrowRuntimeException) e).getResult().unwrap();
         } else {

@@ -20,11 +20,11 @@ import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.daos.ReleaseDetailQuery;
 import net.hasor.dataway.spi.ApiInfo;
-import net.hasor.utils.ExceptionUtils;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,23 +44,21 @@ public class DatawayServiceImpl implements DatawayService {
     private ApiCallService callService;
 
     @Override
-    public Map<String, Object> invokeApi(String method, String apiPath, Map<String, ?> jsonParam) {
-        try {
-            String httpMethod = method.trim().toUpperCase();
-            ApiInfo apiInfo = new ApiInfo();
-            QueryResult queryResult = new ReleaseDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
-                put("apiMethod", httpMethod);
-                put("apiPath", apiPath);
-            }});
-            ObjectModel dataModel = (ObjectModel) queryResult.getData();
-            apiInfo.setApiID(dataModel.getValue("apiID").asString());
-            apiInfo.setReleaseID(dataModel.getValue("releaseID").asString());
-            apiInfo.setMethod(httpMethod);
-            apiInfo.setApiPath(apiPath);
-            String script = dataModel.getValue("script").asString();
-            return this.callService.doCall(apiInfo, script, jsonParam);
-        } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e);
-        }
+    public Map<String, Object> invokeApi(String method, String apiPath, Map<String, Object> jsonParam) throws IOException {
+        String httpMethod = method.trim().toUpperCase();
+        ApiInfo apiInfo = new ApiInfo();
+        QueryResult queryResult = new ReleaseDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
+            put("apiMethod", httpMethod);
+            put("apiPath", apiPath);
+        }});
+        ObjectModel dataModel = (ObjectModel) queryResult.getData();
+        apiInfo.setApiID(dataModel.getValue("apiID").asString());
+        apiInfo.setReleaseID(dataModel.getValue("releaseID").asString());
+        apiInfo.setMethod(httpMethod);
+        apiInfo.setApiPath(apiPath);
+        apiInfo.setParameterMap(jsonParam);
+        //
+        String script = dataModel.getValue("script").asString();
+        return this.callService.doCall(apiInfo, param -> script);
     }
 }

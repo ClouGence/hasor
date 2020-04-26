@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataway.service;
-import net.hasor.core.provider.SingleProvider;
+import net.hasor.core.ProviderWithThrow;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.Finder;
@@ -24,10 +24,7 @@ import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.LoggerUtils;
-import net.hasor.dataway.spi.ApiInfo;
-import net.hasor.dataway.spi.CompilerSpiListener;
-import net.hasor.dataway.spi.PreExecuteChainSpi;
-import net.hasor.dataway.spi.ResultProcessChainSpi;
+import net.hasor.dataway.spi.*;
 import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +33,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
 /**
  * 服务调用。
@@ -51,31 +47,36 @@ public class ApiCallService {
     @Inject
     private          DataQL     executeDataQL;
 
-    public Map<String, Object> doCall(ApiInfo apiInfo, String script, Map<String, ?> jsonParam) {
+    public Map<String, Object> doCall(ApiInfo apiInfo, QueryScriptBuild scriptBuild) {
         LoggerUtils loggerUtils = LoggerUtils.create();
         loggerUtils.addLog("apiMethod", apiInfo.getMethod());
         loggerUtils.addLog("apiPath", apiInfo.getApiPath());
-        //
-        // .准备参数
-        if (jsonParam != null) {
-            loggerUtils.addLog("paramRootKeys", jsonParam.keySet());
+        if (apiInfo.getParameterMap() != null) {
+            loggerUtils.addLog("paramRootKeys", apiInfo.getParameterMap().keySet());
+        } else {
+            loggerUtils.addLog("paramRootKeys", "empty.");
         }
+        //
+        // .确认参数
+        Map<String, Object> jsonParam = this.spiTrigger.chainSpi(ParseParameterChainSpi.class, (listener, lastResult) -> {
+            return listener.parseParameter(true, apiInfo, lastResult);
+        }, apiInfo.getParameterMap());
+        apiInfo.setParameterMap(jsonParam);
         //
         // .编译DataQL查询
-        QIL compiler = null;
-        try {
+        ProviderWithThrow<QIL> qilSupplier = () -> {
+            final String scriptBody = scriptBuild.buildScript(jsonParam);
             final Set<String> varNames = this.executeDataQL.getShareVarMap().keySet();
             final Finder finder = this.executeDataQL.getFinder();
-            compiler = this.spiTrigger.notifySpi(CompilerSpiListener.class, (listener, lastResult) -> {
-                return listener.compiler(apiInfo, script, varNames, finder);
+            QIL compiler = this.spiTrigger.notifySpi(CompilerSpiListener.class, (listener, lastResult) -> {
+                return listener.compiler(apiInfo, scriptBody, varNames, finder);
             }, null);
             if (compiler == null) {
-                compiler = CompilerSpiListener.DEFAULT.compiler(apiInfo, script, varNames, finder);
+                compiler = CompilerSpiListener.DEFAULT.compiler(apiInfo, scriptBody, varNames, finder);
             }
             loggerUtils.addLog("compilerTime", DatawayUtils.currentLostTime());
-        } catch (Exception e) {
-            return doError(e, apiInfo, loggerUtils);
-        }
+            return compiler;
+        };
         //
         // .执行查询
         //  - 1.首先将 API 调用封装为 单例的 Supplier
@@ -84,10 +85,6 @@ public class ApiCallService {
         BasicFuture<Object> newResult = new BasicFuture<>();
         QueryResult execute = null;
         try {
-            QIL finalCompiler = compiler;
-            Supplier<QueryResult> queryResult = SingleProvider.of(() -> {
-                return this.executeDataQL.createQuery(finalCompiler).execute(jsonParam);
-            });
             this.spiTrigger.chainSpi(PreExecuteChainSpi.class, (listener, lastResult) -> {
                 if (!newResult.isDone()) {
                     listener.preExecute(apiInfo, newResult);
@@ -100,19 +97,20 @@ public class ApiCallService {
                     execute = (QueryResult) data;           // 使用preExecute的结果
                 } else {
                     execute = QueryResultInfo.of(           //
-                            0,                    // 状态码
+                            0,                   // 状态码
                             DomainHelper.convertTo(data),   // 结果
                             DatawayUtils.currentLostTime()  // 耗时
                     );
                 }
             } else {
-                execute = queryResult.get(); // 发起真正的调用
+                QIL qil = qilSupplier.getWithThrow();       // 发起真正的调用
+                execute = this.executeDataQL.createQuery(qil).execute(apiInfo.getParameterMap());
             }
             loggerUtils.addLog("executionTime", execute.executionTime());
             loggerUtils.addLog("lifeCycleTime", DatawayUtils.currentLostTime());
             loggerUtils.addLog("code", execute.getCode());
             logger.info("requestSuccess - " + loggerUtils.toJson());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return doError(e, apiInfo, loggerUtils);
         }
         //
@@ -124,7 +122,7 @@ public class ApiCallService {
         return DatawayUtils.queryResultToResultWithSpecialValue(execute, resultData).getResult();
     }
 
-    private Map<String, Object> doError(Exception e, ApiInfo apiInfo, LoggerUtils loggerUtils) {
+    private Map<String, Object> doError(Throwable e, ApiInfo apiInfo, LoggerUtils loggerUtils) {
         Object value = null;
         if (e instanceof ThrowRuntimeException) {
             value = ((ThrowRuntimeException) e).getResult().unwrap();

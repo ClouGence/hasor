@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataway.spi;
-import net.hasor.web.Invoker;
-
 import java.util.EventListener;
 import java.util.Map;
 
@@ -29,8 +27,7 @@ public interface ParseParameterChainSpi extends EventListener {
      * 执行SPI，改写请求参数。将改写之后的参数 作为返回值返回即可。
      * @param perform 是否为 UI 页面中发起的
      * @param apiInfo api信息
-     * @param invoker Invoker对象
      * @param parameter 待处理的参数信息
      */
-    public Map<String, Object> parseParameter(boolean perform, ApiInfo apiInfo, Invoker invoker, Map<String, Object> parameter);
+    public Map<String, Object> parseParameter(boolean perform, ApiInfo apiInfo, Map<String, Object> parameter);
 }

@@ -72,7 +72,7 @@ public class DatawayUtils {
         }});
     }
 
-    public static Result<Map<String, Object>> exceptionToResult(Exception e) {
+    public static Result<Map<String, Object>> exceptionToResult(Throwable e) {
         if (e instanceof ThrowRuntimeException) {
             return exceptionToResultWithSpecialValue(e, ((ThrowRuntimeException) e).getResult().unwrap());
         } else {
@@ -80,7 +80,7 @@ public class DatawayUtils {
         }
     }
 
-    public static Result<Map<String, Object>> exceptionToResultWithSpecialValue(Exception e, Object specialValue) {
+    public static Result<Map<String, Object>> exceptionToResultWithSpecialValue(Throwable e, Object specialValue) {
         if (e instanceof ThrowRuntimeException) {
             return Result.of(new LinkedHashMap<String, Object>() {{
                 put("success", false);

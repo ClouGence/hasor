@@ -22,11 +22,20 @@ import java.util.Map;
  * @version : 2020-04-19
  */
 public class ApiInfo {
+    private boolean             perform;        // 本次调用是否为perform
     private String              apiID;          // API ID
     private String              releaseID;      // 发布的版本ID
     private String              method;         // Http Method
     private String              apiPath;        // Path
     private Map<String, Object> parameterMap;   // 请求参数
+
+    public boolean isPerform() {
+        return perform;
+    }
+
+    public void setPerform(boolean perform) {
+        this.perform = perform;
+    }
 
     public String getApiID() {
         return apiID;

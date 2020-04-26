@@ -23,7 +23,6 @@ import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataway.daos.ReleaseDetailQuery;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
-import net.hasor.dataway.spi.ParseParameterChainSpi;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
@@ -90,6 +89,7 @@ class InterfaceApiFilter implements InvokerFilter {
         //
         // .查询接口数据
         ApiInfo apiInfo = new ApiInfo();
+        apiInfo.setPerform(false);
         String script = null;
         try {
             QueryResult queryResult = new ReleaseDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
@@ -127,13 +127,11 @@ class InterfaceApiFilter implements InvokerFilter {
             }
         }
         apiInfo.setParameterMap(jsonParam);
-        jsonParam = this.spiTrigger.chainSpi(ParseParameterChainSpi.class, (listener, lastResult) -> {
-            return listener.parseParameter(false, apiInfo, invoker, lastResult);
-        }, jsonParam);
         //
         // .执行调用
         try {
-            Map<String, Object> objectMap = this.callService.doCall(apiInfo, script, jsonParam);
+            String finalScript = script;
+            Map<String, Object> objectMap = this.callService.doCall(apiInfo, param -> finalScript);
             return responseData(mimeType, httpResponse, objectMap);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

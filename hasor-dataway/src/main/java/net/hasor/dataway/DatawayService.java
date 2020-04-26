@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataway;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -22,5 +23,6 @@ import java.util.Map;
  * @version : 2020-04-19
  */
 public interface DatawayService {
-    public Map<String, Object> invokeApi(String method, String apiPath, Map<String, ?> jsonParam);
+    /** 执行配置的接口。*/
+    public Map<String, Object> invokeApi(String method, String apiPath, Map<String, Object> jsonParam) throws IOException;
 }
