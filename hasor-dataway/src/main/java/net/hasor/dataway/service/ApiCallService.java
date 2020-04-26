@@ -24,7 +24,10 @@ import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.LoggerUtils;
-import net.hasor.dataway.spi.*;
+import net.hasor.dataway.spi.ApiInfo;
+import net.hasor.dataway.spi.CompilerSpiListener;
+import net.hasor.dataway.spi.PreExecuteChainSpi;
+import net.hasor.dataway.spi.ResultProcessChainSpi;
 import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,15 +60,10 @@ public class ApiCallService {
             loggerUtils.addLog("paramRootKeys", "empty.");
         }
         //
-        // .确认参数
-        Map<String, Object> jsonParam = this.spiTrigger.chainSpi(ParseParameterChainSpi.class, (listener, lastResult) -> {
-            return listener.parseParameter(true, apiInfo, lastResult);
-        }, apiInfo.getParameterMap());
-        apiInfo.setParameterMap(jsonParam);
         //
         // .编译DataQL查询
         ProviderWithThrow<QIL> qilSupplier = () -> {
-            final String scriptBody = scriptBuild.buildScript(jsonParam);
+            final String scriptBody = scriptBuild.buildScript(apiInfo.getParameterMap());
             final Set<String> varNames = this.executeDataQL.getShareVarMap().keySet();
             final Finder finder = this.executeDataQL.getFinder();
             QIL compiler = this.spiTrigger.notifySpi(CompilerSpiListener.class, (listener, lastResult) -> {

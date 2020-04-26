@@ -4,7 +4,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.DimModule;
 import net.hasor.dataway.DatawayService;
-import net.hasor.dataway.spi.ParseParameterChainSpi;
+import net.hasor.dataway.spi.PreExecuteChainSpi;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
 import net.hasor.spring.SpringModule;
@@ -27,9 +27,8 @@ public class ExampleModule implements SpringModule {
         apiBinder.installModule(new JdbcModule(Level.Full, this.dataSource));
         // .custom DataQL
         //apiBinder.tryCast(QueryApiBinder.class).loadUdfSource(apiBinder.findClass(DimUdfSource.class));
-        apiBinder.bindSpiListener(ParseParameterChainSpi.class, (perform, apiInfo, invoker, parameter) -> {
-            parameter.put("self", "me");
-            return parameter;
+        apiBinder.bindSpiListener(PreExecuteChainSpi.class, (apiInfo, future) -> {
+            apiInfo.getParameterMap().put("self", "me");
         });
     }
 
