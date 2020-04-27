@@ -10,6 +10,7 @@ Hasor v4.1.4 (2020-05-?)
     - Dataway 增加 ResultProcessChainSpi 扩展点，可以对DataQL执行的结果进行二次处理。
     - hasor-spring 做整合的时，Hasor-web可以工作在 Filter模式下也可以工作在 SpringWebMVC 拦截器模式下
     - Dataway 新增 DatawayService 界面配置的接口可以在本地应用上用代码发起调用了。
+    - Dataway 支持配置多个数据源。但一个 DataQL 查询中目前依然只能使用一种数据源。
 **优化**
     - 改进 Dataway 在处理 GET 请求时，多个同名参数获取的问题。之前只能拿到数组形态，在于 POST 模式进行对比的时容易产生奇异造成认为是 Bug 的假象。 `issue <https://gitee.com/zycgit/hasor/issues/I1EUAL>`_
     - hasor-dataql-fx 项目中 ognl 内嵌到 jar包中，减少两个外部依赖 jar。`issue <https://gitee.com/zycgit/hasor/issues/I1DK6R>`_
