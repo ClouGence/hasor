@@ -24,13 +24,25 @@ import java.util.EventListener;
  * @version : 2020-04-19
  */
 public interface ResultProcessChainSpi extends EventListener {
-    /** 成功完成调用 */
-    public default Object callAfter(ApiInfo apiInfo, boolean fromPre, Object result) {
+    /**
+     * 成功完成调用
+     * @param formPre 结果的来源是否是 PreExecuteChainSpi
+     * @param apiInfo API 调用信息
+     * @param result 结果信息
+     * @return 返回结果，或者抛出异常。
+     */
+    public default Object callAfter(boolean formPre, ApiInfo apiInfo, Object result) {
         return result;
     }
 
-    /** 调用发生异常 */
-    public default Object callError(ApiInfo apiInfo, Throwable e) {
+    /**
+     * 调用发生异常
+     * @param formPre 异常的来源是否是 PreExecuteChainSpi
+     * @param apiInfo API 调用信息
+     * @param e 异常信息
+     * @return 返回结果，或者抛出一个新的异常来替代之前那个。
+     */
+    public default Object callError(boolean formPre, ApiInfo apiInfo, Throwable e) {
         if (e instanceof ThrowRuntimeException) {
             return ((ThrowRuntimeException) e).getResult().unwrap();
         } else {

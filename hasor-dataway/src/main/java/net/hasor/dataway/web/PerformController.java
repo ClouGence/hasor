@@ -24,8 +24,6 @@ import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.Map;
@@ -38,12 +36,11 @@ import java.util.Map;
 @MappingToUrl("/api/perform")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class PerformController extends BasicController {
-    protected static Logger         logger = LoggerFactory.getLogger(PerformController.class);
     @Inject
-    private          ApiCallService apiCallService;
+    private ApiCallService apiCallService;
 
     @Post
-    public Result<Map<String, Object>> doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) {
+    public Result<Map<String, Object>> doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws Throwable {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
@@ -58,22 +55,17 @@ public class PerformController extends BasicController {
         apiInfo.setParameterMap((Map<String, Object>) requestBody.get("requestBody"));
         //
         // .执行调用
-        try {
-            Map<String, Object> objectMap = this.apiCallService.doCall(apiInfo, jsonParam -> {
-                String strCodeType = requestBody.get("codeType").toString();
-                String strCodeValue = requestBody.get("codeValue").toString();
-                if ("sql".equalsIgnoreCase(strCodeType)) {
-                    // .如果是 SQL 还需要进行代码替换
-                    return DatawayUtils.evalCodeValueForSQL(strCodeValue, jsonParam);
-                } else {
-                    // .如果是 DataQL 那么就返回
-                    return strCodeValue;
-                }
-            });
-            return Result.of(objectMap);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return DatawayUtils.exceptionToResult(e);
-        }
+        Map<String, Object> objectMap = this.apiCallService.doCallWithoutError(apiInfo, jsonParam -> {
+            String strCodeType = requestBody.get("codeType").toString();
+            String strCodeValue = requestBody.get("codeValue").toString();
+            if ("sql".equalsIgnoreCase(strCodeType)) {
+                // .如果是 SQL 还需要进行代码替换
+                return DatawayUtils.evalCodeValueForSQL(strCodeValue, jsonParam);
+            } else {
+                // .如果是 DataQL 那么就返回
+                return strCodeValue;
+            }
+        });
+        return Result.of(objectMap);
     }
 }

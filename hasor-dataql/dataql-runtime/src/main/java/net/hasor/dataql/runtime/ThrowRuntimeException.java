@@ -22,9 +22,9 @@ import net.hasor.dataql.domain.DataModel;
  * @version : 2017-07-14
  */
 public class ThrowRuntimeException extends InstructRuntimeException {
-    private int       throwCode;
-    private long      executionTime;
-    private DataModel result;
+    protected int       throwCode     = 500;
+    protected long      executionTime = -1;
+    protected DataModel result        = null;
 
     public ThrowRuntimeException(String errorMessage) {
         super(errorMessage);

@@ -129,15 +129,9 @@ class InterfaceApiFilter implements InvokerFilter {
         apiInfo.setParameterMap(jsonParam);
         //
         // .执行调用
-        try {
-            String finalScript = script;
-            Map<String, Object> objectMap = this.callService.doCall(apiInfo, param -> finalScript);
-            return responseData(mimeType, httpResponse, objectMap);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            Map<String, Object> result = DatawayUtils.exceptionToResult(e).getResult();
-            return responseData(mimeType, httpResponse, result);
-        }
+        String finalScript = script;
+        Map<String, Object> objectMap = this.callService.doCallWithoutError(apiInfo, param -> finalScript);
+        return responseData(mimeType, httpResponse, objectMap);
     }
 
     private Map<String, Object> responseData(String mimeType, HttpServletResponse httpResponse, Map<String, Object> objectMap) throws IOException {

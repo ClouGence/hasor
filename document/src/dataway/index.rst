@@ -23,3 +23,11 @@ API 管理指南
     :maxdepth: 3
 
     api_manager
+
+
+扩展能力
+------------------------------------
+.. toctree::
+    :maxdepth: 3
+
+    spi

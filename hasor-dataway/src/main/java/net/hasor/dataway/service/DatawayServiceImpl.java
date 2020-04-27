@@ -24,7 +24,6 @@ import net.hasor.dataway.spi.ApiInfo;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +43,7 @@ public class DatawayServiceImpl implements DatawayService {
     private ApiCallService callService;
 
     @Override
-    public Map<String, Object> invokeApi(String method, String apiPath, Map<String, Object> jsonParam) throws IOException {
+    public Map<String, Object> invokeApi(String method, String apiPath, Map<String, Object> jsonParam) throws Throwable {
         String httpMethod = method.trim().toUpperCase();
         ApiInfo apiInfo = new ApiInfo();
         QueryResult queryResult = new ReleaseDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{

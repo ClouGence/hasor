@@ -6,7 +6,6 @@ Hasor v4.1.4 (2020-05-?)
 **新增**
     - 接口可以跨域访问。
     - Dataway 增加 CompilerSpiListener 扩展点，可以自定义 DataQL 编译过程。
-    - Dataway 增加 ParseParameterChainSpi 扩展点，可以在 DataQL 执行之前对请求参数进行干预和改写。
     - Dataway 增加 PreExecuteChainSpi 扩展点，可以在 DataQL 执行之前进行干预。配合 ResultProcessChainSpi 可以实现缓存和权限。
     - Dataway 增加 ResultProcessChainSpi 扩展点，可以对DataQL执行的结果进行二次处理。
     - hasor-spring 做整合的时，Hasor-web可以工作在 Filter模式下也可以工作在 SpringWebMVC 拦截器模式下

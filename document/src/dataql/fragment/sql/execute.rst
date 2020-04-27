@@ -264,3 +264,38 @@ DataQL 的事务函数还可以嵌套使用。
 +---------------+--------------------+-------------------------------------+
 | MANDATORY     | 要求环境中存在事务 | tran.tranMandatory(() -> { ... });  |
 +---------------+--------------------+-------------------------------------+
+
+
+多数据源
+------------------------------------
+SQL执行器在 4.1.4 版本之后提供了可以通过 hint 来切换数据源的能力。在没有指定数据源 hint 的情况下数据源采用的是默认数据源，配置多个数据源的方式如下：
+
+.. code-block:: java
+    :linenos:
+
+    public class MyModule implements Module {
+        public void loadModule(ApiBinder apiBinder) throws Throwable {
+            DataSource defaultDs = ...;
+            DataSource dsA = ...;
+            DataSource dsB = ...;
+            apiBinder.installModule(new JdbcModule(Level.Full, defaultDs));   // 默认数据源
+            apiBinder.installModule(new JdbcModule(Level.Full, "ds_A", dsA)); // 数据源A
+            apiBinder.installModule(new JdbcModule(Level.Full, "ds_B", dsB)); // 数据源B
+        }
+    }
+
+
+在DataQL中选择数据源：
+
+.. code-block:: js
+    :linenos:
+
+    // 如果不设置 FRAGMENT_SQL_DATA_SOURCE 使用的是 defaultDs 数据源。
+    //   - 设置值为 "ds_A" ，使用的是 dsA 数据源。
+    //   - 设置值为 "ds_B" ，使用的是 dsB 数据源。
+    hint FRAGMENT_SQL_DATA_SOURCE = "ds_A"
+
+    // 声明一个 SQL
+    var dataSet = @@sql() <% select * from category limit 10; %>
+    // 使用 特定数据源来执行SQL。
+    return dataSet();

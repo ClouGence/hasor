@@ -21,6 +21,41 @@ MAX_DECIMAL_DIGITS 选项
 超出该范围将会根据 NUMBER_ROUNDING 选项指定的舍入模式进行舍入，默认是四舍五入。
 
 
+FRAGMENT_SQL_DATA_SOURCE 选项
+------------------------------------
+SQL执行器使用的数据源名字，默认为：``""``。配置多个数据源的方法如下：
+
+.. code-block:: java
+    :linenos:
+
+    public class MyModule implements Module {
+        public void loadModule(ApiBinder apiBinder) throws Throwable {
+            DataSource defaultDs = ...;
+            DataSource dsA = ...;
+            DataSource dsB = ...;
+            apiBinder.installModule(new JdbcModule(Level.Full, defaultDs));   // 默认数据源
+            apiBinder.installModule(new JdbcModule(Level.Full, "ds_A", dsA)); // 数据源A
+            apiBinder.installModule(new JdbcModule(Level.Full, "ds_B", dsB)); // 数据源B
+        }
+    }
+
+
+在DataQL中选择数据源：
+
+.. code-block:: js
+    :linenos:
+
+    // 如果不设置 FRAGMENT_SQL_DATA_SOURCE 使用的是 defaultDs 数据源。
+    //   - 设置值为 "ds_A" ，使用的是 dsA 数据源。
+    //   - 设置值为 "ds_B" ，使用的是 dsB 数据源。
+    hint FRAGMENT_SQL_DATA_SOURCE = "ds_A"
+
+    // 声明一个 SQL
+    var dataSet = @@sql() <% select * from category limit 10; %>
+    // 使用 特定数据源来执行SQL。
+    return dataSet();
+
+
 NUMBER_ROUNDING 选项
 ------------------------------------
 小数的舍入模式，参考 RoundingEnum 定义的舍入模式(一共八种)，默认为：四舍五入。详细配置参考：RoundingEnum 枚举。

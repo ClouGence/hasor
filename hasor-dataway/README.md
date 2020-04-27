@@ -153,3 +153,8 @@ public class ExampleModule implements SpringModule {
 ![avatar](https://www.hasor.net/web/_images/CC2_D633_6D5C_MK4L.png)
 
 发布接口需要先进行冒烟测试，冒烟通过之后就可以点亮发布按钮。接口只有在发布之后才能在 Api List 页面中调用，前端才可以正常访问。
+
+
+## FAQ：
+
+&emsp;&emsp;拿到源码直接倒入工程后发现有一些类缺失是什么问题？ 答：请先执行一下 "mvn compile"。原因是：dataway的 dao 层采用的是 DataQL 方案。

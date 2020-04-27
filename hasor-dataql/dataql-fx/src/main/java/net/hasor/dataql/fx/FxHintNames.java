@@ -28,7 +28,9 @@ public enum FxHintNames {
     /** SqlFragment 查询执行是否使用分页模式（默认：不使用） */
     FRAGMENT_SQL_QUERY_BY_PAGE(FRAGMENT_SQL_QUERY_BY_PAGE_DISABLE),
     /** SqlFragment 分页查询在改写分页查询语句时使用的方言（默认：空，需要明确指定） */
-    FRAGMENT_SQL_PAGE_DIALECT("");
+    FRAGMENT_SQL_PAGE_DIALECT(""),
+    /** SqlFragment 数据源名字 */
+    FRAGMENT_SQL_DATA_SOURCE("");
     //
     private String defaultVal;
 
