@@ -50,9 +50,7 @@ public class DateTimeUdfSource implements UdfSourceAssembly {
 
     /** 返回当前系统时区的：日 */
     public static int day(long time) {
-        Calendar date = Calendar.getInstance();
-        date.setTime(new Date(time));
-        return date.get(Calendar.DAY_OF_MONTH);
+        return dayOfMonth(time);
     }
 
     /** 返回当前系统时区的：小时 */

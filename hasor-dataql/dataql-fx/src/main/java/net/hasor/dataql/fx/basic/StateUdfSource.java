@@ -18,7 +18,6 @@ import net.hasor.dataql.Udf;
 import net.hasor.dataql.UdfSourceAssembly;
 
 import javax.inject.Singleton;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -28,26 +27,14 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Singleton
 public class StateUdfSource implements UdfSourceAssembly {
-    /** 返回一个自增的 int，每次调用函数获取值都会自增 1。 */
-    public static Udf decInt(int initValue) {
-        AtomicInteger atomicLong = new AtomicInteger(initValue);
-        return (params, readOnly) -> atomicLong.incrementAndGet();
-    }
-
-    /** 返回一个自增的long，每次调用函数获取值都会自增 1。 */
-    public static Udf decLong(long initValue) {
+    /** 返回一个Udf，每次调用这个UDF，都会返回一个 Number。Number值较上一次会自增 1。 */
+    public static Udf decNumber(long initValue) {
         AtomicLong atomicLong = new AtomicLong(initValue);
         return (params, readOnly) -> atomicLong.incrementAndGet();
     }
 
-    /** 返回一个自减的 int，每次调用函数获取值都会自减 1。 */
-    public static Udf incInt(int initValue) {
-        AtomicInteger atomicLong = new AtomicInteger(initValue);
-        return (params, readOnly) -> atomicLong.decrementAndGet();
-    }
-
-    /** 返回一个自减的long，每次调用函数获取值都会自减 1。 */
-    public static Udf incLong(long initValue) {
+    /** 返回一个Udf，每次调用这个UDF，都会返回一个 Number。Number值较上一次会自减 1。 */
+    public static Udf incNumber(long initValue) {
         AtomicLong atomicLong = new AtomicLong(initValue);
         return (params, readOnly) -> atomicLong.decrementAndGet();
     }

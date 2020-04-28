@@ -8,7 +8,7 @@ compareString
 函数定义：``int compareString(str1, str2)``
 
 - **参数定义：** ``str1`` 类型：String，``str2`` 类型：String
-- **返回类型：** ``int``
+- **返回类型：** ``Number``
 - **作用：** 比较两个字符串，使用Java原生的字符串 compareTo 比较方法来实现。
 
 **作用**
@@ -30,7 +30,7 @@ compareStringIgnoreCase
 函数定义：``int compareStringIgnoreCase(str1, str2)``
 
 - **参数定义：** ``str1`` 类型：String，``str2`` 类型：String
-- **返回类型：** ``int``
+- **返回类型：** ``Number``
 - **作用：** 忽略大小写比较两个字符串，使用Java原生的字符串 compareToIgnoreCase 比较方法来实现。
 
 **作用**

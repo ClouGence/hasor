@@ -61,7 +61,6 @@ FunctionX库函数
     fx/basic/fx_datetime
     fx/basic/fx_json
     fx/basic/fx_string
-    fx/basic/fx_string
     fx/encryt/fx_codec
     fx/encryt/fx_digest
     fx/encryt/fx_hex

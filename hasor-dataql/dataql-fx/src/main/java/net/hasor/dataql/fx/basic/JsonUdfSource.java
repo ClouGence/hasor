@@ -36,7 +36,7 @@ public class JsonUdfSource implements UdfSourceAssembly {
         return JSON.toJSONString(data, true);
     }
 
-    /** 解析 JSON 序列化（带格式） */
+    /** 解析 JSON */
     public Object fromJson(String data) {
         if (data == null) {
             return null;
