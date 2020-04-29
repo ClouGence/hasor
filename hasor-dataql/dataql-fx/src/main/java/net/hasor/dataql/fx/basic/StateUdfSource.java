@@ -18,6 +18,7 @@ import net.hasor.dataql.Udf;
 import net.hasor.dataql.UdfSourceAssembly;
 
 import javax.inject.Singleton;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -37,5 +38,15 @@ public class StateUdfSource implements UdfSourceAssembly {
     public static Udf incNumber(long initValue) {
         AtomicLong atomicLong = new AtomicLong(initValue);
         return (params, readOnly) -> atomicLong.decrementAndGet();
+    }
+
+    /** 返回一个完整格式的 UUID 字符串。  */
+    public static String uuid() {
+        return UUID.randomUUID().toString();
+    }
+
+    /** 返回一个不含"-" 符号的 UUID 字符串 */
+    public static String uuidToShort() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }

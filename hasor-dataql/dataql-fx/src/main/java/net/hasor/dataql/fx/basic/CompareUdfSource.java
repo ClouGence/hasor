@@ -99,10 +99,4 @@ public class CompareUdfSource implements UdfSourceAssembly {
         str2 = str2 == null ? "" : str2;
         return str1.compareToIgnoreCase(str2);
     }
-    //    /** 比较两个数字 */
-    //    public static int compareNumber(Number num1, Number num2) {
-    //        num1 = num1 == null ? 0 : num1;
-    //        num2 = num2 == null ? 0 : num2;
-    //        return num1 > num2;
-    //    }
 }

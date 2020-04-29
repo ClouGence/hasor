@@ -32,7 +32,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * UDF UdfSource 的装配接口
+ * UDF UdfSource 的装配接口，请注意：不支持函数重载
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-11
  */

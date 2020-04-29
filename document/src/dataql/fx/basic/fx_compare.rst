@@ -1,7 +1,7 @@
 --------------------
 比较函数库
 --------------------
-引入集合函数库的方式为：``import 'net.hasor.dataql.fx.basic.CompareUdfSource' as compare;``
+引入比较函数库的方式为：``import 'net.hasor.dataql.fx.basic.CompareUdfSource' as compare;``
 
 compareString
 ------------------------------------

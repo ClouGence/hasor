@@ -1,7 +1,7 @@
 --------------------
 Json函数库
 --------------------
-引入集合函数库的方式为：``import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;``
+引入Json函数库的方式为：``import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;``
 
 toJson
 ------------------------------------
@@ -47,7 +47,7 @@ fromJson
 函数定义：``Object fromJson(jsonString)``
 
 - **参数定义：** ``jsonString`` 类型：String
-- **返回类型：** ``String``
+- **返回类型：** ``Object``
 - **作用：** 把 Json 格式的字符串解析成对象。
 
 **例子**

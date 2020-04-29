@@ -16,6 +16,7 @@ Hasor v4.1.4 (2020-05-?)
     - hasor-dataql-fx 项目中 ognl 内嵌到 jar包中，减少两个外部依赖 jar。`issue <https://gitee.com/zycgit/hasor/issues/I1DK6R>`_
     - SpiInterceptor 机制有些说不清，改为 SpiJudge（仲裁机制：SPI 仲裁：当同一个 SPI bind 了多个监听器时，仲裁可以决定哪些 SPI 会被调用）
     - hasor-web 支持路径中出现多个连续 / ，例如： ``http://127.0.0.1:8080/app/////interface-ui/#/new``。连续的 / 会被折叠成一个。
+    - Dataway UI 界面中模式切换会因为 // 但行注释问题产生一些不友好的用户体验。现改成 /**/ 多行注释方式。
 **修复**
     - Dateway 4.1.3 版本资源文件缺失问题。 `issue <https://gitee.com/zycgit/hasor/issues/I1EM2V>`_
     - Dataway 当关闭 UI 功能之后接口调用报 NPE 问题。Bug 原因是 Dataway 内置 DataQL 的环境是一个隔离环境，隔离环境的初始化是在 UI 之后。

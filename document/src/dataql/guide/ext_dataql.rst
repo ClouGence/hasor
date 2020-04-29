@@ -8,7 +8,7 @@
     :linenos:
 
     var dataSet = @@sql(item_code) <%
-        select * from category where co_code = :item_code
+        select * from category where co_code = #{item_code}
     %>
     return dataSet() => [
         { "id","name","code","body" }

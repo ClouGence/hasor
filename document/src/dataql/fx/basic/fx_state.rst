@@ -41,3 +41,36 @@ incNumber
     var next = decNum() // next = -2
     var next = decNum() // next = -3
 
+uuid
+------------------------------------
+函数定义：``String uuid()``
+
+- **参数定义：** 无
+- **返回类型：** ``String``
+- **作用：** 返回一个完整格式的 UUID 字符串。
+
+**例子**
+
+.. code-block:: js
+    :linenos:
+
+    state.uuid() = "bc4b0433-0427-4d0f-9f0b-5e9b7a0a281e"
+    state.uuid() = "f573a2dd-5dd3-41c8-8bf6-f5e794b7d3f4"
+    state.uuid() = "dcae141d-2e1e-4079-8cd2-ded2cfa7d9d8"
+
+uuidToShort
+------------------------------------
+函数定义：``String uuidToShort()``
+
+- **参数定义：** 无
+- **返回类型：** ``String``
+- **作用：** 返回一个不含"-" 符号的 UUID 字符串。
+
+**例子**
+
+.. code-block:: js
+    :linenos:
+
+    state.uuidToShort() = "bc4b043304274d0f9f0b5e9b7a0a281e"
+    state.uuidToShort() = "f573a2dd5dd341c88bf6f5e794b7d3f4"
+    state.uuidToShort() = "dcae141d2e1e40798cd2ded2cfa7d9d8"

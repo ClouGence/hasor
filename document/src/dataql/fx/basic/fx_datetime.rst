@@ -1,7 +1,7 @@
 --------------------
 时间日历函数库
 --------------------
-引入集合函数库的方式为：``import 'net.hasor.dataql.fx.basic.DateTimeUdfSource' as time;``
+引入时间日历函数库的方式为：``import 'net.hasor.dataql.fx.basic.DateTimeUdfSource' as time;``
 
 now
 ------------------------------------
@@ -62,7 +62,7 @@ month
     time.month(1588040924445) = 4 // 将三个集合合并成一个集合。
     time.month(time.now())    = 4 // 系统时间中，当前的月份（从 1 开始）
 
-dayOfMonth、day
+day、dayOfMonth
 ------------------------------------
 函数定义：``Number dayOfMonth(time)`` 或 ``Number day(time)``
 

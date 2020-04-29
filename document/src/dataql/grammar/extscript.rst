@@ -7,7 +7,7 @@ DataQL 允许在查询中混合其它查询语言，一个典型的场景是把 
     :linenos:
 
     var dataSet = @@sql(item_code) <%
-        select * from category where co_code = :item_code
+        select * from category where co_code = #{item_code}
     %>
     return dataSet() => [
         { "id","name","code","body" }

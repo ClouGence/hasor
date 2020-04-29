@@ -276,7 +276,7 @@
                     comment: '',
                     apiStatus: 0,
                     codeType: 'DataQL',
-                    codeValue: '// a new DataQL Query.\nreturn ${message};',
+                    codeValue: '/* a new Query.*/\nreturn ${message};',
                     editorSubmitted: true,
                 },
                 //
