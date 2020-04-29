@@ -3,7 +3,7 @@ DataQL 的数据模型是通过 ``net.hasor.dataql.domain.DataModel`` 接口表�
 
 由于 DataQL 在进行数据处理和转换期间所有数据操作都会在统一的数据模型上进行处理，因此 DataModel 也是 DataQL 的一项核心概念。
 
-API 文档参考手册地址为：[`net.hasor.dataql.domain </apis/hasor/4.1.x/4.1.3/net/hasor/dataql/domain/package-summary.html>`_]
+API 文档参考手册地址为：[`net.hasor.dataql.domain </apis/hasor/4.1.x/4.1.4/net/hasor/dataql/domain/package-summary.html>`_]
 
 DataModel
 ------------------------------------
