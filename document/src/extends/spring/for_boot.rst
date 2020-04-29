@@ -102,4 +102,18 @@ Hasor-Web 的全局拦截器配置的拦截路径，默认值是： ``/*``
 
 **order**
 
-Hasor 全局拦截器的顺序，默认值是：``0``
+Hasor 全局拦截器的顺序，默认值是： ``0``
+
+**at**
+
+Hasor-web 在 Spring 中的工作模式，由 ``net.hasor.spring.boot.WorkAt`` 枚举定义。默认是：Filter
+
+- Filter：过滤器模式
+- Interceptor：拦截器模式
+
+在 Spring 生态中，SpringMVC 提供了拦截器功能，通过拦截器可以实现诸如权限控制的能力。
+但是拦截器和 j2ee 的 过滤器如果同时在 Spring 中出现，过滤器会被优先处理。
+
+这就造成了如果基于 SpringMVC 的拦截器实现权限控制，在整合 Hasor 之后。拦截器无法拦截 Hasor 请求的问题。
+
+这时候可以使用 at 属性来调整 Hasor-web 的工作模式，默认情况下hasor-web 是工作在 Filter 模式下的
