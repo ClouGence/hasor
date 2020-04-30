@@ -4,7 +4,7 @@
     <parent>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
-        <version>4.1.4</version>
+        <version>4.1.5-SNAPSHOT</version>
     </parent>
     
     <!-- Maven Info -->
