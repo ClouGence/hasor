@@ -102,6 +102,10 @@ public class SqlFragment implements FragmentProcess {
         return jdbcTemplate;
     }
 
+    protected FxSql analysisSQL(Hints hint, SqlMode sqlMode, String fragmentString) {
+        return FxSql.analysisSQL(fragmentString);
+    }
+
     public List<Object> batchRunFragment(Hints hint, List<Map<String, Object>> params, String fragmentString) throws Throwable {
         // 如果批量参数为空或者只有一个时，自动退化为非批量
         if (params == null || params.size() == 0) {
@@ -112,7 +116,7 @@ public class SqlFragment implements FragmentProcess {
         }
         //
         SqlMode sqlMode = evalSqlMode(fragmentString);
-        FxSql fxSql = FxSql.analysisSQL(fragmentString);
+        FxSql fxSql = analysisSQL(hint, sqlMode, fragmentString);
         if ((SqlMode.Insert == sqlMode || SqlMode.Update == sqlMode || SqlMode.Delete == sqlMode) && !fxSql.isHavePlaceholder()) {
             fragmentString = fxSql.buildSqlString(params.get(0));
             PreparedStatementSetter[] parameterArrays = new PreparedStatementSetter[params.size()];
@@ -147,7 +151,7 @@ public class SqlFragment implements FragmentProcess {
     @Override
     public Object runFragment(Hints hint, Map<String, Object> paramMap, String fragmentString) throws Throwable {
         SqlMode sqlMode = evalSqlMode(fragmentString);
-        FxSql fxSql = FxSql.analysisSQL(fragmentString);
+        FxSql fxSql = analysisSQL(hint, sqlMode, fragmentString);
         if (usePage(hint, sqlMode, fxSql)) {
             return this.usePageFragment(fxSql, sqlMode, hint, paramMap);
         } else {
