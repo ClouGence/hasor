@@ -279,11 +279,17 @@ public class SqlFragment implements FragmentProcess {
                     continue;
                 }
                 // 单行注释
-                if (tempLine.startsWith("--") && tempLine.startsWith("#")) {
+                if (tempLine.startsWith("--") || tempLine.startsWith("//")) {
                     continue;
                 }
                 // 多行注释
                 if (tempLine.startsWith("/*")) {
+                    if (tempLine.contains("*/")) {
+                        tempLine = tempLine.substring(tempLine.indexOf("*/") + 2).trim();// 使用多行注释定义了一个单行注释
+                    }
+                    if (StringUtils.isBlank(tempLine)) {
+                        continue;
+                    }
                     multipleLines = true;
                 }
             }

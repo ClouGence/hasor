@@ -24,6 +24,7 @@ Hasor v4.1.4 (2020-05-?)
     - `issue <https://gitee.com/zycgit/hasor/issues/I1EM2V>`_ Dateway 4.1.3 版本资源文件缺失问题。
     - `issue <https://gitee.com/zycgit/hasor/issues/I1FD95>`_ Dataway 修复 spring boot context_path 不支持的问题。
     - Dataway 当关闭 UI 功能之后接口调用报 NPE 问题。Bug 原因是 Dataway 内置 DataQL 的环境是一个隔离环境，隔离环境的初始化是在 UI 之后。
+    - 修复 SqlFragment 单行注释判断不识别的问题。
 
 Hasor v4.1.3 (2020-04-13)
 ------------------------------------
