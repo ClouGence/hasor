@@ -20,6 +20,7 @@ import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.fx.FxHintNames;
 import net.hasor.dataql.fx.FxHintValue;
+import net.hasor.dataql.fx.basic.StringUdfSource;
 import net.hasor.dataql.fx.db.dialect.SqlPageDialect;
 import net.hasor.dataql.fx.db.parser.FxSql;
 import net.hasor.db.jdbc.BatchPreparedStatementSetter;
@@ -42,7 +43,7 @@ import java.util.stream.Collectors;
 
 import static net.hasor.dataql.fx.FxHintNames.FRAGMENT_SQL_DATA_SOURCE;
 import static net.hasor.dataql.fx.FxHintNames.FRAGMENT_SQL_PAGE_DIALECT;
-import static net.hasor.dataql.fx.FxHintValue.FRAGMENT_SQL_QUERY_BY_PAGE_ENABLE;
+import static net.hasor.dataql.fx.FxHintValue.*;
 
 /**
  * 支持 SQL 的代码片段执行器。整合了分页、批处理能力。
@@ -193,35 +194,7 @@ public class SqlFragment implements FragmentProcess {
         //
         if (SqlMode.Query == sqlMode) {
             List<Map<String, Object>> mapList = this.getJdbcTemplate(sourceName).queryForList(fragmentString, source);
-            String openPackage = hint.getOrDefault(FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.name(), FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.getDefaultVal()).toString();
-            //
-            // .结果有多条记录,或者模式为 off，那么直接返回List
-            boolean packageOff = FxHintValue.FRAGMENT_SQL_OPEN_PACKAGE_OFF.equalsIgnoreCase(openPackage);
-            if (packageOff || (mapList != null && mapList.size() > 1)) {
-                return mapList;
-            }
-            // .为空或者结果为空，那么看看是返回 null 或者 空对象
-            if (mapList == null || mapList.isEmpty()) {
-                if (FxHintValue.FRAGMENT_SQL_OPEN_PACKAGE_COLUMN.equalsIgnoreCase(openPackage)) {
-                    return null;
-                } else {
-                    return Collections.emptyMap();
-                }
-            }
-            // .只有1条记录
-            Map<String, Object> rowObject = mapList.get(0);
-            if (FxHintValue.FRAGMENT_SQL_OPEN_PACKAGE_COLUMN.equalsIgnoreCase(openPackage)) {
-                if (rowObject == null) {
-                    return null;
-                }
-                if (rowObject.size() == 1) {
-                    Set<Map.Entry<String, Object>> entrySet = rowObject.entrySet();
-                    Map.Entry<String, Object> objectEntry = entrySet.iterator().next();
-                    return objectEntry.getValue();
-                }
-            }
-            return rowObject;
-            //
+            return this.convertResult(hint, mapList);
         } else if (SqlMode.Insert == sqlMode || SqlMode.Update == sqlMode || SqlMode.Delete == sqlMode) {
             return this.getJdbcTemplate(sourceName).executeUpdate(fragmentString, source);
         } else if (SqlMode.Procedure == sqlMode) {
@@ -239,6 +212,59 @@ public class SqlFragment implements FragmentProcess {
             return FRAGMENT_SQL_QUERY_BY_PAGE_ENABLE.equalsIgnoreCase(hintOrDefault.toString());
         }
         return false;
+    }
+
+    protected Object convertResult(Hints hint, List<Map<String, Object>> mapList) {
+        String openPackage = hint.getOrDefault(FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.name(), FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.getDefaultVal()).toString();
+        String caseModule = hint.getOrDefault(FxHintNames.FRAGMENT_SQL_COLUMN_CASE.name(), FxHintNames.FRAGMENT_SQL_COLUMN_CASE.getDefaultVal()).toString();
+        if (!FRAGMENT_SQL_COLUMN_CASE_DEFAULT.equalsIgnoreCase(caseModule)) {
+            final boolean toUpper = FRAGMENT_SQL_COLUMN_CASE_UPPER.equalsIgnoreCase(caseModule);
+            final boolean toLower = FRAGMENT_SQL_COLUMN_CASE_LOWER.equalsIgnoreCase(caseModule);
+            final boolean toHump = FRAGMENT_SQL_COLUMN_CASE_HUMP.equalsIgnoreCase(caseModule);
+            //
+            for (int i = 0; i < mapList.size(); i++) {
+                Map<String, Object> newMap = new LinkedHashMap<>();
+                mapList.get(i).forEach((key, value) -> {
+                    if (toUpper) {
+                        newMap.put(key.toUpperCase(), value);
+                    } else if (toLower) {
+                        newMap.put(key.toLowerCase(), value);
+                    } else if (toHump) {
+                        newMap.put(StringUdfSource.lineToHump(key.toLowerCase()), value);
+                    } else {
+                        newMap.put(key, value);
+                    }
+                });
+                mapList.set(i, newMap);
+            }
+        }
+        //
+        // .结果有多条记录,或者模式为 off，那么直接返回List
+        boolean packageOff = FxHintValue.FRAGMENT_SQL_OPEN_PACKAGE_OFF.equalsIgnoreCase(openPackage);
+        if (packageOff || (mapList != null && mapList.size() > 1)) {
+            return mapList;
+        }
+        // .为空或者结果为空，那么看看是返回 null 或者 空对象
+        if (mapList == null || mapList.isEmpty()) {
+            if (FxHintValue.FRAGMENT_SQL_OPEN_PACKAGE_COLUMN.equalsIgnoreCase(openPackage)) {
+                return null;
+            } else {
+                return Collections.emptyMap();
+            }
+        }
+        // .只有1条记录
+        Map<String, Object> rowObject = mapList.get(0);
+        if (FxHintValue.FRAGMENT_SQL_OPEN_PACKAGE_COLUMN.equalsIgnoreCase(openPackage)) {
+            if (rowObject == null) {
+                return null;
+            }
+            if (rowObject.size() == 1) {
+                Set<Map.Entry<String, Object>> entrySet = rowObject.entrySet();
+                Map.Entry<String, Object> objectEntry = entrySet.iterator().next();
+                return objectEntry.getValue();
+            }
+        }
+        return rowObject;
     }
 
     private static SqlMode evalSqlMode(String fragmentString) throws SQLException, IOException {

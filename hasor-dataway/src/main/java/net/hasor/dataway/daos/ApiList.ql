@@ -1,8 +1,14 @@
+hint FRAGMENT_SQL_COLUMN_CASE = "lower";
+
 var queryMap = {
-    "default"   : @@sql()<% select * from interface_info order by api_create_time asc; %>
+    "default"   : @@sql()<%
+        select * from interface_info order by api_create_time asc
+    %>
 };
 
-return queryMap[dbMapping]() => [
+var queryExec = (queryMap[dbMapping] == null) ? queryMap["default"] : queryMap[dbMapping];
+
+return queryExec() => [
     {
         "id"      : api_id,
         "checked" : false,

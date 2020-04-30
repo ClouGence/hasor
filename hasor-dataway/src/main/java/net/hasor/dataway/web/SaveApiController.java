@@ -23,6 +23,8 @@ import net.hasor.dataway.daos.ApiInfoQuery;
 import net.hasor.dataway.daos.InsertApiQuery;
 import net.hasor.dataway.daos.UpdateApiQuery;
 import net.hasor.dataway.service.CheckService;
+import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.interceptor.Transactional;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
@@ -30,7 +32,6 @@ import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
 import javax.inject.Inject;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +47,8 @@ public class SaveApiController extends BasicController {
     private CheckService checkService;
 
     @Post
-    public Result<Object> doSave(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public Result<Object> doSave(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws Throwable {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }

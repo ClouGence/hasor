@@ -336,6 +336,26 @@ public class CollectionUdfSource implements UdfSourceAssembly {
         return returnData;
     }
 
+    /** Map 的 Key 统一转小写 */
+    public static Map<String, Object> mapKeyToLowerCase(Map<String, Object> map) {
+        if (map == null) {
+            return Collections.emptyMap();
+        }
+        LinkedHashMap<String, Object> newMap = new LinkedHashMap<>();
+        map.forEach((s, o) -> newMap.put(s.toLowerCase(), o));
+        return newMap;
+    }
+
+    /** Map 的 Key 统一转大写 */
+    public static Map<String, Object> mapKeyToUpperCase(Map<String, Object> map) {
+        if (map == null) {
+            return Collections.emptyMap();
+        }
+        LinkedHashMap<String, Object> newMap = new LinkedHashMap<>();
+        map.forEach((s, o) -> newMap.put(s.toUpperCase(), o));
+        return newMap;
+    }
+
     /** 提取 Map 的 Key */
     public static List<String> mapKeys(Map<String, Object> map) {
         if (map == null) {

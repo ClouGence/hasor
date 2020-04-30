@@ -1,10 +1,15 @@
+hint FRAGMENT_SQL_COLUMN_CASE = "lower";
 import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 
 var queryMap = {
-    "default"   : @@sql(apiId)<% select * from interface_info where api_id= #{apiId}; %>
+    "default"   : @@sql(apiId)<%
+        select * from interface_info where api_id = #{apiId}
+    %>
 };
 
-return queryMap[dbMapping](${apiId}) => {
+var queryExec = (queryMap[dbMapping] == null) ? queryMap["default"] : queryMap[dbMapping];
+
+return queryExec(${apiId}) => {
     "id"          : api_id,
     "select"      : api_method,
     "path"        : api_path,

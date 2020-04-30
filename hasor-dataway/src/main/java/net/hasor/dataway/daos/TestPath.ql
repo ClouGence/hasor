@@ -1,5 +1,11 @@
+hint FRAGMENT_SQL_COLUMN_CASE = "lower";
+
 var queryMap = {
-    "default"   : @@sql(apiPath)<% select count(*) from interface_info where api_path= #{apiPath}; %>
+    "default"   : @@sql(apiPath)<%
+        select count(*) from interface_info where api_path = #{apiPath}
+    %>
 };
 
-return queryMap[dbMapping](${apiPath}) > 0
+var queryExec = (queryMap[dbMapping] == null) ? queryMap["default"] : queryMap[dbMapping];
+
+return queryExec(${apiPath}) > 0

@@ -22,6 +22,8 @@ import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiDetailQuery;
 import net.hasor.dataway.daos.PublishApiQuery;
+import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.interceptor.Transactional;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
@@ -29,7 +31,6 @@ import net.hasor.web.annotation.RequestBody;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +43,8 @@ import java.util.Map;
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class PublishController extends BasicController {
     @Post
-    public Result<Object> doPublish(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public Result<Object> doPublish(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws Throwable {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
@@ -62,11 +64,10 @@ public class PublishController extends BasicController {
         }
         //
         String finalStrCodeValue = strCodeValue;
-        new PublishApiQuery(this.dataQL).execute(new HashMap<String, String>() {{
+        new PublishApiQuery(dataQL).execute(new HashMap<String, String>() {{
             put("apiId", apiId);
             put("newScript", finalStrCodeValue);
         }});
-        //
         return Result.of(true);
     }
 }

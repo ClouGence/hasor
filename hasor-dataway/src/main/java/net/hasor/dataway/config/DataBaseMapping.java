@@ -21,7 +21,7 @@ package net.hasor.dataway.config;
  */
 public enum DataBaseMapping {
     Mysql("MySQL", "default"),//
-    Oracle("Oracle", "default"),//
+    Oracle("Oracle", "oracle"),//
     PostgreSQL("PostgreSQL", "default");
     //
     //

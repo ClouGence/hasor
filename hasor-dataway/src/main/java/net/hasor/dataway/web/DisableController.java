@@ -18,6 +18,8 @@ import net.hasor.dataql.QueryResult;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.DisableApiQuery;
+import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.interceptor.Transactional;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
@@ -37,6 +39,7 @@ import java.util.Map;
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class DisableController extends BasicController {
     @Post
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Result<Object> doDisable(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");

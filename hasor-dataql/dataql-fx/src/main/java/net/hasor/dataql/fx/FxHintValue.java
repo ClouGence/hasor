@@ -25,4 +25,20 @@ public interface FxHintValue extends HintValue {
      * SqlFragment 在执行 select 语句时不分页，获取数据的步骤：1先获取查询对象，2.获取SQL执行的数据。
      */
     public static final String FRAGMENT_SQL_QUERY_BY_PAGE_DISABLE = "false";
+    /**
+     * SqlFragment 返回的列信息,全部列名保持大小写敏感。
+     */
+    public static final String FRAGMENT_SQL_COLUMN_CASE_DEFAULT   = "default";
+    /**
+     * SqlFragment 返回的列信息,全部列名保持大写。
+     */
+    public static final String FRAGMENT_SQL_COLUMN_CASE_UPPER     = "upper";
+    /**
+     * SqlFragment 返回的列信息,全部列名保持小写。
+     */
+    public static final String FRAGMENT_SQL_COLUMN_CASE_LOWER     = "lower";
+    /**
+     * SqlFragment 返回的列信息,全部列名做一次驼峰转换。如：goods_id=>goodsId
+     */
+    public static final String FRAGMENT_SQL_COLUMN_CASE_HUMP      = "hump";
 }
