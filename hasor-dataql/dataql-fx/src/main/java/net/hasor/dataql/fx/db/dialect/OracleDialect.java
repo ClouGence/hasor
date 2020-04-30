@@ -31,10 +31,8 @@ public class OracleDialect extends AbstractDialect {
         //
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append("SELECT * FROM ( ");
-        sqlBuilder.append(" SELECT TMP_PAGE.*, ROWNUM ROW_ID FROM ( ");
         sqlBuilder.append(buildSqlString);
-        sqlBuilder.append(" ) TMP_PAGE)");
-        sqlBuilder.append(" WHERE ROW_ID > ? AND ROW_ID <= ?");
+        sqlBuilder.append(") TMP_PAGE WHERE ROWNUM > ? AND ROWNUM <= ?");
         paramArrays.add(start);
         paramArrays.add(start + limit);
         //
