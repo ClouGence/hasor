@@ -356,6 +356,16 @@ public class CollectionUdfSource implements UdfSourceAssembly {
         return newMap;
     }
 
+    /** Map 的 Key 统一转驼峰 */
+    public static Map<String, Object> mapKeyToHumpCase(Map<String, Object> map) {
+        if (map == null) {
+            return Collections.emptyMap();
+        }
+        LinkedHashMap<String, Object> newMap = new LinkedHashMap<>();
+        map.forEach((s, o) -> newMap.put(StringUdfSource.lineToHump(s.toLowerCase()), o));
+        return newMap;
+    }
+
     /** 提取 Map 的 Key */
     public static List<String> mapKeys(Map<String, Object> map) {
         if (map == null) {
