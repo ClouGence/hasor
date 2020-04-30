@@ -239,6 +239,69 @@ mapJoin
     //   {"商品Code":"code_4", "去年同期":1234.0, "今年总额":2344, "环比去年增长":"89.95%"}
     // ]
 
+mapKeyToLowerCase
+------------------------------------
+函数定义：``Map mapKeyToLowerCase(dataMap)``
+
+- **参数定义：** ``dataMap`` 类型：Map，准备要转换的Map对象；
+- **返回类型：** ``Map``
+- **作用：** 将 Map 的 Key 全部转为小写，如果 Key 有冲突会产生覆盖。
+
+**例子**
+
+.. code-block:: js
+    :linenos:
+
+    var mapData = {
+        "abc" : "aa",
+        "ABC" : "bb",
+        "test_abc" : "cc"
+    }
+    var result = collect.mapKeyToLowerCase(mapData)
+    // result = { "abc": "bb", "test_abc": "cc" }
+
+mapKeyToUpperCase
+------------------------------------
+函数定义：``Map mapKeyToUpperCase(dataMap)``
+
+- **参数定义：** ``dataMap`` 类型：Map，准备要转换的Map对象；
+- **返回类型：** ``Map``
+- **作用：** 将 Map 的 Key 全部转为大写，如果 Key 有冲突会产生覆盖。
+
+**例子**
+
+.. code-block:: js
+    :linenos:
+
+    var mapData = {
+        "abc" : "aa",
+        "ABC" : "bb",
+        "test_abc" : "cc"
+    }
+    var result = collect.mapKeyToUpperCase(mapData)
+    // result = { "ABC": "bb", "TEST_ABC": "cc" }
+
+mapKeyToHumpCase
+------------------------------------
+函数定义：``Map mapKeyToHumpCase(dataMap)``
+
+- **参数定义：** ``dataMap`` 类型：Map，准备要转换的Map对象；
+- **返回类型：** ``Map``
+- **作用：** 将 Map 的 Key 中下划线做驼峰转换。
+
+**例子**
+
+.. code-block:: js
+    :linenos:
+
+    var mapData = {
+        "abc" : "aa",
+        "ABC" : "bb",
+        "test_abc" : "cc"
+    }
+    var result = collect.mapKeyToHumpCase(mapData)
+    // result = { "ABC": "bb", "testAbc": "cc" }
+
 mapKeys
 ------------------------------------
 函数定义：``List mapKeys(dataMap)``

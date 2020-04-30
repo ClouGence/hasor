@@ -24,7 +24,7 @@ import static net.hasor.dataql.fx.FxHintValue.*;
 public enum FxHintNames {
     /** SqlFragment 返回值，拆开方式 */
     FRAGMENT_SQL_OPEN_PACKAGE(FRAGMENT_SQL_OPEN_PACKAGE_COLUMN),
-    /** SqlFragment 返回的列信息大小写模式：default、upper、lower */
+    /** SqlFragment 返回的列信息大小写模式：default、upper、lower、hump */
     FRAGMENT_SQL_COLUMN_CASE(FRAGMENT_SQL_COLUMN_CASE_DEFAULT),
     /** SqlFragment 查询执行是否使用分页模式（默认：不使用） */
     FRAGMENT_SQL_QUERY_BY_PAGE(FRAGMENT_SQL_QUERY_BY_PAGE_DISABLE),

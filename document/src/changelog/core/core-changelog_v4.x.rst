@@ -10,17 +10,20 @@ Hasor v4.1.4 (2020-05-?)
     - Dataway 增加 ResultProcessChainSpi 扩展点，可以对DataQL执行的结果进行二次处理。
     - hasor-spring 做整合的时，Hasor-web可以工作在 Filter模式下也可以工作在 SpringWebMVC 拦截器模式下
     - Dataway 新增 DatawayService 界面配置的接口可以在本地应用上用代码发起调用了。
-    - Dataway 支持配置多个数据源。但一个 DataQL 查询中目前依然只能使用一种数据源。
+    - `issue <https://github.com/zycgit/hasor/issues/13>`_ Dataway 支持配置多个数据源。但一个 DataQL 查询中目前依然只能使用一种数据源。
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1F0ZB>`_ Dataway 新增 Oracle 的支持。
+    - 新增 FRAGMENT_SQL_COLUMN_CASE 选项，可以决定 SQL 执行器的返回结果 key 策略，是全部大写还是全部小写或者满足驼峰。
+    - 新增 mapKeyToLowerCase、mapKeyToUpperCase、mapKeyToHumpCase 三个函数，对 Map 的 Key 做转换
 **优化**
-    - 改进 Dataway 在处理 GET 请求时，多个同名参数获取的问题。之前只能拿到数组形态，在于 POST 模式进行对比的时容易产生奇异造成认为是 Bug 的假象。 `issue <https://gitee.com/zycgit/hasor/issues/I1EUAL>`_
-    - hasor-dataql-fx 项目中 ognl 内嵌到 jar包中，减少两个外部依赖 jar。`issue <https://gitee.com/zycgit/hasor/issues/I1DK6R>`_
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1EUAL>`_ 改进 Dataway 在处理 GET 请求时，多个同名参数获取的问题。之前只能拿到数组形态，在于 POST 模式进行对比的时容易产生奇异造成认为是 Bug 的假象。
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1DK6R>`_ hasor-dataql-fx 项目中 ognl 内嵌到 jar包中，减少两个外部依赖 jar。
     - SpiInterceptor 机制有些说不清，改为 SpiJudge（仲裁机制：SPI 仲裁：当同一个 SPI bind 了多个监听器时，仲裁可以决定哪些 SPI 会被调用）
     - hasor-web 支持路径中出现多个连续 / ，例如： ``http://127.0.0.1:8080/app/////interface-ui/#/new``。连续的 / 会被折叠成一个。
     - Dataway UI 界面中模式切换会因为 // 但行注释问题产生一些不友好的用户体验。现改成 /**/ 多行注释方式。
 **修复**
-    - Dateway 4.1.3 版本资源文件缺失问题。 `issue <https://gitee.com/zycgit/hasor/issues/I1EM2V>`_
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1EM2V>`_ Dateway 4.1.3 版本资源文件缺失问题。
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1FD95>`_ Dataway 修复 spring boot context_path 不支持的问题。
     - Dataway 当关闭 UI 功能之后接口调用报 NPE 问题。Bug 原因是 Dataway 内置 DataQL 的环境是一个隔离环境，隔离环境的初始化是在 UI 之后。
-    - Dataway 修复 spring boot context_path 不支持的问题。 `issue <https://gitee.com/zycgit/hasor/issues/I1FD95>`_
 
 Hasor v4.1.3 (2020-04-13)
 ------------------------------------

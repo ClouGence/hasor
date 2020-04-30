@@ -30,15 +30,15 @@ public interface FxHintValue extends HintValue {
      */
     public static final String FRAGMENT_SQL_COLUMN_CASE_DEFAULT   = "default";
     /**
-     * SqlFragment 返回的列信息,全部列名保持大写。
+     * SqlFragment 全部列名保持大写，如果在转换过程中发生冲突，那么会产生覆盖问题。
      */
     public static final String FRAGMENT_SQL_COLUMN_CASE_UPPER     = "upper";
     /**
-     * SqlFragment 返回的列信息,全部列名保持小写。
+     * SqlFragment 全部列名保持小写，如果在转换过程中发生冲突，那么会产生覆盖问题。
      */
     public static final String FRAGMENT_SQL_COLUMN_CASE_LOWER     = "lower";
     /**
-     * SqlFragment 返回的列信息,全部列名做一次驼峰转换。如：goods_id=>goodsId
+     * SqlFragment 返回的列信息,全部列名做一次驼峰转换。如：goods_id => goodsId、GOODS_id => goodsId。
      */
     public static final String FRAGMENT_SQL_COLUMN_CASE_HUMP      = "hump";
 }
