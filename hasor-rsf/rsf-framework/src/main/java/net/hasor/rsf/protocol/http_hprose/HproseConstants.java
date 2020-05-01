@@ -1,5 +1,5 @@
 package net.hasor.rsf.protocol.http_hprose;
-import net.hasor.rsf.libs.com.hprose.io.HproseTags;
+import hprose.io.HproseTags;
 
 /**
  * 常量

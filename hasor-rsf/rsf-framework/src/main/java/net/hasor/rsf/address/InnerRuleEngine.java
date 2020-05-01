@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
-import net.hasor.rsf.libs.org.codehaus.groovy.jsr223.GroovyScriptEngineImpl;
+import net.hasor.rsf.utils.groovy223.GroovyScriptEngineImpl;
 import net.hasor.utils.CommonCodeUtils;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;

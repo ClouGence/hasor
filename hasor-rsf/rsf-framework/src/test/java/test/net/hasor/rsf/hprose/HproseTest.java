@@ -1,8 +1,9 @@
 package test.net.hasor.rsf.hprose;
-import net.hasor.rsf.libs.com.hprose.io.HproseReader;
+import hprose.io.HproseReader;
 import org.junit.Test;
 
 import java.io.IOException;
+
 /**
  * Created by yongchun.zyc on 2017/1/11.
  */

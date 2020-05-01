@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.serialize.coder;
+import hprose.io.HproseReader;
+import hprose.io.HproseWriter;
 import net.hasor.core.Environment;
 import net.hasor.rsf.SerializeCoder;
-import net.hasor.rsf.libs.com.hprose.io.HproseReader;
-import net.hasor.rsf.libs.com.hprose.io.HproseWriter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,8 +40,9 @@ public class HproseSerializeCoder implements SerializeCoder {
     }
 
     public Object decode(byte[] bytes, Class<?> returnType) throws IOException {
-        if (bytes == null)
+        if (bytes == null) {
             return null;
+        }
         HproseReader reader = new HproseReader(bytes);
         return reader.unserialize(returnType);
     }

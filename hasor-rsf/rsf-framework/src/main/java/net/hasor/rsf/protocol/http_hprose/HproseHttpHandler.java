@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol.http_hprose;
+import hprose.io.HproseWriter;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import net.hasor.core.AppContext;
@@ -23,7 +24,6 @@ import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.libs.com.hprose.io.HproseWriter;
 import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.rpc.net.http.*;
 import net.hasor.rsf.utils.IOUtils;
