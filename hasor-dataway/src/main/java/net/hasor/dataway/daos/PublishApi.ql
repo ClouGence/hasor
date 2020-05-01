@@ -14,17 +14,17 @@ var copyDataMap = {
         limit 1;
     %>,
     "oracle"    : @@sql(apiId,newScript)<%
-            insert into interface_release (
-                pub_api_id, pub_method, pub_path,   pub_status,
-                pub_type,   pub_script, pub_schema, pub_sample,
-                pub_script_ori,pub_release_time
-            ) select
-                api_id,     api_method,  api_path,   0,
-                api_type,   #{newScript},api_schema, api_sample,
-                api_script, sysdate
-            from (
-                select * from interface_info where api_id = #{apiId}
-            ) t where rownum <= 1
+        insert into interface_release (
+            pub_api_id, pub_method, pub_path,   pub_status,
+            pub_type,   pub_script, pub_schema, pub_sample,
+            pub_script_ori,pub_release_time
+        ) select
+            api_id,     api_method,  api_path,   0,
+            api_type,   #{newScript},api_schema, api_sample,
+            api_script, sysdate
+        from (
+            select * from interface_info where api_id = #{apiId}
+        ) t where rownum <= 1
     %>
 };
 
