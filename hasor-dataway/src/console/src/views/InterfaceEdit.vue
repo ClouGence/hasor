@@ -166,8 +166,10 @@
                 // this.monacoEditor.updateOptions({contextmenu: false});
                 this.monacoEditor.updateOptions({minimap: {enabled: false}});
                 this.monacoEditor.onDidChangeModelContent(function (event) { // 编辑器内容changge事件
-                    self.apiInfo.codeValue = self.monacoEditor.getValue();
-                    self.apiInfo.editorSubmitted = false;
+                    if(self.apiInfo.editorSubmitted){
+                        self.apiInfo.codeValue = self.monacoEditor.getValue();
+                        self.apiInfo.editorSubmitted = false;
+                    }
                 });
                 // // 自定义键盘事件
                 // self.monacoEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function () {
