@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.fx.db.dialect.SqlPageDialect.BoundSql;
 import net.hasor.db.jdbc.ConnectionCallback;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 数据库方言，针对不同数据库进行实现
@@ -33,4 +36,8 @@ interface SqlPageQuery {
 
     /** 执行 SQL */
     public <T> T doQuery(ConnectionCallback<T> connectionCallback) throws SQLException;
+
+    public interface SqlPageQueryConvertResult {
+        Object convertPageResult(List<Map<String, Object>> mapList);
+    }
 }

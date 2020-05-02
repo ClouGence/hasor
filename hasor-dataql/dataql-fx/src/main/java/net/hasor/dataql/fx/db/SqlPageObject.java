@@ -24,6 +24,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.hasor.dataql.fx.db.SqlPageQuery.SqlPageQueryConvertResult;
+
 /**
  * 翻页数据，同时负责调用分页的SQL执行分页查询
  * @version : 2014年10月25日
@@ -31,16 +33,18 @@ import java.util.Map;
  */
 public class SqlPageObject implements UdfSourceAssembly {
     /**满足条件的总记录数*/
-    private int          totalCount       = 0;
+    private int                       totalCount       = 0;
     /**每页记录数（-1表示无限大）*/
-    private int          pageSize         = -1;
+    private int                       pageSize         = -1;
     /**当前页号*/
-    private int          currentPage      = 0;
+    private int                       currentPage      = 0;
     //
-    private boolean      totalCountInited = false;
-    private SqlPageQuery sqlPageQuery     = null;
+    private boolean                   totalCountInited = false;
+    private SqlPageQuery              sqlPageQuery     = null;
+    private SqlPageQueryConvertResult convertResult    = null;
 
-    SqlPageObject(SqlPageQuery sqlPageQuery) {
+    SqlPageObject(SqlPageQueryConvertResult convertResult, SqlPageQuery sqlPageQuery) {
+        this.convertResult = convertResult;
         this.sqlPageQuery = sqlPageQuery;
         this.totalCountInited = false;
     }
@@ -164,12 +168,13 @@ public class SqlPageObject implements UdfSourceAssembly {
     }
 
     /** 移动到最后一页 */
-    public List<Map<String, Object>> data() throws SQLException {
+    public Object data() throws SQLException {
         final BoundSql countBoundSql = this.sqlPageQuery.getPageBoundSql(firstRecordPosition(), pageSize());
         return this.sqlPageQuery.doQuery(con -> {
             String countFxSql = countBoundSql.getSqlString();
             Object[] paramArrays = countBoundSql.getParamMap();
-            return new JdbcTemplate(con).queryForList(countFxSql, paramArrays);
+            List<Map<String, Object>> resultData = new JdbcTemplate(con).queryForList(countFxSql, paramArrays);
+            return this.convertResult.convertPageResult(resultData);
         });
     }
 }

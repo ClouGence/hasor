@@ -167,7 +167,9 @@ public class SqlFragment implements FragmentProcess {
         }
         SqlPageDialect pageDialect = SqlPageDialectRegister.findOrCreate(sqlDialect, this.appContext);
         //
-        return new SqlPageObject(new SqlPageQuery() {
+        return new SqlPageObject(mapList -> {
+            return convertResult(hint, mapList);
+        }, new SqlPageQuery() {
             @Override
             public SqlPageDialect.BoundSql getCountBoundSql() {
                 return pageDialect.getCountSql(fxSql, paramMap);
