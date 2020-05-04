@@ -9,6 +9,7 @@ create table interface_release (
     pub_script_ori   clob           NOT NULL,
     pub_schema       clob               NULL,
     pub_sample       clob               NULL,
+    pub_option       clob               NULL,
     pub_release_time timestamp      default sysdate
 )
 /comment on column interface_release.pub_id is 'Publish ID'
@@ -21,6 +22,7 @@ create table interface_release (
 /comment on column interface_release.pub_script_ori is '原始查询脚本，仅当类型为SQL时不同'
 /comment on column interface_release.pub_schema is '接口的请求/响应数据结构'
 /comment on column interface_release.pub_sample is '请求/响应/请求头样本数据'
+/comment on column interface_release.pub_option is '扩展配置信息'
 /comment on column interface_release.pub_release_time is '发布时间（下线不更新）'
 /
 create index idx_interface_release on INTERFACE_RELEASE (pub_api_id)

@@ -109,6 +109,12 @@
                     return []
                 }
             },
+            optionInfo: {
+                type: Object,
+                default: function () {
+                    return {}
+                }
+            },
             newMode: {
                 type: Boolean,
                 default: function () {
@@ -162,6 +168,7 @@
             },
             // 保存按钮
             handleSaveAction() {
+                debugger
                 const self = this;
                 request(ApiUrl.apiSave + "?id=" + self.apiInfo.apiID, {
                     "method": "POST",
@@ -173,7 +180,8 @@
                         "codeType": self.apiInfo.codeType,
                         "codeValue": self.apiInfo.codeValue,
                         "requestBody": self.requestBody,
-                        "headerData": self.requestHeader
+                        "headerData": self.requestHeader,
+                        "optionInfo": self.optionInfo
                     }
                 }, response => {
                     if (!self.newMode) {
@@ -186,6 +194,7 @@
             },
             // 执行按钮
             handleExecuteAction() {
+                debugger
                 // test
                 let testResult = checkRequestBody(this.apiInfo.select, this.apiInfo.codeType, this.requestBody);
                 if (!testResult) {
@@ -203,6 +212,7 @@
                         "codeType": self.apiInfo.codeType,
                         "codeValue": self.apiInfo.codeValue,
                         "requestBody": JSON.parse(self.requestBody),
+                        "optionInfo": self.optionInfo
                     }
                 }, response => {
                     self.$emit('onExecute', response.data.result);

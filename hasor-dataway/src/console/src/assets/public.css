@@ -48,10 +48,6 @@ body {
     margin: 0px !important;
 }
 
-.el-select .el-input {
-    width: 90px;
-}
-
 .input-with-select .el-input-group__prepend {
     background-color: #fff;
 }
@@ -62,4 +58,8 @@ body {
     vertical-align: -0.15em;
     fill: currentColor;
     overflow: hidden;
+}
+
+.el-drawer.rtl {
+    overflow-y: scroll !important;
 }

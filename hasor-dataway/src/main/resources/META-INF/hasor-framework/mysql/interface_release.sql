@@ -9,6 +9,7 @@ CREATE TABLE `interface_release` (
     `pub_script_ori`  mediumtext   NOT NULL                  COMMENT '原始查询脚本，仅当类型为SQL时不同',
     `pub_schema`      mediumtext       NULL                  COMMENT '接口的请求/响应数据结构',
     `pub_sample`      mediumtext       NULL                  COMMENT '请求/响应/请求头样本数据',
+    `pub_option`      mediumtext       NULL                  COMMENT '扩展配置信息',
     `pub_release_time`datetime     DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间（下线不更新）',
     PRIMARY KEY (`pub_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='Dataway API 发布历史。';

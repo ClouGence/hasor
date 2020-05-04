@@ -50,7 +50,7 @@
                 </template>
                 <template slot="paneR">
                     <ResponsePanel id="listResponsePanel" ref="listResponsePanel"
-                                   :response-body="responseBody"
+                                   :response-body="responseBody" :on-edit-page="false"
                                    @onResponseBodyChange="(data)=> { this.responseBody = data}"/>
                 </template>
             </split-pane>

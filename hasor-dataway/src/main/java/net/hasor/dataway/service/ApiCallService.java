@@ -51,15 +51,15 @@ public class ApiCallService {
     @Inject
     private          DataQL     executeDataQL;
 
-    public Map<String, Object> doCallWithoutError(ApiInfo apiInfo, QueryScriptBuild scriptBuild) throws Throwable {
+    public Object doCallWithoutError(ApiInfo apiInfo, QueryScriptBuild scriptBuild) throws Throwable {
         return this._doCall(apiInfo, scriptBuild, false);
     }
 
-    public Map<String, Object> doCall(ApiInfo apiInfo, QueryScriptBuild scriptBuild) throws Throwable {
+    public Object doCall(ApiInfo apiInfo, QueryScriptBuild scriptBuild) throws Throwable {
         return this._doCall(apiInfo, scriptBuild, true);
     }
 
-    private Map<String, Object> _doCall(ApiInfo apiInfo, QueryScriptBuild scriptBuild, boolean needThrow) throws Throwable {
+    private Object _doCall(ApiInfo apiInfo, QueryScriptBuild scriptBuild, boolean needThrow) throws Throwable {
         LoggerUtils loggerUtils = LoggerUtils.create();
         loggerUtils.addLog("apiMethod", apiInfo.getMethod());
         loggerUtils.addLog("apiPath", apiInfo.getApiPath());
@@ -128,14 +128,14 @@ public class ApiCallService {
                 }
                 return listener.callAfter(newResult.isDone(), apiInfo, lastResult);
             }, resultData);
-            return DatawayUtils.queryResultToResultWithSpecialValue(execute, resultData).getResult();
+            return DatawayUtils.queryResultToResultWithSpecialValue(apiInfo.getOptionMap(), execute, resultData).getResult();
         } catch (Throwable e) {
             logger.error("requestFailed - " + loggerUtils.logException(e).toJson());
             return doError(needThrow, newResult.isDone(), e, apiInfo, loggerUtils);
         }
     }
 
-    private Map<String, Object> doError(boolean needThrow, boolean isFormPre, Throwable e, ApiInfo apiInfo, LoggerUtils loggerUtils) throws Throwable {
+    private Object doError(boolean needThrow, boolean isFormPre, Throwable e, ApiInfo apiInfo, LoggerUtils loggerUtils) throws Throwable {
         Object value = null;
         if (e instanceof ExecutionException) {
             e = e.getCause();
@@ -160,7 +160,7 @@ public class ApiCallService {
         if (needThrow) {
             throw e;
         } else {
-            return DatawayUtils.exceptionToResultWithSpecialValue(e, value).getResult();
+            return DatawayUtils.exceptionToResultWithSpecialValue(apiInfo.getOptionMap(), e, value).getResult();
         }
     }
 }

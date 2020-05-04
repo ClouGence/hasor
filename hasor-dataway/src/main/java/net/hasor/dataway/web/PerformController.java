@@ -40,7 +40,7 @@ public class PerformController extends BasicController {
     private ApiCallService apiCallService;
 
     @Post
-    public Result<Map<String, Object>> doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws Throwable {
+    public Result<Object> doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws Throwable {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
@@ -53,9 +53,10 @@ public class PerformController extends BasicController {
         apiInfo.setMethod(requestBody.get("select").toString());
         apiInfo.setApiPath(requestBody.get("apiPath").toString());
         apiInfo.setParameterMap((Map<String, Object>) requestBody.get("requestBody"));
+        apiInfo.setOptionMap((Map<String, Object>) requestBody.get("optionInfo"));
         //
         // .执行调用
-        Map<String, Object> objectMap = this.apiCallService.doCallWithoutError(apiInfo, jsonParam -> {
+        Object objectMap = this.apiCallService.doCallWithoutError(apiInfo, jsonParam -> {
             String strCodeType = requestBody.get("codeType").toString();
             String strCodeValue = requestBody.get("codeValue").toString();
             if ("sql".equalsIgnoreCase(strCodeType)) {

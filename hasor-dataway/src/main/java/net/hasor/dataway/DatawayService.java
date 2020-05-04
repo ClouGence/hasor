@@ -23,5 +23,5 @@ import java.util.Map;
  */
 public interface DatawayService {
     /** 执行配置的接口。*/
-    public Map<String, Object> invokeApi(String method, String apiPath, Map<String, Object> jsonParam) throws Throwable;
+    public Object invokeApi(String method, String apiPath, Map<String, Object> jsonParam) throws Throwable;
 }

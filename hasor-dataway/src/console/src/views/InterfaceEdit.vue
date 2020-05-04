@@ -34,6 +34,7 @@
                                :request-body="requestBody"
                                :request-header="headerData"
                                :new-mode="newCode"
+                               :option-info="optionData"
                                @onAfterSave="onAfterSave" @onPublish="onAfterSave" @onDisable="onAfterSave"
                                @onExecute="onExecute" @onSmokeTest="onExecute"
                                @onRecover="onRecover" @onDelete="onDelete"/>
@@ -62,8 +63,9 @@
                         </template>
                         <template slot="paneR">
                             <ResponsePanel id="editerResponsePanel" ref="editerResponsePanel"
-                                           :response-body="responseBody"
-                                           @onResponseBodyChange="(data)=> { this.responseBody = data}"/>
+                                           :response-body="responseBody" :result-structure="optionData['resultStructure']" :on-edit-page="true"
+                                           @onResponseBodyChange="handleResultStructureChange"
+                                           @onResultStructureChange="(data)=> { this.optionData['resultStructure'] = data}"/>
                         </template>
                     </SplitPane>
                 </template>
@@ -79,6 +81,10 @@
     import request from "../utils/request";
     import {apiBaseUrl, ApiUrl} from "../utils/api-const";
     import {errorBox, tagInfo} from "../utils/utils"
+
+    let defaultOptionData = {
+        resultStructure: true
+    };
 
     export default {
         components: {
@@ -140,6 +146,10 @@
             handleCommentOnchange() {
                 this.apiInfo.editorSubmitted = false;
             },
+            handleResultStructureChange(data) {
+                this.responseBody = data;
+                this.handleCommentOnchange();
+            },
             //
             // 初始化编辑器
             initMonacoEditor() {
@@ -195,6 +205,10 @@
                     //
                     self.requestBody = data.codeInfo.requestBody || "{}";
                     self.headerData = data.codeInfo.headerData || [];
+                    self.optionData = {
+                        ...defaultOptionData,
+                        ...data.optionData
+                    };
                     //
                     self.tagInfo = tagInfo(self.apiInfo.apiStatus);
                     self.loadEditorMode();
@@ -248,6 +262,10 @@
                     self.apiInfo.codeValue = data.codeInfo.codeValue || "";
                     self.requestBody = data.codeInfo.requestBody || "{}";
                     self.headerData = data.codeInfo.headerData || [];
+                    self.optionData = {
+                        ...defaultOptionData,
+                        ...data.optionData
+                    };
                     //
                     self.loadEditorMode();
                     self.$nextTick(function () {
@@ -296,6 +314,7 @@
                 //
                 //
                 headerData: [],
+                optionData: defaultOptionData,
                 requestBody: '{"message":"Hello DataQL."}',
                 responseBody: '"empty."',
                 //

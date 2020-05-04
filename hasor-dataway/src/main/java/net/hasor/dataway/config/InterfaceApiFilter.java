@@ -101,10 +101,11 @@ class InterfaceApiFilter implements InvokerFilter {
             apiInfo.setReleaseID(dataModel.getValue("releaseID").asString());
             apiInfo.setMethod(httpMethod);
             apiInfo.setApiPath(requestURI);
+            apiInfo.setOptionMap(dataModel.getObject("optionData").unwrap());
             script = dataModel.getValue("script").asString();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            Map<String, Object> result = DatawayUtils.exceptionToResult(e).getResult();
+            Object result = DatawayUtils.exceptionToResult(e).getResult();
             return responseData(mimeType, httpResponse, result);
         }
         //
@@ -130,11 +131,11 @@ class InterfaceApiFilter implements InvokerFilter {
         //
         // .执行调用
         String finalScript = script;
-        Map<String, Object> objectMap = this.callService.doCallWithoutError(apiInfo, param -> finalScript);
+        Object objectMap = this.callService.doCallWithoutError(apiInfo, param -> finalScript);
         return responseData(mimeType, httpResponse, objectMap);
     }
 
-    private Map<String, Object> responseData(String mimeType, HttpServletResponse httpResponse, Map<String, Object> objectMap) throws IOException {
+    private Object responseData(String mimeType, HttpServletResponse httpResponse, Object objectMap) throws IOException {
         if (!httpResponse.isCommitted()) {
             String body = JSON.toJSONString(objectMap, SerializerFeature.WriteMapNullValue);
             byte[] bodyByte = body.getBytes();

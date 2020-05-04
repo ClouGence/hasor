@@ -23,7 +23,8 @@ if (!collect.isEmpty(dataTmp)) {
         "apiMethod" : pub_method,
         "apiPath"   : pub_path,
         "scriptType": pub_type,
-        "script"    : pub_script
+        "script"    : pub_script,
+        "optionData": json.fromJson((pub_option == null) ? '{}' : pub_option )
     };
 } else {
     throw 404 , "not found api.";

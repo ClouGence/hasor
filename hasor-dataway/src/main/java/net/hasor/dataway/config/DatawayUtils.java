@@ -56,31 +56,49 @@ public class DatawayUtils {
         return System.currentTimeMillis() - localRequestTime.get();
     }
 
-    public static Result<Map<String, Object>> queryResultToResultWithSpecialValue(QueryResult queryResult, Object specialValue) {
-        return Result.of(new LinkedHashMap<String, Object>() {{
-            put("success", true);
-            put("message", "OK");
-            put("code", queryResult.getCode());
-            put("lifeCycleTime", currentLostTime());
-            put("executionTime", queryResult.executionTime());
-            //
-            if (specialValue instanceof DataModel) {
-                put("value", ((DataModel) specialValue).unwrap());
-            } else {
-                put("value", specialValue);
-            }
-        }});
+    /** 在选项中判断，是否保留外层结构 */
+    public static boolean isResultStructure(Map<String, Object> optionMap) {
+        if (optionMap == null) {
+            return true;
+        }
+        return (boolean) optionMap.getOrDefault("resultStructure", true);
     }
 
-    public static Result<Map<String, Object>> exceptionToResult(Throwable e) {
-        if (e instanceof ThrowRuntimeException) {
-            return exceptionToResultWithSpecialValue(e, ((ThrowRuntimeException) e).getResult().unwrap());
+    public static Result<Object> queryResultToResultWithSpecialValue(Map<String, Object> optionMap, QueryResult queryResult, Object specialValue) {
+        Object resultValue;
+        if (specialValue instanceof DataModel) {
+            resultValue = ((DataModel) specialValue).unwrap();
         } else {
-            return exceptionToResultWithSpecialValue(e, e.getMessage());
+            resultValue = specialValue;
+        }
+        //
+        if (!isResultStructure(optionMap)) {
+            return Result.of(resultValue);
+        } else {
+            return Result.of(new LinkedHashMap<String, Object>() {{
+                put("success", true);
+                put("message", "OK");
+                put("code", queryResult.getCode());
+                put("lifeCycleTime", currentLostTime());
+                put("executionTime", queryResult.executionTime());
+                put("value", resultValue);
+            }});
         }
     }
 
-    public static Result<Map<String, Object>> exceptionToResultWithSpecialValue(Throwable e, Object specialValue) {
+    public static Result<Object> exceptionToResult(Throwable e) {
+        if (e instanceof ThrowRuntimeException) {
+            return exceptionToResultWithSpecialValue(null, e, ((ThrowRuntimeException) e).getResult().unwrap());
+        } else {
+            return exceptionToResultWithSpecialValue(null, e, e.getMessage());
+        }
+    }
+
+    public static Result<Object> exceptionToResultWithSpecialValue(Map<String, Object> optionMap, Throwable e, Object specialValue) {
+        if (!isResultStructure(optionMap) && specialValue != null) {
+            return Result.of(specialValue);
+        }
+        //
         if (e instanceof ThrowRuntimeException) {
             return Result.of(new LinkedHashMap<String, Object>() {{
                 put("success", false);

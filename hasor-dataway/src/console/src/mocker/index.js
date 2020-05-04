@@ -68,6 +68,9 @@ const proxy = {
                         {"checked": true, "name": "name4", "value": "value4"},
                         {"checked": true, "name": "name5", "value": "value5"}
                     ]
+                },
+                "optionData": {
+                    //     "resultStructure": false
                 }
             }
         }));
@@ -117,6 +120,9 @@ const proxy = {
                         {"checked": true, "name": "name4", "value": "value4"},
                         {"checked": true, "name": "name5", "value": "value5"}
                     ]
+                },
+                "optionData": {
+                    // "resultStructure": true
                 }
             }
         }));

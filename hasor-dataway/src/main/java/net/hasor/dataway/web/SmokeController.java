@@ -46,7 +46,7 @@ public class SmokeController extends BasicController {
     private ApiCallService apiCallService;
 
     @Post
-    public Result<Map<String, Object>> doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws Throwable {
+    public Result<Object> doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws Throwable {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
@@ -71,9 +71,10 @@ public class SmokeController extends BasicController {
         String jsonParamValue = objectModel.getObject("codeInfo").getValue("requestBody").asString();
         jsonParamValue = (StringUtils.isBlank(jsonParamValue)) ? "{}" : jsonParamValue;
         apiInfo.setParameterMap(JSON.parseObject(jsonParamValue));
+        apiInfo.setOptionMap(objectModel.getObject("optionData").unwrap());
         //
         // .执行调用
-        Map<String, Object> objectMap = this.apiCallService.doCallWithoutError(apiInfo, jsonParam -> {
+        Object objectMap = this.apiCallService.doCallWithoutError(apiInfo, jsonParam -> {
             if ("sql".equalsIgnoreCase(strCodeType)) {
                 // .如果是 SQL 还需要进行代码替换
                 return DatawayUtils.evalCodeValueForSQL(strCodeValue, jsonParam);
@@ -86,7 +87,7 @@ public class SmokeController extends BasicController {
         return Result.of(objectMap);
     }
 
-    private void updateSchema(String apiID, Map<String, Object> requestData, Map<String, Object> responseData) {
+    private void updateSchema(String apiID, Map<String, Object> requestData, Object responseData) {
         //
     }
 }

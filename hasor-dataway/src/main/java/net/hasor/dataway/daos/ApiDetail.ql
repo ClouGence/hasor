@@ -20,5 +20,6 @@ return queryExec(${apiId}) => {
         "codeValue"   : api_script,
         "requestBody" : json.fromJson(api_sample).requestBody,
         "headerData"  : json.fromJson(api_sample).headerData
-    }
+    },
+    "optionData"  : json.fromJson((api_option == null) ? '{}' : api_option )
 };

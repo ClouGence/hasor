@@ -16,5 +16,6 @@ return queryExec(${historyId}) => {
         "codeValue"   : pub_script_ori,
         "requestBody" : json.fromJson(pub_sample).requestBody,
         "headerData"  : json.fromJson(pub_sample).headerData
-    }
+    },
+    "optionData"  : json.fromJson((pub_option == null) ? '{}' : pub_option )
 };

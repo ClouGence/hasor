@@ -1,6 +1,9 @@
 <template>
     <div class="responsePanel">
         <div class="response-btns">
+            <el-tooltip class="item" effect="dark" content="use Result Structure" placement="right-start">
+                <el-checkbox style="padding: 3px 5px;z-index: 1000" v-model="resultStructureCopy" v-if="onEditPage">Structure</el-checkbox>
+            </el-tooltip>
             <el-button-group>
                 <el-tooltip class="item" effect="dark" content="Copy to Clipboard" placement="top-end">
                     <el-button class="z-index-top" size="mini" round
@@ -47,6 +50,18 @@
                 default: function () {
                     return '"empty."'
                 }
+            },
+            resultStructure: {
+                type: Boolean,
+                default: function () {
+                    return true
+                }
+            },
+            onEditPage: {
+                type: Boolean,
+                default: function () {
+                    return false; // 是否在 编辑 页面
+                }
             }
         },
         data() {
@@ -58,16 +73,23 @@
                     line: true,
                     mode: 'text/javascript'
                 },
-                responseBodyCopy: ''
+                responseBodyCopy: '',
+                resultStructureCopy: true
             }
         },
         mounted() {
-            this.responseBodyCopy = this.responseBody
+            this.responseBodyCopy = this.responseBody;
+            this.resultStructureCopy = (this.resultStructure === undefined) ? true : this.resultStructure;
         },
         watch: {
             'responseBodyCopy': {
                 handler(val, oldVal) {
                     this.$emit('onResponseBodyChange', this.responseBodyCopy)
+                }
+            },
+            'resultStructureCopy': {
+                handler(val, oldVal) {
+                    this.$emit('onResultStructureChange', this.resultStructureCopy)
                 }
             }
         },
@@ -90,12 +112,13 @@
             //
             // 执行布局
             doLayout(height) {
-                let responseBodyID = '#' + this.id + '_responseBodyRef'
-                let responseBody = document.querySelectorAll(responseBodyID + ' .CodeMirror')[0]
+                let responseBodyID = '#' + this.id + '_responseBodyRef';
+                let responseBody = document.querySelectorAll(responseBodyID + ' .CodeMirror')[0];
                 responseBody.style.height = (height - 47) + 'px'
             },
             doUpdate() {
                 this.responseBodyCopy = this.responseBody;
+                this.resultStructureCopy = (this.resultStructure === undefined) ? true : this.resultStructure;
             }
         }
     }

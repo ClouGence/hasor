@@ -43,7 +43,7 @@ public class DatawayServiceImpl implements DatawayService {
     private ApiCallService callService;
 
     @Override
-    public Map<String, Object> invokeApi(String method, String apiPath, Map<String, Object> jsonParam) throws Throwable {
+    public Object invokeApi(String method, String apiPath, Map<String, Object> jsonParam) throws Throwable {
         String httpMethod = method.trim().toUpperCase();
         ApiInfo apiInfo = new ApiInfo();
         QueryResult queryResult = new ReleaseDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{

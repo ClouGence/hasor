@@ -8,6 +8,7 @@ CREATE TABLE `interface_info` (
     `api_script`      mediumtext   NOT NULL                  COMMENT '查询脚本：xxxxxxx',
     `api_schema`      mediumtext       NULL                  COMMENT '接口的请求/响应数据结构',
     `api_sample`      mediumtext       NULL                  COMMENT '请求/响应/请求头样本数据',
+    `api_option`      mediumtext       NULL                  COMMENT '扩展配置信息',
     `api_create_time` datetime     DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `api_gmt_time`    datetime     DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY (`api_id`)

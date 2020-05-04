@@ -28,6 +28,7 @@ public class ApiInfo {
     private String              method;         // Http Method
     private String              apiPath;        // Path
     private Map<String, Object> parameterMap;   // 请求参数
+    private Map<String, Object> optionMap;      // 选项参数
 
     public boolean isPerform() {
         return perform;
@@ -75,5 +76,13 @@ public class ApiInfo {
 
     public void setParameterMap(Map<String, Object> parameterMap) {
         this.parameterMap = parameterMap;
+    }
+
+    public Map<String, Object> getOptionMap() {
+        return this.optionMap;
+    }
+
+    public void setOptionMap(Map<String, Object> optionMap) {
+        this.optionMap = optionMap;
     }
 }
