@@ -11,7 +11,7 @@ var insertMap = {
         ) values (
             #{data.select},  #{data.apiPath},   0,
             #{data.comment}, #{data.codeType},  #{data.codeValue},
-            '{}',            #{apiSample},      #{optionInfo}
+            '{}',            #{apiSample},      #{optionInfo},
             now(),           now()
         )
     %>,
@@ -24,7 +24,7 @@ var insertMap = {
         ) values (
             #{data.select},  #{data.apiPath},   0,
             #{data.comment}, #{data.codeType},  #{data.codeValue},
-            '{}',            #{apiSample},      #{optionInfo}
+            '{}',            #{apiSample},      #{optionInfo},
             sysdate,         sysdate
         )
     %>

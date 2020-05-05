@@ -57,8 +57,6 @@ class InterfaceApiFilter implements InvokerFilter {
     private          DataQL         dataQL;
     @Inject
     private          ApiCallService callService;
-    @Inject
-    private          SpiTrigger     spiTrigger;
     private          String         apiBaseUri;
 
     public InterfaceApiFilter(String apiBaseUri) {

@@ -4,11 +4,19 @@
             <div style="width: 50%; margin-top: 2px; display: inline-table;">
                 <el-tooltip class="item" effect="dark" placement="bottom" :content="apiInfo.comment || defaultComment" :disabled="showComment">
                     <el-input placeholder="the path to access this Api" v-model="apiInfo.apiPath" class="input-with-select" size="mini" :disabled="!newCode">
-                        <el-select v-model="apiInfo.select" slot="prepend" placeholder="Choose" :disabled="!newCode">
-                            <el-option label="POST" value="POST"/>
-                            <el-option label="PUT" value="PUT"/>
-                            <el-option label="GET" value="GET"/>
-                            <el-option label="DELETE" value="DELETE"/>
+                        <el-select v-model="apiInfo.select" slot="prepend" placeholder="Choose" :disabled="!newCode" style="width: 90px;">
+                            <el-option-group>
+                                <el-option label="POST" value="POST"/>
+                                <el-option label="GET" value="GET"/>
+                                <el-option label="PUT" value="PUT"/>
+                                <el-option label="DELETE" value="DELETE"/>
+                                <el-option label="HEAD" value="DELETE"/>
+                            </el-option-group>
+                            <el-option-group>
+                                <el-option label="ANY" value="ANY">
+                                    <span style="color: #dd4444;font-weight: bold;">ANY</span>
+                                </el-option>
+                            </el-option-group>
                         </el-select>
                         <el-button slot="append" icon="el-icon-info" @click.native="handleShowComment"/>
                     </el-input>

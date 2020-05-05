@@ -4,11 +4,11 @@ import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 
 var queryMap = {
     "default"   : @@sql(apiMethod, apiPath)<%
-        select * from interface_release where pub_method = #{apiMethod} and pub_path = #{apiPath} and pub_status = 0 order by pub_release_time desc limit 1
+        select * from interface_release where (pub_method = #{apiMethod} or pub_method = 'ANY') and pub_path = #{apiPath} and pub_status = 0 order by pub_release_time desc limit 1
     %>,
     "oracle"   : @@sql(apiMethod, apiPath)<%
         select * from (
-            select * from interface_release where pub_method = #{apiMethod} and pub_path = #{apiPath} and pub_status = 0 order by pub_release_time desc
+            select * from interface_release where (pub_method = #{apiMethod} or pub_method = 'ANY') and pub_path = #{apiPath} and pub_status = 0 order by pub_release_time desc
         ) t where rownum <= 1
     %>
 };
