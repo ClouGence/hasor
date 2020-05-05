@@ -72,8 +72,8 @@
                         <template slot="paneR">
                             <ResponsePanel id="editerResponsePanel" ref="editerResponsePanel"
                                            :response-body="responseBody" :result-structure="optionData['resultStructure']" :on-edit-page="true"
-                                           @onResponseBodyChange="handleResultStructureChange"
-                                           @onResultStructureChange="(data)=> { this.optionData['resultStructure'] = data}"/>
+                                           @onResponseBodyChange="(data)=> { this.responseBody = data}"
+                                           @onResultStructureChange="(data) => {this.optionData['resultStructure'] = data}"/>
                         </template>
                     </SplitPane>
                 </template>
@@ -123,6 +123,25 @@
         beforeDestroy() {
             window.removeEventListener('resize', this._resize);
         },
+        watch: {
+            'headerData': {
+                handler(val, oldVal) {
+                    this.handleCommentOnchange();
+                },
+                deep: true
+            },
+            'requestBody': {
+                handler(val, oldVal) {
+                    this.handleCommentOnchange();
+                }
+            },
+            'optionData': {
+                handler(val, oldVal) {
+                    this.handleCommentOnchange();
+                },
+                deep: true
+            }
+        },
         methods: {
             // 页面大小调整
             layoutMonacoEditor() {
@@ -153,10 +172,6 @@
             },
             handleCommentOnchange() {
                 this.apiInfo.editorSubmitted = false;
-            },
-            handleResultStructureChange(data) {
-                this.responseBody = data;
-                this.handleCommentOnchange();
             },
             //
             // 初始化编辑器

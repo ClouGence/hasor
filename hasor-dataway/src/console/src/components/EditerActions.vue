@@ -168,7 +168,6 @@
             },
             // 保存按钮
             handleSaveAction() {
-                debugger
                 const self = this;
                 request(ApiUrl.apiSave + "?id=" + self.apiInfo.apiID, {
                     "method": "POST",
@@ -194,7 +193,6 @@
             },
             // 执行按钮
             handleExecuteAction() {
-                debugger
                 // test
                 let testResult = checkRequestBody(this.apiInfo.select, this.apiInfo.codeType, this.requestBody);
                 if (!testResult) {
