@@ -253,7 +253,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             for (String pattern : this.uriPatterns) {
                 jeeServlet(index, pattern, servletRegister, initParams);
             }
-            logger.info("mapingTo[Servlet] -> bindID ‘{}’ mappingTo: ‘{}’.", servletRegister.getBindID(), this.uriPatterns);
+            logger.info("mapingTo[Servlet] -> bindID '{}' mappingTo: '{}'.", servletRegister.getBindID(), this.uriPatterns);
         }
     }
     // ------------------------------------------------------------------------------------------------------
@@ -284,7 +284,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
                     MappingDef define = new MappingDef(index, targetInfo, pattern, Matchers.anyMethod(), true);
                     bindType(MappingDef.class).uniqueName().toInstance(define);
                 });
-                logger.info("mapingTo[{}] -> bindType ‘{}’ mappingTo: ‘{}’.", targetInfo.getBindID(), targetInfo.getBindType(), morePatterns);
+                logger.info("mapingTo[{}] -> bindType '{}' mappingTo: '{}'.", targetInfo.getBindID(), targetInfo.getBindType(), morePatterns);
             }
         };
     }

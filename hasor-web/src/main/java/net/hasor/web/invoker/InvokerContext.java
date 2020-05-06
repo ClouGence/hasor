@@ -53,7 +53,7 @@ public class InvokerContext {
         mappingList.sort(Comparator.comparingLong(MappingDef::getIndex));
         this.invokeArray = mappingList.toArray(new Mapping[0]);
         for (Mapping inMapping : this.invokeArray) {
-            logger.info("mapingTo -> type ‘{}’ mappingTo: ‘{}’.", inMapping.getTargetType().getBindType(), inMapping.getMappingTo());
+            logger.info("mapingTo -> type '{}' mappingTo: '{}'.", inMapping.getTargetType().getBindType(), inMapping.getMappingTo());
         }
         //
         // .discover

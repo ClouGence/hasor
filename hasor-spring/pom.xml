@@ -34,11 +34,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-dataql</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>

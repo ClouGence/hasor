@@ -285,7 +285,7 @@ public class InvokerCallerParamsBuilder {
             }
             return encoding;
         } catch (Exception e) {
-            logger.warn("use ‘{}’ decode ‘{}’ error.", encoding, oriData);
+            logger.warn("use '{}' decode '{}' error.", encoding, oriData);
             return encoding;
         }
     }
