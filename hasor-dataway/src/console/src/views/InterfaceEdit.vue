@@ -4,7 +4,7 @@
             <div style="width: 50%; margin-top: 2px; display: inline-table;">
                 <el-tooltip class="item" effect="dark" placement="bottom" :content="apiInfo.comment || defaultComment" :disabled="showComment">
                     <el-input placeholder="the path to access this Api" v-model="apiInfo.apiPath" class="input-with-select" size="mini" :disabled="!newCode">
-                        <el-select v-model="apiInfo.select" slot="prepend" placeholder="Choose" :disabled="!newCode">
+                        <el-select v-model="apiInfo.select" slot="prepend" placeholder="Choose" :disabled="!newCode" style="width: 90px;">
                             <el-option label="POST" value="POST"/>
                             <el-option label="PUT" value="PUT"/>
                             <el-option label="GET" value="GET"/>
@@ -191,10 +191,8 @@
                 // this.monacoEditor.updateOptions({contextmenu: false});
                 this.monacoEditor.updateOptions({minimap: {enabled: false}});
                 this.monacoEditor.onDidChangeModelContent(function (event) { // 编辑器内容changge事件
-                    if(self.apiInfo.editorSubmitted){
-                        self.apiInfo.codeValue = self.monacoEditor.getValue();
-                        self.apiInfo.editorSubmitted = false;
-                    }
+                    self.apiInfo.codeValue = self.monacoEditor.getValue();
+                    self.apiInfo.editorSubmitted = false;
                 });
                 // // 自定义键盘事件
                 // self.monacoEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function () {
@@ -241,13 +239,13 @@
                 this.apiInfo.editorSubmitted = false;
                 if (this.apiInfo.codeType.toLowerCase() === 'dataql') {
                     this.monacoEditor.updateOptions({language: 'javascript'});
-                    if (this.monacoEditor.getValue().trim() === '-- a new Query.\nselect #{message};') {
+                    if (this.newCode && this.monacoEditor.getValue().trim() === '-- a new Query.\nselect #{message};') {
                         this.monacoEditor.setValue('// a new Query.\nreturn ${message};');
                     }
                 }
                 if (this.apiInfo.codeType.toLowerCase() === 'sql') {
                     this.monacoEditor.updateOptions({language: 'sql'});
-                    if (this.monacoEditor.getValue().trim() === '// a new Query.\nreturn ${message};') {
+                    if (this.newCode && this.monacoEditor.getValue().trim() === '// a new Query.\nreturn ${message};') {
                         this.monacoEditor.setValue('-- a new Query.\nselect #{message};');
                     }
                 }

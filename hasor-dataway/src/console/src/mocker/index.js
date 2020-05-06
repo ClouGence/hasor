@@ -57,7 +57,7 @@ const proxy = {
                 "apiComment": "",
                 "status": 3,//Random.integer(0, 3),
                 "select": "POST",
-                "codeType": 'DataQL',
+                "codeType": 'SQL',
                 "codeInfo": {
                     "codeValue": 'return ${abc}.test',
                     "requestBody": '{"abc":true}',
