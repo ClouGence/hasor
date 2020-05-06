@@ -22,7 +22,7 @@ import net.hasor.dataql.fx.FxHintNames;
 import net.hasor.dataql.fx.FxHintValue;
 import net.hasor.dataql.fx.basic.StringUdfSource;
 import net.hasor.dataql.fx.db.dialect.SqlPageDialect;
-import net.hasor.dataql.fx.db.parser.FxSql;
+import net.hasor.dataql.fx.db.parser.SqlFxQuery;
 import net.hasor.db.jdbc.BatchPreparedStatementSetter;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.PreparedStatementSetter;
@@ -102,8 +102,8 @@ public class SqlFragment implements FragmentProcess {
         return jdbcTemplate;
     }
 
-    protected FxSql analysisSQL(Hints hint, SqlMode sqlMode, String fragmentString) {
-        return FxSql.analysisSQL(fragmentString);
+    protected FxQuery analysisSQL(Hints hint, SqlMode sqlMode, String fragmentString) {
+        return SqlFxQuery.analysisSQL(fragmentString);
     }
 
     public List<Object> batchRunFragment(Hints hint, List<Map<String, Object>> params, String fragmentString) throws Throwable {
@@ -116,9 +116,9 @@ public class SqlFragment implements FragmentProcess {
         }
         //
         SqlMode sqlMode = evalSqlMode(fragmentString);
-        FxSql fxSql = analysisSQL(hint, sqlMode, fragmentString);
+        FxQuery fxSql = analysisSQL(hint, sqlMode, fragmentString);
         if ((SqlMode.Insert == sqlMode || SqlMode.Update == sqlMode || SqlMode.Delete == sqlMode) && !fxSql.isHavePlaceholder()) {
-            fragmentString = fxSql.buildSqlString(params.get(0));
+            fragmentString = fxSql.buildQueryString(params.get(0));
             PreparedStatementSetter[] parameterArrays = new PreparedStatementSetter[params.size()];
             for (int i = 0; i < params.size(); i++) {
                 parameterArrays[i] = new ArgPreparedStatementSetter(fxSql.buildParameterSource(params.get(i)).toArray());
@@ -151,7 +151,7 @@ public class SqlFragment implements FragmentProcess {
     @Override
     public Object runFragment(Hints hint, Map<String, Object> paramMap, String fragmentString) throws Throwable {
         SqlMode sqlMode = evalSqlMode(fragmentString);
-        FxSql fxSql = analysisSQL(hint, sqlMode, fragmentString);
+        FxQuery fxSql = analysisSQL(hint, sqlMode, fragmentString);
         if (usePage(hint, sqlMode, fxSql)) {
             return this.usePageFragment(fxSql, sqlMode, hint, paramMap);
         } else {
@@ -159,7 +159,7 @@ public class SqlFragment implements FragmentProcess {
         }
     }
 
-    protected Object usePageFragment(FxSql fxSql, SqlMode sqlMode, Hints hint, Map<String, Object> paramMap) {
+    protected Object usePageFragment(FxQuery fxSql, SqlMode sqlMode, Hints hint, Map<String, Object> paramMap) {
         String sqlDialect = this.appContext.getEnvironment().getVariable("HASOR_DATAQL_FX_PAGE_DIALECT");
         sqlDialect = hint.getOrDefault(FRAGMENT_SQL_PAGE_DIALECT.name(), sqlDialect).toString();
         if (StringUtils.isBlank(sqlDialect)) {
@@ -178,7 +178,7 @@ public class SqlFragment implements FragmentProcess {
             @Override
             public SqlPageDialect.BoundSql getPageBoundSql(int start, int limit) {
                 if (limit < 0) {
-                    String sqlString = fxSql.buildSqlString(paramMap);
+                    String sqlString = fxSql.buildQueryString(paramMap);
                     Object[] paramArrays = fxSql.buildParameterSource(paramMap).toArray();
                     return new SqlPageDialect.BoundSql(sqlString, paramArrays);
                 }
@@ -193,9 +193,9 @@ public class SqlFragment implements FragmentProcess {
         });
     }
 
-    protected Object noPageFragment(FxSql fxSql, SqlMode sqlMode, Hints hint, Map<String, Object> paramMap) throws Throwable {
+    protected Object noPageFragment(FxQuery fxSql, SqlMode sqlMode, Hints hint, Map<String, Object> paramMap) throws Throwable {
         String sourceName = hint.getOrDefault(FRAGMENT_SQL_DATA_SOURCE.name(), "").toString();
-        String fragmentString = fxSql.buildSqlString(paramMap);
+        String fragmentString = fxSql.buildQueryString(paramMap);
         Object[] source = fxSql.buildParameterSource(paramMap).toArray();
         //
         if (SqlMode.Query == sqlMode) {
@@ -211,7 +211,7 @@ public class SqlFragment implements FragmentProcess {
         throw new SQLException("Unknown SqlMode.");//不可能走到这里
     }
 
-    private boolean usePage(Hints hint, SqlMode sqlMode, FxSql fxSql) {
+    private boolean usePage(Hints hint, SqlMode sqlMode, FxQuery fxSql) {
         if (SqlMode.Query == sqlMode) {
             FxHintNames queryByPage = FxHintNames.FRAGMENT_SQL_QUERY_BY_PAGE;
             Object hintOrDefault = hint.getOrDefault(queryByPage.name(), queryByPage.getDefaultVal());

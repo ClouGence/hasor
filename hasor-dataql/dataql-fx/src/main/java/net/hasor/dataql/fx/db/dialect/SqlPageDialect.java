@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db.dialect;
-import net.hasor.dataql.fx.db.parser.FxSql;
+import net.hasor.dataql.fx.db.FxQuery;
 
 import java.util.Map;
 
@@ -25,10 +25,10 @@ import java.util.Map;
  */
 public interface SqlPageDialect {
     /** 生成 count 查询 SQL */
-    public BoundSql getCountSql(FxSql fxSql, Map<String, Object> paramMap);
+    public BoundSql getCountSql(FxQuery fxSql, Map<String, Object> paramMap);
 
     /** 生成分页查询 SQL */
-    public BoundSql getPageSql(FxSql fxSql, Map<String, Object> paramMap, int start, int limit);
+    public BoundSql getPageSql(FxQuery fxSql, Map<String, Object> paramMap, int start, int limit);
 
     /** SQL */
     public static class BoundSql {

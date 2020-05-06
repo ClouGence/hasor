@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db.parser;
+import net.hasor.dataql.fx.db.FxQuery;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import ognl.Ognl;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-28
  */
-public class FxSql implements Cloneable {
+public class SqlFxQuery implements Cloneable, FxQuery {
     private StringBuilder           sqlStringOri    = new StringBuilder("");
     private List<Object>            sqlStringPlan   = new LinkedList<>();
     private List<String>            paramEl         = new LinkedList<>();
@@ -96,7 +97,7 @@ public class FxSql implements Cloneable {
         return this.sqlStringOri;
     }
 
-    public String buildSqlString(Object context) {
+    public String buildQueryString(Object context) {
         try {
             this.tempObject.set(context);
             return StringUtils.join(this.sqlStringPlan.toArray());
@@ -135,8 +136,8 @@ public class FxSql implements Cloneable {
         }
     }
 
-    public static FxSql analysisSQL(String fragmentString) {
-        final FxSql fxSql = new FxSql();
+    public static FxQuery analysisSQL(String fragmentString) {
+        final SqlFxQuery fxSql = new SqlFxQuery();
         final String result = new GenericTokenParser(new String[] { "#{", "${" }, "}", (builder, token, content) -> {
             fxSql.appendString(builder.toString());
             if (token.equalsIgnoreCase("${")) {
@@ -153,7 +154,7 @@ public class FxSql implements Cloneable {
     }
 
     @Override
-    public FxSql clone() {
-        return FxSql.analysisSQL(this.sqlStringOri.toString());
+    public FxQuery clone() {
+        return SqlFxQuery.analysisSQL(this.sqlStringOri.toString());
     }
 }

@@ -14,29 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db;
-import net.hasor.dataql.fx.db.dialect.SqlPageDialect.BoundSql;
-import net.hasor.db.jdbc.ConnectionCallback;
-
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 /**
- * 数据库方言，针对不同数据库进行实现
+ * Query 文本处理器，兼容 #{...}、${...} 两种写法。
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2020-04-08
+ * @version : 2020-03-28
  */
-interface SqlPageQuery {
-    /** 生成 count 查询 SQL */
-    public BoundSql getCountBoundSql();
+public interface FxQuery {
+    /** 是否包含替换占位符，如果包含替换占位符那么不能使用批量模式 */
+    public boolean isHavePlaceholder();
 
-    /** 生成分页查询 SQL */
-    public BoundSql getPageBoundSql(int start, int limit);
+    public String buildQueryString(Object context);
 
-    /** 执行 SQL */
-    public <T> T doQuery(ConnectionCallback<T> connectionCallback) throws SQLException;
-
-    public interface SqlPageQueryConvertResult {
-        Object convertPageResult(List<Map<String, Object>> mapList);
-    }
+    public List<Object> buildParameterSource(Object context);
 }

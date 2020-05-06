@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db.dialect;
-import net.hasor.dataql.fx.db.parser.FxSql;
+import net.hasor.dataql.fx.db.FxQuery;
 
 import java.util.List;
 import java.util.Map;
@@ -26,8 +26,8 @@ import java.util.Map;
  */
 public abstract class AbstractDialect implements SqlPageDialect {
     @Override
-    public BoundSql getCountSql(FxSql fxSql, Map<String, Object> paramMap) {
-        String buildSqlString = fxSql.buildSqlString(paramMap);
+    public BoundSql getCountSql(FxQuery fxSql, Map<String, Object> paramMap) {
+        String buildSqlString = fxSql.buildQueryString(paramMap);
         List<Object> paramArrays = fxSql.buildParameterSource(paramMap);
         //
         StringBuilder sqlBuilder = new StringBuilder();

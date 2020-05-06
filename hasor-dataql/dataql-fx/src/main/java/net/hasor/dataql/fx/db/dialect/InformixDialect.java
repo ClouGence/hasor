@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db.dialect;
-import net.hasor.dataql.fx.db.parser.FxSql;
+import net.hasor.dataql.fx.db.FxQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +26,8 @@ import java.util.Map;
  */
 public class InformixDialect extends AbstractDialect {
     @Override
-    public BoundSql getPageSql(FxSql fxSql, Map<String, Object> paramMap, int start, int limit) {
-        String buildSqlString = fxSql.buildSqlString(paramMap);
+    public BoundSql getPageSql(FxQuery fxSql, Map<String, Object> paramMap, int start, int limit) {
+        String buildSqlString = fxSql.buildQueryString(paramMap);
         List<Object> paramArrays = fxSql.buildParameterSource(paramMap);
         //
         StringBuilder sqlBuilder = new StringBuilder();
