@@ -1,6 +1,18 @@
 --------------------
 Release Hasor v4.x
 --------------------
+Hasor v4.1.5 (2020-05-08)
+------------------------------------
+**新增**
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1FGQO>`_ 接口可以自定义返回值，完美兼容老项目的接口规范。
+    - 增加 ConvertUdfSource 类型转换函数包。
+**优化**
+    - FxSql 工具类抽象出 FxQuery 接口 和 SqlFxQuery 实现类。
+**修复**
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1G6QS>`_ DatawayService 接口使用 @Bean 在 Spring 中配置报错。
+    - `issue <https://github.com/zycgit/hasor/issues/29>`_ SQL模式下保存api之后，点击编辑再进入，没有显示之前保存的信息。
+    - `issue <https://github.com/zycgit/hasor/issues/31>`_ 分页模式下，FRAGMENT_SQL_COLUMN_CASE 不起作用。
+
 Hasor v4.1.4 (2020-04-30)
 ------------------------------------
 **新增**
