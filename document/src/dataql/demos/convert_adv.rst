@@ -11,7 +11,7 @@ DataQL 查询语句
     // 层次化：把带有 parent 属性的数据转换成 tree 结构
     //  - 需要用到集合包的 filter 函数
     //  - 实现思路是：递归
-    import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;
+    import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;
 
     var dataSet = [
         {'id': 1, 'parent_id':null, 'label' : 't1'},
@@ -91,7 +91,7 @@ DataQL 查询
     :linenos:
 
     // 递归：利用有状态集合，把一个多维数组打平成为一维数组
-    import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;
+    import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;
     var data = [
         [1,2,3,[4,5]],
         [6,7,8,9,0]
@@ -123,7 +123,7 @@ DataQL 查询
     :linenos:
 
     hint MAX_DECIMAL_DIGITS = 4
-    import "net.hasor.dataql.sdk.CollectionUdfSource" as collect
+    import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;
 
     var year2019 = [
         { "pt":2019, "item_code":"code_1", "sum_price":2234 },

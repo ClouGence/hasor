@@ -61,14 +61,11 @@ FunctionX库函数
     fx/basic/fx_datetime
     fx/basic/fx_json
     fx/basic/fx_string
+    fx/web/fx_web
     fx/encryt/fx_codec
     fx/encryt/fx_digest
     fx/encryt/fx_hex
     fx/encryt/fx_hmac
-    fx/web/fx_cookie
-    fx/web/fx_web
-    fx/web/fx_header
-    fx/web/fx_session
 
 作为Dao层
 ------------------------------------

@@ -12,7 +12,7 @@
     <dependency>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-dataql</artifactId>
-        <version>4.1.4</version>
+        <version>4.1.5</version>
     </dependency>
 
 通过Hasor使用DataQL

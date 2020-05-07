@@ -2,7 +2,7 @@
 Release Nodes
 --------------------
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 1
 
     core/core-changelog_v4.x
     core/core-changelog_v3.x
