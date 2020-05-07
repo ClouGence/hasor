@@ -32,7 +32,6 @@ import java.lang.annotation.*;
  * @version : 2015年7月28日
  * @author 赵永春 (zyc@hasor.net)
  */
-@Deprecated
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
