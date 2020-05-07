@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.dataway.service;
+import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
+import net.hasor.core.Type;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ObjectModel;
@@ -21,9 +24,6 @@ import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.daos.ReleaseDetailQuery;
 import net.hasor.dataway.spi.ApiInfo;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,8 +36,7 @@ import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
  */
 @Singleton
 public class DatawayServiceImpl implements DatawayService {
-    @Inject
-    @Named(ISOLATION_CONTEXT)
+    @Inject(value = ISOLATION_CONTEXT, byType = Type.ByName)
     private DataQL         dataQL;
     @Inject
     private ApiCallService callService;
