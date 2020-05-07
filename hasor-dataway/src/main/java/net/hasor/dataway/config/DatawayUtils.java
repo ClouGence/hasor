@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataway.config;
+import com.alibaba.fastjson.JSONObject;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
@@ -75,14 +76,15 @@ public class DatawayUtils {
         if (!isResultStructure(optionMap)) {
             return Result.of(resultValue);
         } else {
-            return Result.of(new LinkedHashMap<String, Object>() {{
+            Map<String, Object> resultData = new LinkedHashMap<String, Object>() {{
                 put("success", true);
                 put("message", "OK");
                 put("code", queryResult.getCode());
                 put("lifeCycleTime", currentLostTime());
                 put("executionTime", queryResult.executionTime());
                 put("value", resultValue);
-            }});
+            }};
+            return Result.of(doResponseFormat(optionMap, resultData));
         }
     }
 
@@ -99,24 +101,72 @@ public class DatawayUtils {
             return Result.of(specialValue);
         }
         //
+        Map<String, Object> resultData = null;
         if (e instanceof ThrowRuntimeException) {
-            return Result.of(new LinkedHashMap<String, Object>() {{
+            resultData = new LinkedHashMap<String, Object>() {{
                 put("success", false);
                 put("message", e.getMessage());
                 put("code", ((ThrowRuntimeException) e).getThrowCode());
                 put("lifeCycleTime", currentLostTime());
                 put("executionTime", ((ThrowRuntimeException) e).getExecutionTime());
                 put("value", specialValue);
-            }});
+            }};
         } else {
-            return Result.of(new LinkedHashMap<String, Object>() {{
+            resultData = new LinkedHashMap<String, Object>() {{
                 put("success", false);
                 put("message", e.getMessage());
                 put("code", 500);
                 put("lifeCycleTime", currentLostTime());
                 put("executionTime", -1);
                 put("value", specialValue);
-            }});
+            }};
         }
+        return Result.of(doResponseFormat(optionMap, resultData));
+    }
+
+    private static Object doResponseFormat(Map<String, Object> optionMap, Map<String, Object> resultData) {
+        if (optionMap == null || !optionMap.containsKey("responseFormat")) {
+            return resultData;
+        }
+        Object responseFormat = optionMap.get("responseFormat");
+        Map<String, Object> finalResult = new LinkedHashMap<>();
+        LinkedHashMap<?, ?> jsonObject = JSONObject.parseObject(responseFormat.toString(), LinkedHashMap.class);
+        for (Object key : jsonObject.keySet()) {
+            Object value = jsonObject.get(key);
+            if (value == null) {
+                finalResult.put(key.toString(), null);
+                continue;
+            }
+            // "success"      : "@resultStatus",
+            // "message"      : "@resultMessage",
+            // "code"         : "@resultCode",
+            // "lifeCycleTime": "@timeLifeCycle",
+            // "executionTime": "@timeExecution",
+            // "value"        : "@resultData"
+            switch (value.toString()) {
+            case "@resultStatus":
+                finalResult.put(key.toString(), resultData.get("success"));
+                break;
+            case "@resultMessage":
+                finalResult.put(key.toString(), resultData.get("message"));
+                break;
+            case "@resultCode":
+                finalResult.put(key.toString(), resultData.get("code"));
+                break;
+            case "@timeLifeCycle":
+                finalResult.put(key.toString(), resultData.get("lifeCycleTime"));
+                break;
+            case "@timeExecution":
+                finalResult.put(key.toString(), resultData.get("executionTime"));
+                break;
+            case "@resultData":
+                finalResult.put(key.toString(), resultData.get("value"));
+                break;
+            default:
+                finalResult.put(key.toString(), value);
+                break;
+            }
+        }
+        return finalResult;
     }
 }

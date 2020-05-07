@@ -1,7 +1,7 @@
 <template>
     <div class="responsePanel">
         <div class="response-btns">
-            <el-tooltip class="item" effect="dark" content="use Result Structure" placement="right-start">
+            <el-tooltip class="item" effect="dark" content="use Result Structure" placement="top-end">
                 <el-checkbox style="padding: 3px 5px;z-index: 1000" v-model="resultStructureCopy" v-if="onEditPage">Structure</el-checkbox>
             </el-tooltip>
             <el-button-group>
@@ -25,7 +25,7 @@
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="Format Structure" placement="top-end">
                     <el-button class="z-index-top" size="mini" round
-                               @click.native='handleStructureFormatter' v-if="panelActiveName ==='result_format'">
+                               @click.native='handleStructureFormatter' v-if="onEditPage && panelActiveName ==='result_format'">
                         <svg class="icon" aria-hidden="true">
                             <use xlink:href="#iconformat"></use>
                         </svg>
@@ -39,7 +39,7 @@
                     <codemirror v-model="responseBodyCopy" :options="defaultOption"/>
                 </div>
             </el-tab-pane>
-            <el-tab-pane name="result_format" label="Structure" :disabled="!resultStructureCopy">
+            <el-tab-pane name="result_format" label="Structure" v-if="onEditPage" :disabled="!resultStructureCopy">
                 <div :id="id + '_responseFormatRef'">
                     <codemirror v-model="responseFormatCopy" :options="defaultOption"/>
                 </div>
@@ -164,14 +164,16 @@
                 let responseBody = document.querySelectorAll(responseBodyID + ' .CodeMirror')[0];
                 responseBody.style.height = (height - 47) + 'px'
                 //
-                let responseFormatBodyID = '#' + this.id + '_responseFormatRef';
-                let responseFormatBody = document.querySelectorAll(responseFormatBodyID + ' .CodeMirror')[0];
-                responseFormatBody.style.height = (height - 47) + 'px'
+                if (this.onEditPage) {
+                    let responseFormatBodyID = '#' + this.id + '_responseFormatRef';
+                    let responseFormatBody = document.querySelectorAll(responseFormatBodyID + ' .CodeMirror')[0];
+                    responseFormatBody.style.height = (height - 47) + 'px'
+                }
             },
             doUpdate() {
                 this.responseBodyCopy = this.responseBody;
                 this.resultStructureCopy = (this.resultStructure === undefined) ? true : this.resultStructure;
-                this.responseBodyFormatCopy = this.responseFormat;
+                this.responseFormatCopy = this.responseFormat;
             }
         }
     }

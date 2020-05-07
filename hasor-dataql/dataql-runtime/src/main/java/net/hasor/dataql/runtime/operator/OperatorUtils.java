@@ -378,7 +378,7 @@ public class OperatorUtils {
         }
     }
 
-    /* 测试是否为一个小数 */
+    /** 测试是否为一个小数 */
     public static boolean isDecimal(Number tester) {
         if (tester instanceof BigDecimal) {
             return true;
