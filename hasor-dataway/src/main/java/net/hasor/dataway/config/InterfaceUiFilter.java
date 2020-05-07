@@ -37,6 +37,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static net.hasor.dataway.config.DatawayModule.fixUrl;
 
@@ -46,18 +47,20 @@ import static net.hasor.dataway.config.DatawayModule.fixUrl;
  * @version : 2020-03-20
  */
 class InterfaceUiFilter implements InvokerFilter {
-    protected static     Logger logger           = LoggerFactory.getLogger(InterfaceUiFilter.class);
-    private static final String resourceBaseUri  = "/META-INF/hasor-framework/dataway-ui/";
-    private              String resourceIndexUri = null;
-    private              String apiBaseUri;
-    private              String uiBaseUri;
-    private              String uiAdminBaseUri;
+    protected static     Logger               logger           = LoggerFactory.getLogger(InterfaceUiFilter.class);
+    private static final String               resourceBaseUri  = "/META-INF/hasor-framework/dataway-ui/";
+    private              String               resourceIndexUri = null;
+    private              String               apiBaseUri;
+    private              String               uiBaseUri;
+    private              String               uiAdminBaseUri;
+    private              Map<String, Integer> resourceSize;
 
     public InterfaceUiFilter(String apiBaseUri, String uiBaseUri) {
         this.apiBaseUri = apiBaseUri;
         this.uiBaseUri = uiBaseUri;
         this.uiAdminBaseUri = fixUrl(uiBaseUri + "/api/");
         this.resourceIndexUri = fixUrl(uiBaseUri + "/index.html");
+        this.resourceSize = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -119,16 +122,32 @@ class InterfaceUiFilter implements InvokerFilter {
             }
             //
             String resourceName = fixUrl(resourceBaseUri + requestURI.substring(this.uiBaseUri.length()));
-            //${host}
             try (OutputStream outputStream = httpResponse.getOutputStream()) {
+                // .准备输出流
+                OutputStream output = null;
+                Integer size = this.resourceSize.get(resourceName);
+                if (size == null) {
+                    output = new ByteArrayOutputStream();
+                } else {
+                    output = outputStream;
+                    httpResponse.setContentLength(size);
+                }
+                // .把数据写入流
                 try (InputStream inputStream = ResourcesUtils.getResourceAsStream(resourceName)) {
                     if (inputStream == null) {
                         httpResponse.sendError(404, "not found " + requestURI);
                         return null;
                     }
-                    IOUtils.copy(inputStream, outputStream);
+                    IOUtils.copy(inputStream, output);
                 } catch (Exception e) {
                     logger.error("load " + resourceName + " failed -> " + e.getMessage(), e);
+                }
+                // .如果是第一次，那么缓存资源长度。然后拷贝到真的流中
+                if (size == null) {
+                    byte[] byteArray = ((ByteArrayOutputStream) output).toByteArray();
+                    size = byteArray.length;
+                    this.resourceSize.put(resourceName, size);
+                    outputStream.write(byteArray);
                 }
                 outputStream.flush();
             }
