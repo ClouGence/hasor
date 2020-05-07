@@ -63,9 +63,13 @@
                         </template>
                         <template slot="paneR">
                             <ResponsePanel id="editerResponsePanel" ref="editerResponsePanel"
-                                           :response-body="responseBody" :result-structure="optionData['resultStructure']" :on-edit-page="true"
+                                           :response-body="responseBody"
+                                           :on-edit-page="true"
+                                           :result-structure="optionData['resultStructure']"
+                                           :response-format="optionData['responseFormat']"
                                            @onResponseBodyChange="(data)=> { this.responseBody = data}"
-                                           @onResultStructureChange="(data) => {this.optionData['resultStructure'] = data}"/>
+                                           @onResultStructureChange="(data) => {this.optionData['resultStructure'] = data}"
+                                           @onResultStructureFormatChange="(data) => {this.optionData['responseFormat'] = data}"/>
                         </template>
                     </SplitPane>
                 </template>
@@ -332,7 +336,7 @@
                 responseBody: '"empty."',
                 //
                 //
-                panelPercentVertical: 70,
+                panelPercentVertical: 65,
                 panelPercentHorizontal: 50,
                 panelHeight: '100%',
                 monacoEditorOptions: {

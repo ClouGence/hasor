@@ -70,7 +70,8 @@ const proxy = {
                     ]
                 },
                 "optionData": {
-                    //     "resultStructure": false
+                    // "resultStructure": false,
+                    "responseFormat": "ddddd"
                 }
             }
         }));
@@ -122,7 +123,8 @@ const proxy = {
                     ]
                 },
                 "optionData": {
-                    // "resultStructure": true
+                    // "resultStructure": true,
+                    "responseFormat": "ddddd"
                 }
             }
         }));
