@@ -56,6 +56,7 @@ FunctionX库函数
     :maxdepth: 3
 
     fx/about_fx
+    fx/basic/fx_convert
     fx/basic/fx_collect
     fx/basic/fx_compare
     fx/basic/fx_datetime
