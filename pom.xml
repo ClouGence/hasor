@@ -21,7 +21,6 @@
         <project.website>http://www.hasor.net/</project.website>
         <project.inceptionYear>2020</project.inceptionYear>
         <javadocs.bottom><![CDATA[  ]]></javadocs.bottom>
-        <profile.active>dev</profile.active>
     </properties>
 
     <!-- 项目信息 -->
@@ -215,25 +214,6 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
-
     <!-- 发布使用的版本库 -->
     <distributionManagement>
         <snapshotRepository>
@@ -245,33 +225,7 @@
     <!-- 使用“-P release”启用下面配置 -->
     <profiles>
         <profile>
-            <id>dev</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
             <id>release</id>
-            <properties>
-                <profile.active>sonatype-deploy</profile.active>
-                <release.type>Release</release.type>
-            </properties>
-        </profile>
-        <profile>
-            <id>beta</id>
-            <properties>
-                <profile.active>sonatype-deploy</profile.active>
-                <release.type>Beta</release.type>
-            </properties>
-        </profile>
-        <profile>
-            <id>sonatype-deploy</id>
-            <activation>
-                <property>
-                    <name>profile.active</name>
-                    <value>release</value>
-                </property>
-            </activation>
             <properties>
                 <gpg.executable>gpg2</gpg.executable>
                 <gpg.passphrase>fubing220106</gpg.passphrase>

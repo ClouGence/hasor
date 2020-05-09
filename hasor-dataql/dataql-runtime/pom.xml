@@ -49,7 +49,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.7</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
@@ -66,15 +66,16 @@
             </plugin>
             <!-- 把 target/generated-sources/antlr4 目录下生成的两个 DataQL tokens 文件放回到 g4 目录（为了 IDE 插件） -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <phase>compile</phase>
                         <configuration>
                             <target>
-                                <copy file="${basedir}/target/generated-sources/antlr4/DataQLLexer.tokens" tofile="${basedir}/src/main/antlr4/net/hasor/dataql/compiler/parser/DataQLLexer.tokens" />
-                                <copy file="${basedir}/target/generated-sources/antlr4/DataQLParser.tokens" tofile="${basedir}/src/main/antlr4/net/hasor/dataql/compiler/parser/DataQLParser.tokens" />
+                                <copy file="${basedir}/target/generated-sources/antlr4/DataQLLexer.tokens" tofile="${basedir}/src/main/antlr4/net/hasor/dataql/compiler/parser/DataQLLexer.tokens"/>
+                                <copy file="${basedir}/target/generated-sources/antlr4/DataQLParser.tokens" tofile="${basedir}/src/main/antlr4/net/hasor/dataql/compiler/parser/DataQLParser.tokens"/>
                             </target>
                         </configuration>
                         <goals>
