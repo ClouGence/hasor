@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataway;
+import net.hasor.utils.ExceptionUtils;
+
 import java.util.Map;
 
 /**
@@ -24,4 +26,13 @@ import java.util.Map;
 public interface DatawayService {
     /** 执行配置的接口。*/
     public Object invokeApi(String method, String apiPath, Map<String, Object> jsonParam) throws Throwable;
+
+    /** 执行配置的接口。*/
+    public default Object invokeApiWithoutThrow(String method, String apiPath, Map<String, Object> jsonParam) {
+        try {
+            return invokeApi(method, apiPath, jsonParam);
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+    }
 }
