@@ -99,7 +99,7 @@
                 this.apiInfo.apiID = -1;
                 this.apiInfo.apiPath = this.apiBaseUrl;
                 this.newCode = true;
-                this.showComment = true;
+                this.showComment = false; // 新增模式下也隐藏 备注输入框
             } else {
                 this.apiInfo.apiID = this.$route.params.id;
                 this.newCode = false;

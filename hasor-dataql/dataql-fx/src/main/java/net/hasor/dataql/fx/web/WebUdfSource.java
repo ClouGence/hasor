@@ -60,7 +60,7 @@ public class WebUdfSource implements UdfSourceAssembly {
         return cookieMap().get(cookieName);
     }
 
-    /** 获取所有名字相同的 Cookie */
+    /** 获取Cookie数组形态 */
     public static List<String> getCookieArray(String cookieName) {
         if (StringUtils.isBlank(cookieName)) {
             return null;
@@ -159,6 +159,16 @@ public class WebUdfSource implements UdfSourceAssembly {
         return true;
     }
 
+    /** 批量设置 HeaderMap */
+    public static boolean setHeaderAll(Map<String, String> headerMap) {
+        if (headerMap != null) {
+            HttpServletResponse httpResponse = FxWebInterceptor.invoker().getHttpResponse();
+            headerMap.forEach(httpResponse::setHeader);
+            return true;
+        }
+        return false;
+    }
+
     /** 添加 Header */
     public static boolean addHeader(String headerName, String value) {
         if (StringUtils.isBlank(headerName)) {
@@ -168,11 +178,11 @@ public class WebUdfSource implements UdfSourceAssembly {
         return true;
     }
 
-    /** 设置 HeaderMap */
+    /** 批量添加 HeaderMap */
     public static boolean addHeaderAll(Map<String, String> headerMap) {
         if (headerMap != null) {
             HttpServletResponse httpResponse = FxWebInterceptor.invoker().getHttpResponse();
-            headerMap.forEach(httpResponse::setHeader);
+            headerMap.forEach(httpResponse::addHeader);
             return true;
         }
         return false;

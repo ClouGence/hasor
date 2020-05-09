@@ -17,6 +17,7 @@ package net.hasor.dataql.fx.basic;
 import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.utils.BooleanUtils;
 import net.hasor.utils.NumberUtils;
+import net.hasor.utils.StringUtils;
 
 import javax.inject.Singleton;
 
@@ -34,6 +35,9 @@ public class ConvertUdfSource implements UdfSourceAssembly {
         } else if (target == null) {
             return 0;
         } else if (target instanceof String) {
+            if (StringUtils.isBlank((String) target)) {
+                return 0;
+            }
             return NumberUtils.createNumber((String) target);
         }
         return 0;
