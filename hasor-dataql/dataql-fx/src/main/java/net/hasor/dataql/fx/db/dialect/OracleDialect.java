@@ -25,6 +25,18 @@ import java.util.Map;
  */
 public class OracleDialect extends AbstractDialect {
     @Override
+    public BoundSql getCountSql(FxQuery fxSql, Map<String, Object> paramMap) {
+        String buildSqlString = fxSql.buildQueryString(paramMap);
+        List<Object> paramArrays = fxSql.buildParameterSource(paramMap);
+        //
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("SELECT COUNT(*) FROM (");
+        sqlBuilder.append(buildSqlString);
+        sqlBuilder.append(") TEMP_T");
+        return new BoundSql(sqlBuilder.toString(), paramArrays.toArray());
+    }
+
+    @Override
     public BoundSql getPageSql(FxQuery fxSql, Map<String, Object> paramMap, int start, int limit) {
         String buildSqlString = fxSql.buildQueryString(paramMap);
         List<Object> paramArrays = fxSql.buildParameterSource(paramMap);
