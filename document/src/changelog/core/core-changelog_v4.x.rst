@@ -1,7 +1,12 @@
 --------------------
 Release Hasor v4.x
 --------------------
-Hasor v4.1.5 (2020-05-08)
+Hasor v4.1.6 (2020-05-10)
+------------------------------------
+**修复**
+    - `issue <https://github.com/zycgit/hasor/issues/36>`_ oracle 分页模式下 select count 语句无法正确执行。
+
+Hasor v4.1.5 (2020-05-09)
 ------------------------------------
 **新增**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1FGQO>`_ 接口可以自定义返回值，完美兼容老项目的接口规范。
