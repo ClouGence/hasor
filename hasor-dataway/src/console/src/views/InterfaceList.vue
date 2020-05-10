@@ -1,11 +1,17 @@
 <template>
     <SplitPane :min-percent='30' :default-percent='30' split="vertical">
         <template slot="paneL">
-            <el-table ref="interfaceTable" height="100%"
+
+            <el-table  ref="interfaceTable" height="100%"
                       :data="tableData.filter(dat => !apiSearch || dat.path.toLowerCase().includes(apiSearch.toLowerCase()) || dat.comment.toLowerCase().includes(apiSearch.toLowerCase()))"
                       @current-change="handleApiDataChange"
                       empty-text="No Api" highlight-current-row border lazy stripe>
                 <el-table-column prop="id" width="24" :resizable='false'>
+                    <template slot="header" class="dir-list-icon">
+                        <el-tooltip class="item" effect="dark" content="Directory" placement="right">
+                            <el-link v-on:click="showToggle"><i class="el-icon-menu"/></el-link>
+                        </el-tooltip>
+                    </template>
                     <template slot-scope="scope">
                         <el-tooltip class="item" effect="dark" content="Choose to Test" placement="right">
                             <el-checkbox name="type" v-model="scope.row.checked" v-on:change="handleApiDataChange(scope.row)"/>
@@ -37,6 +43,16 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <el-tree
+                    v-show="directoryShow"
+                    id="directory-list"
+                    :data="directoryList"
+                    node-key="id"
+                    :default-expand-all="true"
+                    @node-click="treeClick"
+                    :props="defaultProps">
+            </el-tree>
+
         </template>
         <template slot="paneR">
             <split-pane v-on:resize="handleSplitResize" :min-percent='30' :default-percent='panelPercent' split="horizontal">
@@ -86,6 +102,45 @@
         methods: {
             requestPath(apiPath) {
                 return contextPath() + apiPath;
+            },
+            treeClick(obj,node,e){
+                this.apiSearch = obj.label;
+                this.showToggle();
+            },
+            showToggle(e){
+                this.directoryShow = !this.directoryShow;
+                let path = [];
+                this.tableData.forEach(function (item,index) {
+                    path.push(item.path.replace(/^http[s]?:\/\//,"").replace(/\w*:?\w*/,"").replace(/\/$/,""));
+                });
+                this.directoryList = this.buildChild(path,"");
+                this.directoryList.splice(0,0,{"label":"/"})
+            },
+            buildChild(pathList,label){
+                let tree = [];
+                let labelKeySet = new Set();
+
+                pathList.forEach(path=>{
+                    if (path.indexOf(label) !=0){
+                        return;
+                    }
+
+                    let subPath = path.substring(path.indexOf(label)+label.length);
+                    if (subPath.lastIndexOf("/") <= 0){
+                        return;
+                    }
+                    let subLabel = label + subPath.substring(0,subPath.indexOf("/",1));
+                    if(labelKeySet.has(subLabel)){
+                        return;
+                    }
+                    labelKeySet.add(subLabel);
+                    tree.push({
+                        "label":subLabel,
+                        "children":this.buildChild(pathList,subLabel)
+                    });
+                });
+
+                return tree;
             },
             // 面板大小改变，重新计算CodeMirror的高度
             handleSplitResize(data) {
@@ -192,6 +247,12 @@
                 //
                 apiSearch: '',
                 tableData: [],
+                directoryShow: false,
+                directoryList:[],
+                defaultProps: {
+                    children: 'children',
+                    label: 'label'
+                },
                 //
                 headerData: [],
                 requestApiInfo: {},
@@ -203,4 +264,25 @@
     }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss"/>
+<style >
+    #directory-list{
+        top: 30px;
+        left: -4px;
+        position: absolute;
+        width:100%;
+        height: 100%;
+        z-index: 100;
+        background: #fff;
+    }
+    .el-tree-node__content{
+        border-bottom: 1px solid #ccc;
+        line-height: 30px;
+        background-color: #fbfbfb99;
+    }
+    /*.el-tree-node:nth-of-type(odd){
+        background-color: #FAFAFA;
+    }*/
+    /*.has-gutter th:first-of-type{
+        background-color: #ccc;
+    }*/
+</style>
