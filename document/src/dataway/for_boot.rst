@@ -51,7 +51,7 @@ Dataway 是 Hasor 生态中的一员，使用 Dataway 第一步需要通过 `has
     HASOR_DATAQL_DATAWAY_UI_URL=/interface-ui/
 
 
-初始化必要的表
+初始化必要的表(例：MySQL)
 ------------------------------------
 .. code-block:: sql
     :linenos:
@@ -66,6 +66,7 @@ Dataway 是 Hasor 生态中的一员，使用 Dataway 第一步需要通过 `has
         `api_script`      mediumtext   NOT NULL                  COMMENT '查询脚本：xxxxxxx',
         `api_schema`      mediumtext       NULL                  COMMENT '接口的请求/响应数据结构',
         `api_sample`      mediumtext       NULL                  COMMENT '请求/响应/请求头样本数据',
+        `api_option`      mediumtext       NULL                  COMMENT '扩展配置信息',
         `api_create_time` datetime     DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
         `api_gmt_time`    datetime     DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
         PRIMARY KEY (`api_id`)
@@ -82,11 +83,23 @@ Dataway 是 Hasor 生态中的一员，使用 Dataway 第一步需要通过 `has
         `pub_script_ori`  mediumtext   NOT NULL                  COMMENT '原始查询脚本，仅当类型为SQL时不同',
         `pub_schema`      mediumtext       NULL                  COMMENT '接口的请求/响应数据结构',
         `pub_sample`      mediumtext       NULL                  COMMENT '请求/响应/请求头样本数据',
+        `pub_option`      mediumtext       NULL                  COMMENT '扩展配置信息',
         `pub_release_time`datetime     DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间（下线不更新）',
         PRIMARY KEY (`pub_id`)
     ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='Dataway API 发布历史。';
 
     create index idx_interface_release on interface_release (pub_api_id);
+
+
+各数据库建表语句
+
++-------------------+-----------------------------------------------------------+
+| **数据库**        |  **建表脚本**                                             |
++-------------------+-----------------------------------------------------------+
+| ``MySql``         | `Create Table DDL <../../_static/script/mysql_ddl.sql>`_  |
++-------------------+-----------------------------------------------------------+
+| ``Oracle``        | `Create Table DDL <../../_static/script/oracle_ddl.sql>`_ |
++-------------------+-----------------------------------------------------------+
 
 
 初始化数据源

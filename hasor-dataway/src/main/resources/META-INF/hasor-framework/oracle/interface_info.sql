@@ -1,8 +1,8 @@
 create table interface_info (
-	api_id          int             generated as identity constraint pk_interface_info primary key,
+	api_id          number(8)       generated as identity constraint pk_interface_info primary key,
 	api_method      varchar(12)     NOT NULL,
 	api_path        varchar(512)    NOT NULL,
-	api_status      int             NOT null,
+	api_status      number(8)       NOT null,
 	api_comment     varchar(255)        NULL,
 	api_type        varchar(24)     NOT null,
 	api_script      clob            NOT NULL,
