@@ -90,7 +90,7 @@ Hasor-Web 是一款和 Spring 无关的 WebMVC 框架。它的功能与 SpringMV
     <dependency>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-web</artifactId>
-        <version>4.1.5</version>
+        <version>4.1.6</version>
     </dependency>
 
 
