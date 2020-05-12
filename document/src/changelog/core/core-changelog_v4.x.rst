@@ -1,6 +1,11 @@
 --------------------
 Release Hasor v4.x
 --------------------
+Hasor v4.1.7 (2020-05-?)
+------------------------------------
+**修复**
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1GW5J>`_ Oracle 下 ReleaseDetail.ql 脚本中的查询语句缺少一个 where
+
 Hasor v4.1.6 (2020-05-10)
 ------------------------------------
 **修复**
