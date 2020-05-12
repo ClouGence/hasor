@@ -8,7 +8,7 @@ var queryMap = {
     %>,
     "oracle"   : @@sql(apiMethod, apiPath)<%
         select * from (
-            select * from interface_release pub_method = #{apiMethod} and pub_path = #{apiPath} and pub_status = 0 order by pub_release_time desc
+            select * from interface_release where pub_method = #{apiMethod} and pub_path = #{apiPath} and pub_status = 0 order by pub_release_time desc
         ) t where rownum <= 1
     %>
 };
