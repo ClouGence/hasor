@@ -13,3 +13,5 @@ CREATE TABLE `interface_info` (
     `api_gmt_time`    datetime     DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY (`api_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='Dataway 中的API';
+
+create unique index idx_interface_info on interface_info (api_method, api_path);

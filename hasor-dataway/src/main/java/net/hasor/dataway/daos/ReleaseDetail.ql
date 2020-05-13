@@ -3,13 +3,16 @@ import 'net.hasor.dataql.fx.basic.CollectionUdfSource' as collect;
 import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 
 var queryMap = {
-    "default"   : @@sql(apiMethod, apiPath)<%
+    "default" : @@sql(apiMethod, apiPath)<%
         select * from interface_release where pub_method = #{apiMethod} and pub_path = #{apiPath} and pub_status = 0 order by pub_release_time desc limit 1
     %>,
-    "oracle"   : @@sql(apiMethod, apiPath)<%
+    "oracle" : @@sql(apiMethod, apiPath)<%
         select * from (
             select * from interface_release where pub_method = #{apiMethod} and pub_path = #{apiPath} and pub_status = 0 order by pub_release_time desc
         ) t where rownum <= 1
+    %>,
+    "sqlserver2012" : @@sql(apiMethod, apiPath)<%
+        select * from interface_release where pub_method = #{apiMethod} and pub_path = #{apiPath} and pub_status = 0 order by pub_release_time desc offset 0 rows fetch next 1 rows only
     %>
 };
 

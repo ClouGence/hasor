@@ -25,5 +25,5 @@ create table interface_release (
 /comment on column interface_release.pub_option is '扩展配置信息'
 /comment on column interface_release.pub_release_time is '发布时间（下线不更新）'
 /
-create index idx_interface_release on INTERFACE_RELEASE (pub_api_id)
+create index idx_interface_release on interface_release (pub_api_id)
 /

@@ -2,27 +2,27 @@ hint FRAGMENT_SQL_COLUMN_CASE = "lower";
 import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 
 var updateMap = {
-    "default"   : @@sql(data, apiSample, optionInfo)<%
+    "default" : @@sql(data, apiSample, optionInfo)<%
         update interface_info set
-            api_status   = #{data.newStatus},
-            api_comment  = #{data.comment},
-            api_type     = #{data.codeType},
-            api_script   = #{data.codeValue},
-            api_sample   = #{apiSample},
-            api_option   = #{optionInfo},
+            api_status   = #{data.newStatus},   api_comment  = #{data.comment}, api_type     = #{data.codeType},
+            api_script   = #{data.codeValue},   api_sample   = #{apiSample},    api_option   = #{optionInfo},
             api_gmt_time = now()
         where
             api_id       = #{data.id}
     %>,
-    "oracle"    : @@sql(data, apiSample, optionInfo)<%
+    "oracle" : @@sql(data, apiSample, optionInfo)<%
         update interface_info set
-            api_status   = #{data.newStatus},
-            api_comment  = #{data.comment},
-            api_type     = #{data.codeType},
-            api_script   = #{data.codeValue},
-            api_sample   = #{apiSample},
-            api_option   = #{optionInfo},
+            api_status   = #{data.newStatus},   api_comment  = #{data.comment}, api_type     = #{data.codeType},
+            api_script   = #{data.codeValue},   api_sample   = #{apiSample},    api_option   = #{optionInfo},
             api_gmt_time = sysdate
+        where
+            api_id       = #{data.id}
+    %>,
+    "sqlserver2012" : @@sql(data, apiSample, optionInfo)<%
+        update interface_info set
+            api_status   = #{data.newStatus},   api_comment  = #{data.comment}, api_type     = #{data.codeType},
+            api_script   = #{data.codeValue},   api_sample   = #{apiSample},    api_option   = #{optionInfo},
+            api_gmt_time = getdate()
         where
             api_id       = #{data.id}
     %>

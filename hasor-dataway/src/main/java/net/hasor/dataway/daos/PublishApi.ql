@@ -1,30 +1,26 @@
 hint FRAGMENT_SQL_COLUMN_CASE = "lower";
 
 var copyDataMap = {
-    "default"   : @@sql(apiId,newScript)<%
+    "default" : @@sql(apiId,newScript)<%
         insert into interface_release (
-            pub_api_id, pub_method, pub_path,   pub_status,
-            pub_type,   pub_script, pub_schema, pub_sample,
-            pub_option, pub_script_ori,pub_release_time
+            pub_api_id, pub_method, pub_path,   pub_status, pub_type,   pub_script, pub_schema, pub_sample, pub_option, pub_script_ori,pub_release_time
         ) select
-            api_id,     api_method,  api_path,   0,
-            api_type,   #{newScript},api_schema, api_sample,
-            api_option, api_script, now()
+            api_id,     api_method,  api_path,   0,         api_type,   #{newScript},api_schema, api_sample,api_option, api_script, now()
         from interface_info where api_id = #{apiId}
-        limit 1;
     %>,
-    "oracle"    : @@sql(apiId,newScript)<%
+    "oracle" : @@sql(apiId,newScript)<%
         insert into interface_release (
-            pub_api_id, pub_method, pub_path,   pub_status,
-            pub_type,   pub_script, pub_schema, pub_sample,
-            pub_option, pub_script_ori,pub_release_time
+            pub_api_id, pub_method, pub_path,   pub_status, pub_type,   pub_script, pub_schema, pub_sample, pub_option, pub_script_ori,pub_release_time
         ) select
-            api_id,     api_method,  api_path,   0,
-            api_type,   #{newScript},api_schema, api_sample,
-            api_option, api_script, sysdate
-        from (
-            select * from interface_info where api_id = #{apiId}
-        ) t where rownum <= 1
+            api_id,     api_method,  api_path,   0,         api_type,   #{newScript},api_schema, api_sample,api_option, api_script, sysdate
+        from interface_info where api_id = #{apiId}
+    %>,
+    "sqlserver2012" : @@sql(apiId,newScript)<%
+        insert into interface_release (
+            pub_api_id, pub_method, pub_path,   pub_status, pub_type,   pub_script, pub_schema, pub_sample, pub_option, pub_script_ori,pub_release_time
+        ) select
+            api_id,     api_method,  api_path,   0,         api_type,   #{newScript},api_schema, api_sample,api_option, api_script, getdate()
+        from interface_info where api_id = #{apiId}
     %>
 };
 
@@ -35,11 +31,14 @@ if (res == 0) {
 }
 
 var updatePublishMap = {
-    "default"   : @@sql(apiId)<%
+    "default" : @@sql(apiId)<%
         update interface_info set api_status = 1, api_gmt_time = now() where api_id = #{apiId}
     %>,
-    "oracle"    : @@sql(apiId)<%
+    "oracle" : @@sql(apiId)<%
         update interface_info set api_status = 1, api_gmt_time = sysdate where api_id = #{apiId}
+    %>,
+    "sqlserver14" : @@sql(apiId)<%
+        update interface_info set api_status = 1, api_gmt_time = getdate() where api_id = #{apiId}
     %>
 };
 

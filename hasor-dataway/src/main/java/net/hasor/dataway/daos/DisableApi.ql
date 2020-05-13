@@ -1,11 +1,14 @@
 hint FRAGMENT_SQL_COLUMN_CASE = "lower";
 
 var updateInfoMap = {
-    "default"   : @@sql(apiId)<%
+    "default"     : @@sql(apiId)<%
         update interface_info set api_status = 3, api_gmt_time = now() where api_id = #{apiId}
     %>,
-    "oracle"   : @@sql(apiId)<%
+    "oracle"      : @@sql(apiId)<%
         update interface_info set api_status = 3, api_gmt_time = sysdate where api_id = #{apiId}
+    %>,
+    "sqlserver2012" : @@sql(apiId)<%
+        update interface_info set api_status = 3, api_gmt_time = getdate() where api_id = #{apiId}
     %>
 };
 

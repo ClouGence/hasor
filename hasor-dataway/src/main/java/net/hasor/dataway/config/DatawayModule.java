@@ -125,7 +125,7 @@ public class DatawayModule implements WebModule {
         String databaseProductName = appContext.getEnvironment().getVariable("HASOR_DATAQL_DATAWAY_FORCE_DBTYPE");
         if (StringUtils.isBlank(databaseProductName)) {
             databaseProductName = jdbcTemplate.execute((ConnectionCallback<String>) con -> {
-                return con.getMetaData().getDatabaseProductName();
+                return con.getMetaData().getDatabaseProductName() + " " + con.getMetaData().getDatabaseMajorVersion();
             });
         }
         DataBaseMapping dataBaseType = DataBaseMapping.formName(databaseProductName);
