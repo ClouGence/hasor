@@ -14,6 +14,8 @@ CREATE TABLE `interface_info` (
     PRIMARY KEY (`api_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='Dataway 中的API';
 
+create unique index idx_interface_info on interface_info (api_method, api_path);
+
 CREATE TABLE `interface_release` (
     `pub_id`          int(11)      NOT NULL AUTO_INCREMENT   COMMENT 'Publish ID',
     `pub_api_id`      int(11)      NOT NULL                  COMMENT '所属API ID',
@@ -28,6 +30,6 @@ CREATE TABLE `interface_release` (
     `pub_option`      mediumtext       NULL                  COMMENT '扩展配置信息',
     `pub_release_time`datetime     DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间（下线不更新）',
     PRIMARY KEY (`pub_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='Dataway API 发布历史。';
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='Dataway API 发布记录';
 
 create index idx_interface_release on interface_release (pub_api_id);

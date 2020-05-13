@@ -25,7 +25,8 @@ create table interface_info (
 /comment on column interface_info.api_create_time is '创建时间'
 /comment on column interface_info.api_gmt_time is '修改时间'
 /
-
+create unique index idx_interface_info on INTERFACE_INFO (api_method, api_path)
+/
 create table interface_release (
     pub_id           number(8)      generated as identity constraint pk_interface_release primary key,
     pub_api_id       number(8)      NOT NULL,
@@ -53,5 +54,5 @@ create table interface_release (
 /comment on column interface_release.pub_option is '扩展配置信息'
 /comment on column interface_release.pub_release_time is '发布时间（下线不更新）'
 /
-create index idx_interface_release on INTERFACE_RELEASE (pub_api_id)
+create index idx_interface_release on interface_release (pub_api_id)
 /
