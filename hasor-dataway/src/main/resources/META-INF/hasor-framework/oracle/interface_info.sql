@@ -25,3 +25,5 @@ create table interface_info (
 /comment on column interface_info.api_create_time is '创建时间'
 /comment on column interface_info.api_gmt_time is '修改时间'
 /
+create unique index idx_interface_info on INTERFACE_INFO (api_method, api_path)
+/

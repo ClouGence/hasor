@@ -22,6 +22,8 @@ package net.hasor.dataway.config;
 public enum DataBaseMapping {
     Mysql("MySQL", "default"),//
     Oracle("Oracle", "oracle"),//
+    SqlServer2012("Microsoft SQL Server 14", "sqlserver2012"),//
+    SqlServer("Microsoft SQL Server", "oracle"),//
     PostgreSQL("PostgreSQL", "default");
     //
     //
@@ -34,8 +36,9 @@ public enum DataBaseMapping {
     }
 
     public static DataBaseMapping formName(String productName) {
+        String productTag = productName.toLowerCase();
         for (DataBaseMapping mapping : DataBaseMapping.values()) {
-            if (mapping.dbProductName.equalsIgnoreCase(productName)) {
+            if (productTag.contains(mapping.dbProductName.toLowerCase())) {
                 return mapping;
             }
         }
