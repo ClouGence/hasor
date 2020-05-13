@@ -133,7 +133,7 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
         // .如果处理渲染失败，但是isCommitted = false，那么做服务端转发 renderTo
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         HttpServletResponse httpResponse = invoker.getHttpResponse();
-        if (!httpResponse.isCommitted()) {
+        if (!httpResponse.isCommitted() && !StringUtils.isEmpty(invoker.renderTo())) {
             RequestDispatcher requestDispatcher = httpRequest.getRequestDispatcher(invoker.renderTo());
             if (requestDispatcher != null) {
                 requestDispatcher.forward(httpRequest, httpResponse);
