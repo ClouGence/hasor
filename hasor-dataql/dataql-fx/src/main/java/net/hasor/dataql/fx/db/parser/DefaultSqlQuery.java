@@ -20,6 +20,7 @@ import net.hasor.utils.StringUtils;
 import ognl.Ognl;
 import ognl.OgnlContext;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -31,60 +32,58 @@ import java.util.stream.Collectors;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-28
  */
-public class SqlFxQuery implements Cloneable, FxQuery {
-    private StringBuilder           sqlStringOri    = new StringBuilder("");
-    private List<Object>            sqlStringPlan   = new LinkedList<>();
-    private List<String>            paramEl         = new LinkedList<>();
-    private boolean                 havePlaceholder = false;
-    private AtomicReference<Object> tempObject      = new AtomicReference<>();
-    private Supplier<Object>        objectSupplier  = () -> {
-        return tempObject.get();
-    };
+public class DefaultSqlQuery extends HashMap<Class<?>, Object> implements Cloneable, FxQuery {
+    private final StringBuilder           queryStringOri  = new StringBuilder("");
+    private final List<Object>            queryStringPlan = new LinkedList<>();
+    private final List<String>            paramEl         = new LinkedList<>();
+    private       boolean                 havePlaceholder = false;
+    private final AtomicReference<Object> tempObject      = new AtomicReference<>();
+    private final Supplier<Object>        objectSupplier  = tempObject::get;
 
     /** 插入一个字符串 */
     public void insertString(String append) {
-        this.sqlStringOri.insert(0, append);
-        this.sqlStringPlan.add(0, append);
+        this.queryStringOri.insert(0, append);
+        this.queryStringPlan.add(0, append);
     }
 
     /** 追加一个字符串 */
     public void appendString(String append) {
-        this.sqlStringOri.append(append);
-        if (!this.sqlStringPlan.isEmpty()) {
-            Object ss = this.sqlStringPlan.get(this.sqlStringPlan.size() - 1);
+        this.queryStringOri.append(append);
+        if (!this.queryStringPlan.isEmpty()) {
+            Object ss = this.queryStringPlan.get(this.queryStringPlan.size() - 1);
             if (ss instanceof StringBuilder) {
                 ((StringBuilder) ss).append(append);
                 return;
             }
         }
-        this.sqlStringPlan.add(new StringBuilder(append));
+        this.queryStringPlan.add(new StringBuilder(append));
     }
 
     /** 插入一个 SQL 参数，最终这个参数会通过 PreparedStatement 形式传递。 */
     public void insertValueExpr(String exprString) {
-        this.sqlStringOri.insert(0, "#{" + exprString + "}");
-        this.sqlStringPlan.add("?");
+        this.queryStringOri.insert(0, "#{" + exprString + "}");
+        this.queryStringPlan.add("?");
         this.paramEl.add(exprString);
     }
 
     /** 添加一个 SQL 参数，最终这个参数会通过 PreparedStatement 形式传递。 */
     public void appendValueExpr(String exprString) {
-        this.sqlStringOri.append("#{" + exprString + "}");
-        this.sqlStringPlan.add("?");
+        this.queryStringOri.append("#{" + exprString + "}");
+        this.queryStringPlan.add("?");
         this.paramEl.add(exprString);
     }
 
     /** 插入一个动态字符串，动态字符串是指字符串本身内容需要经过表达式计算之后才知道。 */
     public void insertPlaceholderExpr(String exprString) {
-        this.sqlStringOri.insert(0, "${" + exprString + "}");
-        this.sqlStringPlan.add(0, new EvalCharSequence(exprString, this.objectSupplier));
+        this.queryStringOri.insert(0, "${" + exprString + "}");
+        this.queryStringPlan.add(0, new EvalCharSequence(exprString, this.objectSupplier));
         this.havePlaceholder = true;
     }
 
     /** 追加一个动态字符串，动态字符串是指字符串本身内容需要经过表达式计算之后才知道。 */
     public void appendPlaceholderExpr(String exprString) {
-        this.sqlStringOri.append("${" + exprString + "}");
-        this.sqlStringPlan.add(new EvalCharSequence(exprString, this.objectSupplier));
+        this.queryStringOri.append("${" + exprString + "}");
+        this.queryStringPlan.add(new EvalCharSequence(exprString, this.objectSupplier));
         this.havePlaceholder = true;
     }
 
@@ -94,13 +93,13 @@ public class SqlFxQuery implements Cloneable, FxQuery {
     }
 
     public StringBuilder getOriSqlString() {
-        return this.sqlStringOri;
+        return this.queryStringOri;
     }
 
     public String buildQueryString(Object context) {
         try {
             this.tempObject.set(context);
-            return StringUtils.join(this.sqlStringPlan.toArray());
+            return StringUtils.join(this.queryStringPlan.toArray());
         } finally {
             this.tempObject.set(null);
         }
@@ -112,9 +111,19 @@ public class SqlFxQuery implements Cloneable, FxQuery {
         }).collect(Collectors.toList());
     }
 
+    @Override
+    public <T> T attach(Class<? extends T> attach, T attachValue) {
+        return (T) super.put(attach, attachValue);
+    }
+
+    @Override
+    public <T> T attach(Class<? extends T> attach) {
+        return (T) super.get(attach);
+    }
+
     private static class EvalCharSequence {
-        private String           exprString;
-        private Supplier<Object> exprContext;
+        private final String           exprString;
+        private final Supplier<Object> exprContext;
 
         public EvalCharSequence(String exprString, Supplier<Object> exprContext) {
             this.exprString = exprString;
@@ -137,7 +146,7 @@ public class SqlFxQuery implements Cloneable, FxQuery {
     }
 
     public static FxQuery analysisSQL(String fragmentString) {
-        final SqlFxQuery fxSql = new SqlFxQuery();
+        final DefaultSqlQuery fxSql = new DefaultSqlQuery();
         final String result = new GenericTokenParser(new String[] { "#{", "${" }, "}", (builder, token, content) -> {
             fxSql.appendString(builder.toString());
             if (token.equalsIgnoreCase("${")) {
@@ -155,6 +164,6 @@ public class SqlFxQuery implements Cloneable, FxQuery {
 
     @Override
     public FxQuery clone() {
-        return SqlFxQuery.analysisSQL(this.sqlStringOri.toString());
+        return DefaultSqlQuery.analysisSQL(this.queryStringOri.toString());
     }
 }

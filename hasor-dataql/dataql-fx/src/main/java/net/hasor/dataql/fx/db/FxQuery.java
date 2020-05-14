@@ -28,4 +28,8 @@ public interface FxQuery {
     public String buildQueryString(Object context);
 
     public List<Object> buildParameterSource(Object context);
+
+    public <T> T attach(Class<? extends T> attach, T attachValue);
+
+    public <T> T attach(Class<? extends T> attach);
 }

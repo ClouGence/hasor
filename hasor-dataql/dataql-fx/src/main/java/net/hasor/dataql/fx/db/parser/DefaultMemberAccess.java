@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Drew Davidson (drew@ognl.org)
  * @version 15 October 1999
  */
-class DefaultMemberAccess implements MemberAccess {
+public class DefaultMemberAccess implements MemberAccess {
     public boolean allowPrivateAccess          = false;
     public boolean allowProtectedAccess        = false;
     public boolean allowPackageProtectedAccess = false;

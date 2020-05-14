@@ -22,7 +22,7 @@ import net.hasor.dataql.fx.FxHintNames;
 import net.hasor.dataql.fx.FxHintValue;
 import net.hasor.dataql.fx.basic.StringUdfSource;
 import net.hasor.dataql.fx.db.dialect.SqlPageDialect;
-import net.hasor.dataql.fx.db.parser.SqlFxQuery;
+import net.hasor.dataql.fx.db.parser.DefaultSqlQuery;
 import net.hasor.db.jdbc.BatchPreparedStatementSetter;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.PreparedStatementSetter;
@@ -103,7 +103,7 @@ public class SqlFragment implements FragmentProcess {
     }
 
     protected FxQuery analysisSQL(Hints hint, SqlMode sqlMode, String fragmentString) {
-        return SqlFxQuery.analysisSQL(fragmentString);
+        return DefaultSqlQuery.analysisSQL(fragmentString);
     }
 
     public List<Object> batchRunFragment(Hints hint, List<Map<String, Object>> params, String fragmentString) throws Throwable {
