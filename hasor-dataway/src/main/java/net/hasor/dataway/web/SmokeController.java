@@ -24,11 +24,10 @@ import net.hasor.dataway.daos.ApiDetailQuery;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.utils.StringUtils;
+import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
-import net.hasor.web.objects.JsonRenderEngine;
-import net.hasor.web.render.RenderType;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -40,13 +39,12 @@ import java.util.Map;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/smoke")
-@RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class SmokeController extends BasicController {
     @Inject
     private ApiCallService apiCallService;
 
     @Post
-    public Result<Object> doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws Throwable {
+    public void doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody, Invoker invoker) throws Throwable {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
@@ -84,7 +82,10 @@ public class SmokeController extends BasicController {
             }
         });
         this.updateSchema(apiId, apiInfo.getParameterMap(), objectMap);
-        return Result.of(objectMap);
+        //
+        DatawayUtils.responseData(//
+                this.spiTrigger, apiInfo, invoker.getMimeType("json"), invoker, Result.of(objectMap)//
+        );
     }
 
     private void updateSchema(String apiID, Map<String, Object> requestData, Object responseData) {

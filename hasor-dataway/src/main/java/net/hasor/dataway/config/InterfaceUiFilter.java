@@ -70,6 +70,7 @@ class InterfaceUiFilter implements InvokerFilter {
         httpRequest.setCharacterEncoding("UTF-8");
         httpResponse.setCharacterEncoding("UTF-8");
         String requestURI = invoker.getRequestPath();
+        CorsUtils.setup(invoker);
         if (requestURI.startsWith(this.uiAdminBaseUri)) {
             try {
                 DatawayUtils.resetLocalTime();

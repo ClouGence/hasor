@@ -50,7 +50,7 @@
                 </template>
                 <template slot="paneR">
                     <ResponsePanel id="listResponsePanel" ref="listResponsePanel"
-                                   :response-body="responseBody" :on-edit-page="false"
+                                   :response-body="responseBody" :on-edit-page="false" :result-type="responseType"
                                    @onResponseBodyChange="(data)=> { this.responseBody = data}"/>
                 </template>
             </split-pane>
@@ -163,10 +163,18 @@
                 request(requestURL, {
                     "direct": true,
                     "method": this.requestApiInfo.select,
-                    "headers": headerData(this.headerData),
+                    "headers": {
+                        ...headerData(this.headerData),
+                        "X-InterfaceUI-Info": "true"
+                    },
                     "data": JSON.parse(this.requestBody)
                 }, response => {
-                    self.responseBody = JSON.stringify(response.data, null, 2);
+                    self.responseType = response.dataTypeMode
+                    if (response.dataTypeMode === 'json') {
+                        self.responseBody = JSON.stringify(response.data, null, 2);
+                    } else {
+                        self.responseBody = response.data.result;
+                    }
                     self.$nextTick(function () {
                         self.$refs.listResponsePanel.doUpdate();
                         self.$message({message: 'Success.', type: 'success'});
@@ -188,7 +196,8 @@
                 headerData: [],
                 requestApiInfo: {},
                 requestBody: '{}',
-                responseBody: '"empty."'
+                responseBody: '"empty."',
+                responseType: 'json'
             }
         }
     }

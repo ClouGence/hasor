@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
+import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.DataQL;
 
 import javax.inject.Inject;
@@ -29,5 +30,7 @@ import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
 public abstract class BasicController {
     @Inject
     @Named(ISOLATION_CONTEXT)
-    protected DataQL dataQL;
+    protected DataQL     dataQL;
+    @Inject
+    protected SpiTrigger spiTrigger;
 }

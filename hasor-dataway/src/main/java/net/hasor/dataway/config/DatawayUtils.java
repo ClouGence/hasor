@@ -14,11 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.dataway.config;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
+import net.hasor.dataway.spi.ApiInfo;
+import net.hasor.dataway.spi.ResultSerializationChainSpi;
+import net.hasor.dataway.spi.ResultSerializationChainSpi.SerializationInfo;
+import net.hasor.web.Invoker;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -168,5 +179,45 @@ public class DatawayUtils {
             }
         }
         return finalResult;
+    }
+
+    public static Object responseData(SpiTrigger spiTrigger, ApiInfo apiInfo, String mimeType, Invoker invoker, Object objectMap) throws IOException {
+        HttpServletRequest httpRequest = invoker.getHttpRequest();
+        HttpServletResponse httpResponse = invoker.getHttpResponse();
+        if (!httpResponse.isCommitted()) {
+            Object resultData = spiTrigger.chainSpi(ResultSerializationChainSpi.class, (listener, lastResult) -> {
+                return listener.doSerialization(apiInfo, lastResult);
+            }, objectMap);
+            //
+            if (resultData instanceof SerializationInfo) {
+                mimeType = ((SerializationInfo) resultData).getMimeType();
+                resultData = ((SerializationInfo) resultData).getData();
+            }
+            //
+            String responseContextType = null;
+            byte[] bodyByte = null;
+            if (resultData instanceof String) {
+                responseContextType = "text";
+                bodyByte = ((String) resultData).getBytes();
+            } else if (resultData instanceof byte[]) {
+                responseContextType = "bytes";
+                bodyByte = (byte[]) resultData;
+            } else {
+                responseContextType = "json";
+                String body = JSON.toJSONString(resultData, SerializerFeature.WriteMapNullValue);
+                bodyByte = body.getBytes();
+            }
+            //
+            httpResponse.setContentType(mimeType);
+            httpResponse.setContentLength(bodyByte.length);
+            if ("true".equalsIgnoreCase(httpRequest.getHeader("X-InterfaceUI-Info"))) {
+                httpResponse.setHeader("X-InterfaceUI-ContextType", responseContextType);
+            }
+            ServletOutputStream output = httpResponse.getOutputStream();
+            output.write(bodyByte);
+            output.flush();
+            output.close();
+        }
+        return objectMap;
     }
 }

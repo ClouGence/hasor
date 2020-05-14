@@ -33,7 +33,7 @@ public class CorsUtils {
             httpResponse.setHeader("Access-Control-Allow-Origin", "*");
         }
         httpResponse.addHeader("Access-Control-Allow-Methods", "*");
-        httpResponse.addHeader("Access-Control-Allow-Headers", "content-type");
+        httpResponse.addHeader("Access-Control-Allow-Headers", "content-type,x-interfaceui-info");
         httpResponse.addHeader("Access-Control-Max-Age", "3600");
     }
 }

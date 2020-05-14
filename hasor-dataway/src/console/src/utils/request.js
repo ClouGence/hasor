@@ -72,12 +72,55 @@ export default function request(apiURL, options, successCallback, errorCallback)
     return axios.request({
         ...newOptions,
         withCredentials: true,
-    }).then((response) => {
-        if (newOptions.direct || response.data.success) {
-            successCallback(response);
-            return;
+        responseType: 'blob'
+    }).then(async (response) => {
+        let contentType = "";
+        for (let key in response.headers) {
+            if (key.toLowerCase() === 'x-interfaceui-contexttype') {
+                contentType = response.headers[key];
+                contentType = contentType.toLowerCase();
+                break;
+            }
         }
-        errorBox(`${response.data.code}: ${response.data.message}`);
-        errorCallback(response);
+        //
+        if (response.data.type === "application/json" || contentType === 'json') {
+            // json
+            response.dataTypeMode = 'json';
+            let text = await response.data.text();
+            response.data = JSON.parse(text);
+            if (newOptions.direct || response.data.success) {
+                successCallback(response);
+                return;
+            }
+            errorBox(`${response.data.code}: ${response.data.message}`);
+            errorCallback(response);
+        } else if (contentType === 'text') {
+            // text
+            response.dataTypeMode = 'text';
+            response.data.result = await response.data.text();
+            successCallback(response);
+        } else {
+            // bytes
+            response.dataTypeMode = 'bytes';
+            let buffer = await response.data.arrayBuffer();
+            let bufferTypes = new Uint8Array(buffer);
+            let tempString = "";
+            let n = 0;
+            for (let i = 0; i < bufferTypes.length; ++i) {
+                let hexDat = bufferTypes[i].toString(16).toUpperCase();
+                if (hexDat.length === 1) {
+                    hexDat = "0" + hexDat;
+                }
+                if (n < 15) {
+                    n++;
+                    tempString = tempString + hexDat + " ";
+                } else {
+                    n = 0;
+                    tempString = tempString + hexDat + "\n";
+                }
+            }
+            response.data.result = tempString.trim();
+            successCallback(response);
+        }
     }).catch(errorCallback).finally(finallyCallback);
 }

@@ -19,11 +19,10 @@ import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
+import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
-import net.hasor.web.objects.JsonRenderEngine;
-import net.hasor.web.render.RenderType;
 
 import javax.inject.Inject;
 import java.util.Map;
@@ -34,13 +33,12 @@ import java.util.Map;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/perform")
-@RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class PerformController extends BasicController {
     @Inject
     private ApiCallService apiCallService;
 
     @Post
-    public Result<Object> doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws Throwable {
+    public void doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody, Invoker invoker) throws Throwable {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
@@ -67,6 +65,9 @@ public class PerformController extends BasicController {
                 return strCodeValue;
             }
         });
-        return Result.of(objectMap);
+        //
+        DatawayUtils.responseData(//
+                this.spiTrigger, apiInfo, invoker.getMimeType("json"), invoker, Result.of(objectMap)//
+        );
     }
 }

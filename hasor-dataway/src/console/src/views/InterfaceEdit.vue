@@ -65,6 +65,7 @@
                             <ResponsePanel id="editerResponsePanel" ref="editerResponsePanel"
                                            :response-body="responseBody"
                                            :on-edit-page="true"
+                                           :result-type="responseType"
                                            :result-structure="optionData['resultStructure']"
                                            :response-format="optionData['responseFormat']"
                                            @onResponseBodyChange="(data)=> { this.responseBody = data}"
@@ -261,9 +262,14 @@
                     self.loadApiDetail();
                 });
             },
-            onExecute(resultValue) {
+            onExecute(resultValue, dataTypeMode) {
+                this.responseType = dataTypeMode;
+                if (dataTypeMode === 'json') {
+                    this.responseBody = JSON.stringify(resultValue, null, 2);
+                } else {
+                    this.responseBody = resultValue;
+                }
                 const self = this;
-                this.responseBody = JSON.stringify(resultValue, null, 2);
                 self.$nextTick(function () {
                     self.$refs.editerResponsePanel.doUpdate();
                 });
@@ -334,6 +340,7 @@
                 optionData: defaultOptionData,
                 requestBody: '{"message":"Hello DataQL."}',
                 responseBody: '"empty."',
+                responseType: 'json',
                 //
                 //
                 panelPercentVertical: 65,

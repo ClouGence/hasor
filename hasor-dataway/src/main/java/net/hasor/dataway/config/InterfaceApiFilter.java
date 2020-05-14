@@ -15,7 +15,7 @@
  */
 package net.hasor.dataway.config;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ObjectModel;
@@ -32,10 +32,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -56,6 +54,8 @@ class InterfaceApiFilter implements InvokerFilter {
     private          DataQL         dataQL;
     @Inject
     private          ApiCallService callService;
+    @Inject
+    private          SpiTrigger     spiTrigger;
     private          String         apiBaseUri;
 
     public InterfaceApiFilter(String apiBaseUri) {
@@ -103,7 +103,7 @@ class InterfaceApiFilter implements InvokerFilter {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             Object result = DatawayUtils.exceptionToResult(e).getResult();
-            return responseData(mimeType, httpResponse, result);
+            return DatawayUtils.responseData(this.spiTrigger, apiInfo, mimeType, invoker, result);
         }
         //
         // .准备参数
@@ -129,21 +129,6 @@ class InterfaceApiFilter implements InvokerFilter {
         // .执行调用
         String finalScript = script;
         Object objectMap = this.callService.doCallWithoutError(apiInfo, param -> finalScript);
-        return responseData(mimeType, httpResponse, objectMap);
-    }
-
-    private Object responseData(String mimeType, HttpServletResponse httpResponse, Object objectMap) throws IOException {
-        if (!httpResponse.isCommitted()) {
-            String body = JSON.toJSONString(objectMap, SerializerFeature.WriteMapNullValue);
-            byte[] bodyByte = body.getBytes();
-            //
-            httpResponse.setContentType(mimeType);
-            httpResponse.setContentLength(bodyByte.length);
-            ServletOutputStream output = httpResponse.getOutputStream();
-            output.write(bodyByte);
-            output.flush();
-            output.close();
-        }
-        return objectMap;
+        return DatawayUtils.responseData(this.spiTrigger, apiInfo, mimeType, invoker, objectMap);
     }
 }

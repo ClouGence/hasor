@@ -202,7 +202,10 @@
                 const self = this;
                 request(ApiUrl.perform + "?id=" + this.apiInfo.apiID, {
                     "method": "POST",
-                    "headers": headerData(this.requestHeader),
+                    "headers": {
+                        ...headerData(this.requestHeader),
+                        "X-InterfaceUI-Info": "true"
+                    },
                     "data": {
                         "id": self.apiInfo.apiID,
                         "select": self.apiInfo.select,
@@ -213,7 +216,7 @@
                         "optionInfo": self.optionInfo
                     }
                 }, response => {
-                    self.$emit('onExecute', response.data.result);
+                    self.$emit('onExecute', response.data.result, response.dataTypeMode);
                 });
             },
             // 冒烟按钮
@@ -227,14 +230,17 @@
                 const self = this;
                 request(ApiUrl.smokeTest + "?id=" + this.apiInfo.apiID, {
                     "method": "POST",
-                    "headers": headerData(this.requestHeader),
+                    "headers": {
+                        ...headerData(this.requestHeader),
+                        "X-InterfaceUI-Info": "true"
+                    },
                     "data": {
                         "id": this.apiInfo.apiID,
                         "requestBody": JSON.parse(this.requestBody),
                     }
                 }, response => {
                     this.smokeTest = true;
-                    self.$emit('onSmokeTest', response.data.result);
+                    self.$emit('onSmokeTest', response.data.result, response.dataTypeMode);
                 });
             },
             // 发布按钮

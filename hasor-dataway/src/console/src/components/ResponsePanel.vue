@@ -17,7 +17,7 @@
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="Format Result" placement="top-end">
                     <el-button class="z-index-top" size="mini" round
-                               @click.native='handleJsonResultFormatter' v-if="panelActiveName ==='result_view'">
+                               @click.native='handleJsonResultFormatter' v-if="panelActiveName ==='result_view'" :disabled="resultType !=='json'">
                         <svg class="icon" aria-hidden="true">
                             <use xlink:href="#iconformat"></use>
                         </svg>
@@ -87,6 +87,12 @@
                 type: Boolean,
                 default: function () {
                     return false; // 是否在 编辑 页面
+                }
+            },
+            resultType: {
+                type: String,
+                default: function () {
+                    return 'json';
                 }
             }
         },
