@@ -17,9 +17,17 @@
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="Format Result" placement="top-end">
                     <el-button class="z-index-top" size="mini" round
-                               @click.native='handleJsonResultFormatter' v-if="panelActiveName ==='result_view'" :disabled="resultType !=='json'">
+                               @click.native='handleJsonResultFormatter' v-if="panelActiveName ==='result_view' && resultType ==='json'">
                         <svg class="icon" aria-hidden="true">
                             <use xlink:href="#iconformat"></use>
+                        </svg>
+                    </el-button>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="Save As Download" placement="top-end">
+                    <el-button class="z-index-top" size="mini" round
+                               @click.native='handleResultDownload' v-if="panelActiveName ==='result_view' && resultType ==='bytes'">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#icondownload"></use>
                         </svg>
                     </el-button>
                 </el-tooltip>
@@ -49,6 +57,8 @@
 </template>
 <script>
     import 'codemirror'
+    import {formatDate} from "../utils/utils"
+
 
     export default {
         props: {
@@ -162,6 +172,29 @@
             },
             handleJsonResultCopyError() {
                 this.$message.error('JsonResult Copy to Copied Failed')
+            },
+            // 下载
+            handleResultDownload() {
+                // 把十六进制转换为bytes
+                let localResponseBody = this.responseBody;
+                let localArrays = localResponseBody.replace(/\n/g, " ").split(" ");
+                let byteArray = [];
+                for (let i = 0; i < localArrays.length; i++) {
+                    byteArray.push(parseInt(localArrays[i], 16));
+                }
+                let byteUint8Array = new Uint8Array(byteArray);
+                // 创建隐藏的可下载链接
+                let eleLink = document.createElement('a');
+                eleLink.download = formatDate(new Date()) + '.result';
+                eleLink.style.display = 'none';
+                // 字符内容转变成blob地址
+                let blob = new Blob([byteUint8Array]);
+                eleLink.href = URL.createObjectURL(blob);
+                // 触发点击
+                document.body.appendChild(eleLink);
+                eleLink.click();
+                // 然后移除
+                document.body.removeChild(eleLink);
             },
             //
             // 执行布局
