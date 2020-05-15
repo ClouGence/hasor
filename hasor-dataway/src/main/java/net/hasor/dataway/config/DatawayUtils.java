@@ -24,12 +24,15 @@ import net.hasor.dataql.runtime.ThrowRuntimeException;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.SerializationChainSpi;
 import net.hasor.dataway.spi.SerializationChainSpi.SerializationInfo;
+import net.hasor.utils.io.IOUtils;
 import net.hasor.web.Invoker;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -193,28 +196,42 @@ public class DatawayUtils {
             }
             //
             String responseContextType = null;
-            byte[] bodyByte = null;
+            int dataLength = -1;
+            InputStream bodyInputStream = null;
             if (resultData instanceof String) {
                 responseContextType = "text";
-                bodyByte = ((String) resultData).getBytes();
+                byte[] bodyByte = ((String) resultData).getBytes();
+                dataLength = bodyByte.length;
+                bodyInputStream = new ByteArrayInputStream(bodyByte);
             } else if (resultData instanceof byte[]) {
                 responseContextType = "bytes";
-                bodyByte = (byte[]) resultData;
+                byte[] bodyByte = (byte[]) resultData;
+                dataLength = bodyByte.length;
+                bodyInputStream = new ByteArrayInputStream(bodyByte);
+            } else if (resultData instanceof InputStream) {
+                responseContextType = "bytes";
+                dataLength = -1;
+                bodyInputStream = (InputStream) resultData;
             } else {
                 responseContextType = "json";
                 String body = JSON.toJSONString(resultData, SerializerFeature.WriteMapNullValue);
-                bodyByte = body.getBytes();
+                byte[] bodyByte = body.getBytes();
+                dataLength = bodyByte.length;
+                bodyInputStream = new ByteArrayInputStream(bodyByte);
             }
             //
-            httpResponse.setContentType(mimeType);
-            httpResponse.setContentLength(bodyByte.length);
+            if (dataLength > 0) {
+                httpResponse.setContentLength(dataLength);
+            }
             if ("true".equalsIgnoreCase(httpRequest.getHeader("X-InterfaceUI-Info"))) {
                 httpResponse.setHeader("X-InterfaceUI-ContextType", responseContextType);
             }
-            ServletOutputStream output = httpResponse.getOutputStream();
-            output.write(bodyByte);
-            output.flush();
-            output.close();
+            httpResponse.setContentType(mimeType);
+            //
+            try (ServletOutputStream output = httpResponse.getOutputStream()) {
+                IOUtils.copy(bodyInputStream, output);
+                output.flush();
+            }
         }
         return objectMap;
     }

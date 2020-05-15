@@ -16,6 +16,7 @@
 package net.hasor.dataway.spi;
 import net.hasor.web.MimeType;
 
+import java.io.InputStream;
 import java.util.EventListener;
 
 /**
@@ -36,7 +37,27 @@ public interface SerializationChainSpi extends EventListener {
             return this.data;
         }
 
-        public static SerializationInfo of(String mimeType, Object data) {
+        /** 字符串数据 */
+        public static SerializationInfo ofString(String mimeType, String data) {
+            return of(mimeType, data);
+        }
+
+        /** 字节数据 */
+        public static SerializationInfo ofBytes(String mimeType, byte[] data) {
+            return of(mimeType, data);
+        }
+
+        /** 对象 */
+        public static SerializationInfo ofObject(String mimeType, Object data) {
+            return of(mimeType, data);
+        }
+
+        /** 输出流 */
+        public static SerializationInfo ofStream(String mimeType, InputStream data) {
+            return of(mimeType, data);
+        }
+
+        private static SerializationInfo of(String mimeType, Object data) {
             SerializationInfo info = new SerializationInfo();
             info.mimeType = mimeType;
             info.data = data;

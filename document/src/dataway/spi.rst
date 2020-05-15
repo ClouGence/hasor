@@ -397,7 +397,7 @@ SerializationChainSpi结果序列化
             ByteArrayOutputStream oat = new ByteArrayOutputStream();
             ImageIO.write(bi, "JPEG", oat);
             //
-            return SerializationChainSpi.SerializationInfo.of(//
+            return SerializationChainSpi.SerializationInfo.ofBytes(//
                 mimeType.getMimeType("jpeg"),   // response context-type
                 oat.toByteArray()               // response body
             );
