@@ -37,7 +37,7 @@ var updatePublishMap = {
     "oracle" : @@sql(apiId)<%
         update interface_info set api_status = 1, api_gmt_time = sysdate where api_id = #{apiId}
     %>,
-    "sqlserver14" : @@sql(apiId)<%
+    "sqlserver2012" : @@sql(apiId)<%
         update interface_info set api_status = 1, api_gmt_time = getdate() where api_id = #{apiId}
     %>
 };

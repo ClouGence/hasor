@@ -34,6 +34,7 @@ public class CorsUtils {
         }
         httpResponse.addHeader("Access-Control-Allow-Methods", "*");
         httpResponse.addHeader("Access-Control-Allow-Headers", "content-type,x-interfaceui-info");
+        httpResponse.addHeader("Access-Control-Expose-Headers", "X-InterfaceUI-ContextType");
         httpResponse.addHeader("Access-Control-Max-Age", "3600");
     }
 }

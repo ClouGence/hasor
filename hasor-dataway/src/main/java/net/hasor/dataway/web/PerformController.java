@@ -16,7 +16,6 @@
 package net.hasor.dataway.web;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
-import net.hasor.dataway.config.Result;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.web.Invoker;
@@ -67,7 +66,7 @@ public class PerformController extends BasicController {
         });
         //
         DatawayUtils.responseData(//
-                this.spiTrigger, apiInfo, invoker.getMimeType("json"), invoker, Result.of(objectMap)//
+                this.spiTrigger, apiInfo, invoker.getMimeType("json"), invoker, objectMap//
         );
     }
 }

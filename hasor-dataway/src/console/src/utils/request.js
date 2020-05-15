@@ -82,8 +82,13 @@ export default function request(apiURL, options, successCallback, errorCallback)
                 break;
             }
         }
+        if (contentType === undefined || contentType == null || contentType === '') {
+            if (response.data.type === "application/json") {
+                contentType = 'json';
+            }
+        }
         //
-        if (response.data.type === "application/json" || contentType === 'json') {
+        if (contentType === 'json') {
             // json
             response.dataTypeMode = 'json';
             let text = await response.data.text();

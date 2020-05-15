@@ -22,8 +22,8 @@ import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
 import net.hasor.dataway.spi.ApiInfo;
-import net.hasor.dataway.spi.ResultSerializationChainSpi;
-import net.hasor.dataway.spi.ResultSerializationChainSpi.SerializationInfo;
+import net.hasor.dataway.spi.SerializationChainSpi;
+import net.hasor.dataway.spi.SerializationChainSpi.SerializationInfo;
 import net.hasor.web.Invoker;
 
 import javax.servlet.ServletOutputStream;
@@ -114,23 +114,21 @@ public class DatawayUtils {
         //
         Map<String, Object> resultData = null;
         if (e instanceof ThrowRuntimeException) {
-            resultData = new LinkedHashMap<String, Object>() {{
-                put("success", false);
-                put("message", e.getMessage());
-                put("code", ((ThrowRuntimeException) e).getThrowCode());
-                put("lifeCycleTime", currentLostTime());
-                put("executionTime", ((ThrowRuntimeException) e).getExecutionTime());
-                put("value", specialValue);
-            }};
+            resultData = new LinkedHashMap<>();
+            resultData.put("success", false);
+            resultData.put("message", e.getMessage());
+            resultData.put("code", ((ThrowRuntimeException) e).getThrowCode());
+            resultData.put("lifeCycleTime", currentLostTime());
+            resultData.put("executionTime", ((ThrowRuntimeException) e).getExecutionTime());
+            resultData.put("value", specialValue);
         } else {
-            resultData = new LinkedHashMap<String, Object>() {{
-                put("success", false);
-                put("message", e.getMessage());
-                put("code", 500);
-                put("lifeCycleTime", currentLostTime());
-                put("executionTime", -1);
-                put("value", specialValue);
-            }};
+            resultData = new LinkedHashMap<>();
+            resultData.put("success", false);
+            resultData.put("message", e.getMessage());
+            resultData.put("code", 500);
+            resultData.put("lifeCycleTime", currentLostTime());
+            resultData.put("executionTime", -1);
+            resultData.put("value", specialValue);
         }
         return Result.of(doResponseFormat(optionMap, resultData));
     }
@@ -185,8 +183,8 @@ public class DatawayUtils {
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         HttpServletResponse httpResponse = invoker.getHttpResponse();
         if (!httpResponse.isCommitted()) {
-            Object resultData = spiTrigger.chainSpi(ResultSerializationChainSpi.class, (listener, lastResult) -> {
-                return listener.doSerialization(apiInfo, lastResult);
+            Object resultData = spiTrigger.chainSpi(SerializationChainSpi.class, (listener, lastResult) -> {
+                return listener.doSerialization(apiInfo, invoker, lastResult);
             }, objectMap);
             //
             if (resultData instanceof SerializationInfo) {

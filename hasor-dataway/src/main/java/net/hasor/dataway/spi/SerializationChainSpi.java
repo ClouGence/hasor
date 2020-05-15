@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataway.spi;
+import net.hasor.web.MimeType;
+
 import java.util.EventListener;
 
 /**
@@ -21,7 +23,7 @@ import java.util.EventListener;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-19
  */
-public interface ResultSerializationChainSpi extends EventListener {
+public interface SerializationChainSpi extends EventListener {
     public static class SerializationInfo {
         private String mimeType;
         private Object data;
@@ -45,8 +47,9 @@ public interface ResultSerializationChainSpi extends EventListener {
     /**
      * 成功完成调用
      * @param apiInfo API 调用信息
+     * @param mimeType mimeType 查询器，当返回 SerializationInfo 类型的时候可以协助确定 content_type
      * @param result 结果信息
      * @return 返回结果，或者抛出异常。
      */
-    public Object doSerialization(ApiInfo apiInfo, Object result);
+    public Object doSerialization(ApiInfo apiInfo, MimeType mimeType, Object result);
 }

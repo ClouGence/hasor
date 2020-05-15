@@ -19,7 +19,6 @@ import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
-import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiDetailQuery;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
@@ -84,7 +83,7 @@ public class SmokeController extends BasicController {
         this.updateSchema(apiId, apiInfo.getParameterMap(), objectMap);
         //
         DatawayUtils.responseData(//
-                this.spiTrigger, apiInfo, invoker.getMimeType("json"), invoker, Result.of(objectMap)//
+                this.spiTrigger, apiInfo, invoker.getMimeType("json"), invoker, objectMap//
         );
     }
 
