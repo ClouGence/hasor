@@ -6,6 +6,7 @@ Hasor v4.1.7 (2020-05-?)
 **新增**
     - `issue <https://github.com/zycgit/hasor/issues/14>`_ 新增 Microsoft SQL Server 的支持
     - `issue <https://github.com/zycgit/hasor/issues/41>`_ 支持返回结果的完全自定义序列化，甚至可以自定义二进制专有协议。
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1GDPD>`_ 新增 PG 的支持
 **修复**
     - `issue <https://github.com/zycgit/hasor/issues/45>`_ Oracle 下 ReleaseDetail.ql 脚本中的查询语句缺少一个 where
 
