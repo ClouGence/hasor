@@ -25,6 +25,14 @@ var updateMap = {
             api_gmt_time = getdate()
         where
             api_id       = #{data.id}
+    %>,
+    "postgresql" : @@sql(data, apiSample, optionInfo)<%
+        update interface_info set
+            api_status   = #{data.newStatus},   api_comment  = #{data.comment}, api_type     = #{data.codeType},
+            api_script   = #{data.codeValue},   api_sample   = #{apiSample},    api_option   = #{optionInfo},
+            api_gmt_time = now()
+        where
+            api_id       = cast(#{data.id} as integer)
     %>
 };
 

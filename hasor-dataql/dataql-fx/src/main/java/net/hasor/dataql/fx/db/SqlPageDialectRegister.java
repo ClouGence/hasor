@@ -26,8 +26,8 @@ import java.util.Map;
  * @version : 2020-04-08
  */
 public class SqlPageDialectRegister {
-    private static Map<String, Class<?>>       dialectAliasMap = new LinkedCaseInsensitiveMap<>();
-    private static Map<String, SqlPageDialect> dialectCache    = new LinkedCaseInsensitiveMap<>();
+    private static final Map<String, Class<?>>       dialectAliasMap = new LinkedCaseInsensitiveMap<>();
+    private static final Map<String, SqlPageDialect> dialectCache    = new LinkedCaseInsensitiveMap<>();
 
     public static void registerDialectAlias(String alias, Class<? extends SqlPageDialect> dialectClass) {
         dialectAliasMap.put(alias, dialectClass);
@@ -60,10 +60,10 @@ public class SqlPageDialectRegister {
 
     static {
         //
-        registerDialectAlias("h2", HsqldbDialect.class);
-        registerDialectAlias("hsqldb", HsqldbDialect.class);
-        registerDialectAlias("postgresql", HsqldbDialect.class);
-        registerDialectAlias("phoenix", HsqldbDialect.class);
+        registerDialectAlias("postgresql", PostgreSqlDialect.class);
+        registerDialectAlias("h2", PostgreSqlDialect.class);
+        registerDialectAlias("hsqldb", PostgreSqlDialect.class);
+        registerDialectAlias("phoenix", PostgreSqlDialect.class);
         //
         registerDialectAlias("mysql", MySqlDialect.class);
         registerDialectAlias("mariadb", MySqlDialect.class);

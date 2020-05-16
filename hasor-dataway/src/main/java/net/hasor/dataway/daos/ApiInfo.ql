@@ -5,6 +5,9 @@ import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 var queryMap = {
     "default"   : @@sql(apiId)<%
         select * from interface_info where api_id = #{apiId}
+    %>,
+    "postgresql" : @@sql(apiId)<%
+        select * from interface_info where api_id = cast(#{apiId} as integer)
     %>
 };
 

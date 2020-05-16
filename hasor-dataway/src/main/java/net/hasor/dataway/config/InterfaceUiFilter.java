@@ -50,10 +50,10 @@ class InterfaceUiFilter implements InvokerFilter {
     protected static     Logger               logger           = LoggerFactory.getLogger(InterfaceUiFilter.class);
     private static final String               resourceBaseUri  = "/META-INF/hasor-framework/dataway-ui/";
     private              String               resourceIndexUri = null;
-    private              String               apiBaseUri;
-    private              String               uiBaseUri;
-    private              String               uiAdminBaseUri;
-    private              Map<String, Integer> resourceSize;
+    private final        String               apiBaseUri;
+    private final        String               uiBaseUri;
+    private final        String               uiAdminBaseUri;
+    private final        Map<String, Integer> resourceSize;
 
     public InterfaceUiFilter(String apiBaseUri, String uiBaseUri) {
         this.apiBaseUri = apiBaseUri;

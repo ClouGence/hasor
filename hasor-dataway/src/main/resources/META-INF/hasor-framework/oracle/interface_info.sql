@@ -12,6 +12,8 @@ create table interface_info (
 	api_create_time timestamp           default sysdate,
 	api_gmt_time    timestamp           default sysdate
 )
+
+/comment on table interface_info is 'Dataway 中的API'
 /comment on column interface_info.api_id is 'ID'
 /comment on column interface_info.api_method is 'HttpMethod：GET、PUT、POST'
 /comment on column interface_info.api_path is '拦截路径'
@@ -25,5 +27,5 @@ create table interface_info (
 /comment on column interface_info.api_create_time is '创建时间'
 /comment on column interface_info.api_gmt_time is '修改时间'
 /
-create unique index idx_interface_info on INTERFACE_INFO (api_method, api_path)
+create unique index idx_interface_info on interface_info (api_method, api_path)
 /

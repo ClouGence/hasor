@@ -12,6 +12,7 @@ create table interface_release (
     pub_option       clob               NULL,
     pub_release_time timestamp      default sysdate
 )
+/comment on table interface_release is 'Dataway API 发布记录'
 /comment on column interface_release.pub_id is 'Publish ID'
 /comment on column interface_release.pub_api_id is '所属API ID'
 /comment on column interface_release.pub_method is 'HttpMethod：GET、PUT、POST'

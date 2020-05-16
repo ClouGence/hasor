@@ -4,6 +4,9 @@ import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 var queryMap = {
     "default"   : @@sql(historyId)<%
         select * from interface_release where pub_id = #{historyId}
+    %>,
+    "postgresql" : @@sql(apiId)<%
+        select * from interface_release where pub_id = cast(#{historyId} as integer)
     %>
 };
 

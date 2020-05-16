@@ -42,7 +42,7 @@
             </el-button-group>
         </div>
         <el-tabs class="response-tabs" type="card" v-model="panelActiveName">
-            <el-tab-pane name="result_view" label="JsonResult">
+            <el-tab-pane name="result_view" label="Result">
                 <div :id="id + '_responseBodyRef'">
                     <codemirror v-model="responseBodyCopy" :options="defaultOption"/>
                 </div>

@@ -123,12 +123,16 @@ public class DatawayModule implements WebModule {
         }
         //
         String databaseProductName = appContext.getEnvironment().getVariable("HASOR_DATAQL_DATAWAY_FORCE_DBTYPE");
+        DbInfo dbInfo = null;
         if (StringUtils.isBlank(databaseProductName)) {
-            databaseProductName = jdbcTemplate.execute((ConnectionCallback<String>) con -> {
-                return con.getMetaData().getDatabaseProductName() + " " + con.getMetaData().getDatabaseMajorVersion();
+            dbInfo = jdbcTemplate.execute((ConnectionCallback<DbInfo>) con -> {
+                return DbInfo.of(//
+                        con.getMetaData().getDatabaseProductName(),//
+                        con.getMetaData().getDatabaseMajorVersion()//
+                );
             });
         }
-        DataBaseMapping dataBaseType = DataBaseMapping.formName(databaseProductName);
+        DataBaseMapping dataBaseType = DataBaseMapping.formName(dbInfo);
         if (dataBaseType == null) {
             throw new IllegalStateException("unknown DataBaseType -> " + databaseProductName);
         }
@@ -139,5 +143,17 @@ public class DatawayModule implements WebModule {
 
     static String fixUrl(String url) {
         return url.replaceAll("/+", "/");
+    }
+
+    public static class DbInfo {
+        public String productName;
+        public int    majorVersion;
+
+        public static DbInfo of(String productName, int majorVersion) {
+            DbInfo info = new DbInfo();
+            info.productName = productName;
+            info.majorVersion = majorVersion;
+            return info;
+        }
     }
 }

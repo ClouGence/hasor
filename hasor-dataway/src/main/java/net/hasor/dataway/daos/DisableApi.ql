@@ -9,12 +9,18 @@ var updateInfoMap = {
     %>,
     "sqlserver2012" : @@sql(apiId)<%
         update interface_info set api_status = 3, api_gmt_time = getdate() where api_id = #{apiId}
+    %>,
+    "postgresql" : @@sql(apiId)<%
+        update interface_info set api_status = 3, api_gmt_time = now() where api_id = cast(#{apiId} as integer)
     %>
 };
 
 var updateReleaseMap = {
     "default"   : @@sql(apiId)<%
         update interface_release set pub_status = 1 where pub_status = 0 and pub_api_id = #{apiId}
+    %>,
+    "postgresql" : @@sql(apiId)<%
+        update interface_release set pub_status = 1 where pub_status = 0 and pub_api_id = cast(#{apiId} as integer)
     %>
 };
 

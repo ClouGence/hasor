@@ -23,7 +23,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-08
  */
-public class HsqldbDialect extends AbstractDialect {
+public class PostgreSqlDialect extends AbstractDialect {
     @Override
     public BoundSql getPageSql(FxQuery fxSql, Map<String, Object> paramMap, int start, int limit) {
         String buildSqlString = fxSql.buildQueryString(paramMap);

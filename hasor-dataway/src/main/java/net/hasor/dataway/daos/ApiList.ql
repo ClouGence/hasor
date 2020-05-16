@@ -1,7 +1,7 @@
 hint FRAGMENT_SQL_COLUMN_CASE = "lower";
 
 var queryMap = {
-    "default"   : @@sql()<%
+    "default" : @@sql()<%
         select * from interface_info order by api_create_time asc
     %>
 };

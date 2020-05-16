@@ -12,6 +12,9 @@ var queryMap = {
     %>,
     "sqlserver2012" : @@sql(apiId)<%
         select * from interface_release where pub_api_id = #{apiId} order by pub_release_time desc offset 0 rows fetch next 10 rows only
+    %>,
+    "postgresql" : @@sql(apiId)<%
+        select * from interface_release where pub_api_id = cast(#{apiId} as integer) order by pub_release_time desc limit 10
     %>
 };
 
