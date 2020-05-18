@@ -216,7 +216,7 @@
                         "optionInfo": self.optionInfo
                     }
                 }, response => {
-                    self.$emit('onExecute', response.data.result, response.dataTypeMode);
+                    self.$emit('onExecute', response.data, response.dataTypeMode);
                 });
             },
             // 冒烟按钮
@@ -240,7 +240,7 @@
                     }
                 }, response => {
                     this.smokeTest = true;
-                    self.$emit('onSmokeTest', response.data.result, response.dataTypeMode);
+                    self.$emit('onSmokeTest', response.data, response.dataTypeMode);
                 });
             },
             // 发布按钮

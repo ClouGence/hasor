@@ -93,12 +93,7 @@ export default function request(apiURL, options, successCallback, errorCallback)
             response.dataTypeMode = 'json';
             let text = await response.data.text();
             response.data = JSON.parse(text);
-            if (newOptions.direct || response.data.success) {
-                successCallback(response);
-                return;
-            }
-            errorBox(`${response.data.code}: ${response.data.message}`);
-            errorCallback(response);
+            successCallback(response);
         } else if (contentType === 'text') {
             // text
             response.dataTypeMode = 'text';
