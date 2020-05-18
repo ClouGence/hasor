@@ -136,7 +136,7 @@ public class DefaultSqlQuery extends HashMap<Class<?>, Object> implements Clonea
         }
     }
 
-    private static Object evalOgnl(String exprString, Object root) {
+    public static Object evalOgnl(String exprString, Object root) {
         try {
             OgnlContext context = new OgnlContext(null, null, new DefaultMemberAccess(true));
             return Ognl.getValue(exprString, context, root);

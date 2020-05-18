@@ -211,7 +211,7 @@ public class SqlFragment implements FragmentProcess {
         throw new SQLException("Unknown SqlMode.");//不可能走到这里
     }
 
-    private boolean usePage(Hints hint, SqlMode sqlMode, FxQuery fxSql) {
+    protected boolean usePage(Hints hint, SqlMode sqlMode, FxQuery fxSql) {
         if (SqlMode.Query == sqlMode) {
             FxHintNames queryByPage = FxHintNames.FRAGMENT_SQL_QUERY_BY_PAGE;
             Object hintOrDefault = hint.getOrDefault(queryByPage.name(), queryByPage.getDefaultVal());
