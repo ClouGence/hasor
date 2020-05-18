@@ -9,7 +9,7 @@ SQL 执行器是 DataQL 的一个 FragmentProcess 扩展，其作用是让 DataQ
     <dependency>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-dataql-fx</artifactId>
-        <version>4.1.6</version>
+        <version>4.1.7</version>
     </dependency>
 
 功能与特性

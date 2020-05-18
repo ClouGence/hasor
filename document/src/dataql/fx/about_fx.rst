@@ -8,5 +8,5 @@ FunctionX 是 DataQL 官方维护的一组基础函数库。使用函数库需�
     <dependency>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-dataql-fx</artifactId>
-        <version>4.1.6</version>
+        <version>4.1.7</version>
     </dependency>
