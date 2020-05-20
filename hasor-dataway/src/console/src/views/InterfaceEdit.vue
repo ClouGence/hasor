@@ -343,7 +343,7 @@
                 responseType: 'json',
                 //
                 //
-                panelPercentVertical: 65,
+                panelPercentVertical: 50,
                 panelPercentHorizontal: 50,
                 panelHeight: '100%',
                 monacoEditorOptions: {

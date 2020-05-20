@@ -14,6 +14,29 @@ const showMessage = res => {
     errorBox(`${response.status}: ${errorText}`);
 };
 
+function decodeUtf8(bytes) {
+    let bufferTypes = new Uint8Array(bytes);
+    let tempString = "";
+    for (let i = 0; i < bufferTypes.length; ++i) {
+        let hexDat = bufferTypes[i].toString(16);
+        if (hexDat.length === 1) {
+            hexDat = "0" + hexDat;
+        }
+        tempString += '%' + hexDat;
+    }
+    return decodeURIComponent(tempString);
+}
+
+function arrayBufferFromBlob(bytesBlob) {
+    return new Promise(function (resolve, reject) {
+        let reader = new FileReader()
+        reader.readAsArrayBuffer(bytesBlob)
+        reader.onload = function () {
+            resolve(this.result)
+        }
+    });
+}
+
 /**
  * Requests a URL, returning a promise.
  *
@@ -90,37 +113,43 @@ export default function request(apiURL, options, successCallback, errorCallback)
         //
         if (contentType === 'json') {
             // json
-            response.dataTypeMode = 'json';
-            let text = await response.data.text();
-            response.data = JSON.parse(text);
-            successCallback(response);
+            arrayBufferFromBlob(response.data).then(arrayBuffer => {
+                response.dataTypeMode = 'json';
+                response.data = JSON.parse(decodeUtf8(arrayBuffer));
+                successCallback(response);
+            });
         } else if (contentType === 'text') {
             // text
-            response.dataTypeMode = 'text';
-            response.data.result = await response.data.text();
-            successCallback(response);
+            debugger
+            arrayBufferFromBlob(response.data).then(arrayBuffer => {
+                response.dataTypeMode = 'text';
+                response.data = decodeUtf8(arrayBuffer);
+                successCallback(response);
+            });
         } else {
             // bytes
-            response.dataTypeMode = 'bytes';
-            let buffer = await response.data.arrayBuffer();
-            let bufferTypes = new Uint8Array(buffer);
-            let tempString = "";
-            let n = 0;
-            for (let i = 0; i < bufferTypes.length; ++i) {
-                let hexDat = bufferTypes[i].toString(16).toUpperCase();
-                if (hexDat.length === 1) {
-                    hexDat = "0" + hexDat;
+            debugger
+            arrayBufferFromBlob(response.data).then(arrayBuffer => {
+                let bufferTypes = new Uint8Array(arrayBuffer);
+                let tempString = "";
+                let n = 0;
+                for (let i = 0; i < bufferTypes.length; ++i) {
+                    let hexDat = bufferTypes[i].toString(16).toUpperCase();
+                    if (hexDat.length === 1) {
+                        hexDat = "0" + hexDat;
+                    }
+                    if (n < 15) {
+                        n++;
+                        tempString = tempString + hexDat + " ";
+                    } else {
+                        n = 0;
+                        tempString = tempString + hexDat + "\n";
+                    }
                 }
-                if (n < 15) {
-                    n++;
-                    tempString = tempString + hexDat + " ";
-                } else {
-                    n = 0;
-                    tempString = tempString + hexDat + "\n";
-                }
-            }
-            response.data.result = tempString.trim();
-            successCallback(response);
+                response.dataTypeMode = 'bytes';
+                response.data = tempString.trim();
+                successCallback(response);
+            });
         }
     }).catch(errorCallback).finally(finallyCallback);
 }

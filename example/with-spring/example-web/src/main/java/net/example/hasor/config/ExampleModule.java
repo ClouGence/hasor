@@ -60,17 +60,13 @@ public class ExampleModule implements SpringModule {
         //            }
         //        });
         //        {
-        //            //                        try {
-        //            //                            ByteArrayOutputStream oat = new ByteArrayOutputStream();
+        //
+        //
+        //        apiBinder.bindSpiListener(SerializationChainSpi.class, (apiInfo, mimeType, result) -> {
         //            String jsonString = JSON.toJSONString(result);
-        //            //                oat.write(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 });
-        //            //                oat.write(jsonString.getBytes());
-        //            //                return SerializationInfo.of("abc/text/plain", oat.toByteArray()); //JSON.toJSONString(result);
-        //            //            } catch (Exception e) {
-        //            //                throw ExceptionUtils.toRuntimeException(e);
-        //            //            }
-        //            return jsonString;
-        //        }
+        //            return SerializationChainSpi.SerializationInfo.ofString("abc/text/plain", jsonString); //JSON.toJSONString(result);
+        //        });
+        //
         //        apiBinder.bindSpiListener(SerializationChainSpi.class, (apiInfo, mimeType, result) -> {
         //            //
         //            try {

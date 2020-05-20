@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +28,10 @@ public class ObjectModel implements DataModel {
     private Map<String, DataModel> dataModel = new LinkedHashMap<>();
 
     public ObjectModel() {
+    }
+
+    public List<String> fieldNames() {
+        return new ArrayList<>(this.dataModel.keySet());
     }
 
     public void put(String key, Object value) {

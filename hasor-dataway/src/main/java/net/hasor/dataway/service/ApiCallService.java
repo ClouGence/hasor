@@ -17,6 +17,7 @@ package net.hasor.dataway.service;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.Finder;
+import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.domain.DataModel;
@@ -34,7 +35,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
@@ -108,7 +108,22 @@ public class ApiCallService {
                     compiler = CompilerSpiListener.DEFAULT.compiler(apiInfo, scriptBody, varNames, finder);
                 }
                 loggerUtils.addLog("compilerTime", DatawayUtils.currentLostTime());
-                execute = this.executeDataQL.createQuery(compiler).execute(apiInfo.getParameterMap());
+                loggerUtils.addLog("prepareHint", apiInfo.getPrepareHint());
+                Query query = this.executeDataQL.createQuery(compiler);
+                if (apiInfo.getPrepareHint() != null) {
+                    apiInfo.getPrepareHint().forEach((hint, value) -> {
+                        if (value == null) {
+                            query.setHint(hint, (String) null);
+                        } else if (value instanceof Boolean) {
+                            query.setHint(hint, (Boolean) value);
+                        } else if (value instanceof Number) {
+                            query.setHint(hint, (Number) value);
+                        } else {
+                            query.setHint(hint, value.toString());
+                        }
+                    });
+                }
+                execute = query.execute(apiInfo.getParameterMap());
             }
             loggerUtils.addLog("executionTime", execute.executionTime());
             loggerUtils.addLog("lifeCycleTime", DatawayUtils.currentLostTime());

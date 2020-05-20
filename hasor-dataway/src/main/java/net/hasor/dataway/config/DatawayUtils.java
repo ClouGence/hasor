@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -200,7 +201,7 @@ public class DatawayUtils {
             InputStream bodyInputStream = null;
             if (resultData instanceof String) {
                 responseContextType = "text";
-                byte[] bodyByte = ((String) resultData).getBytes();
+                byte[] bodyByte = ((String) resultData).getBytes(StandardCharsets.UTF_8);// 前端会通过 UTF-8 进行解码
                 dataLength = bodyByte.length;
                 bodyInputStream = new ByteArrayInputStream(bodyByte);
             } else if (resultData instanceof byte[]) {
@@ -215,7 +216,7 @@ public class DatawayUtils {
             } else {
                 responseContextType = "json";
                 String body = JSON.toJSONString(resultData, SerializerFeature.WriteMapNullValue);
-                byte[] bodyByte = body.getBytes();
+                byte[] bodyByte = body.getBytes(StandardCharsets.UTF_8);// 前端会通过 UTF-8 进行解码
                 dataLength = bodyByte.length;
                 bodyInputStream = new ByteArrayInputStream(bodyByte);
             }

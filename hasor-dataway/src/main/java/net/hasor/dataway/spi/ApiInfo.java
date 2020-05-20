@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataway.spi;
+import net.hasor.dataql.Hints;
+
 import java.util.Map;
 
 /**
@@ -29,6 +31,7 @@ public class ApiInfo {
     private String              apiPath;        // Path
     private Map<String, Object> parameterMap;   // 请求参数
     private Map<String, Object> optionMap;      // 选项参数
+    private Hints               prepareHint;    // 预先定义的 Hint
 
     public boolean isPerform() {
         return perform;
@@ -84,5 +87,13 @@ public class ApiInfo {
 
     public void setOptionMap(Map<String, Object> optionMap) {
         this.optionMap = optionMap;
+    }
+
+    public Hints getPrepareHint() {
+        return prepareHint;
+    }
+
+    public void setPrepareHint(Hints prepareHint) {
+        this.prepareHint = prepareHint;
     }
 }

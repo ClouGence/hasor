@@ -1,6 +1,6 @@
 <template>
     <div class="requestPanel">
-        <div class="request-btns">
+        <div class="request-btns" style="height: 30px;">
             <el-button-group>
                 <el-tooltip class="item" effect="dark" content="Execute Query" placement="bottom-end">
                     <el-button class="z-index-top" size="mini" round
