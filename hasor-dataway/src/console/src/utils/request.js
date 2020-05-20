@@ -1,18 +1,5 @@
 import Vue from 'vue';
 import axios from 'axios';
-import {errorBox} from './utils';
-
-const codeMessage = {
-    200: 'ok.',
-    401: 'no permission.',
-    404: 'not found.'
-};
-
-const showMessage = res => {
-    let response = res.response;
-    const errorText = codeMessage[response.status] || response.statusText;
-    errorBox(`${response.status}: ${errorText}`);
-};
 
 function decodeUtf8(bytes) {
     let bufferTypes = new Uint8Array(bytes);
@@ -120,7 +107,6 @@ export default function request(apiURL, options, successCallback, errorCallback)
             });
         } else if (contentType === 'text') {
             // text
-            debugger
             arrayBufferFromBlob(response.data).then(arrayBuffer => {
                 response.dataTypeMode = 'text';
                 response.data = decodeUtf8(arrayBuffer);
@@ -128,7 +114,6 @@ export default function request(apiURL, options, successCallback, errorCallback)
             });
         } else {
             // bytes
-            debugger
             arrayBufferFromBlob(response.data).then(arrayBuffer => {
                 let bufferTypes = new Uint8Array(arrayBuffer);
                 let tempString = "";

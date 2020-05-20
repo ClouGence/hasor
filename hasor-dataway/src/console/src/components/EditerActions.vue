@@ -78,7 +78,7 @@
 <script>
     import request from "../utils/request";
     import {ApiUrl} from "../utils/api-const";
-    import {checkRequestBody, headerData} from "../utils/utils";
+    import {checkRequestBody, errorBox, headerData} from "../utils/utils";
 
     export default {
         props: {
@@ -183,6 +183,10 @@
                         "optionInfo": self.optionInfo
                     }
                 }, response => {
+                    if (!response.data.success) {
+                        errorBox(`${response.data.code}: ${response.data.message}`);
+                        return
+                    }
                     if (!self.newMode) {
                         self.$message({message: 'Save successfully.', type: 'success'});
                         self.$emit('onAfterSave', self.apiInfo.apiStatus, response.data.status);
@@ -252,6 +256,10 @@
                         "id": self.apiInfo.apiID,
                     }
                 }, response => {
+                    if (!response.data.success) {
+                        errorBox(`${response.data.code}: ${response.data.message}`);
+                        return
+                    }
                     self.$emit('onPublish', response.data.result);
                 });
             },
@@ -261,6 +269,10 @@
                 request(ApiUrl.apiHistory + "?id=" + this.apiInfo.apiID, {
                     "method": "GET",
                 }, response => {
+                    if (!response.data.success) {
+                        errorBox(`${response.data.code}: ${response.data.message}`);
+                        return
+                    }
                     self.historyList = response.data.result;
                 });
             },
@@ -277,6 +289,10 @@
                         "id": self.apiInfo.apiID,
                     }
                 }, response => {
+                    if (!response.data.success) {
+                        errorBox(`${response.data.code}: ${response.data.message}`);
+                        return
+                    }
                     self.$emit('onDisable', response.data.result);
                 });
             },
