@@ -22,6 +22,21 @@ const errorBox = (content) => {
     Vue.prototype.$alert(content, 'Error', {confirmButtonText: 'OK'});
 };
 
+const fixGetRequestBody = (httpMethod, requestBody) => {
+    let doRunParam = JSON.parse(requestBody);
+    if (httpMethod !== 'GET') {
+        return doRunParam;
+    }
+    //
+    let newRunParam = {};
+    for (let key in doRunParam) {
+        if (doRunParam[key] !== null) {
+            newRunParam[key] = doRunParam[key].toString();
+        }
+    }
+    return newRunParam;
+}
+
 const checkRequestBody = (httpMethod, codeType, requestBody) => {
     let doRunParam = {};
     try {
@@ -30,15 +45,15 @@ const checkRequestBody = (httpMethod, codeType, requestBody) => {
         errorBox('Parameters Format Error : ' + e);
         return false;
     }
-    if (httpMethod === 'GET' || codeType === 'SQL') {
+    if (httpMethod === 'GET') {
         if (Object.prototype.toString.call(doRunParam) !== '[object Object]') {
-            errorBox('In GET or SQL , The request parameters must be Map.');
+            errorBox('In GET request parameters must be Map.');
             return false;
         }
         for (let key in doRunParam) {
             let typeStr = Object.prototype.toString.call(doRunParam[key]);
             if (typeStr === '[object Object]' || typeStr === '[object Array]') {
-                errorBox('In GET or SQL , can\'t have complex structure parameters.');
+                errorBox('In GET can\'t have complex structure parameters.');
                 return false;
             }
         }
@@ -79,5 +94,5 @@ const formatDate = (date, fmt = 'yyyyMMdd-hhmmss.S') => {
 };
 
 export {
-    tagInfo, errorBox, checkRequestBody, headerData, formatDate
+    tagInfo, errorBox, checkRequestBody, fixGetRequestBody, headerData, formatDate
 };

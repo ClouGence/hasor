@@ -78,7 +78,7 @@
 <script>
     import request from "../utils/request";
     import {ApiUrl} from "../utils/api-const";
-    import {checkRequestBody, errorBox, headerData} from "../utils/utils";
+    import {checkRequestBody, errorBox, fixGetRequestBody, headerData} from "../utils/utils";
 
     export default {
         props: {
@@ -216,7 +216,7 @@
                         "apiPath": self.apiInfo.apiPath,
                         "codeType": self.apiInfo.codeType,
                         "codeValue": self.apiInfo.codeValue,
-                        "requestBody": JSON.parse(self.requestBody),
+                        "requestBody": fixGetRequestBody(self.apiInfo.select, self.requestBody),
                         "optionInfo": self.optionInfo
                     }
                 }, response => {
@@ -240,7 +240,7 @@
                     },
                     "data": {
                         "id": this.apiInfo.apiID,
-                        "requestBody": JSON.parse(this.requestBody),
+                        "requestBody": fixGetRequestBody(this.apiInfo.select, this.requestBody),
                     }
                 }, response => {
                     this.smokeTest = true;
@@ -329,5 +329,4 @@
     .el-timeline {
         padding-inline-start: 5px !important;
     }
-
 </style>

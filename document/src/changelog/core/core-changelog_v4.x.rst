@@ -1,14 +1,16 @@
 --------------------
 Release Hasor v4.x
 --------------------
-Hasor v4.1.7 (2020-05-18)
+Hasor v4.1.8 (2020-05-18)
 ------------------------------------
 **新增**
     - `issue <https://github.com/zycgit/hasor/issues/47>`_ Pre 拦截器中建议增加 hint 的设置。
+    - 合并来自社区贡献的 Api 分组功能，分组是通过 Api 的
 **优化**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1HS58>`_ 4.1.7 执行之后 Result 为 "empty.",较低版本浏览器兼容问题Bob的方法不支持 data() 导致
     - DataqL 的 Maven 插件对 Maven 的依赖从 3.3.9 降低到 3.3.3。
-    - JSON结果数据强制使用 UTF-8 进行传输，在前端使用 UTF-8 重新解码。
+    - UI 发起的请求，Server 端统一使用 UTF-8 编码形式将数据转换为二进制，同时浏览器端统一采用 Blob 方式接受二进制数据在通过 decodeURIComponent 函数来解码UTF-8数据。
+    - GET 模式下，UI 发起的请求会将请求参数全部转化为 String。因为 GET 获取参数在服务器端拿到的也都是 String。
 **修复**
     - 修复当内部 UI 请求报错之后，错误被吃掉没有显示出来的问题。
 
