@@ -26,7 +26,7 @@ public enum DataBaseMapping {
     Mysql("MySQL", 0, "default"),//
     Oracle("Oracle", 0, "oracle"),//
     SqlServer2012("Microsoft SQL Server", 14, "sqlserver2012"),//
-    PostgreSQL("PostgreSQL", 12, "postgresql");
+    PostgreSQL("PostgreSQL", 9, "postgresql");
     //
     //
     private String dbProductName = null;
