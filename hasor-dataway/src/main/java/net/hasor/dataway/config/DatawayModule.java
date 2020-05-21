@@ -123,16 +123,24 @@ public class DatawayModule implements WebModule {
         }
         //
         String databaseProductName = appContext.getEnvironment().getVariable("HASOR_DATAQL_DATAWAY_FORCE_DBTYPE");
-        DbInfo dbInfo = null;
+        DataBaseMapping dataBaseType = null;
         if (StringUtils.isBlank(databaseProductName)) {
-            dbInfo = jdbcTemplate.execute((ConnectionCallback<DbInfo>) con -> {
+            DbInfo dbInfo = jdbcTemplate.execute((ConnectionCallback<DbInfo>) con -> {
                 return DbInfo.of(//
                         con.getMetaData().getDatabaseProductName(),//
                         con.getMetaData().getDatabaseMajorVersion()//
                 );
             });
+            dataBaseType = DataBaseMapping.formName(dbInfo);
+        } else {
+            for (DataBaseMapping mapping : DataBaseMapping.values()) {
+                if (StringUtils.equalsIgnoreCase(mapping.name(), databaseProductName)) {
+                    dataBaseType = mapping;
+                    break;
+                }
+            }
         }
-        DataBaseMapping dataBaseType = DataBaseMapping.formName(dbInfo);
+        //
         if (dataBaseType == null) {
             throw new IllegalStateException("unknown DataBaseType -> " + databaseProductName);
         }
