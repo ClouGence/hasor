@@ -10,6 +10,7 @@
     spring/about
     spring/for_boot
     spring/for_xml
+    spring/spring_supplier
 
 tConsole CLI框架
 ------------------------------------

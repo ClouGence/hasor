@@ -19,6 +19,7 @@ import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.spi.SpiJudge;
+import net.hasor.utils.ClassUtils;
 import net.hasor.utils.ExceptionUtils;
 
 import javax.inject.Singleton;
@@ -292,6 +293,45 @@ public interface ApiBinder {
 
     /** 添加SPI监听器 */
     public <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<T> listener);
+
+    /** 加载SPI监听器，可以在 spiType 上选择配置 @Spi 注解 */
+    public default <T extends EventListener> void loadSpiListener(Set<Class<T>> spiTypeSet) {
+        loadSpiListener(spiTypeSet, null);
+    }
+
+    /** 加载SPI监听器，可以在 spiType 上选择配置 @Spi 注解 */
+    public default <T extends EventListener> void loadSpiListener(Set<Class<T>> spiTypeSet, TypeSupplier typeSupplier) {
+        if (spiTypeSet != null && !spiTypeSet.isEmpty()) {
+            spiTypeSet.forEach(aClass -> loadSpiListener(aClass, typeSupplier));
+        }
+    }
+
+    /** 加载SPI监听器，可以在 spiType 上选择配置 @Spi 注解 */
+    public default <T extends EventListener> void loadSpiListener(Class<T> spiType) {
+        loadSpiListener(spiType, null);
+    }
+
+    /** 加载SPI监听器，可以在 spiType 上选择配置 @Spi 注解 */
+    public default <T extends EventListener> void loadSpiListener(Class<T> spiType, final TypeSupplier typeSupplier) {
+        Objects.requireNonNull(spiType, "spiType is Null.");
+        Spi apiAnnotation = spiType.getAnnotation(Spi.class);
+        Class<?>[] allTypes = null;
+        if (apiAnnotation == null || apiAnnotation.value().length == 0) {
+            allTypes = ClassUtils.getAllInterfaces(spiType).toArray(new Class<?>[0]);
+        } else {
+            allTypes = apiAnnotation.value();
+        }
+        //
+        if (allTypes.length == 0) {
+            return;
+        }
+        //
+        if (typeSupplier == null) {
+            this.bindSpiListener(spiType, getProvider(spiType));
+        } else {
+            this.bindSpiListener(spiType, (Supplier<T>) () -> typeSupplier.get(spiType));
+        }
+    }
 
     /** 设置一个 SPI 仲裁，一个SPI只能注册一个仲裁 */
     public default <T extends EventListener> void bindSpiJudge(Class<T> spiType, SpiJudge spiJudgeSupplier) {
