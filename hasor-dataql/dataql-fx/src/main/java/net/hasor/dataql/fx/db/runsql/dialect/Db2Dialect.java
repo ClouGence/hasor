@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx.db.dialect;
-import net.hasor.dataql.fx.db.FxQuery;
+package net.hasor.dataql.fx.db.runsql.dialect;
+import net.hasor.dataql.fx.db.parser.FxQuery;
 
 import java.util.List;
 import java.util.Map;
@@ -23,24 +23,19 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-08
  */
-public class MySqlDialect extends AbstractDialect {
+public class Db2Dialect extends AbstractDialect {
     @Override
     public BoundSql getPageSql(FxQuery fxSql, Map<String, Object> paramMap, int start, int limit) {
         String buildSqlString = fxSql.buildQueryString(paramMap);
         List<Object> paramArrays = fxSql.buildParameterSource(paramMap);
         //
         StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("SELECT * FROM (SELECT TMP_PAGE.*,ROWNUMBER() OVER() AS ROW_ID FROM ( ");
         sqlBuilder.append(buildSqlString);
-        if (start <= 0) {
-            sqlBuilder.append(" LIMIT ? ");
-            paramArrays.add(limit);
-        } else {
-            sqlBuilder.append(" LIMIT ?, ? ");
-            paramArrays.add(start);
-            paramArrays.add(limit);
-        }
+        sqlBuilder.append(" ) AS TMP_PAGE) TMP_PAGE WHERE ROW_ID BETWEEN ? AND ?");
         //
-        buildSqlString = sqlBuilder.toString();
-        return new BoundSql(buildSqlString, paramArrays.toArray());
+        paramArrays.add(start);
+        paramArrays.add(limit);
+        return new BoundSql(sqlBuilder.toString(), paramArrays.toArray());
     }
 }

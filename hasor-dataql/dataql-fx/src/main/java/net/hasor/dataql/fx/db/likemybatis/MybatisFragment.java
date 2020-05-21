@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx.db;
-
+package net.hasor.dataql.fx.db.likemybatis;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.fx.db.parser.MybatisSqlQuery;
+import net.hasor.dataql.fx.db.parser.FxQuery;
+import net.hasor.dataql.fx.db.runsql.SqlFragment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -41,7 +41,6 @@ import java.util.Map;
  */
 @Singleton
 public class MybatisFragment extends SqlFragment {
-
     private DocumentBuilder documentBuilder;
 
     @PostConstruct
@@ -81,7 +80,6 @@ public class MybatisFragment extends SqlFragment {
         }
         parseNodeList(sqlNode, root.getChildNodes());
         return sqlNode;
-
     }
 
     private void parseNodeList(SqlNode sqlNode, NodeList nodeList) {
@@ -97,7 +95,7 @@ public class MybatisFragment extends SqlFragment {
                 } else if ("if".equalsIgnoreCase(nodeName)) {
                     childNode = new IfSqlNode(getNodeAttributeValue(node, "test"));
                 } else {
-                    throw new UnsupportedOperationException("不支持的标签：" + nodeName);
+                    throw new UnsupportedOperationException("Unsupported tags :" + nodeName);
                 }
                 sqlNode.addChildNode(childNode);
                 if (node.hasChildNodes()) {
@@ -107,9 +105,7 @@ public class MybatisFragment extends SqlFragment {
         }
     }
 
-    /**
-     * 解析foreach节点
-     */
+    /** 解析foreach节点 */
     private ForeachSqlNode parseForeachSqlNode(Node node) {
         ForeachSqlNode foreachSqlNode = new ForeachSqlNode();
         foreachSqlNode.setCollection(getNodeAttributeValue(node, "collection"));

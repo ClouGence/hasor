@@ -13,36 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.schema.types;
+package net.hasor.dataql.fx.db.likemybatis;
+import net.hasor.dataql.fx.db.parser.DefaultFxQuery;
+
 import java.util.List;
 import java.util.Map;
 
 /**
- * 结构类型
+ * @author jmxd
+ * @version : 2020-05-18
  */
-public class StrutsType extends Type {
-    /** 字段名集合，有序 */
-    private List<String>      fieldNames;
-    /** 每个字段Map */
-    private Map<String, Type> fieldTypeMap;
+class MybatisSqlQuery extends DefaultFxQuery {
+    private SqlNode sqlNode;
 
-    public TypeEnum getType() {
-        return TypeEnum.Struts;
+    public MybatisSqlQuery(SqlNode sqlNode) {
+        this.sqlNode = sqlNode;
     }
 
-    public List<String> getFieldNames() {
-        return this.fieldNames;
+    @Override
+    public String buildQueryString(Object context) {
+        if (context instanceof Map) {
+            return sqlNode.getSql((Map<String, Object>) context);
+        } else {
+            throw new IllegalArgumentException("context must be instance of Map");
+        }
     }
 
-    public void setFieldNames(List<String> fieldNames) {
-        this.fieldNames = fieldNames;
-    }
-
-    public Map<String, Type> getFieldTypeMap() {
-        return this.fieldTypeMap;
-    }
-
-    public void setFieldTypeMap(Map<String, Type> fieldTypeMap) {
-        this.fieldTypeMap = fieldTypeMap;
+    @Override
+    public List<Object> buildParameterSource(Object context) {
+        return this.sqlNode.getParameters();
     }
 }

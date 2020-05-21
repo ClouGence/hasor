@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryApiBinder;
-import net.hasor.dataql.fx.db.SqlFragment;
+import net.hasor.dataql.fx.db.runsql.SqlFragment;
 import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.service.DatawayServiceImpl;
 import net.hasor.dataway.web.*;

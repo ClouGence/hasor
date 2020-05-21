@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx.db;
+package net.hasor.dataql.fx.db.runsql;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.dataql.FragmentProcess;
@@ -21,8 +21,9 @@ import net.hasor.dataql.Hints;
 import net.hasor.dataql.fx.FxHintNames;
 import net.hasor.dataql.fx.FxHintValue;
 import net.hasor.dataql.fx.basic.StringUdfSource;
-import net.hasor.dataql.fx.db.dialect.SqlPageDialect;
-import net.hasor.dataql.fx.db.parser.DefaultSqlQuery;
+import net.hasor.dataql.fx.db.parser.DefaultFxQuery;
+import net.hasor.dataql.fx.db.parser.FxQuery;
+import net.hasor.dataql.fx.db.runsql.dialect.SqlPageDialect;
 import net.hasor.db.jdbc.BatchPreparedStatementSetter;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.PreparedStatementSetter;
@@ -60,7 +61,7 @@ public class SqlFragment implements FragmentProcess {
     protected JdbcTemplate              defaultDataSource;
     protected Map<String, JdbcTemplate> dataSourceMap;
 
-    protected static enum SqlMode {
+    public static enum SqlMode {
         /** DML：insert、update、delete、replace、exec */
         Insert, Update, Delete, Procedure,
         /** DML：select */
@@ -103,7 +104,7 @@ public class SqlFragment implements FragmentProcess {
     }
 
     protected FxQuery analysisSQL(Hints hint, SqlMode sqlMode, String fragmentString) {
-        return DefaultSqlQuery.analysisSQL(fragmentString);
+        return DefaultFxQuery.analysisSQL(fragmentString);
     }
 
     public List<Object> batchRunFragment(Hints hint, List<Map<String, Object>> params, String fragmentString) throws Throwable {

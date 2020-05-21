@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx.db;
+package net.hasor.dataql.fx.db.runsql;
 import net.hasor.core.AppContext;
-import net.hasor.dataql.fx.db.dialect.*;
+import net.hasor.dataql.fx.db.runsql.dialect.*;
 import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 
 import java.util.Map;

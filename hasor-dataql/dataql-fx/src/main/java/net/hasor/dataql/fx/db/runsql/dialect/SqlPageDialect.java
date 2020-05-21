@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx.db.dialect;
-import net.hasor.dataql.fx.db.FxQuery;
+package net.hasor.dataql.fx.db.runsql.dialect;
+import net.hasor.dataql.fx.db.parser.FxQuery;
 
 import java.util.Map;
 

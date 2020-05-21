@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx.db;
+package net.hasor.dataql.fx.db.runsql;
 import net.hasor.dataql.UdfSourceAssembly;
-import net.hasor.dataql.fx.db.dialect.SqlPageDialect.BoundSql;
+import net.hasor.dataql.fx.db.runsql.SqlPageQuery.SqlPageQueryConvertResult;
+import net.hasor.dataql.fx.db.runsql.dialect.SqlPageDialect.BoundSql;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.convert.ConverterUtils;
 
@@ -24,14 +25,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.hasor.dataql.fx.db.SqlPageQuery.SqlPageQueryConvertResult;
-
 /**
  * 翻页数据，同时负责调用分页的SQL执行分页查询
  * @version : 2014年10月25日
  * @author 赵永春 zyc@hasor.net
  */
-public class SqlPageObject implements UdfSourceAssembly {
+class SqlPageObject implements UdfSourceAssembly {
     /**满足条件的总记录数*/
     private int                       totalCount       = 0;
     /**每页记录数（-1表示无限大）*/
@@ -43,7 +42,7 @@ public class SqlPageObject implements UdfSourceAssembly {
     private SqlPageQuery              sqlPageQuery     = null;
     private SqlPageQueryConvertResult convertResult    = null;
 
-    SqlPageObject(SqlPageQueryConvertResult convertResult, SqlPageQuery sqlPageQuery) {
+    public SqlPageObject(SqlPageQueryConvertResult convertResult, SqlPageQuery sqlPageQuery) {
         this.convertResult = convertResult;
         this.sqlPageQuery = sqlPageQuery;
         this.totalCountInited = false;

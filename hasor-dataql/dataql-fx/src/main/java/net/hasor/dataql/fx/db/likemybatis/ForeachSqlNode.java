@@ -1,6 +1,20 @@
-package net.hasor.dataql.fx.db;
-
-import net.hasor.dataql.fx.db.parser.DefaultSqlQuery;
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package net.hasor.dataql.fx.db.likemybatis;
+import net.hasor.dataql.fx.db.parser.DefaultFxQuery;
 import net.hasor.utils.StringUtils;
 
 import java.lang.reflect.Array;
@@ -10,32 +24,19 @@ import java.util.Map;
 
 /**
  * 对应XML中 <foreach>
+ * @author jmxd
+ * @version : 2020-05-18
  */
 public class ForeachSqlNode extends SqlNode {
-
-    /**
-     * 数据集合，支持Collection、数组
-     */
+    /** 数据集合，支持Collection、数组 */
     private String collection;
-
-    /**
-     * item 变量名
-     */
+    /** item 变量名 */
     private String item;
-
-    /**
-     * 拼接起始SQL
-     */
+    /** 拼接起始SQL */
     private String open;
-
-    /**
-     * 拼接结束SQL
-     */
+    /** 拼接结束SQL */
     private String close;
-
-    /**
-     * 分隔符
-     */
+    /** 分隔符 */
     private String separator;
 
     public void setCollection(String collection) {
@@ -61,7 +62,7 @@ public class ForeachSqlNode extends SqlNode {
     @Override
     public String getSql(Map<String, Object> paramMap, List<Object> parameters) {
         // 提取集合
-        Object value = DefaultSqlQuery.evalOgnl(this.collection, paramMap);
+        Object value = DefaultFxQuery.evalOgnl(this.collection, paramMap);
         // 如果集合为空，则过滤该节点
         if (value == null) {
             return "";

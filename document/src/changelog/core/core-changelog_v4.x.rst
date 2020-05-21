@@ -5,7 +5,8 @@ Hasor v4.1.8 (2020-05-18)
 ------------------------------------
 **新增**
     - `issue <https://github.com/zycgit/hasor/issues/47>`_ Pre 拦截器中建议增加 hint 的设置。
-    - 合并来自社区贡献的 Api 分组功能，分组是通过 Api 的
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1GG0O>`_ 合并来自社区的 Api 分组功能，分组是通过 Api 的 path 切分为 Tree 形式。
+    - `PR <https://gitee.com/zycgit/hasor/pulls/8>`_ 合并来自社区的 @@mybatis 的能力，通过 @@mybatis 可以给 SQL 增强动态SQL能力。
 **优化**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1HS58>`_ 4.1.7 执行之后 Result 为 "empty.",较低版本浏览器兼容问题Bob的方法不支持 data() 导致
     - DataqL 的 Maven 插件对 Maven 的依赖从 3.3.9 降低到 3.3.3。

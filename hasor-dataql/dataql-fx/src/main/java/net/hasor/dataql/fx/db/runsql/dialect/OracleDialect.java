@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx.db.dialect;
-import net.hasor.dataql.fx.db.FxQuery;
+package net.hasor.dataql.fx.db.runsql.dialect;
+import net.hasor.dataql.fx.db.parser.FxQuery;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * 方言基类
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-08
  */
-public abstract class AbstractDialect implements SqlPageDialect {
+public class OracleDialect extends AbstractDialect {
     @Override
     public BoundSql getCountSql(FxQuery fxSql, Map<String, Object> paramMap) {
         String buildSqlString = fxSql.buildQueryString(paramMap);
@@ -33,7 +32,23 @@ public abstract class AbstractDialect implements SqlPageDialect {
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append("SELECT COUNT(*) FROM (");
         sqlBuilder.append(buildSqlString);
-        sqlBuilder.append(") as TEMP_T");
+        sqlBuilder.append(") TEMP_T");
         return new BoundSql(sqlBuilder.toString(), paramArrays.toArray());
+    }
+
+    @Override
+    public BoundSql getPageSql(FxQuery fxSql, Map<String, Object> paramMap, int start, int limit) {
+        String buildSqlString = fxSql.buildQueryString(paramMap);
+        List<Object> paramArrays = fxSql.buildParameterSource(paramMap);
+        //
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("SELECT * FROM ( ");
+        sqlBuilder.append(buildSqlString);
+        sqlBuilder.append(") TMP_PAGE WHERE ROWNUM > ? AND ROWNUM <= ?");
+        paramArrays.add(start);
+        paramArrays.add(start + limit);
+        //
+        buildSqlString = sqlBuilder.toString();
+        return new BoundSql(buildSqlString, paramArrays.toArray());
     }
 }

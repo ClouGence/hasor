@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx.db.dialect;
-import net.hasor.dataql.fx.db.FxQuery;
+package net.hasor.dataql.fx.db.runsql.dialect;
+import net.hasor.dataql.fx.db.parser.FxQuery;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-08
  */
-public class PostgreSqlDialect extends AbstractDialect {
+public class MySqlDialect extends AbstractDialect {
     @Override
     public BoundSql getPageSql(FxQuery fxSql, Map<String, Object> paramMap, int start, int limit) {
         String buildSqlString = fxSql.buildQueryString(paramMap);
@@ -31,13 +31,13 @@ public class PostgreSqlDialect extends AbstractDialect {
         //
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append(buildSqlString);
-        if (limit > 0) {
+        if (start <= 0) {
             sqlBuilder.append(" LIMIT ? ");
             paramArrays.add(limit);
-        }
-        if (start > 0) {
-            sqlBuilder.append(" OFFSET ? ");
+        } else {
+            sqlBuilder.append(" LIMIT ?, ? ");
             paramArrays.add(start);
+            paramArrays.add(limit);
         }
         //
         buildSqlString = sqlBuilder.toString();

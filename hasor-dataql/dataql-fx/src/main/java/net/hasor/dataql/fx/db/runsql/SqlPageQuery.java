@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx.db;
-import net.hasor.dataql.fx.db.dialect.SqlPageDialect.BoundSql;
+package net.hasor.dataql.fx.db.runsql;
+import net.hasor.dataql.fx.db.runsql.dialect.SqlPageDialect.BoundSql;
 import net.hasor.db.jdbc.ConnectionCallback;
 
 import java.sql.SQLException;

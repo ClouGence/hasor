@@ -13,40 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx.db.dialect;
-import net.hasor.dataql.fx.db.FxQuery;
+package net.hasor.dataql.fx.db.runsql.dialect;
+import net.hasor.dataql.fx.db.parser.FxQuery;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * 方言基类
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-08
  */
-public class InformixDialect extends AbstractDialect {
+public abstract class AbstractDialect implements SqlPageDialect {
     @Override
-    public BoundSql getPageSql(FxQuery fxSql, Map<String, Object> paramMap, int start, int limit) {
+    public BoundSql getCountSql(FxQuery fxSql, Map<String, Object> paramMap) {
         String buildSqlString = fxSql.buildQueryString(paramMap);
         List<Object> paramArrays = fxSql.buildParameterSource(paramMap);
         //
         StringBuilder sqlBuilder = new StringBuilder();
-        List<Object> newParam = new ArrayList<>();
-        sqlBuilder.append("SELECT ");
-        if (start > 0) {
-            sqlBuilder.append(" SKIP ? ");
-            newParam.add(start);
-        }
-        if (limit > 0) {
-            sqlBuilder.append(" FIRST ? ");
-            newParam.add(limit);
-        }
-        sqlBuilder.append(" * FROM ( ");
+        sqlBuilder.append("SELECT COUNT(*) FROM (");
         sqlBuilder.append(buildSqlString);
-        sqlBuilder.append(" ) TEMP_T ");
-        //
-        paramArrays.addAll(0, newParam);
-        buildSqlString = sqlBuilder.toString();
-        return new BoundSql(buildSqlString, paramArrays.toArray());
+        sqlBuilder.append(") as TEMP_T");
+        return new BoundSql(sqlBuilder.toString(), paramArrays.toArray());
     }
 }

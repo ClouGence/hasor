@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db.parser;
-import net.hasor.dataql.fx.db.FxQuery;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import ognl.Ognl;
@@ -28,11 +27,11 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * SQL 文本处理器，兼容 #{...}、${...} 两种写法。
+ * 本处理器，兼容 #{...}、${...} 两种写法。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-28
  */
-public class DefaultSqlQuery extends HashMap<Class<?>, Object> implements Cloneable, FxQuery {
+public class DefaultFxQuery extends HashMap<Class<?>, Object> implements Cloneable, FxQuery {
     private final StringBuilder           queryStringOri  = new StringBuilder("");
     private final List<Object>            queryStringPlan = new LinkedList<>();
     private final List<String>            paramEl         = new LinkedList<>();
@@ -146,7 +145,7 @@ public class DefaultSqlQuery extends HashMap<Class<?>, Object> implements Clonea
     }
 
     public static FxQuery analysisSQL(String fragmentString) {
-        final DefaultSqlQuery fxSql = new DefaultSqlQuery();
+        final DefaultFxQuery fxSql = new DefaultFxQuery();
         final String result = new GenericTokenParser(new String[] { "#{", "${" }, "}", (builder, token, content) -> {
             fxSql.appendString(builder.toString());
             if (token.equalsIgnoreCase("${")) {
@@ -164,6 +163,6 @@ public class DefaultSqlQuery extends HashMap<Class<?>, Object> implements Clonea
 
     @Override
     public FxQuery clone() {
-        return DefaultSqlQuery.analysisSQL(this.queryStringOri.toString());
+        return DefaultFxQuery.analysisSQL(this.queryStringOri.toString());
     }
 }
