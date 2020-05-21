@@ -42,11 +42,11 @@ public class OracleDialect extends AbstractDialect {
         List<Object> paramArrays = fxSql.buildParameterSource(paramMap);
         //
         StringBuilder sqlBuilder = new StringBuilder();
-        sqlBuilder.append("SELECT * FROM ( ");
+        sqlBuilder.append("SELECT * FROM ( SELECT TMP.*, ROWNUM ROW_ID FROM ( ");
         sqlBuilder.append(buildSqlString);
-        sqlBuilder.append(") TMP_PAGE WHERE ROWNUM > ? AND ROWNUM <= ?");
-        paramArrays.add(start);
+        sqlBuilder.append(" ) TMP WHERE ROWNUM <= ? ) WHERE ROW_ID > ?");
         paramArrays.add(start + limit);
+        paramArrays.add(start);
         //
         buildSqlString = sqlBuilder.toString();
         return new BoundSql(buildSqlString, paramArrays.toArray());
