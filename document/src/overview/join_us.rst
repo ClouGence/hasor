@@ -15,5 +15,4 @@ Git仓库，由于国内外网络访问速度因素。Hasor 的源码被同时�
 **相关资源**
     - Issues：[https://github.com/zycgit/hasor/issues]
     - Sphinx：[http://www.sphinx-doc.org/en/master/]
-    - Gitalk：[https://github.com/gitalk/gitalk]
     - QQ群：193943114

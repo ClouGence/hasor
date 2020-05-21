@@ -6,3 +6,4 @@
     about
     join_us
     tks
+    copyright
