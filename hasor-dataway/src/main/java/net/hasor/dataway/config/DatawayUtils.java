@@ -183,6 +183,14 @@ public class DatawayUtils {
         return finalResult;
     }
 
+    public static byte[] toBytes(ApiInfo apiInfo, String body) {
+        if (apiInfo.isPerform()) {
+            return body.getBytes(StandardCharsets.UTF_8);
+        } else {
+            return body.getBytes();
+        }
+    }
+
     public static Object responseData(SpiTrigger spiTrigger, ApiInfo apiInfo, String mimeType, Invoker invoker, Object objectMap) throws IOException {
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         HttpServletResponse httpResponse = invoker.getHttpResponse();
@@ -201,7 +209,7 @@ public class DatawayUtils {
             InputStream bodyInputStream = null;
             if (resultData instanceof String) {
                 responseContextType = "text";
-                byte[] bodyByte = ((String) resultData).getBytes(StandardCharsets.UTF_8);// 前端会通过 UTF-8 进行解码
+                byte[] bodyByte = toBytes(apiInfo, ((String) resultData));// 前端会通过 UTF-8 进行解码（仅限UI）
                 dataLength = bodyByte.length;
                 bodyInputStream = new ByteArrayInputStream(bodyByte);
             } else if (resultData instanceof byte[]) {
@@ -216,7 +224,7 @@ public class DatawayUtils {
             } else {
                 responseContextType = "json";
                 String body = JSON.toJSONString(resultData, SerializerFeature.WriteMapNullValue);
-                byte[] bodyByte = body.getBytes(StandardCharsets.UTF_8);// 前端会通过 UTF-8 进行解码
+                byte[] bodyByte = toBytes(apiInfo, body);// 前端会通过 UTF-8 进行解码（仅限UI）
                 dataLength = bodyByte.length;
                 bodyInputStream = new ByteArrayInputStream(bodyByte);
             }
