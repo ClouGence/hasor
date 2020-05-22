@@ -16,6 +16,8 @@
 package net.hasor.dataway.schema.types;
 /**
  * 参数类型
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-05-21
  */
 public abstract class Type {
     /** 类型名 */

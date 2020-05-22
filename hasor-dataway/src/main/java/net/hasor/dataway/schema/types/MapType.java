@@ -16,6 +16,8 @@
 package net.hasor.dataway.schema.types;
 /**
  * Map类型，和StrutsType类似但对 key 无限制
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-05-21
  */
 public class MapType extends Type {
     public TypeEnum getType() {

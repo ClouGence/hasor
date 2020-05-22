@@ -16,6 +16,8 @@
 package net.hasor.dataway.schema.types;
 /**
  * 字符串值类型
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-05-21
  */
 public class StringType extends DefaultValue<String> {
     public TypeEnum getType() {

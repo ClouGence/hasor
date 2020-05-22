@@ -16,6 +16,8 @@
 package net.hasor.dataway.schema.types;
 /**
  * 引用其它类型
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-05-21
  */
 public class RefType extends Type {
     /** 采用的原始类型 */

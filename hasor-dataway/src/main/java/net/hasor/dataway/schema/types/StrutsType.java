@@ -19,6 +19,8 @@ import java.util.Map;
 
 /**
  * 结构类型
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-05-21
  */
 public class StrutsType extends Type {
     /** 字段名集合，有序 */

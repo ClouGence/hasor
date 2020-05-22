@@ -16,6 +16,8 @@
 package net.hasor.dataway.schema.types;
 /**
  * 类型定义
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-05-21
  */
 public enum TypeEnum {
     String,     // 字符串

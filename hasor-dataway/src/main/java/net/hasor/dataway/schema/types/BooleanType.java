@@ -16,6 +16,8 @@
 package net.hasor.dataway.schema.types;
 /**
  * 布尔类型
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-05-21
  */
 public class BooleanType extends DefaultValue<Boolean> {
     public TypeEnum getType() {

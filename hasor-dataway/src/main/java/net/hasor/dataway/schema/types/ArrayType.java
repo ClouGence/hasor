@@ -16,6 +16,8 @@
 package net.hasor.dataway.schema.types;
 /**
  * 数组或集合类型
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-05-21
  */
 public class ArrayType extends Type {
     /** 获取集合中的对象类型 */
