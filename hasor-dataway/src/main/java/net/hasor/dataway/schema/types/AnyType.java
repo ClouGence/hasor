@@ -14,26 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataway.schema.types;
-import java.util.Map;
-
 /**
- * 结构类型
+ * 可能是任何类型
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-05-21
  */
-public class StrutsType extends Type {
-    /** 每个字段Map */
-    private Map<String, Type> properties;
-
+public class AnyType extends Type {
     public TypeEnum getType() {
-        return TypeEnum.Struts;
-    }
-
-    public Map<String, Type> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Map<String, Type> properties) {
-        this.properties = properties;
+        return TypeEnum.Any;
     }
 }

@@ -20,6 +20,7 @@ package net.hasor.dataway.schema.types;
  * @version : 2020-05-21
  */
 public enum TypeEnum {
+    Any,        // 不确定的，可能是任何中的一个
     String,     // 字符串
     Boolean,    // Boolean
     Number,     // 数字

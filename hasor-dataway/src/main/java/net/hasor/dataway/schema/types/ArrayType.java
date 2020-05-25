@@ -21,17 +21,17 @@ package net.hasor.dataway.schema.types;
  */
 public class ArrayType extends Type {
     /** 获取集合中的对象类型 */
-    private Type genricType;
+    private Type genericType;
 
     public TypeEnum getType() {
         return TypeEnum.Array;
     }
 
-    public Type getGenricType() {
-        return genricType;
+    public Type getGenericType() {
+        return genericType;
     }
 
-    public void setGenricType(Type genricType) {
-        this.genricType = genricType;
+    public void setGenericType(Type genricType) {
+        this.genericType = genricType;
     }
 }

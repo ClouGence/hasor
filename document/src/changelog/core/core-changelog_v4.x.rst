@@ -1,7 +1,7 @@
 --------------------
 Release Hasor v4.x
 --------------------
-Hasor v4.1.8 (2020-05-18)
+Hasor v4.1.8 (2020-05-?)
 ------------------------------------
 **新增**
     - `issue <https://github.com/zycgit/hasor/issues/47>`_ Pre 拦截器中建议增加 hint 的设置。
