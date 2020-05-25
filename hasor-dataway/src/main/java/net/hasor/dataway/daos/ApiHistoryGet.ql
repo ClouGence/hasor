@@ -5,7 +5,7 @@ var queryMap = {
     "default"   : @@sql(historyId)<%
         select * from interface_release where pub_id = #{historyId}
     %>,
-    "postgresql" : @@sql(apiId)<%
+    "postgresql" : @@sql(historyId)<%
         select * from interface_release where pub_id = cast(#{historyId} as integer)
     %>
 };
