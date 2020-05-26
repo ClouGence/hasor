@@ -104,6 +104,8 @@ public class DatawayModule implements WebModule {
                 PublishController.class,            //
                 PerformController.class,            //
                 DeleteController.class,             //
+                //
+                Swagger2Controller.class,           //
         };
         for (Class<?> aClass : controllerSet) {
             MappingToUrl toUrl = aClass.getAnnotation(MappingToUrl.class);
@@ -145,7 +147,7 @@ public class DatawayModule implements WebModule {
             throw new IllegalStateException("unknown DataBaseType -> " + databaseProductName);
         }
         //
-        logger.info("dataway dbMapping {} to {}", databaseProductName, dataBaseType.mappingType());
+        logger.info("dataway dbMapping {}", dataBaseType.mappingType());
         appContext.findBindingBean(ISOLATION_CONTEXT, DataQL.class).addShareVarInstance("dbMapping", dataBaseType.mappingType().toLowerCase());
     }
 

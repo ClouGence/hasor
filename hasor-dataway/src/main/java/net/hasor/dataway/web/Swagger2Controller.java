@@ -1,0 +1,52 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package net.hasor.dataway.web;
+import net.hasor.dataql.QueryResult;
+import net.hasor.dataway.config.MappingToUrl;
+import net.hasor.dataway.daos.ReleaseListQuery;
+import net.hasor.dataway.schema.swagger.v2.Swagger2_0Query;
+import net.hasor.web.Invoker;
+import net.hasor.web.annotation.Get;
+import net.hasor.web.objects.JsonRenderEngine;
+import net.hasor.web.render.RenderType;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.HashMap;
+
+/**
+ * Swagger 导出 "http://127.0.0.1:8080/interface-ui/api/docs/swagger/v2.json"
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-03-24
+ */
+@MappingToUrl("/api/docs/swagger/v2.json")
+@RenderType(value = "json", engineType = JsonRenderEngine.class)
+public class Swagger2Controller extends BasicController {
+    @Get
+    public Object doReleaseList(Invoker invoker) throws IOException {
+        HttpServletRequest httpRequest = invoker.getHttpRequest();
+        String localName = httpRequest.getLocalName();
+        int localPort = httpRequest.getLocalPort();
+        //
+        QueryResult apiList = new ReleaseListQuery(this.dataQL).execute(new HashMap<String, Object>() {{
+            //
+        }});
+        return new Swagger2_0Query(this.dataQL).execute(new HashMap<String, Object>() {{
+            put("apiDataList", apiList.getData());
+            put("serverHost", localName + ((localPort == 80) ? "" : (":" + localPort)));
+        }}).getData().unwrap();
+    }
+}

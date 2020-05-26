@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version : 2020-05-21
  */
 public class TypesUtils {
+    /** 分析 DataModel 提取数据结构变为 Type 类型对象 */
     public static Type extractType(String prefix, AtomicInteger atomicInteger, DataModel atData) {
         //
         if (atData.isObject()) {
@@ -71,6 +72,9 @@ public class TypesUtils {
                 } else {
                     lastType = mergeType(lastType, type);
                 }
+            }
+            if (lastType == null) {
+                lastType = autoName(prefix, atomicInteger, new AnyType());
             }
             arrayType.setGenericType(lastType);
             return arrayType;
@@ -124,7 +128,10 @@ public class TypesUtils {
             if (fstTypeType == TypeEnum.Array) {
                 Type fstArrayType = ((ArrayType) fstType).getGenericType();
                 Type secArrayType = ((ArrayType) secType).getGenericType();
-                return mergeType(fstArrayType, secArrayType);
+                Type mergeType = mergeType(fstArrayType, secArrayType);
+                //
+                ((ArrayType) fstType).setGenericType(mergeType);
+                return fstType;
             }
             if (fstTypeType == TypeEnum.Struts) {
                 StrutsType fstMapType = ((StrutsType) fstType);
@@ -148,6 +155,7 @@ public class TypesUtils {
         return fstType;
     }
 
+    /** 将 Type 分析 DataModel 提取数据结构变为 Type 类型对象 */
     public static JSONObject toJsonSchema(Type type, boolean useRef) {
         Map<String, JSONObject> defTypes = new LinkedHashMap<>();
         JSONObject root = toJsonSchema(defTypes, type, useRef);
