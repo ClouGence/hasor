@@ -49,6 +49,7 @@ SQL执行器
 
     fragment/sql/about_sql
     fragment/sql/execute
+    fragment/sql/about_mybatis
 
 FunctionX库函数
 ------------------------------------
