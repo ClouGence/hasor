@@ -168,7 +168,7 @@ public class SqlFragment implements FragmentProcess {
         }
         SqlPageDialect pageDialect = SqlPageDialectRegister.findOrCreate(sqlDialect, this.appContext);
         //
-        return new SqlPageObject(mapList -> {
+        return new SqlPageObject(hint, mapList -> {
             return convertResult(hint, mapList);
         }, new SqlPageQuery() {
             @Override

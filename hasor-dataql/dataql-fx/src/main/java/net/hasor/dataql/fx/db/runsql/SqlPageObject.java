@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db.runsql;
+import net.hasor.dataql.Hints;
 import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.dataql.fx.db.runsql.SqlPageQuery.SqlPageQueryConvertResult;
 import net.hasor.dataql.fx.db.runsql.dialect.SqlPageDialect.BoundSql;
@@ -24,6 +25,8 @@ import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static net.hasor.dataql.fx.FxHintNames.FRAGMENT_SQL_QUERY_BY_PAGE_NUMBER_OFFSET;
 
 /**
  * 翻页数据，同时负责调用分页的SQL执行分页查询
@@ -41,8 +44,14 @@ class SqlPageObject implements UdfSourceAssembly {
     private boolean                   totalCountInited = false;
     private SqlPageQuery              sqlPageQuery     = null;
     private SqlPageQueryConvertResult convertResult    = null;
+    private int                       pageNumberOffset = 0;
 
-    public SqlPageObject(SqlPageQueryConvertResult convertResult, SqlPageQuery sqlPageQuery) {
+    public SqlPageObject(Hints hints, SqlPageQueryConvertResult convertResult, SqlPageQuery sqlPageQuery) {
+        this.pageNumberOffset = (int) ConverterUtils.convert(String.valueOf(hints.getOrDefault(//
+                FRAGMENT_SQL_QUERY_BY_PAGE_NUMBER_OFFSET.name(),//
+                FRAGMENT_SQL_QUERY_BY_PAGE_NUMBER_OFFSET.getDefaultVal())//
+        ), Integer.TYPE);
+        //
         this.convertResult = convertResult;
         this.sqlPageQuery = sqlPageQuery;
         this.totalCountInited = false;
@@ -144,7 +153,7 @@ class SqlPageObject implements UdfSourceAssembly {
             put("pageSize", pageSize());
             put("totalCount", totalCount());
             put("totalPage", totalPage());
-            put("currentPage", currentPage());
+            put("currentPage", currentPage() + pageNumberOffset);
             put("recordPosition", firstRecordPosition());
         }};
     }
@@ -160,8 +169,8 @@ class SqlPageObject implements UdfSourceAssembly {
         if (currentPage == null && pageSize == null) {
             return false;
         }
-        //
-        currentPage((Integer) ConverterUtils.convert(Integer.TYPE, currentPage));
+        //FRAGMENT_SQL_QUERY_BY_PAGE_NUMBER_OFFSET
+        currentPage(((Integer) ConverterUtils.convert(Integer.TYPE, currentPage) - this.pageNumberOffset));
         pageSize((Integer) ConverterUtils.convert(Integer.TYPE, pageSize));
         return true;
     }

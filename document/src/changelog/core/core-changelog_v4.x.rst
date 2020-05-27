@@ -15,6 +15,8 @@ Hasor v4.1.8 (2020-05-?)
     - UI 发起的请求，Server 端统一使用 UTF-8 编码形式将数据转换为二进制，同时浏览器端统一采用 Blob 方式接受二进制数据在通过 decodeURIComponent 函数来解码UTF-8数据。
     - GET 模式下，UI 发起的请求会将请求参数全部转化为 String。因为 GET 获取参数在服务器端拿到的也都是 String。
     - `issue <https://gitee.com/zycgit/hasor/issues/I1I9XW>`_ 处理api跨域部分头信息失败。
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1HQPF>`_ 优化配置接口 /interface-ui/ 页面加载大js导致加载速度缓慢。对静态资源增加了 1个月对缓存。
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1HW0C>`_ 增加一个 Hint 用来可以设定查询分页时 currentPage 的默认启始数字
 **修复**
     - 修复当内部 UI 请求报错之后，错误被吃掉没有显示出来的问题。
     - `issue <https://gitee.com/zycgit/hasor/issues/I1HX3O>`_ 修复 `HASOR_DATAQL_DATAWAY_FORCE_DBTYPE` 配置项在 4.1.7 中失效的问题。

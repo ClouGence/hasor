@@ -121,6 +121,7 @@ class InterfaceUiFilter implements InvokerFilter {
             if (StringUtils.isNotBlank(mimeType)) {
                 httpResponse.setContentType(mimeType);
             }
+            httpResponse.setHeader("Cache-control", "public, max-age=2592000");
             //
             String resourceName = fixUrl(resourceBaseUri + requestURI.substring(this.uiBaseUri.length()));
             try (OutputStream outputStream = httpResponse.getOutputStream()) {

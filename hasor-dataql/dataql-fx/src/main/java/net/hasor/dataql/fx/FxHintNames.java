@@ -28,6 +28,11 @@ public enum FxHintNames {
     FRAGMENT_SQL_COLUMN_CASE(FRAGMENT_SQL_COLUMN_CASE_DEFAULT),
     /** SqlFragment 查询执行是否使用分页模式（默认：不使用） */
     FRAGMENT_SQL_QUERY_BY_PAGE(FRAGMENT_SQL_QUERY_BY_PAGE_DISABLE),
+    /**
+     * SqlFragment 在执行分页查询时，设置的当前页码偏移量。原始的 currentPage 规定启始页码是从 0 开始。在某些场景下 1开始会比较好理解，这时候就可以设施偏移量 为 1。
+     * <p>当设置偏移量之后，真实的 currentPage 值计算方式为：<code>yourCurrentPage - FRAGMENT_SQL_QUERY_BY_PAGE_NUMBER_OFFSET</code> 结果如果小于等于0，那么设置为 0</p>
+     */
+    FRAGMENT_SQL_QUERY_BY_PAGE_NUMBER_OFFSET("0"),
     /** SqlFragment 分页查询在改写分页查询语句时使用的方言（默认：空，需要明确指定） */
     FRAGMENT_SQL_PAGE_DIALECT(""),
     /** SqlFragment 数据源名字 */
