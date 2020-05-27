@@ -1,3 +1,6 @@
+//
+// see  -> https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md
+
 import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;
 import "net.hasor.dataql.fx.basic.StringUdfSource" as string;
 import "net.hasor.dataql.fx.basic.CollectionUdfSource" as collect;
@@ -68,13 +71,13 @@ var converApi = (apiData) -> {
 return {
   "swagger": "2.0",
   "info": {
-    "title": "Dataway Swagger2 Api Document",
-    "description": "APIs",
-    "termsOfService": "http://despairyoke.github.io/",
+    "title": "Interface Document for Dataway",
+    "description": "Dataway OpenAPI 3.0.0 Document",
+    "termsOfService": "https://www.hasor.net/web/dataway/index.html",
     "contact": {
-      "name": "API Support",
-      "url": "http://www.swagger.io/support",
-      "email": "support@swagger.io"
+      "name": "Dataway Support",
+      "url": "https://www.hasor.net/web/dataway/index.html",
+      "email": "zyc@hasor.net"
     },
     "license":{
       "name": "Apache 2.0",

@@ -344,6 +344,90 @@ mapValues
     var result = collect.mapValues(data);
     // result = [ 1, 2, 3 ]
 
+mapKeyReplace
+------------------------------------
+函数定义：``Map mapKeyReplace(dataMap, replaceKey)``
+
+- **参数定义：** ``dataMap`` 类型：Map，准备要替换 Key 的Map对象；`replaceKey`` 类型：Udf，用于生成新Key的函数
+- **返回类型：** ``Map``
+- **作用：** 提取 Map 的 Key。
+
+**作用**
+
+- 循环遍历每一个 Map 元素，并且对 Map 的 Key 进行替换。
+
+**例子**
+
+.. code-block:: js
+    :linenos:
+
+    var data = {"key1":1, "key2":2, "key3":3 };
+    var result = collect.mapKeyReplace(data, (okdKey,value) -> {
+        return "new_" + okdKey
+    });
+    // result = {"new_key1":1, "new_key2":2, "new_key3":3 }
+
+mapKeyReplace
+------------------------------------
+函数定义：``Map mapKeyReplace(dataMap, replaceKey)``
+
+- **参数定义：** ``dataMap`` 类型：Map，准备要替换 Key 的Map对象；`replaceKey`` 类型：Udf，用于生成新Key的函数
+- **返回类型：** ``Map``
+- **作用：** 提取 Map 的 Key。
+
+**作用**
+
+- 循环遍历每一个 Map 元素，并且对 Map 的 Key 进行替换。
+- 如果说使用 DataQL 语言来处理 key 值映射是静态方式处理的话，mapKeyReplace 函数的最大意义在于提供了动态的能力来决定对象的 key 值。
+
+**例子**
+
+.. code-block:: js
+    :linenos:
+
+    var data = {"key1":1, "key2":2, "key3":3 };
+    var result = collect.mapKeyReplace(data, (okdKey,value) -> {
+        return "new_" + okdKey
+    });
+    // result = {"new_key1":1, "new_key2":2, "new_key3":3 }
+
+mapValueReplace
+------------------------------------
+函数定义：``Map mapValueReplace(dataMap, replaceKey)``
+
+- **参数定义：** ``dataMap`` 类型：Map，准备要替换 Key 的Map对象；`replaceValue`` 类型：Udf，用于生成新Key的函数
+- **返回类型：** ``Map``
+- **作用：** 提取 Map 的 Key。
+
+**作用**
+
+- 循环遍历每一个 Map 元素，并且对 Map 的 Value 进行替换。
+- 和 mapKeyReplace 函数是相同用法，不同的是 mapKeyReplace 专注的是 Key 动态处理。而 mapValueReplace 是值的动态处理。
+
+**例子**
+
+.. code-block:: js
+    :linenos:
+
+    var data = {"key1":1, "key2":2, "key3":3 };
+    var result = collect.mapValueReplace(data, (okdKey,value) -> {
+        return {
+            "new_value" : value
+        }
+    });
+    // result = {
+    //  {
+    //   "key1": {
+    //     "new_value": 1
+    //   },
+    //   "key2": {
+    //     "new_value": 2
+    //   },
+    //   "key3": {
+    //     "new_value": 3
+    //   }
+    // }
+
 list2map
 ------------------------------------
 函数定义：``Map list2map(listData, dataKey, convertUDF)``

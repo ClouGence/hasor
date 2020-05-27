@@ -28,11 +28,11 @@ import java.io.IOException;
 import java.util.HashMap;
 
 /**
- * Swagger 导出 "http://127.0.0.1:8080/interface-ui/api/docs/swagger/v2.json"
+ * Swagger 导出 "http://127.0.0.1:8080/interface-ui/api/docs/swagger2.json"
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-24
  */
-@MappingToUrl("/api/docs/swagger/v2.json")
+@MappingToUrl("/api/docs/swagger2.json")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class Swagger2Controller extends BasicController {
     @Get

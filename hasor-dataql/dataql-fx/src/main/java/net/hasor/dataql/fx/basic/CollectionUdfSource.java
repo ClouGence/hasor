@@ -185,10 +185,10 @@ public class CollectionUdfSource implements UdfSourceAssembly {
     }
 
     /** 创建一个有状态的 Array 对象 */
-    public static Map<String, Udf> newList(Object mabeCollection) {
+    public static Map<String, Udf> newList(Object maybeCollection) {
         List<Object> initData = new ArrayList<>();
-        if (mabeCollection != null) {
-            initData.addAll(foreach(mabeCollection));
+        if (maybeCollection != null) {
+            initData.addAll(foreach(maybeCollection));
         }
         return new Inner_ListStateUdfSource(initData).getUdfResource(Finder.DEFAULT).get();
     }
@@ -432,5 +432,41 @@ public class CollectionUdfSource implements UdfSourceAssembly {
             return stringBuilder.substring(0, stringBuilder.length() - joinLength);
         }
         return stringBuilder.toString();
+    }
+
+    /** Map 的 Key 替换  */
+    public static Map<String, Object> mapKeyReplace(Map<String, Object> mapValue, Udf replaceKey, Hints hints) throws Throwable {
+        if (replaceKey == null || mapValue == null || mapValue.size() == 0) {
+            return mapValue;
+        }
+        //
+        Map<String, Object> dataMap = new LinkedHashMap<>();
+        Set<Map.Entry<String, Object>> entrySet = mapValue.entrySet();
+        for (Map.Entry<String, Object> entry : entrySet) {
+            String entryKey = entry.getKey();
+            Object entryValue = entry.getValue();
+            //
+            entryKey = String.valueOf(replaceKey.call(hints, entryKey, entryValue));
+            dataMap.put(entryKey, entryValue);
+        }
+        return dataMap;
+    }
+
+    /** Map 的 Value 替换  */
+    public static Map<String, Object> mapValueReplace(Map<String, Object> mapValue, Udf replaceValue, Hints hints) throws Throwable {
+        if (replaceValue == null || mapValue == null || mapValue.size() == 0) {
+            return mapValue;
+        }
+        //
+        Map<String, Object> dataMap = new LinkedHashMap<>();
+        Set<Map.Entry<String, Object>> entrySet = mapValue.entrySet();
+        for (Map.Entry<String, Object> entry : entrySet) {
+            String entryKey = entry.getKey();
+            Object entryValue = entry.getValue();
+            //
+            entryValue = replaceValue.call(hints, entryKey, entryValue);
+            dataMap.put(entryKey, entryValue);
+        }
+        return dataMap;
     }
 }

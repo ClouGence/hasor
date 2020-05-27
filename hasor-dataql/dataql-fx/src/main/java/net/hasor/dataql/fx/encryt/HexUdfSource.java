@@ -24,7 +24,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 /**
- * 十六进制转换函数库。函数库引入 <code>import 'net.hasor.dataql.fx.encryt.HexUdfSource' as codec;</code>
+ * 十六进制转换函数库。函数库引入 <code>import 'net.hasor.dataql.fx.encryt.HexUdfSource' as hex;</code>
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
