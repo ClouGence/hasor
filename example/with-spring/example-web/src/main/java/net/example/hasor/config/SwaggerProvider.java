@@ -14,7 +14,7 @@ public class SwaggerProvider implements SwaggerResourcesProvider {
     public List<SwaggerResource> get() {
         List<SwaggerResource> resources = new ArrayList<>();
         resources.add(swaggerResource("应用接口", "/v2/api-docs", "1.0"));
-        resources.add(swaggerResource("Dataway接口", "/interface-ui/api/docs/swagger/v2.json", "1.0"));
+        resources.add(swaggerResource("Dataway接口", "/interface-ui/api/docs/swagger2.json", "1.0"));
         return resources;
     }
 
