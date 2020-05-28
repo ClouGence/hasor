@@ -57,7 +57,7 @@
                 request(ApiUrl.report, {
                     "method": "POST",
                     "loading": false,
-                    "data": {info: window.ALL_MAC}
+                    "data": {info: window.ALL_MAC, version: window.DATAWAY_VERSION}
                 }, response => {
                 }, response => {
                 },);

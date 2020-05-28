@@ -33,10 +33,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static net.hasor.dataway.config.DatawayModule.fixUrl;
@@ -49,6 +46,7 @@ import static net.hasor.dataway.config.DatawayModule.fixUrl;
 class InterfaceUiFilter implements InvokerFilter {
     protected static     Logger               logger           = LoggerFactory.getLogger(InterfaceUiFilter.class);
     private static final String               resourceBaseUri  = "/META-INF/hasor-framework/dataway-ui/";
+    private static final String               datawayVersion;
     private              String               resourceIndexUri = null;
     private final        String               apiBaseUri;
     private final        String               uiBaseUri;
@@ -61,6 +59,19 @@ class InterfaceUiFilter implements InvokerFilter {
         this.uiAdminBaseUri = fixUrl(uiBaseUri + "/api/");
         this.resourceIndexUri = fixUrl(uiBaseUri + "/index.html");
         this.resourceSize = new ConcurrentHashMap<>();
+    }
+
+    static {
+        String version = null;
+        try {
+            InputStream inputStream = ResourcesUtils.getResourceAsStream("/META-INF/maven/net.hasor/hasor-dataway/pom.properties");
+            Properties properties = new Properties();
+            properties.load(inputStream);
+            version = properties.getProperty("version");
+        } catch (Exception e) {
+            version = "4.1.8";
+        }
+        datawayVersion = version;
     }
 
     @Override
@@ -107,6 +118,7 @@ class InterfaceUiFilter implements InvokerFilter {
             htmlBody = htmlBody.replace("{API_BASE_URL}", fixUrl(this.apiBaseUri));
             htmlBody = htmlBody.replace("{ADMIN_BASE_URL}", fixUrl(this.uiBaseUri));
             htmlBody = htmlBody.replace("{ALL_MAC}", allLocalMac());
+            htmlBody = htmlBody.replace("{DATAWAY_VERSION}", datawayVersion);
             httpResponse.setContentType(invoker.getMimeType("html"));
             httpResponse.setContentLength(htmlBody.length());
             PrintWriter writer = httpResponse.getWriter();
