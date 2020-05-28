@@ -15,12 +15,12 @@ Dataway 是 Hasor 生态中的一员，使用 Dataway 第一步需要通过 `has
     <dependency>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-spring</artifactId>
-        <version>4.1.7</version>
+        <version>4.1.7</version><!-- 查看最新版本：https://mvnrepository.com/artifact/net.hasor/hasor-spring -->
     </dependency>
     <dependency>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-dataway</artifactId>
-        <version>4.1.7</version>
+        <version>4.1.7</version><!-- 查看最新版本：https://mvnrepository.com/artifact/net.hasor/hasor-dataway -->
     </dependency>
 
 

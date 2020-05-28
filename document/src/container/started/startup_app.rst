@@ -1,6 +1,6 @@
 引入依赖
 ------------------------------------
-截止到目前为止 Hasor 的最新版本为：**4.1.7** ，下面以 maven 为例。
+截止到目前为止 Hasor 的最新版本为：**4.1.8** ，下面以 maven 为例。
 
 - 这个网站会提供给您各种依赖管理框架的引入配置，支持：Maven、Gradle、SBT、Ivy、Grape、Leiningen、Buildr
 - https://mvnrepository.com/artifact/net.hasor
@@ -11,7 +11,7 @@
     <dependency>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-core</artifactId>
-        <version>4.1.7</version>
+        <version>4.1.7</version><!-- 查看最新版本：https://mvnrepository.com/artifact/net.hasor/hasor-core -->
     </dependency>
 
 

@@ -28,5 +28,5 @@ Spring版本说明
     <dependency>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-spring</artifactId>
-        <version>4.1.7</version>
+        <version>4.1.7</version><!-- 查看最新版本：https://mvnrepository.com/artifact/net.hasor/hasor-spring -->
     </dependency>
