@@ -5,6 +5,8 @@ Hasor v4.1.8 (2020-06-?)
 ------------------------------------
 **新增**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1IT82>`_ Api列表时显式其http method
+**优化**
+    - 所有编辑器统一使用 MonacoEditor，去掉 Codemirror 依赖。
 
 Hasor v4.1.8 (2020-05-28)
 ------------------------------------

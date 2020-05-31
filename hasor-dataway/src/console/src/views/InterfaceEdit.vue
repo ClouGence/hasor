@@ -54,7 +54,7 @@
                 <template slot="paneR">
                     <SplitPane v-on:resize="handleHorizontalSplitResize" :min-percent='10' :default-percent='panelPercentHorizontal' split="horizontal">
                         <template slot="paneL">
-                            <RequestPanel id="editerRequestPanel" ref="editerRequestPanel"
+                            <RequestPanel ref="editerRequestPanel"
                                           :header-data="headerData"
                                           :request-body="requestBody"
                                           :hide-run-btn="true"
@@ -62,7 +62,7 @@
                                           @onRequestBodyChange="(data)=> { this.requestBody = data}"/>
                         </template>
                         <template slot="paneR">
-                            <ResponsePanel id="editerResponsePanel" ref="editerResponsePanel"
+                            <ResponsePanel ref="editerResponsePanel"
                                            :response-body="responseBody"
                                            :on-edit-page="true"
                                            :result-type="responseType"
@@ -79,13 +79,13 @@
     </div>
 </template>
 <script>
-    import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
     import EditerActions from '../components/EditerActions';
     import RequestPanel from '../components/RequestPanel';
     import ResponsePanel from '../components/ResponsePanel';
     import request from "../utils/request";
     import {apiBaseUrl, ApiUrl} from "../utils/api-const";
     import {errorBox, statusTagInfo} from "../utils/utils"
+    import {defineMonacoEditorFoo, loadMonacoEditorSelfTheme} from "../utils/editorUtils"
 
     let defaultOptionData = {
         resultStructure: true
@@ -143,16 +143,18 @@
             // 页面大小调整
             layoutMonacoEditor() {
                 this.panelHeight = document.documentElement.clientHeight - 88;
+                let monacoEditorWidth = (document.documentElement.clientWidth * (this.panelPercentVertical / 100))
                 this.monacoEditor.layout({
                     height: this.panelHeight,
-                    width: (document.documentElement.clientWidth * (this.panelPercentVertical / 100))
+                    width: monacoEditorWidth
                 });
                 //
                 this.panelPercent = this.panelPercentHorizontal;
                 let dataNum = this.panelPercentHorizontal / 100;
-                let size = document.documentElement.clientHeight - 88;
-                this.$refs.editerRequestPanel.doLayout(size * dataNum);
-                this.$refs.editerResponsePanel.doLayout(size * (1 - dataNum));
+                let heightSize = document.documentElement.clientHeight - 88;
+                let widthSize = document.documentElement.clientWidth - monacoEditorWidth - 2;
+                this.$refs.editerRequestPanel.doLayout(heightSize * dataNum, widthSize);
+                this.$refs.editerResponsePanel.doLayout(heightSize * (1 - dataNum), widthSize);
             },
             handleVerticalSplitResize(data) {
                 this.panelPercentVertical = data;
@@ -173,28 +175,17 @@
             //
             // 初始化编辑器
             initMonacoEditor() {
-                this.monacoEditor = monaco.editor.create(this.$refs.container, {
+                loadMonacoEditorSelfTheme();
+                this.monacoEditor = defineMonacoEditorFoo(this.$refs.container, {
                     value: this.apiInfo.codeValue,
                     language: 'javascript',
-                    theme: 'vs', // vs, hc-black, or vs-dark
-                    editorOptions: this.monacoEditorOptions
+                    theme: 'selfTheme'
                 });
+                this.monacoEditor.updateOptions({contextmenu: true});
                 //
-                monaco.editor.defineTheme('selfTheme', {
-                    base: 'vs',
-                    inherit: true,
-                    rules: [],
-                    colors: {
-                        'editor.lineHighlightBackground': '#fff8c5'
-                    }
-                });
-                monaco.editor.setTheme('selfTheme');
-                //
-                const self = this;
                 // let contextmenu = this.monacoEditor.getContribution('editor.contrib.contextmenu')
                 // let actions = this.monacoEditor.getActions()
-                // this.monacoEditor.updateOptions({contextmenu: false});
-                this.monacoEditor.updateOptions({minimap: {enabled: false}});
+                const self = this;
                 this.monacoEditor.onDidChangeModelContent(function (event) { // 编辑器内容changge事件
                     self.apiInfo.codeValue = self.monacoEditor.getValue();
                     self.apiInfo.editorSubmitted = false;
@@ -345,20 +336,7 @@
                 //
                 panelPercentVertical: 50,
                 panelPercentHorizontal: 50,
-                panelHeight: '100%',
-                monacoEditorOptions: {
-                    selectOnLineNumbers: true,
-                    roundedSelection: false,
-                    readOnly: false, // 只读
-                    cursorStyle: 'line', // 光标样式
-                    automaticLayout: false, // 自动布局
-                    glyphMargin: true, // 字形边缘
-                    useTabStops: false,
-                    fontSize: 14, // 字体大小
-                    autoIndent: true, // 自动布局
-                    contextmenu: true
-                    // quickSuggestionsDelay: 500,   //代码提示延时
-                }
+                panelHeight: '100%'
             }
         }
     }

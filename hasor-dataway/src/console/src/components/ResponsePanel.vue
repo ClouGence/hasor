@@ -43,31 +43,20 @@
         </div>
         <el-tabs class="response-tabs" type="card" v-model="panelActiveName">
             <el-tab-pane name="result_view" label="Result">
-                <div :id="id + '_responseBodyRef'">
-                    <codemirror v-model="responseBodyCopy" :options="defaultOption"/>
-                </div>
+                <div ref="responsePanel"/>
             </el-tab-pane>
             <el-tab-pane name="result_format" label="Structure" v-if="onEditPage" :disabled="!resultStructureCopy">
-                <div :id="id + '_responseFormatRef'">
-                    <codemirror v-model="responseFormatCopy" :options="defaultOption"/>
-                </div>
+                <div ref="responseFormatPanel"/>
             </el-tab-pane>
         </el-tabs>
     </div>
 </template>
 <script>
-    import 'codemirror'
+    import {defineMonacoEditorFoo} from "../utils/editorUtils"
     import {formatDate} from "../utils/utils"
-
 
     export default {
         props: {
-            id: {
-                type: String,
-                default: function () {
-                    return 'responsePanel'
-                }
-            },
             responseBody: {
                 type: String,
                 default: function () {
@@ -108,13 +97,6 @@
         },
         data() {
             return {
-                defaultOption: {
-                    tabSize: 4,
-                    styleActiveLine: true,
-                    lineNumbers: true,
-                    line: true,
-                    mode: 'text/javascript'
-                },
                 responseBodyCopy: '',
                 responseFormatCopy: '',
                 resultStructureCopy: true,
@@ -123,9 +105,23 @@
             }
         },
         mounted() {
+            const self = this;
+            this.monacoDataEditor = defineMonacoEditorFoo(this.$refs.responsePanel, {});
+            this.monacoDataEditor.onDidChangeModelContent(function (event) { // 编辑器内容changge事件
+                self.responseBodyCopy = self.monacoDataEditor.getValue();
+            });
+            //
+            if (this.onEditPage) {
+                this.monacoForamtEditor = defineMonacoEditorFoo(this.$refs.responseFormatPanel, {});
+                this.monacoForamtEditor.onDidChangeModelContent(function (event) { // 编辑器内容changge事件
+                    self.responseFormatCopy = self.monacoForamtEditor.getValue();
+                });
+            }
+            //
             this.responseBodyCopy = this.responseBody;
-            this.resultStructureCopy = (this.resultStructure === undefined) ? true : this.resultStructure;
             this.responseFormatCopy = this.responseFormat;
+            this.resultStructureCopy = (this.resultStructure === undefined) ? true : this.resultStructure;
+            this.doUpdate();
         },
         watch: {
             'responseBodyCopy': {
@@ -153,7 +149,8 @@
             // 响应结果格式化
             handleJsonResultFormatter() {
                 try {
-                    this.responseBodyCopy = JSON.stringify(JSON.parse(this.responseBodyCopy), null, 2)
+                    this.responseBodyCopy = JSON.stringify(JSON.parse(this.responseBodyCopy), null, 2);
+                    this.monacoDataEditor.setValue(this.responseBodyCopy);
                 } catch (e) {
                     this.$message.error('JsonResult Format Error : ' + e)
                 }
@@ -161,7 +158,8 @@
             // 响应结果格式化
             handleStructureFormatter() {
                 try {
-                    this.responseFormatCopy = JSON.stringify(JSON.parse(this.responseFormatCopy), null, 2)
+                    this.responseFormatCopy = JSON.stringify(JSON.parse(this.responseFormatCopy), null, 2);
+                    this.monacoForamtEditor.setValue(this.responseFormatCopy);
                 } catch (e) {
                     this.$message.error('Structure Format Error : ' + e)
                 }
@@ -198,21 +196,17 @@
             },
             //
             // 执行布局
-            doLayout(height) {
-                let responseBodyID = '#' + this.id + '_responseBodyRef';
-                let responseBody = document.querySelectorAll(responseBodyID + ' .CodeMirror')[0];
-                responseBody.style.height = (height - 47) + 'px'
-                //
-                if (this.onEditPage) {
-                    let responseFormatBodyID = '#' + this.id + '_responseFormatRef';
-                    let responseFormatBody = document.querySelectorAll(responseFormatBodyID + ' .CodeMirror')[0];
-                    responseFormatBody.style.height = (height - 47) + 'px'
-                }
+            doLayout(height, width) {
+                this.monacoDataEditor.layout({height: (height - 47), width: width});
+                this.onEditPage && this.monacoForamtEditor.layout({height: (height - 47), width: width});
             },
             doUpdate() {
                 this.responseBodyCopy = this.responseBody;
                 this.resultStructureCopy = (this.resultStructure === undefined) ? true : this.resultStructure;
                 this.responseFormatCopy = this.responseFormat;
+                //
+                this.monacoDataEditor.setValue(this.responseBodyCopy);
+                this.onEditPage && this.monacoForamtEditor.setValue(this.responseFormatCopy);
             }
         }
     }

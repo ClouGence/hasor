@@ -57,7 +57,7 @@
         <template slot="paneR">
             <split-pane v-on:resize="handleSplitResize" :min-percent='30' :default-percent='panelPercent' split="horizontal">
                 <template slot="paneL">
-                    <RequestPanel id="listRequestPanel" ref="listRequestPanel"
+                    <RequestPanel ref="listRequestPanel"
                                   v-bind:header-data="headerData"
                                   v-bind:request-body="requestBody"
                                   @onRun="handleRun"
@@ -65,7 +65,7 @@
                                   @onRequestBodyChange="(data)=> { this.requestBody = data}"/>
                 </template>
                 <template slot="paneR">
-                    <ResponsePanel id="listResponsePanel" ref="listResponsePanel"
+                    <ResponsePanel ref="listResponsePanel"
                                    :response-body="responseBody" :on-edit-page="false" :result-type="responseType"
                                    @onResponseBodyChange="(data)=> { this.responseBody = data}"/>
                 </template>

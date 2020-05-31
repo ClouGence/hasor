@@ -32,9 +32,7 @@
         </div>
         <el-tabs class="request-tabs" type="card" v-model="panelMode">
             <el-tab-pane name="req_parameters" label="Parameters" lazy>
-                <div :id="id + '_requestBodyRef'">
-                    <codemirror v-model="requestBodyCopy" :options="defaultOption"/>
-                </div>
+                <div ref="requestPanel"/>
             </el-tab-pane>
             <el-tab-pane name="req_headers" label="Headers" lazy>
                 <el-table ref="requestHeaderTable" :data="headerDataCopy" :height="headerPanelHeight" border empty-text="No Header">
@@ -70,16 +68,10 @@
     </div>
 </template>
 <script>
-    import 'codemirror'
+    import {defineMonacoEditorFoo} from "../utils/editorUtils"
 
     export default {
         props: {
-            id: {
-                type: String,
-                default: function () {
-                    return 'requestPanel';
-                }
-            },
             requestBody: {
                 type: String,
                 default: function () {
@@ -107,17 +99,15 @@
                 headerPanelHeight: '100%',
                 panelMode: 'req_parameters',
                 headerSelectIndeterminateStatus: false,
-                headerSelectAllStatus: false,
-                defaultOption: {
-                    tabSize: 4,
-                    styleActiveLine: true,
-                    lineNumbers: true,
-                    line: true,
-                    mode: 'text/javascript'
-                }
+                headerSelectAllStatus: false
             }
         },
         mounted() {
+            const self = this;
+            this.monacoEditor = defineMonacoEditorFoo(this.$refs.requestPanel, {});
+            this.monacoEditor.onDidChangeModelContent(function (event) { // 编辑器内容changge事件
+                self.requestBodyCopy = self.monacoEditor.getValue();
+            });
             this.doUpdate();
         },
         watch: {
@@ -146,6 +136,7 @@
             handleParametersFormatter() {
                 try {
                     this.requestBodyCopy = JSON.stringify(JSON.parse(this.requestBodyCopy), null, 2);
+                    this.monacoEditor.setValue(this.requestBodyCopy);
                 } catch (e) {
                     this.$message.error('Parameters Format Error : ' + e);
                 }
@@ -182,15 +173,14 @@
                 this.$emit('onRun');
             },
             // 执行布局
-            doLayout(height) {
-                let requestBodyID = '#' + this.id + '_requestBodyRef';
-                let requestBody = document.querySelectorAll(requestBodyID + ' .CodeMirror')[0];
-                requestBody.style.height = (height - 31) + 'px';
+            doLayout(height, width) {
                 this.headerPanelHeight = (height - 31) + 'px';
+                this.monacoEditor.layout({height: (height - 31), width: width});
             },
             doUpdate() {
                 this.requestBodyCopy = this.requestBody;
                 this.headerDataCopy = this.headerData;
+                this.monacoEditor.setValue(this.requestBodyCopy);
             }
         }
     }
