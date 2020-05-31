@@ -85,7 +85,7 @@
     import ResponsePanel from '../components/ResponsePanel';
     import request from "../utils/request";
     import {apiBaseUrl, ApiUrl} from "../utils/api-const";
-    import {errorBox, tagInfo} from "../utils/utils"
+    import {errorBox, statusTagInfo} from "../utils/utils"
 
     let defaultOptionData = {
         resultStructure: true
@@ -228,7 +228,7 @@
                         ...data.optionData
                     };
                     //
-                    self.tagInfo = tagInfo(self.apiInfo.apiStatus);
+                    self.tagInfo = statusTagInfo(self.apiInfo.apiStatus);
                     self.loadEditorMode();
                     //
                     self.$nextTick(function () {

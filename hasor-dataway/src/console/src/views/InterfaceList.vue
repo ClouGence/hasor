@@ -1,8 +1,7 @@
 <template>
-    <SplitPane :min-percent='30' :default-percent='30' split="vertical">
+    <SplitPane :min-percent='30' :default-percent='50' split="vertical">
         <template slot="paneL">
-
-            <el-table  ref="interfaceTable" height="100%"
+            <el-table ref="interfaceTable" height="100%"
                       :data="tableData.filter(dat => !apiSearch || dat.path.toLowerCase().includes(apiSearch.toLowerCase()) || dat.comment.toLowerCase().includes(apiSearch.toLowerCase()))"
                       @current-change="handleApiDataChange"
                       empty-text="No Api" highlight-current-row border lazy stripe>
@@ -23,7 +22,8 @@
                         <el-input size="mini" v-model="apiSearch" placeholder="search Api"/>
                     </template>
                     <template slot-scope="scope">
-                        <el-tag size="mini" style="float: left;width: 65px;text-align: center;" :type="tableRowTagClassName(scope.row).css">{{tableRowTagClassName(scope.row).title}}</el-tag>
+                        <el-tag size="mini" style="float: left;width: 45px;text-align: center;margin-right: 2px;" effect="dark" :type="tableRowMethodTagClassName(scope.row).css">{{tableRowMethodTagClassName(scope.row).title}}</el-tag>
+                        <el-tag size="mini" style="float: left;width: 65px;text-align: center;" :type="tableRowStatusTagClassName(scope.row).css">{{tableRowStatusTagClassName(scope.row).title}}</el-tag>
                         <span style="overflow-x: hidden;">{{requestPath(scope.row.path)}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
                         <span style="color: #adadad;display: contents;float: right; overflow-x: hidden;">[{{scope.row.comment}}]</span>
                     </template>
@@ -78,7 +78,7 @@
     import ResponsePanel from '../components/ResponsePanel'
     import request from "../utils/request";
     import {ApiUrl, contextPath} from "../utils/api-const"
-    import {checkRequestBody, errorBox, headerData, tagInfo} from "../utils/utils"
+    import {checkRequestBody, errorBox, headerData, methodTagInfo, statusTagInfo} from "../utils/utils"
 
     export default {
         components: {
@@ -103,40 +103,40 @@
             requestPath(apiPath) {
                 return contextPath() + apiPath;
             },
-            treeClick(obj,node,e){
+            treeClick(obj, node, e) {
                 this.apiSearch = obj.label;
                 this.showToggle();
             },
-            showToggle(e){
+            showToggle(e) {
                 this.directoryShow = !this.directoryShow;
                 let path = [];
-                this.tableData.forEach(function (item,index) {
-                    path.push(item.path.replace(/^http[s]?:\/\//,"").replace(/\w*:?\w*/,"").replace(/\/$/,""));
+                this.tableData.forEach(function (item, index) {
+                    path.push(item.path.replace(/^http[s]?:\/\//, "").replace(/\w*:?\w*/, "").replace(/\/$/, ""));
                 });
-                this.directoryList = this.buildChild(path,"");
-                this.directoryList.splice(0,0,{"label":"/"})
+                this.directoryList = this.buildChild(path, "");
+                this.directoryList.splice(0, 0, {"label": "/"})
             },
-            buildChild(pathList,label){
+            buildChild(pathList, label) {
                 let tree = [];
                 let labelKeySet = new Set();
 
-                pathList.forEach(path=>{
-                    if (path.indexOf(label) !=0){
+                pathList.forEach(path => {
+                    if (path.indexOf(label) != 0) {
                         return;
                     }
 
-                    let subPath = path.substring(path.indexOf(label)+label.length);
-                    if (subPath.lastIndexOf("/") <= 0){
+                    let subPath = path.substring(path.indexOf(label) + label.length);
+                    if (subPath.lastIndexOf("/") <= 0) {
                         return;
                     }
-                    let subLabel = label + subPath.substring(0,subPath.indexOf("/",1));
-                    if(labelKeySet.has(subLabel)){
+                    let subLabel = label + subPath.substring(0, subPath.indexOf("/", 1));
+                    if (labelKeySet.has(subLabel)) {
                         return;
                     }
                     labelKeySet.add(subLabel);
                     tree.push({
-                        "label":subLabel,
-                        "children":this.buildChild(pathList,subLabel)
+                        "label": subLabel,
+                        "children": this.buildChild(pathList, subLabel)
                     });
                 });
 
@@ -163,9 +163,13 @@
                     }
                 }
             },
-            tableRowTagClassName(row) {
-                return tagInfo(row.status);
+            tableRowStatusTagClassName(row) {
+                return statusTagInfo(row.status);
             },
+            tableRowMethodTagClassName(row) {
+                return methodTagInfo(row.select);
+            },
+
             //
             //
             // 加载列表
@@ -248,7 +252,7 @@
                 apiSearch: '',
                 tableData: [],
                 directoryShow: false,
-                directoryList:[],
+                directoryList: [],
                 defaultProps: {
                     children: 'children',
                     label: 'label'
@@ -264,21 +268,23 @@
     }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style >
-    #directory-list{
+<style>
+    #directory-list {
         top: 30px;
         left: -4px;
         position: absolute;
-        width:100%;
+        width: 100%;
         height: 100%;
         z-index: 100;
         background: #fff;
     }
-    .el-tree-node__content{
+
+    .el-tree-node__content {
         border-bottom: 1px solid #ccc;
         line-height: 30px;
         background-color: #fbfbfb99;
     }
+
     /*.el-tree-node:nth-of-type(odd){
         background-color: #FAFAFA;
     }*/

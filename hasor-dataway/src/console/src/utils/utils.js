@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 
 /***/
-const tagInfo = (status) => {
+const statusTagInfo = (status) => {
     if (status === 0) {
         return {'css': 'info', 'title': 'Editor'};
     }
@@ -14,6 +14,23 @@ const tagInfo = (status) => {
     }
     if (status === 3) {
         return {'css': 'danger', 'title': 'Disable'};
+    }
+    return {'css': '', 'title': ''};
+};
+
+/***/
+const methodTagInfo = (httpMethod) => {
+    if (httpMethod === 'GET') {
+        return {'css': '', 'title': 'GET'};
+    }
+    if (httpMethod === 'POST') {
+        return {'css': 'success', 'title': 'POST'};
+    }
+    if (httpMethod === 'PUT') {
+        return {'css': 'warning', 'title': 'PUT'};
+    }
+    if (httpMethod === 'DELETE') {
+        return {'css': 'danger', 'title': 'DELETE'};
     }
     return {'css': '', 'title': ''};
 };
@@ -94,5 +111,5 @@ const formatDate = (date, fmt = 'yyyyMMdd-hhmmss.S') => {
 };
 
 export {
-    tagInfo, errorBox, checkRequestBody, fixGetRequestBody, headerData, formatDate
+    methodTagInfo, statusTagInfo, errorBox, checkRequestBody, fixGetRequestBody, headerData, formatDate
 };
