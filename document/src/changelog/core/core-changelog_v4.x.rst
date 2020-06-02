@@ -9,6 +9,8 @@ Hasor v4.1.8 (2020-06-?)
     - `issue <https://gitee.com/zycgit/hasor/issues/I1J2BJ>`_ Dataway string 库函数新增 split 方法。
 **优化**
     - 所有编辑器统一使用 MonacoEditor，去掉 Codemirror 依赖。
+**修复**
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1J7K3>`_ 修复Dataway 生成的 Swagger api文档，在容器中用 swagger 访问失败。
 
 Hasor v4.1.8 (2020-05-28)
 ------------------------------------

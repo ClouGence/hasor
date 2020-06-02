@@ -18,6 +18,7 @@ import net.hasor.dataql.QueryResult;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.daos.ReleaseListQuery;
 import net.hasor.dataway.schema.swagger.v2.Swagger2_0Query;
+import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Get;
 import net.hasor.web.objects.JsonRenderEngine;
@@ -38,15 +39,20 @@ public class Swagger2Controller extends BasicController {
     @Get
     public Object doReleaseList(Invoker invoker) throws IOException {
         HttpServletRequest httpRequest = invoker.getHttpRequest();
-        String localName = httpRequest.getLocalName();
-        int localPort = httpRequest.getLocalPort();
+        String localName = httpRequest.getHeader("Host");
+        if (StringUtils.isBlank(localName)) {
+            int localPort = httpRequest.getLocalPort();
+            localName = httpRequest.getLocalAddr() + ((localPort == 80) ? "" : (":" + localPort));
+        }
         //
         QueryResult apiList = new ReleaseListQuery(this.dataQL).execute(new HashMap<String, Object>() {{
             //
         }});
+        //
+        String serverHost = localName;
         return new Swagger2_0Query(this.dataQL).execute(new HashMap<String, Object>() {{
             put("apiDataList", apiList.getData());
-            put("serverHost", localName + ((localPort == 80) ? "" : (":" + localPort)));
+            put("serverHost", serverHost);
         }}).getData().unwrap();
     }
 }
