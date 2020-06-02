@@ -193,7 +193,6 @@ DataQL 的 SQL 执行器支持批量 ``Insert\Update\Delete\Select`` 操作，�
 - **lower**：全部转小写
 - **hump**：转换成驼峰
 
-
 分页查询
 ------------------------------------
 分页查询默认是关闭的，需要通过 ``hint FRAGMENT_SQL_QUERY_BY_PAGE = true`` 将其打开。
@@ -257,6 +256,53 @@ DataQL 的 SQL 执行器支持批量 ``Insert\Update\Delete\Select`` 操作，�
 
 .. HINT::
     获取分页信息时需要获取总记录数，因此会产生一条 count 的查询。
+
+**关于第一页：方式一**
+
+在前端框架分页机制中，第一页相当多是从 1 开始计算的。然而默认情况下 SQL 执行器的第一页的页码是从 0 开始的。
+
+因此前端如果传递 ``page1 = 1`` 的情况下需要做一些处理。通常情况下是 -1 例如：
+
+.. code-block:: js
+    :linenos:
+
+    hint FRAGMENT_SQL_QUERY_BY_PAGE = true
+    ...
+    run queryPage.setPageInfo({
+        "pageSize"    : 5, // 页大小
+        "currentPage" : (${pageNumber} -1)
+    });
+    ...
+
+如果API发布采用的是 ``GET`` 方法还需要通过转换函数转换
+
+.. code-block:: js
+    :linenos:
+
+    import 'net.hasor.dataql.fx.basic.ConvertUdfSource' as convert;
+    hint FRAGMENT_SQL_QUERY_BY_PAGE = true
+    ...
+    run queryPage.setPageInfo({
+        "pageSize"    : 5, // 页大小
+        "currentPage" : (convert.toInt(${pageNumber}) -1)
+    });
+    ...
+
+**关于第一页：方式二（推荐）**
+
+除了 -1 之外，DataQL 在 4.1.8 版本中加入了 ``FRAGMENT_SQL_QUERY_BY_PAGE_NUMBER_OFFSET`` Hint，可以简单的通过配置 Hint 让 SQL 执行器自动处理从 1 开始作为页码的启始编号。
+
+.. code-block:: js
+    :linenos:
+
+    hint FRAGMENT_SQL_QUERY_BY_PAGE = true
+    hint FRAGMENT_SQL_QUERY_BY_PAGE_NUMBER_OFFSET = 1
+    ...
+    run pageQuery.setPageInfo({
+        "pageSize"    : 5, // 页大小
+        "currentPage" : 1  // 第1页，在设置 FRAGMENT_SQL_QUERY_BY_PAGE_NUMBER_OFFSET 之前 第一页要设置为 0
+    });
+    ...
 
 数据库事务
 ------------------------------------
