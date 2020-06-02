@@ -18,6 +18,7 @@ import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.utils.StringUtils;
 
 import javax.inject.Singleton;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -278,6 +279,34 @@ public class StringUdfSource implements UdfSourceAssembly {
     }
     // other
     //-----------------------------------------------------------------------
+
+    /**
+     * <p>Splits the provided text into an array, separators specified.
+     * This is an alternative to using StringTokenizer.</p>
+     *
+     * <p>The separator is not included in the returned String array.
+     * Adjacent separators are treated as one separator.
+     * For more control over the split use the StrTokenizer class.</p>
+     *
+     * <p>A <code>null</code> input String returns <code>null</code>.
+     * A <code>null</code> separatorChars splits on whitespace.</p>
+     *
+     * <pre>
+     * StringUtils.split(null, *)         = null
+     * StringUtils.split("", *)           = []
+     * StringUtils.split("abc def", null) = ["abc", "def"]
+     * StringUtils.split("abc def", " ")  = ["abc", "def"]
+     * StringUtils.split("abc  def", " ") = ["abc", "def"]
+     * StringUtils.split("ab:cd:ef", ":") = ["ab", "cd", "ef"]
+     * </pre>
+     *
+     * @param str  the String to parse, may be null
+     * @param separatorChars  the characters used as the delimiters, <code>null</code> splits on whitespace
+     * @return an array of parsed Strings, <code>null</code> if null String input
+     */
+    public static List<String> split(String str, String separatorChars) {
+        return Arrays.asList(StringUtils.split(str, separatorChars));
+    }
 
     /** Joins the elements of the provided array into a single String containing the provided list of elements. */
     public static String join(List<Object> array, String separator) {

@@ -634,3 +634,23 @@ equalsIgnoreCase
     string.equalsIgnoreCase("abc", null)  = false
     string.equalsIgnoreCase("abc", "abc") = true
     string.equalsIgnoreCase("abc", "ABC") = true
+
+split
+------------------------------------
+函数定义：``List split(str, separatorChars)``
+
+- **参数定义：** ``str`` 类型：String；``separatorChars`` 类型：String
+- **返回类型：** ``List``
+- **作用：** Splits the provided text into an array, separators specified. This is an alternative to using StringTokenizer.
+
+**例子**
+
+.. code-block:: js
+    :linenos:
+
+    string.split(null, *)         = null
+    string.split("", *)           = []
+    string.split("abc def", null) = ["abc", "def"]
+    string.split("abc def", " ")  = ["abc", "def"]
+    string.split("abc  def", " ") = ["abc", "def"]
+    string.split("ab:cd:ef", ":") = ["ab", "cd", "ef"]
