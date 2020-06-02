@@ -56,6 +56,15 @@ public class WebController implements Controller {
         return this.invoker.get();
     }
 
+    protected <T extends Invoker> T getInvoker(Class<T> invokerType) {
+        Invoker invoker = getInvoker();
+        if (invokerType.isInstance(invoker)) {
+            return (T) invoker;
+        } else {
+            return null;
+        }
+    }
+
     /** @return Return HttpServletRequest. Do not use HttpServletRequest Object in constructor of Controller */
     public HttpServletRequest getRequest() {
         return this.getInvoker().getHttpRequest();
