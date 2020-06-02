@@ -13,7 +13,7 @@ const adminBaseUrl = (oriUrl) => {
 
 // 通用查 配置
 const ApiUrl = {
-    report: "http://apis.hasor.net/projects/hasor-dataway/report",
+    checkVersion: "http://apis.hasor.net/projects/hasor-dataway/checkVersion",
     //
     apiInfo: contextPath() + adminBaseUrl(`/api/api-info`),
     apiList: contextPath() + adminBaseUrl(`/api/api-list`),

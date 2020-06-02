@@ -5,6 +5,7 @@ Hasor v4.1.8 (2020-06-?)
 ------------------------------------
 **新增**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1IT82>`_ Api列表时显式其http method
+    - 新版本检查提示功能，例如:官方在发布新版本的时。Interface-UI 会检测是否有新版本并弹窗提示给使用者，使用者可以选择永久忽略这次版本提示。
 **优化**
     - 所有编辑器统一使用 MonacoEditor，去掉 Codemirror 依赖。
 

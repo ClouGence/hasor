@@ -169,9 +169,6 @@
             tableRowMethodTagClassName(row) {
                 return methodTagInfo(row.select);
             },
-
-            //
-            //
             // 加载列表
             loadList() {
                 const self = this;
