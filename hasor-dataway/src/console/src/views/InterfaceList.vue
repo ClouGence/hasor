@@ -1,5 +1,5 @@
 <template>
-    <SplitPane :min-percent='30' :default-percent='50' split="vertical">
+    <SplitPane v-on:resize="handleVerticalSplitResize" :min-percent='30' :default-percent='verticalPanelPercent' split="vertical">
         <template slot="paneL">
             <el-table ref="interfaceTable" height="100%"
                       :data="tableData.filter(dat => !apiSearch || dat.path.toLowerCase().includes(apiSearch.toLowerCase()) || dat.comment.toLowerCase().includes(apiSearch.toLowerCase()))"
@@ -43,19 +43,12 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <el-tree
-                    v-show="directoryShow"
-                    id="directory-list"
-                    :data="directoryList"
-                    node-key="id"
-                    :default-expand-all="true"
-                    @node-click="treeClick"
-                    :props="defaultProps">
+            <el-tree id="directory-list" :default-expand-all="true" v-show="directoryShow"
+                     node-key="id" :data="directoryList" :props="defaultProps" @node-click="treeClick">
             </el-tree>
-
         </template>
         <template slot="paneR">
-            <split-pane v-on:resize="handleSplitResize" :min-percent='30' :default-percent='panelPercent' split="horizontal">
+            <split-pane v-on:resize="handleHorizontalSplitResize" :min-percent='30' :default-percent='horizontalPanelPercent' split="horizontal">
                 <template slot="paneL">
                     <RequestPanel ref="listRequestPanel"
                                   v-bind:header-data="headerData"
@@ -85,12 +78,12 @@
             RequestPanel, ResponsePanel
         },
         mounted() {
-            this.handleSplitResize(this.panelPercent);
+            this.handleSplitResize(this.verticalPanelPercent, this.horizontalPanelPercent);
             //
             const self = this;
             this._resize = () => {
                 return (() => {
-                    self.handleSplitResize(self.panelPercent);
+                    self.handleSplitResize(self.verticalPanelPercent, self.horizontalPanelPercent);
                 })();
             };
             window.addEventListener('resize', this._resize);
@@ -142,14 +135,23 @@
 
                 return tree;
             },
-            // 面板大小改变，重新计算CodeMirror的高度
-            handleSplitResize(data) {
-                this.panelPercent = data;
-                let dataNum = data / 100;
-                let size = document.documentElement.clientHeight - 60;
+            // 面板大小改变
+            handleVerticalSplitResize(data) {
+                this.handleSplitResize(data, this.horizontalPanelPercent);
+            },
+            handleHorizontalSplitResize(data) {
+                this.handleSplitResize(this.verticalPanelPercent, data);
+            },
+            handleSplitResize(verticalPercent, horizontalPercent) {
+                this.verticalPanelPercent = verticalPercent;
+                this.horizontalPanelPercent = horizontalPercent;
+                let verticalDataNum = verticalPercent / 100;
+                let horizontalDataNum = horizontalPercent / 100;
+                let widthSize = document.documentElement.clientWidth * verticalDataNum;
+                let heightSize = document.documentElement.clientHeight - 60;
                 //
-                this.$refs.listRequestPanel.doLayout(size * dataNum);
-                this.$refs.listResponsePanel.doLayout(size * (1 - dataNum) + 10);
+                this.$refs.listRequestPanel.doLayout(heightSize * horizontalDataNum, widthSize);
+                this.$refs.listResponsePanel.doLayout(heightSize * (1 - horizontalDataNum) + 10, widthSize);
             },
             // 选择了 Api 中的一个，确保只能选一个
             handleApiDataChange(row) {
@@ -243,7 +245,8 @@
         data() {
             return {
                 headerPanelHeight: '100%',
-                panelPercent: 50,
+                verticalPanelPercent: 50,
+                horizontalPanelPercent: 50,
                 loading: false,
                 //
                 apiSearch: '',
