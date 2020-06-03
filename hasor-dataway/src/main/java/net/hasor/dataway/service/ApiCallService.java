@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataway.service;
+import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.Finder;
@@ -23,18 +25,14 @@ import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
+import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.LoggerUtils;
-import net.hasor.dataway.spi.ApiInfo;
-import net.hasor.dataway.spi.CompilerSpiListener;
-import net.hasor.dataway.spi.PreExecuteChainSpi;
-import net.hasor.dataway.spi.ResultProcessChainSpi;
+import net.hasor.dataway.spi.*;
 import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
@@ -45,11 +43,13 @@ import java.util.concurrent.ExecutionException;
  */
 @Singleton
 public class ApiCallService {
-    protected static Logger     logger = LoggerFactory.getLogger(ApiCallService.class);
+    protected static Logger         logger = LoggerFactory.getLogger(ApiCallService.class);
     @Inject
-    private          SpiTrigger spiTrigger;
+    private          SpiTrigger     spiTrigger;
     @Inject
-    private          DataQL     executeDataQL;
+    private          ApiServiceImpl apiService;
+    @Inject
+    private          DataQL         executeDataQL;
 
     public Object doCallWithoutError(ApiInfo apiInfo, QueryScriptBuild scriptBuild) throws Throwable {
         return this._doCall(apiInfo, scriptBuild, false);
@@ -70,12 +70,22 @@ public class ApiCallService {
         }
         //
         // .执行查询
+        //  - 0.权限检查
         //  - 1.首先将 API 调用封装为 单例的 Supplier
         //  - 2.准备一个 Future 然后，触发 PreExecuteListener SPI
         //  - 3.如果 Future 被设置那么获取设置的值，否则就用之前封装好的 Supplier 中取值
         BasicFuture<Object> newResult = new BasicFuture<>();
         QueryResult execute = null;
         try {
+            //
+            // .执行权限检查SPI
+            Boolean checkResult = spiTrigger.chainSpi(AuthorizationChainSpi.class, (listener, lastResult) -> {
+                return listener.doCheck(AuthorizationType.ApiExecute, apiInfo, lastResult);
+            }, true);
+            if (checkResult == null || !checkResult) {
+                throw new StatusMessageException(401, "no permission of api " + apiInfo.getApiPath());
+            }
+            //
             this.spiTrigger.chainSpi(PreExecuteChainSpi.class, (listener, lastResult) -> {
                 if (!newResult.isDone()) {
                     listener.preExecute(apiInfo, newResult);

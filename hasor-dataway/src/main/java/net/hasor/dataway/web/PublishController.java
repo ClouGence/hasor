@@ -18,7 +18,7 @@ import com.alibaba.fastjson.JSON;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataway.authorization.RefAuthorization;
-import net.hasor.dataway.authorization.UiAuthorization;
+import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
@@ -42,7 +42,7 @@ import java.util.Map;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/publish")
-@RefAuthorization(UiAuthorization.ApiPublish)
+@RefAuthorization(AuthorizationType.ApiPublish)
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class PublishController extends BasicController {
     @Post

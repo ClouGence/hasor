@@ -15,7 +15,7 @@
  */
 package net.hasor.dataway.web;
 import net.hasor.dataway.authorization.RefAuthorization;
-import net.hasor.dataway.authorization.UiAuthorization;
+import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.service.ApiCallService;
@@ -35,7 +35,7 @@ import java.util.Map;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/perform")
-@RefAuthorization(UiAuthorization.ApiPerform)
+@RefAuthorization(AuthorizationType.ApiEdit)
 public class PerformController extends BasicController {
     @Inject
     private ApiCallService apiCallService;
