@@ -1,99 +1,160 @@
 <template>
-    <div>
-        <div class="monacoEditorHeader">
-            <div style="width: 50%; margin-top: 2px; display: inline-table;">
-                <el-tooltip class="item" effect="dark" placement="bottom" :content="apiInfo.comment || defaultComment" :disabled="showComment">
-                    <el-input placeholder="the path to access this Api" v-model="apiInfo.apiPath" class="input-with-select" size="mini" :disabled="!newCode">
-                        <el-select v-model="apiInfo.select" slot="prepend" placeholder="Choose" :disabled="!newCode" style="width: 90px;">
-                            <el-option label="POST" value="POST"/>
-                            <el-option label="PUT" value="PUT"/>
-                            <el-option label="GET" value="GET"/>
-                            <el-option label="DELETE" value="DELETE"/>
-                        </el-select>
-                        <el-button slot="append" icon="el-icon-info" @click.native="handleShowComment"/>
-                    </el-input>
-                </el-tooltip>
-            </div>
-            <div class="comment" v-if="showComment">
-                <el-input placeholder="Api's comment." size="mini" v-model="apiInfo.comment" @input="handleCommentOnchange">
-                    <template slot="prepend">Comment</template>
-                </el-input>
-            </div>
-            <div style="display: inline-table;padding-left: 5px;">
-                <el-radio-group v-model="apiInfo.codeType" size="mini" @change="loadEditorMode">
-                    <el-tooltip class="item" effect="dark" placement="bottom" content="DataQL language.">
-                        <el-radio border label="DataQL"/>
-                    </el-tooltip>
-                    <el-tooltip class="item" effect="dark" placement="bottom" content="SQL language.">
-                        <el-radio border label="SQL"/>
-                    </el-tooltip>
-                </el-radio-group>
-            </div>
-            <div style="float: right;">
-                <EditerActions :api-info="apiInfo"
-                               :request-body="requestBody"
-                               :request-header="headerData"
-                               :new-mode="newCode"
-                               :option-info="optionData"
-                               @onAfterSave="onAfterSave" @onPublish="onAfterSave" @onDisable="onAfterSave"
-                               @onExecute="onExecute" @onSmokeTest="onExecute"
-                               @onRecover="onRecover" @onDelete="onDelete"/>
-                <div style="display: inline-table;padding-left: 5px;">
-                    <el-tooltip class="item" effect="dark" placement="top" content="Current Api Status">
-                        <el-tag size="mini" style="width: 65px;text-align: center;" :type="tagInfo.css">{{tagInfo.title}}</el-tag>
-                    </el-tooltip>
-                </div>
-            </div>
+  <div>
+    <div class="monacoEditorHeader">
+      <div style="width: 50%; margin-top: 2px; display: inline-table;">
+        <el-tooltip class="item" effect="dark" placement="bottom" :content="apiInfo.comment || defaultComment" :disabled="showComment">
+          <el-input v-model="apiInfo.apiPath" placeholder="the path to access this Api" class="input-with-select" size="mini" :disabled="!newCode">
+            <el-select slot="prepend" v-model="apiInfo.select" placeholder="Choose" :disabled="!newCode" style="width: 90px;">
+              <el-option label="POST" value="POST" />
+              <el-option label="PUT" value="PUT" />
+              <el-option label="GET" value="GET" />
+              <el-option label="DELETE" value="DELETE" />
+            </el-select>
+            <el-button slot="append" icon="el-icon-info" @click.native="handleShowComment" />
+          </el-input>
+        </el-tooltip>
+      </div>
+      <div v-if="showComment" class="comment">
+        <el-input v-model="apiInfo.comment" placeholder="Api's comment." size="mini" @input="handleCommentOnchange">
+          <template slot="prepend">Comment</template>
+        </el-input>
+      </div>
+      <div style="display: inline-table;padding-left: 5px;">
+        <el-radio-group v-model="apiInfo.codeType" size="mini" @change="loadEditorMode">
+          <el-tooltip class="item" effect="dark" placement="bottom" content="DataQL language.">
+            <el-radio border label="DataQL" />
+          </el-tooltip>
+          <el-tooltip class="item" effect="dark" placement="bottom" content="SQL language.">
+            <el-radio border label="SQL" />
+          </el-tooltip>
+        </el-radio-group>
+      </div>
+      <div style="float: right;">
+        <EditerActions
+          :api-info="apiInfo"
+          :request-body="requestBody"
+          :request-header="headerData"
+          :new-mode="newCode"
+          :option-info="optionData"
+          @onAfterSave="onAfterSave"
+          @onPublish="onAfterSave"
+          @onDisable="onAfterSave"
+          @onExecute="onExecute"
+          @onSmokeTest="onExecute"
+          @onRecover="onRecover"
+          @onDelete="onDelete"
+        />
+        <div style="display: inline-table;padding-left: 5px;">
+          <el-tooltip class="item" effect="dark" placement="top" content="Current Api Status">
+            <el-tag size="mini" style="width: 65px;text-align: center;" :type="tagInfo.css">{{ tagInfo.title }}</el-tag>
+          </el-tooltip>
         </div>
-        <el-divider/>
-        <div :style="{height: panelHeight + 'px'}">
-            <SplitPane v-on:resize="handleVerticalSplitResize" :min-percent='10' :default-percent='panelPercentVertical' split="vertical">
-                <template slot="paneL">
-                    <div ref="container"/>
-                </template>
-                <template slot="paneR">
-                    <SplitPane v-on:resize="handleHorizontalSplitResize" :min-percent='10' :default-percent='panelPercentHorizontal' split="horizontal">
-                        <template slot="paneL">
-                            <RequestPanel ref="editerRequestPanel"
-                                          :header-data="headerData"
-                                          :request-body="requestBody"
-                                          :hide-run-btn="true"
-                                          @onHeaderChange="(data)=> { this.headerData = data}"
-                                          @onRequestBodyChange="(data)=> { this.requestBody = data}"/>
-                        </template>
-                        <template slot="paneR">
-                            <ResponsePanel ref="editerResponsePanel"
-                                           :response-body="responseBody"
-                                           :on-edit-page="true"
-                                           :result-type="responseType"
-                                           :result-structure="optionData['resultStructure']"
-                                           :response-format="optionData['responseFormat']"
-                                           @onResponseBodyChange="(data)=> { this.responseBody = data}"
-                                           @onResultStructureChange="(data) => {this.optionData['resultStructure'] = data}"
-                                           @onResultStructureFormatChange="(data) => {this.optionData['responseFormat'] = data}"/>
-                        </template>
-                    </SplitPane>
-                </template>
-            </SplitPane>
-        </div>
+      </div>
     </div>
+    <el-divider />
+    <div :style="{height: panelHeight + 'px'}">
+      <SplitPane :min-percent="10" :default-percent="panelPercentVertical" split="vertical" @resize="handleVerticalSplitResize">
+        <template slot="paneL">
+          <div ref="container" />
+        </template>
+        <template slot="paneR">
+          <SplitPane :min-percent="10" :default-percent="panelPercentHorizontal" split="horizontal" @resize="handleHorizontalSplitResize">
+            <template slot="paneL">
+              <RequestPanel
+                ref="editerRequestPanel"
+                :header-data="headerData"
+                :request-body="requestBody"
+                :hide-run-btn="true"
+                @onHeaderChange="(data)=> { this.headerData = data}"
+                @onRequestBodyChange="(data)=> { this.requestBody = data}"
+              />
+            </template>
+            <template slot="paneR">
+              <ResponsePanel
+                ref="editerResponsePanel"
+                :response-body="responseBody"
+                :on-edit-page="true"
+                :result-type="responseType"
+                :result-structure="optionData['resultStructure']"
+                :response-format="optionData['responseFormat']"
+                @onResponseBodyChange="(data)=> { this.responseBody = data}"
+                @onResultStructureChange="(data) => {this.optionData['resultStructure'] = data}"
+                @onResultStructureFormatChange="(data) => {this.optionData['responseFormat'] = data}"
+              />
+            </template>
+          </SplitPane>
+        </template>
+      </SplitPane>
+    </div>
+  </div>
 </template>
 <script>
     import EditerActions from '../components/EditerActions';
     import RequestPanel from '../components/RequestPanel';
     import ResponsePanel from '../components/ResponsePanel';
-    import request from "../utils/request";
-    import {apiBaseUrl, ApiUrl} from "../utils/api-const";
-    import {errorBox, statusTagInfo} from "../utils/utils"
-    import {defineMonacoEditorFoo, loadMonacoEditorSelfTheme} from "../utils/editorUtils"
+    import request from '../utils/request';
+    import {apiBaseUrl, ApiUrl} from '../utils/api-const';
+    import {errorBox, statusTagInfo} from '../utils/utils'
+    import {defineMonacoEditorFoo, loadMonacoEditorSelfTheme} from '../utils/editorUtils'
 
-    let defaultOptionData = {
+    const defaultOptionData = {
         resultStructure: true
     };
 
     export default {
         components: {
             RequestPanel, ResponsePanel, EditerActions
+        },
+        data() {
+            return {
+                apiInfo: {
+                    apiID: 1,
+                    select: 'POST',
+                    apiPath: '',
+                    comment: '',
+                    apiStatus: 0,
+                    codeType: 'DataQL',
+                    codeValue: '// a new Query.\nreturn ${message};',
+                    editorSubmitted: true,
+                },
+                //
+                tagInfo: {css: 'info', title: 'Editor'},
+                defaultComment: "There is no comment, Click 'info' icon to add comment",
+                showComment: false,
+                newCode: false,
+                apiBaseUrl: apiBaseUrl('/'),
+                //
+                //
+                headerData: [],
+                optionData: defaultOptionData,
+                requestBody: '{"message":"Hello DataQL."}',
+                responseBody: '"empty."',
+                responseType: 'json',
+                //
+                //
+                panelPercentVertical: 50,
+                panelPercentHorizontal: 50,
+                panelHeight: '100%'
+            }
+        },
+        watch: {
+            'headerData': {
+                handler(val, oldVal) {
+                    this.handleCommentOnchange();
+                },
+                deep: true
+            },
+            'requestBody': {
+                handler(val, oldVal) {
+                    this.handleCommentOnchange();
+                }
+            },
+            'optionData': {
+                handler(val, oldVal) {
+                    this.handleCommentOnchange();
+                },
+                deep: true
+            }
         },
         mounted() {
             if (this.$route.path.startsWith('/new')) {
@@ -120,39 +181,20 @@
         beforeDestroy() {
             window.removeEventListener('resize', this._resize);
         },
-        watch: {
-            'headerData': {
-                handler(val, oldVal) {
-                    this.handleCommentOnchange();
-                },
-                deep: true
-            },
-            'requestBody': {
-                handler(val, oldVal) {
-                    this.handleCommentOnchange();
-                }
-            },
-            'optionData': {
-                handler(val, oldVal) {
-                    this.handleCommentOnchange();
-                },
-                deep: true
-            }
-        },
         methods: {
             // 页面大小调整
             layoutMonacoEditor() {
                 this.panelHeight = document.documentElement.clientHeight - 88;
-                let monacoEditorWidth = (document.documentElement.clientWidth * (this.panelPercentVertical / 100))
+                const monacoEditorWidth = (document.documentElement.clientWidth * (this.panelPercentVertical / 100))
                 this.monacoEditor.layout({
                     height: this.panelHeight,
                     width: monacoEditorWidth
                 });
                 //
                 this.panelPercent = this.panelPercentHorizontal;
-                let dataNum = this.panelPercentHorizontal / 100;
-                let heightSize = document.documentElement.clientHeight - 88;
-                let widthSize = document.documentElement.clientWidth - monacoEditorWidth - 2;
+                const dataNum = this.panelPercentHorizontal / 100;
+                const heightSize = document.documentElement.clientHeight - 88;
+                const widthSize = document.documentElement.clientWidth - monacoEditorWidth - 2;
                 this.$refs.editerRequestPanel.doLayout(heightSize * dataNum, widthSize);
                 this.$refs.editerResponsePanel.doLayout(heightSize * (1 - dataNum), widthSize);
             },
@@ -201,18 +243,18 @@
             // 加载Api的基本信息
             loadApiDetail() {
                 const self = this;
-                request(ApiUrl.apiDetail + "?id=" + self.apiInfo.apiID, {
-                    "method": "GET"
+                request(ApiUrl.apiDetail + '?id=' + self.apiInfo.apiID, {
+                    'method': 'GET'
                 }, response => {
-                    let data = response.data.result;
+                    const data = response.data.result;
                     self.apiInfo.select = data.select;
                     self.apiInfo.apiPath = data.path;
                     self.apiInfo.comment = data.apiComment;
                     self.apiInfo.apiStatus = data.status;
                     self.apiInfo.codeType = data.codeType;
-                    self.apiInfo.codeValue = data.codeInfo.codeValue || "";
+                    self.apiInfo.codeValue = data.codeInfo.codeValue || '';
                     //
-                    self.requestBody = data.codeInfo.requestBody || "{}";
+                    self.requestBody = data.codeInfo.requestBody || '{}';
                     self.headerData = data.codeInfo.headerData || [];
                     self.optionData = {
                         ...defaultOptionData,
@@ -267,14 +309,14 @@
             },
             onRecover(historyId) {
                 const self = this;
-                request(ApiUrl.apiHistoryInfo + "?historyId=" + historyId, {
-                    "method": "GET"
+                request(ApiUrl.apiHistoryInfo + '?historyId=' + historyId, {
+                    'method': 'GET'
                 }, response => {
-                    let data = response.data.result;
+                    const data = response.data.result;
                     self.apiInfo.select = data.select;
                     self.apiInfo.codeType = data.codeType;
-                    self.apiInfo.codeValue = data.codeInfo.codeValue || "";
-                    self.requestBody = data.codeInfo.requestBody || "{}";
+                    self.apiInfo.codeValue = data.codeInfo.codeValue || '';
+                    self.requestBody = data.codeInfo.requestBody || '{}';
                     self.headerData = data.codeInfo.headerData || [];
                     self.optionData = {
                         ...defaultOptionData,
@@ -292,52 +334,20 @@
             },
             onDelete(apiId) {
                 const self = this;
-                request(ApiUrl.deleteApi + "?id=" + apiId, {
-                    "method": "POST",
-                    "data": {
-                        "id": apiId,
+                request(ApiUrl.deleteApi + '?id=' + apiId, {
+                    'method': 'POST',
+                    'data': {
+                        'id': apiId,
                     }
                 }, response => {
                     if (response.data.result) {
                         self.$message({message: 'Api Delete finish.', type: 'success'});
-                        this.$router.push("/");
+                        this.$router.push('/');
                     } else {
                         errorBox('result is false.');
                     }
                 });
             },
-        },
-        data() {
-            return {
-                apiInfo: {
-                    apiID: 1,
-                    select: 'POST',
-                    apiPath: '',
-                    comment: '',
-                    apiStatus: 0,
-                    codeType: 'DataQL',
-                    codeValue: '// a new Query.\nreturn ${message};',
-                    editorSubmitted: true,
-                },
-                //
-                tagInfo: {css: 'info', title: 'Editor'},
-                defaultComment: "There is no comment, Click 'info' icon to add comment",
-                showComment: false,
-                newCode: false,
-                apiBaseUrl: apiBaseUrl('/'),
-                //
-                //
-                headerData: [],
-                optionData: defaultOptionData,
-                requestBody: '{"message":"Hello DataQL."}',
-                responseBody: '"empty."',
-                responseType: 'json',
-                //
-                //
-                panelPercentVertical: 50,
-                panelPercentHorizontal: 50,
-                panelHeight: '100%'
-            }
         }
     }
 </script>

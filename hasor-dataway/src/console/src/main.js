@@ -8,13 +8,13 @@ import 'element-ui/lib/theme-chalk/index.css'
 import './assets/public.css'
 
 //
-let lastCheckVersion = localStorage.getItem("lastCheckVersion");
+const lastCheckVersion = localStorage.getItem('lastCheckVersion');
 if (lastCheckVersion === undefined || lastCheckVersion === null) {
-    localStorage.setItem("lastCheckVersion", window.DATAWAY_VERSION);
+    localStorage.setItem('lastCheckVersion', window.DATAWAY_VERSION);
 }
-let lastCheckVersionDialogRemember = localStorage.getItem("lastCheckVersionDialogRemember");
+const lastCheckVersionDialogRemember = localStorage.getItem('lastCheckVersionDialogRemember');
 if (lastCheckVersionDialogRemember === undefined || lastCheckVersionDialogRemember === null) {
-    localStorage.setItem("lastCheckVersionDialogRemember", "false");
+    localStorage.setItem('lastCheckVersionDialogRemember', 'false');
 }
 
 //

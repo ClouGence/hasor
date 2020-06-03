@@ -1,6 +1,5 @@
 import Vue from 'vue';
 
-
 /***/
 const statusTagInfo = (status) => {
     if (status === 0) {
@@ -40,13 +39,13 @@ const errorBox = (content) => {
 };
 
 const fixGetRequestBody = (httpMethod, requestBody) => {
-    let doRunParam = JSON.parse(requestBody);
+    const doRunParam = JSON.parse(requestBody);
     if (httpMethod !== 'GET') {
         return doRunParam;
     }
     //
-    let newRunParam = {};
-    for (let key in doRunParam) {
+    const newRunParam = {};
+    for (const key in doRunParam) {
         if (doRunParam[key] !== null) {
             newRunParam[key] = doRunParam[key].toString();
         }
@@ -67,8 +66,8 @@ const checkRequestBody = (httpMethod, codeType, requestBody) => {
             errorBox('In GET request parameters must be Map.');
             return false;
         }
-        for (let key in doRunParam) {
-            let typeStr = Object.prototype.toString.call(doRunParam[key]);
+        for (const key in doRunParam) {
+            const typeStr = Object.prototype.toString.call(doRunParam[key]);
             if (typeStr === '[object Object]' || typeStr === '[object Array]') {
                 errorBox('In GET can\'t have complex structure parameters.');
                 return false;
@@ -79,7 +78,7 @@ const checkRequestBody = (httpMethod, codeType, requestBody) => {
 };
 
 const headerData = (oriData) => {
-    let requestHeaderData = {};
+    const requestHeaderData = {};
     for (let i = 0; i < oriData.length; i++) {
         if (oriData[i].checked && oriData[i].name !== '') {
             requestHeaderData[oriData[i].name] = encodeURIComponent(oriData[i].value);
@@ -92,19 +91,19 @@ const formatDate = (date, fmt = 'yyyyMMdd-hhmmss.S') => {
     if (typeof (date) === 'number') {
         date = new Date(date)
     }
-    let o = {
-        "M+": date.getMonth() + 1, //月份
-        "d+": date.getDate(), //日
-        "h+": date.getHours(), //小时
-        "m+": date.getMinutes(), //分
-        "s+": date.getSeconds(), //秒
-        "q+": Math.floor((date.getMonth() + 3) / 3), //季度
-        "S": date.getMilliseconds() //毫秒
+    const o = {
+        'M+': date.getMonth() + 1, // 月份
+        'd+': date.getDate(), // 日
+        'h+': date.getHours(), // 小时
+        'm+': date.getMinutes(), // 分
+        's+': date.getSeconds(), // 秒
+        'q+': Math.floor((date.getMonth() + 3) / 3), // 季度
+        'S': date.getMilliseconds() // 毫秒
     }
-    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length))
-    for (let k in o) {
-        if (new RegExp("(" + k + ")").test(fmt)) {
-            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)))
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+    for (const k in o) {
+        if (new RegExp('(' + k + ')').test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)))
         }
     }
     return fmt

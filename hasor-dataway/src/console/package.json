@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "eslint --ext .js,.vue src",
+    "lint-fix": "eslint --ext .js,.vue src --fix"
   },
   "dependencies": {
     "axios": "^0.19.2",
@@ -15,7 +16,19 @@
     "vue": "^2.6.11",
     "vue-router": "^3.1.5",
     "vue-clipboard2": "^0.3.1",
+    "vue-codemirror": "^4.0.6",
     "vue-splitpane": "^1.0.6"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,vue}": [
+      "eslint --fix",
+      "git add"
+    ]
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.2.0",
@@ -25,6 +38,8 @@
     "babel-eslint": "^10.0.3",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.1.2",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.7",
     "mocker-api": "^1.13.1",
     "mockjs": "^1.1.0",
     "monaco-editor-webpack-plugin": "^1.9.0",

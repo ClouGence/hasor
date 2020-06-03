@@ -2,12 +2,12 @@ import Vue from 'vue';
 import axios from 'axios';
 
 function decodeUtf8(bytes) {
-    let bufferTypes = new Uint8Array(bytes);
-    let tempString = "";
+    const bufferTypes = new Uint8Array(bytes);
+    let tempString = '';
     for (let i = 0; i < bufferTypes.length; ++i) {
         let hexDat = bufferTypes[i].toString(16);
         if (hexDat.length === 1) {
-            hexDat = "0" + hexDat;
+            hexDat = '0' + hexDat;
         }
         tempString += '%' + hexDat;
     }
@@ -16,7 +16,7 @@ function decodeUtf8(bytes) {
 
 function arrayBufferFromBlob(bytesBlob) {
     return new Promise(function (resolve, reject) {
-        let reader = new FileReader()
+        const reader = new FileReader()
         reader.readAsArrayBuffer(bytesBlob)
         reader.onload = function () {
             resolve(this.result)
@@ -84,8 +84,8 @@ export default function request(apiURL, options, successCallback, errorCallback)
         withCredentials: true,
         responseType: 'blob'
     }).then(async (response) => {
-        let contentType = "";
-        for (let key in response.headers) {
+        let contentType = '';
+        for (const key in response.headers) {
             if (key.toLowerCase() === 'x-interfaceui-contexttype') {
                 contentType = response.headers[key];
                 contentType = contentType.toLowerCase();
@@ -93,7 +93,7 @@ export default function request(apiURL, options, successCallback, errorCallback)
             }
         }
         if (contentType === undefined || contentType == null || contentType === '') {
-            if (response.data.type === "application/json") {
+            if (response.data.type === 'application/json') {
                 contentType = 'json';
             }
         }
@@ -115,20 +115,20 @@ export default function request(apiURL, options, successCallback, errorCallback)
         } else {
             // bytes
             arrayBufferFromBlob(response.data).then(arrayBuffer => {
-                let bufferTypes = new Uint8Array(arrayBuffer);
-                let tempString = "";
+                const bufferTypes = new Uint8Array(arrayBuffer);
+                let tempString = '';
                 let n = 0;
                 for (let i = 0; i < bufferTypes.length; ++i) {
                     let hexDat = bufferTypes[i].toString(16).toUpperCase();
                     if (hexDat.length === 1) {
-                        hexDat = "0" + hexDat;
+                        hexDat = '0' + hexDat;
                     }
                     if (n < 15) {
                         n++;
-                        tempString = tempString + hexDat + " ";
+                        tempString = tempString + hexDat + ' ';
                     } else {
                         n = 0;
-                        tempString = tempString + hexDat + "\n";
+                        tempString = tempString + hexDat + '\n';
                     }
                 }
                 response.dataTypeMode = 'bytes';

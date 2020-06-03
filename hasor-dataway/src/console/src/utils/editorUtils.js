@@ -1,7 +1,7 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 const monacoDefaultOptions = {
-    value: "",
+    value: '',
     language: 'javascript',
     theme: 'vs', // vs, hc-black, or vs-dark
     editorOptions: {
@@ -30,7 +30,7 @@ const loadMonacoEditorSelfTheme = () => {
     // monaco.editor.setTheme('selfTheme');
 }
 const defineMonacoEditorFoo = (container, options) => {
-    let newEditor = monaco.editor.create(container, {
+    const newEditor = monaco.editor.create(container, {
         ...monacoDefaultOptions,
         ...options
     });
