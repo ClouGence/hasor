@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 /**
  * 负责UI界面调用的权限判断。
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2020-03-20
+ * @version : 2020-06-03
  */
 public class InterfaceAuthorizationFilter implements InvokerFilter {
     private SpiTrigger     spiTrigger     = null;

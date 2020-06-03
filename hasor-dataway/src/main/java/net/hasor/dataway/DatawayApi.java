@@ -19,9 +19,9 @@ import net.hasor.dataql.Hints;
 import java.util.Map;
 
 /**
- * 程序层面调用 API。
+ * API 基础信息
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2020-04-19
+ * @version : 2020-06-03
  */
 public interface DatawayApi {
     public String getApiID();

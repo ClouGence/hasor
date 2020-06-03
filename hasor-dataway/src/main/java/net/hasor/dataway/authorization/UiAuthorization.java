@@ -17,7 +17,7 @@ package net.hasor.dataway.authorization;
 /**
  * 界面操作权限点。
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2020-03-20
+ * @version : 2020-06-03
  */
 public enum UiAuthorization {
     ApiList,    // 列表

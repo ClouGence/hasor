@@ -22,7 +22,7 @@ import java.util.EventListener;
 /**
  * 权限判断
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2020-06-02
+ * @version : 2020-06-03
  */
 public interface AuthorizationChainSpi extends EventListener {
     /**

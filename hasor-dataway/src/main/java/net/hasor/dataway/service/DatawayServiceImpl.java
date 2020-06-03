@@ -68,6 +68,7 @@ public class DatawayServiceImpl implements DatawayService {
         if (apiId == null) {
             return null;
         }
+        //
         QueryResult queryResult = new ApiInfoSampleQuery(this.dataQL).execute(new HashMap<String, String>() {{
             put("apiId", apiId);
         }});
