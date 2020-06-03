@@ -24,6 +24,8 @@ import java.util.Map;
  * @version : 2020-04-19
  */
 public interface DatawayService {
+    public static final String VERSION = "4.1.9";
+
     /** 执行配置的接口。*/
     public Object invokeApi(String method, String apiPath, Map<String, Object> jsonParam) throws Throwable;
 
@@ -35,4 +37,6 @@ public interface DatawayService {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
+
+    public DatawayApi getApiById(String apiId) throws Throwable;
 }

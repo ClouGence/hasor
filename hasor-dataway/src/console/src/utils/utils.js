@@ -1,6 +1,5 @@
 import Vue from 'vue';
 
-
 /***/
 const statusTagInfo = (status) => {
     if (status === 0) {

@@ -411,3 +411,18 @@ SerializationChainSpi结果序列化
 接口发布之后调用这个接口就可以看到一个配置的 API 将返回值顺利的渲染成了 图片。
 
 .. image:: ../_static/response-serialization-2.png
+
+
+AuthorizationChainSpi界面操作权限检查
+---------------------------------------
+``AuthorizationChainSpi`` 是 4.1.9 加入的新特性。在此之前针对界面的权限校验，通常需要通过 InvokerFilter 接口来辅助完成。
+有了 AuthorizationChainSpi 之后就可以更加简单方便的对界面操作进行权限控制了。
+
+例如：
+
+.. code-block:: java
+    :linenos:
+
+    apiBinder.bindSpiListener(AuthorizationChainSpi.class, (checkType, apiId, defaultCheck) -> {
+        return false; // 返回 true 表示权限校验通过、返回 false 表示权限校验失败。
+    });

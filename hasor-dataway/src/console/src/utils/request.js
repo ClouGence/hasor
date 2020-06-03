@@ -1,5 +1,20 @@
 import Vue from 'vue';
 import axios from 'axios';
+import {errorBox} from './utils';
+
+const codeMessage = {
+    200: 'ok.',
+    401: 'no permission.',
+    404: 'not found.'
+};
+
+const showMessage = res => {
+    let response = res.response;
+    let errorText = codeMessage[response.status] || response.statusText;
+    let url = response.config.url.replace("//", "_");
+    url = url.substr(url.indexOf("/"));
+    errorBox(`${response.status}: ${errorText} (${url})`);
+};
 
 function decodeUtf8(bytes) {
     let bufferTypes = new Uint8Array(bytes);
@@ -60,7 +75,8 @@ export default function request(apiURL, options, successCallback, errorCallback)
         }
     }
     //
-    errorCallback = (errorCallback === null || errorCallback === undefined) ? () => {
+    errorCallback = (errorCallback === null || errorCallback === undefined) ? (errorMessage) => {
+        showMessage(errorMessage);
     } : errorCallback;
     successCallback = (successCallback === null || successCallback === undefined) ? () => {
     } : successCallback;

@@ -20,9 +20,12 @@ import net.hasor.core.Type;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ObjectModel;
+import net.hasor.dataway.DatawayApi;
 import net.hasor.dataway.DatawayService;
+import net.hasor.dataway.daos.ApiInfoSampleQuery;
 import net.hasor.dataway.daos.ReleaseDetailQuery;
 import net.hasor.dataway.spi.ApiInfo;
+import net.hasor.dataway.spi.CallSource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +53,7 @@ public class DatawayServiceImpl implements DatawayService {
             put("apiPath", apiPath);
         }});
         ObjectModel dataModel = (ObjectModel) queryResult.getData();
+        apiInfo.setCallSource(CallSource.Internal);
         apiInfo.setApiID(dataModel.getValue("apiID").asString());
         apiInfo.setReleaseID(dataModel.getValue("releaseID").asString());
         apiInfo.setMethod(httpMethod);
@@ -58,5 +62,21 @@ public class DatawayServiceImpl implements DatawayService {
         //
         String script = dataModel.getValue("script").asString();
         return this.callService.doCall(apiInfo, param -> script);
+    }
+
+    public DatawayApi getApiById(String apiId) throws Throwable {
+        if (apiId == null) {
+            return null;
+        }
+        QueryResult queryResult = new ApiInfoSampleQuery(this.dataQL).execute(new HashMap<String, String>() {{
+            put("apiId", apiId);
+        }});
+        ObjectModel unwrap = (ObjectModel) queryResult.getData();
+        ApiInfo apiInfo = new ApiInfo();
+        apiInfo.setApiID(unwrap.getValue("id").asString());
+        apiInfo.setMethod(unwrap.getValue("select").asString());
+        apiInfo.setApiPath(unwrap.getValue("path").asString());
+        apiInfo.setOptionMap(unwrap.getObject("optionData").unwrap());
+        return apiInfo;
     }
 }

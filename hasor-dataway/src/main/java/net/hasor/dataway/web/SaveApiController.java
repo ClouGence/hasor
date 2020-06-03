@@ -17,6 +17,8 @@ package net.hasor.dataway.web;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ObjectModel;
+import net.hasor.dataway.authorization.RefAuthorization;
+import net.hasor.dataway.authorization.UiAuthorization;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiInfoQuery;
@@ -41,6 +43,7 @@ import java.util.Map;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/save-api")
+@RefAuthorization(UiAuthorization.ApiSave)
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class SaveApiController extends BasicController {
     @Inject

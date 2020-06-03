@@ -15,6 +15,8 @@
  */
 package net.hasor.dataway.web;
 import net.hasor.dataql.QueryResult;
+import net.hasor.dataway.authorization.RefAuthorization;
+import net.hasor.dataway.authorization.UiAuthorization;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.DeleteApiQuery;
@@ -36,6 +38,7 @@ import java.util.Map;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/delete")
+@RefAuthorization(UiAuthorization.ApiDelete)
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class DeleteController extends BasicController {
     @Post

@@ -15,6 +15,8 @@
  */
 package net.hasor.dataway.web;
 import net.hasor.dataql.QueryResult;
+import net.hasor.dataway.authorization.RefAuthorization;
+import net.hasor.dataway.authorization.UiAuthorization;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiHistoryGetQuery;
@@ -32,10 +34,11 @@ import java.util.HashMap;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/get-history")
+@RefAuthorization(UiAuthorization.ApiHistory)
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class ApiHistoryGetController extends BasicController {
     @Get
-    public Result<Object> getHistory(@QueryParameter("historyId") String historyId) throws IOException {
+    public Result<Object> getHistory(@QueryParameter("id") String apiId, @QueryParameter("historyId") String historyId) throws IOException {
         QueryResult queryResult = new ApiHistoryGetQuery(this.dataQL).execute(new HashMap<String, String>() {{
             put("historyId", historyId);
         }});

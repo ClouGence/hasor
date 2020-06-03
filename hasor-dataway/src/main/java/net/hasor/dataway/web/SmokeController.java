@@ -18,6 +18,8 @@ import com.alibaba.fastjson.JSON;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataql.domain.ObjectModel;
+import net.hasor.dataway.authorization.RefAuthorization;
+import net.hasor.dataway.authorization.UiAuthorization;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.daos.ApiDetailQuery;
@@ -26,6 +28,7 @@ import net.hasor.dataway.schema.types.Type;
 import net.hasor.dataway.schema.types.TypesUtils;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
+import net.hasor.dataway.spi.CallSource;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
@@ -46,6 +49,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/smoke")
+@RefAuthorization(UiAuthorization.ApiPublish)
 public class SmokeController extends BasicController {
     protected static Logger         logger = LoggerFactory.getLogger(SmokeController.class);
     @Inject
@@ -65,7 +69,7 @@ public class SmokeController extends BasicController {
         //
         // .获取API信息
         ApiInfo apiInfo = new ApiInfo();
-        apiInfo.setPerform(true);
+        apiInfo.setCallSource(CallSource.InterfaceUI);
         apiInfo.setApiID(apiId);
         apiInfo.setReleaseID("");
         apiInfo.setMethod(objectModel.getValue("select").asString());

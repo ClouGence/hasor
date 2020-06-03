@@ -15,6 +15,7 @@
  */
 package net.hasor.dataway.spi;
 import net.hasor.dataql.Hints;
+import net.hasor.dataway.DatawayApi;
 
 import java.util.Map;
 
@@ -23,8 +24,8 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-19
  */
-public class ApiInfo {
-    private boolean             perform;        // 本次调用是否为perform
+public class ApiInfo implements DatawayApi {
+    private CallSource          callSource;        // 本次调用是否perform
     private String              apiID;          // API ID
     private String              releaseID;      // 发布的版本ID
     private String              method;         // Http Method
@@ -33,12 +34,17 @@ public class ApiInfo {
     private Map<String, Object> optionMap;      // 选项参数
     private Hints               prepareHint;    // 预先定义的 Hint
 
+    @Deprecated
     public boolean isPerform() {
-        return perform;
+        return CallSource.InterfaceUI == this.callSource;
     }
 
-    public void setPerform(boolean perform) {
-        this.perform = perform;
+    public CallSource getCallSource() {
+        return callSource;
+    }
+
+    public void setCallSource(CallSource callSource) {
+        this.callSource = callSource;
     }
 
     public String getApiID() {

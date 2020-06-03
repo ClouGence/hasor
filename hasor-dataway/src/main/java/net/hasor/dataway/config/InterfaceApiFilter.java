@@ -22,6 +22,7 @@ import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataway.daos.ReleaseDetailQuery;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
+import net.hasor.dataway.spi.CallSource;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
@@ -86,7 +87,7 @@ class InterfaceApiFilter implements InvokerFilter {
         //
         // .查询接口数据
         ApiInfo apiInfo = new ApiInfo();
-        apiInfo.setPerform(false);
+        apiInfo.setCallSource(CallSource.External);
         String script = null;
         try {
             QueryResult queryResult = new ReleaseDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{

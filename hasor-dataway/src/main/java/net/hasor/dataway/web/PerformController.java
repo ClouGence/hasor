@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
+import net.hasor.dataway.authorization.RefAuthorization;
+import net.hasor.dataway.authorization.UiAuthorization;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
+import net.hasor.dataway.spi.CallSource;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
@@ -32,6 +35,7 @@ import java.util.Map;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/perform")
+@RefAuthorization(UiAuthorization.ApiPerform)
 public class PerformController extends BasicController {
     @Inject
     private ApiCallService apiCallService;
@@ -44,7 +48,7 @@ public class PerformController extends BasicController {
         //
         // .准备参数
         ApiInfo apiInfo = new ApiInfo();
-        apiInfo.setPerform(true);
+        apiInfo.setCallSource(CallSource.InterfaceUI);
         apiInfo.setApiID(apiId);
         apiInfo.setReleaseID("");
         apiInfo.setMethod(requestBody.get("select").toString());

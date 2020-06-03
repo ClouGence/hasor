@@ -13,25 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.web;
-import net.hasor.core.spi.SpiTrigger;
-import net.hasor.dataql.DataQL;
-import net.hasor.web.WebController;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
-
+package net.hasor.dataway.authorization;
 /**
- * 基础
+ * 界面操作权限点。
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2020-03-24
+ * @version : 2020-03-20
  */
-public abstract class BasicController extends WebController {
-    @Inject
-    @Named(ISOLATION_CONTEXT)
-    protected DataQL     dataQL;
-    @Inject
-    protected SpiTrigger spiTrigger;
+public enum UiAuthorization {
+    ApiList,    // 列表
+    ApiHistory, // 历史
+    ApiSave,    // 保存
+    ApiPerform, // 执行
+    ApiPublish, // 发布
+    ApiDisable, // 禁用
+    ApiDelete,  // 删除
 }
