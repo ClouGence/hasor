@@ -13,25 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.web;
-import net.hasor.core.spi.SpiTrigger;
-import net.hasor.dataql.DataQL;
-import net.hasor.web.WebController;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
+package net.hasor.utils;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * 基础
+ * 简单的基于 LinkedHashMap 的 LRU 实现
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2020-03-24
+ * @version : 2020-04-19
  */
-public abstract class BasicController extends WebController {
-    @Inject
-    @Named(ISOLATION_CONTEXT)
-    protected DataQL     dataQL;
-    @Inject
-    protected SpiTrigger spiTrigger;
+public class SimpleLRU<K, V> extends LinkedHashMap<K, V> {
+    private final int MAX_CACHE_SIZE;
+
+    public SimpleLRU(int cacheSize) {
+        super((int) Math.ceil(cacheSize / 0.75) + 1, 0.75f, true);
+        MAX_CACHE_SIZE = cacheSize;
+    }
+
+    @Override
+    protected boolean removeEldestEntry(Map.Entry eldest) {
+        return size() > MAX_CACHE_SIZE;
+    }
 }

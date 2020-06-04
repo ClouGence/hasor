@@ -309,7 +309,7 @@
             },
             onRecover(historyId) {
                 const self = this;
-                request(ApiUrl.apiHistoryInfo + '?historyId=' + historyId, {
+                request(ApiUrl.apiHistoryInfo + '?id=' + this.apiInfo.apiID + '&historyId=' + historyId,, {
                     'method': 'GET'
                 }, response => {
                     const data = response.data.result;

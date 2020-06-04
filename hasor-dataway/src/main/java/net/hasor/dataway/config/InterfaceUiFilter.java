@@ -15,6 +15,7 @@
  */
 package net.hasor.dataway.config;
 import com.alibaba.fastjson.JSON;
+import net.hasor.dataway.DatawayService;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.FilenameUtils;
@@ -35,8 +36,6 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static net.hasor.dataway.config.DatawayModule.fixUrl;
 
 /**
  * 负责UI界面资源的请求响应。
@@ -61,6 +60,10 @@ class InterfaceUiFilter implements InvokerFilter {
         this.resourceSize = new ConcurrentHashMap<>();
     }
 
+    private static String fixUrl(String url) {
+        return url.replaceAll("/+", "/");
+    }
+
     static {
         String version = null;
         try {
@@ -69,7 +72,7 @@ class InterfaceUiFilter implements InvokerFilter {
             properties.load(inputStream);
             version = properties.getProperty("version");
         } catch (Exception e) {
-            version = "4.1.8";
+            version = DatawayService.VERSION;
         }
         datawayVersion = version;
     }

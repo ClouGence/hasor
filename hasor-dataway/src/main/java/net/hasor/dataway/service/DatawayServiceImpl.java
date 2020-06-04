@@ -17,12 +17,15 @@ package net.hasor.dataway.service;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.core.Type;
+import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ObjectModel;
+import net.hasor.dataway.DatawayApi;
 import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.daos.ReleaseDetailQuery;
 import net.hasor.dataway.spi.ApiInfo;
+import net.hasor.dataway.spi.CallSource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +43,10 @@ public class DatawayServiceImpl implements DatawayService {
     private DataQL         dataQL;
     @Inject
     private ApiCallService callService;
+    @Inject
+    private ApiServiceImpl apiService;
+    @Inject
+    private SpiTrigger     spiTrigger;
 
     @Override
     public Object invokeApi(String method, String apiPath, Map<String, Object> jsonParam) throws Throwable {
@@ -50,6 +57,7 @@ public class DatawayServiceImpl implements DatawayService {
             put("apiPath", apiPath);
         }});
         ObjectModel dataModel = (ObjectModel) queryResult.getData();
+        apiInfo.setCallSource(CallSource.Internal);
         apiInfo.setApiID(dataModel.getValue("apiID").asString());
         apiInfo.setReleaseID(dataModel.getValue("releaseID").asString());
         apiInfo.setMethod(httpMethod);
@@ -58,5 +66,9 @@ public class DatawayServiceImpl implements DatawayService {
         //
         String script = dataModel.getValue("script").asString();
         return this.callService.doCall(apiInfo, param -> script);
+    }
+
+    public DatawayApi getApiById(String apiId) throws Throwable {
+        return this.apiService.getApiById(apiId);
     }
 }

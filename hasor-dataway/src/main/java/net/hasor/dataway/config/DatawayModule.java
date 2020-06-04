@@ -20,6 +20,7 @@ import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryApiBinder;
 import net.hasor.dataql.fx.db.runsql.SqlFragment;
 import net.hasor.dataway.DatawayService;
+import net.hasor.dataway.authorization.InterfaceAuthorizationFilter;
 import net.hasor.dataway.service.DatawayServiceImpl;
 import net.hasor.dataway.web.*;
 import net.hasor.db.jdbc.ConnectionCallback;
@@ -111,7 +112,12 @@ public class DatawayModule implements WebModule {
             MappingToUrl toUrl = aClass.getAnnotation(MappingToUrl.class);
             apiBinder.mappingTo(fixUrl(uiBaseUri + "/" + toUrl.value())).with(aClass);
         }
+        apiBinder.filter(fixUrl(uiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceAuthorizationFilter(uiBaseUri));
         apiBinder.filter(fixUrl(uiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceUiFilter(apiBaseUri, uiBaseUri));
+    }
+
+    private static String fixUrl(String url) {
+        return url.replaceAll("/+", "/");
     }
 
     @Override
@@ -149,10 +155,6 @@ public class DatawayModule implements WebModule {
         //
         logger.info("dataway dbMapping {}", dataBaseType.mappingType());
         appContext.findBindingBean(ISOLATION_CONTEXT, DataQL.class).addShareVarInstance("dbMapping", dataBaseType.mappingType().toLowerCase());
-    }
-
-    static String fixUrl(String url) {
-        return url.replaceAll("/+", "/");
     }
 
     public static class DbInfo {

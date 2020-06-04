@@ -15,6 +15,8 @@
  */
 package net.hasor.dataway.web;
 import net.hasor.dataql.QueryResult;
+import net.hasor.dataway.authorization.RefAuthorization;
+import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.ApiInfoQuery;
@@ -32,6 +34,7 @@ import java.util.HashMap;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/api-info")
+@RefAuthorization(AuthorizationType.ApiInfo)
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class ApiInfoController extends BasicController {
     @Get
