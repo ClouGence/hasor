@@ -2,18 +2,17 @@ const contextPath = () => {
     return (window.CONTEXT_PATH === '{CONTEXT_PATH}') ? '' : window.CONTEXT_PATH;
 };
 const apiBaseUrl = (oriUrl) => {
-    let baseUrl = (window.API_BASE_URL === '{API_BASE_URL}') ? '/' : window.API_BASE_URL;
-    return (baseUrl + oriUrl).replace("//", "/");
+    const baseUrl = (window.API_BASE_URL === '{API_BASE_URL}') ? '/' : window.API_BASE_URL;
+    return (baseUrl + oriUrl).replace('//', '/');
 };
 const adminBaseUrl = (oriUrl) => {
-    let baseUrl = (window.ADMIN_BASE_URL === '{ADMIN_BASE_URL}') ? '/' : window.ADMIN_BASE_URL;
-    return (baseUrl + oriUrl).replace("//", "/");
+    const baseUrl = (window.ADMIN_BASE_URL === '{ADMIN_BASE_URL}') ? '/' : window.ADMIN_BASE_URL;
+    return (baseUrl + oriUrl).replace('//', '/');
 };
-
 
 // 通用查 配置
 const ApiUrl = {
-    checkVersion: "http://apis.hasor.net/projects/hasor-dataway/checkVersion",
+    checkVersion: 'http://apis.hasor.net/projects/hasor-dataway/checkVersion',
     //
     apiInfo: contextPath() + adminBaseUrl(`/api/api-info`),
     apiList: contextPath() + adminBaseUrl(`/api/api-list`),

@@ -1,5 +1,5 @@
 <template>
-    <InterfaceEdit/>
+  <InterfaceEdit />
 </template>
 <script>
     import InterfaceEdit from './InterfaceEdit'

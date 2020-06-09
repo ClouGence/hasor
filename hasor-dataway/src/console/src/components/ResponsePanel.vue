@@ -1,59 +1,78 @@
 <template>
-    <div class="responsePanel">
-        <div class="response-btns">
-            <el-tooltip class="item" effect="dark" content="use Result Structure" placement="top-end">
-                <el-checkbox style="padding: 3px 5px;z-index: 1000" v-model="resultStructureCopy" v-if="onEditPage">Structure</el-checkbox>
-            </el-tooltip>
-            <el-button-group>
-                <el-tooltip class="item" effect="dark" content="Copy to Clipboard" placement="top-end">
-                    <el-button class="z-index-top" size="mini" round
-                               v-clipboard:copy="responseBodyCopy"
-                               v-clipboard:success="handleJsonResultCopySuccess"
-                               v-clipboard:error="handleJsonResultCopyError">
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#iconcopy"></use>
-                        </svg>
-                    </el-button>
-                </el-tooltip>
-                <el-tooltip class="item" effect="dark" content="Format Result" placement="top-end">
-                    <el-button class="z-index-top" size="mini" round
-                               @click.native='handleJsonResultFormatter' v-if="panelActiveName ==='result_view' && resultType ==='json'">
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#iconformat"></use>
-                        </svg>
-                    </el-button>
-                </el-tooltip>
-                <el-tooltip class="item" effect="dark" content="Save As Download" placement="top-end">
-                    <el-button class="z-index-top" size="mini" round
-                               @click.native='handleResultDownload' v-if="panelActiveName ==='result_view' && resultType ==='bytes'">
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#icondownload"></use>
-                        </svg>
-                    </el-button>
-                </el-tooltip>
-                <el-tooltip class="item" effect="dark" content="Format Structure" placement="top-end">
-                    <el-button class="z-index-top" size="mini" round
-                               @click.native='handleStructureFormatter' v-if="onEditPage && panelActiveName ==='result_format'">
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#iconformat"></use>
-                        </svg>
-                    </el-button>
-                </el-tooltip>
-            </el-button-group>
-        </div>
-        <el-tabs class="response-tabs" type="card" v-model="panelActiveName">
-            <el-tab-pane name="result_view" label="Result">
-                <div ref="responsePanel"/>
-            </el-tab-pane>
-            <el-tab-pane name="result_format" label="Structure" v-if="onEditPage" :disabled="!resultStructureCopy">
-                <div ref="responseFormatPanel"/>
-            </el-tab-pane>
-        </el-tabs>
+  <div class="responsePanel">
+    <div class="response-btns">
+      <el-tooltip class="item" effect="dark" content="use Result Structure" placement="top-end">
+        <el-checkbox v-if="onEditPage" v-model="resultStructureCopy" style="padding: 3px 5px;z-index: 1000">Structure</el-checkbox>
+      </el-tooltip>
+      <el-button-group>
+        <el-tooltip class="item" effect="dark" content="Copy to Clipboard" placement="top-end">
+          <el-button
+            v-clipboard:copy="responseBodyCopy"
+            v-clipboard:success="handleJsonResultCopySuccess"
+            v-clipboard:error="handleJsonResultCopyError"
+            class="z-index-top"
+            size="mini"
+            round
+          >
+            <svg class="icon" aria-hidden="true">
+              <use xlink:href="#iconcopy"></use>
+            </svg>
+          </el-button>
+        </el-tooltip>
+        <el-tooltip class="item" effect="dark" content="Format Result" placement="top-end">
+          <el-button
+            v-if="panelActiveName ==='result_view' && resultType ==='json'"
+            class="z-index-top"
+            size="mini"
+            round
+            @click.native="handleJsonResultFormatter"
+          >
+            <svg class="icon" aria-hidden="true">
+              <use xlink:href="#iconformat"></use>
+            </svg>
+          </el-button>
+        </el-tooltip>
+        <el-tooltip class="item" effect="dark" content="Save As Download" placement="top-end">
+          <el-button
+            v-if="panelActiveName ==='result_view' && resultType ==='bytes'"
+            class="z-index-top"
+            size="mini"
+            round
+            @click.native="handleResultDownload"
+          >
+            <svg class="icon" aria-hidden="true">
+              <use xlink:href="#icondownload"></use>
+            </svg>
+          </el-button>
+        </el-tooltip>
+        <el-tooltip class="item" effect="dark" content="Format Structure" placement="top-end">
+          <el-button
+            v-if="onEditPage && panelActiveName ==='result_format'"
+            class="z-index-top"
+            size="mini"
+            round
+            @click.native="handleStructureFormatter"
+          >
+            <svg class="icon" aria-hidden="true">
+              <use xlink:href="#iconformat"></use>
+            </svg>
+          </el-button>
+        </el-tooltip>
+      </el-button-group>
     </div>
+    <el-tabs v-model="panelActiveName" class="response-tabs" type="card">
+      <el-tab-pane name="result_view" label="Result">
+        <div ref="responsePanel" />
+      </el-tab-pane>
+      <el-tab-pane v-if="onEditPage" name="result_format" label="Structure" :disabled="!resultStructureCopy">
+        <div ref="responseFormatPanel" />
+      </el-tab-pane>
+    </el-tabs>
+  </div>
 </template>
 <script>
-    import {defineMonacoEditorFoo} from "../utils/editorUtils"
-    import {formatDate} from "../utils/utils"
+    import {defineMonacoEditorFoo} from '../utils/editorUtils'
+    import {formatDate} from '../utils/utils'
 
     export default {
         props: {
@@ -101,27 +120,8 @@
                 responseFormatCopy: '',
                 resultStructureCopy: true,
                 panelActiveName: 'result_view',
-                height: "10px"
+                height: '10px'
             }
-        },
-        mounted() {
-            const self = this;
-            this.monacoDataEditor = defineMonacoEditorFoo(this.$refs.responsePanel, {});
-            this.monacoDataEditor.onDidChangeModelContent(function (event) { // 编辑器内容changge事件
-                self.responseBodyCopy = self.monacoDataEditor.getValue();
-            });
-            //
-            if (this.onEditPage) {
-                this.monacoForamtEditor = defineMonacoEditorFoo(this.$refs.responseFormatPanel, {});
-                this.monacoForamtEditor.onDidChangeModelContent(function (event) { // 编辑器内容changge事件
-                    self.responseFormatCopy = self.monacoForamtEditor.getValue();
-                });
-            }
-            //
-            this.responseBodyCopy = this.responseBody;
-            this.responseFormatCopy = this.responseFormat;
-            this.resultStructureCopy = (this.resultStructure === undefined) ? true : this.resultStructure;
-            this.doUpdate();
         },
         watch: {
             'responseBodyCopy': {
@@ -144,6 +144,25 @@
                     }
                 }
             }
+        },
+        mounted() {
+            const self = this;
+            this.monacoDataEditor = defineMonacoEditorFoo(this.$refs.responsePanel, {});
+            this.monacoDataEditor.onDidChangeModelContent(function (event) { // 编辑器内容changge事件
+                self.responseBodyCopy = self.monacoDataEditor.getValue();
+            });
+            //
+            if (this.onEditPage) {
+                this.monacoForamtEditor = defineMonacoEditorFoo(this.$refs.responseFormatPanel, {});
+                this.monacoForamtEditor.onDidChangeModelContent(function (event) { // 编辑器内容changge事件
+                    self.responseFormatCopy = self.monacoForamtEditor.getValue();
+                });
+            }
+            //
+            this.responseBodyCopy = this.responseBody;
+            this.responseFormatCopy = this.responseFormat;
+            this.resultStructureCopy = (this.resultStructure === undefined) ? true : this.resultStructure;
+            this.doUpdate();
         },
         methods: {
             // 响应结果格式化
@@ -174,19 +193,19 @@
             // 下载
             handleResultDownload() {
                 // 把十六进制转换为bytes
-                let localResponseBody = this.responseBody;
-                let localArrays = localResponseBody.replace(/\n/g, " ").split(" ");
-                let byteArray = [];
+                const localResponseBody = this.responseBody;
+                const localArrays = localResponseBody.replace(/\n/g, ' ').split(' ');
+                const byteArray = [];
                 for (let i = 0; i < localArrays.length; i++) {
                     byteArray.push(parseInt(localArrays[i], 16));
                 }
-                let byteUint8Array = new Uint8Array(byteArray);
+                const byteUint8Array = new Uint8Array(byteArray);
                 // 创建隐藏的可下载链接
-                let eleLink = document.createElement('a');
+                const eleLink = document.createElement('a');
                 eleLink.download = formatDate(new Date()) + '.result';
                 eleLink.style.display = 'none';
                 // 字符内容转变成blob地址
-                let blob = new Blob([byteUint8Array]);
+                const blob = new Blob([byteUint8Array]);
                 eleLink.href = URL.createObjectURL(blob);
                 // 触发点击
                 document.body.appendChild(eleLink);
