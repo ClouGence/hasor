@@ -105,6 +105,7 @@ public class DatawayModule implements WebModule {
                 PublishController.class,            //
                 PerformController.class,            //
                 DeleteController.class,             //
+                AnalyzeSchemaController.class,      //
                 //
                 Swagger2Controller.class,           //
         };

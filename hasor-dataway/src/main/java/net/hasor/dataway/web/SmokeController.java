@@ -101,10 +101,8 @@ public class SmokeController extends BasicController {
     }
 
     private void updateSchema(String apiID, Object requestData, Object responseData) throws IOException {
-        AtomicInteger atomicInteger = new AtomicInteger();
-        String prefixType = "ApiType_" + apiID + "_";
-        final Type reqType = TypesUtils.extractType(prefixType, atomicInteger, DomainHelper.convertTo(requestData));
-        final Type resType = TypesUtils.extractType(prefixType, atomicInteger, DomainHelper.convertTo(responseData));
+        final Type reqType = TypesUtils.extractType(("ReqApiType_" + apiID + "_"), new AtomicInteger(), DomainHelper.convertTo(requestData));
+        final Type resType = TypesUtils.extractType(("ResApiType_" + apiID + "_"), new AtomicInteger(), DomainHelper.convertTo(responseData));
         //
         // .查询接口数据
         QueryResult result = new UpdateSchemaQuery(this.dataQL).execute(new HashMap<String, Object>() {{

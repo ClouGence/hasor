@@ -423,6 +423,8 @@ AuthorizationChainSpi界面操作权限检查
 .. code-block:: java
     :linenos:
 
-    apiBinder.bindSpiListener(AuthorizationChainSpi.class, (checkType, apiId, defaultCheck) -> {
-        return false; // 返回 true 表示权限校验通过、返回 false 表示权限校验失败。
+    // 配置所有接口，都是只读权限
+    final Set<String> codeSet = AuthorizationType.Group_ReadOnly.toCodeSet();
+    apiBinder.bindSpiListener(AuthorizationChainSpi.class, (checkType, apiInfo, defaultCheck) -> {
+        return checkType.testAuthorization(codeSet);
     });

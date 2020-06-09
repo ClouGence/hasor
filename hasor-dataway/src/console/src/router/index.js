@@ -1,8 +1,8 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import InterfaceList from '../views/InterfaceList.vue'
-import InterfaceEdit from '../views/InterfaceEdit.vue'
-import InterfaceNew from '../views/InterfaceNew.vue'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import InterfaceList from '../views/InterfaceList.vue';
+import InterfaceEdit from '../views/InterfaceEdit.vue';
+import InterfaceNew from '../views/InterfaceNew.vue';
 
 Vue.use(VueRouter);
 
@@ -18,4 +18,4 @@ const router = new VueRouter({
     routes
 });
 
-export default router
+export default router;

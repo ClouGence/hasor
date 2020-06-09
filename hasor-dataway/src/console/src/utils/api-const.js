@@ -27,6 +27,8 @@ const ApiUrl = {
     publish: contextPath() + adminBaseUrl(`/api/publish`),
     disable: contextPath() + adminBaseUrl(`/api/disable`),
     deleteApi: contextPath() + adminBaseUrl(`/api/delete`),
+    //
+    analyzeSchema: contextPath() + adminBaseUrl(`/api/analyze-schema`),
 };
 
 export {

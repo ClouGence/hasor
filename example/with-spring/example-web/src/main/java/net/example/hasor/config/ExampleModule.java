@@ -24,6 +24,10 @@ public class ExampleModule implements SpringModule {
         // .custom DataQL
         //apiBinder.tryCast(QueryApiBinder.class).loadUdfSource(apiBinder.findClass(DimUdfSource.class));
         //
+        //        final Set<String> codeSet = AuthorizationType.Group_ReadOnly.toCodeSet();
+        //        apiBinder.bindSpiListener(AuthorizationChainSpi.class, (checkType, apiId, defaultCheck) -> {
+        //            return checkType.testAuthorization(codeSet);
+        //        });
         //        apiBinder.bindSpiListener(PreExecuteChainSpi.class, (apiInfo, future) -> {
         //            apiInfo.getParameterMap().put("self", "me");
         //            if (apiInfo.getApiPath().equals("/api/demos/find_user_by_name")) {

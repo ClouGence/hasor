@@ -17,7 +17,7 @@ const monacoDefaultOptions = {
         contextmenu: true
         // quickSuggestionsDelay: 500,   //代码提示延时
     }
-}
+};
 const loadMonacoEditorSelfTheme = () => {
     monaco.editor.defineTheme('selfTheme', {
         base: 'vs',
@@ -28,7 +28,7 @@ const loadMonacoEditorSelfTheme = () => {
         }
     });
     // monaco.editor.setTheme('selfTheme');
-}
+};
 const defineMonacoEditorFoo = (container, options) => {
     const newEditor = monaco.editor.create(container, {
         ...monacoDefaultOptions,
@@ -37,6 +37,6 @@ const defineMonacoEditorFoo = (container, options) => {
     newEditor.updateOptions({minimap: {enabled: false}});
     newEditor.updateOptions({contextmenu: false});
     return newEditor;
-}
+};
 
-export {defineMonacoEditorFoo, loadMonacoEditorSelfTheme}
+export {defineMonacoEditorFoo, loadMonacoEditorSelfTheme};
