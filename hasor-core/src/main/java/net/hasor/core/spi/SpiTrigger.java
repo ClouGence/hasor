@@ -63,4 +63,10 @@ public interface SpiTrigger {
      * @param defaultResult 默认值
      */
     public <R, T extends EventListener> R chainSpi(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult);
+
+    /** 判断某类 SPI 是否有注册 */
+    public boolean hasSpi(Class<? extends EventListener> spiType);
+
+    /** 判断某类 SPI 是否有注册了仲裁 */
+    public boolean hasJudge(Class<? extends SpiJudge> spiJudge);
 }

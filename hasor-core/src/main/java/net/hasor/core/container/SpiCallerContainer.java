@@ -46,6 +46,16 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
         return spiCommonCall(spiType, spiCaller, defaultResult, false);
     }
 
+    @Override
+    public boolean hasSpi(Class<? extends EventListener> spiType) {
+        return this.spiListener.containsKey(spiType);
+    }
+
+    @Override
+    public boolean hasJudge(Class<? extends SpiJudge> spiJudge) {
+        return this.spiSpiJudge.containsKey(spiJudge);
+    }
+
     private <R, T extends EventListener> R spiCommonCall(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult, boolean isNotify) {
         List<Supplier<EventListener>> listeners = this.spiListener.get(spiType);
         // .没有 SPI 监听器，那么返回默认值
