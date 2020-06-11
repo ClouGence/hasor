@@ -27,14 +27,6 @@ public class ThrowRuntimeException extends InstructRuntimeException {
     protected long      executionTime = -1;
     protected DataModel result        = null;
 
-    public ThrowRuntimeException(String errorMessage) {
-        this(Location.unknownLocation(), errorMessage);
-    }
-
-    public ThrowRuntimeException(String errorMessage, Throwable e) {
-        super(Location.unknownLocation(), errorMessage, e);
-    }
-
     public ThrowRuntimeException(RuntimeLocation location, String errorMessage) {
         super(location, errorMessage);
     }

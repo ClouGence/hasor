@@ -43,12 +43,11 @@ public abstract class Location {
 
         @Override
         public String toErrorMessage() {
-            //            if (this.lineNumber == -1 || this.columnNumber == -1) {
-            //                return "line unknown";
-            //            } else {
-            //                return "line " + this.lineNumber + ":" + this.columnNumber;
-            //            }
-            return ""; // TODO next version open this
+            if (this.lineNumber == -1 || this.columnNumber == -1) {
+                return "line unknown";
+            } else {
+                return "line " + this.lineNumber + ":" + this.columnNumber;
+            }
         }
     }
 
@@ -71,7 +70,7 @@ public abstract class Location {
         }
 
         public String toErrorMessage() {
-            return super.toErrorMessage() + "address " + this.methodAddress + ":" + this.programAddress;
+            return super.toErrorMessage() + ",address " + this.methodAddress + ":" + this.programAddress;
         }
     }
 
