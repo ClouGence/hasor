@@ -19,6 +19,7 @@ import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.Location.RuntimeLocation;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -31,18 +32,29 @@ import java.util.function.Supplier;
  * @version : 2017-07-19
  */
 public class OpcodesPool {
-    private InsetProcess[] processes = new InsetProcess[255];
+    private final InsetProcess[] processes = new InsetProcess[255];
 
     private void addInsetProcess(InsetProcess inst) {
         this.processes[inst.getOpcode()] = inst;
     }
 
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
-        InsetProcess process = this.processes[sequence.currentInst().getInstCode()];
-        process.doWork(sequence, dataHeap, dataStack, envStack, context);
+        RuntimeLocation location = sequence.programLocation();
+        try {
+            InsetProcess process = this.processes[sequence.currentInst().getInstCode()];
+            process.doWork(sequence, dataHeap, dataStack, envStack, context);
+        } catch (Exception e) {
+            InstructRuntimeException ire = null;
+            if (e instanceof InstructRuntimeException) {
+                ire = (InstructRuntimeException) e;
+            } else {
+                ire = new InstructRuntimeException(location, e);
+            }
+            throw ire;
+        }
     }
 
-    private static Supplier<OpcodesPool> operatorManager = new SingleProvider<>(OpcodesPool::initPool);
+    private static final Supplier<OpcodesPool> operatorManager = new SingleProvider<>(OpcodesPool::initPool);
 
     public static OpcodesPool defaultOpcodesPool() {
         return operatorManager.get();

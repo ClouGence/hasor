@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.UdfSource;
 import net.hasor.dataql.compiler.qil.Instruction;
 import net.hasor.dataql.runtime.*;
 import net.hasor.dataql.runtime.mem.DataHeap;
@@ -51,7 +50,7 @@ class CALL implements InsetProcess {
         //
         Object refCallObj = dataStack.pop();
         if (!(refCallObj instanceof RefCall)) {
-            throw new InstructRuntimeException("target is not RefCall.");
+            throw new InstructRuntimeException(sequence.programLocation(), "target is not RefCall.");
         }
         //
         RefCall refCall = (RefCall) refCallObj;

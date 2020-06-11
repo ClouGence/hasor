@@ -67,7 +67,7 @@ class E_LOAD implements InsetProcess {
             }
             dataStack.push(objects);
         } else {
-            throw new InstructRuntimeException("symbol '" + symbol + "' is not define.");
+            throw new InstructRuntimeException(sequence.programLocation(), "symbol '" + symbol + "' is not define.");
         }
     }
 }

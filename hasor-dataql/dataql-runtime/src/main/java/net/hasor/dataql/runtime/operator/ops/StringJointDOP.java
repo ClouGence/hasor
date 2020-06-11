@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.Hints;
+import net.hasor.dataql.runtime.Location.RuntimeLocation;
 import net.hasor.dataql.runtime.operator.OperatorProcess;
 
 /**
@@ -24,7 +25,7 @@ import net.hasor.dataql.runtime.operator.OperatorProcess;
  */
 public class StringJointDOP implements OperatorProcess {
     @Override
-    public Object doProcess(String operator, Object[] args, Hints option) {
+    public Object doProcess(RuntimeLocation location, String operator, Object[] args, Hints option) {
         String str1 = args[0] == null ? "null" : args[0].toString();
         String str2 = args[1] == null ? "null" : args[1].toString();
         return str1 + str2;

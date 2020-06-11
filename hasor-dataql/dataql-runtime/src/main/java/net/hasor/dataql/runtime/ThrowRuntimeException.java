@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.domain.DataModel;
+import net.hasor.dataql.runtime.Location.RuntimeLocation;
 
 /**
  * DataQL 运行时异常
@@ -27,15 +28,23 @@ public class ThrowRuntimeException extends InstructRuntimeException {
     protected DataModel result        = null;
 
     public ThrowRuntimeException(String errorMessage) {
-        super(errorMessage);
+        this(Location.unknownLocation(), errorMessage);
     }
 
     public ThrowRuntimeException(String errorMessage, Throwable e) {
-        super(errorMessage, e);
+        super(Location.unknownLocation(), errorMessage, e);
     }
 
-    public ThrowRuntimeException(String errorMessage, int throwCode, long executionTime, DataModel result) {
-        this(errorMessage);
+    public ThrowRuntimeException(RuntimeLocation location, String errorMessage) {
+        super(location, errorMessage);
+    }
+
+    public ThrowRuntimeException(RuntimeLocation location, String errorMessage, Throwable e) {
+        super(location, errorMessage, e);
+    }
+
+    public ThrowRuntimeException(RuntimeLocation location, String errorMessage, int throwCode, long executionTime, DataModel result) {
+        this(location, errorMessage);
         this.throwCode = throwCode;
         this.executionTime = executionTime;
         this.result = result;

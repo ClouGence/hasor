@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime.operator;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.Location.RuntimeLocation;
 
 /**
  * 二元运算代理。
@@ -23,9 +24,9 @@ import net.hasor.dataql.runtime.InstructRuntimeException;
  * @version : 2017-03-23
  */
 class DyadicProxyOperatorProcess implements OperatorMatch {
-    private Class<?>        fstType;
-    private Class<?>        secType;
-    private OperatorProcess process;
+    private final Class<?>        fstType;
+    private final Class<?>        secType;
+    private final OperatorProcess process;
 
     public DyadicProxyOperatorProcess(Class<?> fstType, Class<?> secType, OperatorProcess process) {
         this.fstType = fstType;
@@ -34,8 +35,8 @@ class DyadicProxyOperatorProcess implements OperatorMatch {
     }
 
     @Override
-    public Object doProcess(String operator, Object[] args, Hints option) throws InstructRuntimeException {
-        return this.process.doProcess(operator, args, option);
+    public Object doProcess(RuntimeLocation location, String operator, Object[] args, Hints option) throws InstructRuntimeException {
+        return this.process.doProcess(location, operator, args, option);
     }
 
     @Override

@@ -14,17 +14,48 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
+import net.hasor.dataql.runtime.Location.RuntimeLocation;
+
 /**
  * DataQL 运行时异常
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-14
  */
 public class InstructRuntimeException extends RuntimeException {
-    public InstructRuntimeException(String errorMessage) {
-        super(errorMessage);
+    private RuntimeLocation location = null;
+
+    public InstructRuntimeException(RuntimeLocation location, String errorMessage) {
+        super("[" + location.toErrorMessage() + "] " + errorMessage);
+        this.location = location;
     }
 
-    public InstructRuntimeException(String errorMessage, Throwable e) {
-        super(errorMessage, e);
+    public InstructRuntimeException(RuntimeLocation location, String errorMessage, Throwable e) {
+        super("[" + location.toErrorMessage() + "] " + errorMessage, e);
+        this.location = location;
+    }
+
+    public InstructRuntimeException(RuntimeLocation location, Throwable e) {
+        super("[" + location.toErrorMessage() + "] " + e.getMessage(), e);
+        this.location = location;
+    }
+
+    public Location getLocation() {
+        return this.location;
+    }
+
+    public int getProgramAddress() {
+        return this.location.getProgramAddress();
+    }
+
+    public int getMethodAddress() {
+        return this.location.getMethodAddress();
+    }
+
+    public int getLineNumber() {
+        return this.location.getLineNumber();
+    }
+
+    public int getColumnNumber() {
+        return this.location.getColumnNumber();
     }
 }

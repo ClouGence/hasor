@@ -33,9 +33,9 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 class QueryImpl extends HintsSet implements CompilerVarQuery {
-    private QIL                 qil;
-    private Finder              finder;
-    private Map<String, Object> compilerVar;
+    private final QIL                 qil;
+    private final Finder              finder;
+    private final Map<String, Object> compilerVar;
 
     QueryImpl(QIL qil, Finder finder) {
         this.qil = qil;
@@ -46,7 +46,7 @@ class QueryImpl extends HintsSet implements CompilerVarQuery {
     @Override
     public Query clone() {
         QueryImpl query = new QueryImpl(this.qil, this.finder);
-        query.compilerVar = new HashMap<>(this.compilerVar);
+        query.compilerVar.putAll(this.compilerVar);
         return query;
     }
 
@@ -103,11 +103,11 @@ class QueryImpl extends HintsSet implements CompilerVarQuery {
             if (result instanceof ValueModel) {
                 message = resultCode + " : " + ((ValueModel) result).asString();
             }
-            throw new ThrowRuntimeException(message, resultCode, executionTime, result);
+            throw new ThrowRuntimeException(Location.unknownLocation(), message, resultCode, executionTime, result);
         } else if (ExitType.Return == exitType) {
             return new QueryResultImpl(false, resultCode, result, executionTime);
         } else {
-            throw new InstructRuntimeException(exitType + " ExitType undefined.");
+            throw new InstructRuntimeException(Location.unknownLocation(), exitType + " ExitType undefined.");
         }
     }
 }

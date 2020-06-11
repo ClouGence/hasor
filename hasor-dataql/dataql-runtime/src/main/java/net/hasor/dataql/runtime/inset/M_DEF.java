@@ -19,6 +19,7 @@ import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.Location.RuntimeLocation;
 import net.hasor.dataql.runtime.mem.*;
 
 /**
@@ -38,15 +39,16 @@ class M_DEF implements InsetProcess {
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
+        RuntimeLocation location = sequence.programLocation();
         Object refCall = dataStack.pop();
         if (refCall == null) {
-            throw new InstructRuntimeException("target is null.");
+            throw new InstructRuntimeException(location, "target is null.");
         }
         if (!(refCall instanceof Udf)) {
-            throw new InstructRuntimeException("target or Property is not UDF.");
+            throw new InstructRuntimeException(location, "target or Property is not UDF.");
         }
         boolean innerUDF = refCall instanceof RefFragmentCall || refCall instanceof RefLambdaCall;
-        refCall = new RefCall(!innerUDF, (Udf) refCall);
+        refCall = new RefCall(location, !innerUDF, (Udf) refCall);
         dataStack.push(refCall);
     }
 }

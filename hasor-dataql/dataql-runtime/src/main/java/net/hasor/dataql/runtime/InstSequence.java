@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.compiler.qil.Instruction;
 import net.hasor.dataql.compiler.qil.QIL;
+import net.hasor.dataql.runtime.Location.RuntimeLocation;
 import net.hasor.utils.StringUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -52,6 +53,16 @@ public class InstSequence {
     /** 当前指令序列的地址 */
     public int getAddress() {
         return this.address;
+    }
+
+    /** 获取当前程序指令指针位置 */
+    public int programPointer() {
+        return this.sequenceIndex.get();
+    }
+
+    /** 获取当前程序指令指针位置以及运行的代码位置信息 */
+    public RuntimeLocation programLocation() {
+        return Location.atRuntime(-1, -1, this.address, this.programPointer());
     }
 
     /** 克隆一个 */
@@ -102,7 +113,7 @@ public class InstSequence {
             return true;
         }
         if (nextSkip < 0) {
-            throw new InstructRuntimeException("nextSkip must be > 0");
+            throw new InstructRuntimeException(programLocation(), "nextSkip must be > 0");
         }
         int newPosition = this.sequenceIndex.get() + nextSkip;
         if (newPosition > this.endPosition) {

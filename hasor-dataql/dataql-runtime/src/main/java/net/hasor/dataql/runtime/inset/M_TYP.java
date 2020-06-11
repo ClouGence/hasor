@@ -45,10 +45,10 @@ class M_TYP implements InsetProcess {
         try {
             loadObject = context.loadObject(udfType);
         } catch (ClassNotFoundException e) {
-            throw new InstructRuntimeException(udfType + " ClassNotFoundException.", e);
+            throw new InstructRuntimeException(sequence.programLocation(), udfType + " ClassNotFoundException.", e);
         }
         if (loadObject == null) {
-            throw new InstructRuntimeException("loadObject is null.");
+            throw new InstructRuntimeException(sequence.programLocation(), "loadObject is null.");
         }
         //
         if (loadObject instanceof UdfSource) {

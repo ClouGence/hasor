@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.Location.RuntimeLocation;
 
 import java.util.Objects;
 
@@ -26,13 +27,13 @@ import java.util.Objects;
  */
 public class ObjectEqDOP extends AbstractDOP {
     @Override
-    public Object doDyadicProcess(String operator, Object fstObject, Object secObject, Hints option) throws InstructRuntimeException {
+    public Object doDyadicProcess(RuntimeLocation location, String operator, Object fstObject, Object secObject, Hints option) throws InstructRuntimeException {
         if ("==".equals(operator)) {
             return Objects.equals(fstObject, secObject);
         }
         if ("!=".equals(operator)) {
             return !Objects.equals(fstObject, secObject);
         }
-        throw throwError(operator, fstObject, secObject, "symbol unsupported.");
+        throw throwError(location, operator, fstObject, secObject, "symbol unsupported.");
     }
 }

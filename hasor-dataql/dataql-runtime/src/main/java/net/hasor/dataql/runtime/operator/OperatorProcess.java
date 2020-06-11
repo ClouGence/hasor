@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime.operator;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.Location.RuntimeLocation;
 import net.hasor.utils.StringUtils;
 
 /**
@@ -25,7 +26,7 @@ import net.hasor.utils.StringUtils;
  */
 public interface OperatorProcess {
     /**执行运算*/
-    public Object doProcess(String operator, Object[] args, Hints option) throws InstructRuntimeException;
+    public Object doProcess(RuntimeLocation location, String operator, Object[] args, Hints option) throws InstructRuntimeException;
 
     public default boolean testIn(String[] dataSet, String test) {
         if (dataSet == null || dataSet.length == 0 || StringUtils.isBlank(test)) {

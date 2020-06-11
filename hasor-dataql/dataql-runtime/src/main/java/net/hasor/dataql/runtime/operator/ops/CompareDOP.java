@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.Location.RuntimeLocation;
 import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 /**
@@ -24,24 +25,24 @@ import net.hasor.dataql.runtime.operator.OperatorUtils;
  * @version : 2017-03-23
  */
 public class CompareDOP extends AbstractDOP {
-    private static final Integer BOOL_FASLE = 0;
+    private static final Integer BOOL_FALSE = 0;
     private static final Integer BOOL_TRUE  = 1;
 
     @Override
-    public Object doDyadicProcess(String operator, Object fstObject, Object secObject, Hints option) throws InstructRuntimeException {
+    public Object doDyadicProcess(RuntimeLocation location, String operator, Object fstObject, Object secObject, Hints option) throws InstructRuntimeException {
         //
         // .Boolean 和 Number 混杂模式下，先统一成为 number 在做判断
         if (OperatorUtils.isBoolean(fstObject) && OperatorUtils.isBoolean(secObject)) {
-            fstObject = Boolean.TRUE.equals(fstObject) ? BOOL_TRUE : BOOL_FASLE;
-            secObject = Boolean.TRUE.equals(secObject) ? BOOL_TRUE : BOOL_FASLE;
+            fstObject = Boolean.TRUE.equals(fstObject) ? BOOL_TRUE : BOOL_FALSE;
+            secObject = Boolean.TRUE.equals(secObject) ? BOOL_TRUE : BOOL_FALSE;
         }
         if (OperatorUtils.isBoolean(fstObject) && OperatorUtils.isNumber(secObject)) {
-            fstObject = Boolean.TRUE.equals(fstObject) ? BOOL_TRUE : BOOL_FASLE;
-            secObject = OperatorUtils.eq((Number) secObject, 0) ? BOOL_FASLE : BOOL_TRUE;
+            fstObject = Boolean.TRUE.equals(fstObject) ? BOOL_TRUE : BOOL_FALSE;
+            secObject = OperatorUtils.eq((Number) secObject, 0) ? BOOL_FALSE : BOOL_TRUE;
         }
         if (OperatorUtils.isNumber(fstObject) && OperatorUtils.isBoolean(secObject)) {
-            fstObject = OperatorUtils.eq((Number) fstObject, 0) ? BOOL_FASLE : BOOL_TRUE;
-            secObject = Boolean.TRUE.equals(secObject) ? BOOL_TRUE : BOOL_FASLE;
+            fstObject = OperatorUtils.eq((Number) fstObject, 0) ? BOOL_FALSE : BOOL_TRUE;
+            secObject = Boolean.TRUE.equals(secObject) ? BOOL_TRUE : BOOL_FALSE;
         }
         //
         // .大于
@@ -89,6 +90,6 @@ public class CompareDOP extends AbstractDOP {
                 return fstBool || secBool;
             }
         }
-        throw throwError(operator, fstObject, secObject, "this operator nonsupport.");
+        throw throwError(location, operator, fstObject, secObject, "this operator nonsupport.");
     }
 }
