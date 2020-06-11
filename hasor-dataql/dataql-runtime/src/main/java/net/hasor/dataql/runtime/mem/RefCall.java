@@ -20,8 +20,8 @@ import net.hasor.dataql.Udf;
 import net.hasor.dataql.UdfSource;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.DomainHelper;
-import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.Location.RuntimeLocation;
 import net.hasor.utils.ExceptionUtils;
 
 /**
@@ -30,10 +30,12 @@ import net.hasor.utils.ExceptionUtils;
  * @version : 2019-11-22
  */
 public class RefCall {
-    private boolean autoUnwrap;
-    private Udf     refCall;
+    private final RuntimeLocation location;
+    private final boolean         autoUnwrap;
+    private final Udf             refCall;
 
-    public RefCall(boolean autoUnwrap, Udf refCall) {
+    public RefCall(RuntimeLocation location, boolean autoUnwrap, Udf refCall) {
+        this.location = location;
         this.autoUnwrap = autoUnwrap;
         this.refCall = refCall;
     }
@@ -57,7 +59,9 @@ public class RefCall {
             if (e instanceof InstructRuntimeException) {
                 throw (InstructRuntimeException) e;
             }
-            throw ExceptionUtils.toRuntimeException(e, throwable -> new InstructRuntimeException(throwable.getMessage(), throwable));
+            throw ExceptionUtils.toRuntimeException(e, throwable -> {
+                return new InstructRuntimeException(location, throwable.getMessage(), throwable);
+            });
         }
     }
 }

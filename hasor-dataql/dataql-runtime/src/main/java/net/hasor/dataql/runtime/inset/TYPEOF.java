@@ -48,7 +48,7 @@ class TYPEOF implements InsetProcess {
         List("list"),       //
         Udf("udf"),         //
         Null("null");       //
-        private String typeOfEnum;
+        private final String typeOfEnum;
 
         public String typeCode() {
             return typeOfEnum;
@@ -94,6 +94,6 @@ class TYPEOF implements InsetProcess {
             }
         }
         //
-        throw new InstructRuntimeException("DataModel type is unknown.");
+        throw new InstructRuntimeException(sequence.programLocation(), "DataModel type is unknown.");
     }
 }

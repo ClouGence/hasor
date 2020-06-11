@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.Location.RuntimeLocation;
 import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 import java.math.BigDecimal;
@@ -30,9 +31,9 @@ import static net.hasor.dataql.Hints.MIN_INTEGER_WIDTH;
  */
 public class NumberDOP extends AbstractDOP {
     @Override
-    public Object doDyadicProcess(String operator, Object fstObject, Object secObject, Hints option) throws InstructRuntimeException {
+    public Object doDyadicProcess(RuntimeLocation location, String operator, Object fstObject, Object secObject, Hints option) throws InstructRuntimeException {
         if (!(fstObject instanceof Number) || !(secObject instanceof Number)) {
-            throw throwError(operator, fstObject, secObject, "requirements must be numerical.");
+            throw throwError(location, operator, fstObject, secObject, "requirements must be numerical.");
         }
         // .数值计算的选项参数
         RoundingEnum roundingMode = RoundingEnum.find((String) option.getHint(Hints.NUMBER_ROUNDING));   // 舍入模式
@@ -74,10 +75,10 @@ public class NumberDOP extends AbstractDOP {
             result = OperatorUtils.mod((Number) fstObject, (Number) secObject);
             break;
         default:
-            throw throwError(operator, fstObject, secObject, "this operator nonsupport.");
+            throw throwError(location, operator, fstObject, secObject, "this operator nonsupport.");
         }
         if (result == null) {
-            throw throwError(operator, fstObject, secObject, "evaluation result is empty.");
+            throw throwError(location, operator, fstObject, secObject, "evaluation result is empty.");
         }
         //
         // .处理小数保留位数(默认保留20位)

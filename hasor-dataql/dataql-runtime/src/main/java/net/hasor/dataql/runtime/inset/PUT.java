@@ -48,6 +48,6 @@ class PUT implements InsetProcess {
             ((ObjectModel) containerData).put(fieldName, useData);
             return;
         }
-        throw new InstructRuntimeException("output data error, target type must be ObjectModel.");
+        throw new InstructRuntimeException(sequence.programLocation(), "output data error, target type must be ObjectModel.");
     }
 }

@@ -19,6 +19,7 @@ import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.Location.RuntimeLocation;
 import net.hasor.dataql.runtime.mem.*;
 
 /**
@@ -38,13 +39,15 @@ class M_FRAG implements InsetProcess {
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
+        RuntimeLocation location = sequence.programLocation();
         boolean isBach = sequence.currentInst().getBoolean(0);
         String fragmentType = sequence.currentInst().getString(1);
         FragmentProcess loadObject = context.findFragmentProcess(fragmentType);
         if (loadObject == null) {
-            throw new InstructRuntimeException(fragmentType + " fragment undefine.");
+            throw new InstructRuntimeException(location, fragmentType + " fragment undefine.");
         }
         //
-        dataStack.push(new RefCall(true, new RefFragmentCall(isBach, loadObject)));
+        RefFragmentCall fragmentCall = new RefFragmentCall(location, isBach, loadObject);
+        dataStack.push(new RefCall(location, true, fragmentCall));
     }
 }

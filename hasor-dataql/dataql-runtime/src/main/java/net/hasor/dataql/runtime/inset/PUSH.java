@@ -47,6 +47,6 @@ class PUSH implements InsetProcess {
             ((ListModel) ors).add(data);
             return;
         }
-        throw new InstructRuntimeException("output data error, target type must be ListModel.");
+        throw new InstructRuntimeException(sequence.programLocation(), "output data error, target type must be ListModel.");
     }
 }

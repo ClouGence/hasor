@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime.mem;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.Location.RuntimeLocation;
 
 /**
  * 代理 Lambda 使其成为 UDF.
@@ -23,11 +24,11 @@ import net.hasor.dataql.runtime.InstructRuntimeException;
  * @version : 2017-03-23
  */
 public class RefLambdaCallException extends InstructRuntimeException {
-    private int       resultCode;
-    private DataModel result;
+    private final int       resultCode;
+    private final DataModel result;
 
-    public RefLambdaCallException(int address, int resultCode, DataModel result) {
-        super("address " + address + " lambda function failed.");
+    public RefLambdaCallException(RuntimeLocation location, int resultCode, DataModel result) {
+        super(location, "lambda function failed.");
         this.resultCode = resultCode;
         this.result = result;
     }

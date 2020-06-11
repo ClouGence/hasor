@@ -11,6 +11,7 @@
     <!-- Maven Info -->
     <artifactId>hasor-dataql</artifactId>
     <packaging>jar</packaging>
+    <version>4.1.8-fix20200611</version>
 
     <!-- Project Info -->
     <name>Hasor-DataQL/Runtime</name>
@@ -74,8 +75,8 @@
                         <phase>compile</phase>
                         <configuration>
                             <target>
-                                <copy file="${basedir}/target/generated-sources/antlr4/DataQLLexer.tokens" tofile="${basedir}/src/main/antlr4/net/hasor/dataql/compiler/parser/DataQLLexer.tokens" />
-                                <copy file="${basedir}/target/generated-sources/antlr4/DataQLParser.tokens" tofile="${basedir}/src/main/antlr4/net/hasor/dataql/compiler/parser/DataQLParser.tokens" />
+                                <copy file="${basedir}/target/generated-sources/antlr4/DataQLLexer.tokens" tofile="${basedir}/src/main/antlr4/net/hasor/dataql/compiler/parser/DataQLLexer.tokens"/>
+                                <copy file="${basedir}/target/generated-sources/antlr4/DataQLParser.tokens" tofile="${basedir}/src/main/antlr4/net/hasor/dataql/compiler/parser/DataQLParser.tokens"/>
                             </target>
                         </configuration>
                         <goals>
@@ -97,6 +98,12 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
+            <version>4.1.8</version>
+        </dependency>
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-commons</artifactId>
+            <version>4.1.8</version>
         </dependency>
     </dependencies>
 </project>

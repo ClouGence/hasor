@@ -64,7 +64,7 @@ class DO implements InsetProcess {
                 isPositive = OperatorUtils.gteq(number, 0);
             } else {
                 String msg = (fstExpData == null) ? "is null." : "must number.";
-                throw new InstructRuntimeException("DO -> first data " + msg);
+                throw new InstructRuntimeException(sequence.programLocation(), "DO -> first data " + msg);
             }
             if (secExpData == null) {
                 secExpData = 0;
@@ -86,10 +86,10 @@ class DO implements InsetProcess {
         OperatorProcess process = context.findDyadicOperator(dyadicSymbol, fstType, secType);
         //
         if (process == null) {
-            throw new InstructRuntimeException("DO -> '" + fstType.getName() + "' and '" + secType.getName() + "' operation '" + dyadicSymbol + "' not support.");
+            throw new InstructRuntimeException(sequence.programLocation(), "DO -> '" + fstType.getName() + "' and '" + secType.getName() + "' operation '" + dyadicSymbol + "' not support.");
         }
         //
-        Object result = process.doProcess(dyadicSymbol, new Object[] { fstExpData, secExpData }, context);
+        Object result = process.doProcess(sequence.programLocation(), dyadicSymbol, new Object[] { fstExpData, secExpData }, context);
         dataStack.push(result);
     }
 }

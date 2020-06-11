@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.domain.ListModel;
+import net.hasor.dataql.domain.ValueModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -51,7 +52,12 @@ class PULL implements InsetProcess {
         if (sequence.currentInst().getArrays().length > 0) {
             point = sequence.currentInst().getInt(0);
         } else {
-            point = (int) dataStack.pop();
+            Object pointData = dataStack.pop();
+            if (pointData instanceof ValueModel) {
+                point = ((ValueModel) pointData).asInt();
+            } else {
+                point = (int) pointData;
+            }
         }
         Object data = dataStack.pop();
         //
@@ -69,7 +75,7 @@ class PULL implements InsetProcess {
         });
         //
         if (!(data instanceof Collection)) {
-            throw new InstructRuntimeException("output data error, target type must be Collection.");
+            throw new InstructRuntimeException(sequence.programLocation(), "output data error, target type must be Collection.");
         }
         int size = ((Collection) data).size();
         if (point < 0) {

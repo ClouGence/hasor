@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.Location.RuntimeLocation;
 import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 /**
@@ -25,11 +26,11 @@ import net.hasor.dataql.runtime.operator.OperatorUtils;
  */
 public class BooleanUOP extends AbstractUOP {
     @Override
-    public Object doUnaryProcess(String operator, Object object, Hints option) throws InstructRuntimeException {
+    public Object doUnaryProcess(RuntimeLocation location, String operator, Object object, Hints option) throws InstructRuntimeException {
         if ("!".equals(operator) && OperatorUtils.isBoolean(object)) {
             return !((Boolean) object);
         }
         String dataType = object == null ? "null" : object.getClass().getName();
-        throw new InstructRuntimeException(dataType + " , Cannot be used as '" + operator + "'.");
+        throw new InstructRuntimeException(location, dataType + " , Cannot be used as '" + operator + "'.");
     }
 }

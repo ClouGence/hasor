@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.domain.ObjectModel;
+import net.hasor.dataql.domain.ValueModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -46,7 +47,12 @@ class GET implements InsetProcess {
         if (sequence.currentInst().getArrays().length > 0) {
             nodeName = sequence.currentInst().getString(0);
         } else {
-            nodeName = (String) dataStack.pop();
+            Object nodeNameData = dataStack.pop();
+            if (nodeNameData instanceof ValueModel) {
+                nodeName = ((ValueModel) nodeNameData).asString();
+            } else {
+                nodeName = (String) nodeNameData;
+            }
         }
         Object useData = dataStack.pop();
         useData = readProperty(useData, nodeName);

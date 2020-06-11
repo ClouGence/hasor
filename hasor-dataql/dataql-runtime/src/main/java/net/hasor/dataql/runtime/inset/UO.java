@@ -53,10 +53,10 @@ class UO implements InsetProcess {
         OperatorProcess process = context.findUnaryOperator(dyadicSymbol, expType);
         //
         if (process == null) {
-            throw new InstructRuntimeException("UO -> " + dyadicSymbol + " OperatorProcess is Undefined");
+            throw new InstructRuntimeException(sequence.programLocation(), "UO -> " + dyadicSymbol + " OperatorProcess is Undefined");
         }
         //
-        Object result = process.doProcess(dyadicSymbol, new Object[] { expData }, context);
+        Object result = process.doProcess(sequence.programLocation(), dyadicSymbol, new Object[] { expData }, context);
         dataStack.push(result);
     }
 }
