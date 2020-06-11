@@ -26,9 +26,9 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-11-07
  */
-public class ReturnInst implements Inst {
-    private int      returnCode;
-    private Variable resultData;
+public class ReturnInst extends AstBasic implements Inst {
+    private final int      returnCode;
+    private final Variable resultData;
 
     public ReturnInst(int returnCode, Variable resultData) {
         this.returnCode = returnCode;

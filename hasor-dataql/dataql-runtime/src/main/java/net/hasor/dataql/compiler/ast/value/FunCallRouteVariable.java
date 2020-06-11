@@ -26,9 +26,9 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class FunCallRouteVariable implements RouteVariable {
-    private RouteVariable  enterRoute;
-    private List<Variable> paramList = new ArrayList<>();
+public class FunCallRouteVariable extends AstBasic implements RouteVariable {
+    private final RouteVariable  enterRoute;
+    private final List<Variable> paramList = new ArrayList<>();
 
     public FunCallRouteVariable(RouteVariable enterRoute) {
         this.enterRoute = enterRoute;

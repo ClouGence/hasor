@@ -24,8 +24,8 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-11-07
  */
-public class AtomExpression implements Expression {
-    private Variable variableExpression; // 把值类型转换为表达式
+public class AtomExpression extends AstBasic implements Expression {
+    private final Variable variableExpression; // 把值类型转换为表达式
 
     public AtomExpression(Variable variableExpression) {
         this.variableExpression = variableExpression;

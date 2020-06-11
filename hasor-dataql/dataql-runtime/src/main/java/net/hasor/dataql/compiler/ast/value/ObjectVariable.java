@@ -31,10 +31,10 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ObjectVariable implements Inst, Variable {
-    private List<String>          fieldSort;
-    private String                objectType;
-    private Map<String, Variable> objectData;
+public class ObjectVariable extends AstBasic implements Inst, Variable {
+    private final List<String>          fieldSort;
+    private final String                objectType;
+    private final Map<String, Variable> objectData;
 
     public ObjectVariable() {
         this.fieldSort = new ArrayList<>();

@@ -28,7 +28,7 @@ import java.util.List;
  * @version : 2017-03-23
  */
 public class LambdaVariable extends InstSet implements Variable {
-    private List<String> paramList = new ArrayList<>();
+    private final List<String> paramList = new ArrayList<>();
 
     public LambdaVariable() {
         super(true);

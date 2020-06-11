@@ -17,7 +17,14 @@ package net.hasor.dataql.compiler.ast;
 /**
  * 指令，基类
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2020-06-11
  */
-public interface Inst extends location, InstFormat, Visitor {
+public interface location {
+    public int getLineNumber();
+
+    public int getColumnNumber();
+
+    public void setLineNumber(int lineNumber);
+
+    public void setColumnNumber(int columnNumber);
 }

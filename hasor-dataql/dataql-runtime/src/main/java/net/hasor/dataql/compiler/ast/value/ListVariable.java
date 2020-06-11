@@ -15,10 +15,7 @@
  */
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.compiler.ast.AstVisitor;
-import net.hasor.dataql.compiler.ast.FormatWriter;
-import net.hasor.dataql.compiler.ast.InstVisitorContext;
-import net.hasor.dataql.compiler.ast.Variable;
+import net.hasor.dataql.compiler.ast.*;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
@@ -30,8 +27,8 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ListVariable implements Variable {
-    private List<Variable> expressionList = new ArrayList<>();
+public class ListVariable extends AstBasic implements Variable {
+    private final List<Variable> expressionList = new ArrayList<>();
 
     /** 添加元素 */
     public void addItem(Variable valueExp) {

@@ -15,10 +15,7 @@
  */
 package net.hasor.dataql.compiler.ast.expr;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.compiler.ast.AstVisitor;
-import net.hasor.dataql.compiler.ast.Expression;
-import net.hasor.dataql.compiler.ast.FormatWriter;
-import net.hasor.dataql.compiler.ast.InstVisitorContext;
+import net.hasor.dataql.compiler.ast.*;
 
 import java.io.IOException;
 
@@ -27,10 +24,10 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class DyadicExpression implements Expression {
-    private Expression fstExpression;   //第一个表达式
-    private String     dyadicSymbol;    //运算符
-    private Expression secExpression;   //第二个表达式
+public class DyadicExpression extends AstBasic implements Expression {
+    private final Expression fstExpression;   //第一个表达式
+    private final String     dyadicSymbol;    //运算符
+    private final Expression secExpression;   //第二个表达式
 
     public DyadicExpression(Expression fstExpression, String dyadicSymbol, Expression secExpression) {
         this.fstExpression = fstExpression;

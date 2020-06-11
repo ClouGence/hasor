@@ -27,9 +27,9 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class NameRouteVariable implements Variable, RouteVariable {
-    private RouteVariable parent;
-    private String        name;
+public class NameRouteVariable extends AstBasic implements Variable, RouteVariable {
+    private final RouteVariable parent;
+    private final String        name;
 
     public NameRouteVariable(RouteVariable parent, String name) {
         this.parent = parent;

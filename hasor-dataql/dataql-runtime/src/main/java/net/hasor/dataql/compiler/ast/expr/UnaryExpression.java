@@ -15,10 +15,7 @@
  */
 package net.hasor.dataql.compiler.ast.expr;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.compiler.ast.AstVisitor;
-import net.hasor.dataql.compiler.ast.Expression;
-import net.hasor.dataql.compiler.ast.FormatWriter;
-import net.hasor.dataql.compiler.ast.InstVisitorContext;
+import net.hasor.dataql.compiler.ast.*;
 
 import java.io.IOException;
 
@@ -27,9 +24,9 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class UnaryExpression implements Expression {
-    private Expression target;      //表达式
-    private String     dyadicSymbol;//操作符
+public class UnaryExpression extends AstBasic implements Expression {
+    private final Expression target;      //表达式
+    private final String     dyadicSymbol;//操作符
 
     public UnaryExpression(Expression target, String dyadicSymbol) {
         this.target = target;

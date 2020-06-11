@@ -28,18 +28,19 @@ import static net.hasor.utils.NumberUtils.*;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class PrimitiveVariable implements Variable, Inst {
+public class PrimitiveVariable extends AstBasic implements Variable, Inst {
     public static enum ValueType {
         Boolean, Number, String, Null
     }
 
-    private Object    value;
-    private ValueType valueType;
-    private int       radix;
+    private final Object    value;
+    private final ValueType valueType;
+    private final int       radix;
 
     public PrimitiveVariable(Object value, ValueType valueType) {
         this.value = value;
         this.valueType = valueType;
+        this.radix = 10;
     }
 
     public PrimitiveVariable(Object value, ValueType valueType, int radix) {

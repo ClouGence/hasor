@@ -15,10 +15,7 @@
  */
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.compiler.ast.AstVisitor;
-import net.hasor.dataql.compiler.ast.FormatWriter;
-import net.hasor.dataql.compiler.ast.InstVisitorContext;
-import net.hasor.dataql.compiler.ast.RouteVariable;
+import net.hasor.dataql.compiler.ast.*;
 
 import java.io.IOException;
 
@@ -27,7 +24,7 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class EnterRouteVariable implements RouteVariable {
+public class EnterRouteVariable extends AstBasic implements RouteVariable {
     public static enum RouteType {
         /** 表达式 */
         Expr(),
@@ -41,7 +38,7 @@ public class EnterRouteVariable implements RouteVariable {
         Special_B("$"),  // 特殊路由2，自定义
         Special_C("@"),  // 特殊路由3，自定义
         ;
-        private String code;
+        private final String code;
 
         SpecialType(String code) {
             this.code = code;
@@ -52,8 +49,8 @@ public class EnterRouteVariable implements RouteVariable {
         }
     }
 
-    private RouteType   routeType;
-    private SpecialType specialType;
+    private final RouteType   routeType;
+    private final SpecialType specialType;
 
     public EnterRouteVariable(RouteType routeType, SpecialType specialType) {
         this.routeType = routeType;

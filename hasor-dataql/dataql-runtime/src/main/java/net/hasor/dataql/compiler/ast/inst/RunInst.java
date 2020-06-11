@@ -26,8 +26,8 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class RunInst implements Inst {
-    private Variable value;   //执行表达式
+public class RunInst extends AstBasic implements Inst {
+    private final Variable value;   //执行表达式
 
     public RunInst(Variable value) {
         this.value = value;

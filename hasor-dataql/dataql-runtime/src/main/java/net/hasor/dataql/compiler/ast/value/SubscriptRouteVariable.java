@@ -28,15 +28,15 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class SubscriptRouteVariable implements Variable, RouteVariable {
+public class SubscriptRouteVariable extends AstBasic implements Variable, RouteVariable {
     public static enum SubType {
         String, Integer, Expr
     }
 
-    private RouteVariable parent;
-    private SubType       subType;
-    private String        subValue;
-    private Expression    exprValue;
+    private final RouteVariable parent;
+    private final SubType       subType;
+    private       String        subValue;
+    private       Expression    exprValue;
 
     public SubscriptRouteVariable(RouteVariable parent, int subValue) {
         this.subType = SubType.Integer;

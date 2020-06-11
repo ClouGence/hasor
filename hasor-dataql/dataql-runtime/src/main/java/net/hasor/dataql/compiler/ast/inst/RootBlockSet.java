@@ -33,7 +33,7 @@ import java.util.Objects;
  * @version : 2019-11-07
  */
 public class RootBlockSet extends InstSet implements QueryModel {
-    private List<ImportInst> importSet = new ArrayList<>();
+    private final List<ImportInst> importSet = new ArrayList<>();
 
     public RootBlockSet() {
         super(true);

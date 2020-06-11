@@ -25,9 +25,9 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ListFormat implements Inst, Variable {
-    private RouteVariable form;
-    private ListVariable  formatTo;
+public class ListFormat extends AstBasic implements Inst, Variable {
+    private final RouteVariable form;
+    private final ListVariable  formatTo;
 
     public ListFormat(RouteVariable form, ListVariable formatTo) {
         this.form = form;

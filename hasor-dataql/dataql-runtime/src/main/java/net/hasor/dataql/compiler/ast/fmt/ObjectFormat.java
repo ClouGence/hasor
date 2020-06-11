@@ -25,9 +25,9 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ObjectFormat implements Inst, Variable {
-    private RouteVariable  form;
-    private ObjectVariable formatTo;
+public class ObjectFormat extends AstBasic implements Inst, Variable {
+    private final RouteVariable  form;
+    private final ObjectVariable formatTo;
 
     public ObjectFormat(RouteVariable form, ObjectVariable formatTo) {
         this.form = form;

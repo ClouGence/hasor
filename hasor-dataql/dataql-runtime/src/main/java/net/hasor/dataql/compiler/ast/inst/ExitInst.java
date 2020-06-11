@@ -26,9 +26,9 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ExitInst implements Inst {
-    private int      exitCode;
-    private Variable exitData;
+public class ExitInst extends AstBasic implements Inst {
+    private final int      exitCode;
+    private final Variable exitData;
 
     public ExitInst(int exitCode, Variable exitData) {
         this.exitCode = exitCode;

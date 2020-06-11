@@ -27,14 +27,14 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class SwitchInst implements Inst {
+public class SwitchInst extends AstBasic implements Inst {
     public static class SwitchExpression {
         public Expression testExpression;
         public InstSet    instBlockSet;
     }
 
-    private List<SwitchExpression> testBlockSet = new ArrayList<>();
-    private InstSet                elseBlockSet = null;
+    private final List<SwitchExpression> testBlockSet = new ArrayList<>();
+    private       InstSet                elseBlockSet = null;
 
     public List<SwitchExpression> getTestBlockSet() {
         return testBlockSet;

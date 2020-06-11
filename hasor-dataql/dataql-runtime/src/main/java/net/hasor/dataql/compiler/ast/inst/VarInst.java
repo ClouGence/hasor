@@ -26,9 +26,9 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class VarInst implements Inst {
-    private String   varName; //变量名
-    private Variable value;   //变量表达式
+public class VarInst extends AstBasic implements Inst {
+    private final String   varName; //变量名
+    private final Variable value;   //变量表达式
 
     public VarInst(String varName, Variable value) {
         this.varName = varName;

@@ -26,9 +26,9 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ThrowInst implements Inst {
-    private int      errorCode;
-    private Variable throwData;
+public class ThrowInst extends AstBasic implements Inst {
+    private final int      errorCode;
+    private final Variable throwData;
 
     public ThrowInst(int exitCode, Variable exitData) {
         this.errorCode = exitCode;

@@ -26,11 +26,11 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class FragmentVariable implements Inst, Variable {
-    private String       fragmentName;
-    private List<String> paramList = new ArrayList<>();
-    private String       fragmentString;
-    private boolean      batchMode;
+public class FragmentVariable extends AstBasic implements Inst, Variable {
+    private final String       fragmentName;
+    private final List<String> paramList = new ArrayList<>();
+    private final String       fragmentString;
+    private final boolean      batchMode;
 
     public FragmentVariable(String fragmentName, String fragmentString, boolean batchMode) {
         this.fragmentName = fragmentName;

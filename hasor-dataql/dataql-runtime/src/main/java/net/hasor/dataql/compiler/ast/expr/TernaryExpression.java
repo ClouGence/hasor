@@ -15,10 +15,7 @@
  */
 package net.hasor.dataql.compiler.ast.expr;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.compiler.ast.AstVisitor;
-import net.hasor.dataql.compiler.ast.Expression;
-import net.hasor.dataql.compiler.ast.FormatWriter;
-import net.hasor.dataql.compiler.ast.InstVisitorContext;
+import net.hasor.dataql.compiler.ast.*;
 
 import java.io.IOException;
 
@@ -27,10 +24,10 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class TernaryExpression implements Expression {
-    private Expression testExpression;  //三元运算符，条件表达式
-    private Expression thenExpression;  //第一个表达式
-    private Expression elseExpression;  //第二个表达式
+public class TernaryExpression extends AstBasic implements Expression {
+    private final Expression testExpression;  //三元运算符，条件表达式
+    private final Expression thenExpression;  //第一个表达式
+    private final Expression elseExpression;  //第二个表达式
 
     public TernaryExpression(Expression testExp, Expression thenExp, Expression elseExp) {
         this.testExpression = testExp;
