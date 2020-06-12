@@ -35,8 +35,8 @@ import java.util.Objects;
 public class ImportInstCompiler implements InstCompiler<ImportInst> {
     @Override
     public void doCompiler(ImportInst astInst, InstQueue queue, CompilerContext compilerContext) {
-        String asName = astInst.getAsName();
-        String importResource = astInst.getImportName();
+        String asName = astInst.getAsName().getValue();
+        String importResource = astInst.getImportName().getValue();
         ImportType importType = astInst.getImportType();
         //
         // .导入操作

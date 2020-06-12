@@ -33,7 +33,7 @@ public class ObjectVariableInstCompiler implements InstCompiler<ObjectVariable> 
     public void doCompiler(ObjectVariable astInst, InstQueue queue, CompilerContext compilerContext) {
         queue.inst(NEW_O);
         List<String> keyFields = astInst.getFieldSort();
-        Map<String, Variable> objectData = astInst.getObjectData();
+        Map<String, Variable> objectData = astInst.getObjectValues();
         //
         for (String fieldKey : keyFields) {
             Variable variable = objectData.get(fieldKey);

@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.expr;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.token.SymbolToken;
 
 import java.io.IOException;
 
@@ -25,13 +26,13 @@ import java.io.IOException;
  * @version : 2017-03-23
  */
 public class DyadicExpression extends AstBasic implements Expression {
-    private final Expression fstExpression;   //第一个表达式
-    private final String     dyadicSymbol;    //运算符
-    private final Expression secExpression;   //第二个表达式
+    private final Expression  fstExpression;   //第一个表达式
+    private final SymbolToken symbolToken;    //运算符
+    private final Expression  secExpression;   //第二个表达式
 
-    public DyadicExpression(Expression fstExpression, String dyadicSymbol, Expression secExpression) {
+    public DyadicExpression(Expression fstExpression, SymbolToken symbolToken, Expression secExpression) {
         this.fstExpression = fstExpression;
-        this.dyadicSymbol = dyadicSymbol;
+        this.symbolToken = symbolToken;
         this.secExpression = secExpression;
     }
 
@@ -39,8 +40,8 @@ public class DyadicExpression extends AstBasic implements Expression {
         return fstExpression;
     }
 
-    public String getDyadicSymbol() {
-        return dyadicSymbol;
+    public SymbolToken getDyadicSymbol() {
+        return symbolToken;
     }
 
     public Expression getSecExpression() {
@@ -61,7 +62,7 @@ public class DyadicExpression extends AstBasic implements Expression {
     @Override
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
         this.fstExpression.doFormat(depth, formatOption, writer);
-        writer.write(" " + dyadicSymbol + " ");
+        writer.write(" " + symbolToken.getSymbol() + " ");
         this.secExpression.doFormat(depth, formatOption, writer);
     }
 }

@@ -30,6 +30,6 @@ public class ThrowInstCompiler implements InstCompiler<ThrowInst> {
     public void doCompiler(ThrowInst astInst, InstQueue queue, CompilerContext compilerContext) {
         Variable dataValue = astInst.getThrowData();
         compilerContext.findInstCompilerByInst(dataValue).doCompiler(queue);
-        queue.inst(THROW, astInst.getErrorCode());
+        queue.inst(THROW, astInst.getErrorCode().getValue());
     }
 }

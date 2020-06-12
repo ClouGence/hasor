@@ -51,7 +51,7 @@ public class ObjectFormatInstCompiler implements InstCompiler<ObjectFormat> {
             queue.inst(NEW_O);
             ObjectVariable formatTo = astInst.getFormatTo();
             List<String> keyFields = formatTo.getFieldSort();
-            Map<String, Variable> objectData = formatTo.getObjectData();
+            Map<String, Variable> objectData = formatTo.getObjectValues();
             for (String fieldKey : keyFields) {
                 Variable variable = objectData.get(fieldKey);
                 compilerContext.findInstCompilerByInst(variable).doCompiler(queue);

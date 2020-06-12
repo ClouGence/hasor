@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.token.StringToken;
 import net.hasor.dataql.compiler.ast.value.LambdaVariable;
 import net.hasor.utils.StringUtils;
 
@@ -27,15 +28,15 @@ import java.io.IOException;
  * @version : 2017-03-23
  */
 public class VarInst extends AstBasic implements Inst {
-    private final String   varName; //变量名
-    private final Variable value;   //变量表达式
+    private final StringToken varName; //变量名
+    private final Variable    value;   //变量表达式
 
-    public VarInst(String varName, Variable value) {
+    public VarInst(StringToken varName, Variable value) {
         this.varName = varName;
         this.value = value;
     }
 
-    public String getVarName() {
+    public StringToken getVarName() {
         return varName;
     }
 
@@ -57,7 +58,7 @@ public class VarInst extends AstBasic implements Inst {
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
         String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
         //
-        writer.write(fixedString + String.format("var %s = ", this.varName));
+        writer.write(fixedString + String.format("var %s = ", this.varName.getValue()));
         this.value.doFormat(depth, formatOption, writer);
         if (this.value instanceof LambdaVariable) {
             return;

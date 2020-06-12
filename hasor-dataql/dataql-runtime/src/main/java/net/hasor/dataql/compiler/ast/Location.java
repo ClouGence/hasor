@@ -15,27 +15,16 @@
  */
 package net.hasor.dataql.compiler.ast;
 /**
- * AST 和代码文本的位置关系
+ * 指令，基类
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-06-11
  */
-public class AstBasic implements Location {
-    private int lineNumber   = -1; // 代码行号
-    private int columnNumber = -1; // 代码行的第几个字符
+public interface Location {
+    public int getLineNumber();
 
-    public int getLineNumber() {
-        return this.lineNumber;
-    }
+    public int getColumnNumber();
 
-    public int getColumnNumber() {
-        return this.columnNumber;
-    }
+    public void setLineNumber(int lineNumber);
 
-    public void setLineNumber(int lineNumber) {
-        this.lineNumber = lineNumber;
-    }
-
-    public void setColumnNumber(int columnNumber) {
-        this.columnNumber = columnNumber;
-    }
+    public void setColumnNumber(int columnNumber);
 }

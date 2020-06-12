@@ -33,11 +33,12 @@ public class SubscriptRouteVariableInstCompiler implements InstCompiler<Subscrip
         compilerContext.findInstCompilerByInst(astInst.getParent()).doCompiler(queue);
         //
         SubType subType = astInst.getSubType();
-        String subValue = astInst.getSubValue();
         if (subType == SubType.String) {
+            String subValue = astInst.getSubValue().getValue();
             queue.inst(GET, subValue);
         }
         if (subType == SubType.Integer) {
+            String subValue = astInst.getSubValue().getValue();
             queue.inst(PULL, Integer.parseInt(subValue));
         }
         if (subType == SubType.Expr) {

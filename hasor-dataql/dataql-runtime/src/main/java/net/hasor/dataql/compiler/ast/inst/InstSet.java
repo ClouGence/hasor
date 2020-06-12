@@ -28,7 +28,7 @@ import java.util.Objects;
  * @version : 2017-03-23
  */
 public class InstSet extends ArrayList<Inst> implements Inst {
-    private       AstBasic       astBasic  = new AstBasic();
+    private final AstBasic       astBasic  = new AstBasic();
     private final List<HintInst> optionSet = new ArrayList<>();
     private       boolean        multipleInst;
 

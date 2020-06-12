@@ -13,29 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.compiler.ast;
+package net.hasor.dataql.compiler.ast.token;
+import net.hasor.dataql.compiler.ast.AstBasic;
+
 /**
- * AST 和代码文本的位置关系
+ * 表示一个 数字
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-06-11
  */
-public class AstBasic implements Location {
-    private int lineNumber   = -1; // 代码行号
-    private int columnNumber = -1; // 代码行的第几个字符
+public class IntegerToken extends AstBasic {
+    private final int value;
 
-    public int getLineNumber() {
-        return this.lineNumber;
+    public IntegerToken(int value) {
+        this.value = value;
     }
 
-    public int getColumnNumber() {
-        return this.columnNumber;
+    public int getValue() {
+        return this.value;
     }
 
-    public void setLineNumber(int lineNumber) {
-        this.lineNumber = lineNumber;
-    }
-
-    public void setColumnNumber(int columnNumber) {
-        this.columnNumber = columnNumber;
+    public StringToken toStringToken() {
+        StringToken stringToken = new StringToken(String.valueOf(this.value));
+        stringToken.setLineNumber(this.getLineNumber());
+        stringToken.setColumnNumber(this.getColumnNumber());
+        return stringToken;
     }
 }

@@ -17,10 +17,13 @@ package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.ast.inst.InstSet;
+import net.hasor.dataql.compiler.ast.token.StringToken;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * lambda 函数对象
@@ -28,21 +31,23 @@ import java.util.List;
  * @version : 2017-03-23
  */
 public class LambdaVariable extends InstSet implements Variable {
-    private final List<String> paramList = new ArrayList<>();
+    private final Map<String, StringToken> paramMap  = new HashMap<>();
+    private final List<StringToken>        paramList = new ArrayList<>();
 
     public LambdaVariable() {
         super(true);
     }
 
     /** 添加入参 */
-    public void addParam(String name) {
-        if (this.paramList.contains(name)) {
+    public void addParam(StringToken name) {
+        if (this.paramMap.containsKey(name.getValue())) {
             throw new java.lang.IllegalStateException(name + " param existing.");
         }
+        this.paramMap.put(name.getValue(), name);
         this.paramList.add(name);
     }
 
-    public List<String> getParamList() {
+    public List<StringToken> getParamList() {
         return paramList;
     }
 
@@ -65,7 +70,7 @@ public class LambdaVariable extends InstSet implements Variable {
             if (i > 0) {
                 writer.write(", ");
             }
-            writer.write(this.paramList.get(i));
+            writer.write(this.paramList.get(i).getValue());
         }
         writer.write(") -> ");
         if (this.isMultipleInst()) {

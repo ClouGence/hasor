@@ -29,7 +29,7 @@ public class VarInstCompiler implements InstCompiler<VarInst> {
     @Override
     public void doCompiler(VarInst astInst, InstQueue queue, CompilerContext compilerContext) {
         // .如果当前堆栈中存在该变量的定义，那么直接覆盖。否则新增一个本地变量
-        String varName = astInst.getVarName();
+        String varName = astInst.getVarName().getValue();
         int index = compilerContext.containsWithCurrent(varName);
         if (index < 0) {
             index = compilerContext.push(varName);

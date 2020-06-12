@@ -30,6 +30,6 @@ public class ReturnInstCompiler implements InstCompiler<ReturnInst> {
     public void doCompiler(ReturnInst astInst, InstQueue queue, CompilerContext compilerContext) {
         Variable dataValue = astInst.getResultData();
         compilerContext.findInstCompilerByInst(dataValue).doCompiler(queue);
-        queue.inst(RETURN, astInst.getReturnCode());
+        queue.inst(RETURN, astInst.getReturnCode().getValue());
     }
 }

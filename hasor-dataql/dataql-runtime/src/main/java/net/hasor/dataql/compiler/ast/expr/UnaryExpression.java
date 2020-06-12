@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.expr;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.token.SymbolToken;
 
 import java.io.IOException;
 
@@ -25,20 +26,20 @@ import java.io.IOException;
  * @version : 2017-03-23
  */
 public class UnaryExpression extends AstBasic implements Expression {
-    private final Expression target;      //表达式
-    private final String     dyadicSymbol;//操作符
+    private final Expression  target;      //表达式
+    private final SymbolToken symbolToken;//操作符
 
-    public UnaryExpression(Expression target, String dyadicSymbol) {
+    public UnaryExpression(Expression target, SymbolToken symbolToken) {
         this.target = target;
-        this.dyadicSymbol = dyadicSymbol;
+        this.symbolToken = symbolToken;
     }
 
     public Expression getTarget() {
         return target;
     }
 
-    public String getDyadicSymbol() {
-        return dyadicSymbol;
+    public SymbolToken getDyadicSymbol() {
+        return symbolToken;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class UnaryExpression extends AstBasic implements Expression {
 
     @Override
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
-        writer.write(this.dyadicSymbol);
+        writer.write(this.symbolToken.getSymbol());
         this.target.doFormat(depth, formatOption, writer);
     }
 }

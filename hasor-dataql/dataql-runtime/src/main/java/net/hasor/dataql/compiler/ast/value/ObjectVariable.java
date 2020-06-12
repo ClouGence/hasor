@@ -17,6 +17,7 @@ package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.ast.expr.AtomExpression;
+import net.hasor.dataql.compiler.ast.token.StringToken;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
 import net.hasor.utils.StringUtils;
 
@@ -32,31 +33,39 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 public class ObjectVariable extends AstBasic implements Inst, Variable {
-    private final List<String>          fieldSort;
-    private final String                objectType;
-    private final Map<String, Variable> objectData;
+    private final List<String>             fieldSort;
+    private final String                   objectType;
+    private final Map<String, StringToken> objectKey;
+    private final Map<String, Variable>    objectData;
 
     public ObjectVariable() {
         this.fieldSort = new ArrayList<>();
         this.objectType = "";
+        this.objectKey = new HashMap<>();
         this.objectData = new HashMap<>();
     }
 
     /** 添加字段 */
-    public void addField(String fieldName, Variable valueExp) {
-        if (StringUtils.isBlank(fieldName) || this.fieldSort.contains(fieldName)) {
+    public void addField(StringToken fieldName, Variable valueExp) {
+        String nameValue = fieldName.getValue();
+        if (StringUtils.isBlank(nameValue) || this.fieldSort.contains(nameValue)) {
             return;
         }
-        this.fieldSort.add(fieldName);
-        this.objectData.put(fieldName, valueExp);
+        this.fieldSort.add(nameValue);
+        this.objectKey.put(nameValue, fieldName);
+        this.objectData.put(nameValue, valueExp);
     }
 
     public List<String> getFieldSort() {
         return fieldSort;
     }
 
-    public Map<String, Variable> getObjectData() {
-        return objectData;
+    public Map<String, StringToken> getObjectKeys() {
+        return this.objectKey;
+    }
+
+    public Map<String, Variable> getObjectValues() {
+        return this.objectData;
     }
 
     @Override
@@ -95,12 +104,12 @@ public class ObjectVariable extends AstBasic implements Inst, Variable {
             }
             if (variable instanceof NameRouteVariable) {
                 NameRouteVariable nameRouteVariable = (NameRouteVariable) variable;
-                if (!key.equals(nameRouteVariable.getName())) {
+                if (!key.equals(nameRouteVariable.getName().getValue())) {
                     writer.write(" : ");
                     variable.doFormat(depth + 1, formatOption, writer);
                 } else {
                     RouteVariable tempParent = nameRouteVariable.getParent();
-                    if (tempParent instanceof NameRouteVariable && StringUtils.isBlank(((NameRouteVariable) tempParent).getName())) {
+                    if (tempParent instanceof NameRouteVariable && StringUtils.isBlank(((NameRouteVariable) tempParent).getName().getValue())) {
                         tempParent = tempParent.getParent();
                     }
                     if (tempParent instanceof EnterRouteVariable) {

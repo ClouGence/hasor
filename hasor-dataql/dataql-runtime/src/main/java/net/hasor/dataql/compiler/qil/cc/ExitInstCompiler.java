@@ -30,6 +30,6 @@ public class ExitInstCompiler implements InstCompiler<ExitInst> {
     public void doCompiler(ExitInst astInst, InstQueue queue, CompilerContext compilerContext) {
         Variable dataValue = astInst.getExitData();
         compilerContext.findInstCompilerByInst(dataValue).doCompiler(queue);
-        queue.inst(EXIT, astInst.getExitCode());
+        queue.inst(EXIT, astInst.getExitCode().getValue());
     }
 }

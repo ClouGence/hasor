@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.parser;
 import net.hasor.dataql.compiler.ParseException;
 import net.hasor.dataql.compiler.ast.Expression;
+import net.hasor.dataql.compiler.ast.Location;
 import net.hasor.dataql.compiler.ast.RouteVariable;
 import net.hasor.dataql.compiler.ast.Variable;
 import net.hasor.dataql.compiler.ast.expr.*;
@@ -23,11 +24,15 @@ import net.hasor.dataql.compiler.ast.fmt.ListFormat;
 import net.hasor.dataql.compiler.ast.fmt.ObjectFormat;
 import net.hasor.dataql.compiler.ast.inst.*;
 import net.hasor.dataql.compiler.ast.inst.ImportInst.ImportType;
+import net.hasor.dataql.compiler.ast.token.IntegerToken;
+import net.hasor.dataql.compiler.ast.token.StringToken;
+import net.hasor.dataql.compiler.ast.token.SymbolToken;
 import net.hasor.dataql.compiler.ast.value.*;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
 import net.hasor.dataql.compiler.ast.value.PrimitiveVariable.ValueType;
 import net.hasor.dataql.compiler.parser.DataQLParser.*;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -47,11 +52,18 @@ import java.util.Stack;
  * @version : 2019-11-07
  */
 public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> implements DataQLParserVisitor<T> {
-    private Stack<Object> instStack = new Stack<>();
+    private final Stack<Object> instStack = new Stack<>();
+
+    public <T extends Location> T code(T location, ParserRuleContext context) {
+        Token start = context.start;
+        location.setLineNumber(start.getLine());
+        location.setLineNumber(start.getCharPositionInLine());
+        return location;
+    }
 
     @Override
     public T visitRootInstSet(RootInstSetContext ctx) {
-        this.instStack.push(new RootBlockSet());
+        this.instStack.push(code(new RootBlockSet(), ctx));
         List<HintInstContext> optionList = ctx.hintInst();
         List<ImportInstContext> importList = ctx.importInst();
         List<BlockSetContext> blockSetList = ctx.blockSet();
@@ -84,11 +96,13 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
     @Override
     public T visitHintInst(HintInstContext ctx) {
-        this.instStack.push(fixIdentifier(ctx.IDENTIFIER()));
+        TerminalNode identifier = ctx.IDENTIFIER();
+        StringToken stringToken = new StringToken(fixIdentifier(identifier));
+        this.instStack.push(stringToken);
         visitChildren(ctx);
         //
         PrimitiveVariable optValue = (PrimitiveVariable) this.instStack.pop();
-        String optKey = (String) this.instStack.pop();
+        StringToken optKey = (StringToken) this.instStack.pop();
         HintInst hintInst = new HintInst(optKey, optValue);
         ((InstSet) this.instStack.peek()).addOptionInst(hintInst);
         return null;
@@ -110,7 +124,9 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             }
         }
         //
-        ImportInst importInst = new ImportInst(importType, importResource, asName);
+        StringToken importResourceToken = new StringToken(importResource);
+        StringToken asNameToken = new StringToken(asName);
+        ImportInst importInst = new ImportInst(importType, importResourceToken, asNameToken);
         ((RootBlockSet) this.instStack.peek()).addImportInst(importInst);
         return null;
     }
@@ -133,7 +149,9 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     public T visitVarInst(VarInstContext ctx) {
         visitChildren(ctx);
         //
-        VarInst varInst = new VarInst(fixIdentifier(ctx.IDENTIFIER()), (Variable) this.instStack.pop());
+        TerminalNode identifier = ctx.IDENTIFIER();
+        StringToken stringToken = new StringToken(fixIdentifier(identifier));
+        VarInst varInst = new VarInst(stringToken, (Variable) this.instStack.pop());
         ((InstSet) this.instStack.peek()).addInst(varInst);
         return null;
     }
@@ -189,21 +207,22 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         if (breakCodeNode != null) {
             breakCode = Integer.parseInt(breakCodeNode.getText());
         }
+        IntegerToken breakCodeToken = new IntegerToken(breakCode);
         //
         AnyObjectContext anyObject = ctx.anyObject();
         anyObject.accept(this);
         Variable variable = (Variable) this.instStack.pop();
         //
         if (ctx.EXIT() != null) {
-            ((InstSet) this.instStack.peek()).addInst(new ExitInst(breakCode, variable));
+            ((InstSet) this.instStack.peek()).addInst(new ExitInst(breakCodeToken, variable));
             return null;
         }
         if (ctx.THROW() != null) {
-            ((InstSet) this.instStack.peek()).addInst(new ThrowInst(breakCode, variable));
+            ((InstSet) this.instStack.peek()).addInst(new ThrowInst(breakCodeToken, variable));
             return null;
         }
         if (ctx.RETURN() != null) {
-            ((InstSet) this.instStack.peek()).addInst(new ReturnInst(breakCode, variable));
+            ((InstSet) this.instStack.peek()).addInst(new ReturnInst(breakCodeToken, variable));
             return null;
         }
         throw newParseException(ctx.start, "missing exit statement.");
@@ -215,7 +234,9 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         List<TerminalNode> identifierList = ctx.IDENTIFIER();
         if (identifierList != null) {
             for (TerminalNode terminalNode : identifierList) {
-                lambdaVariable.addParam(fixIdentifier(terminalNode));
+                String paramName = fixIdentifier(terminalNode);
+                StringToken paramToken = new StringToken(paramName);
+                lambdaVariable.addParam(paramToken);
             }
         }
         //
@@ -237,17 +258,20 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
     @Override
     public T visitObjectKeyValue(ObjectKeyValueContext ctx) {
+        TerminalNode fieldKeyTerm = ctx.STRING();
+        String fieldKey = fixString(fieldKeyTerm);
+        StringToken fieldKeyToken = new StringToken(fieldKey);
+        //
         ObjectVariable objectVariable = (ObjectVariable) this.instStack.peek();
-        String fieldKey = fixString(ctx.STRING());
         AnyObjectContext polymericObject = ctx.anyObject();
         if (polymericObject != null) {
             polymericObject.accept(this);
             Variable valueExp = (Variable) this.instStack.pop();
-            objectVariable.addField(fieldKey, valueExp);
+            objectVariable.addField(fieldKeyToken, valueExp);
         } else {
             EnterRouteVariable enterRoute = new EnterRouteVariable(RouteType.Expr, null);
-            NameRouteVariable nameRoute = new NameRouteVariable(enterRoute, fieldKey);
-            objectVariable.addField(fieldKey, nameRoute);
+            NameRouteVariable nameRoute = new NameRouteVariable(enterRoute, fieldKeyToken);
+            objectVariable.addField(fieldKeyToken, nameRoute);
         }
         return null;
     }
@@ -458,14 +482,14 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         SpecialType special = specialType(ctx.ROU(), SpecialType.Special_B);
         TerminalNode identifier = ctx.IDENTIFIER();
         TerminalNode string = ctx.STRING();
-        String rouName = null;
+        StringToken rouNameToken = null;
         EnterRouteVariable enter = new EnterRouteVariable(RouteType.Params, special);
         if (identifier != null) {
-            rouName = fixIdentifier(identifier);
+            rouNameToken = new StringToken(fixIdentifier(identifier));
         } else {
-            rouName = string.getText();
+            rouNameToken = new StringToken(string.getText());
         }
-        this.instStack.push(new NameRouteVariable(enter, rouName));
+        this.instStack.push(new NameRouteVariable(enter, rouNameToken));
         //
         // .x{} 后面的继续路由
         RouteSubscriptContext routeSubscript = ctx.routeSubscript();
@@ -502,7 +526,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         SpecialType special = specialType(ctx.ROU(), SpecialType.Special_B);
         EnterRouteVariable enter = new EnterRouteVariable(RouteType.Expr, special);
         if (ctx.DOT() != null) {
-            this.instStack.push(new NameRouteVariable(enter, ""));
+            this.instStack.push(new NameRouteVariable(enter, new StringToken("")));
         } else {
             this.instStack.push(enter);
         }
@@ -560,8 +584,9 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
             this.instStack.pop();
             parent = (RouteVariable) peek;
         }
-        String itemName = fixIdentifier(ctx.IDENTIFIER());
-        this.instStack.push(new NameRouteVariable(parent, itemName));
+        TerminalNode itemNameTerm = ctx.IDENTIFIER();
+        StringToken itemNameToken = new StringToken(fixIdentifier(itemNameTerm));
+        this.instStack.push(new NameRouteVariable(parent, itemNameToken));
         //
         List<RouteSubscriptContext> subList = ctx.routeSubscript();
         if (subList != null) {
@@ -580,11 +605,13 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         ExprContext exprContext = ctx.expr();
         //
         if (intNode != null) {
-            this.instStack.push(new SubscriptRouteVariable(atNode, Integer.parseInt(intNode.getText())));
+            IntegerToken subscriptToken = new IntegerToken(Integer.parseInt(intNode.getText()));
+            this.instStack.push(new SubscriptRouteVariable(atNode, subscriptToken));
             return null;
         }
         if (stringNode != null) {
-            this.instStack.push(new SubscriptRouteVariable(atNode, fixString(stringNode)));
+            StringToken subscriptToken = new StringToken(fixString(stringNode));
+            this.instStack.push(new SubscriptRouteVariable(atNode, subscriptToken));
             return null;
         }
         if (exprContext != null) {
@@ -627,7 +654,8 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         //
         ctx.expr().accept(this);
         Expression expr = (Expression) this.instStack.pop();
-        this.instStack.push(new UnaryExpression(expr, unaryOper.getText()));
+        SymbolToken symbolToken = new SymbolToken(unaryOper.getText());
+        this.instStack.push(new UnaryExpression(expr, symbolToken));
         return null;
     }
 
@@ -666,7 +694,8 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         ctx.expr().accept(this);
         Expression expr2 = (Expression) this.instStack.pop();
         Expression expr1 = (Expression) this.instStack.pop();
-        this.instStack.push(new DyadicExpression(expr1, dyadicOper.getText(), expr2));
+        SymbolToken symbolToken = new SymbolToken(dyadicOper.getText());
+        this.instStack.push(new DyadicExpression(expr1, symbolToken, expr2));
         return null;
     }
 
@@ -704,11 +733,14 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         }
         //
         boolean isBatch = ctx.LSBT() != null;
-        FragmentVariable fragmentVariable = new FragmentVariable(fragmentName, fragmentString.toString(), isBatch);
+        StringToken fragmentNameToken = new StringToken(fragmentName);
+        StringToken fragmentStringToken = new StringToken(fragmentString.toString());
+        FragmentVariable fragmentVariable = new FragmentVariable(fragmentNameToken, fragmentStringToken, isBatch);
         ExtParamsContext paramsContext = ctx.extParams();
         if (paramsContext != null) {
             for (TerminalNode terminalNode : paramsContext.IDENTIFIER()) {
-                fragmentVariable.getParamList().add(fixIdentifier(terminalNode));
+                StringToken paramNameToken = new StringToken(fixIdentifier(terminalNode));
+                fragmentVariable.getParamList().add(paramNameToken);
             }
         }
         this.instStack.push(fragmentVariable);

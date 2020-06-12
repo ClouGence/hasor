@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.inst.InstSet;
+import net.hasor.dataql.compiler.ast.token.StringToken;
 import net.hasor.dataql.compiler.ast.value.LambdaVariable;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
@@ -32,11 +33,11 @@ public class LambdaVariableInstCompiler implements InstCompiler<LambdaVariable> 
     public void doCompiler(LambdaVariable astInst, InstQueue queue, CompilerContext compilerContext) {
         //
         // .声明函数参数的变量位置
-        List<String> paramList = astInst.getParamList();
+        List<StringToken> paramList = astInst.getParamList();
         InstQueue newMethodInst = queue.newMethodInst();
         compilerContext.newFrame();
         for (int i = 0; i < paramList.size(); i++) {
-            String name = paramList.get(i);
+            String name = paramList.get(i).getValue();
             int index = compilerContext.push(name);//将变量名压栈，并返回栈中的位置
             newMethodInst.inst(LOCAL, i, index, name);  //为栈中某个位置的变量命名
         }

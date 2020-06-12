@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.token.IntegerToken;
 import net.hasor.dataql.compiler.ast.value.LambdaVariable;
 import net.hasor.utils.StringUtils;
 
@@ -27,15 +28,15 @@ import java.io.IOException;
  * @version : 2017-03-23
  */
 public class ThrowInst extends AstBasic implements Inst {
-    private final int      errorCode;
-    private final Variable throwData;
+    private final IntegerToken errorCode;
+    private final Variable     throwData;
 
-    public ThrowInst(int exitCode, Variable exitData) {
+    public ThrowInst(IntegerToken exitCode, Variable exitData) {
         this.errorCode = exitCode;
         this.throwData = exitData;
     }
 
-    public int getErrorCode() {
+    public IntegerToken getErrorCode() {
         return errorCode;
     }
 
@@ -57,8 +58,8 @@ public class ThrowInst extends AstBasic implements Inst {
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
         String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
         //
-        if (this.errorCode != 0) {
-            writer.write(fixedString + String.format("throw %s, ", this.errorCode));
+        if (this.errorCode.getValue() != 0) {
+            writer.write(fixedString + String.format("throw %s, ", this.errorCode.getValue()));
         } else {
             writer.write(fixedString + "throw ");
         }

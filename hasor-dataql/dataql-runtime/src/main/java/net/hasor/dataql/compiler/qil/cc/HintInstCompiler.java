@@ -28,7 +28,7 @@ import net.hasor.dataql.compiler.qil.InstQueue;
 public class HintInstCompiler implements InstCompiler<HintInst> {
     @Override
     public void doCompiler(HintInst astInst, InstQueue queue, CompilerContext compilerContext) {
-        queue.inst(LDC_S, astInst.getHint());
+        queue.inst(LDC_S, astInst.getHint().getValue());
         PrimitiveVariable hintValue = astInst.getValue();
         compilerContext.findInstCompilerByInst(hintValue).doCompiler(queue);
         queue.inst(HINT);

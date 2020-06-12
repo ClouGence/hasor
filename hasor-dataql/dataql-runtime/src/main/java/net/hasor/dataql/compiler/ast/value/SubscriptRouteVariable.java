@@ -18,6 +18,8 @@ import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
 import net.hasor.dataql.compiler.ast.expr.AtomExpression;
 import net.hasor.dataql.compiler.ast.expr.PrivilegeExpression;
+import net.hasor.dataql.compiler.ast.token.IntegerToken;
+import net.hasor.dataql.compiler.ast.token.StringToken;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
 
@@ -35,16 +37,16 @@ public class SubscriptRouteVariable extends AstBasic implements Variable, RouteV
 
     private final RouteVariable parent;
     private final SubType       subType;
-    private       String        subValue;
+    private       StringToken   subValue;
     private       Expression    exprValue;
 
-    public SubscriptRouteVariable(RouteVariable parent, int subValue) {
+    public SubscriptRouteVariable(RouteVariable parent, IntegerToken subValue) {
         this.subType = SubType.Integer;
         this.parent = parent;
-        this.subValue = String.valueOf(subValue);
+        this.subValue = subValue.toStringToken();
     }
 
-    public SubscriptRouteVariable(RouteVariable parent, String subValue) {
+    public SubscriptRouteVariable(RouteVariable parent, StringToken subValue) {
         this.subType = SubType.String;
         this.parent = parent;
         this.subValue = subValue;
@@ -65,7 +67,7 @@ public class SubscriptRouteVariable extends AstBasic implements Variable, RouteV
         return subType;
     }
 
-    public String getSubValue() {
+    public StringToken getSubValue() {
         return subValue;
     }
 
@@ -98,10 +100,10 @@ public class SubscriptRouteVariable extends AstBasic implements Variable, RouteV
         }
         //
         if (subType == SubType.String) {
-            String newValue = subValue.replace(String.valueOf(quoteChar), "\\" + quoteChar);
+            String newValue = subValue.getValue().replace(String.valueOf(quoteChar), "\\" + quoteChar);
             writer.write("[" + quoteChar + newValue + quoteChar + "]");
         } else if (subType == SubType.Integer) {
-            writer.write("[" + subValue + "]");
+            writer.write("[" + subValue.getValue() + "]");
         } else {
             writer.write("[");
             Variable varExp = this.exprValue;

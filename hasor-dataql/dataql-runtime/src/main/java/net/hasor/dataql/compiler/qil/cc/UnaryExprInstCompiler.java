@@ -29,6 +29,6 @@ public class UnaryExprInstCompiler implements InstCompiler<UnaryExpression> {
     @Override
     public void doCompiler(UnaryExpression astInst, InstQueue queue, CompilerContext compilerContext) {
         compilerContext.findInstCompilerByInst(astInst.getTarget()).doCompiler(queue);
-        queue.inst(Opcodes.UO, astInst.getDyadicSymbol());
+        queue.inst(Opcodes.UO, astInst.getDyadicSymbol().getSymbol());
     }
 }

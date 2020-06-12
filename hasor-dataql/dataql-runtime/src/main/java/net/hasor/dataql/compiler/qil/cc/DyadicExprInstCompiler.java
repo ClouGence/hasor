@@ -35,7 +35,7 @@ public class DyadicExprInstCompiler implements InstCompiler<DyadicExpression> {
 
     protected void doCompiler(DyadicExpression astInst, InstQueue queue, CompilerContext compilerContext, Stack<String> last) {
         Expression fstExpression = astInst.getFstExpression();
-        String dyadicSymbol = astInst.getDyadicSymbol();
+        String dyadicSymbol = astInst.getDyadicSymbol().getSymbol();
         Expression secExpression = astInst.getSecExpression();
         //
         //  优先级：

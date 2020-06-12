@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.token.IntegerToken;
 import net.hasor.dataql.compiler.ast.value.LambdaVariable;
 import net.hasor.utils.StringUtils;
 
@@ -27,15 +28,15 @@ import java.io.IOException;
  * @version : 2019-11-07
  */
 public class ReturnInst extends AstBasic implements Inst {
-    private final int      returnCode;
-    private final Variable resultData;
+    private final IntegerToken returnCode;
+    private final Variable     resultData;
 
-    public ReturnInst(int returnCode, Variable resultData) {
+    public ReturnInst(IntegerToken returnCode, Variable resultData) {
         this.returnCode = returnCode;
         this.resultData = resultData;
     }
 
-    public int getReturnCode() {
+    public IntegerToken getReturnCode() {
         return returnCode;
     }
 
@@ -57,8 +58,8 @@ public class ReturnInst extends AstBasic implements Inst {
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
         String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
         //
-        if (this.returnCode != 0) {
-            writer.write(fixedString + String.format("return %s, ", this.returnCode));
+        if (this.returnCode.getValue() != 0) {
+            writer.write(fixedString + String.format("return %s, ", this.returnCode.getValue()));
         } else {
             writer.write(fixedString + "return ");
         }

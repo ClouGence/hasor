@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.token.StringToken;
 import net.hasor.dataql.compiler.ast.value.PrimitiveVariable;
 import net.hasor.utils.StringUtils;
 
@@ -27,15 +28,15 @@ import java.io.IOException;
  * @version : 2017-03-23
  */
 public class HintInst extends AstBasic implements Inst {
-    private final String            hint;
+    private final StringToken       hint;
     private final PrimitiveVariable value;
 
-    public HintInst(String hint, PrimitiveVariable value) {
+    public HintInst(StringToken hint, PrimitiveVariable value) {
         this.hint = hint;
         this.value = value;
     }
 
-    public String getHint() {
+    public StringToken getHint() {
         return hint;
     }
 
@@ -56,7 +57,7 @@ public class HintInst extends AstBasic implements Inst {
     @Override
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
         String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
-        String opt = fixedString + "hint " + this.hint + " = ";
+        String opt = fixedString + "hint " + this.hint.getValue() + " = ";
         writer.write(opt);
         this.value.doFormat(depth + 1, formatOption, writer);
         writer.write(";\n");

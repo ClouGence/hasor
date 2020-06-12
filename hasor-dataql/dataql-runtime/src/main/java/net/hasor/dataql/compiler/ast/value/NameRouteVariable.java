@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.token.StringToken;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
 import net.hasor.utils.StringUtils;
@@ -29,9 +30,9 @@ import java.io.IOException;
  */
 public class NameRouteVariable extends AstBasic implements Variable, RouteVariable {
     private final RouteVariable parent;
-    private final String        name;
+    private final StringToken   name;
 
-    public NameRouteVariable(RouteVariable parent, String name) {
+    public NameRouteVariable(RouteVariable parent, StringToken name) {
         this.parent = parent;
         this.name = name;
     }
@@ -41,7 +42,7 @@ public class NameRouteVariable extends AstBasic implements Variable, RouteVariab
         return this.parent;
     }
 
-    public String getName() {
+    public StringToken getName() {
         return name;
     }
 
@@ -75,7 +76,7 @@ public class NameRouteVariable extends AstBasic implements Variable, RouteVariab
         //
         this.parent.doFormat(depth, formatOption, writer);
         if (this.parent instanceof EnterRouteVariable) {
-            if (StringUtils.isBlank(this.name)) {
+            if (StringUtils.isBlank(this.name.getValue())) {
                 SpecialType special = ((EnterRouteVariable) this.parent).getSpecialType();
                 if (special != SpecialType.Special_A) {
                     writer.write(((EnterRouteVariable) this.parent).getSpecialType().getCode());
@@ -84,13 +85,13 @@ public class NameRouteVariable extends AstBasic implements Variable, RouteVariab
                 if (RouteType.Params != routeType && SpecialType.Special_A != specialType) {
                     writer.write(specialType.getCode());
                 }
-                writer.write(this.name);
+                writer.write(this.name.getValue());
             }
         } else {
-            if (this.parent instanceof NameRouteVariable && StringUtils.isBlank(((NameRouteVariable) this.parent).name)) {
-                writer.write(this.name);
+            if (this.parent instanceof NameRouteVariable && StringUtils.isBlank(((NameRouteVariable) this.parent).name.getValue())) {
+                writer.write(this.name.getValue());
             } else {
-                writer.write("." + this.name);
+                writer.write("." + this.name.getValue());
             }
         }
         //

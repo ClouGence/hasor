@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.token.StringToken;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,26 +28,26 @@ import java.util.List;
  * @version : 2017-03-23
  */
 public class FragmentVariable extends AstBasic implements Inst, Variable {
-    private final String       fragmentName;
-    private final List<String> paramList = new ArrayList<>();
-    private final String       fragmentString;
-    private final boolean      batchMode;
+    private final StringToken       fragmentName;
+    private final List<StringToken> paramList = new ArrayList<>();
+    private final StringToken       fragmentString;
+    private final boolean           batchMode;
 
-    public FragmentVariable(String fragmentName, String fragmentString, boolean batchMode) {
+    public FragmentVariable(StringToken fragmentName, StringToken fragmentString, boolean batchMode) {
         this.fragmentName = fragmentName;
         this.fragmentString = fragmentString;
         this.batchMode = batchMode;
     }
 
-    public String getFragmentName() {
+    public StringToken getFragmentName() {
         return fragmentName;
     }
 
-    public String getFragmentString() {
+    public StringToken getFragmentString() {
         return fragmentString;
     }
 
-    public List<String> getParamList() {
+    public List<StringToken> getParamList() {
         return paramList;
     }
 
@@ -65,18 +66,18 @@ public class FragmentVariable extends AstBasic implements Inst, Variable {
 
     @Override
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
-        writer.write("@@" + this.fragmentName);
+        writer.write("@@" + this.fragmentName.getValue());
         if (batchMode) {
             writer.write("[]");
         }
         writer.write("(");
         for (int i = 0; i < this.paramList.size(); i++) {
             if (i == 0) {
-                writer.write(this.paramList.get(i));
+                writer.write(this.paramList.get(i).getValue());
             } else {
-                writer.write("," + this.paramList.get(i));
+                writer.write("," + this.paramList.get(i).getValue());
             }
         }
-        writer.write(") <%" + this.fragmentString + "%>");
+        writer.write(") <%" + this.fragmentString.getValue() + "%>");
     }
 }

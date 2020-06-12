@@ -32,10 +32,10 @@ import net.hasor.utils.StringUtils;
 public class NameRouteVariableInstCompiler implements InstCompiler<NameRouteVariable> {
     @Override
     public void doCompiler(NameRouteVariable astInst, InstQueue queue, CompilerContext compilerContext) {
-        String astInstName = astInst.getName();
+        String astInstName = astInst.getName().getValue();
         RouteVariable parent = astInst.getParent();
         if (parent instanceof NameRouteVariable) {
-            if (StringUtils.isBlank(((NameRouteVariable) parent).getName())) {
+            if (StringUtils.isBlank(((NameRouteVariable) parent).getName().getValue())) {
                 parent = parent.getParent();
             }
         }
