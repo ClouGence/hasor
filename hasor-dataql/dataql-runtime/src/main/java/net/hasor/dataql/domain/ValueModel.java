@@ -55,57 +55,57 @@ public class ValueModel implements DataModel {
         return this.value == null;
     }
 
-    /** 判断是否为 Number 类型值 */
+    /** 是否可以转为 Number 类型值 */
     public boolean isNumber() {
         return OperatorUtils.isNumber(this.value);
     }
 
-    /** 判断是否为 byte 类型值 */
+    /** 是否可以转为 byte 类型值 */
     public boolean isByte() {
         return OperatorUtils.isByteNumber(this.value);
     }
 
-    /** 判断是否为 short 类型值 */
+    /** 是否可以转为 short 类型值 */
     public boolean isShort() {
-        return OperatorUtils.isShortNumber(this.value);
+        return OperatorUtils.isShortNumber(this.value) || isByte();
     }
 
-    /** 判断是否为 int 类型值 */
+    /** 是否可以转为 int 类型值 */
     public boolean isInt() {
-        return OperatorUtils.isIntegerNumber(this.value);
+        return OperatorUtils.isIntegerNumber(this.value) || isShort();
     }
 
-    /** 判断是否为 long 类型值 */
+    /** 是否可以转为 long 类型值 */
     public boolean isLong() {
-        return OperatorUtils.isLongNumber(this.value);
+        return OperatorUtils.isLongNumber(this.value) || isInt();
     }
 
-    /** 判断是否为 BigInteger 类型值 */
+    /** 是否可以转为 BigInteger 类型值 */
     public boolean isBigInteger() {
-        return this.value instanceof BigInteger;
+        return this.value instanceof BigInteger || isLong();
     }
 
-    /** 判断是否为 float 类型值 */
+    /** 是否可以转为 float 类型值 */
     public boolean isFloat() {
         return OperatorUtils.isFloatNumber(this.value);
     }
 
-    /** 判断是否为 double 类型值 */
+    /** 是否可以转为 double 类型值 */
     public boolean isDouble() {
-        return OperatorUtils.isDoubleNumber(this.value);
+        return OperatorUtils.isDoubleNumber(this.value) || isFloat();
     }
 
-    /** 判断是否为 BigDecimal 类型值 */
+    /** 是否可以转为 BigDecimal 类型值 */
     public boolean isBigDecimal() {
-        return this.value instanceof BigDecimal;
+        return this.value instanceof BigDecimal || isDouble();
     }
 
-    /** 判断是否为 Decimal 类型值 */
+    /** 是否可以转为 Decimal 类型值 */
     public boolean isDecimal() {
         return isFloat() || isDouble() || isBigDecimal();
     }
 
-    /** 判断是否为 boolean 类型值 */
+    /** 是否可以转为 boolean 类型值 */
     public boolean isBoolean() {
         return OperatorUtils.isBoolean(this.value);
     }

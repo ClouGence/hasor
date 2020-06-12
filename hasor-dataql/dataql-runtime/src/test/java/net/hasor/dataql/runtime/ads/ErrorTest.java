@@ -22,7 +22,7 @@ public class ErrorTest extends AbstractTestResource {
             assert false;
         } catch (Exception e) {
             assert e instanceof RuntimeException;
-            assert e == ErrorUdf.ERR;
+            assert e.getCause() == ErrorUdf.ERR;
         }
     }
 

@@ -23,6 +23,7 @@ import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
+import net.hasor.utils.convert.ConverterUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -55,8 +56,10 @@ class PULL implements InsetProcess {
             Object pointData = dataStack.pop();
             if (pointData instanceof ValueModel) {
                 point = ((ValueModel) pointData).asInt();
+            } else if (pointData instanceof Number) {
+                point = ((Number) pointData).intValue();
             } else {
-                point = (int) pointData;
+                point = (int) ConverterUtils.convert(Integer.TYPE, pointData);
             }
         }
         Object data = dataStack.pop();

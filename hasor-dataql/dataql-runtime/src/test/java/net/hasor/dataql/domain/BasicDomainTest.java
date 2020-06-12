@@ -119,12 +119,12 @@ public class BasicDomainTest extends AbstractTestResource {
         //
         assert !dataModel.isBoolean();
         assert dataModel.isByte();
-        assert !dataModel.isShort();
-        assert !dataModel.isInt();
-        assert !dataModel.isLong();
+        assert dataModel.isShort();
+        assert dataModel.isInt();
+        assert dataModel.isLong();
         assert !dataModel.isFloat();
         assert !dataModel.isDouble();
-        assert !dataModel.isBigInteger();
+        assert dataModel.isBigInteger();
         assert !dataModel.isBigDecimal();
         //
         assert dataModel.asBoolean();
@@ -149,11 +149,11 @@ public class BasicDomainTest extends AbstractTestResource {
         assert !dataModel.isBoolean();
         assert !dataModel.isByte();
         assert dataModel.isShort();
-        assert !dataModel.isInt();
-        assert !dataModel.isLong();
+        assert dataModel.isInt();
+        assert dataModel.isLong();
         assert !dataModel.isFloat();
         assert !dataModel.isDouble();
-        assert !dataModel.isBigInteger();
+        assert dataModel.isBigInteger();
         assert !dataModel.isBigDecimal();
         //
         assert dataModel.asBoolean();
@@ -179,10 +179,10 @@ public class BasicDomainTest extends AbstractTestResource {
         assert !dataModel.isByte();
         assert !dataModel.isShort();
         assert dataModel.isInt();
-        assert !dataModel.isLong();
+        assert dataModel.isLong();
         assert !dataModel.isFloat();
         assert !dataModel.isDouble();
-        assert !dataModel.isBigInteger();
+        assert dataModel.isBigInteger();
         assert !dataModel.isBigDecimal();
         //
         assert dataModel.asBoolean();
@@ -211,7 +211,7 @@ public class BasicDomainTest extends AbstractTestResource {
         assert dataModel.isLong();
         assert !dataModel.isFloat();
         assert !dataModel.isDouble();
-        assert !dataModel.isBigInteger();
+        assert dataModel.isBigInteger();
         assert !dataModel.isBigDecimal();
         //
         assert dataModel.asBoolean();
@@ -268,9 +268,9 @@ public class BasicDomainTest extends AbstractTestResource {
         assert !dataModel.isInt();
         assert !dataModel.isLong();
         assert dataModel.isFloat();
-        assert !dataModel.isDouble();
+        assert dataModel.isDouble();
         assert !dataModel.isBigInteger();
-        assert !dataModel.isBigDecimal();
+        assert dataModel.isBigDecimal();
         //
         assert dataModel.asBoolean();
         assert dataModel.asByte() == 57;            // 被截断,取整了
@@ -299,7 +299,7 @@ public class BasicDomainTest extends AbstractTestResource {
         assert !dataModel.isFloat();
         assert dataModel.isDouble();
         assert !dataModel.isBigInteger();
-        assert !dataModel.isBigDecimal();
+        assert dataModel.isBigDecimal();
         //
         assert dataModel.asBoolean();
         assert dataModel.asByte() == 57;            // 被截断,取整了
