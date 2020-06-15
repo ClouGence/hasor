@@ -34,8 +34,8 @@ public class IntegerToken extends AstBasic {
 
     public StringToken toStringToken() {
         StringToken stringToken = new StringToken(String.valueOf(this.value));
-        stringToken.setLineNumber(this.getLineNumber());
-        stringToken.setColumnNumber(this.getColumnNumber());
+        stringToken.setStartPosition(this.getStartPosition());
+        stringToken.setEndPosition(this.getEndPosition());
         return stringToken;
     }
 }

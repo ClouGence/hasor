@@ -19,12 +19,35 @@ package net.hasor.dataql.compiler.ast;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-06-11
  */
-public interface location {
-    public int getLineNumber();
+public interface Location {
+    public static class CodePosition {
+        private final int lineNumber; // 代码行号
+        private final int columnNumber; // 代码行的第几个字符
 
-    public int getColumnNumber();
+        public CodePosition(int lineNumber, int columnNumber) {
+            this.lineNumber = lineNumber;
+            this.columnNumber = columnNumber;
+        }
 
-    public void setLineNumber(int lineNumber);
+        public int getLineNumber() {
+            return this.lineNumber;
+        }
 
-    public void setColumnNumber(int columnNumber);
+        public int getColumnNumber() {
+            return this.columnNumber;
+        }
+
+        @Override
+        public String toString() {
+            return lineNumber + ":" + columnNumber;
+        }
+    }
+
+    public CodePosition getStartPosition();
+
+    public CodePosition getEndPosition();
+
+    public void setStartPosition(CodePosition codePosition);
+
+    public void setEndPosition(CodePosition codePosition);
 }

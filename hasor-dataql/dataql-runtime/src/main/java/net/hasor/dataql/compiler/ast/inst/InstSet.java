@@ -110,22 +110,22 @@ public class InstSet extends ArrayList<Inst> implements Inst {
     }
 
     @Override
-    public int getLineNumber() {
-        return this.astBasic.getLineNumber();
+    public CodePosition getStartPosition() {
+        return this.astBasic.getStartPosition();
     }
 
     @Override
-    public int getColumnNumber() {
-        return this.astBasic.getColumnNumber();
+    public CodePosition getEndPosition() {
+        return this.astBasic.getEndPosition();
     }
 
     @Override
-    public void setLineNumber(int lineNumber) {
-        this.astBasic.setLineNumber(lineNumber);
+    public void setStartPosition(CodePosition codePosition) {
+        this.astBasic.setStartPosition(codePosition);
     }
 
     @Override
-    public void setColumnNumber(int columnNumber) {
-        this.astBasic.setColumnNumber(columnNumber);
+    public void setEndPosition(CodePosition codePosition) {
+        this.astBasic.setEndPosition(codePosition);
     }
 }

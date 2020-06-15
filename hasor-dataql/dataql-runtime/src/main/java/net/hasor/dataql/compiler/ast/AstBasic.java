@@ -20,22 +20,31 @@ package net.hasor.dataql.compiler.ast;
  * @version : 2020-06-11
  */
 public class AstBasic implements Location {
-    private int lineNumber   = -1; // 代码行号
-    private int columnNumber = -1; // 代码行的第几个字符
+    private CodePosition startPosition;
+    private CodePosition endPosition;
 
-    public int getLineNumber() {
-        return this.lineNumber;
+    @Override
+    public CodePosition getStartPosition() {
+        return this.startPosition;
     }
 
-    public int getColumnNumber() {
-        return this.columnNumber;
+    @Override
+    public CodePosition getEndPosition() {
+        return this.endPosition;
     }
 
-    public void setLineNumber(int lineNumber) {
-        this.lineNumber = lineNumber;
+    @Override
+    public void setStartPosition(CodePosition codePosition) {
+        this.startPosition = codePosition;
     }
 
-    public void setColumnNumber(int columnNumber) {
-        this.columnNumber = columnNumber;
+    @Override
+    public void setEndPosition(CodePosition codePosition) {
+        this.endPosition = codePosition;
+    }
+
+    @Override
+    public String toString() {
+        return getStartPosition() + "~" + getEndPosition();
     }
 }
