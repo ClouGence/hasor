@@ -1,0 +1,14 @@
+[0]
+  #00  LINE      1
+  #01  E_LOAD    #
+  #02  GET       a
+  #03  E_LOAD    #
+  #04  GET       a
+  #05  DO        ==
+  #06  IF        11
+  #07  LINE      2
+  #08  LDC_D     11
+  #09  STORE     0
+  #10  GOTO      12
+  #11  LABEL     11
+  #12  LABEL     12

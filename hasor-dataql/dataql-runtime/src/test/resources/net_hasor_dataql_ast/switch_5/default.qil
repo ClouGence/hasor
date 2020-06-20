@@ -1,0 +1,14 @@
+[0]
+  #00  LINE      1
+  #01  LDC_B     true
+  #02  IF        7
+  #03  LINE      2
+  #04  LDC_B     true
+  #05  RETURN    0
+  #06  GOTO      12
+  #07  LABEL     7
+  #08  LINE      3
+  #09  LDC_B     false
+  #10  RETURN    0
+  #11  GOTO      12
+  #12  LABEL     12

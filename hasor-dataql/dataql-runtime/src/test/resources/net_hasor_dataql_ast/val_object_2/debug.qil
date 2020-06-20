@@ -1,0 +1,40 @@
+[0]
+  #00  LINE      1, 7, 1, 9
+  #01  NEW_A
+  #02  LINE      1, 0, 1, 9
+  #03  RETURN    0
+  #04  LINE      3, 8, 5, 1
+  #05  NEW_A
+  #06  LINE      4, 4, 4, 9
+  #07  LDC_S     abc
+  #08  PUSH
+  #09  LINE      4, 12, 4, 17
+  #10  LDC_S     abc
+  #11  PUSH
+  #12  LINE      3, 0, 5, 1
+  #13  RETURN    0
+  #14  LINE      7, 8, 9, 1
+  #15  NEW_A
+  #16  LINE      8, 4, 8, 9
+  #17  LDC_S     abc
+  #18  PUSH
+  #19  LINE      7, 0, 9, 1
+  #20  RETURN    0
+  #21  LINE      12, 8, 14, 2
+  #22  NEW_A
+  #23  LINE      12, 9, 14, 1
+  #24  NEW_O
+  #25  LINE      13, 10, 13, 13
+  #26  E_LOAD    #
+  #27  GET       ccc
+  #28  LINE      13, 4, 13, 9
+  #29  PUT       abc
+  #30  LINE      13, 22, 13, 26
+  #31  E_LOAD    #
+  #32  GET       dddd
+  #33  LINE      13, 15, 13, 20
+  #34  PUT       cde
+  #35  LINE      12, 9, 14, 1
+  #36  PUSH
+  #37  LINE      12, 0, 14, 2
+  #38  RETURN    0

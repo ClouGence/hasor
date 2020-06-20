@@ -1,0 +1,46 @@
+[0]
+  #00  LINE      1, 4, 1, 5
+  #01  E_LOAD    #
+  #02  GET       a
+  #03  LINE      1, 8, 1, 9
+  #04  E_LOAD    #
+  #05  GET       a
+  #06  LINE      1, 4, 1, 9
+  #07  DO        ==
+  #08  IF        14
+  #09  LINE      2, 12, 2, 14
+  #10  LDC_D     11
+  #11  LINE      2, 8, 2, 10
+  #12  STORE     0
+  #13  GOTO      44
+  #14  LABEL     14
+  #15  LINE      3, 10, 3, 14
+  #16  LDC_B     true
+  #17  IF        23
+  #18  LINE      4, 16, 4, 18
+  #19  LDC_D     22
+  #20  LINE      4, 12, 4, 14
+  #21  STORE     1
+  #22  GOTO      44
+  #23  LABEL     23
+  #24  LINE      7, 8, 11, 2
+  #25  NEW_A
+  #26  LINE      7, 10, 7, 11
+  #27  LDC_D     1
+  #28  PUSH
+  #29  LINE      8, 8, 8, 10
+  #30  LDC_D     22
+  #31  PUSH
+  #32  LINE      8, 11, 8, 12
+  #33  LDC_D     3
+  #34  PUSH
+  #35  LINE      8, 13, 8, 14
+  #36  LDC_D     4
+  #37  PUSH
+  #38  LINE      9, 9, 9, 10
+  #39  LDC_D     5
+  #40  PUSH
+  #41  LINE      7, 1, 11, 2
+  #42  RETURN    0
+  #43  GOTO      44
+  #44  LABEL     44

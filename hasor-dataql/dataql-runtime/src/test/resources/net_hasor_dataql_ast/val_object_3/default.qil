@@ -1,0 +1,9 @@
+[0]
+  #0  LINE      2
+  #1  NEW_O
+  #2  LINE      3
+  #3  E_LOAD    #
+  #4  GET       abc
+  #5  PUT       abc
+  #6  LINE      2
+  #7  RETURN    0

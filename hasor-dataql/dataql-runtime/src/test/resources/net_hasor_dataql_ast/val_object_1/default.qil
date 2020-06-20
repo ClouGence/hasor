@@ -1,0 +1,34 @@
+[0]
+  #00  LINE      1
+  #01  NEW_O
+  #02  RETURN    0
+  #03  LINE      3
+  #04  NEW_O
+  #05  LINE      4
+  #06  E_LOAD    #
+  #07  GET       abc
+  #08  PUT       abc
+  #09  E_LOAD    #
+  #10  GET       cde
+  #11  PUT       cde
+  #12  LINE      3
+  #13  RETURN    0
+  #14  LINE      7
+  #15  NEW_O
+  #16  LINE      8
+  #17  E_LOAD    #
+  #18  GET       abc
+  #19  PUT       abc
+  #20  LINE      7
+  #21  RETURN    0
+  #22  LINE      11
+  #23  NEW_O
+  #24  LINE      12
+  #25  E_LOAD    #
+  #26  GET       ccc
+  #27  PUT       abc
+  #28  E_LOAD    #
+  #29  GET       dddd
+  #30  PUT       cde
+  #31  LINE      11
+  #32  RETURN    0

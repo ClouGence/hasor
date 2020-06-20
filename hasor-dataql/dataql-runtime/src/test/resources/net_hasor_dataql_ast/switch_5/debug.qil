@@ -1,0 +1,16 @@
+[0]
+  #00  LINE      1, 8, 1, 12
+  #01  LDC_B     true
+  #02  IF        8
+  #03  LINE      2, 15, 2, 19
+  #04  LDC_B     true
+  #05  LINE      2, 8, 2, 19
+  #06  RETURN    0
+  #07  GOTO      14
+  #08  LABEL     8
+  #09  LINE      3, 23, 3, 28
+  #10  LDC_B     false
+  #11  LINE      3, 16, 3, 28
+  #12  RETURN    0
+  #13  GOTO      14
+  #14  LABEL     14
