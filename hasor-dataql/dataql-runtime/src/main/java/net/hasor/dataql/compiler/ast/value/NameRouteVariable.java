@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
 import net.hasor.dataql.compiler.ast.token.StringToken;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
@@ -28,7 +29,7 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class NameRouteVariable extends AstBasic implements Variable, RouteVariable {
+public class NameRouteVariable extends CodeLocationInfo implements Variable, RouteVariable {
     private final RouteVariable parent;
     private final StringToken   name;
 

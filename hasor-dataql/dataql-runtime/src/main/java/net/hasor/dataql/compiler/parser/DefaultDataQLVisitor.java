@@ -15,9 +15,9 @@
  */
 package net.hasor.dataql.compiler.parser;
 import net.hasor.dataql.compiler.ParseException;
+import net.hasor.dataql.compiler.ast.CodeLocation;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodePosition;
 import net.hasor.dataql.compiler.ast.Expression;
-import net.hasor.dataql.compiler.ast.Location;
-import net.hasor.dataql.compiler.ast.Location.CodePosition;
 import net.hasor.dataql.compiler.ast.RouteVariable;
 import net.hasor.dataql.compiler.ast.Variable;
 import net.hasor.dataql.compiler.ast.expr.*;
@@ -55,14 +55,14 @@ import java.util.Stack;
 public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> implements DataQLParserVisitor<T> {
     private final Stack<Object> instStack = new Stack<>();
 
-    public <T extends Location> T code(T location, TerminalNode context) {
+    public <T extends CodeLocation> T code(T location, TerminalNode context) {
         Token symbol = context.getSymbol();
         location.setStartPosition(new CodePosition(symbol.getLine(), symbol.getCharPositionInLine()));
         location.setEndPosition(new CodePosition(symbol.getLine(), symbol.getCharPositionInLine() + symbol.getText().length()));
         return location;
     }
 
-    public <T extends Location> T code(T location, ParserRuleContext context) {
+    public <T extends CodeLocation> T code(T location, ParserRuleContext context) {
         Token startToken = context.start;
         Token endToken = context.stop;
         int endTokenLength = endToken.getText().length();
@@ -71,13 +71,13 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         return location;
     }
 
-    private <T extends Location, V extends Location> T code(T location, V other) {
+    private <T extends CodeLocation, V extends CodeLocation> T code(T location, V other) {
         location.setStartPosition(other.getStartPosition());
         location.setEndPosition(other.getEndPosition());
         return location;
     }
 
-    private <T extends Location, V extends Location> T code(T location, List<TerminalNode> otherList) {
+    private <T extends CodeLocation, V extends CodeLocation> T code(T location, List<TerminalNode> otherList) {
         Token firstTerm = otherList.get(0).getSymbol();
         Token lastTerm = otherList.get(otherList.size() - 1).getSymbol();
         location.setStartPosition(new CodePosition(firstTerm.getLine(), firstTerm.getCharPositionInLine()));
@@ -85,7 +85,7 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         return location;
     }
 
-    private <T extends Location, V extends Location> T code(T location, Token token) {
+    private <T extends CodeLocation, V extends CodeLocation> T code(T location, Token token) {
         int endTokenLength = token.getText().length();
         location.setStartPosition(new CodePosition(token.getLine(), token.getCharPositionInLine()));
         location.setEndPosition(new CodePosition(token.getLine(), token.getCharPositionInLine() + endTokenLength));

@@ -15,7 +15,10 @@
  */
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.AstVisitor;
+import net.hasor.dataql.compiler.ast.FormatWriter;
+import net.hasor.dataql.compiler.ast.Inst;
+import net.hasor.dataql.compiler.ast.InstVisitorContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,9 +31,9 @@ import java.util.Objects;
  * @version : 2017-03-23
  */
 public class InstSet extends ArrayList<Inst> implements Inst {
-    private final AstBasic       astBasic  = new AstBasic();
-    private final List<HintInst> optionSet = new ArrayList<>();
-    private       boolean        multipleInst;
+    private final CodeLocationInfo astBasic  = new CodeLocationInfo();
+    private final List<HintInst>   optionSet = new ArrayList<>();
+    private       boolean          multipleInst;
 
     public InstSet(boolean multipleInst) {
         this.multipleInst = multipleInst;
@@ -119,12 +122,10 @@ public class InstSet extends ArrayList<Inst> implements Inst {
         return this.astBasic.getEndPosition();
     }
 
-    @Override
     public void setStartPosition(CodePosition codePosition) {
         this.astBasic.setStartPosition(codePosition);
     }
 
-    @Override
     public void setEndPosition(CodePosition codePosition) {
         this.astBasic.setEndPosition(codePosition);
     }

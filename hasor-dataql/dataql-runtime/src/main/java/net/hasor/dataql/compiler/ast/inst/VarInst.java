@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
 import net.hasor.dataql.compiler.ast.token.StringToken;
 import net.hasor.dataql.compiler.ast.value.LambdaVariable;
 import net.hasor.utils.StringUtils;
@@ -27,7 +28,7 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class VarInst extends AstBasic implements Inst {
+public class VarInst extends CodeLocationInfo implements Inst {
     private final StringToken varName; //变量名
     private final Variable    value;   //变量表达式
 

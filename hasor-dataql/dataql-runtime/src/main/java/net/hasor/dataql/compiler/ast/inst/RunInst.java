@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.inst;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
 import net.hasor.dataql.compiler.ast.value.LambdaVariable;
 import net.hasor.utils.StringUtils;
 
@@ -26,7 +27,7 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class RunInst extends AstBasic implements Inst {
+public class RunInst extends CodeLocationInfo implements Inst {
     private final Variable value;   //执行表达式
 
     public RunInst(Variable value) {

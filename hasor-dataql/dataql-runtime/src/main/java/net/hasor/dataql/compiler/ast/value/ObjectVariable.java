@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
 import net.hasor.dataql.compiler.ast.expr.AtomExpression;
 import net.hasor.dataql.compiler.ast.token.StringToken;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.SpecialType;
@@ -32,7 +33,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ObjectVariable extends AstBasic implements Inst, Variable {
+public class ObjectVariable extends CodeLocationInfo implements Inst, Variable {
     private final List<String>             fieldSort;
     private final String                   objectType;
     private final Map<String, StringToken> objectKey;

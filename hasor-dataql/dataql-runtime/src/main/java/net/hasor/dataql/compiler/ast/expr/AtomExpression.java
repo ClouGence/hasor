@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.expr;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
 
 import java.io.IOException;
 
@@ -24,7 +25,7 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-11-07
  */
-public class AtomExpression extends AstBasic implements Expression {
+public class AtomExpression extends CodeLocationInfo implements Expression {
     private final Variable variableExpression; // 把值类型转换为表达式
 
     public AtomExpression(Variable variableExpression) {

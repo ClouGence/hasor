@@ -20,4 +20,7 @@ package net.hasor.dataql.compiler.ast;
  * @version : 2017-03-23
  */
 public interface Expression extends Variable {
+    public default CodeLocation expressCodeLocation() {
+        return this;
+    }
 }

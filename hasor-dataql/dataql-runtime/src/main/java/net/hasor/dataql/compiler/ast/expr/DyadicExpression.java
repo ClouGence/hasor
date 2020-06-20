@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.expr;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
 import net.hasor.dataql.compiler.ast.token.SymbolToken;
 
 import java.io.IOException;
@@ -25,7 +26,7 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class DyadicExpression extends AstBasic implements Expression {
+public class DyadicExpression extends CodeLocationInfo implements Expression {
     private final Expression  fstExpression;   //第一个表达式
     private final SymbolToken symbolToken;    //运算符
     private final Expression  secExpression;   //第二个表达式
@@ -34,6 +35,13 @@ public class DyadicExpression extends AstBasic implements Expression {
         this.fstExpression = fstExpression;
         this.symbolToken = symbolToken;
         this.secExpression = secExpression;
+    }
+
+    public CodeLocation expressCodeLocation() {
+        CodeLocation codeLocation = new CodeLocation.CodeLocationInfo();
+        codeLocation.setStartPosition(this.fstExpression.getStartPosition());
+        codeLocation.setEndPosition(this.secExpression.getEndPosition());
+        return codeLocation;
     }
 
     public Expression getFstExpression() {

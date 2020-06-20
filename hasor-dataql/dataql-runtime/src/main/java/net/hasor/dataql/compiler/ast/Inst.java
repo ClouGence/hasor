@@ -19,5 +19,5 @@ package net.hasor.dataql.compiler.ast;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface Inst extends Location, InstFormat, Visitor {
+public interface Inst extends CodeLocation, InstFormat, Visitor {
 }

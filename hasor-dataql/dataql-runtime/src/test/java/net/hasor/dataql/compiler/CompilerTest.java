@@ -17,6 +17,7 @@ package net.hasor.dataql.compiler;
 import net.hasor.dataql.AbstractTestResource;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.compiler.qil.QIL;
+import net.hasor.dataql.runtime.CompilerArguments;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.utils.StringUtils;
 import org.junit.Test;
@@ -33,11 +34,20 @@ public class CompilerTest extends AbstractTestResource {
     private void qilTest(String testCase) throws IOException {
         String query1 = getScript("/net_hasor_dataql_ast/" + testCase + "/ast.ql");
         QueryModel queryModel = QueryHelper.queryParser(query1);
-        QIL qil = QueryHelper.queryCompiler(queryModel, null, Finder.DEFAULT);
+        QIL qilFast = QueryHelper.queryCompiler(queryModel, CompilerArguments.FAST, Finder.DEFAULT);
+        QIL qilDefault = QueryHelper.queryCompiler(queryModel, CompilerArguments.DEFAULT, Finder.DEFAULT);
+        QIL qilDebug = QueryHelper.queryCompiler(queryModel, CompilerArguments.DEBUG, Finder.DEFAULT);
         //
-        String qilString1 = qil.toString();
-        String qilString2 = getScript("/net_hasor_dataql_ast/" + testCase + "/ast.qil");
-        assert qilString1.trim().equals(qilString2.trim());
+        String qilStringFast1 = qilFast.toString();
+        String qilStringDefault1 = qilDefault.toString();
+        String qilStringDebug1 = qilDebug.toString();
+        //
+        String qilStringFast2 = getScript("/net_hasor_dataql_ast/" + testCase + "/fast.qil");
+        String qilStringDefault2 = getScript("/net_hasor_dataql_ast/" + testCase + "/default.qil");
+        String qilStringDebug2 = getScript("/net_hasor_dataql_ast/" + testCase + "/debug.qil");
+        assert qilStringFast1.trim().equals(qilStringFast2.trim());
+        assert qilStringDefault1.trim().equals(qilStringDefault2.trim());
+        assert qilStringDebug1.trim().equals(qilStringDebug2.trim());
     }
 
     private void astTest(String testCase) throws IOException {

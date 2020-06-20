@@ -3,12 +3,16 @@ import net.hasor.dataql.*;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.domain.*;
+import net.hasor.dataql.runtime.CompilerArguments;
 import net.hasor.dataql.runtime.CompilerVarQuery;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.test.dataql.udfs.DataBean;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RouRuntimeTest extends AbstractTestResource implements HintValue {
     @Test
@@ -200,11 +204,11 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
 
     @Test
     public void compilerVar_1_Test() throws Exception {
-        Set<String> compilerVar = new HashSet<String>() {{
-            add("list");
-        }};
+        CompilerArguments arguments = new CompilerArguments();
+        arguments.getCompilerVar().add("list");
+        //
         QueryModel queryModel = QueryHelper.queryParser("return list[2]");
-        QIL qil = QueryHelper.queryCompiler(queryModel, compilerVar, Finder.DEFAULT);
+        QIL qil = QueryHelper.queryCompiler(queryModel, arguments, Finder.DEFAULT);
         CompilerVarQuery query = (CompilerVarQuery) QueryHelper.createQuery(qil, Finder.DEFAULT);
         //
         query.setCompilerVar("list", Arrays.asList("a", "b", "c", "d"));

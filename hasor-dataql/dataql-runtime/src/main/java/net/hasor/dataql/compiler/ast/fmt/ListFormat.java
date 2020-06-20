@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.fmt;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
 import net.hasor.dataql.compiler.ast.value.ListVariable;
 
 import java.io.IOException;
@@ -25,7 +26,7 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ListFormat extends AstBasic implements Inst, Variable {
+public class ListFormat extends CodeLocationInfo implements Inst, Variable {
     private final RouteVariable form;
     private final ListVariable  formatTo;
 

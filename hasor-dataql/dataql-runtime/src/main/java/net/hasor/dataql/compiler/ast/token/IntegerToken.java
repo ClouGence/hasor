@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.ast.token;
-import net.hasor.dataql.compiler.ast.AstBasic;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
 
 /**
  * 表示一个 数字
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-06-11
  */
-public class IntegerToken extends AstBasic {
+public class IntegerToken extends CodeLocationInfo {
     private final int value;
 
     public IntegerToken(int value) {

@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -28,7 +29,7 @@ import static net.hasor.utils.NumberUtils.*;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class PrimitiveVariable extends AstBasic implements Variable, Inst {
+public class PrimitiveVariable extends CodeLocationInfo implements Variable, Inst {
     public static enum ValueType {
         Boolean, Number, String, Null
     }

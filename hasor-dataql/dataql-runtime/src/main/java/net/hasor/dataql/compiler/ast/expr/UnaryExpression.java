@@ -15,7 +15,11 @@
  */
 package net.hasor.dataql.compiler.ast.expr;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.AstVisitor;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
+import net.hasor.dataql.compiler.ast.Expression;
+import net.hasor.dataql.compiler.ast.FormatWriter;
+import net.hasor.dataql.compiler.ast.InstVisitorContext;
 import net.hasor.dataql.compiler.ast.token.SymbolToken;
 
 import java.io.IOException;
@@ -25,7 +29,7 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class UnaryExpression extends AstBasic implements Expression {
+public class UnaryExpression extends CodeLocationInfo implements Expression {
     private final Expression  target;      //表达式
     private final SymbolToken symbolToken;//操作符
 

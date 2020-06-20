@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.ast.value;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.ast.*;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
 import net.hasor.dataql.compiler.ast.expr.AtomExpression;
 import net.hasor.dataql.compiler.ast.expr.PrivilegeExpression;
 import net.hasor.dataql.compiler.ast.token.IntegerToken;
@@ -30,7 +31,7 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class SubscriptRouteVariable extends AstBasic implements Variable, RouteVariable {
+public class SubscriptRouteVariable extends CodeLocationInfo implements Variable, RouteVariable {
     public static enum SubType {
         String, Integer, Expr
     }

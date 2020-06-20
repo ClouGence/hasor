@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.ast.token;
-import net.hasor.dataql.compiler.ast.AstBasic;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
 
 /**
  * 表示一个 数字符串
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-06-11
  */
-public class StringToken extends AstBasic {
+public class StringToken extends CodeLocationInfo {
     private final String value;
 
     public StringToken(String value) {
