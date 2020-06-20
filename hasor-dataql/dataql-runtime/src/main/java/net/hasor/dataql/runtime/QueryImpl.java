@@ -19,9 +19,11 @@ import net.hasor.dataql.Finder;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.domain.DataModel;
-import net.hasor.dataql.domain.ValueModel;
 import net.hasor.dataql.runtime.inset.OpcodesPool;
-import net.hasor.dataql.runtime.mem.*;
+import net.hasor.dataql.runtime.mem.DataHeap;
+import net.hasor.dataql.runtime.mem.DataStack;
+import net.hasor.dataql.runtime.mem.EnvStack;
+import net.hasor.dataql.runtime.mem.ExitType;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,13 +56,8 @@ class QueryImpl extends HintsSet implements CompilerVarQuery {
         this.compilerVar.put(compilerVar, object);
     }
 
-    private static long executionTime(long startTime) {
-        return System.currentTimeMillis() - startTime;
-    }
-
     @Override
     public QueryResultImpl execute(CustomizeScope customize) throws InstructRuntimeException {
-        long startTime = System.currentTimeMillis();
         InstSequence instSequence = new InstSequence(0, this.qil);
         //
         // .创建指令执行环境
@@ -80,30 +77,18 @@ class QueryImpl extends HintsSet implements CompilerVarQuery {
         });
         //
         // .执行指令序列
-        try {
-            OpcodesPool opcodesPool = OpcodesPool.defaultOpcodesPool();
-            while (instSequence.hasNext()) {
-                opcodesPool.doWork(instSequence, dataHeap, dataStack, envStack, processContext);
-                instSequence.doNext(1);
-            }
-        } catch (RefLambdaCallException e) {
-            dataStack.setExitType(ExitType.Throw);
-            dataStack.setResultCode(e.getResultCode());
-            dataStack.setResult(e.getResult());
+        OpcodesPool opcodesPool = OpcodesPool.defaultOpcodesPool();
+        while (instSequence.hasNext()) {
+            opcodesPool.doWork(instSequence, dataHeap, dataStack, envStack, processContext);
+            instSequence.doNext(1);
         }
         // .结果处理
         ExitType exitType = dataStack.getExitType();
-        long executionTime = executionTime(startTime);
+        long executionTime = processContext.executionTime();
         int resultCode = dataStack.getResultCode();
         DataModel result = dataStack.getResult();
         if (ExitType.Exit == exitType) {
             return new QueryResultImpl(true, resultCode, result, executionTime);
-        } else if (ExitType.Throw == exitType) {
-            String message = "udf or lambda failed.";
-            if (result instanceof ValueModel) {
-                message = resultCode + " : " + ((ValueModel) result).asString();
-            }
-            throw new ThrowRuntimeException(Location.unknownLocation(), message, resultCode, executionTime, result);
         } else if (ExitType.Return == exitType) {
             return new QueryResultImpl(false, resultCode, result, executionTime);
         } else {

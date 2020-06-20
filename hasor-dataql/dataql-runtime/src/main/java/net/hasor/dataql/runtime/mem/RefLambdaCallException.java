@@ -28,7 +28,7 @@ public class RefLambdaCallException extends InstructRuntimeException {
     private final DataModel result;
 
     public RefLambdaCallException(RuntimeLocation location, int resultCode, DataModel result) {
-        super(location, "lambda function failed.");
+        super(location, "udf or lambda failed.");
         this.resultCode = resultCode;
         this.result = result;
     }

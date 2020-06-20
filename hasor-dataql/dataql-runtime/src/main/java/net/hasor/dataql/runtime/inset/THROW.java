@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
+import net.hasor.dataql.runtime.ThrowRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -45,9 +47,19 @@ class THROW implements InsetProcess {
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
         int resultCode = sequence.currentInst().getInt(0);
         Object result = dataStack.pop();
+        DataModel dataModel = DomainHelper.convertTo(result);
         dataStack.setResultCode(resultCode);
-        dataStack.setResult(DomainHelper.convertTo(result));
+        dataStack.setResult(dataModel);
         dataStack.setExitType(ExitType.Throw);
         sequence.jumpTo(sequence.exitPosition());
+        //
+        String errorMessage = dataModel.isValue() ? dataModel.unwrap().toString() : "";
+        throw new ThrowRuntimeException(    //
+                sequence.programLocation(), // location
+                errorMessage,               // errorMessage
+                resultCode,                 // throwCode
+                context.executionTime(),    // executionTime
+                dataModel                   // result
+        );
     }
 }

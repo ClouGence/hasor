@@ -30,6 +30,7 @@ import java.util.Map;
  */
 public class InsetProcessContext extends HintsSet implements CustomizeScope {
     private final static OperatorManager opeManager = OperatorManager.defaultManager();
+    private final        long            startTime  = System.currentTimeMillis();
     private final        CustomizeScope  customizeScope;
     private final        Finder          finder;
 
@@ -40,6 +41,10 @@ public class InsetProcessContext extends HintsSet implements CustomizeScope {
         }
         this.customizeScope = customizeScope;
         this.finder = finder;
+    }
+
+    public long executionTime() {
+        return System.currentTimeMillis() - this.startTime;
     }
 
     public Finder getFinder() {
