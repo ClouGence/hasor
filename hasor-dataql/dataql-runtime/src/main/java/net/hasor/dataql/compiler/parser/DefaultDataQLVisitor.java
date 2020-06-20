@@ -706,18 +706,6 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         ExprContext expr = ctx.expr();
         expr.accept(this);
         this.instStack.push(code(new PrivilegeExpression((Expression) this.instStack.pop()), ctx));
-        //
-        // .后处理可能存在的多元计算
-        DyadicExprContext dyadicExpr = ctx.dyadicExpr();
-        TernaryExprContext ternaryExpr = ctx.ternaryExpr();
-        if (dyadicExpr != null) {
-            dyadicExpr.accept(this);
-            return null;
-        }
-        if (ternaryExpr != null) {
-            ternaryExpr.accept(this);
-            return null;
-        }
         return null;
     }
 
@@ -736,38 +724,88 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     }
 
     @Override
-    public T visitMultipleExpr(MultipleExprContext ctx) {
-        return visitChildren(ctx);
-    }
-
-    @Override
-    public T visitDyadicExpr(DyadicExprContext ctx) {
+    public T visitDyadicExpr_A(DyadicExpr_AContext ctx) {
         TerminalNode dyadicOper = null;
-        dyadicOper = operSwitch(dyadicOper, ctx.PLUS());
-        dyadicOper = operSwitch(dyadicOper, ctx.MINUS());
         dyadicOper = operSwitch(dyadicOper, ctx.MUL());
         dyadicOper = operSwitch(dyadicOper, ctx.DIV());
         dyadicOper = operSwitch(dyadicOper, ctx.DIV2());
         dyadicOper = operSwitch(dyadicOper, ctx.MOD());
-        dyadicOper = operSwitch(dyadicOper, ctx.LBT());
-        dyadicOper = operSwitch(dyadicOper, ctx.RBT());
+        //
+        ctx.expr(0).accept(this);
+        ctx.expr(1).accept(this);
+        //
+        Expression expr2 = (Expression) this.instStack.pop();
+        Expression expr1 = (Expression) this.instStack.pop();
+        SymbolToken symbolToken = code(new SymbolToken(dyadicOper.getText()), dyadicOper);
+        this.instStack.push(code(new DyadicExpression(expr1, symbolToken, expr2), ctx));
+        return null;
+    }
+
+    @Override
+    public T visitDyadicExpr_B(DyadicExpr_BContext ctx) {
+        TerminalNode dyadicOper = null;
+        dyadicOper = operSwitch(dyadicOper, ctx.PLUS());
+        dyadicOper = operSwitch(dyadicOper, ctx.MINUS());
+        //
+        ctx.expr(0).accept(this);
+        ctx.expr(1).accept(this);
+        //
+        Expression expr2 = (Expression) this.instStack.pop();
+        Expression expr1 = (Expression) this.instStack.pop();
+        SymbolToken symbolToken = code(new SymbolToken(dyadicOper.getText()), dyadicOper);
+        this.instStack.push(code(new DyadicExpression(expr1, symbolToken, expr2), ctx));
+        return null;
+    }
+
+    @Override
+    public T visitDyadicExpr_C(DyadicExpr_CContext ctx) {
+        TerminalNode dyadicOper = null;
         dyadicOper = operSwitch(dyadicOper, ctx.AND());
         dyadicOper = operSwitch(dyadicOper, ctx.OR());
-        dyadicOper = operSwitch(dyadicOper, ctx.NOT());
         dyadicOper = operSwitch(dyadicOper, ctx.XOR());
         dyadicOper = operSwitch(dyadicOper, ctx.LSHIFT());
         dyadicOper = operSwitch(dyadicOper, ctx.RSHIFT());
         dyadicOper = operSwitch(dyadicOper, ctx.RSHIFT2());
+        //
+        ctx.expr(0).accept(this);
+        ctx.expr(1).accept(this);
+        //
+        Expression expr2 = (Expression) this.instStack.pop();
+        Expression expr1 = (Expression) this.instStack.pop();
+        SymbolToken symbolToken = code(new SymbolToken(dyadicOper.getText()), dyadicOper);
+        this.instStack.push(code(new DyadicExpression(expr1, symbolToken, expr2), ctx));
+        return null;
+    }
+
+    @Override
+    public T visitDyadicExpr_D(DyadicExpr_DContext ctx) {
+        TerminalNode dyadicOper = null;
         dyadicOper = operSwitch(dyadicOper, ctx.GT());
         dyadicOper = operSwitch(dyadicOper, ctx.GE());
-        dyadicOper = operSwitch(dyadicOper, ctx.LT());
-        dyadicOper = operSwitch(dyadicOper, ctx.LE());
-        dyadicOper = operSwitch(dyadicOper, ctx.EQ());
         dyadicOper = operSwitch(dyadicOper, ctx.NE());
+        dyadicOper = operSwitch(dyadicOper, ctx.EQ());
+        dyadicOper = operSwitch(dyadicOper, ctx.LE());
+        dyadicOper = operSwitch(dyadicOper, ctx.LT());
+        //
+        ctx.expr(0).accept(this);
+        ctx.expr(1).accept(this);
+        //
+        Expression expr2 = (Expression) this.instStack.pop();
+        Expression expr1 = (Expression) this.instStack.pop();
+        SymbolToken symbolToken = code(new SymbolToken(dyadicOper.getText()), dyadicOper);
+        this.instStack.push(code(new DyadicExpression(expr1, symbolToken, expr2), ctx));
+        return null;
+    }
+
+    @Override
+    public T visitDyadicExpr_E(DyadicExpr_EContext ctx) {
+        TerminalNode dyadicOper = null;
         dyadicOper = operSwitch(dyadicOper, ctx.SC_OR());
         dyadicOper = operSwitch(dyadicOper, ctx.SC_AND());
         //
-        ctx.expr().accept(this);
+        ctx.expr(0).accept(this);
+        ctx.expr(1).accept(this);
+        //
         Expression expr2 = (Expression) this.instStack.pop();
         Expression expr1 = (Expression) this.instStack.pop();
         SymbolToken symbolToken = code(new SymbolToken(dyadicOper.getText()), dyadicOper);

@@ -19,7 +19,7 @@
   #17  LINE      6, 19, 6, 22
   #18  E_LOAD    #
   #19  GET       abc
-  #20  LINE      6, 7, 6, 22
+  #20  LINE      6, 17, 6, 18
   #21  DO        +
   #22  LINE      6, 0, 6, 22
   #23  RETURN    0
@@ -46,7 +46,7 @@
   #12  LOAD      0, 0
   #13  LINE      5, 18, 5, 21
   #14  GET       abc
-  #15  LINE      5, 7, 5, 21
+  #15  LINE      5, 11, 5, 12
   #16  DO        +
   #17  LINE      5, 0, 5, 21
   #18  RETURN    0

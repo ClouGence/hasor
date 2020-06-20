@@ -91,7 +91,7 @@ public class DyadicExprInstCompiler implements InstCompiler<DyadicExpression> {
                 int lastPriority = priorityAt(last.peek());
                 if (selfPriority >= lastPriority) {
                     SymbolToken symbolToken = last.pop();
-                    instLocation(queue, astInst.expressCodeLocation());
+                    instLocation(queue, symbolToken);
                     queue.inst(DO, symbolToken.getSymbol());
                 } else {
                     break;
@@ -106,7 +106,7 @@ public class DyadicExprInstCompiler implements InstCompiler<DyadicExpression> {
             compilerContext.findInstCompilerByInst(secExpression).doCompiler(queue);
             while (!last.isEmpty()) {
                 SymbolToken symbolToken = last.pop();
-                instLocation(queue, astInst.expressCodeLocation());
+                instLocation(queue, symbolToken);
                 queue.inst(DO, symbolToken.getSymbol());
             }
         }

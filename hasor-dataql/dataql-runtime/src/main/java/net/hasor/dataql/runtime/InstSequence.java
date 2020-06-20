@@ -72,8 +72,13 @@ public class InstSequence {
     /** 获取当前程序指令指针位置以及运行的代码位置信息 */
     public RuntimeLocation programLocation() {
         CodeLocationInfo codeLocation = new CodeLocationInfo();
-        codeLocation.setStartPosition(new CodePosition(this.codeLocation[0], this.codeLocation[1]));
-        codeLocation.setEndPosition(new CodePosition(this.codeLocation[2], this.codeLocation[3]));
+        if (this.codeLocation.length == 4) {
+            codeLocation.setStartPosition(new CodePosition(this.codeLocation[0], this.codeLocation[1]));
+            codeLocation.setEndPosition(new CodePosition(this.codeLocation[2], this.codeLocation[3]));
+        } else {
+            codeLocation.setStartPosition(new CodePosition(this.codeLocation[0], -1));
+            codeLocation.setEndPosition(new CodePosition(-1, -1));
+        }
         return Location.atRuntime(codeLocation, this.address, this.programPointer());
     }
 

@@ -1,0 +1,34 @@
+[0]
+  #00  LINE      3, 1, 3, 2
+  #01  LDC_D     1
+  #02  LINE      3, 3, 3, 4
+  #03  LDC_D     2
+  #04  LINE      3, 5, 3, 6
+  #05  LDC_D     3
+  #06  LINE      3, 4, 3, 5
+  #07  DO        *
+  #08  LINE      5, 1, 5, 2
+  #09  LDC_D     4
+  #10  LINE      5, 0, 5, 1
+  #11  DO        /
+  #12  LINE      3, 2, 3, 3
+  #13  DO        +
+  #14  LINE      5, 3, 6, 1
+  #15  LINE      5, 4, 5, 5
+  #16  E_LOAD    #
+  #17  GET       a
+  #18  LINE      5, 6, 5, 7
+  #19  E_LOAD    #
+  #20  GET       b
+  #21  LINE      5, 5, 5, 6
+  #22  DO        -
+  #23  LINE      5, 2, 5, 3
+  #24  DO        -
+  #25  LINE      1, 0, 6, 1
+  #26  RETURN    0
+  #27  LINE      9, 9, 9, 11
+  #28  LDC_D     -1
+  #29  LINE      9, 8, 9, 9
+  #30  UO        !
+  #31  LINE      9, 4, 9, 5
+  #32  STORE     0

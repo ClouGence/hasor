@@ -85,19 +85,17 @@ primitiveValue  : STRING                                                    #str
 
 /* ----------------------------------------------------------------------------------- 表达式 */
 
-expr            : (PLUS | MINUS | NOT) expr                     #unaryExpr      // 一元运算
-                | LBT expr RBT ( dyadicExpr | ternaryExpr )?    #privilegeExpr  // 优先级(后面可以有多元运算)
-                | atomExpr ( dyadicExpr | ternaryExpr )?        #multipleExpr   // 基本算项 or 多元运算
+/* 表达式 */
+expr            : LBT expr RBT                                                  #privilegeExpr  // 优先级
+                |  (PLUS | MINUS | NOT) expr                                    #unaryExpr      // 一元运算
+                | expr (MUL | DIV | DIV2 | MOD) expr                            #dyadicExpr_A   // 二元运算优先级 1st
+                | expr (PLUS | MINUS) expr                                      #dyadicExpr_B   // 二元运算优先级 2st
+                | expr (AND | OR || XOR || LSHIFT || RSHIFT || RSHIFT2) expr    #dyadicExpr_C   // 二元运算优先级 3st
+                | expr (GT | GE || NE || EQ || LE || LT) expr                   #dyadicExpr_D   // 二元运算优先级 4st
+                | expr (SC_OR | SC_AND) expr                                    #dyadicExpr_E   // 二元运算优先级 5st
+                | expr QUE expr COLON expr                                      #ternaryExpr    // 三元运算
+                | (primitiveValue | funcCall | routeMapping)                    #atomExpr       // 可以作为表达式项的有：基本类型 or 发起函数调用 or 路由映射
                 ;
-
-/* 二元运算 */
-dyadicExpr      : (PLUS | MINUS | MUL | DIV | DIV2 | MOD | LBT | RBT | AND | OR | NOT | XOR | LSHIFT | RSHIFT | RSHIFT2 | GT | GE | LT | LE | EQ | NE | SC_OR | SC_AND) expr;
-
-/* 三元运算 */
-ternaryExpr     : QUE expr COLON expr;
-
-/* 可以作为表达式项的有：基本类型 or 发起函数调用 or 路由映射 */
-atomExpr        : primitiveValue | funcCall | routeMapping;
 
 /* 外部语句块块 */
 extBlock        : AT IDENTIFIER (LSBT RSBT)?  LBT extParams? RBT '<%' CHAR* '%>';

@@ -5,42 +5,43 @@
   #03  LINE      1, 8, 1, 9
   #04  E_LOAD    #
   #05  GET       a
-  #06  LINE      1, 4, 1, 9
+  #06  LINE      1, 6, 1, 8
   #07  DO        ==
-  #08  IF        14
-  #09  LINE      2, 12, 2, 14
-  #10  LDC_D     11
-  #11  LINE      2, 8, 2, 10
-  #12  STORE     0
-  #13  GOTO      44
-  #14  LABEL     14
-  #15  LINE      3, 10, 3, 14
-  #16  LDC_B     true
-  #17  IF        23
-  #18  LINE      4, 16, 4, 18
-  #19  LDC_D     22
-  #20  LINE      4, 12, 4, 14
-  #21  STORE     1
-  #22  GOTO      44
-  #23  LABEL     23
-  #24  LINE      7, 8, 11, 2
-  #25  NEW_A
-  #26  LINE      7, 10, 7, 11
-  #27  LDC_D     1
-  #28  PUSH
-  #29  LINE      8, 8, 8, 10
-  #30  LDC_D     22
-  #31  PUSH
-  #32  LINE      8, 11, 8, 12
-  #33  LDC_D     3
-  #34  PUSH
-  #35  LINE      8, 13, 8, 14
-  #36  LDC_D     4
-  #37  PUSH
-  #38  LINE      9, 9, 9, 10
-  #39  LDC_D     5
-  #40  PUSH
-  #41  LINE      7, 1, 11, 2
-  #42  RETURN    0
-  #43  GOTO      44
-  #44  LABEL     44
+  #08  LINE      1, 4, 1, 9
+  #09  IF        15
+  #10  LINE      2, 12, 2, 14
+  #11  LDC_D     11
+  #12  LINE      2, 8, 2, 10
+  #13  STORE     0
+  #14  GOTO      45
+  #15  LABEL     15
+  #16  LINE      3, 10, 3, 14
+  #17  LDC_B     true
+  #18  IF        24
+  #19  LINE      4, 16, 4, 18
+  #20  LDC_D     22
+  #21  LINE      4, 12, 4, 14
+  #22  STORE     1
+  #23  GOTO      45
+  #24  LABEL     24
+  #25  LINE      7, 8, 11, 2
+  #26  NEW_A
+  #27  LINE      7, 10, 7, 11
+  #28  LDC_D     1
+  #29  PUSH
+  #30  LINE      8, 8, 8, 10
+  #31  LDC_D     22
+  #32  PUSH
+  #33  LINE      8, 11, 8, 12
+  #34  LDC_D     3
+  #35  PUSH
+  #36  LINE      8, 13, 8, 14
+  #37  LDC_D     4
+  #38  PUSH
+  #39  LINE      9, 9, 9, 10
+  #40  LDC_D     5
+  #41  PUSH
+  #42  LINE      7, 1, 11, 2
+  #43  RETURN    0
+  #44  GOTO      45
+  #45  LABEL     45

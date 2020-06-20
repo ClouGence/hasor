@@ -40,6 +40,9 @@ public interface CodeLocation {
 
         @Override
         public String toString() {
+            if (lineNumber <= 0 && columnNumber < 0) {
+                return "unknown";
+            }
             String lineNumStr = lineNumber >= 0 ? String.valueOf(lineNumber) : "unknown";
             String columnNumStr = columnNumber >= 0 ? String.valueOf(columnNumber) : "unknown";
             return lineNumStr + ":" + columnNumStr;
@@ -81,7 +84,12 @@ public interface CodeLocation {
 
         @Override
         public String toString() {
-            return getStartPosition() + "~" + getEndPosition();
+            String starStr = getStartPosition().toString();
+            String endStr = getEndPosition().toString();
+            if ("unknown".equalsIgnoreCase(starStr) && "unknown".equalsIgnoreCase(endStr)) {
+                return "unknown";
+            }
+            return starStr + "~" + endStr;
         }
     }
 }

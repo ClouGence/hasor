@@ -1,44 +1,44 @@
 IN - RootBlockSet
     IN - ReturnInst
         IN - DyadicExpression
-            IN - AtomExpression
-                IN - PrimitiveVariable
-                OUT - PrimitiveVariable
-            OUT - AtomExpression
             IN - DyadicExpression
                 IN - AtomExpression
                     IN - PrimitiveVariable
                     OUT - PrimitiveVariable
                 OUT - AtomExpression
                 IN - DyadicExpression
-                    IN - AtomExpression
-                        IN - PrimitiveVariable
-                        OUT - PrimitiveVariable
-                    OUT - AtomExpression
                     IN - DyadicExpression
                         IN - AtomExpression
                             IN - PrimitiveVariable
                             OUT - PrimitiveVariable
                         OUT - AtomExpression
-                        IN - PrivilegeExpression
-                            IN - DyadicExpression
-                                IN - AtomExpression
-                                    IN - EnterRouteVariable
-                                    OUT - EnterRouteVariable
-                                    IN - NameRouteVariable
-                                    OUT - NameRouteVariable
-                                OUT - AtomExpression
-                                IN - AtomExpression
-                                    IN - EnterRouteVariable
-                                    OUT - EnterRouteVariable
-                                    IN - NameRouteVariable
-                                    OUT - NameRouteVariable
-                                OUT - AtomExpression
-                            OUT - DyadicExpression
-                        OUT - PrivilegeExpression
+                        IN - AtomExpression
+                            IN - PrimitiveVariable
+                            OUT - PrimitiveVariable
+                        OUT - AtomExpression
                     OUT - DyadicExpression
+                    IN - AtomExpression
+                        IN - PrimitiveVariable
+                        OUT - PrimitiveVariable
+                    OUT - AtomExpression
                 OUT - DyadicExpression
             OUT - DyadicExpression
+            IN - PrivilegeExpression
+                IN - DyadicExpression
+                    IN - AtomExpression
+                        IN - EnterRouteVariable
+                        OUT - EnterRouteVariable
+                        IN - NameRouteVariable
+                        OUT - NameRouteVariable
+                    OUT - AtomExpression
+                    IN - AtomExpression
+                        IN - EnterRouteVariable
+                        OUT - EnterRouteVariable
+                        IN - NameRouteVariable
+                        OUT - NameRouteVariable
+                    OUT - AtomExpression
+                OUT - DyadicExpression
+            OUT - PrivilegeExpression
         OUT - DyadicExpression
     OUT - ReturnInst
     IN - VarInst

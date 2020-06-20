@@ -37,11 +37,18 @@ class LINE implements InsetProcess {
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
         Instruction inst = sequence.currentInst();
-        sequence.updateCodeLocation(new int[] { //
-                inst.getInt(0), // startPosition - lineNumber
-                inst.getInt(1), // startPosition - columnNumber
-                inst.getInt(2), // endPosition - lineNumber
-                inst.getInt(3), // endPosition - columnNumber
-        });
+        Object[] arrays = inst.getArrays();
+        if (arrays.length == 4) {
+            sequence.updateCodeLocation(new int[] { //
+                    inst.getInt(0), // startPosition - lineNumber
+                    inst.getInt(1), // startPosition - columnNumber
+                    inst.getInt(2), // endPosition - lineNumber
+                    inst.getInt(3), // endPosition - columnNumber
+            });
+        } else {
+            sequence.updateCodeLocation(new int[] { //
+                    inst.getInt(0) // startPosition - lineNumber
+            });
+        }
     }
 }

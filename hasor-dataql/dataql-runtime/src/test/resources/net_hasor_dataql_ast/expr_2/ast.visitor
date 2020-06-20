@@ -7,10 +7,6 @@ IN - RootBlockSet
             OUT - AtomExpression
             IN - PrivilegeExpression
                 IN - DyadicExpression
-                    IN - AtomExpression
-                        IN - PrimitiveVariable
-                        OUT - PrimitiveVariable
-                    OUT - AtomExpression
                     IN - DyadicExpression
                         IN - AtomExpression
                             IN - PrimitiveVariable
@@ -21,6 +17,10 @@ IN - RootBlockSet
                             OUT - PrimitiveVariable
                         OUT - AtomExpression
                     OUT - DyadicExpression
+                    IN - AtomExpression
+                        IN - PrimitiveVariable
+                        OUT - PrimitiveVariable
+                    OUT - AtomExpression
                 OUT - DyadicExpression
             OUT - PrivilegeExpression
             IN - PrivilegeExpression
