@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.Variable;
+import net.hasor.dataql.compiler.ast.token.StringToken;
 import net.hasor.dataql.compiler.ast.value.ObjectVariable;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
@@ -31,13 +32,18 @@ import java.util.Map;
 public class ObjectVariableInstCompiler implements InstCompiler<ObjectVariable> {
     @Override
     public void doCompiler(ObjectVariable astInst, InstQueue queue, CompilerContext compilerContext) {
+        instLocation(queue, astInst);
         queue.inst(NEW_O);
         List<String> keyFields = astInst.getFieldSort();
+        Map<String, StringToken> objectKeys = astInst.getObjectKeys();
         Map<String, Variable> objectData = astInst.getObjectValues();
         //
         for (String fieldKey : keyFields) {
+            StringToken keyVal = objectKeys.get(fieldKey);
             Variable variable = objectData.get(fieldKey);
             compilerContext.findInstCompilerByInst(variable).doCompiler(queue);
+            //
+            instLocation(queue, keyVal);
             queue.inst(PUT, fieldKey);
         }
     }

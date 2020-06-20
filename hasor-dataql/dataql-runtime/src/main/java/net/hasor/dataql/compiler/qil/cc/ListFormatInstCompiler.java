@@ -37,6 +37,7 @@ public class ListFormatInstCompiler implements InstCompiler<ListFormat> {
         if (astInst.getFormatTo().getExpressionList().isEmpty()) {
             RouteVariable formVariable = astInst.getForm();
             compilerContext.findInstCompilerByInst(formVariable).doCompiler(queue);
+            instLocation(queue, astInst.getFormatTo());
             queue.inst(POP);    // 丢弃表达式结果
             queue.inst(NEW_A);  // 构造集合
             return;
@@ -48,18 +49,21 @@ public class ListFormatInstCompiler implements InstCompiler<ListFormat> {
         queue.inst(CAST_I); // 栈顶数据转换为迭代器
         queue.inst(E_PUSH); // 将栈顶数据压入环境栈
         {
+            instLocation(queue, astInst.getFormatTo());
             queue.inst(NEW_A);  // 构造集合
             Label enterLoop = queue.labelDef();
             Label breakLoop = queue.labelDef();
             {
                 // .声明循环起点
                 queue.inst(LABEL, enterLoop);
+                instLocationFocus(queue, astInst.getFormatTo());
                 // .加载迭代器并尝试获取下一条数据，如果数据获取失败就跳出迭代器结束遍历
                 queue.inst(E_LOAD, Special_A.getCode());
                 queue.inst(GET, "next");
                 queue.inst(IF, breakLoop);
                 //
                 for (Variable variable : astInst.getFormatTo().getExpressionList()) {
+                    instLocation(queue, variable);
                     if (!(variable instanceof PrimitiveVariable)) {
                         // 从环境栈上取得迭代器并拿到数据，然后在放到环境栈顶。等待后面 路由表达式使用
                         queue.inst(E_LOAD, Special_A.getCode());

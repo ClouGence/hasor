@@ -17,6 +17,7 @@ package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.RouteVariable;
 import net.hasor.dataql.compiler.ast.Variable;
 import net.hasor.dataql.compiler.ast.fmt.ObjectFormat;
+import net.hasor.dataql.compiler.ast.token.StringToken;
 import net.hasor.dataql.compiler.ast.value.ObjectVariable;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
@@ -37,6 +38,7 @@ public class ObjectFormatInstCompiler implements InstCompiler<ObjectFormat> {
         if (astInst.getFormatTo().getFieldSort().isEmpty()) {
             RouteVariable formVariable = astInst.getForm();
             compilerContext.findInstCompilerByInst(formVariable).doCompiler(queue);
+            instLocation(queue, astInst);
             queue.inst(POP);    // 丢弃表达式结果
             queue.inst(NEW_O);  // 构造对象
             return;
@@ -45,16 +47,20 @@ public class ObjectFormatInstCompiler implements InstCompiler<ObjectFormat> {
         // .编译表达式
         RouteVariable formVariable = astInst.getForm();
         compilerContext.findInstCompilerByInst(formVariable).doCompiler(queue);
+        instLocation(queue, astInst);
         queue.inst(CAST_O);
         queue.inst(E_PUSH);
         {
             queue.inst(NEW_O);
             ObjectVariable formatTo = astInst.getFormatTo();
+            Map<String, StringToken> keyObjects = formatTo.getObjectKeys();
             List<String> keyFields = formatTo.getFieldSort();
             Map<String, Variable> objectData = formatTo.getObjectValues();
             for (String fieldKey : keyFields) {
+                StringToken keyVal = keyObjects.get(fieldKey);
                 Variable variable = objectData.get(fieldKey);
                 compilerContext.findInstCompilerByInst(variable).doCompiler(queue);
+                instLocation(queue, keyVal);
                 queue.inst(PUT, fieldKey);
             }
         }

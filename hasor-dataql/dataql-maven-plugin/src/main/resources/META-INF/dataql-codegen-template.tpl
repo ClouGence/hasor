@@ -39,7 +39,7 @@ public class %target_name% extends HintsSet implements Query {
         Set<String> keySet = shareVarMap.keySet();
         InputStream inputStream = Objects.requireNonNull(ResourcesUtils.getResourceAsStream(sourceCode), sourceCode);
         QueryModel queryModel = QueryHelper.queryParser(inputStream, Charset.forName("UTF-8"));
-        QIL queryQil = QueryHelper.queryCompiler(queryModel, keySet, finder);
+        QIL queryQil = QueryHelper.queryCompiler(queryModel, new CompilerArguments(keySet), finder);
         this.dataQuery = QueryHelper.createQuery(queryQil, finder);
         if (this.dataQuery instanceof CompilerVarQuery) {
             CompilerVarQuery varQuery = (CompilerVarQuery) this.dataQuery;

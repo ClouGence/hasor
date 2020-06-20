@@ -27,6 +27,7 @@ import net.hasor.dataql.compiler.qil.InstQueue;
 public class PrivilegeExprInstCompiler implements InstCompiler<PrivilegeExpression> {
     @Override
     public void doCompiler(PrivilegeExpression astInst, InstQueue queue, CompilerContext compilerContext) {
+        this.instLocation(queue, astInst);
         compilerContext.findInstCompilerByInst(astInst.getExpression()).doCompiler(queue);
     }
 }

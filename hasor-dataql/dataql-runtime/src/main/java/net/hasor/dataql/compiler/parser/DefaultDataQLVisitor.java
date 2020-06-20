@@ -92,6 +92,12 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         return location;
     }
 
+    private <T extends CodeLocation, V extends CodePosition> T code(T location, V startPos, V endPos) {
+        location.setStartPosition(startPos);
+        location.setEndPosition(endPos);
+        return location;
+    }
+
     @Override
     public T visitRootInstSet(RootInstSetContext ctx) {
         this.instStack.push(code(new RootBlockSet(), ctx));
@@ -423,7 +429,13 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         ctx.routeMapping().accept(this);
         //
         RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
-        FunCallRouteVariable funCall = code(new FunCallRouteVariable(routeVariable), ctx);
+        CodePosition startPos = routeVariable.getStartPosition();
+        if (routeVariable.getParent() instanceof EnterRouteVariable) {
+            startPos = routeVariable.getParent().getStartPosition();
+        }
+        CodePosition endPos = code(new CodeLocation.CodeLocationInfo(), ctx.RBT()).getEndPosition();
+        //
+        FunCallRouteVariable funCall = code(new FunCallRouteVariable(routeVariable), startPos, endPos);
         List<AnyObjectContext> paramLists = ctx.anyObject();
         if (paramLists != null) {
             for (AnyObjectContext param : paramLists) {
@@ -499,7 +511,10 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     @Override
     public T visitFuncCallResult_call(FuncCallResult_callContext ctx) {
         RouteVariable routeVariable = (RouteVariable) this.instStack.pop();
-        FunCallRouteVariable funCall = code(new FunCallRouteVariable(routeVariable), ctx);
+        CodePosition startPos = routeVariable.getStartPosition();
+        CodePosition endPos = code(new CodeLocation.CodeLocationInfo(), ctx.RBT()).getEndPosition();
+        //
+        FunCallRouteVariable funCall = code(new FunCallRouteVariable(routeVariable), startPos, endPos);
         List<AnyObjectContext> paramLists = ctx.anyObject();
         if (paramLists != null) {
             for (AnyObjectContext param : paramLists) {
@@ -658,20 +673,27 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
         TerminalNode stringNode = ctx.STRING();
         ExprContext exprContext = ctx.expr();
         //
+        CodeLocation.CodeLocationInfo locationInfo = code(new CodeLocation.CodeLocationInfo(), ctx);
+        CodePosition startPos = locationInfo.getStartPosition();
+        CodePosition endPos = locationInfo.getEndPosition();
+        if (atNode instanceof EnterRouteVariable) {
+            startPos = atNode.getStartPosition();
+        }
+        //
         if (intNode != null) {
             IntegerToken subscriptToken = code(new IntegerToken(Integer.parseInt(intNode.getText())), intNode);
-            this.instStack.push(code(new SubscriptRouteVariable(atNode, subscriptToken), intNode));
+            this.instStack.push(code(new SubscriptRouteVariable(atNode, subscriptToken), startPos, endPos));
             return null;
         }
         if (stringNode != null) {
             StringToken subscriptToken = code(new StringToken(fixString(stringNode)), stringNode);
-            this.instStack.push(code(new SubscriptRouteVariable(atNode, subscriptToken), stringNode));
+            this.instStack.push(code(new SubscriptRouteVariable(atNode, subscriptToken), startPos, endPos));
             return null;
         }
         if (exprContext != null) {
             exprContext.accept(this);
             Expression expr = (Expression) this.instStack.pop();
-            this.instStack.push(code(new SubscriptRouteVariable(atNode, expr), exprContext));
+            this.instStack.push(code(new SubscriptRouteVariable(atNode, expr), startPos, endPos));
             return null;
         }
         throw newParseException(ctx.start, "parser failed -> visitRouteSubscript.");

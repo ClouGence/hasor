@@ -18,6 +18,7 @@ import net.hasor.dataql.Finder;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
+import net.hasor.dataql.runtime.CompilerArguments;
 import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataql.runtime.QueryHelper;
 
@@ -102,7 +103,8 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
             }
             //
             QueryModel queryModel = QueryHelper.queryParser(queryString);
-            QIL compilerQIL = QueryHelper.queryCompiler(queryModel, global.keySet(), this.getFinder());
+            CompilerArguments compilerArguments = new CompilerArguments(global.keySet());
+            QIL compilerQIL = QueryHelper.queryCompiler(queryModel, compilerArguments, this.getFinder());
             return new DataQLCompiledScript(compilerQIL, this);
         } catch (IOException e) {
             throw new ScriptException(e);

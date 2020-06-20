@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodePosition;
 import net.hasor.dataql.compiler.qil.Instruction;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.Location.RuntimeLocation;
@@ -32,6 +34,7 @@ public class InstSequence {
     private final int           startPosition;  // 有效的起始位置
     private final int           endPosition;    // 有效的终止位置
     private final AtomicInteger sequenceIndex;  // 当前指令指针指向的序列位置
+    private       int[]         codeLocation;   // 长度为4的一个数组,分为两段(1-起始位置，2-终止位置)。每段的结构相同(行，列)。 -1 表示未知
     private       boolean       jumpMark = false;
 
     InstSequence(int address, QIL queueSet) {
@@ -40,6 +43,7 @@ public class InstSequence {
         this.startPosition = 0;
         this.endPosition = this.queueSet.iqlSize(address);
         this.sequenceIndex = new AtomicInteger(this.startPosition);
+        this.codeLocation = new int[] { -1, -1, -1, -1 };
     }
 
     InstSequence(int address, QIL queueSet, int startPosition, int endPosition) {
@@ -48,6 +52,7 @@ public class InstSequence {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         this.sequenceIndex = new AtomicInteger(this.startPosition);
+        this.codeLocation = new int[] { -1, -1, -1, -1 };
     }
 
     /** 当前指令序列的地址 */
@@ -60,9 +65,16 @@ public class InstSequence {
         return this.sequenceIndex.get();
     }
 
+    public void updateCodeLocation(int[] ints) {
+        this.codeLocation = ints;
+    }
+
     /** 获取当前程序指令指针位置以及运行的代码位置信息 */
     public RuntimeLocation programLocation() {
-        return Location.atRuntime(-1, -1, this.address, this.programPointer());
+        CodeLocationInfo codeLocation = new CodeLocationInfo();
+        codeLocation.setStartPosition(new CodePosition(this.codeLocation[0], this.codeLocation[1]));
+        codeLocation.setEndPosition(new CodePosition(this.codeLocation[2], this.codeLocation[3]));
+        return Location.atRuntime(codeLocation, this.address, this.programPointer());
     }
 
     /** 克隆一个 */

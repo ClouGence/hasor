@@ -37,14 +37,17 @@ public class LambdaVariableInstCompiler implements InstCompiler<LambdaVariable> 
         InstQueue newMethodInst = queue.newMethodInst();
         compilerContext.newFrame();
         for (int i = 0; i < paramList.size(); i++) {
-            String name = paramList.get(i).getValue();
+            StringToken nameToken = paramList.get(i);
+            String name = nameToken.getValue();
             int index = compilerContext.push(name);//将变量名压栈，并返回栈中的位置
+            instLocation(newMethodInst, nameToken);
             newMethodInst.inst(LOCAL, i, index, name);  //为栈中某个位置的变量命名
         }
         compilerContext.findInstCompilerByInst(astInst, InstSet.class).doCompiler(newMethodInst);
         compilerContext.dropFrame();
         //
         // .指向函数的指针
+        instLocation(queue, astInst);
         queue.inst(M_REF, newMethodInst.getName());
     }
 }

@@ -22,6 +22,7 @@ import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
+import net.hasor.dataql.runtime.CompilerArguments;
 import net.hasor.dataql.runtime.CompilerVarQuery;
 import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataql.runtime.QueryHelper;
@@ -109,7 +110,8 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
 
     @Override
     public QIL compilerQuery(QueryModel queryModel) throws IOException {
-        return QueryHelper.queryCompiler(queryModel, this.compilerVarMap.keySet(), getFinder());
+        CompilerArguments compilerArguments = new CompilerArguments(this.compilerVarMap.keySet());
+        return QueryHelper.queryCompiler(queryModel, compilerArguments, getFinder());
     }
 
     @Override

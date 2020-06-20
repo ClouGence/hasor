@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.Variable;
 import net.hasor.dataql.compiler.ast.inst.VarInst;
+import net.hasor.dataql.compiler.ast.token.StringToken;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
@@ -29,7 +30,8 @@ public class VarInstCompiler implements InstCompiler<VarInst> {
     @Override
     public void doCompiler(VarInst astInst, InstQueue queue, CompilerContext compilerContext) {
         // .如果当前堆栈中存在该变量的定义，那么直接覆盖。否则新增一个本地变量
-        String varName = astInst.getVarName().getValue();
+        StringToken varNameToken = astInst.getVarName();
+        String varName = varNameToken.getValue();
         int index = compilerContext.containsWithCurrent(varName);
         if (index < 0) {
             index = compilerContext.push(varName);
@@ -38,6 +40,8 @@ public class VarInstCompiler implements InstCompiler<VarInst> {
         // .编译表达式
         Variable varValue = astInst.getValue();
         compilerContext.findInstCompilerByInst(varValue).doCompiler(queue);
+        //
+        instLocation(queue, varNameToken);
         queue.inst(STORE, index);
     }
 }

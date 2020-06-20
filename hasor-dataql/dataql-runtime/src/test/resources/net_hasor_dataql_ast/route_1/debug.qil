@@ -1,0 +1,33 @@
+[0]
+  #00  LINE      2, 7, 2, 8
+  #01  E_LOAD    #
+  #02  GET       a
+  #03  LINE      2, 0, 2, 8
+  #04  RETURN    0
+  #05  LINE      4, 7, 4, 8
+  #06  E_LOAD    #
+  #07  GET       a
+  #08  LINE      5, 9, 5, 10
+  #09  GET       b
+  #10  LINE      6, 9, 6, 10
+  #11  GET       c
+  #12  LINE      7, 9, 7, 10
+  #13  GET       d
+  #14  LINE      8, 9, 8, 10
+  #15  GET       e
+  #16  LINE      4, 0, 8, 10
+  #17  RETURN    0
+  #18  LINE      10, 7, 10, 8
+  #19  E_LOAD    #
+  #20  GET       a
+  #21  LINE      10, 9, 10, 11
+  #22  PULL      12
+  #23  LINE      10, 0, 10, 12
+  #24  RETURN    0
+  #25  LINE      12, 7, 12, 8
+  #26  E_LOAD    #
+  #27  GET       b
+  #28  LINE      12, 12, 12, 16
+  #29  GET       23
+  #30  LINE      12, 0, 13, 1
+  #31  RETURN    0

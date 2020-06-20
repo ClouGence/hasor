@@ -1,0 +1,136 @@
+[0]
+  #000  LINE      1, 7, 1, 8
+  #001  E_LOAD    #
+  #002  GET       a
+  #003  LINE      1, 12, 1, 14
+  #004  POP
+  #005  NEW_A
+  #006  LINE      1, 0, 1, 14
+  #007  RETURN    0
+  #008  LINE      3, 7, 3, 8
+  #009  E_LOAD    #
+  #010  GET       b
+  #011  CAST_I
+  #012  E_PUSH
+  #013  LINE      3, 12, 5, 1
+  #014  NEW_A
+  #015  LABEL     15
+  #016  LINE      3, 12, 5, 1
+  #017  E_LOAD    #
+  #018  GET       next
+  #019  IF        27
+  #020  LINE      4, 4, 4, 9
+  #021  LDC_S     abc
+  #022  PUSH
+  #023  LINE      4, 12, 4, 17
+  #024  LDC_S     cde
+  #025  PUSH
+  #026  GOTO      15
+  #027  LABEL     27
+  #028  E_POP
+  #029  LINE      3, 0, 5, 1
+  #030  RETURN    0
+  #031  LINE      9, 7, 9, 8
+  #032  E_LOAD    #
+  #033  GET       b
+  #034  CAST_I
+  #035  E_PUSH
+  #036  LINE      9, 12, 11, 1
+  #037  NEW_A
+  #038  LABEL     38
+  #039  LINE      9, 12, 11, 1
+  #040  E_LOAD    #
+  #041  GET       next
+  #042  IF        52
+  #043  LINE      10, 4, 10, 7
+  #044  E_LOAD    #
+  #045  GET       data
+  #046  E_PUSH
+  #047  E_LOAD    #
+  #048  GET       abc
+  #049  E_POP
+  #050  PUSH
+  #051  GOTO      38
+  #052  LABEL     52
+  #053  E_POP
+  #054  LINE      9, 0, 11, 1
+  #055  RETURN    0
+  #056  LINE      13, 7, 13, 8
+  #057  E_LOAD    #
+  #058  GET       b
+  #059  CAST_I
+  #060  E_PUSH
+  #061  LINE      13, 12, 15, 1
+  #062  NEW_A
+  #063  LABEL     63
+  #064  LINE      13, 12, 15, 1
+  #065  E_LOAD    #
+  #066  GET       next
+  #067  IF        131
+  #068  LINE      14, 4, 14, 17
+  #069  E_LOAD    #
+  #070  GET       data
+  #071  E_PUSH
+  #072  NEW_A
+  #073  LINE      14, 5, 14, 16
+  #074  NEW_O
+  #075  LINE      14, 12, 14, 15
+  #076  E_LOAD    #
+  #077  GET       ccc
+  #078  LINE      14, 6, 14, 11
+  #079  PUT       abc
+  #080  LINE      14, 5, 14, 16
+  #081  PUSH
+  #082  E_POP
+  #083  PUSH
+  #084  LINE      14, 19, 14, 67
+  #085  E_LOAD    #
+  #086  GET       data
+  #087  E_PUSH
+  #088  NEW_O
+  #089  LINE      14, 27, 14, 66
+  #090  NEW_A
+  #091  LINE      14, 28, 14, 29
+  #092  E_LOAD    #
+  #093  GET       a
+  #094  PUSH
+  #095  LINE      14, 30, 14, 31
+  #096  E_LOAD    #
+  #097  GET       b
+  #098  PUSH
+  #099  LINE      14, 32, 14, 33
+  #100  E_LOAD    #
+  #101  GET       c
+  #102  PUSH
+  #103  LINE      14, 35, 14, 44
+  #104  NEW_A
+  #105  LINE      14, 36, 14, 40
+  #106  LDC_S     ss
+  #107  PUSH
+  #108  LINE      14, 41, 14, 43
+  #109  E_LOAD    #
+  #110  GET       df
+  #111  PUSH
+  #112  LINE      14, 35, 14, 44
+  #113  PUSH
+  #114  LINE      14, 45, 14, 64
+  #115  NEW_O
+  #116  LINE      14, 46, 14, 51
+  #117  E_LOAD    #
+  #118  GET       abc
+  #119  PUT       abc
+  #120  LINE      14, 59, 14, 63
+  #121  LDC_B     true
+  #122  LINE      14, 52, 14, 58
+  #123  PUT       aacc
+  #124  LINE      14, 45, 14, 64
+  #125  PUSH
+  #126  LINE      14, 20, 14, 25
+  #127  PUT       cde
+  #128  E_POP
+  #129  PUSH
+  #130  GOTO      63
+  #131  LABEL     131
+  #132  E_POP
+  #133  LINE      13, 0, 15, 1
+  #134  RETURN    0

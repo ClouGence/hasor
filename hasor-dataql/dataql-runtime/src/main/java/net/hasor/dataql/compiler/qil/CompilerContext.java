@@ -26,9 +26,9 @@ import java.util.*;
  * @version : 2019-12-11
  */
 public class CompilerContext {
-    private Map<String, Integer> loadedImport = new HashMap<>();
-    private CompilerEnvironment  compilerEnvironment;
-    private Stack<List<String>>  dataStack    = new Stack<List<String>>() {{
+    private       Map<String, Integer> loadedImport = new HashMap<>();
+    private final CompilerEnvironment  compilerEnvironment;
+    private final Stack<List<String>>  dataStack    = new Stack<List<String>>() {{
         push(new ArrayList<>());
     }};
 

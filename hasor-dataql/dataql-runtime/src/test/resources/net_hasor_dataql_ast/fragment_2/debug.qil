@@ -1,0 +1,76 @@
+[0]
+  #00  LINE      1, 14, 1, 121
+  #01  M_REF     1
+  #02  LINE      1, 4, 1, 11
+  #03  STORE     0
+  #04  LINE      3, 7, 3, 14
+  #05  LOAD      0, 0
+  #06  LINE      3, 7, 3, 26
+  #07  M_DEF
+  #08  LINE      3, 15, 3, 20
+  #09  LDC_S     abc
+  #10  LINE      3, 21, 3, 25
+  #11  LDC_B     true
+  #12  LINE      3, 7, 3, 26
+  #13  CALL      2
+  #14  CAST_I
+  #15  E_PUSH
+  #16  LINE      3, 30, 7, 1
+  #17  NEW_A
+  #18  LABEL     18
+  #19  LINE      3, 30, 7, 1
+  #20  E_LOAD    #
+  #21  GET       next
+  #22  IF        51
+  #23  LINE      4, 4, 6, 5
+  #24  E_LOAD    #
+  #25  GET       data
+  #26  E_PUSH
+  #27  NEW_O
+  #28  LINE      5, 8, 5, 12
+  #29  E_LOAD    #
+  #30  GET       id
+  #31  PUT       id
+  #32  LINE      5, 13, 5, 19
+  #33  E_LOAD    #
+  #34  GET       name
+  #35  PUT       name
+  #36  LINE      5, 20, 5, 26
+  #37  E_LOAD    #
+  #38  GET       code
+  #39  PUT       code
+  #40  LINE      5, 27, 5, 33
+  #41  E_LOAD    #
+  #42  GET       body
+  #43  PUT       body
+  #44  LINE      5, 34, 5, 42
+  #45  E_LOAD    #
+  #46  GET       params
+  #47  PUT       params
+  #48  E_POP
+  #49  PUSH
+  #50  GOTO      18
+  #51  LABEL     51
+  #52  E_POP
+  #53  LINE      3, 0, 7, 1
+  #54  RETURN    0
+
+[1]
+  #00  LINE      1, 22, 1, 30
+  #01  LOCAL     0, 0, itemCode
+  #02  LINE      1, 31, 1, 37
+  #03  LOCAL     1, 1, status
+  #04  LINE      1, 16, 1, 19
+  #05  M_FRAG    true, sql
+  #06  NEW_O
+  #07  LINE      1, 22, 1, 30
+  #08  LOAD      0, 0
+  #09  PUT       itemCode
+  #10  LINE      1, 31, 1, 37
+  #11  LOAD      0, 1
+  #12  PUT       status
+  #13  LINE      1, 41, 1, 119
+  #14  LDC_S      select * from category where co_code like '%:itemCode%' and status = :status
+  #15  LINE      1, 14, 1, 121
+  #16  CALL      2
+  #17  RETURN    0

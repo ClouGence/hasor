@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.RouteVariable;
+import net.hasor.dataql.compiler.ast.token.StringToken;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable;
 import net.hasor.dataql.compiler.ast.value.EnterRouteVariable.RouteType;
 import net.hasor.dataql.compiler.ast.value.NameRouteVariable;
@@ -32,7 +33,7 @@ import net.hasor.utils.StringUtils;
 public class NameRouteVariableInstCompiler implements InstCompiler<NameRouteVariable> {
     @Override
     public void doCompiler(NameRouteVariable astInst, InstQueue queue, CompilerContext compilerContext) {
-        String astInstName = astInst.getName().getValue();
+        StringToken nameRouteToken = astInst.getName();
         RouteVariable parent = astInst.getParent();
         if (parent instanceof NameRouteVariable) {
             if (StringUtils.isBlank(((NameRouteVariable) parent).getName().getValue())) {
@@ -42,8 +43,9 @@ public class NameRouteVariableInstCompiler implements InstCompiler<NameRouteVari
         if (parent instanceof EnterRouteVariable) {
             EnterRouteVariable enterParent = (EnterRouteVariable) parent;
             if (enterParent.getRouteType() == RouteType.Expr) {
-                ContainsIndex withTree = compilerContext.containsWithTree(astInstName);
+                ContainsIndex withTree = compilerContext.containsWithTree(nameRouteToken.getValue());
                 if (withTree.isValid()) {
+                    this.instLocation(queue, nameRouteToken);
                     queue.inst(LOAD, withTree.depth, withTree.index);
                     return;
                 }
@@ -51,6 +53,7 @@ public class NameRouteVariableInstCompiler implements InstCompiler<NameRouteVari
         }
         //
         compilerContext.findInstCompilerByInst(parent).doCompiler(queue);
-        queue.inst(GET, astInstName);
+        this.instLocation(queue, nameRouteToken);
+        queue.inst(GET, nameRouteToken.getValue());
     }
 }

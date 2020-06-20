@@ -1,18 +1,22 @@
 --------------------
 Release Hasor v4.x
 --------------------
-Hasor v4.1.8 (2020-06-?)
+Hasor v4.1.9 (2020-06-?)
 ------------------------------------
 **新增**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1IT82>`_ Api列表时显式其http method
     - `issue <https://gitee.com/zycgit/hasor/issues/I1J2BJ>`_ Dataway string 库函数新增 split 方法。
     - `issue <https://gitee.com/zycgit/hasor/issues/I1JA0Q>`_ UI 的操作提供权限控制扩展能力
     - 新版本检查提示功能，例如:官方在发布新版本的时。Interface-UI 会检测是否有新版本并弹窗提示给使用者，使用者可以选择永久忽略这次版本提示。
+    - SPI 增加可以判断 hasSpi、hasJudge 方法用来判断 SPI 是否有被注册。
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1EQCS>`_ 异常信息增加了行号。
 **优化**
     - 所有编辑器统一使用 MonacoEditor，去掉 Codemirror 依赖。
     - ApiInfo 类型中增加 CallSource 枚举，用来表示请求的来源。isPerform 方法成为过期方法。
+    - ValueModel 的isByte、isShort、isInt、isLong 等等方法。逻辑调整为是否可以转换为该类型。
 **修复**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1J7K3>`_ 修复Dataway 生成的 Swagger api文档，在容器中用 swagger 访问失败。
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1K85T>`_ 修复 字符串加法计算特定场景下抛异常
 
 Hasor v4.1.8 (2020-05-28)
 ------------------------------------

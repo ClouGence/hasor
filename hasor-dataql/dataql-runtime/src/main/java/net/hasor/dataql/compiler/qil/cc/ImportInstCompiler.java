@@ -18,6 +18,7 @@ import net.hasor.dataql.compiler.CompilerException;
 import net.hasor.dataql.compiler.ast.inst.ImportInst;
 import net.hasor.dataql.compiler.ast.inst.ImportInst.ImportType;
 import net.hasor.dataql.compiler.ast.inst.RootBlockSet;
+import net.hasor.dataql.compiler.ast.token.StringToken;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
@@ -35,8 +36,10 @@ import java.util.Objects;
 public class ImportInstCompiler implements InstCompiler<ImportInst> {
     @Override
     public void doCompiler(ImportInst astInst, InstQueue queue, CompilerContext compilerContext) {
-        String asName = astInst.getAsName().getValue();
-        String importResource = astInst.getImportName().getValue();
+        StringToken asNameToken = astInst.getAsName();
+        StringToken importResourceToken = astInst.getImportName();
+        String importResource = importResourceToken.getValue();
+        String asName = asNameToken.getValue();
         ImportType importType = astInst.getImportType();
         //
         // .导入操作
@@ -48,9 +51,11 @@ public class ImportInstCompiler implements InstCompiler<ImportInst> {
                 this.loadResource(importResource, newMethodInst, compilerContext.createSegregate());
                 importAddress = newMethodInst.getName();
             }
+            instLocation(queue, importResourceToken);
             queue.inst(M_REF, importAddress);
             //
         } else if (importType == ImportType.ClassType) {
+            instLocation(queue, importResourceToken);
             queue.inst(M_TYP, importResource);
         } else {
             throw new CompilerException("import compiler failed -> importType undefined");
@@ -62,6 +67,7 @@ public class ImportInstCompiler implements InstCompiler<ImportInst> {
             throw new CompilerException("import '" + asName + "' is defined.");
         }
         index = compilerContext.push(asName);
+        instLocation(queue, asNameToken);
         queue.inst(STORE, index);
     }
 

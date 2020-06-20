@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.compiler.qil.Instruction;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -35,5 +36,12 @@ class LINE implements InsetProcess {
 
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
+        Instruction inst = sequence.currentInst();
+        sequence.updateCodeLocation(new int[] { //
+                inst.getInt(0), // startPosition - lineNumber
+                inst.getInt(1), // startPosition - columnNumber
+                inst.getInt(2), // endPosition - lineNumber
+                inst.getInt(3), // endPosition - columnNumber
+        });
     }
 }

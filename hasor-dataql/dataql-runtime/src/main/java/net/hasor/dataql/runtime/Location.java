@@ -14,49 +14,26 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
+import net.hasor.dataql.compiler.ast.CodeLocation;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
+
 /**
  * 位置
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-06-11
  */
-public abstract class Location {
-    public static class CodeLocation extends Location {
-        private int lineNumber   = -1; // 代码行号
-        private int columnNumber = -1; // 代码行的第几个字符
-
-        private CodeLocation(int lineNumber, int columnNumber) {
-            this.lineNumber = lineNumber;
-            this.columnNumber = columnNumber;
-        }
-
-        public int getLineNumber() {
-            return this.lineNumber;
-        }
-
-        public int getColumnNumber() {
-            return this.columnNumber;
-        }
-
-        public RuntimeLocation atRuntime(int methodAddress, int programAddress) {
-            return new RuntimeLocation(this, methodAddress, programAddress);
-        }
-
-        @Override
-        public String toErrorMessage() {
-            if (this.lineNumber == -1 || this.columnNumber == -1) {
-                return "line unknown";
-            } else {
-                return "line " + this.lineNumber + ":" + this.columnNumber;
-            }
-        }
+public abstract class Location extends CodeLocationInfo {
+    public String toErrorMessage() {
+        return "line [" + super.toString() + "]";
     }
 
-    public static class RuntimeLocation extends CodeLocation {
+    public static class RuntimeLocation extends Location {
         private int methodAddress  = -1; // 方法地址
         private int programAddress = -1; // 执行指针
 
         private RuntimeLocation(CodeLocation codeLocation, int methodAddress, int programAddress) {
-            super(codeLocation.lineNumber, codeLocation.columnNumber);
+            setStartPosition(codeLocation.getStartPosition());
+            setEndPosition(codeLocation.getEndPosition());
             this.methodAddress = methodAddress;
             this.programAddress = programAddress;
         }
@@ -74,17 +51,14 @@ public abstract class Location {
         }
     }
 
-    public abstract String toErrorMessage();
-
-    public static CodeLocation atCode(int lineNumber, int columnNumber) {
-        return new CodeLocation(lineNumber, columnNumber);
-    }
-
-    public static RuntimeLocation atRuntime(int lineNumber, int columnNumber, int methodAddress, int programAddress) {
-        return new RuntimeLocation(atCode(lineNumber, columnNumber), methodAddress, programAddress);
+    public static RuntimeLocation atRuntime(CodeLocation codeLocation, int methodAddress, int programAddress) {
+        return new RuntimeLocation(codeLocation, methodAddress, programAddress);
     }
 
     public static RuntimeLocation unknownLocation() {
-        return new RuntimeLocation(atCode(-1, -1), -1, -1);
+        CodeLocationInfo codeLocation = new CodeLocationInfo();
+        codeLocation.setStartPosition(new CodePosition(-1, -1));
+        codeLocation.setEndPosition(new CodePosition(-1, -1));
+        return new RuntimeLocation(codeLocation, -1, -1);
     }
 }

@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.expr.UnaryExpression;
+import net.hasor.dataql.compiler.ast.token.SymbolToken;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
@@ -29,6 +30,9 @@ public class UnaryExprInstCompiler implements InstCompiler<UnaryExpression> {
     @Override
     public void doCompiler(UnaryExpression astInst, InstQueue queue, CompilerContext compilerContext) {
         compilerContext.findInstCompilerByInst(astInst.getTarget()).doCompiler(queue);
-        queue.inst(Opcodes.UO, astInst.getDyadicSymbol().getSymbol());
+        //
+        SymbolToken dyadicSymbol = astInst.getDyadicSymbol();
+        this.instLocation(queue, dyadicSymbol);
+        queue.inst(Opcodes.UO, dyadicSymbol.getSymbol());
     }
 }

@@ -24,9 +24,8 @@ import java.lang.reflect.Field;
  * @version : 2017-07-03
  */
 public class InstructionInfo implements Opcodes, Instruction {
-    private byte     instCode     = 0;
-    private Object[] instParam    = null;
-    private boolean  compilerMark = false;//一个特殊的标，用于处理 ListExpression、ObjectExpression 两个模型编译时是否输出对应的 NA、NO 指令。
+    private byte     instCode  = 0;
+    private Object[] instParam = null;
 
     public InstructionInfo(byte instCode, Object[] instParam) {
         this.instCode = instCode;
@@ -113,15 +112,5 @@ public class InstructionInfo implements Opcodes, Instruction {
         }
         //
         return codeName.toString().trim();
-    }
-
-    /** 判断是否要被编译输出 */
-    public boolean isCompilerMark() {
-        return this.compilerMark;
-    }
-
-    /** 判断是否要被编译输出 */
-    public void setCompilerMark(boolean compilerMark) {
-        this.compilerMark = compilerMark;
     }
 }

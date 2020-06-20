@@ -166,12 +166,12 @@ public class QueryMojo extends AbstractMojo {
                     RootBlockSet queryModel = (RootBlockSet) QueryHelper.queryParser(new AutoCloseInputStream(new FileInputStream(qlFile)));
                     List<HintInst> optionSet = queryModel.getOptionSet();
                     for (HintInst inst : optionSet) {
-                        if ("javax_inject".equalsIgnoreCase(inst.getHint())) {
+                        if ("javax_inject".equalsIgnoreCase(inst.getHint().getValue())) {
                             if (inst.getValue().getValueType() == PrimitiveVariable.ValueType.Boolean) {
                                 javaxInject = (Boolean) inst.getValue().getValue();
                             }
                         }
-                        if ("javax_inject_name".equalsIgnoreCase(inst.getHint())) {
+                        if ("javax_inject_name".equalsIgnoreCase(inst.getHint().getValue())) {
                             if (inst.getValue().getValueType() != PrimitiveVariable.ValueType.Null) {
                                 javaxInjectName = inst.getValue().getValue().toString();
                             }

@@ -1,0 +1,95 @@
+[0]
+  #00  LINE      1, 7, 1, 8
+  #01  E_LOAD    #
+  #02  GET       a
+  #03  LINE      1, 12, 1, 14
+  #04  POP
+  #05  NEW_O
+  #06  LINE      1, 0, 1, 14
+  #07  RETURN    0
+  #08  LINE      3, 7, 3, 8
+  #09  E_LOAD    #
+  #10  GET       b
+  #11  LINE      3, 12, 5, 1
+  #12  CAST_O
+  #13  E_PUSH
+  #14  NEW_O
+  #15  LINE      4, 4, 4, 9
+  #16  E_LOAD    #
+  #17  GET       abc
+  #18  PUT       abc
+  #19  LINE      4, 12, 4, 17
+  #20  E_LOAD    #
+  #21  GET       cde
+  #22  PUT       cde
+  #23  E_POP
+  #24  LINE      3, 0, 5, 1
+  #25  RETURN    0
+  #26  LINE      7, 7, 7, 8
+  #27  E_LOAD    #
+  #28  GET       b
+  #29  LINE      7, 12, 9, 1
+  #30  CAST_O
+  #31  E_PUSH
+  #32  NEW_O
+  #33  LINE      8, 4, 8, 9
+  #34  E_LOAD    #
+  #35  GET       abc
+  #36  PUT       abc
+  #37  E_POP
+  #38  LINE      7, 0, 9, 1
+  #39  RETURN    0
+  #40  LINE      11, 7, 11, 8
+  #41  E_LOAD    #
+  #42  GET       b
+  #43  LINE      11, 12, 13, 1
+  #44  CAST_O
+  #45  E_PUSH
+  #46  NEW_O
+  #47  LINE      12, 10, 12, 13
+  #48  E_LOAD    #
+  #49  GET       ccc
+  #50  LINE      12, 4, 12, 9
+  #51  PUT       abc
+  #52  LINE      12, 22, 12, 61
+  #53  NEW_A
+  #54  LINE      12, 23, 12, 24
+  #55  E_LOAD    #
+  #56  GET       a
+  #57  PUSH
+  #58  LINE      12, 25, 12, 26
+  #59  E_LOAD    #
+  #60  GET       b
+  #61  PUSH
+  #62  LINE      12, 27, 12, 28
+  #63  E_LOAD    #
+  #64  GET       c
+  #65  PUSH
+  #66  LINE      12, 30, 12, 39
+  #67  NEW_A
+  #68  LINE      12, 31, 12, 35
+  #69  LDC_S     ss
+  #70  PUSH
+  #71  LINE      12, 36, 12, 38
+  #72  E_LOAD    #
+  #73  GET       df
+  #74  PUSH
+  #75  LINE      12, 30, 12, 39
+  #76  PUSH
+  #77  LINE      12, 40, 12, 59
+  #78  NEW_O
+  #79  LINE      12, 41, 12, 46
+  #80  E_LOAD    #
+  #81  GET       abc
+  #82  PUT       abc
+  #83  LINE      12, 54, 12, 58
+  #84  LDC_B     true
+  #85  LINE      12, 47, 12, 53
+  #86  PUT       aacc
+  #87  LINE      12, 40, 12, 59
+  #88  PUSH
+  #89  LINE      12, 15, 12, 20
+  #90  PUT       cde
+  #91  E_POP
+  #92  LINE      11, 0, 13, 1
+  #93  RETURN    0

@@ -28,6 +28,7 @@ import net.hasor.dataql.compiler.qil.InstQueue;
 public class PrimitiveVariableInstCompiler implements InstCompiler<PrimitiveVariable> {
     @Override
     public void doCompiler(PrimitiveVariable astInst, InstQueue queue, CompilerContext compilerContext) {
+        this.instLocation(queue, astInst);
         ValueType valueType = astInst.getValueType();
         if (valueType == ValueType.Boolean) {
             queue.inst(LDC_B, Boolean.parseBoolean(astInst.getValue().toString()));

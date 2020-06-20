@@ -1,0 +1,85 @@
+[0]
+  #00  LINE      2, 7, 2, 8
+  #01  E_LOAD    @
+  #02  LINE      2, 8, 2, 9
+  #03  GET       a
+  #04  LINE      2, 10, 2, 13
+  #05  PULL      123
+  #06  LINE      2, 9, 2, 16
+  #07  M_DEF
+  #08  CALL      0
+  #09  LINE      2, 17, 2, 21
+  #10  GET       dd
+  #11  LINE      2, 23, 2, 24
+  #12  GET       b
+  #13  LINE      2, 23, 2, 33
+  #14  M_DEF
+  #15  LINE      2, 25, 2, 26
+  #16  LDC_D     1
+  #17  LINE      2, 27, 2, 28
+  #18  LDC_D     2
+  #19  LINE      2, 29, 2, 30
+  #20  LDC_D     3
+  #21  LINE      2, 31, 2, 32
+  #22  LDC_D     4
+  #23  LINE      2, 23, 2, 33
+  #24  CALL      4
+  #25  LINE      2, 34, 2, 35
+  #26  GET       c
+  #27  LINE      2, 36, 2, 37
+  #28  GET       d
+  #29  LINE      2, 38, 2, 40
+  #30  PULL      -1
+  #31  LINE      2, 0, 2, 41
+  #32  RETURN    0
+  #33  LINE      4, 7, 4, 8
+  #34  E_LOAD    $
+  #35  LINE      4, 8, 4, 11
+  #36  GET       abc
+  #37  LINE      4, 12, 4, 17
+  #38  GET       sssss
+  #39  LINE      4, 12, 4, 26
+  #40  M_DEF
+  #41  LINE      4, 18, 4, 19
+  #42  LDC_D     1
+  #43  LINE      4, 20, 4, 21
+  #44  LDC_D     2
+  #45  LINE      4, 22, 4, 23
+  #46  LDC_D     3
+  #47  LINE      4, 24, 4, 25
+  #48  LDC_D     4
+  #49  LINE      4, 12, 4, 26
+  #50  CALL      4
+  #51  LINE      4, 27, 4, 28
+  #52  GET       e
+  #53  LINE      4, 29, 4, 30
+  #54  GET       f
+  #55  LINE      4, 0, 4, 30
+  #56  RETURN    0
+  #57  LINE      7, 7, 7, 8
+  #58  E_LOAD    #
+  #59  LINE      7, 8, 7, 9
+  #60  GET       a
+  #61  LINE      7, 7, 7, 13
+  #62  M_DEF
+  #63  LINE      7, 10, 7, 12
+  #64  E_LOAD    #
+  #65  GET       f1
+  #66  LINE      7, 7, 7, 13
+  #67  CALL      1
+  #68  LINE      7, 7, 7, 17
+  #69  M_DEF
+  #70  LINE      7, 14, 7, 16
+  #71  E_LOAD    #
+  #72  GET       f2
+  #73  LINE      7, 7, 7, 17
+  #74  CALL      1
+  #75  LINE      7, 7, 7, 21
+  #76  M_DEF
+  #77  LINE      7, 18, 7, 20
+  #78  E_LOAD    #
+  #79  GET       f3
+  #80  LINE      7, 7, 7, 21
+  #81  CALL      1
+  #82  LINE      7, 0, 7, 21
+  #83  RETURN    0

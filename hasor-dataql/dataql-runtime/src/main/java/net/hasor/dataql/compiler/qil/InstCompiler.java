@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil;
+import net.hasor.dataql.compiler.ast.CodeLocation;
+import net.hasor.dataql.compiler.ast.CodeLocation.CodePosition;
 import net.hasor.dataql.compiler.ast.Inst;
+import net.hasor.dataql.runtime.CompilerArguments.CodeLocationEnum;
 
 /**
  * 每一个 AST 树都会对应一个 InstCompiler
@@ -29,4 +32,32 @@ public interface InstCompiler<T extends Inst> extends Opcodes {
      * @param compilerContext 编译上下文
      */
     public abstract void doCompiler(T astInst, InstQueue queue, CompilerContext compilerContext);
+
+    public default void instLocationFocus(InstQueue queue, CodeLocation location) {
+        this.instLocation(true, queue, location);
+    }
+
+    public default void instLocation(InstQueue queue, CodeLocation location) {
+        this.instLocation(false, queue, location);
+    }
+
+    public default void instLocation(boolean focus, InstQueue queue, CodeLocation location) {
+        CodeLocationEnum locationEnum = queue.getCompilerArguments().getLocationEnum();
+        if (location == null || locationEnum == null || locationEnum == CodeLocationEnum.NONE) {
+            return;
+        }
+        //
+        CodePosition startPosition = location.getStartPosition();
+        CodePosition endPosition = location.getEndPosition();
+        if (startPosition == null || endPosition == null) {
+            return;
+        }
+        if (locationEnum == CodeLocationEnum.LINE) {
+            queue.inst(LINE, focus, startPosition.getLineNumber());
+        } else {
+            queue.inst(LINE, focus,//
+                    startPosition.getLineNumber(), startPosition.getColumnNumber(),//
+                    endPosition.getLineNumber(), endPosition.getColumnNumber());
+        }
+    }
 }

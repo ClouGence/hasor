@@ -50,12 +50,4 @@ public class InstructRuntimeException extends RuntimeException {
     public int getMethodAddress() {
         return this.location.getMethodAddress();
     }
-
-    public int getLineNumber() {
-        return this.location.getLineNumber();
-    }
-
-    public int getColumnNumber() {
-        return this.location.getColumnNumber();
-    }
 }

@@ -30,10 +30,12 @@ import java.util.List;
 public class ListVariableInstCompiler implements InstCompiler<ListVariable> {
     @Override
     public void doCompiler(ListVariable astInst, InstQueue queue, CompilerContext compilerContext) {
+        instLocation(queue, astInst);
         queue.inst(NEW_A);
         List<Variable> varList = astInst.getExpressionList();
         for (Variable var : varList) {
             compilerContext.findInstCompilerByInst(var).doCompiler(queue);
+            instLocation(queue, var);
             queue.inst(PUSH);
         }
     }

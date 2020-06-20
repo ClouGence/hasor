@@ -15,12 +15,16 @@
  */
 package net.hasor.dataql.compiler.qil;
 import net.hasor.dataql.compiler.CompilerException;
+import net.hasor.dataql.runtime.CompilerArguments;
 import net.hasor.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static net.hasor.dataql.compiler.qil.Opcodes.LINE;
 
 /**
  * QL 指令序列
@@ -32,20 +36,24 @@ public class InstQueue {
     private final AtomicInteger                     labelIndex;
     private final AtomicInteger                     methodName;
     private final List<LinkedList<InstructionInfo>> instSet;
+    private final CompilerArguments                 compilerArguments;
+    private       Object[]                          lastLine;
 
-    public InstQueue() {
+    public InstQueue(CompilerArguments compilerArguments) {
         this.name = 0;
         this.labelIndex = new AtomicInteger(0);
         this.methodName = new AtomicInteger(0);
         this.instSet = new ArrayList<>();
         this.instSet.add(new LinkedList<>());
+        this.compilerArguments = compilerArguments;
     }
 
-    private InstQueue(int methodName, InstQueue dataPool) {
+    private InstQueue(CompilerArguments compilerArguments, int methodName, InstQueue dataPool) {
         this.name = methodName;
         this.labelIndex = dataPool.labelIndex;
         this.methodName = dataPool.methodName;
         this.instSet = dataPool.instSet;
+        this.compilerArguments = compilerArguments;
     }
 
     public int getName() {
@@ -54,6 +62,16 @@ public class InstQueue {
 
     /** 添加指令 */
     public int inst(byte inst, Object... param) {
+        // .如果行号信息没变那么忽略
+        if (inst == LINE) {
+            boolean focus = (Boolean) param[0];
+            param = Arrays.copyOfRange(param, 1, param.length);
+            if (!focus && testSameLine(param)) {
+                return this.instSet.get(this.name).size() - 1;
+            }
+            //
+            this.lastLine = param;
+        }
         //
         // .加入到指令集
         LinkedList<InstructionInfo> instList = this.instSet.get(this.name);
@@ -70,6 +88,25 @@ public class InstQueue {
             }
         }
         return index;
+    }
+
+    public CompilerArguments getCompilerArguments() {
+        return this.compilerArguments;
+    }
+
+    private boolean testSameLine(Object[] param) {
+        if (this.lastLine == null) {
+            return false;
+        } else {
+            for (int i = 0; i < this.lastLine.length; i++) {
+                Object lastLine = this.lastLine[i];
+                Object targetLine = param[i];
+                if (!lastLine.toString().equals(targetLine.toString())) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
     /** 最后加入的那条指令 */
@@ -89,7 +126,7 @@ public class InstQueue {
                 break;
             }
         }
-        return new InstQueue(name, this);
+        return new InstQueue(this.compilerArguments, name, this);
     }
 
     public Label labelDef() {
@@ -105,13 +142,13 @@ public class InstQueue {
             }
         }
         //
-        InstructionInfo[][] buildDatas = new InstructionInfo[this.instSet.size()][];
+        InstructionInfo[][] buildData = new InstructionInfo[this.instSet.size()][];
         for (int i = 0; i < this.instSet.size(); i++) {
             LinkedList<InstructionInfo> instList = this.instSet.get(i);
             InstructionInfo[] instSet = instList.toArray(new InstructionInfo[0]);
-            buildDatas[i] = instSet;
+            buildData[i] = instSet;
         }
-        return buildDatas;
+        return buildData;
     }
 
     @Override

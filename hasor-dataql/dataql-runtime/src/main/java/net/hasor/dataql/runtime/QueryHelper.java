@@ -72,74 +72,6 @@ public class QueryHelper {
         return queryParser(CharStreams.fromStream(Objects.requireNonNull(inputStream), charset));
     }
 
-    /**
-     * 解析并编译 DataQL 执行脚本
-     * @param queryString 脚本字符串
-     * @param importFinder import 导入用到的资源加载器。
-     */
-    public static QIL queryCompiler(String queryString, Finder importFinder) throws IOException {
-        return queryCompiler(queryParser(queryString), Collections.emptySet(), importFinder);
-    }
-
-    /**
-     * 解析并编译 DataQL 执行脚本
-     * @param queryReader 脚本输入流
-     * @param importFinder import 导入用到的资源加载器。
-     */
-    public static QIL queryCompiler(Reader queryReader, Finder importFinder) throws IOException {
-        return queryCompiler(queryParser(queryReader), Collections.emptySet(), importFinder);
-    }
-
-    /**
-     * 解析并编译 DataQL 执行脚本
-     * @param queryInput 脚本输入流，使用 UTF-8 字符集
-     * @param importFinder import 导入用到的资源加载器。
-     */
-    public static QIL queryCompiler(InputStream queryInput, Finder importFinder) throws IOException {
-        return queryCompiler(queryParser(queryInput, StandardCharsets.UTF_8), Collections.emptySet(), importFinder);
-    }
-
-    /**
-     * 解析并编译 DataQL 执行脚本
-     * @param queryInput 脚本输入流
-     * @param charset 读取字节流使用的字符集
-     * @param importFinder import 导入用到的资源加载器。
-     */
-    public static QIL queryCompiler(InputStream queryInput, Charset charset, Finder importFinder) throws IOException {
-        return queryCompiler(queryParser(queryInput, charset), Collections.emptySet(), importFinder);
-    }
-
-    /**
-     * 编译已经解析好的 DataQL
-     * @param queryModel 解析之后的 DataQL 查询模型。
-     * @param compilerVar 编译变量名，编译变量的作用相当于在脚本中预先 执行 var xxx = null;
-     *                    其意义在于在编译期就把脚本中尚未定义过的变量预先进行声明从而免去通过 ${...} 或类似方式查找变量。
-     * @param importFinder import 导入用到的资源加载器。
-     */
-    public static QIL queryCompiler(QueryModel queryModel, Set<String> compilerVar, Finder importFinder) throws IOException {
-        RootBlockSet rootBlockSet = null;
-        if (queryModel instanceof RootBlockSet) {
-            rootBlockSet = (RootBlockSet) queryModel;
-        } else {
-            rootBlockSet = (RootBlockSet) queryParser(CharStreams.fromString(queryModel.toQueryString()));
-        }
-        //
-        if (compilerVar == null) {
-            compilerVar = Collections.emptySet();
-        }
-        //
-        InstQueue queue = new InstQueue();
-        CompilerContext compilerContext = new CompilerContext(new CompilerEnvironment(importFinder));
-        Map<String, Integer> compilerVarMap = new HashMap<>();
-        compilerVar.forEach(var -> {
-            int localIdx = compilerContext.push(var);
-            compilerVarMap.put(var, localIdx);
-        });
-        compilerContext.findInstCompilerByInst(rootBlockSet).doCompiler(queue);
-        Instruction[][] queueSet = queue.buildArrays();
-        return new QIL(queueSet, compilerVarMap);
-    }
-
     public static QueryModel queryParser(CharStream charStream) throws ParseException {
         DataQLLexer lexer = new DataQLLexer(charStream);
         lexer.removeErrorListeners();
@@ -150,6 +82,76 @@ public class QueryHelper {
         qlParser.addErrorListener(ThrowingErrorListener.INSTANCE);
         DataQLParserVisitor visitor = new DefaultDataQLVisitor();
         return (RootBlockSet) visitor.visit(qlParser.rootInstSet());
+    }
+
+    /**
+     * 解析并编译 DataQL 执行脚本
+     * @param queryString 脚本字符串
+     * @param importFinder import 导入用到的资源加载器。
+     */
+    public static QIL queryCompiler(String queryString, Finder importFinder) throws IOException {
+        return queryCompiler(queryParser(queryString), CompilerArguments.DEFAULT, importFinder);
+    }
+
+    /**
+     * 解析并编译 DataQL 执行脚本
+     * @param queryReader 脚本输入流
+     * @param importFinder import 导入用到的资源加载器。
+     */
+    public static QIL queryCompiler(Reader queryReader, Finder importFinder) throws IOException {
+        return queryCompiler(queryParser(queryReader), CompilerArguments.DEFAULT, importFinder);
+    }
+
+    /**
+     * 解析并编译 DataQL 执行脚本
+     * @param queryInput 脚本输入流，使用 UTF-8 字符集
+     * @param importFinder import 导入用到的资源加载器。
+     */
+    public static QIL queryCompiler(InputStream queryInput, Finder importFinder) throws IOException {
+        return queryCompiler(queryParser(queryInput, StandardCharsets.UTF_8), CompilerArguments.DEFAULT, importFinder);
+    }
+
+    /**
+     * 解析并编译 DataQL 执行脚本
+     * @param queryInput 脚本输入流
+     * @param charset 读取字节流使用的字符集
+     * @param importFinder import 导入用到的资源加载器。
+     */
+    public static QIL queryCompiler(InputStream queryInput, Charset charset, Finder importFinder) throws IOException {
+        return queryCompiler(queryParser(queryInput, charset), CompilerArguments.DEFAULT, importFinder);
+    }
+
+    /**
+     * 编译已经解析好的 DataQL
+     * @param queryModel 解析之后的 DataQL 查询模型。
+     * @param compilerArguments 编译参数，编译参数中包含了编译器需要的一些列变量。例如：编译变量，相当于在脚本中预先 执行 var xxx = null;
+     *                    其意义在于在编译期就把脚本中尚未定义过的变量预先进行声明从而免去通过 ${...} 或类似方式查找变量。
+     * @param importFinder import 导入用到的资源加载器。
+     */
+    public static QIL queryCompiler(QueryModel queryModel, CompilerArguments compilerArguments, Finder importFinder) throws IOException {
+        RootBlockSet rootBlockSet = null;
+        if (queryModel instanceof RootBlockSet) {
+            rootBlockSet = (RootBlockSet) queryModel;
+        } else {
+            rootBlockSet = (RootBlockSet) queryParser(CharStreams.fromString(queryModel.toQueryString()));
+        }
+        //
+        compilerArguments = (compilerArguments == null) ? CompilerArguments.DEFAULT : compilerArguments;
+        Set<String> compilerVar = compilerArguments.getCompilerVar();
+        if (compilerVar == null) {
+            compilerVar = Collections.emptySet();
+        }
+        //
+        InstQueue queue = new InstQueue(compilerArguments);
+        CompilerContext compilerContext = new CompilerContext(new CompilerEnvironment(importFinder));
+        Map<String, Integer> compilerVarMap = new HashMap<>();
+        compilerVar.forEach(var -> {
+            int localIdx = compilerContext.push(var);
+            compilerVarMap.put(var, localIdx);
+        });
+        compilerContext.findInstCompilerByInst(rootBlockSet).doCompiler(queue);
+        Instruction[][] queueSet = queue.buildArrays();
+        return new QIL(queueSet, compilerVarMap);
     }
 
     /** 创建查询实例 */
@@ -173,8 +175,8 @@ public class QueryHelper {
     }
 
     /** 创建查询实例 */
-    public static Query createQuery(QueryModel queryModel, Set<String> compilerVar, Finder finder) throws IOException {
-        return createQuery(queryCompiler(queryModel, compilerVar, finder), finder);
+    public static Query createQuery(QueryModel queryModel, CompilerArguments compilerArguments, Finder finder) throws IOException {
+        return createQuery(queryCompiler(queryModel, compilerArguments, finder), finder);
     }
 
     /** 创建查询实例 */

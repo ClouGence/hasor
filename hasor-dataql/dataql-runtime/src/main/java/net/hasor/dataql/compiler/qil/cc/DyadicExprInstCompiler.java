@@ -16,6 +16,7 @@
 package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.Expression;
 import net.hasor.dataql.compiler.ast.expr.DyadicExpression;
+import net.hasor.dataql.compiler.ast.token.SymbolToken;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
@@ -33,9 +34,9 @@ public class DyadicExprInstCompiler implements InstCompiler<DyadicExpression> {
         this.doCompiler(astInst, queue, compilerContext, new Stack<>());
     }
 
-    protected void doCompiler(DyadicExpression astInst, InstQueue queue, CompilerContext compilerContext, Stack<String> last) {
+    protected void doCompiler(DyadicExpression astInst, InstQueue queue, CompilerContext compilerContext, Stack<SymbolToken> last) {
         Expression fstExpression = astInst.getFstExpression();
-        String dyadicSymbol = astInst.getDyadicSymbol().getSymbol();
+        SymbolToken dyadicSymbol = astInst.getDyadicSymbol();
         Expression secExpression = astInst.getSecExpression();
         //
         //  优先级：
@@ -89,7 +90,9 @@ public class DyadicExprInstCompiler implements InstCompiler<DyadicExpression> {
             while (!last.isEmpty()) {
                 int lastPriority = priorityAt(last.peek());
                 if (selfPriority >= lastPriority) {
-                    queue.inst(DO, last.pop());
+                    SymbolToken symbolToken = last.pop();
+                    instLocation(queue, astInst.expressCodeLocation());
+                    queue.inst(DO, symbolToken.getSymbol());
                 } else {
                     break;
                 }
@@ -102,16 +105,18 @@ public class DyadicExprInstCompiler implements InstCompiler<DyadicExpression> {
         } else {
             compilerContext.findInstCompilerByInst(secExpression).doCompiler(queue);
             while (!last.isEmpty()) {
-                queue.inst(DO, last.pop());
+                SymbolToken symbolToken = last.pop();
+                instLocation(queue, astInst.expressCodeLocation());
+                queue.inst(DO, symbolToken.getSymbol());
             }
         }
     }
 
-    private static int priorityAt(String dyadicSymbol) {
+    private static int priorityAt(SymbolToken dyadicSymbol) {
         for (int symbolArraysIndex = 0; symbolArraysIndex < ComparePriorityKeys.length; symbolArraysIndex++) {
             String[] symbolArrays = ComparePriorityKeys[symbolArraysIndex];
             for (String symbol : symbolArrays) {
-                if (symbol.equalsIgnoreCase(dyadicSymbol)) {
+                if (symbol.equalsIgnoreCase(dyadicSymbol.getSymbol())) {
                     return symbolArraysIndex;
                 }
             }

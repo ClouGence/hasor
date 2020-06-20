@@ -83,6 +83,7 @@ public class SwitchInstCompiler implements InstCompiler<SwitchInst> {
             // .条件判断
             Expression testExpression = switchExp.testExpression;
             compilerContext.findInstCompilerByInst(testExpression).doCompiler(queue);
+            instLocation(queue, switchExp.testExpression.expressCodeLocation());
             queue.inst(IF, lastEnterIn);//如果判断失败，跳转到下一个Label
             //
             // .if的body

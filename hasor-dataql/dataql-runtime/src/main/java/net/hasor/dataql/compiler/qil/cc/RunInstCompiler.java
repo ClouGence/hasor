@@ -30,6 +30,8 @@ public class RunInstCompiler implements InstCompiler<RunInst> {
     public void doCompiler(RunInst astInst, InstQueue queue, CompilerContext compilerContext) {
         Variable varValue = astInst.getValue();
         compilerContext.findInstCompilerByInst(varValue).doCompiler(queue);
+        //
+        instLocation(queue, astInst);
         queue.inst(POP);
     }
 }

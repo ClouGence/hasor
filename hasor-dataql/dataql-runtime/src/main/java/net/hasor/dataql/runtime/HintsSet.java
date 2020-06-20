@@ -25,7 +25,7 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 public class HintsSet implements Hints {
-    private Map<String, Object> optionMap;
+    private final Map<String, Object> optionMap;
 
     public HintsSet() {
         this.optionMap = new HashMap<>();
@@ -33,9 +33,7 @@ public class HintsSet implements Hints {
 
     public HintsSet(Hints optionSet) {
         this.optionMap = new HashMap<>();
-        optionSet.forEach((optName, optValue) -> {
-            this.optionMap.put(optName, optValue);
-        });
+        optionSet.forEach(this.optionMap::put);
     }
 
     @Override

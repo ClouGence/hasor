@@ -1,0 +1,81 @@
+[0]
+  #00  LINE      2, 7, 2, 8
+  #01  E_LOAD    #
+  #02  GET       a
+  #03  LINE      2, 9, 2, 12
+  #04  PULL      123
+  #05  LINE      2, 8, 2, 15
+  #06  M_DEF
+  #07  CALL      0
+  #08  LINE      2, 16, 2, 20
+  #09  GET       dd
+  #10  LINE      2, 22, 2, 23
+  #11  GET       b
+  #12  LINE      2, 22, 2, 32
+  #13  M_DEF
+  #14  LINE      2, 24, 2, 25
+  #15  LDC_D     1
+  #16  LINE      2, 26, 2, 27
+  #17  LDC_D     2
+  #18  LINE      2, 28, 2, 29
+  #19  LDC_D     3
+  #20  LINE      2, 30, 2, 31
+  #21  LDC_D     4
+  #22  LINE      2, 22, 2, 32
+  #23  CALL      4
+  #24  LINE      2, 33, 2, 34
+  #25  GET       c
+  #26  LINE      2, 35, 2, 36
+  #27  GET       d
+  #28  LINE      2, 37, 2, 39
+  #29  PULL      -1
+  #30  LINE      2, 0, 2, 40
+  #31  RETURN    0
+  #32  LINE      4, 7, 4, 8
+  #33  LOAD_C    $
+  #34  LINE      4, 9, 4, 14
+  #35  GET       sssss
+  #36  LINE      4, 7, 4, 24
+  #37  M_DEF
+  #38  LINE      4, 16, 4, 17
+  #39  LDC_D     1
+  #40  LINE      4, 18, 4, 19
+  #41  LDC_D     2
+  #42  LINE      4, 20, 4, 21
+  #43  LDC_D     3
+  #44  LINE      4, 22, 4, 23
+  #45  LDC_D     4
+  #46  LINE      4, 7, 4, 24
+  #47  CALL      4
+  #48  LINE      4, 25, 4, 26
+  #49  GET       e
+  #50  LINE      4, 27, 4, 28
+  #51  GET       f
+  #52  LINE      4, 0, 4, 28
+  #53  RETURN    0
+  #54  LINE      7, 7, 7, 8
+  #55  E_LOAD    #
+  #56  GET       a
+  #57  LINE      7, 7, 7, 12
+  #58  M_DEF
+  #59  LINE      7, 9, 7, 11
+  #60  E_LOAD    #
+  #61  GET       f1
+  #62  LINE      7, 7, 7, 12
+  #63  CALL      1
+  #64  LINE      7, 7, 7, 16
+  #65  M_DEF
+  #66  LINE      7, 13, 7, 15
+  #67  E_LOAD    #
+  #68  GET       f2
+  #69  LINE      7, 7, 7, 16
+  #70  CALL      1
+  #71  LINE      7, 7, 7, 20
+  #72  M_DEF
+  #73  LINE      7, 17, 7, 19
+  #74  E_LOAD    #
+  #75  GET       f3
+  #76  LINE      7, 7, 7, 20
+  #77  CALL      1
+  #78  LINE      7, 0, 7, 20
+  #79  RETURN    0

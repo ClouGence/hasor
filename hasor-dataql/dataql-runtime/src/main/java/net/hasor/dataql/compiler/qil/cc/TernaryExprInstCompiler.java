@@ -37,6 +37,7 @@ public class TernaryExprInstCompiler implements InstCompiler<TernaryExpression> 
         //
         // .测试表达式
         compilerContext.findInstCompilerByInst(testExpr).doCompiler(queue);
+        instLocation(queue, testExpr.expressCodeLocation());
         queue.inst(IF, elseLabel);//如果判断失败，执行第二个表达式
         //
         // .第一个表达式

@@ -32,6 +32,7 @@ public class EnterRouteVariableInstCompiler implements InstCompiler<EnterRouteVa
     public void doCompiler(EnterRouteVariable astInst, InstQueue queue, CompilerContext compilerContext) {
         RouteType routeType = astInst.getRouteType();
         SpecialType specialType = astInst.getSpecialType();
+        this.instLocation(queue, astInst);//行号
         //
         // 表达式
         if (routeType == RouteType.Expr) {

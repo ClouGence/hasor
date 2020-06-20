@@ -36,6 +36,7 @@ public class FunCallRouteVariableInstCompiler implements InstCompiler<FunCallRou
         compilerContext.findInstCompilerByInst(enter).doCompiler(queue);
         //
         // .声明当前栈顶元素为函数入口
+        instLocation(queue, astInst);
         queue.inst(M_DEF);
         //
         // .输出参数
@@ -44,6 +45,7 @@ public class FunCallRouteVariableInstCompiler implements InstCompiler<FunCallRou
             compilerContext.findInstCompilerByInst(var).doCompiler(queue);
         }
         // .执行函数调用
+        instLocation(queue, astInst);
         queue.inst(CALL, paramList.size());
     }
 }

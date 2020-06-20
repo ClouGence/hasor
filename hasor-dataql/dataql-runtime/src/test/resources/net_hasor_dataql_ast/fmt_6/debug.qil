@@ -1,0 +1,25 @@
+[0]
+  #00  LINE      1, 7, 1, 10
+  #01  E_LOAD    #
+  #02  GET       abc
+  #03  CAST_I
+  #04  E_PUSH
+  #05  LINE      1, 14, 1, 19
+  #06  NEW_A
+  #07  LABEL     7
+  #08  LINE      1, 14, 1, 19
+  #09  E_LOAD    #
+  #10  GET       next
+  #11  IF        20
+  #12  LINE      1, 16, 1, 17
+  #13  E_LOAD    #
+  #14  GET       data
+  #15  E_PUSH
+  #16  E_LOAD    #
+  #17  E_POP
+  #18  PUSH
+  #19  GOTO      7
+  #20  LABEL     20
+  #21  E_POP
+  #22  LINE      1, 0, 1, 19
+  #23  RETURN    0

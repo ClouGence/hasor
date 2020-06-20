@@ -25,8 +25,8 @@ import java.util.Map;
  * @version : 2017-07-03
  */
 public class QIL {
-    private Instruction[][]      queueSet;
-    private Map<String, Integer> compilerVar;
+    private final Instruction[][]      queueSet;
+    private final Map<String, Integer> compilerVar;
 
     public QIL(Instruction[][] queueSet, Map<String, Integer> compilerVar) {
         this.queueSet = queueSet;

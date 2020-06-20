@@ -1,0 +1,41 @@
+[0]
+  #0  LINE      2
+  #1  M_REF     1
+  #2  STORE     0
+  #3  LINE      4
+  #4  M_REF     2
+  #5  RETURN    0
+  #6  LINE      7
+  #7  M_REF     3
+  #8  THROW     123
+
+[1]
+  #0  LINE      2
+  #1  LDC_B     true
+  #2  RETURN    0
+
+[2]
+  #0  LINE      4
+  #1  LOCAL     0, 0, a
+  #2  LOCAL     1, 1, b
+  #3  LDC_B     false
+  #4  RETURN    0
+
+[3]
+  #00  LINE      8
+  #01  LDC_B     true
+  #02  IF        7
+  #03  LINE      9
+  #04  LDC_B     true
+  #05  RETURN    0
+  #06  GOTO      12
+  #07  LABEL     7
+  #08  LINE      10
+  #09  LDC_B     false
+  #10  RETURN    0
+  #11  GOTO      12
+  #12  LABEL     12
+  #13  LINE      12
+  #14  E_LOAD    #
+  #15  GET       aaa
+  #16  THROW     0

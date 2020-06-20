@@ -35,7 +35,7 @@ import java.util.Objects;
  * @version : 2019-12-11
  */
 public class CompilerEnvironment implements Finder {
-    private Finder finder;
+    private final Finder finder;
 
     public CompilerEnvironment(Finder finder) {
         this.finder = Objects.requireNonNull(finder, "finder is null.");
@@ -50,7 +50,7 @@ public class CompilerEnvironment implements Finder {
         return (InstCompiler<T>) Objects.requireNonNull(typeMappingToInstCompiler.get(instType), "not found " + instType.getName() + " InstCompiler.");
     }
 
-    private static Map<Class<?>, InstCompiler<?>> typeMappingToInstCompiler = new HashMap<Class<?>, InstCompiler<?>>() {{
+    private static final Map<Class<?>, InstCompiler<?>> typeMappingToInstCompiler = new HashMap<Class<?>, InstCompiler<?>>() {{
         //
         put(RootBlockSet.class, new RootBlockSetInstCompiler());
         put(InstSet.class, new InstSetInstCompiler());

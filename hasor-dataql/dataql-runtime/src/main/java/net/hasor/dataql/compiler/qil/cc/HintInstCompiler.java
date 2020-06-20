@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.inst.HintInst;
+import net.hasor.dataql.compiler.ast.token.StringToken;
 import net.hasor.dataql.compiler.ast.value.PrimitiveVariable;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
@@ -28,9 +29,14 @@ import net.hasor.dataql.compiler.qil.InstQueue;
 public class HintInstCompiler implements InstCompiler<HintInst> {
     @Override
     public void doCompiler(HintInst astInst, InstQueue queue, CompilerContext compilerContext) {
-        queue.inst(LDC_S, astInst.getHint().getValue());
+        StringToken instHint = astInst.getHint();
+        instLocation(queue, instHint);
+        queue.inst(LDC_S, instHint.getValue());
+        //
         PrimitiveVariable hintValue = astInst.getValue();
         compilerContext.findInstCompilerByInst(hintValue).doCompiler(queue);
+        //
+        instLocation(queue, astInst);
         queue.inst(HINT);
     }
 }

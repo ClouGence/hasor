@@ -1,0 +1,44 @@
+[0]
+  #00  LINE      2
+  #01  E_LOAD    #
+  #02  GET       abc
+  #03  CAST_O
+  #04  E_PUSH
+  #05  NEW_O
+  #06  LINE      3
+  #07  E_LOAD    #
+  #08  GET       name
+  #09  PUT       name1
+  #10  LINE      4
+  #11  E_LOAD    #
+  #12  GET       name2
+  #13  PUT       name2
+  #14  LINE      5
+  #15  E_LOAD    #
+  #16  GET       name3
+  #17  PUT       name3
+  #18  LINE      7
+  #19  E_LOAD    $
+  #20  GET       name4
+  #21  PUT       name4
+  #22  LINE      8
+  #23  E_LOAD    $
+  #24  GET       name5
+  #25  PUT       name5
+  #26  LINE      10
+  #27  E_LOAD    #
+  #28  GET       foo
+  #29  M_DEF
+  #30  E_LOAD    #
+  #31  CALL      1
+  #32  PUT       name6
+  #33  LINE      11
+  #34  E_LOAD    #
+  #35  PUT       name7
+  #36  LINE      12
+  #37  E_LOAD    @
+  #38  PULL      22
+  #39  PUT       name8
+  #40  E_POP
+  #41  LINE      2
+  #42  RETURN    0

@@ -1,0 +1,13 @@
+[0]
+  #0  LINE      2
+  #1  M_REF     1
+  #2  RETURN    0
+
+[1]
+  #0  LINE      2
+  #1  LOCAL     0, 0, a
+  #2  LOCAL     1, 1, b
+  #3  LOAD      0, 0
+  #4  LDC_D     1
+  #5  DO        ==
+  #6  RETURN    0
