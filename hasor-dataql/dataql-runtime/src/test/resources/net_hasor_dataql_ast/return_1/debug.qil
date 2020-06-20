@@ -1,0 +1,41 @@
+[0]
+  #00  LINE      1, 8, 1, 11
+  #01  LDC_D     134
+  #02  LINE      1, 0, 1, 11
+  #03  RETURN    0
+  #04  LINE      2, 10, 2, 14
+  #05  LDC_D     -134
+  #06  LINE      2, 0, 2, 14
+  #07  RETURN    0
+  #08  LINE      3, 10, 3, 16
+  #09  LDC_S     ssss
+  #10  LINE      3, 0, 3, 16
+  #11  RETURN    0
+  #12  LINE      5, 7, 9, 1
+  #13  NEW_O
+  #14  LINE      8, 0, 8, 2
+  #15  E_LOAD    #
+  #16  GET       aa
+  #17  LINE      6, 0, 6, 5
+  #18  PUT       abc
+  #19  LINE      5, 0, 9, 1
+  #20  RETURN    0
+  #21  LINE      10, 7, 12, 1
+  #22  NEW_O
+  #23  LINE      11, 0, 11, 5
+  #24  E_LOAD    #
+  #25  GET       abc
+  #26  PUT       abc
+  #27  LINE      10, 0, 12, 1
+  #28  RETURN    0
+  #29  LINE      14, 7, 14, 9
+  #30  NEW_A
+  #31  LINE      14, 0, 14, 9
+  #32  RETURN    0
+  #33  LINE      16, 11, 16, 16
+  #34  NEW_A
+  #35  LINE      16, 12, 16, 15
+  #36  LDC_D     123
+  #37  PUSH
+  #38  LINE      16, 0, 16, 16
+  #39  RETURN    -1

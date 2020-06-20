@@ -1,0 +1,10 @@
+[0]
+  #0  LINE      1
+  #1  LDC_D     134
+  #2  EXIT      0
+  #3  LINE      2
+  #4  LDC_D     -134
+  #5  EXIT      0
+  #6  LINE      3
+  #7  LDC_S     ssss
+  #8  EXIT      234

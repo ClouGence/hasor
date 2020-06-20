@@ -1,0 +1,13 @@
+[0]
+  #00  LINE      1, 8, 1, 11
+  #01  LDC_D     134
+  #02  LINE      1, 0, 1, 11
+  #03  RETURN    0
+  #04  LINE      2, 10, 2, 14
+  #05  LDC_D     -134
+  #06  LINE      2, 0, 2, 14
+  #07  RETURN    0
+  #08  LINE      3, 14, 3, 20
+  #09  LDC_S     ssss
+  #10  LINE      3, 0, 3, 20
+  #11  RETURN    234

@@ -1,0 +1,42 @@
+[0]
+  #00  LINE      1
+  #01  M_REF     1
+  #02  STORE     0
+  #03  LINE      2
+  #04  M_REF     2
+  #05  STORE     1
+  #06  LINE      6
+  #07  E_LOAD    #
+  #08  GET       foo
+  #09  M_DEF
+  #10  LOAD      0, 0
+  #11  CALL      1
+  #12  E_LOAD    #
+  #13  GET       abc
+  #14  DO        +
+  #15  RETURN    0
+
+[1]
+  #0  LINE      1
+  #1  LDC_D     123
+  #2  STORE     0
+
+[2]
+  #00  LINE      1
+  #01  M_REF     1
+  #02  STORE     0
+  #03  LINE      3
+  #04  M_REF     3
+  #05  STORE     1
+  #06  LINE      5
+  #07  E_LOAD    #
+  #08  GET       abc
+  #09  LOAD      0, 0
+  #10  GET       abc
+  #11  DO        +
+  #12  RETURN    0
+
+[3]
+  #0  LINE      3
+  #1  LDC_D     1
+  #2  RETURN    0

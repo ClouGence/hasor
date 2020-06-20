@@ -1,0 +1,28 @@
+[0]
+  #00  LINE      1
+  #01  LDC_S     a
+  #02  LDC_D     134
+  #03  HINT
+  #04  LINE      2
+  #05  LDC_S     a
+  #06  LDC_D     -134
+  #07  HINT
+  #08  LINE      4
+  #09  LDC_S     e
+  #10  LDC_D     1322
+  #11  HINT
+  #12  LINE      6
+  #13  LDC_S     f
+  #14  LDC_D     342391
+  #15  HINT
+  #16  LINE      8
+  #17  LDC_S     g
+  #18  LDC_D     1311768467294899695
+  #19  HINT
+  #20  LINE      11
+  #21  LDC_S     h
+  #22  LDC_D     999999999999999999999999999999999999999999999999999999999999
+  #23  HINT
+  #24  LINE      14
+  #25  LDC_D     1
+  #26  RETURN    0

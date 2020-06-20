@@ -1,0 +1,42 @@
+[0]
+  #00  LINE      2, 7, 2, 13
+  #01  M_TYP     aaaa
+  #02  LINE      2, 17, 2, 18
+  #03  STORE     0
+  #04  LINE      5, 4, 5, 42
+  #05  M_REF     1
+  #06  LINE      6, 11, 6, 15
+  #07  STORE     1
+  #08  LINE      9, 0, 9, 6
+  #09  M_TYP     cccc
+  #10  LINE      10, 7, 10, 8
+  #11  STORE     2
+  #12  LINE      12, 7, 12, 9
+  #13  LDC_D     11
+  #14  LINE      12, 0, 12, 9
+  #15  RETURN    0
+
+[1]
+  #00  LINE      2, 7, 2, 8
+  #01  E_LOAD    #
+  #02  GET       a
+  #03  LINE      2, 9, 2, 12
+  #04  PULL      123
+  #05  LINE      2, 14, 2, 18
+  #06  GET       dd
+  #07  LINE      2, 20, 2, 21
+  #08  GET       a
+  #09  LINE      2, 22, 2, 23
+  #10  GET       b
+  #11  LINE      2, 24, 2, 25
+  #12  GET       c
+  #13  LINE      2, 26, 2, 28
+  #14  PULL      -1
+  #15  LINE      2, 0, 2, 29
+  #16  RETURN    0
+  #17  LINE      4, 7, 4, 8
+  #18  LOAD_C    $
+  #19  LINE      4, 9, 4, 13
+  #20  GET       ssss
+  #21  LINE      4, 0, 4, 14
+  #22  RETURN    0

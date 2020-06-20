@@ -1,0 +1,28 @@
+[0]
+  #00  LINE      1
+  #01  LDC_S     a
+  #02  LDC_D     134
+  #03  HINT
+  #04  LINE      2
+  #05  LDC_S     b
+  #06  LDC_S     aa
+  #07  HINT
+  #08  LINE      4
+  #09  LDC_S     c
+  #10  LINE      5
+  #11  LDC_B     true
+  #12  LINE      4
+  #13  HINT
+  #14  LINE      8
+  #15  LDC_S     d
+  #16  LINE      9
+  #17  LDC_B     false
+  #18  LINE      8
+  #19  HINT
+  #20  LINE      11
+  #21  LDC_S     e
+  #22  LDC_N
+  #23  HINT
+  #24  LINE      13
+  #25  LDC_D     1
+  #26  RETURN    0

@@ -1,0 +1,31 @@
+[0]
+  #00  LINE      2
+  #01  M_TYP     aaaa
+  #02  STORE     0
+  #03  LINE      5
+  #04  M_REF     1
+  #05  LINE      6
+  #06  STORE     1
+  #07  LINE      9
+  #08  M_TYP     cccc
+  #09  LINE      10
+  #10  STORE     2
+  #11  LINE      12
+  #12  LDC_D     11
+  #13  RETURN    0
+
+[1]
+  #00  LINE      2
+  #01  E_LOAD    #
+  #02  GET       a
+  #03  PULL      123
+  #04  GET       dd
+  #05  GET       a
+  #06  GET       b
+  #07  GET       c
+  #08  PULL      -1
+  #09  RETURN    0
+  #10  LINE      4
+  #11  LOAD_C    $
+  #12  GET       ssss
+  #13  RETURN    0
