@@ -90,7 +90,7 @@ public class InstQueue {
         return index;
     }
 
-    public CompilerArguments getCompilerArguments() {
+    CompilerArguments getCompilerArguments() {
         return this.compilerArguments;
     }
 

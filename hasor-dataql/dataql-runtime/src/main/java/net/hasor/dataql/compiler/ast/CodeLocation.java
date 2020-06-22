@@ -45,7 +45,11 @@ public interface CodeLocation {
             }
             String lineNumStr = lineNumber >= 0 ? String.valueOf(lineNumber) : "unknown";
             String columnNumStr = columnNumber >= 0 ? String.valueOf(columnNumber) : "unknown";
-            return lineNumStr + ":" + columnNumStr;
+            if ("unknown".equalsIgnoreCase(columnNumStr)) {
+                return lineNumStr;
+            } else {
+                return lineNumStr + ":" + columnNumStr;
+            }
         }
     }
 
@@ -89,7 +93,11 @@ public interface CodeLocation {
             if ("unknown".equalsIgnoreCase(starStr) && "unknown".equalsIgnoreCase(endStr)) {
                 return "unknown";
             }
-            return starStr + "~" + endStr;
+            if ("unknown".equalsIgnoreCase(endStr)) {
+                return starStr;
+            } else {
+                return starStr + "~" + endStr;
+            }
         }
     }
 }

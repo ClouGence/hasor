@@ -24,7 +24,7 @@ import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
  */
 public abstract class Location extends CodeLocationInfo {
     public String toErrorMessage() {
-        return "line [" + super.toString() + "]";
+        return "line " + super.toString();
     }
 
     public static class RuntimeLocation extends Location {
@@ -47,7 +47,7 @@ public abstract class Location extends CodeLocationInfo {
         }
 
         public String toErrorMessage() {
-            return super.toErrorMessage() + ",address " + this.methodAddress + ":" + this.programAddress;
+            return super.toErrorMessage() + " ,address " + this.methodAddress + ":" + this.programAddress;
         }
     }
 

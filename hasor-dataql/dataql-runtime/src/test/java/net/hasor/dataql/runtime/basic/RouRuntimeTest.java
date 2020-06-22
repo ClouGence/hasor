@@ -204,7 +204,7 @@ public class RouRuntimeTest extends AbstractTestResource implements HintValue {
 
     @Test
     public void compilerVar_1_Test() throws Exception {
-        CompilerArguments arguments = new CompilerArguments();
+        CompilerArguments arguments = CompilerArguments.DEFAULT;
         arguments.getCompilerVar().add("list");
         //
         QueryModel queryModel = QueryHelper.queryParser("return list[2]");

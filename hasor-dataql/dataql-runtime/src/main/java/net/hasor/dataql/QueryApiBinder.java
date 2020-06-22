@@ -17,7 +17,7 @@ package net.hasor.dataql;
 import net.hasor.core.*;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
-import net.hasor.utils.StringUtils;
+import net.hasor.dataql.DataQL.ConfigOption;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -37,16 +37,8 @@ import java.util.function.Supplier;
  * @version : 2017-03-23
  */
 public interface QueryApiBinder extends ApiBinder, Hints {
-    /** 创建一个隔离环境，隔离环境不会共享当前 QueryApiBinder 中的任何配置。 */
-    public default QueryApiBinder isolation(Class<?> contextType) {
-        return isolation(contextType.getName());
-    }
-
-    /** 获取当前环境的名字，如果是通过 {@link #isolation(String)} 方式创建的隔离环境那么会返回隔离环境的名称。默认为：空字符串 */
-    public String isolation();
-
-    /** 创建一个隔离环境，隔离环境不会共享当前 QueryApiBinder 中的任何配置。 */
-    public QueryApiBinder isolation(String contextName);
+    /** 配置编译参数 */
+    public void configOption(ConfigOption optionKey, Object value);
 
     /** 加载带有 @DimFragment 注解的类 */
     public default QueryApiBinder loadFragment(Set<Class<?>> fragmentTypeSet) {
@@ -177,14 +169,8 @@ public interface QueryApiBinder extends ApiBinder, Hints {
         }
         //
         Class<? extends UdfSource> udfSourceType = (Class<? extends UdfSource>) sourceType;
-        final String isolationName = this.isolation();
         HasorUtils.pushStartListener(getEnvironment(), (EventListener<AppContext>) (event, appContext) -> {
-            DataQL dataQL = null;
-            if (StringUtils.isBlank(isolationName)) {
-                dataQL = appContext.getInstance(DataQL.class);
-            } else {
-                dataQL = appContext.findBindingBean(isolationName, DataQL.class);
-            }
+            DataQL dataQL = appContext.getInstance(DataQL.class);
             Finder qlFinder = dataQL.getFinder();
             if (typeSupplier == null) {
                 dataQL.addShareVar(annotationsByType.value(), () -> {

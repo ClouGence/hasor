@@ -49,7 +49,7 @@ public class BeanUtils {
         } else if (returnType == float.class) {
             return 0f;
         } else if (returnType == long.class) {
-            return 0l;
+            return 0L;
         } else if (returnType == short.class) {
             return (short) 0;
         } else if (returnType == boolean.class) {
@@ -111,7 +111,7 @@ public class BeanUtils {
                 }
             }
             //5.如果有参数类型不一样的也忽略---2
-            if (isFind == false) {
+            if (!isFind) {
                 continue;
             }
             //符合条件执行调用
@@ -130,7 +130,7 @@ public class BeanUtils {
         if (target == null) {
             return null;
         }
-        ArrayList<Field> fList = new ArrayList<Field>();
+        ArrayList<Field> fList = new ArrayList<>();
         BeanUtils.findALLFields(target, fList);
         return fList;
     }
@@ -161,7 +161,7 @@ public class BeanUtils {
         if (target == null) {
             return null;
         }
-        ArrayList<Method> mList = new ArrayList<Method>();
+        ArrayList<Method> mList = new ArrayList<>();
         BeanUtils.findALLMethods(target, mList);
         return mList;
     }
@@ -270,7 +270,7 @@ public class BeanUtils {
             } catch (Exception e) {
             }
         }
-        return mnames.toArray(new PropertyDescriptor[mnames.size()]);
+        return mnames.toArray(new PropertyDescriptor[0]);
     }
 
     /**获取一个属性的读取方法。*/
@@ -319,28 +319,20 @@ public class BeanUtils {
     public static boolean hasProperty(final String propertyName, final Class<?> target) {
         //get、set方法
         if (BeanUtils.getReadMethod(propertyName, target) == null) {
-            if (BeanUtils.getWriteMethod(propertyName, target) == null) {
-                return false;
-            }
+            return BeanUtils.getWriteMethod(propertyName, target) != null;
         }
         return true;
     }
 
     /**测试是否具有fieldName所表示的字段，无论是读或写方法只要存在一个就表示存在该属性。*/
     public static boolean hasField(final String propertyName, final Class<?> target) {
-        if (BeanUtils.getField(propertyName, target) == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return BeanUtils.getField(propertyName, target) != null;
     }
 
     /**测试是否具有name所表示的属性，hasProperty或hasField有一个返回为true则返回true。*/
     public static boolean hasPropertyOrField(final String name, final Class<?> target) {
         if (!BeanUtils.hasProperty(name, target)) {
-            if (!BeanUtils.hasField(name, target)) {
-                return false;
-            }
+            return BeanUtils.hasField(name, target);
         }
         return true;
     }
@@ -348,19 +340,13 @@ public class BeanUtils {
     /**测试是否支持readProperty方法。返回true表示可以进行读取操作。*/
     public static boolean canReadProperty(final String propertyName, final Class<?> target) {
         Method readMethod = BeanUtils.getReadMethod(propertyName, target);
-        if (readMethod != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return readMethod != null;
     }
 
     /**测试是否支持readPropertyOrField方法。*/
     public static boolean canReadPropertyOrField(final String propertyName, final Class<?> target) {
         if (!BeanUtils.canReadProperty(propertyName, target)) {
-            if (!BeanUtils.hasField(propertyName, target)) {
-                return false;
-            }
+            return BeanUtils.hasField(propertyName, target);
         }
         return true;
     }
@@ -368,28 +354,19 @@ public class BeanUtils {
     /**测试是否支持writeProperty方法。返回true表示可以进行写入操作。*/
     public static boolean canWriteProperty(final String propertyName, final Class<?> target) {
         Method writeMethod = BeanUtils.getWriteMethod(propertyName, target);
-        if (writeMethod != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return writeMethod != null;
     }
 
     /**测试是否支持Field方法写。*/
     public static boolean canWriteField(final String propertyName, final Class<?> target) {
         Field field = getField(propertyName, target);
-        if (field == null || Modifier.isFinal(field.getModifiers())) {
-            return false;
-        }
-        return true;
+        return field != null && !Modifier.isFinal(field.getModifiers());
     }
 
     /**测试是否支持writePropertyOrField方法。*/
     public static boolean canWritePropertyOrField(final String propertyName, final Class<?> target) {
         if (!BeanUtils.canWriteProperty(propertyName, target)) {
-            if (!BeanUtils.canWriteField(propertyName, target)) {
-                return false;
-            }
+            return BeanUtils.canWriteField(propertyName, target);
         }
         return true;
     }
@@ -531,10 +508,7 @@ public class BeanUtils {
             return propType;
         }
         propType = BeanUtils.getFieldType(defineType, attName);
-        if (propType != null) {
-            return propType;
-        }
-        return null;
+        return propType;
     }
 
     /***/

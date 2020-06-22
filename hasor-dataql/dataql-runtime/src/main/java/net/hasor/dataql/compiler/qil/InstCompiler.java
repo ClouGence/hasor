@@ -42,7 +42,7 @@ public interface InstCompiler<T extends Inst> extends Opcodes {
     }
 
     public default void instLocation(boolean focus, InstQueue queue, CodeLocation location) {
-        CodeLocationEnum locationEnum = queue.getCompilerArguments().getLocationEnum();
+        CodeLocationEnum locationEnum = queue.getCompilerArguments().getCodeLocation();
         if (location == null || locationEnum == null || locationEnum == CodeLocationEnum.NONE) {
             return;
         }

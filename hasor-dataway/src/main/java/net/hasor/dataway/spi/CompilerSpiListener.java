@@ -17,6 +17,7 @@ package net.hasor.dataway.spi;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
+import net.hasor.dataql.runtime.CompilerArguments;
 import net.hasor.dataql.runtime.QueryHelper;
 
 import java.io.IOException;
@@ -34,6 +35,8 @@ public interface CompilerSpiListener extends EventListener {
 
     public default QIL compiler(ApiInfo apiInfo, String query, Set<String> varNames, Finder finder) throws IOException {
         QueryModel queryModel = QueryHelper.queryParser(query);
-        return QueryHelper.queryCompiler(queryModel, varNames, finder);
+        CompilerArguments arguments = CompilerArguments.DEBUG.copyAsNew();
+        arguments.getCompilerVar().addAll(varNames);
+        return QueryHelper.queryCompiler(queryModel, arguments, finder);
     }
 }

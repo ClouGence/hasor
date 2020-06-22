@@ -26,6 +26,7 @@ import net.hasor.dataql.runtime.CompilerArguments;
 import net.hasor.dataql.runtime.CompilerVarQuery;
 import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataql.runtime.QueryHelper;
+import net.hasor.utils.BeanUtils;
 import org.antlr.v4.runtime.CharStream;
 
 import java.io.IOException;
@@ -40,9 +41,10 @@ import java.util.function.Supplier;
  * @version : 2017-03-23
  */
 class InnerDataQLImpl extends HintsSet implements DataQL {
-    private Map<String, Supplier<?>>   compilerVarMap = new HashMap<>();
-    private AppContext                 appContext;
-    private Supplier<? extends Finder> finderObject;
+    private final Map<String, Supplier<?>>   compilerVarMap       = new HashMap<>();
+    private       AppContext                 appContext;
+    private       Supplier<? extends Finder> finderObject;
+    private final CompilerArguments          useCompilerArguments = CompilerArguments.DEFAULT;
 
     public void initConfig(AppContext appContext) {
         this.appContext = appContext;
@@ -54,6 +56,11 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
 
     public void setFinder(Supplier<? extends Finder> finder) {
         this.finderObject = finder;
+    }
+
+    @Override
+    public void configOption(ConfigOption optionKey, Object value) {
+        BeanUtils.writePropertyOrField(this.useCompilerArguments, optionKey.getConfigName(), value);
     }
 
     @Override
@@ -110,7 +117,8 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
 
     @Override
     public QIL compilerQuery(QueryModel queryModel) throws IOException {
-        CompilerArguments compilerArguments = new CompilerArguments(this.compilerVarMap.keySet());
+        CompilerArguments compilerArguments = this.useCompilerArguments.copyAsNew();
+        compilerArguments.getCompilerVar().addAll(this.compilerVarMap.keySet());
         return QueryHelper.queryCompiler(queryModel, compilerArguments, getFinder());
     }
 

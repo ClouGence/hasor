@@ -21,10 +21,10 @@ import net.hasor.core.HasorUtils;
 import net.hasor.core.binder.ApiBinderCreator;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.dataql.DataQL;
+import net.hasor.dataql.DataQL.ConfigOption;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.QueryApiBinder;
-import net.hasor.utils.StringUtils;
 
 import java.util.function.Supplier;
 
@@ -36,44 +36,20 @@ import java.util.function.Supplier;
 public class QueryApiBinderCreator implements ApiBinderCreator<QueryApiBinder> {
     @Override
     public QueryApiBinder createBinder(final ApiBinder apiBinder) {
-        return new QueryApiBinderImpl(true, null, apiBinder);
+        return new QueryApiBinderImpl(apiBinder);
     }
 
     private static class QueryApiBinderImpl extends ApiBinderWrap implements QueryApiBinder {
-        private InnerDataQLImpl innerDqlConfig = new InnerDataQLImpl();
-        private String          contextName    = null;
+        private final InnerDataQLImpl innerDqlConfig = new InnerDataQLImpl();
 
-        private QueryApiBinderImpl(boolean isDefault, String contextName, ApiBinder apiBinder) {
+        private QueryApiBinderImpl(ApiBinder apiBinder) {
             super(apiBinder);
-            this.contextName = contextName;
-            if (!isDefault) {
-                if (StringUtils.isBlank(contextName)) {
-                    throw new IllegalArgumentException("the context name is empty.");
-                }
-                apiBinder.bindType(InnerDataQLImpl.class).nameWith(contextName).toInstance(this.innerDqlConfig);
-                apiBinder.bindType(DataQL.class).nameWith(contextName).toInstance(this.innerDqlConfig);
-            } else {
-                apiBinder.bindType(InnerDataQLImpl.class).toInstance(this.innerDqlConfig);
-                apiBinder.bindType(DataQL.class).toInstance(this.innerDqlConfig);
-            }
+            apiBinder.bindType(InnerDataQLImpl.class).toInstance(this.innerDqlConfig);
+            apiBinder.bindType(DataQL.class).toInstance(this.innerDqlConfig);
             //
             HasorUtils.pushStartListener(getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
                 innerDqlConfig.initConfig(eventData);
             });
-        }
-
-        public QueryApiBinderImpl(String contextName, ApiBinder apiBinder) {
-            this(false, contextName, apiBinder);
-        }
-
-        @Override
-        public String isolation() {
-            return this.contextName;
-        }
-
-        @Override
-        public QueryApiBinder isolation(String contextName) {
-            return new QueryApiBinderImpl(contextName, this);
         }
 
         @Override
@@ -104,6 +80,11 @@ public class QueryApiBinderCreator implements ApiBinderCreator<QueryApiBinder> {
         @Override
         public void setHint(String hintName, boolean value) {
             this.innerDqlConfig.setHint(hintName, value);
+        }
+
+        @Override
+        public void configOption(ConfigOption optionKey, Object value) {
+            this.innerDqlConfig.configOption(optionKey, value);
         }
 
         @Override

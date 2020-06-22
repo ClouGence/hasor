@@ -14,6 +14,7 @@ Hasor v4.1.9 (2020-06-?)
     - 所有编辑器统一使用 MonacoEditor，去掉 Codemirror 依赖。
     - ApiInfo 类型中增加 CallSource 枚举，用来表示请求的来源。isPerform 方法成为过期方法。
     - ValueModel 的isByte、isShort、isInt、isLong 等等方法。逻辑调整为是否可以转换为该类型。
+    - 去掉了 DataQL 的环境隔离能力。
 **修复**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1J7K3>`_ 修复Dataway 生成的 Swagger api文档，在容器中用 swagger 访问失败。
     - `issue <https://gitee.com/zycgit/hasor/issues/I1K85T>`_ 修复 字符串加法计算特定场景下抛异常

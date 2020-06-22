@@ -34,7 +34,26 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface DataQL {
+public interface DataQL extends Hints {
+    public enum ConfigOption {
+        /** 代码行号的编译模式 */
+        CODE_LOCATION("codeLocation"),
+        ;
+        //
+        private final String configName;
+
+        public String getConfigName() {
+            return this.configName;
+        }
+
+        ConfigOption(String configName) {
+            this.configName = configName;
+        }
+    }
+
+    /** 配置编译参数 */
+    public void configOption(ConfigOption optionKey, Object value);
+
     /** 添加全局变量（等同于 compilerVar） */
     public default DataQL addShareVarInstance(String name, Object instance) {
         return this.addShareVar(name, () -> instance);

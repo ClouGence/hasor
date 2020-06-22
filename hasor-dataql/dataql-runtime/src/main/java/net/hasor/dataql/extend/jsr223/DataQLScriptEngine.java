@@ -103,7 +103,8 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
             }
             //
             QueryModel queryModel = QueryHelper.queryParser(queryString);
-            CompilerArguments compilerArguments = new CompilerArguments(global.keySet());
+            CompilerArguments compilerArguments = CompilerArguments.DEFAULT.copyAsNew();
+            compilerArguments.getCompilerVar().addAll(global.keySet());
             QIL compilerQIL = QueryHelper.queryCompiler(queryModel, compilerArguments, this.getFinder());
             return new DataQLCompiledScript(compilerQIL, this);
         } catch (IOException e) {
