@@ -29,6 +29,8 @@ import net.hasor.dataway.schema.types.TypesUtils;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.CallSource;
+import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.interceptor.Transactional;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
@@ -56,6 +58,7 @@ public class SmokeController extends BasicController {
     private          ApiCallService apiCallService;
 
     @Post
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody, Invoker invoker) throws Throwable {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");

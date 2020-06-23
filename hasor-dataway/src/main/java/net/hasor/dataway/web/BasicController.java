@@ -19,9 +19,6 @@ import net.hasor.dataql.DataQL;
 import net.hasor.web.WebController;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-
-import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
 
 /**
  * 基础
@@ -30,7 +27,6 @@ import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
  */
 public abstract class BasicController extends WebController {
     @Inject
-    @Named(ISOLATION_CONTEXT)
     protected DataQL     dataQL;
     @Inject
     protected SpiTrigger spiTrigger;

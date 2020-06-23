@@ -16,7 +16,6 @@
 package net.hasor.dataway.service;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.core.Type;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
@@ -30,8 +29,6 @@ import net.hasor.dataway.spi.CallSource;
 import java.util.HashMap;
 import java.util.Map;
 
-import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
-
 /**
  * 服务调用。
  * @author 赵永春 (zyc@hasor.net)
@@ -39,7 +36,7 @@ import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
  */
 @Singleton
 public class DatawayServiceImpl implements DatawayService {
-    @Inject(value = ISOLATION_CONTEXT, byType = Type.ByName)
+    @Inject
     private DataQL         dataQL;
     @Inject
     private ApiCallService callService;

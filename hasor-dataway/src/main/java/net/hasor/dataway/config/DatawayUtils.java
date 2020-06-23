@@ -80,6 +80,14 @@ public class DatawayUtils {
         return (boolean) optionMap.getOrDefault("resultStructure", true);
     }
 
+    /** 所有参数全部打包到 root 变量中 */
+    public static boolean isWrapParameters(Map<String, Object> optionMap) {
+        if (optionMap == null) {
+            return true;
+        }
+        return (boolean) optionMap.getOrDefault("wrapAllParameters", false);
+    }
+
     public static Result<Object> queryResultToResultWithSpecialValue(Map<String, Object> optionMap, QueryResult queryResult, Object specialValue) {
         Object resultValue;
         if (specialValue instanceof DataModel) {

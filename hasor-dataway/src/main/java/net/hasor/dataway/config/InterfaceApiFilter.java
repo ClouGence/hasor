@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
@@ -40,8 +39,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
 
 /**
  * 负责处理 API 的执行
@@ -51,7 +48,6 @@ import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
 class InterfaceApiFilter implements InvokerFilter {
     protected static Logger         logger = LoggerFactory.getLogger(InterfaceApiFilter.class);
     @Inject
-    @Named(ISOLATION_CONTEXT)
     private          DataQL         dataQL;
     @Inject
     private          ApiCallService callService;

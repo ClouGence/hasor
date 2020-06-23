@@ -1,8 +1,8 @@
 <template>
   <div class="requestPanel">
     <div class="request-btns" style="height: 30px;">
-      <el-tooltip class="item" effect="dark" content="Execute Query" placement="bottom">
-        <div v-if="this.panelMode === 'req_parameters'" class="z-index-top" style="padding-right: 10px;">
+      <el-tooltip class="item" effect="dark" content="Wrap all parameters in an object named 'root'" placement="bottom">
+        <div v-if="this.hideRunBtn === true && this.panelMode === 'req_parameters'" class="z-index-top" style="padding-right: 10px;">
           <span style="display: inline-block; padding-right: 5px;line-height: 24px;">Wrap All Parameters</span>
           <el-switch v-model="optionInfoCopy['wrapAllParameters']" />
         </div>
@@ -32,7 +32,7 @@
         <el-tooltip v-if="this.panelMode === 'req_schema'" class="item" effect="dark" placement="bottom-end" content="refresh Schema">
           <el-button class="z-index-top" size="mini" round @click.native="handleAnalyzeParametersSchema">
             <svg class="icon" aria-hidden="true">
-              <use xlink:href="#iconadd"></use>
+              <use xlink:href="#iconanalysis"></use>
             </svg>
           </el-button>
         </el-tooltip>
@@ -71,28 +71,28 @@
           </el-table-column>
         </el-table>
       </el-tab-pane>
-      <el-tab-pane name="req_schema" label="Schema" lazy>
-        <el-table :data="tableData" :height="headerPanelHeight" row-key="id" border default-expand-all :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-          <el-table-column prop="date" label="Name" :resizable="false" />
-          <el-table-column prop="date" label="Type" width="120" :resizable="false">
-            <template slot-scope="scope">
-              <el-select v-model="scope.row.type" style="width: 100%" size="mini" placeholder="Choose">
-                <el-option label="Any" value="any" />
-                <el-option label="Number" value="number" />
-                <el-option label="Boolean" value="boolean" />
-                <el-option label="String" value="string" />
-                <el-option label="Array" value="array" />
-                <el-option label="Object" value="object" />
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column prop="date" label="Comment" :resizable="false">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.defaultOrRefValue" style="width: 100%" size="mini" placeholder="value of Header" />
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-tab-pane>
+      <!--      <el-tab-pane name="req_schema" label="Schema" lazy>-->
+      <!--        <el-table :data="tableData" :height="headerPanelHeight" row-key="id" border default-expand-all :tree-props="{children: 'children', hasChildren: 'hasChildren'}">-->
+      <!--          <el-table-column prop="date" label="Name" :resizable="false" />-->
+      <!--          <el-table-column prop="date" label="Type" width="120" :resizable="false">-->
+      <!--            <template slot-scope="scope">-->
+      <!--              <el-select v-model="scope.row.type" style="width: 100%" size="mini" placeholder="Choose">-->
+      <!--                <el-option label="Any" value="any" />-->
+      <!--                <el-option label="Number" value="number" />-->
+      <!--                <el-option label="Boolean" value="boolean" />-->
+      <!--                <el-option label="String" value="string" />-->
+      <!--                <el-option label="Array" value="array" />-->
+      <!--                <el-option label="Object" value="object" />-->
+      <!--              </el-select>-->
+      <!--            </template>-->
+      <!--          </el-table-column>-->
+      <!--          <el-table-column prop="date" label="Comment" :resizable="false">-->
+      <!--            <template slot-scope="scope">-->
+      <!--              <el-input v-model="scope.row.defaultOrRefValue" style="width: 100%" size="mini" placeholder="value of Header" />-->
+      <!--            </template>-->
+      <!--          </el-table-column>-->
+      <!--        </el-table>-->
+      <!--      </el-tab-pane>-->
     </el-tabs>
   </div>
 </template>
@@ -265,15 +265,15 @@ export default {
                 'method': 'POST',
                 'data': {
                     'id': this.apiInfo.apiID,
-                    'requestParameters': JSON.parse(this.requestBodyCopy)
+                    'requestParameters': JSON.parse(this.requestBodyCopy),
+                    'optionInfo': this.optionInfoCopy
                 }
             }, response => {
                 debugger;
                 if (response.data.result) {
                     self.$message({message: 'Api Delete finish.', type: 'success'});
-                    this.$router.push('/');
                 } else {
-                    errorBox('result is false.');
+                    errorBox('Request parameter structure analysis error.');
                 }
             });
         },

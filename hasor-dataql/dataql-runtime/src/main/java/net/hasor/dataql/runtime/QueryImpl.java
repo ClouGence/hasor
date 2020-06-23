@@ -34,26 +34,27 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-class QueryImpl extends HintsSet implements CompilerVarQuery {
+class QueryImpl extends HintsSet implements Query {
     private final QIL                 qil;
     private final Finder              finder;
-    private final Map<String, Object> compilerVar;
+    private final Map<String, Object> shareVarMap;
 
     QueryImpl(QIL qil, Finder finder) {
         this.qil = qil;
         this.finder = finder;
-        this.compilerVar = new HashMap<>();
+        this.shareVarMap = new HashMap<>();
     }
 
     @Override
     public Query clone() {
         QueryImpl query = new QueryImpl(this.qil, this.finder);
-        query.compilerVar.putAll(this.compilerVar);
+        query.shareVarMap.putAll(this.shareVarMap);
         return query;
     }
 
-    public void setCompilerVar(String compilerVar, Object object) {
-        this.compilerVar.put(compilerVar, object);
+    @Override
+    public void addShareVar(String key, Object value) {
+        this.shareVarMap.put(key, value);
     }
 
     @Override
@@ -72,7 +73,7 @@ class QueryImpl extends HintsSet implements CompilerVarQuery {
         DataHeap dataHeap = new DataHeap();     // 指令执行 - 堆
         EnvStack envStack = new EnvStack();     // 环境数据 - 栈
         this.qil.getCompilerVar().forEach((varName, varLocalIdx) -> {
-            Object varVal = compilerVar.get(varName);
+            Object varVal = shareVarMap.get(varName);
             dataHeap.saveData(varLocalIdx, varVal);
         });
         //

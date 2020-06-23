@@ -15,8 +15,8 @@
  */
 package net.hasor.dataway.web;
 import net.hasor.dataql.QueryResult;
-import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.authorization.AuthorizationType;
+import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.daos.DisableApiQuery;

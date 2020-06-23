@@ -16,7 +16,6 @@
 package net.hasor.dataway.service;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.core.Type;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.ObjectModel;
@@ -26,8 +25,6 @@ import net.hasor.dataway.spi.ApiInfo;
 
 import java.util.HashMap;
 
-import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
-
 /**
  * 服务调用。
  * @author 赵永春 (zyc@hasor.net)
@@ -35,7 +32,7 @@ import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
  */
 @Singleton
 public class ApiServiceImpl {
-    @Inject(value = ISOLATION_CONTEXT, byType = Type.ByName)
+    @Inject
     private DataQL dataQL;
 
     public DatawayApi getApiById(String apiId) throws Throwable {

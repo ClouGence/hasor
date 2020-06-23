@@ -10,13 +10,14 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "core-js": "^3.6.4",
     "element-ui": "^2.13.0",
     "monaco-editor": "^0.20.0",
-    "core-js": "^3.6.4",
     "vue": "^2.6.11",
-    "vue-router": "^3.1.5",
     "vue-clipboard2": "^0.3.1",
-    "vue-splitpane": "^1.0.6"
+    "vue-router": "^3.1.5",
+    "vue-splitpane": "^1.0.6",
+    "vuex": "^3.4.0"
   },
   "husky": {
     "hooks": {

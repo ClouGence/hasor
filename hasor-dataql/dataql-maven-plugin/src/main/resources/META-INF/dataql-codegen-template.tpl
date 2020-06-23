@@ -41,15 +41,12 @@ public class %target_name% extends HintsSet implements Query {
         QueryModel queryModel = QueryHelper.queryParser(inputStream, Charset.forName("UTF-8"));
         QIL queryQil = QueryHelper.queryCompiler(queryModel, new CompilerArguments(keySet), finder);
         this.dataQuery = QueryHelper.createQuery(queryQil, finder);
-        if (this.dataQuery instanceof CompilerVarQuery) {
-            CompilerVarQuery varQuery = (CompilerVarQuery) this.dataQuery;
-            shareVarMap.forEach(new BiConsumer<String, Supplier<?>>() {
-                @Override
-                public void accept(String s, Supplier<?> varSupplier) {
-                    varQuery.setCompilerVar(s, varSupplier);
-                }
-            });
-        }
+        this.dataQuery.putShareVar(shareVarMap);
+    }
+
+    @Override
+    public void addShareVar(String key, Object value) {
+        this.dataQuery.addShareVar(key, value);
     }
 
     @Override

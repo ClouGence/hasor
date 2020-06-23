@@ -23,8 +23,12 @@
             <el-input v-model="apiSearch" size="mini" placeholder="search Api" />
           </template>
           <template slot-scope="scope">
-            <el-tag size="mini" style="float: left;width: 45px;text-align: center;margin-right: 2px;" effect="dark" :type="tableRowMethodTagClassName(scope.row).css">{{ tableRowMethodTagClassName(scope.row).title }}</el-tag>
-            <el-tag size="mini" style="float: left;width: 65px;text-align: center;" :type="tableRowStatusTagClassName(scope.row).css">{{ tableRowStatusTagClassName(scope.row).title }}</el-tag>
+            <el-tag size="mini" style="float: left;width: 45px;text-align: center;margin-right: 2px;" effect="dark" :type="tableRowMethodTagClassName(scope.row).css">
+              {{ tableRowMethodTagClassName(scope.row).title }}
+            </el-tag>
+            <el-tag size="mini" style="float: left;width: 65px;text-align: center;" :type="tableRowStatusTagClassName(scope.row).css">
+              {{ tableRowStatusTagClassName(scope.row).title }}
+            </el-tag>
             <span style="overflow-x: hidden;">{{ requestPath(scope.row.path) }}&nbsp;&nbsp;&nbsp;&nbsp;</span>
             <span style="color: #adadad;display: contents;float: right; overflow-x: hidden;">[{{ scope.row.comment }}]</span>
           </template>
@@ -44,8 +48,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-tree v-show="directoryShow" id="directory-list" :default-expand-all="true" node-key="id" :data="directoryList" :props="defaultProps" @node-click="treeClick">
-      </el-tree>
+      <el-tree v-show="directoryShow" id="directory-list" :default-expand-all="true" node-key="id" :data="directoryList" :props="defaultProps" @node-click="treeClick" />
     </template>
     <template slot="paneR">
       <split-pane :min-percent="30" :default-percent="horizontalPanelPercent" split="horizontal" @resize="handleHorizontalSplitResize">

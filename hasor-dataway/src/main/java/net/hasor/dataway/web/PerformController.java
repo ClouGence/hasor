@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.authorization.AuthorizationType;
+import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.CallSource;
+import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.interceptor.Transactional;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
@@ -41,6 +43,7 @@ public class PerformController extends BasicController {
     private ApiCallService apiCallService;
 
     @Post
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void doPerform(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody, Invoker invoker) throws Throwable {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");

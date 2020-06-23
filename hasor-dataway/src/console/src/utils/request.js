@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import axios from 'axios';
-import { errorBox } from './utils';
+import {errorBox} from './utils';
 
 const codeMessage = {
     200: 'ok.',
@@ -30,10 +30,10 @@ function decodeUtf8(bytes) {
 }
 
 function arrayBufferFromBlob(bytesBlob) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         const reader = new FileReader();
         reader.readAsArrayBuffer(bytesBlob);
-        reader.onload = function() {
+        reader.onload = function () {
             resolve(this.result);
         };
     });
@@ -81,18 +81,19 @@ export default function request(
     }
     //
     errorCallback =
-    errorCallback === null || errorCallback === undefined
-        ? (errorMessage) => {
-            showMessage(errorMessage);
-        }
-        : errorCallback;
+        errorCallback === null || errorCallback === undefined
+            ? (errorMessage) => {
+                showMessage(errorMessage);
+            }
+            : errorCallback;
     successCallback =
-    successCallback === null || successCallback === undefined
-        ? () => {}
-        : successCallback;
+        successCallback === null || successCallback === undefined
+            ? () => {
+            }
+            : successCallback;
     //
     let finallyCallback = () => {
-    /**/
+        /**/
     };
     if (newOptions.loading) {
         const loading = Vue.prototype.$loading({
@@ -120,11 +121,7 @@ export default function request(
                     break;
                 }
             }
-            if (
-                contentType === undefined ||
-        contentType == null ||
-        contentType === ''
-            ) {
+            if (contentType === undefined || contentType == null || contentType === '') {
                 if (response.data.type === 'application/json') {
                     contentType = 'json';
                 }

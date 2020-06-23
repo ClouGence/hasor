@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
+import com.alibaba.fastjson.JSONObject;
 import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.schema.types.Type;
 import net.hasor.dataway.schema.types.TypesUtils;
 import net.hasor.dataway.service.ApiCallService;
+import net.hasor.utils.convert.ConverterUtils;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
@@ -29,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -49,11 +52,25 @@ public class AnalyzeSchemaController extends BasicController {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
+        Object optionInfo = requestBody.get("optionInfo");
+        boolean allParametersBool = false;
+        if (optionInfo instanceof Map) {
+            Map<Object, Object> optionMap = (Map<Object, Object>) optionInfo;
+            Object allParameters = optionMap.getOrDefault("wrapAllParameters", false);
+            allParametersBool = (boolean) ConverterUtils.convert(Boolean.TYPE, allParameters);
+        }
         //
         Object requestParameters = requestBody.get("requestParameters");
-        Object requestSchema = requestBody.get("requestSchema");
+        if (allParametersBool) {
+            Map<String, Object> tmpData = new LinkedHashMap<>();
+            tmpData.put("root", requestParameters);
+            requestParameters = tmpData;
+        }
         Type reqType = TypesUtils.extractType(("ReqApiType_" + apiId + "_"), new AtomicInteger(), DomainHelper.convertTo(requestParameters));
+        JSONObject parameterJsonSchema = TypesUtils.toJsonSchema(reqType, false);
         //
-        return Result.of(reqType);
+        Object requestSchema = requestBody.get("requestSchema");
+        //
+        return Result.of(parameterJsonSchema);
     }
 }

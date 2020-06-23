@@ -23,7 +23,6 @@ import net.hasor.dataql.Query;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.CompilerArguments;
-import net.hasor.dataql.runtime.CompilerVarQuery;
 import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.utils.BeanUtils;
@@ -125,10 +124,7 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
     @Override
     public Query createQuery(QIL compilerQIL) {
         Query query = QueryHelper.createQuery(compilerQIL, this.finderObject.get());
-        if (query instanceof CompilerVarQuery) {
-            CompilerVarQuery varQuery = (CompilerVarQuery) query;
-            this.compilerVarMap.forEach(varQuery::setCompilerVar);
-        }
+        query.putShareVar(this.compilerVarMap);
         query.setHints(this);
         return query;
     }

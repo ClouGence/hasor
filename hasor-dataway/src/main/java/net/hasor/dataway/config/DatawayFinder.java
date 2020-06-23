@@ -29,8 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
-
 /**
  * Dataway 启动入口
  * @author 赵永春 (zyc@hasor.net)
@@ -38,12 +36,12 @@ import static net.hasor.dataway.config.DatawayModule.ISOLATION_CONTEXT;
  */
 @Singleton
 public class DatawayFinder extends AppContextFinder {
-    private DataQL dataQL;
+    private final DataQL dataQL;
 
     @Inject
     public DatawayFinder(AppContext appContext) {
         super(appContext);
-        this.dataQL = appContext.findBindingBean(ISOLATION_CONTEXT, DataQL.class);
+        this.dataQL = appContext.getInstance(DataQL.class);
     }
 
     /** 负责处理 <code>import @"/net/hasor/demo.ql" as demo;</code>方式中 ‘/net/hasor/demo.ql’ 资源的加载 */

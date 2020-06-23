@@ -19,6 +19,7 @@ import net.hasor.dataql.runtime.InstructRuntimeException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * 查询
@@ -26,6 +27,19 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 public interface Query extends Hints, Cloneable {
+    /** 添加全局变量 */
+    public void addShareVar(String key, Object value);
+
+    /** 添加全局变量 */
+    public default void putShareVar(Map<String, Supplier<?>> shareVarMap) {
+        if (shareVarMap == null) {
+            return;
+        }
+        shareVarMap.forEach((key, valueSupplier) -> {
+            addShareVar(key, valueSupplier.get());
+        });
+    }
+
     /** 执行查询 */
     public default QueryResult execute() throws InstructRuntimeException {
         return this.execute(symbol -> Collections.emptyMap());

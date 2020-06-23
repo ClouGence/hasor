@@ -18,6 +18,7 @@ import net.hasor.core.Settings;
 import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.ast.AstVisitor;
 import net.hasor.dataql.compiler.ast.InstVisitorContext;
+import net.hasor.dataql.runtime.CompilerArguments;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
@@ -60,11 +61,13 @@ public class AbstractTestResource {
     }
 
     protected Query compilerQL(String qlString) throws IOException {
-        return QueryHelper.createQuery(qlString, Finder.DEFAULT);
+        QueryModel queryModel = QueryHelper.queryParser(qlString);
+        return QueryHelper.createQuery(queryModel, CompilerArguments.DEFAULT, Finder.DEFAULT);
     }
 
     protected Query compilerQL(String qlString, Finder finder) throws IOException {
-        return QueryHelper.createQuery(qlString, Finder.DEFAULT);
+        QueryModel queryModel = QueryHelper.queryParser(qlString);
+        return QueryHelper.createQuery(queryModel, CompilerArguments.DEFAULT, finder);
     }
 
     protected List<String> acceptVisitor(QueryModel queryModel) {

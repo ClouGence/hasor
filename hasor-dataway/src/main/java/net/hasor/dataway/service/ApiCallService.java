@@ -18,7 +18,6 @@ import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.DataQL;
-import net.hasor.dataql.Finder;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.compiler.qil.QIL;
@@ -33,7 +32,8 @@ import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -63,12 +63,12 @@ public class ApiCallService {
         LoggerUtils loggerUtils = LoggerUtils.create();
         loggerUtils.addLog("apiMethod", apiInfo.getMethod());
         loggerUtils.addLog("apiPath", apiInfo.getApiPath());
-        if (apiInfo.getParameterMap() != null) {
-            loggerUtils.addLog("paramRootKeys", apiInfo.getParameterMap().keySet());
+        Map<String, Object> parameterMap = apiInfo.getParameterMap();
+        if (parameterMap != null) {
+            loggerUtils.addLog("paramRootKeys", parameterMap.keySet());
         } else {
             loggerUtils.addLog("paramRootKeys", "empty.");
         }
-        //
         // .执行查询
         //  - 0.权限检查
         //  - 1.首先将 API 调用封装为 单例的 Supplier
@@ -77,24 +77,27 @@ public class ApiCallService {
         BasicFuture<Object> newResult = new BasicFuture<>();
         QueryResult execute = null;
         try {
-            //
             // .执行权限检查SPI
-            Boolean checkResult = spiTrigger.chainSpi(AuthorizationChainSpi.class, (listener, lastResult) -> {
-                return listener.doCheck(AuthorizationType.ApiExecute, apiInfo, lastResult);
-            }, true);
-            if (checkResult == null || !checkResult) {
-                throw new StatusMessageException(401, "no permission of api " + apiInfo.getApiPath());
+            if (this.spiTrigger.hasSpi(AuthorizationChainSpi.class)) {
+                Boolean checkResult = spiTrigger.chainSpi(AuthorizationChainSpi.class, (listener, lastResult) -> {
+                    return listener.doCheck(AuthorizationType.ApiExecute, apiInfo, lastResult);
+                }, true);
+                if (checkResult == null || !checkResult) {
+                    throw new StatusMessageException(401, "no permission of api " + apiInfo.getApiPath());
+                }
+            }
+            // .前置拦截器
+            if (this.spiTrigger.hasSpi(PreExecuteChainSpi.class)) {
+                this.spiTrigger.chainSpi(PreExecuteChainSpi.class, (listener, lastResult) -> {
+                    if (!newResult.isDone()) {
+                        listener.preExecute(apiInfo, newResult);
+                    }
+                    return lastResult;
+                });
             }
             //
-            this.spiTrigger.chainSpi(PreExecuteChainSpi.class, (listener, lastResult) -> {
-                if (!newResult.isDone()) {
-                    listener.preExecute(apiInfo, newResult);
-                }
-                return lastResult;
-            });
             if (newResult.isDone()) {
                 // - 使用preExecute的结果
-                //
                 Object data = newResult.get();
                 if (data instanceof QueryResult) {
                     execute = (QueryResult) data;
@@ -106,17 +109,20 @@ public class ApiCallService {
                     );
                 }
             } else {
+                if (DatawayUtils.isWrapParameters(apiInfo.getOptionMap())) {
+                    Map<String, Object> tmpParameterMap = new HashMap<>();
+                    tmpParameterMap.put("root", parameterMap);
+                    parameterMap = tmpParameterMap;
+                }
                 // .编译DataQL查询，并执行查询
-                //
-                final String scriptBody = scriptBuild.buildScript(apiInfo.getParameterMap());
-                final Set<String> varNames = this.executeDataQL.getShareVarMap().keySet();
-                final Finder finder = this.executeDataQL.getFinder();
+                final String scriptBody = scriptBuild.buildScript(parameterMap);
                 QIL compiler = this.spiTrigger.notifySpi(CompilerSpiListener.class, (listener, lastResult) -> {
-                    return listener.compiler(apiInfo, scriptBody, varNames, finder);
+                    return listener.compiler(apiInfo, scriptBody, executeDataQL);
                 }, null);
                 if (compiler == null) {
-                    compiler = CompilerSpiListener.DEFAULT.compiler(apiInfo, scriptBody, varNames, finder);
+                    compiler = CompilerSpiListener.DEFAULT.compiler(apiInfo, scriptBody, executeDataQL);
                 }
+                //
                 loggerUtils.addLog("compilerTime", DatawayUtils.currentLostTime());
                 loggerUtils.addLog("prepareHint", apiInfo.getPrepareHint());
                 Query query = this.executeDataQL.createQuery(compiler);
@@ -133,7 +139,7 @@ public class ApiCallService {
                         }
                     });
                 }
-                execute = query.execute(apiInfo.getParameterMap());
+                execute = query.execute(parameterMap);
             }
             loggerUtils.addLog("executionTime", execute.executionTime());
             loggerUtils.addLog("lifeCycleTime", DatawayUtils.currentLostTime());
@@ -147,12 +153,14 @@ public class ApiCallService {
         // .返回值
         try {
             Object resultData = execute.getData();
-            resultData = this.spiTrigger.chainSpi(ResultProcessChainSpi.class, (listener, lastResult) -> {
-                if (lastResult instanceof DataModel) {
-                    lastResult = ((DataModel) lastResult).unwrap();
-                }
-                return listener.callAfter(newResult.isDone(), apiInfo, lastResult);
-            }, resultData);
+            if (this.spiTrigger.hasSpi(ResultProcessChainSpi.class)) {
+                resultData = this.spiTrigger.chainSpi(ResultProcessChainSpi.class, (listener, lastResult) -> {
+                    if (lastResult instanceof DataModel) {
+                        lastResult = ((DataModel) lastResult).unwrap();
+                    }
+                    return listener.callAfter(newResult.isDone(), apiInfo, lastResult);
+                }, resultData);
+            }
             return DatawayUtils.queryResultToResultWithSpecialValue(apiInfo.getOptionMap(), execute, resultData).getResult();
         } catch (Throwable e) {
             logger.error("requestFailed - " + loggerUtils.logException(e).toJson());
@@ -172,14 +180,19 @@ public class ApiCallService {
         }
         logger.error("requestFailed - " + loggerUtils.logException(e).toJson());
         //
-        try {
-            Throwable finalE = e;
-            value = this.spiTrigger.chainSpi(ResultProcessChainSpi.class, (listener, lastResult) -> {
-                return listener.callError(isFormPre, apiInfo, finalE);
-            }, value);
-        } catch (Throwable ee) {
-            logger.error(ee.getMessage(), ee);
-            e = ee;
+        // .如果注册了 SPI 那么就执行 callError
+        if (this.spiTrigger.hasSpi(ResultProcessChainSpi.class)) {
+            try {
+                Throwable finalE = e;
+                value = this.spiTrigger.chainSpi(ResultProcessChainSpi.class, (listener, lastResult) -> {
+                    return listener.callError(isFormPre, apiInfo, finalE);
+                }, value);
+            } catch (Throwable ee) {
+                logger.error(ee.getMessage(), ee);
+                e = ee;
+            }
+        } else {
+            logger.error(e.getMessage(), e);
         }
         //
         if (needThrow) {

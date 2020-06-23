@@ -39,10 +39,9 @@ import java.sql.SQLException;
  * @version : 2020-03-20
  */
 public class DatawayModule implements WebModule {
-    protected static    Logger  logger            = LoggerFactory.getLogger(DatawayModule.class);
-    public static final String  ISOLATION_CONTEXT = "net.hasor.dataway.config.DatawayModule";
-    private             boolean datawayApi;
-    private             boolean datawayAdmin;
+    protected static Logger  logger = LoggerFactory.getLogger(DatawayModule.class);
+    private          boolean datawayApi;
+    private          boolean datawayAdmin;
 
     @Override
     public void loadModule(WebApiBinder apiBinder) {
@@ -69,10 +68,8 @@ public class DatawayModule implements WebModule {
         QueryApiBinder defaultContext = apiBinder.tryCast(QueryApiBinder.class);
         defaultContext.bindFinder(apiBinder.getProvider(DatawayFinder.class));
         //
-        // .Dataway 自身使用的隔离环境
-        logger.info("dataway self isolation ->" + ISOLATION_CONTEXT);
-        QueryApiBinder isolation = defaultContext.isolation(ISOLATION_CONTEXT);
-        isolation.bindFragment("sql", SqlFragment.class);
+        // .注册 sql 执行器
+        defaultContext.bindFragment("sql", SqlFragment.class);
         //
         // .注册 DatawayService接口
         apiBinder.bindType(DatawayService.class).to(DatawayServiceImpl.class);
@@ -105,7 +102,7 @@ public class DatawayModule implements WebModule {
                 PublishController.class,            //
                 PerformController.class,            //
                 DeleteController.class,             //
-                AnalyzeSchemaController.class,      //
+                //                AnalyzeSchemaController.class,      //
                 //
                 Swagger2Controller.class,           //
         };
@@ -155,7 +152,7 @@ public class DatawayModule implements WebModule {
         }
         //
         logger.info("dataway dbMapping {}", dataBaseType.mappingType());
-        appContext.findBindingBean(ISOLATION_CONTEXT, DataQL.class).addShareVarInstance("dbMapping", dataBaseType.mappingType().toLowerCase());
+        appContext.getInstance(DataQL.class).addShareVarInstance("dbMapping", dataBaseType.mappingType().toLowerCase());
     }
 
     public static class DbInfo {

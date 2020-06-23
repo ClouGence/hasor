@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
+import store from './store';
 import splitPane from 'vue-splitpane';
 import VueClipboard from 'vue-clipboard2';
 import ElementUI from 'element-ui';
@@ -23,6 +24,8 @@ Vue.use(ElementUI);
 Vue.component('SplitPane', splitPane);
 Vue.use(VueClipboard);
 new Vue({
+    el: '#app',
     router,
+    store, // store:store 和router一样，将我们创建的Vuex实例挂载到这个vue实例中
     render: h => h(App)
-}).$mount('#app');
+});

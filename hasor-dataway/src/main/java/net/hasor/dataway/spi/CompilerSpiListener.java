@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.dataway.spi;
-import net.hasor.dataql.Finder;
-import net.hasor.dataql.compiler.QueryModel;
+import net.hasor.dataql.DataQL;
 import net.hasor.dataql.compiler.qil.QIL;
-import net.hasor.dataql.runtime.CompilerArguments;
-import net.hasor.dataql.runtime.QueryHelper;
 
 import java.io.IOException;
 import java.util.EventListener;
-import java.util.Set;
 
 /**
  * DataQL 编译，默认实现了编译。（is notifySpi）
@@ -33,10 +29,7 @@ public interface CompilerSpiListener extends EventListener {
     public static final CompilerSpiListener DEFAULT = new CompilerSpiListener() {
     };
 
-    public default QIL compiler(ApiInfo apiInfo, String query, Set<String> varNames, Finder finder) throws IOException {
-        QueryModel queryModel = QueryHelper.queryParser(query);
-        CompilerArguments arguments = CompilerArguments.DEBUG.copyAsNew();
-        arguments.getCompilerVar().addAll(varNames);
-        return QueryHelper.queryCompiler(queryModel, arguments, finder);
+    public default QIL compiler(ApiInfo apiInfo, String query, DataQL dataQL) throws IOException {
+        return dataQL.compilerQuery(query);
     }
 }
