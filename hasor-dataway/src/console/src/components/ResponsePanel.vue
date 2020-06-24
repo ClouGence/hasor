@@ -56,6 +56,7 @@
 <script>
 import {defineMonacoEditorFoo} from '../utils/editorUtils';
 import {formatDate} from '../utils/utils';
+import {defaultOptionData} from '../utils/api-const';
 
 export default {
     props: {
@@ -141,7 +142,7 @@ export default {
         // 响应结果格式化
         handleStructureFormatter() {
             try {
-                this.responseFormatCopy = JSON.stringify(JSON.parse(this.optionInfoCopy['responseFormat']), null, 2);
+                this.optionInfoCopy['responseFormat'] = JSON.stringify(JSON.parse(this.optionInfoCopy['responseFormat']), null, 2);
                 this.monacoForamtEditor.setValue(this.optionInfoCopy['responseFormat']);
             } catch (e) {
                 this.$message.error('Structure Format Error : ' + e);
@@ -184,22 +185,7 @@ export default {
             this.onEditPage && this.monacoForamtEditor.layout({height: (height - 47), width: width});
         },
         doUpdate() {
-            this.optionInfoCopy = this.optionInfo;
-            if (this.optionInfoCopy['responseFormat'] === undefined) {
-                this.optionInfoCopy['responseFormat'] =
-                    '{\n' +
-                    '  "success"      : "@resultStatus",\n' +
-                    '  "message"      : "@resultMessage",\n' +
-                    '  "code"         : "@resultCode",\n' +
-                    '  "lifeCycleTime": "@timeLifeCycle",\n' +
-                    '  "executionTime": "@timeExecution",\n' +
-                    '  "value"        : "@resultData"\n' +
-                    '}';
-            }
-            if (this.optionInfoCopy['resultStructure'] === undefined) {
-                this.optionInfoCopy['resultStructure'] = true;
-            }
-            //
+            this.optionInfoCopy = { ...defaultOptionData, ...this.optionInfo};
             this.responseBodyCopy = this.responseBody;
             this.monacoDataEditor.setValue(this.responseBodyCopy);
             this.onEditPage && this.monacoForamtEditor.setValue(this.optionInfoCopy['responseFormat']);

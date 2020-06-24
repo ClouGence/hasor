@@ -10,6 +10,20 @@ const adminBaseUrl = (oriUrl) => {
     return (baseUrl + oriUrl).replace('//', '/');
 };
 
+const defaultOptionData = {
+    resultStructure: true,
+    responseFormat:
+        '{\n' +
+        '  "success"      : "@resultStatus",\n' +
+        '  "message"      : "@resultMessage",\n' +
+        '  "code"         : "@resultCode",\n' +
+        '  "lifeCycleTime": "@timeLifeCycle",\n' +
+        '  "executionTime": "@timeExecution",\n' +
+        '  "value"        : "@resultData"\n' +
+        '}',
+    wrapAllParameters: false,
+};
+
 // 通用查 配置
 const ApiUrl = {
     checkVersion: 'http://apis.hasor.net/projects/hasor-dataway/checkVersion',
@@ -32,5 +46,5 @@ const ApiUrl = {
 };
 
 export {
-    ApiUrl, apiBaseUrl, contextPath
+    ApiUrl, defaultOptionData, apiBaseUrl, contextPath
 };

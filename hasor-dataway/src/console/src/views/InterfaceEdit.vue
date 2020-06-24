@@ -76,13 +76,9 @@ import EditerActions from '../components/EditerActions';
 import RequestPanel from '../components/RequestPanel';
 import ResponsePanel from '../components/ResponsePanel';
 import request from '../utils/request';
-import {apiBaseUrl, ApiUrl} from '../utils/api-const';
+import {apiBaseUrl, ApiUrl, defaultOptionData} from '../utils/api-const';
 import {errorBox, statusTagInfo} from '../utils/utils';
 import {defineMonacoEditorFoo, loadMonacoEditorSelfTheme} from '../utils/editorUtils';
-
-const defaultOptionData = {
-    resultStructure: true
-};
 
 export default {
     components: {
@@ -109,7 +105,7 @@ export default {
             //
             //
             headerData: [],
-            optionData: defaultOptionData,
+            optionData: { ...defaultOptionData },
             requestBody: '{"message":"Hello DataQL."}',
             responseBody: '"empty."',
             responseType: 'json',
@@ -174,7 +170,6 @@ export default {
                 width: monacoEditorWidth
             });
             //
-            this.panelPercent = this.panelPercentHorizontal;
             const dataNum = this.panelPercentHorizontal / 100;
             const heightSize = document.documentElement.clientHeight - 88;
             const widthSize = document.documentElement.clientWidth - monacoEditorWidth - 2;

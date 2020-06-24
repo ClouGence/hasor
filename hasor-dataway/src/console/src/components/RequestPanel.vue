@@ -99,7 +99,7 @@
 <script>
 import {defineMonacoEditorFoo} from '../utils/editorUtils';
 import request from '../utils/request';
-import {ApiUrl} from '../utils/api-const';
+import {ApiUrl, defaultOptionData} from '../utils/api-const';
 import {errorBox} from '../utils/utils';
 
 export default {
@@ -150,51 +150,51 @@ export default {
             panelMode: 'req_parameters',
             headerSelectIndeterminateStatus: false,
             headerSelectAllStatus: false,
-            tableData: [
-                {
-                    id: 1,
-                    name: '王小虎',
-                    type: 'int',
-                    source: '',
-                    defaultOrRefValue: '上海市普陀区金沙江路 1518 弄',
-                    date: '2016-05-02'
-                }, {
-                    id: 2,
-                    name: '王小虎',
-                    type: 'int',
-                    source: '',
-                    defaultOrRefValue: '上海市普陀区金沙江路 1518 弄',
-                    date: '2016-05-02'
-                }, {
-                    id: 3,
-                    name: '王小虎',
-                    type: 'int',
-                    source: '',
-                    defaultOrRefValue: '上海市普陀区金沙江路 1518 弄',
-                    date: '2016-05-02',
-                    children: [{
-                        id: 31,
-                        name: '王小虎',
-                        type: 'int',
-                        source: '',
-                        defaultOrRefValue: '上海市普陀区金沙江路 1518 弄',
-                        date: '2016-05-02'
-                    }, {
-                        id: 32,
-                        name: '王小虎',
-                        type: 'int',
-                        source: '',
-                        defaultOrRefValue: '上海市普陀区金沙江路 1518 弄',
-                        date: '2016-05-02'
-                    }]
-                }, {
-                    id: 4,
-                    name: '王小虎',
-                    type: 'int',
-                    source: '',
-                    defaultOrRefValue: '上海市普陀区金沙江路 1518 弄',
-                    date: '2016-05-02'
-                }]
+            // tableData: [
+            //     {
+            //         id: 1,
+            //         name: '王小虎',
+            //         type: 'int',
+            //         source: '',
+            //         defaultOrRefValue: '上海市普陀区金沙江路 1518 弄',
+            //         date: '2016-05-02'
+            //     }, {
+            //         id: 2,
+            //         name: '王小虎',
+            //         type: 'int',
+            //         source: '',
+            //         defaultOrRefValue: '上海市普陀区金沙江路 1518 弄',
+            //         date: '2016-05-02'
+            //     }, {
+            //         id: 3,
+            //         name: '王小虎',
+            //         type: 'int',
+            //         source: '',
+            //         defaultOrRefValue: '上海市普陀区金沙江路 1518 弄',
+            //         date: '2016-05-02',
+            //         children: [{
+            //             id: 31,
+            //             name: '王小虎',
+            //             type: 'int',
+            //             source: '',
+            //             defaultOrRefValue: '上海市普陀区金沙江路 1518 弄',
+            //             date: '2016-05-02'
+            //         }, {
+            //             id: 32,
+            //             name: '王小虎',
+            //             type: 'int',
+            //             source: '',
+            //             defaultOrRefValue: '上海市普陀区金沙江路 1518 弄',
+            //             date: '2016-05-02'
+            //         }]
+            //     }, {
+            //         id: 4,
+            //         name: '王小虎',
+            //         type: 'int',
+            //         source: '',
+            //         defaultOrRefValue: '上海市普陀区金沙江路 1518 弄',
+            //         date: '2016-05-02'
+            //     }]
         };
     },
     watch: {
@@ -298,11 +298,7 @@ export default {
             this.monacoEditor.layout({height: (height - 31), width: width});
         },
         doUpdate() {
-            this.optionInfoCopy = this.optionInfo;
-            if (this.optionInfoCopy['wrapAllParameters'] === undefined) {
-                this.optionInfoCopy['wrapAllParameters'] = false;
-            }
-            //
+            this.optionInfoCopy = { ...defaultOptionData, ...this.optionInfo};
             this.requestBodyCopy = this.requestBody;
             this.headerDataCopy = this.headerData;
             this.monacoEditor.setValue(this.requestBodyCopy);
