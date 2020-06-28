@@ -174,10 +174,9 @@ export default {
             }
             this.panelPercentVertical = verticalPercent;
             this.panelPercentHorizontal = horizontalPercent;
-            const verticalDataNum = verticalPercent / 100;
             const horizontalDataNum = horizontalPercent / 100;
-            const widthSize = document.documentElement.clientWidth * verticalDataNum;
             const heightSize = document.documentElement.clientHeight - 60;
+            const widthSize = (document.documentElement.clientWidth * (1 - (this.panelPercentVertical / 100)));
             //
             this.$refs.listRequestPanel.doLayout(heightSize * horizontalDataNum, widthSize);
             this.$refs.listResponsePanel.doLayout(heightSize * (1 - horizontalDataNum) + 10, widthSize);
