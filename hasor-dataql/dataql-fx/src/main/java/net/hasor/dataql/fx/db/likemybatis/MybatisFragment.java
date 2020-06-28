@@ -42,7 +42,14 @@ import java.util.Map;
 public class MybatisFragment extends SqlFragment {
     @Override
     public Object runFragment(Hints hint, Map<String, Object> paramMap, String fragmentString) throws Throwable {
-        SqlNode sqlNode = parseSqlNode(fragmentString.trim());
+        SqlNode sqlNode = null;
+        try {
+            sqlNode = parseSqlNode(fragmentString.trim());
+        } catch (Exception e) {
+            // 解析失败在来一次，二次都不行直接抛出异常
+            sqlNode = parseSqlNode(fragmentString.trim());
+        }
+
         SqlMode sqlMode = sqlNode.getSqlMode();
         FxQuery fxSql = new MybatisSqlQuery(sqlNode);
         if (usePage(hint, sqlMode, fxSql)) {
@@ -52,7 +59,13 @@ public class MybatisFragment extends SqlFragment {
         }
     }
 
-    private SqlNode parseSqlNode(String fragmentString) throws IOException, SAXException, ParserConfigurationException {
+    /**
+     * 枷锁防止多线程事件
+     * @param fragmentString
+     * @return
+     * @throws Exception
+     */
+    private synchronized SqlNode parseSqlNode(String fragmentString) throws Exception{
         DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = documentBuilder.parse(new ByteArrayInputStream(fragmentString.getBytes()));
         Element root = document.getDocumentElement();
