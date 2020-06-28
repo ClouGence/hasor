@@ -21,6 +21,7 @@ import net.hasor.core.setting.xml.DefaultXmlNode;
 import net.hasor.utils.Iterators;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.future.BasicFuture;
+import net.hasor.utils.io.output.WriterOutputStream;
 import net.hasor.web.binder.OneConfig;
 import net.hasor.web.invoker.ExceuteCaller;
 import net.hasor.web.invoker.InvokerContext;
@@ -133,18 +134,18 @@ public class AbstractTest {
     }
 
     private DefaultXmlNode defaultInvokerCreaterSetXmlNode(LoadModule... modules) {
-        DefaultXmlNode xmlNode = new DefaultXmlNode(null, "invokerCreaterSet");
+        DefaultXmlNode xmlNode = new DefaultXmlNode(null, "invokerCreatorSet");
         List<LoadModule> moduleSet = Arrays.asList(modules);
         if (moduleSet.contains(LoadModule.Valid)) {
-            DefaultXmlNode validInvoker = new DefaultXmlNode(null, "invokerCreater");
+            DefaultXmlNode validInvoker = new DefaultXmlNode(null, "invokerCreator");
             validInvoker.getAttributeMap().put("type", "net.hasor.web.valid.ValidInvoker");
-            validInvoker.setText("net.hasor.web.valid.ValidInvokerCreater");
+            validInvoker.setText("net.hasor.web.valid.ValidInvokerCreator");
             xmlNode.getChildren().add(validInvoker);
         }
         if (moduleSet.contains(LoadModule.Render)) {
-            DefaultXmlNode renderInvoker = new DefaultXmlNode(null, "invokerCreater");
+            DefaultXmlNode renderInvoker = new DefaultXmlNode(null, "invokerCreator");
             renderInvoker.getAttributeMap().put("type", "net.hasor.web.render.RenderInvoker");
-            renderInvoker.setText("net.hasor.web.render.RenderInvokerCreater");
+            renderInvoker.setText("net.hasor.web.render.RenderInvokerCreator");
             xmlNode.getChildren().add(renderInvoker);
         }
         return xmlNode;
@@ -156,7 +157,7 @@ public class AbstractTest {
         if (moduleSet.contains(LoadModule.Web)) {
             DefaultXmlNode webBinder = new DefaultXmlNode(null, "binder");
             webBinder.getAttributeMap().put("type", "net.hasor.web.WebApiBinder");
-            webBinder.setText("net.hasor.web.binder.InvokerWebApiBinderCreater");
+            webBinder.setText("net.hasor.web.binder.InvokerWebApiBinderCreator");
             xmlNode.getChildren().add(webBinder);
         }
         return xmlNode;
@@ -177,7 +178,7 @@ public class AbstractTest {
     protected AppContext buildWebAppContext(String mainconfig, BuildHasor buildHasor, WebModule webModule, ServletContext servletContext, LoadModule... modules) {
         Hasor settings = buildHasor.build(servletContext).asCore()//
                 .addSettings("http://test.hasor.net", "hasor.innerApiBinderSet", defaultInnerApiBinderSetXmlNode(modules))//
-                .addSettings("http://test.hasor.net", "hasor.invokerCreaterSet", defaultInvokerCreaterSetXmlNode(modules))//
+                .addSettings("http://test.hasor.net", "hasor.invokerCreatorSet", defaultInvokerCreaterSetXmlNode(modules))//
                 .mainSettingWith(mainconfig)//
                 .addModules(webModule);
         return settings.build();
@@ -362,6 +363,7 @@ public class AbstractTest {
         HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
         StringWriter stringWriter = new StringWriter();
         PowerMockito.when(httpResponse.getWriter()).thenReturn(new PrintWriter(stringWriter));
+        PowerMockito.when(httpResponse.getOutputStream()).thenReturn(new DelegatingServletOutputStream(new WriterOutputStream(stringWriter)));
         //
         PowerMockito.doAnswer((Answer<Void>) invocation -> {
             if (responseType != null) {

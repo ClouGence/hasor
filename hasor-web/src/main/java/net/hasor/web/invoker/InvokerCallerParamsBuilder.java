@@ -1,3 +1,18 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.hasor.web.invoker;
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.AppContext;
@@ -7,7 +22,6 @@ import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
 import net.hasor.web.Invoker;
-import net.hasor.web.Mapping;
 import net.hasor.web.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,22 +29,21 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.URLDecoder;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+/**
+ * 负责解析参数并执行调用。
+ * @version : 2019-05-11
+ * @author 赵永春 (zyc@hasor.net)
+ */
 public class InvokerCallerParamsBuilder {
-    protected static Logger                    logger          = LoggerFactory.getLogger(InvokerCaller.class);
-    private          Map<String, List<String>> queryParamLocal = null;
-    private          Map<String, Object>       pathParamsLocal = null;
+    protected static Logger logger = LoggerFactory.getLogger(InvokerCaller.class);
 
     public Object[] resolveParams(Invoker invoker, Method targetMethod) throws Throwable {
         Class<?>[] targetParamClass = targetMethod.getParameterTypes();
@@ -106,15 +119,15 @@ public class InvokerCallerParamsBuilder {
         if (pAnno instanceof AttributeParameter) {
             atData = this.getAttributeParam(invoker, (AttributeParameter) pAnno);
         } else if (pAnno instanceof CookieParameter) {
-            atData = this.getCookieParam(invoker, (CookieParameter) pAnno);
+            atData = this.getCookieParam((CookieParameter) pAnno);
         } else if (pAnno instanceof HeaderParameter) {
-            atData = this.getHeaderParam(invoker, (HeaderParameter) pAnno);
+            atData = this.getHeaderParam((HeaderParameter) pAnno);
         } else if (pAnno instanceof QueryParameter) {
-            atData = this.getQueryParam(invoker, (QueryParameter) pAnno);
+            atData = this.getQueryParam((QueryParameter) pAnno);
         } else if (pAnno instanceof PathParameter) {
-            atData = this.getPathParam(invoker, (PathParameter) pAnno);
+            atData = this.getPathParam((PathParameter) pAnno);
         } else if (pAnno instanceof RequestParameter) {
-            atData = invoker.getHttpRequest().getParameterValues(((RequestParameter) pAnno).value());
+            atData = this.getRequestParam((RequestParameter) pAnno);
         } else if (pAnno instanceof RequestBody) {
             if (paramClass == String.class) {
                 atData = invoker.getJsonBodyString();
@@ -168,62 +181,6 @@ public class InvokerCallerParamsBuilder {
     }
 
     /**/
-    private Object getPathParam(Invoker invoker, PathParameter pAnno) {
-        String paramName = pAnno.value();
-        return StringUtils.isBlank(paramName) ? null : this.getPathParamMap(invoker).get(paramName);
-    }
-
-    /**/
-    private Object getQueryParam(Invoker invoker, QueryParameter pAnno) {
-        String paramName = pAnno.value();
-        return StringUtils.isBlank(paramName) ? null : this.getQueryParamMap(invoker).get(paramName);
-    }
-
-    /**/
-    private Object getHeaderParam(Invoker invoker, HeaderParameter pAnno) {
-        String paramName = pAnno.value();
-        if (StringUtils.isBlank(paramName)) {
-            return null;
-        }
-        //
-        HttpServletRequest httpRequest = invoker.getHttpRequest();
-        Enumeration<?> e = httpRequest.getHeaderNames();
-        while (e.hasMoreElements()) {
-            String name = e.nextElement().toString();
-            if (name.equalsIgnoreCase(paramName)) {
-                ArrayList<Object> headerList = new ArrayList<>();
-                Enumeration<?> v = httpRequest.getHeaders(paramName);
-                while (v.hasMoreElements()) {
-                    headerList.add(v.nextElement());
-                }
-                return headerList;
-            }
-        }
-        return null;
-    }
-
-    /**/
-    private Object getCookieParam(Invoker invoker, CookieParameter pAnno) {
-        String paramName = pAnno.value();
-        if (StringUtils.isBlank(paramName)) {
-            return null;
-        }
-        //
-        HttpServletRequest httpRequest = invoker.getHttpRequest();
-        Cookie[] cookies = httpRequest.getCookies();
-        ArrayList<String> cookieList = new ArrayList<>();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                String cookieName = cookie.getName();
-                if (cookieName.equalsIgnoreCase(paramName)) {
-                    cookieList.add(cookie.getValue());
-                }
-            }
-        }
-        return cookieList;
-    }
-
-    /**/
     private Object getAttributeParam(Invoker invoker, AttributeParameter pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
@@ -241,99 +198,32 @@ public class InvokerCallerParamsBuilder {
     }
 
     /**/
-    private Map<String, List<String>> getQueryParamMap(Invoker invoker) {
-        if (this.queryParamLocal != null) {
-            return this.queryParamLocal;
-        }
-        //
-        HttpServletRequest httpRequest = invoker.getHttpRequest();
-        String queryString = httpRequest.getQueryString();
-        if (StringUtils.isBlank(queryString)) {
-            return Collections.EMPTY_MAP;
-        }
-        //
-        this.queryParamLocal = new HashMap<>();
-        String[] params = queryString.split("&");
-        for (String pData : params) {
-            String oriData = pData;
-            String encoding = httpRequest.getCharacterEncoding();
-            String[] kv = oriData.split("=");
-            if (kv.length < 2) {
-                continue;
-            }
-            String k = kv[0].trim();
-            String v = kv[1];
-            if (StringUtils.isNotBlank(encoding)) {
-                k = urlDecoder(encoding, k);
-                v = urlDecoder(encoding, v);
-            }
-            //
-            List<String> pArray = this.queryParamLocal.get(k);
-            pArray = pArray == null ? new ArrayList<>() : pArray;
-            if (!pArray.contains(v)) {
-                pArray.add(v);
-            }
-            this.queryParamLocal.put(k, pArray);
-        }
-        return this.queryParamLocal;
-    }
-
-    private static String urlDecoder(String encoding, String oriData) {
-        try {
-            if (StringUtils.isNotBlank(oriData)) {
-                encoding = URLDecoder.decode(oriData, encoding);
-            }
-            return encoding;
-        } catch (Exception e) {
-            logger.warn("use '{}' decode '{}' error.", encoding, oriData);
-            return encoding;
-        }
+    private Object getPathParam(PathParameter pAnno) {
+        String paramName = pAnno.value();
+        return StringUtils.isBlank(paramName) ? null : HttpParameters.pathArrayMap().get(paramName);
     }
 
     /**/
-    private Map<String, Object> getPathParamMap(Invoker invoker) {
-        if (this.pathParamsLocal != null) {
-            return this.pathParamsLocal;
-        }
-        //
-        HttpServletRequest httpRequest = invoker.getHttpRequest();
-        Mapping ownerMapping = invoker.ownerMapping();
-        if (ownerMapping == null) {
-            return Collections.EMPTY_MAP;
-        }
-        //
-        String requestPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
-        String matchVar = ownerMapping.getMappingToMatches();
-        String matchKey = "(?:\\{(\\w+)\\}){1,}";//  (?:\{(\w+)\}){1,}
-        Matcher keyM = Pattern.compile(matchKey).matcher(ownerMapping.getMappingTo());
-        Matcher varM = Pattern.compile(matchVar).matcher(requestPath);
-        ArrayList<String> keyArray = new ArrayList<>();
-        ArrayList<String> varArray = new ArrayList<>();
-        while (keyM.find()) {
-            keyArray.add(keyM.group(1));
-        }
-        varM.find();
-        for (int i = 1; i <= varM.groupCount(); i++) {
-            varArray.add(varM.group(i));
-        }
-        //
-        Map<String, List<String>> uriParams = new HashMap<>();
-        for (int i = 0; i < keyArray.size(); i++) {
-            String k = keyArray.get(i);
-            String v = varArray.get(i);
-            List<String> pArray = uriParams.get(k);
-            pArray = pArray == null ? new ArrayList<>() : pArray;
-            if (!pArray.contains(v)) {
-                pArray.add(v);
-            }
-            uriParams.put(k, pArray);
-        }
-        this.pathParamsLocal = new HashMap<>();
-        for (Map.Entry<String, List<String>> ent : uriParams.entrySet()) {
-            String k = ent.getKey();
-            List<String> v = ent.getValue();
-            this.pathParamsLocal.put(k, v.toArray(new String[0]));
-        }
-        return this.pathParamsLocal;
+    private Object getQueryParam(QueryParameter pAnno) {
+        String paramName = pAnno.value();
+        return StringUtils.isBlank(paramName) ? null : HttpParameters.queryArrayMap().get(paramName);
+    }
+
+    /**/
+    private Object getHeaderParam(HeaderParameter pAnno) {
+        String paramName = pAnno.value();
+        return StringUtils.isBlank(paramName) ? null : HttpParameters.headerArrayMap().get(paramName);
+    }
+
+    /**/
+    private Object getCookieParam(CookieParameter pAnno) {
+        String paramName = pAnno.value();
+        return StringUtils.isBlank(paramName) ? null : HttpParameters.cookieArrayMap().get(paramName);
+    }
+
+    /**/
+    private Object getRequestParam(RequestParameter pAnno) {
+        String paramName = pAnno.value();
+        return StringUtils.isBlank(paramName) ? null : HttpParameters.requestArrayMap().get(paramName);
     }
 }

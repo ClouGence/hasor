@@ -44,7 +44,7 @@ class RootInvokerCreater implements InvokerCreator {
         //
         // .寻找InvokerCreater扩展
         Map<Class<?>, Class<?>> extBinderMap = new HashMap<>();
-        XmlNode[] nodeArray = settings.getXmlNodeArray("hasor.invokerCreaterSet.invokerCreater");
+        XmlNode[] nodeArray = settings.getXmlNodeArray("hasor.invokerCreatorSet.invokerCreator");
         if (nodeArray != null && nodeArray.length > 0) {
             for (XmlNode atNode : nodeArray) {
                 if (atNode == null) {

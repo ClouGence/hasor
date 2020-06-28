@@ -11,6 +11,7 @@ Hasor v4.1.9 (2020-06-?)
     - SPI 增加可以判断 hasSpi、hasJudge 方法用来判断 SPI 是否有被注册。
     - `issue <https://gitee.com/zycgit/hasor/issues/I1EQCS>`_ 异常信息增加了行号。
     - `issue <https://gitee.com/zycgit/hasor/issues/I1GZZM>`_ 新增一个开源，Parameters中结构化的参数可以包装为一个整体。
+    - hasor-web 项目新增 HttpParameters 工具类。可以静态方法形式获取各类请求参数。
 **优化**
     - 所有编辑器统一使用 MonacoEditor，去掉 Codemirror 依赖。
     - ApiInfo 类型中增加 CallSource 枚举，用来表示请求的来源。isPerform 方法成为过期方法。

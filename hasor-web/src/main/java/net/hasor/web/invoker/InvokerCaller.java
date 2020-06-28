@@ -82,38 +82,40 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller 
     }
 
     /** 执行调用 */
-    private Object invoke(final Method targetMethod, Invoker invoker) throws Throwable {
-        //
-        // .初始化 Controller
-        final Object targetObject = invoker.getAppContext().getInstance(invoker.ownerMapping().getTargetType());
-        if (targetObject instanceof Controller) {
-            ((Controller) targetObject).initController(invoker);
-        }
-        if (targetObject == null) {
-            throw new NullPointerException("mappingToDefine newInstance is null.");
-        }
-        //
-        // .准备过滤器链
-        final InvokerChain invokerChain = inv -> {
-            // 设置contentType
-            String contentType = inv.contentType();
-            if (StringUtils.isNotBlank(contentType)) {
-                if (!inv.getHttpResponse().isCommitted()) {
-                    inv.getHttpResponse().setContentType(contentType);
+    private Object invoke(final Method targetMethod, final Invoker invoker) throws Throwable {
+        return HttpParameters.preInvoke(invoker, (paramData) -> {
+            //
+            // .初始化 Controller
+            final Object targetObject = invoker.getAppContext().getInstance(invoker.ownerMapping().getTargetType());
+            if (targetObject instanceof Controller) {
+                ((Controller) targetObject).initController(invoker);
+            }
+            if (targetObject == null) {
+                throw new NullPointerException("mappingToDefine newInstance is null.");
+            }
+            //
+            // .准备过滤器链
+            final InvokerChain invokerChain = inv -> {
+                // 设置contentType
+                String contentType = inv.contentType();
+                if (StringUtils.isNotBlank(contentType)) {
+                    if (!inv.getHttpResponse().isCommitted()) {
+                        inv.getHttpResponse().setContentType(contentType);
+                    }
                 }
-            }
-            // 执行调用
-            try {
-                final Object[] resolveParamsArrays = this.resolveParams(inv, targetMethod);
-                Object result = targetMethod.invoke(targetObject, resolveParamsArrays);
-                inv.put(Invoker.RETURN_DATA_KEY, result);
-                return result;
-            } catch (InvocationTargetException e) {
-                throw e.getTargetException();
-            }
-        };
-        //
-        // .执行Filters
-        return new InvokerChainInvocation(this.filterArrays, invokerChain).doNext(invoker);
+                // 执行调用
+                try {
+                    final Object[] resolveParamsArrays = this.resolveParams(inv, targetMethod);
+                    Object result = targetMethod.invoke(targetObject, resolveParamsArrays);
+                    inv.put(Invoker.RETURN_DATA_KEY, result);
+                    return result;
+                } catch (InvocationTargetException e) {
+                    throw e.getTargetException();
+                }
+            };
+            //
+            // .执行Filters
+            return new InvokerChainInvocation(this.filterArrays, invokerChain).doNext(invoker);
+        });
     }
 }
