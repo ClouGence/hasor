@@ -27,8 +27,11 @@ import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
+import net.hasor.web.invoker.HttpParameters;
 
 import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,6 +61,18 @@ public class PerformController extends BasicController {
         apiInfo.setApiPath(requestBody.get("apiPath").toString());
         apiInfo.setParameterMap((Map<String, Object>) requestBody.get("requestBody"));
         apiInfo.setOptionMap((Map<String, Object>) requestBody.get("optionInfo"));
+        //
+        // 把 Header 设置到 HttpParameter 中。
+        Map<String, Object> requestHeader = (Map<String, Object>) requestBody.get("requestHeader");
+        if (requestHeader != null) {
+            Map<String, List<String>> headerArrayMap = HttpParameters.headerArrayMap();
+            requestHeader.forEach((key, value) -> {
+                headerArrayMap.merge(key, Collections.singletonList(value.toString()), (var1, var2) -> {
+                    var1.addAll(var2);
+                    return var1;
+                });
+            });
+        }
         //
         // .执行调用
         Object objectMap = this.apiCallService.doCallWithoutError(apiInfo, jsonParam -> {

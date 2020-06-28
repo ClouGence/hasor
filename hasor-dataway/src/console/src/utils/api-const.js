@@ -22,6 +22,7 @@ const defaultOptionData = {
         '  "value"        : "@resultData"\n' +
         '}',
     wrapAllParameters: false,
+    wrapParameterName: 'root',
 };
 
 // 通用查 配置

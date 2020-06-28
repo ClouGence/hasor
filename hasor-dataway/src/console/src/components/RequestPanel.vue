@@ -1,12 +1,6 @@
 <template>
   <div class="requestPanel">
     <div class="request-btns" style="height: 30px;">
-      <el-tooltip class="item" effect="dark" content="Wrap all parameters in an object named 'root'" placement="bottom">
-        <div v-if="this.hideRunBtn === true && this.panelMode === 'req_parameters'" class="z-index-top" style="padding-right: 10px;">
-          <span style="display: inline-block; padding-right: 5px;line-height: 24px;">Wrap All Parameters</span>
-          <el-switch v-model="optionInfoCopy['wrapAllParameters']" />
-        </div>
-      </el-tooltip>
       <el-button-group>
         <el-tooltip class="item" effect="dark" content="Execute Query" placement="bottom-end">
           <el-button v-if="this.hideRunBtn === false" class="z-index-top" size="mini" round @click.native="triggerRun">

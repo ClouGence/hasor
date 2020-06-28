@@ -61,12 +61,14 @@ public class HttpParameters {
         // cookie
         Map<String, List<String>> cookieMap = new HashMap<>();
         Cookie[] cookies = httpRequest.getCookies();
-        for (Cookie cookie : cookies) {
-            String cookieName = cookie.getName();
-            List<String> cookieValue = cookieMap.computeIfAbsent(cookieName, key -> {
-                return new ArrayList<>();
-            });
-            cookieValue.add(cookie.getValue());
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                String cookieName = cookie.getName();
+                List<String> cookieValue = cookieMap.computeIfAbsent(cookieName, key -> {
+                    return new ArrayList<>();
+                });
+                cookieValue.add(cookie.getValue());
+            }
         }
         cookieParamLocal.set(cookieMap);
         //

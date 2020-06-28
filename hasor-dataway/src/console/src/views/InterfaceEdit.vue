@@ -30,7 +30,8 @@
         </el-radio-group>
       </div>
       <div style="float: right;">
-        <EditerActions :api-info="apiInfo" :request-body="requestBody" :request-header="headerData" :new-mode="newCode"
+        <EditerActions ref="editerActionsPanel"
+                       :api-info="apiInfo" :request-body="requestBody" :request-header="headerData" :new-mode="newCode"
                        :option-info="optionData" @onOptionChange="(data)=> { this.optionData = data}"
                        @onAfterSave="onAfterSave" @onPublish="onAfterSave" @onDisable="onAfterSave"
                        @onExecute="onExecute" @onSmokeTest="onExecute"
@@ -245,6 +246,7 @@ export default {
                 self.$nextTick(function () {
                     self.monacoEditor.setValue(self.apiInfo.codeValue);
                     self.apiInfo.editorSubmitted = true;
+                    self.$refs.editerActionsPanel.doUpdate();
                     self.$refs.editerRequestPanel.doUpdate();
                     self.$refs.editerResponsePanel.doUpdate();
                 });

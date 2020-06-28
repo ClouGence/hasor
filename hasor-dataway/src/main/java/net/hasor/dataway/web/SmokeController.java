@@ -36,12 +36,15 @@ import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
+import net.hasor.web.invoker.HttpParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -86,6 +89,18 @@ public class SmokeController extends BasicController {
         apiInfo.setParameterMap(JSON.parseObject(jsonParamValue));
         apiInfo.setOptionMap(objectModel.getObject("optionData").unwrap());
         //
+        // 把 Header 设置到 HttpParameter 中。
+        Map<String, Object> requestHeader = (Map<String, Object>) requestBody.get("requestHeader");
+        if (requestHeader != null) {
+            Map<String, List<String>> headerArrayMap = HttpParameters.headerArrayMap();
+            requestHeader.forEach((key, value) -> {
+                headerArrayMap.merge(key, Collections.singletonList(value.toString()), (var1, var2) -> {
+                    var1.addAll(var2);
+                    return var1;
+                });
+            });
+        }
+        //
         // .执行调用
         Object objectMap = this.apiCallService.doCallWithoutError(apiInfo, jsonParam -> {
             if ("sql".equalsIgnoreCase(strCodeType)) {
@@ -110,6 +125,7 @@ public class SmokeController extends BasicController {
         // .查询接口数据
         QueryResult result = new UpdateSchemaQuery(this.dataQL).execute(new HashMap<String, Object>() {{
             put("apiID", apiID);
+            put("headerSchema", TypesUtils.toJsonSchema(resType, false));
             put("requestSchema", TypesUtils.toJsonSchema(reqType, false));
             put("responseSchema", TypesUtils.toJsonSchema(resType, false));
         }});
