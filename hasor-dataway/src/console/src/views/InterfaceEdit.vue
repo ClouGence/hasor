@@ -192,6 +192,7 @@ export default {
         },
         handleCommentOnchange() {
             this.apiInfo.editorSubmitted = false;
+            // console.log('handleCommentOnchange -> apiInfo.editorSubmitted = false');
         },
         //
         // 初始化编辑器
@@ -245,10 +246,13 @@ export default {
                 //
                 self.$nextTick(function () {
                     self.monacoEditor.setValue(self.apiInfo.codeValue);
-                    self.apiInfo.editorSubmitted = true;
                     self.$refs.editerActionsPanel.doUpdate();
                     self.$refs.editerRequestPanel.doUpdate();
                     self.$refs.editerResponsePanel.doUpdate();
+                    self.$nextTick(function () {
+                        self.apiInfo.editorSubmitted = true;
+                        // console.log('loadApiDetail -> apiInfo.editorSubmitted = true');
+                    });
                 });
             });
         },

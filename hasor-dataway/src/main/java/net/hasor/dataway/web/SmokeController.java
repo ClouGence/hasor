@@ -111,21 +111,23 @@ public class SmokeController extends BasicController {
                 return strCodeValue;
             }
         });
-        this.updateSchema(apiId, apiInfo.getParameterMap(), objectMap);
+        this.updateSchema(apiId, requestHeader, apiInfo.getParameterMap(), objectMap);
         //
         DatawayUtils.responseData(//
                 this.spiTrigger, apiInfo, invoker.getMimeType("json"), invoker, objectMap//
         );
     }
 
-    private void updateSchema(String apiID, Object requestData, Object responseData) throws IOException {
-        final Type reqType = TypesUtils.extractType(("ReqApiType_" + apiID + "_"), new AtomicInteger(), DomainHelper.convertTo(requestData));
-        final Type resType = TypesUtils.extractType(("ResApiType_" + apiID + "_"), new AtomicInteger(), DomainHelper.convertTo(responseData));
+    private void updateSchema(String apiID, Map<String, Object> requestHeader, Object requestData, Object responseData) throws IOException {
+        AtomicInteger atomicInteger = new AtomicInteger();
+        final Type headerType = TypesUtils.extractType(("HeaderType_" + apiID + "_"), atomicInteger, DomainHelper.convertTo(requestHeader));
+        final Type reqType = TypesUtils.extractType(("ReqApiType_" + apiID + "_"), atomicInteger, DomainHelper.convertTo(requestData));
+        final Type resType = TypesUtils.extractType(("ResApiType_" + apiID + "_"), atomicInteger, DomainHelper.convertTo(responseData));
         //
         // .查询接口数据
         QueryResult result = new UpdateSchemaQuery(this.dataQL).execute(new HashMap<String, Object>() {{
             put("apiID", apiID);
-            put("headerSchema", TypesUtils.toJsonSchema(resType, false));
+            put("headerSchema", TypesUtils.toJsonSchema(headerType, false));
             put("requestSchema", TypesUtils.toJsonSchema(reqType, false));
             put("responseSchema", TypesUtils.toJsonSchema(resType, false));
         }});

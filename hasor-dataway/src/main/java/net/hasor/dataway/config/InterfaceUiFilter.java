@@ -84,7 +84,7 @@ class InterfaceUiFilter implements InvokerFilter {
         httpRequest.setCharacterEncoding("UTF-8");
         httpResponse.setCharacterEncoding("UTF-8");
         String requestURI = invoker.getRequestPath();
-        CorsUtils.setupInner(invoker);
+        setupInner(invoker);
         if (requestURI.startsWith(this.uiAdminBaseUri)) {
             try {
                 DatawayUtils.resetLocalTime();
@@ -172,6 +172,23 @@ class InterfaceUiFilter implements InvokerFilter {
         }
         //
         return chain.doNext(invoker);
+    }
+
+    public static void setupInner(Invoker invoker) {
+        HttpServletRequest httpRequest = invoker.getHttpRequest();
+        HttpServletResponse httpResponse = invoker.getHttpResponse();
+        //
+        String originString = httpRequest.getHeader("Origin");
+        if (StringUtils.isNotBlank(originString)) {
+            httpResponse.setHeader("Access-Control-Allow-Origin", originString);
+            httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+        } else {
+            httpResponse.setHeader("Access-Control-Allow-Origin", "*");
+        }
+        httpResponse.addHeader("Access-Control-Allow-Methods", "*");
+        httpResponse.addHeader("Access-Control-Allow-Headers", "Content-Type,X-InterfaceUI-Info");
+        httpResponse.addHeader("Access-Control-Expose-Headers", "X-InterfaceUI-ContextType");
+        httpResponse.addHeader("Access-Control-Max-Age", "3600");
     }
 
     private static String allLocalMac() throws SocketException {

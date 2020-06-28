@@ -21,23 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class CorsUtils {
-    public static void setupInner(Invoker invoker) {
-        HttpServletRequest httpRequest = invoker.getHttpRequest();
-        HttpServletResponse httpResponse = invoker.getHttpResponse();
-        //
-        String originString = httpRequest.getHeader("Origin");
-        if (StringUtils.isNotBlank(originString)) {
-            httpResponse.setHeader("Access-Control-Allow-Origin", originString);
-            httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
-        } else {
-            httpResponse.setHeader("Access-Control-Allow-Origin", "*");
-        }
-        httpResponse.addHeader("Access-Control-Allow-Methods", "*");
-        httpResponse.addHeader("Access-Control-Allow-Headers", "Content-Type,X-InterfaceUI-Info");
-        httpResponse.addHeader("Access-Control-Expose-Headers", "X-InterfaceUI-ContextType");
-        httpResponse.addHeader("Access-Control-Max-Age", "3600");
-    }
-
     public static void setup(Invoker invoker) {
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         HttpServletResponse httpResponse = invoker.getHttpResponse();
@@ -62,14 +45,13 @@ public class CorsUtils {
                 "Connection",       //
                 "User-Agent",       //
                 "Authorization",    //
-                "X-InterfaceUI-Info",//
                 //
                 "authorization",    //
                 "connection",       //
                 "sw-useragent",     //
                 "sw-version"        //
         }, ","));
-        httpResponse.addHeader("Access-Control-Expose-Headers", "X-InterfaceUI-ContextType");
+        //        httpResponse.addHeader("Access-Control-Expose-Headers");
         httpResponse.addHeader("Access-Control-Max-Age", "3600");
     }
 }

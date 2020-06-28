@@ -1,5 +1,5 @@
 <template>
-  <SplitPane :min-percent="30" :default-percent="verticalPanelPercent" split="vertical" @resize="handleVerticalSplitResize">
+  <SplitPane :min-percent="30" :default-percent="panelPercentVertical" split="vertical" @resize="handleVerticalSplitResize">
     <template slot="paneL">
       <el-table ref="interfaceTable" height="100%"
                 :data="tableData.filter(dat => !apiSearch || dat.path.toLowerCase().includes(apiSearch.toLowerCase()) || dat.comment.toLowerCase().includes(apiSearch.toLowerCase()))"
@@ -51,7 +51,7 @@
       <el-tree v-show="directoryShow" id="directory-list" :default-expand-all="true" node-key="id" :data="directoryList" :props="defaultProps" @node-click="treeClick" />
     </template>
     <template slot="paneR">
-      <split-pane :min-percent="30" :default-percent="horizontalPanelPercent" split="horizontal" @resize="handleHorizontalSplitResize">
+      <split-pane :min-percent="30" :default-percent="panelPercentHorizontal" split="horizontal" @resize="handleHorizontalSplitResize">
         <template slot="paneL">
           <RequestPanel ref="listRequestPanel"
                         :header-data="headerData" :request-body="requestBody" :api-info="requestApiInfo"
@@ -82,8 +82,8 @@ export default {
     data() {
         return {
             headerPanelHeight: '100%',
-            verticalPanelPercent: 50,
-            horizontalPanelPercent: 50,
+            panelPercentVertical: 50,
+            panelPercentHorizontal: 50,
             loading: false,
             //
             apiSearch: '',
@@ -160,14 +160,20 @@ export default {
         },
         // 面板大小改变
         handleVerticalSplitResize(data) {
-            this.handleSplitResize(data, this.horizontalPanelPercent);
+            this.handleSplitResize(data, this.panelPercentHorizontal);
         },
         handleHorizontalSplitResize(data) {
-            this.handleSplitResize(this.verticalPanelPercent, data);
+            this.handleSplitResize(this.panelPercentVertical, data);
         },
         handleSplitResize(verticalPercent, horizontalPercent) {
-            this.verticalPanelPercent = verticalPercent;
-            this.horizontalPanelPercent = horizontalPercent;
+            if (verticalPercent === undefined) {
+                verticalPercent = 50;
+            }
+            if (horizontalPercent === undefined) {
+                horizontalPercent = 50;
+            }
+            this.panelPercentVertical = verticalPercent;
+            this.panelPercentHorizontal = horizontalPercent;
             const verticalDataNum = verticalPercent / 100;
             const horizontalDataNum = horizontalPercent / 100;
             const widthSize = document.documentElement.clientWidth * verticalDataNum;

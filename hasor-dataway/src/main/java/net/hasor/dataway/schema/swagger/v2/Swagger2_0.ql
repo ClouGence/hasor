@@ -7,31 +7,45 @@ import "net.hasor.dataql.fx.basic.CollectionUdfSource" as collect;
 
 var apiDataList = ${apiDataList};
 
-var converRequestSchema = (apiMethod, typeData) -> {
-    if (typeData == null) {
+var converRequestSchema = (apiMethod, apiSchema) -> {
+    var requestSchema = apiSchema.requestSchema;
+    var headerSchema = apiSchema.headerSchema;
+    if (requestSchema == null && headerSchema == null) {
         return null;
     }
-    if ("get" != string.toLowerCase(apiMethod)) {
-        return [
-            {
-                "in"     : "body",
-                "name"   : "mainBody",
-                "schema" : typeData
-            }
-        ]
-    }
-    return collect.map2list(typeData.properties) => [
+    //
+    var headerParams = collect.map2list(headerSchema.properties) => [
         {
             "name"       : key,
-            "in"         : "query",
-            "description": "a param",
+            "in"         : "header",
+            "description": "a header",
             "required"   : false,
             "type"       : value.type
         }
-    ]
+    ];
+
+    if ("get" != string.toLowerCase(apiMethod)) {
+        return collect.merge(headerParams, [
+            {
+                "in"     : "body",
+                "name"   : "mainBody",
+                "schema" : requestSchema
+            }
+        ])
+    } else {
+        return collect.merge(headerParams, collect.map2list(requestSchema.properties) => [
+            {
+                "name"       : key,
+                "in"         : "query",
+                "description": "a param",
+                "required"   : false,
+                "type"       : value.type
+            }
+        ])
+    }
     // {
     //     "description": "OK",
-    //     "schema": typeData
+    //     "schema": requestSchema
     //     // description	string	Required. A short description of the response. GFM syntax can be used for rich text representation.
     //     // schema	Schema Object	A definition of the response structure. It can be a primitive, an array or an object. If this field does not exist, it means no content is returned as part of the response. As an extension to the Schema Object, its root type value may also be "file". This SHOULD be accompanied by a relevant produces mime-type.
     //     // headers	Headers Object	A list of headers that are sent with the response.
@@ -61,7 +75,7 @@ var converApi = (apiData) -> {
         "produces": [
             "*/*"
         ],
-        "parameters": converRequestSchema(apiData.apiMethod, apiData.apiSchema.requestSchema),
+        "parameters": converRequestSchema(apiData.apiMethod, apiData.apiSchema),
         "responses": {
             "200": converResponseSchema(apiData.apiSchema.responseSchema)
         }

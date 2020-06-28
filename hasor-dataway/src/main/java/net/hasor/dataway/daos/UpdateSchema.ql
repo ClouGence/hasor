@@ -33,6 +33,7 @@ var updateExec = (updateMap[dbMapping] == null) ? updateMap["default"] : updateM
 var res = updateExec(
     ${apiID},
     json.toJson({
+        "headerSchema" : ${headerSchema},
         "requestSchema" : ${requestSchema},
         "responseSchema"  : ${responseSchema}
     })
