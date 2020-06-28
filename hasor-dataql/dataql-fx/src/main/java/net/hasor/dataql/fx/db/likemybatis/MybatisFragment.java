@@ -23,7 +23,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,14 +40,6 @@ import java.util.Map;
  */
 @Singleton
 public class MybatisFragment extends SqlFragment {
-    private DocumentBuilder documentBuilder;
-
-    @PostConstruct
-    public void initDocumentBuilder() throws ParserConfigurationException {
-        super.init();
-        documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-    }
-
     @Override
     public Object runFragment(Hints hint, Map<String, Object> paramMap, String fragmentString) throws Throwable {
         SqlNode sqlNode = parseSqlNode(fragmentString.trim());
@@ -61,7 +52,8 @@ public class MybatisFragment extends SqlFragment {
         }
     }
 
-    private SqlNode parseSqlNode(String fragmentString) throws IOException, SAXException {
+    private SqlNode parseSqlNode(String fragmentString) throws IOException, SAXException, ParserConfigurationException {
+        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = documentBuilder.parse(new ByteArrayInputStream(fragmentString.getBytes()));
         Element root = document.getDocumentElement();
         String tagName = root.getTagName();

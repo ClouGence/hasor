@@ -17,12 +17,12 @@ package net.hasor.dataql.fx.web;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerFilter;
+import net.hasor.web.invoker.HttpParameters;
 
 import javax.inject.Singleton;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Web相关的工具，例如在 DataQL 中操做 Request/Response。
@@ -31,7 +31,7 @@ import java.util.*;
  */
 @Singleton
 public class FxWebInterceptor implements InvokerFilter {
-    private static ThreadLocal<Invoker> invokerThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<Invoker> invokerThreadLocal = new ThreadLocal<>();
 
     @Override
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
@@ -49,74 +49,22 @@ public class FxWebInterceptor implements InvokerFilter {
 
     /** headerMap */
     public static Map<String, String> headerMap() {
-        Invoker invoker = invoker();
-        if (invoker == null) {
-            return Collections.emptyMap();
-        }
-        HttpServletRequest httpRequest = invoker.getHttpRequest();
-        Enumeration<String> headerNames = httpRequest.getHeaderNames();
-        Map<String, String> headerMap = new HashMap<>();
-        while (headerNames.hasMoreElements()) {
-            String header = headerNames.nextElement();
-            headerMap.put(header, httpRequest.getHeader(header));
-        }
-        return headerMap;
+        return HttpParameters.headerMap();
     }
 
     /** headerMap,Value是数组 */
     public static Map<String, List<String>> headerArrayMap() {
-        Invoker invoker = invoker();
-        if (invoker == null) {
-            return Collections.emptyMap();
-        }
-        HttpServletRequest httpRequest = invoker.getHttpRequest();
-        Enumeration<String> headerNames = httpRequest.getHeaderNames();
-        Map<String, List<String>> headerMap = new HashMap<>();
-        while (headerNames.hasMoreElements()) {
-            String header = headerNames.nextElement();
-            Enumeration<String> headers = httpRequest.getHeaders(header);
-            List<String> headerValue = new ArrayList<>();
-            while (headers.hasMoreElements()) {
-                headerValue.add(headers.nextElement());
-            }
-            headerMap.put(header, headerValue);
-        }
-        return headerMap;
+        return HttpParameters.headerArrayMap();
     }
 
     /** cookieMap */
     public static Map<String, String> cookieMap() {
-        Invoker invoker = invoker();
-        if (invoker == null) {
-            return Collections.emptyMap();
-        }
-        HttpServletRequest httpRequest = invoker.getHttpRequest();
-        Map<String, String> cookieMap = new HashMap<>();
-        Cookie[] cookies = httpRequest.getCookies();
-        for (Cookie cookie : cookies) {
-            String cookieName = cookie.getName();
-            cookieMap.put(cookieName, cookie.getValue());
-        }
-        return cookieMap;
+        return HttpParameters.cookieMap();
     }
 
     /** cookieMap,Value是数组 */
     public static Map<String, List<String>> cookieArrayMap() {
-        Invoker invoker = invoker();
-        if (invoker == null) {
-            return Collections.emptyMap();
-        }
-        HttpServletRequest httpRequest = invoker.getHttpRequest();
-        Map<String, List<String>> cookieMap = new HashMap<>();
-        Cookie[] cookies = httpRequest.getCookies();
-        for (Cookie cookie : cookies) {
-            String cookieName = cookie.getName();
-            List<String> cookieValue = cookieMap.computeIfAbsent(cookieName, key -> {
-                return new ArrayList<>();
-            });
-            cookieValue.add(cookie.getValue());
-        }
-        return cookieMap;
+        return HttpParameters.cookieArrayMap();
     }
 
     /** session */
