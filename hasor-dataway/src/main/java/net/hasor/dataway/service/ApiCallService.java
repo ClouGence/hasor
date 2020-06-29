@@ -28,6 +28,7 @@ import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.LoggerUtils;
 import net.hasor.dataway.spi.*;
+import net.hasor.utils.StringUtils;
 import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,9 +110,11 @@ public class ApiCallService {
                     );
                 }
             } else {
-                if (DatawayUtils.isWrapParameters(apiInfo.getOptionMap())) {
+                // .全参数包裹
+                String wrapParameterName = DatawayUtils.wrapParameterName(apiInfo.getOptionMap());
+                if (StringUtils.isNotBlank(wrapParameterName)) {
                     Map<String, Object> tmpParameterMap = new HashMap<>();
-                    tmpParameterMap.put("root", parameterMap);
+                    tmpParameterMap.put(wrapParameterName, parameterMap);
                     parameterMap = tmpParameterMap;
                 }
                 // .编译DataQL查询，并执行查询

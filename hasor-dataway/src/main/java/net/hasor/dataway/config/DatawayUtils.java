@@ -24,6 +24,7 @@ import net.hasor.dataql.runtime.ThrowRuntimeException;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.SerializationChainSpi;
 import net.hasor.dataway.spi.SerializationChainSpi.SerializationInfo;
+import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
 import net.hasor.web.Invoker;
 
@@ -80,12 +81,17 @@ public class DatawayUtils {
         return (boolean) optionMap.getOrDefault("resultStructure", true);
     }
 
-    /** 所有参数全部打包到 root 变量中 */
-    public static boolean isWrapParameters(Map<String, Object> optionMap) {
+    /** 所有参数全部打包到新的变量中 */
+    public static String wrapParameterName(Map<String, Object> optionMap) {
         if (optionMap == null) {
-            return true;
+            return null;
         }
-        return (boolean) optionMap.getOrDefault("wrapAllParameters", false);
+        boolean wrapAllParameters = (boolean) optionMap.getOrDefault("wrapAllParameters", false);
+        if (wrapAllParameters) {
+            String wrapParameterName = (String) optionMap.getOrDefault("wrapParameterName", "root");
+            return StringUtils.isBlank(wrapParameterName) ? null : wrapParameterName.trim();
+        }
+        return null;
     }
 
     public static Result<Object> queryResultToResultWithSpecialValue(Map<String, Object> optionMap, QueryResult queryResult, Object specialValue) {
