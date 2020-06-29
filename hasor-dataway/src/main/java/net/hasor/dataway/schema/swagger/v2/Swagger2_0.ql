@@ -86,7 +86,7 @@ return {
   "swagger": "2.0",
   "info": {
     "title": "Interface Document for Dataway",
-    "description": "Dataway OpenAPI 3.0.0 Document",
+    "description": "Dataway Swagger2 Document",
     "termsOfService": "https://www.hasor.net/web/dataway/index.html",
     "contact": {
       "name": "Dataway Support",
@@ -100,7 +100,7 @@ return {
     "version": "1.0"
   },
   "host": ${serverHost},
-  "basePath": "/",
+  "basePath": ${serverBasePath},
   "schemes" : ["http", "https"],
   "consumes":["application/json"],
   "produces":["*/*"],

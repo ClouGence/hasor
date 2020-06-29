@@ -50,9 +50,11 @@ public class Swagger2Controller extends BasicController {
         }});
         //
         String serverHost = localName;
+        String serverBasePath = invoker.getHttpRequest().getContextPath();
         return new Swagger2_0Query(this.dataQL).execute(new HashMap<String, Object>() {{
             put("apiDataList", apiList.getData());
             put("serverHost", serverHost);
+            put("serverBasePath", StringUtils.isNotBlank(serverBasePath) ? serverBasePath : "/");
         }}).getData().unwrap();
     }
 }
