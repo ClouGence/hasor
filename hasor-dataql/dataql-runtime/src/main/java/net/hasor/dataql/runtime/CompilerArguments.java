@@ -29,13 +29,12 @@ public class CompilerArguments {
     }};
     /** 默认模式：一般性编译优化，不贵追求极致编译性能*/
     public static final CompilerArguments DEFAULT      = new CompilerArguments() {{
-        setCodeLocation(CodeLocationEnum.LINE);
+        setCodeLocation(CodeLocationEnum.TERM);
     }};
-    /** 极速模式：最小化编译结果，极致的运行性能为目标（调试不友好） */
+    /** 快速模式：最小化编译结果，极致的运行性能为目标 */
     public static final CompilerArguments FAST         = new CompilerArguments() {{
         setCodeLocation(CodeLocationEnum.NONE);
     }};
-    //
     //
     //
     private final       Set<String>       compilerVar  = new HashSet<>();
