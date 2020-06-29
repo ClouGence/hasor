@@ -22,6 +22,7 @@ Hasor v4.1.9 (2020-06-?)
     - `issue <https://gitee.com/zycgit/hasor/issues/I1J7K3>`_ 修复Dataway 生成的 Swagger api文档，在容器中用 swagger 访问失败。
     - `issue <https://gitee.com/zycgit/hasor/issues/I1K85T>`_ 修复 字符串加法计算特定场景下抛异常。
     - `issue <https://gitee.com/zycgit/hasor/issues/I1K1MJ>`_ 修复 @@mybatis 多线程并发问题 MybatisFragment
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1J33N>`_ 跨域下 4.1.7、4.1.8 前端请求第一次是options时会报错。
 
 Hasor v4.1.8 (2020-05-28)
 ------------------------------------
