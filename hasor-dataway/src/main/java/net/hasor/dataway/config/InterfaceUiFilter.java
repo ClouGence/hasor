@@ -98,6 +98,12 @@ class InterfaceUiFilter implements InvokerFilter {
                 return objectMap;
             }
         }
+        // 处理预请求OPTIONS
+        String httpMethod = httpRequest.getMethod().toUpperCase().trim();
+        if (httpMethod.equals("OPTIONS")) {
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            return httpResponse;
+        }
         //
         // 处理 index.html
         if (this.uiBaseUri.equalsIgnoreCase(requestURI)) {
