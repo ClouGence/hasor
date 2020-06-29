@@ -1,7 +1,12 @@
 --------------------
 Release Hasor v4.x
 --------------------
-Hasor v4.1.9 (2020-06-?)
+Hasor v4.1.10 (2020-07-?)
+------------------------------------
+**新增**
+    - xxx
+
+Hasor v4.1.9 (2020-06-29)
 ------------------------------------
 **新增**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1IT82>`_ Api列表时显式其http method
@@ -18,6 +23,7 @@ Hasor v4.1.9 (2020-06-?)
     - ValueModel 的isByte、isShort、isInt、isLong 等等方法。逻辑调整为是否可以转换为该类型。
     - 去掉了 DataQL 的环境隔离能力。
     - FxWebInterceptor 对于 header、cookie 的获取通过 HttpParameters 类来获取。
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1LC53>`_ 整合Swagger 之后 Header 无法通过 Swagger 传入。
 **修复**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1J7K3>`_ 修复Dataway 生成的 Swagger api文档，在容器中用 swagger 访问失败。
     - `issue <https://gitee.com/zycgit/hasor/issues/I1K85T>`_ 修复 字符串加法计算特定场景下抛异常。
