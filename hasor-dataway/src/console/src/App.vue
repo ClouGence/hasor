@@ -36,16 +36,20 @@
     </el-main>
     <el-dialog :visible.sync="newVersionDialog" width="50%" center :destroy-on-close="true">
       <span slot="title" class="dialog-footer">NewVersion : {{ newVersionInfo.lastVersion }}</span>
-      <div v-if="newVersionInfo.changelog === 'unknown'">
-        <span>Your version : {{ currentVersion }}</span>
-        <div style="padding: 10px;">
-          <li>WebSite：https://www.hasor.net/web/dataway/about.html</li>
-          <li>Blog：https://www.hasor.net/blog/index.html</li>
-          <li>Changelog: https://www.hasor.net/web/changelog/index.html</li>
-          <li><a target="_blank" href="https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-dataway">
-            <img src="https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-dataway/badge.svg" alt="Maven">
-          </a></li>
-        </div>
+      <span>Your version : {{ currentVersion }}</span>
+      <div v-if="newVersionInfo.changelog !=='unknown'" style="padding: 10px;">
+        <iframe :src="newVersionInfo.changelog + '?currentVersion='+ currentVersion"
+                width="100%" height="100%" frameborder="no" border="0" marginwidth="0"
+                marginheight="0" scrolling="yes" allowtransparency="yes"
+        ></iframe>
+      </div>
+      <div v-if="newVersionInfo.changelog ==='unknown'" style="padding: 10px;">
+        <li>WebSite：https://www.hasor.net/web/dataway/about.html</li>
+        <li>Blog：https://www.hasor.net/blog/index.html</li>
+        <li>Changelog: https://www.hasor.net/web/changelog/index.html</li>
+        <li><a target="_blank" href="https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-dataway">
+          <img src="https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-dataway/badge.svg" alt="Maven">
+        </a></li>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button size="mini" type="primary" round @click="closeCheckVersion">Close</el-button>
@@ -105,7 +109,7 @@ export default {
             localStorage.setItem('lastCheckVersion', this.newVersionInfo.lastVersion);
         },
         checkVersion(versionInfo) {
-            if (Object.prototype.toString.call(versionInfo) !== '[Object Object]') {
+            if (Object.prototype.toString.call(versionInfo).toUpperCase() !== '[OBJECT OBJECT]') {
                 versionInfo = {lastVersion: versionInfo, changelog: 'unknown'};
             }
             try {
@@ -152,5 +156,4 @@ export default {
     .newStyle:hover {
         cursor: pointer
     }
-
 </style>
