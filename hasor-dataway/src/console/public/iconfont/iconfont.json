@@ -6,6 +6,13 @@
   "description": "Hasor-DataQL",
   "glyphs": [
     {
+      "icon_id": "10453",
+      "name": "更多",
+      "font_class": "more",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
       "icon_id": "15220098",
       "name": "重新分析",
       "font_class": "analysis",

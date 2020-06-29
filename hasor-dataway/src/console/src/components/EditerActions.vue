@@ -5,13 +5,10 @@
       <el-tooltip class="item" effect="dark" content="More Settings" placement="bottom-end">
         <el-button size="mini" round @click.native="handleMoreAction">
           <svg class="icon" aria-hidden="true">
-            <use xlink:href="#iconsave" />
+            <use xlink:href="#iconmore" />
           </svg>
         </el-button>
       </el-tooltip>
-    </el-button-group>
-    <div style="padding-left: 10px;display: inline;" />
-    <el-button-group>
       <!-- 保存 -->
       <el-tooltip class="item" effect="dark" content="Save" placement="bottom-end">
         <el-button size="mini" round :disabled="disabledBtn('saveAction')" @click.native="handleSaveAction">
