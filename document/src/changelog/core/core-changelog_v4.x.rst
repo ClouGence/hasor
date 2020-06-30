@@ -4,7 +4,8 @@ Release Hasor v4.x
 Hasor v4.1.10 (2020-07-?)
 ------------------------------------
 **修复**
-    - `issue <https://gitee.com/zycgit/hasor/issues/I1M4CH>`_ 带有 content-path 的工程生成的 base URL少了一级路径
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1M4CH>`_ 带有 content-path 的工程生成的 Swagger 文档中 BaseURL少了一级路径
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1M4FS>`_ ResultStructure 取消勾选之后，在刷新又显示被勾选了
 
 Hasor v4.1.9 (2020-06-29)
 ------------------------------------

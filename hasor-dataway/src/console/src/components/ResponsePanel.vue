@@ -127,7 +127,6 @@ export default {
         }
         //
         this.responseBodyCopy = this.responseBody;
-        this.optionInfoCopy = { ...defaultOptionData, ...this.optionInfo};
         this.doUpdate();
     },
     methods: {
@@ -186,6 +185,7 @@ export default {
             this.onEditPage && this.monacoForamtEditor.layout({height: (height - 47), width: width});
         },
         doUpdate() {
+            this.optionInfoCopy = { ...defaultOptionData, ...this.optionInfo};
             this.responseBodyCopy = this.responseBody;
             this.monacoDataEditor.setValue(this.responseBodyCopy);
             this.onEditPage && this.monacoForamtEditor.setValue(this.optionInfoCopy['responseFormat']);
