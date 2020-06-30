@@ -72,8 +72,8 @@ public class AppContextWarp implements AppContext {
     }
 
     @Override
-    public void joinSignal(long timeout, TimeUnit unit) {
-        this.getAppContext().joinSignal(timeout, unit);
+    public void waitSignal(Object signal, long timeout, TimeUnit unit) throws InterruptedException {
+        this.getAppContext().waitSignal(signal, timeout, unit);
     }
 
     @Override

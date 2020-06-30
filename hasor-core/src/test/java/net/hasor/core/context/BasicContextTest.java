@@ -25,7 +25,6 @@ import net.hasor.test.core.binder.TestBinder;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
-import java.lang.management.ManagementFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -39,106 +38,58 @@ public class BasicContextTest {
     }
 
     @Test
-    public void joinTest1() throws Throwable {
-        if (isWin()) {
-            return;
-        }
+    public void waitSignal1() throws Throwable {
         Environment env = new StandardEnvironment();
         AppContext appContext = new AppContextWarp(new StatusAppContext(env));
         appContext.start();
         //
-        String name = ManagementFactory.getRuntimeMXBean().getName();
-        String pid = name.split("@")[0];
-        System.out.println("Pid is:" + pid);
-        //
+        final Object signal = new Object();
         Thread thread = new Thread(() -> {
             try {
                 Thread.sleep(2000);
-                Runtime.getRuntime().exec("kill -15 " + pid);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        thread.start();
-        try {
-            appContext.joinSignal(3, TimeUnit.SECONDS);
-            assert true;
-        } catch (RuntimeException e) {
-            assert false;
-        }
-    }
-
-    @Test
-    public void joinTest2() throws Throwable {
-        if (isWin()) {
-            return;
-        }
-        Environment env = new StandardEnvironment();
-        AppContext appContext = new AppContextWarp(new StatusAppContext(env));
-        appContext.start();
-        //
-        String name = ManagementFactory.getRuntimeMXBean().getName();
-        String pid = name.split("@")[0];
-        System.out.println("Pid is:" + pid);
-        //
-        Thread thread = new Thread(() -> {
-            try {
-                Thread.sleep(10000);
-                Runtime.getRuntime().exec("kill -15 " + pid);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        thread.start();
-        try {
-            appContext.joinSignal(1, TimeUnit.SECONDS);
-            assert false;
-        } catch (RuntimeException e) {
-            assert e.getCause() instanceof java.util.concurrent.TimeoutException;
-            return;
-        }
-        assert false;
-    }
-
-    /*
-    @Test
-    public void joinTest3() throws Throwable {
-        if (isWin()) {
-            return;
-        }
-        Environment env = new StandardEnvironment();
-        AppContext appContext = new AppContextWarp(new StatusAppContext(env));
-        appContext.start();
-        //
-        String name = ManagementFactory.getRuntimeMXBean().getName();
-        String pid = name.split("@")[0];
-        System.out.println("Pid is:" + pid);
-        //
-        Thread thread = new Thread(() -> {
-            try {
-                Thread.sleep(5000);
-                Runtime.getRuntime().exec("kill -15 " + pid);
-                Thread.sleep(10000);
-                if (appContext.isStart()) {
-                    appContext.shutdown();
+                synchronized (signal) {
+                    signal.notifyAll();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
         thread.start();
-        try {
-            appContext.joinSignal();
-            assert false;
-        } catch (RuntimeException e) {
-            assert e.getCause() instanceof java.util.concurrent.TimeoutException;
-            return;
-        }
-        assert false;
-    }*/
+        //
+        long t = System.currentTimeMillis();
+        appContext.waitSignal(signal, 5, TimeUnit.SECONDS);
+        assert System.currentTimeMillis() - t < 5000;
+    }
 
     @Test
-    public void joinTest4() throws Throwable {
+    public void waitSignal2() throws Throwable {
+        if (isWin()) {
+            return;
+        }
+        Environment env = new StandardEnvironment();
+        AppContext appContext = new AppContextWarp(new StatusAppContext(env));
+        appContext.start();
+        //
+        Object signal = new Object();
+        Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(10000);
+                synchronized (signal) {
+                    signal.notifyAll();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        thread.start();
+        //
+        long t = System.currentTimeMillis();
+        appContext.waitSignal(signal, 5, TimeUnit.SECONDS);
+        assert System.currentTimeMillis() - t >= 5000;
+    }
+
+    @Test
+    public void joinTest1() throws Throwable {
         Environment env = new StandardEnvironment();
         AppContext appContext = new AppContextWarp(new StatusAppContext(env));
         appContext.start();

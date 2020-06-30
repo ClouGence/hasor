@@ -75,8 +75,12 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
         // .多个 SPI 监听器情况下，通过仲裁决定哪些监听器有效
         SpiJudge spiJudge = SpiJudge.DEFAULT;
         if (this.spiSpiJudge.containsKey(spiType)) {
-            spiJudge = this.spiSpiJudge.get(spiType).get(); // 有仲裁，但是仲裁不能为空
+            // 有仲裁，但是仲裁不能为空
+            spiJudge = this.spiSpiJudge.get(spiType).get();
             Objects.requireNonNull(spiJudge, "spi '" + spiType.getName() + "' SpiJudge is null.");
+        } else if (isNotify) {
+            // 必须要设置仲裁
+            throw new UnsupportedOperationException("spi '" + spiType.getName() + "' encounters Multiple, require SpiJudge.");
         }
         List<EventListener> collect = listeners.stream().map(Supplier::get).collect(Collectors.toList());
         collect = spiJudge.judgeSpi(collect);

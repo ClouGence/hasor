@@ -34,8 +34,6 @@ import net.hasor.utils.StringUtils;
 import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Proxy;
@@ -478,38 +476,6 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         });
         //
         // .阻塞进程
-        joinAt(future, timeout, unit);
-    }
-
-    public void joinSignal(long timeout, TimeUnit unit) {
-        tryShutdown();
-        final BasicFuture<Object> future = new BasicFuture<>();
-        //
-        // .注册 shutdown 事件
-        HasorUtils.pushShutdownListener(getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
-            future.completed(new Object());
-        });
-        //
-        // .注册 shutdown 信号
-        final SignalHandler signalHandler = signal -> {
-            int number = signal.getNumber();
-            logger.warn("process kill by " + signal.getName() + "(" + number + ")");
-            try {
-                future.completed(new Object());
-            } catch (Exception e) {
-                future.failed(e);
-            }
-        };
-        Signal.handle(new Signal("TERM"), signalHandler);    // kill -15 pid
-        Signal.handle(new Signal("INT"), signalHandler);     // 相当于Ctrl+C
-        logger.info("register signal to TERM,INT");
-        //
-        // .阻塞进程
-        joinAt(future, timeout, unit);
-    }
-
-    // .阻塞进程
-    private void joinAt(BasicFuture<Object> future, long timeout, TimeUnit unit) {
         try {
             if (unit == null) {
                 logger.debug("joinAt none.");
@@ -528,6 +494,12 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     private void tryShutdown() {
         if (!this.isStart()) {
             throw new IllegalStateException("the container is not started yet.");
+        }
+    }
+
+    public void waitSignal(final Object signal, long timeout, TimeUnit unit) throws InterruptedException {
+        synchronized (Objects.requireNonNull(signal)) {
+            unit.timedWait(signal, timeout);
         }
     }
 }

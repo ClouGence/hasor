@@ -70,13 +70,13 @@ public interface AppContext extends MetaInfo {
     /** 阻塞当前线程的继续执行，直到 {@link AppContext#shutdown()} 被调用 */
     public void join(long timeout, TimeUnit unit);
 
-    /** 阻塞当前线程的继续执行，直到 {@link AppContext#shutdown()} 被调用或者接收到 kill -15 or kill -2 信号 */
-    public default void joinSignal() {
-        this.joinSignal(0, null);
+    /** 阻塞当前线程的继续执行，直到 signal 的 notify 或 notifyAll 被调用 */
+    public default void waitSignal(Object signal) throws InterruptedException {
+        this.waitSignal(signal, 0, null);
     }
 
-    /** 阻塞当前线程的继续执行，直到 {@link AppContext#shutdown()} 被调用或者接收到 kill -15 or kill -2 信号 */
-    public void joinSignal(long timeout, TimeUnit unit);
+    /** 阻塞当前线程的继续执行，直到 signal 的 notify 或 notifyAll 被调用 */
+    public void waitSignal(Object signal, long timeout, TimeUnit unit) throws InterruptedException;
 
     /*---------------------------------------------------------------------------------------Bean*/
 
