@@ -16,11 +16,13 @@
 package net.hasor.dataql.fx.db.runsql;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
+import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.fx.FxHintNames;
 import net.hasor.dataql.fx.FxHintValue;
 import net.hasor.dataql.fx.basic.StringUdfSource;
+import net.hasor.dataql.fx.db.LookupDataSourceListener;
 import net.hasor.dataql.fx.db.parser.DefaultFxQuery;
 import net.hasor.dataql.fx.db.parser.FxQuery;
 import net.hasor.dataql.fx.db.runsql.dialect.SqlPageDialect;
@@ -35,6 +37,7 @@ import net.hasor.utils.io.IOUtils;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.PreparedStatement;
@@ -58,8 +61,10 @@ import static net.hasor.dataql.fx.FxHintValue.*;
 public class SqlFragment implements FragmentProcess {
     @Inject
     protected AppContext                appContext;
-    protected JdbcTemplate              defaultDataSource;
-    protected Map<String, JdbcTemplate> dataSourceMap;
+    @Inject
+    protected SpiTrigger                spiTrigger;
+    protected JdbcTemplate              defaultJdbcTemplate;
+    protected Map<String, JdbcTemplate> jdbcTemplateMap;
 
     public static enum SqlMode {
         /** DML：insert、update、delete、replace、exec */
@@ -74,30 +79,40 @@ public class SqlFragment implements FragmentProcess {
 
     @PostConstruct
     public void init() {
-        this.dataSourceMap = new HashMap<>();
+        this.jdbcTemplateMap = new HashMap<>();
         List<BindInfo<JdbcTemplate>> bindInfos = this.appContext.findBindingRegister(JdbcTemplate.class);
         for (BindInfo<JdbcTemplate> bindInfo : bindInfos) {
             if (StringUtils.isBlank(bindInfo.getBindName())) {
-                if (this.defaultDataSource == null) {
-                    this.defaultDataSource = this.appContext.getInstance(bindInfo);
+                if (this.defaultJdbcTemplate == null) {
+                    this.defaultJdbcTemplate = this.appContext.getInstance(bindInfo);
                 }
             } else {
-                JdbcTemplate dataSource = this.appContext.getInstance(bindInfo);
-                if (dataSource != null) {
-                    this.dataSourceMap.put(bindInfo.getBindName(), dataSource);
+                JdbcTemplate jdbcTemplate = this.appContext.getInstance(bindInfo);
+                if (jdbcTemplate != null) {
+                    this.jdbcTemplateMap.put(bindInfo.getBindName(), jdbcTemplate);
                 }
             }
         }
     }
 
-    protected JdbcTemplate getJdbcTemplate(String sourceName) {
+    protected JdbcTemplate getJdbcTemplate(final String sourceName) {
         JdbcTemplate jdbcTemplate = null;
         if (StringUtils.isBlank(sourceName)) {
-            jdbcTemplate = this.defaultDataSource;
+            jdbcTemplate = this.defaultJdbcTemplate;
         } else {
-            jdbcTemplate = this.dataSourceMap.get(sourceName);
+            jdbcTemplate = this.jdbcTemplateMap.get(sourceName);
         }
         if (jdbcTemplate == null) {
+            if (this.spiTrigger.hasSpi(LookupDataSourceListener.class)) {
+                // .通过 SPI 查找数据源
+                DataSource dataSource = this.spiTrigger.notifySpi(LookupDataSourceListener.class, (listener, lastResult) -> {
+                    return listener.lookUp(sourceName);
+                }, null);
+                // .构造JdbcTemplate
+                if (dataSource != null) {
+                    return new JdbcTemplate(dataSource);
+                }
+            }
             throw new NullPointerException("DataSource " + sourceName + " is undefined.");
         }
         return jdbcTemplate;

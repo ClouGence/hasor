@@ -3,6 +3,8 @@ Release Hasor v4.x
 --------------------
 Hasor v4.1.10 (2020-07-?)
 ------------------------------------
+**新增**
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1IZ16>`_ 增加 LookupDataSourceListener 扩展接口，允许每次执行 DataQL 的 SQL 片段时都动态的查找 DataSource 以实现动态数据源。
 **修复**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1M4CH>`_ 带有 content-path 的工程生成的 Swagger 文档中 BaseURL少了一级路径
     - `issue <https://gitee.com/zycgit/hasor/issues/I1M4FS>`_ ResultStructure 取消勾选之后，在刷新又显示被勾选了
