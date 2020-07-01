@@ -15,11 +15,12 @@
  */
 package net.hasor.dataql.fx.basic;
 import net.hasor.dataql.UdfSourceAssembly;
-import net.hasor.utils.BooleanUtils;
-import net.hasor.utils.NumberUtils;
-import net.hasor.utils.StringUtils;
+import net.hasor.utils.*;
 
 import javax.inject.Singleton;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.util.List;
 
 /**
  * 转换函数。函数库引入 <code>import 'net.hasor.dataql.fx.basic.ConvertUdfSource' as convert;</code>
@@ -57,5 +58,45 @@ public class ConvertUdfSource implements UdfSourceAssembly {
         } else {
             return Boolean.FALSE;
         }
+    }
+
+    /** 将二进制数据转换为16进制字符串 */
+    public static String byteToHex(List<Byte> content) {
+        if (content == null) {
+            return null;
+        }
+        if (content.size() == 0) {
+            return "";
+        }
+        Byte[] bytes = content.toArray(new Byte[0]);
+        return CommonCodeUtils.HexConversion.byte2HexStr(ArrayUtils.toPrimitive(bytes));
+    }
+
+    /** 将16进制字符串转换为二进制数据 */
+    public static byte[] hexToByte(String content) {
+        if (content == null) {
+            return null;
+        }
+        if (content.equals("")) {
+            return new byte[0];
+        }
+        return CommonCodeUtils.HexConversion.hexStr2Bytes(content);
+    }
+
+    /** 二进制数据转换为字符串 */
+    public static String byteToString(List<Byte> content, String charset) {
+        if (content == null || content.size() == 0) {
+            return null;
+        }
+        Byte[] bytes = content.toArray(new Byte[0]);
+        return new String(ArrayUtils.toPrimitive(bytes), Charset.forName(charset));
+    }
+
+    /** 字符串转换为二进制数据 */
+    public static byte[] stringToByte(String content, String charset) throws UnsupportedEncodingException {
+        if (content == null || content.equals("")) {
+            return new byte[0];
+        }
+        return content.getBytes(charset);
     }
 }

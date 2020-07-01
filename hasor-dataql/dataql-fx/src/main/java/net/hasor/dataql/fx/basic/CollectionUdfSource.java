@@ -54,6 +54,22 @@ public class CollectionUdfSource implements UdfSourceAssembly {
         return false;
     }
 
+    /**
+     * 如果是空：返回 0，
+     * 如果是 Map 返回字段数量
+     * 如果是数组：返回数组长度
+     */
+    public static int size(Object target) {
+        if (target == null) {
+            return 0;
+        }
+        if (target instanceof Map) {
+            return ((Map) target).size();
+        }
+        return foreach(target).size();
+    }
+    // -------------------------------------------------------------------------------------------------------------------------- List
+
     /** 合并多个对象或者集合成为一个新的集合 */
     public static List<Object> merge(UdfParams dataArrays) {
         if (dataArrays == null) {
@@ -93,6 +109,7 @@ public class CollectionUdfSource implements UdfSourceAssembly {
         }
         return finalMap;
     }
+    // -------------------------------------------------------------------------------------------------------------------------- List
 
     /**
      * 对集合进行过滤
@@ -300,6 +317,26 @@ public class CollectionUdfSource implements UdfSourceAssembly {
         }
         return mapData;
     }
+    // -------------------------------------------------------------------------------------------------------------------------- List
+
+    /** 对 List 进行分组 */
+    public static Map<String, Object> groupBy(final List<Object> valueList, final Object key, final Hints hints) throws Throwable {
+        return list2map(valueList, key, (readOnly1, params1) -> {
+            DataModel dataModel = DomainHelper.convertTo(params1[1]);
+            if (!dataModel.isObject()) {
+                throw new UnsupportedOperationException(params1[0] + " element require Object");
+            }
+            final Object parentKeyValue = ((ObjectModel) dataModel).getValue(key.toString()).unwrap();
+            return filter(valueList, (readOnly2, params2) -> {
+                if (params2 == null) {
+                    return false;
+                }
+                DataModel dataModel1 = DomainHelper.convertTo(params2[0]);
+                Object targetKeyValue = ((ObjectModel) dataModel1).getValue(key.toString()).unwrap();
+                return Objects.deepEquals(parentKeyValue, targetKeyValue);
+            }, hints);
+        }, hints);
+    }
 
     // -------------------------------------------------------------------------------------------------------------------------- Map
     private static String evalJoinKey(Object data, String[] joinField) {
@@ -311,6 +348,15 @@ public class CollectionUdfSource implements UdfSourceAssembly {
             joinKey.append(unwrap).append(",");
         });
         return joinKey.toString();
+    }
+
+    /** 创建一个有状态的 Map 对象 */
+    public static Map<String, Udf> newMap(Map<String, Object> collection) {
+        Map<String, Object> initData = new LinkedHashMap<>();
+        if (collection != null) {
+            initData.putAll(collection);
+        }
+        return new Inner_MapStateUdfSource(initData).getUdfResource(Finder.DEFAULT).get();
     }
 
     /** 将两个 Map List 进行链接，行为和 sql 中的 left join 相同 */

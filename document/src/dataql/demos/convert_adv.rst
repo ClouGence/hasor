@@ -114,7 +114,6 @@ DataQL 查询
 
     [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ]
 
-
 模拟 SQL 的 left join
 ------------------------------------
 有两个数据集 ``year2019``、``year2018`` 通过 mapJoin 的方式将两个数据联合在一起，并计算同比
@@ -180,3 +179,39 @@ DataQL 查询
             "环比去年增长":"89.95%"
         }
     ]
+
+对 List 数据进行分组
+------------------------------------
+数据集中需要有一个公共字段，根据公共字段对数据进行分组。例如：
+
+.. code-block:: js
+    :linenos:
+
+    var dataSet = [
+        {'id': 1, 'parent_id':null, 'label' : 't1'},
+        {'id': 2, 'parent_id':1   , 'label' : 't2'},
+        {'id': 3, 'parent_id':1   , 'label' : 't3'},
+        {'id': 4, 'parent_id':2   , 'label' : 't4'},
+        {'id': 5, 'parent_id':null, 'label' : 't5'}
+    ]
+
+    return collect.groupBy(dataSet, "parent_id")
+
+执行结果为：
+
+.. code-block:: js
+    :linenos:
+
+    {
+      "1": [
+        {'id': 2, 'parent_id':1   , 'label' : 't2'},
+        {'id': 3, 'parent_id':1   , 'label' : 't3'}
+      ],
+      "2": [
+        {'id': 4, 'parent_id':2   , 'label' : 't4'}
+      ],
+      "null": [
+        {'id': 1, 'parent_id':null, 'label' : 't1'},
+        {'id': 5, 'parent_id':null, 'label' : 't5'}
+      ]
+    }

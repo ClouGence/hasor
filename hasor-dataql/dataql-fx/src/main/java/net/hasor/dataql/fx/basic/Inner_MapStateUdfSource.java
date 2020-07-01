@@ -18,8 +18,7 @@ import net.hasor.dataql.Udf;
 import net.hasor.dataql.UdfSourceAssembly;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -28,50 +27,45 @@ import java.util.function.Predicate;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-12
  */
-class Inner_ListStateUdfSource implements UdfSourceAssembly {
-    private List<Object>     objectArrayList;
-    private Map<String, Udf> self;
+class Inner_MapStateUdfSource implements UdfSourceAssembly {
+    private final Map<String, Object> objectMap;
+    private final Map<String, Udf>    self;
 
-    public Inner_ListStateUdfSource(List<Object> initData) {
+    public Inner_MapStateUdfSource(Map<String, Object> initData) {
         if (initData != null) {
-            objectArrayList = initData;
+            objectMap = initData;
         } else {
-            objectArrayList = new ArrayList<>();
+            objectMap = new LinkedHashMap<>();
         }
         //
         Class<?> targetType = getClass();
         Predicate<Method> predicate = getPredicate(targetType);
-        Inner_ListStateUdfSource target = this;
+        Inner_MapStateUdfSource target = this;
         this.self = new TypeUdfMap(targetType, () -> target, predicate);
     }
 
     /** 把参数数据加到开头 */
-    public Map<String, Udf> addFirst(Object dataArrays) {
-        if (dataArrays != null) {
-            this.objectArrayList = CollectionUdfSource.merge(() -> {
-                return new Object[] { dataArrays, objectArrayList };
-            });
-        }
+    public Map<String, Udf> put(String key, Object dataValue) {
+        this.objectMap.put(key, dataValue);
         return this.self;
     }
 
     /** 把参数数据加到末尾 */
-    public Map<String, Udf> addLast(Object dataArrays) {
-        if (dataArrays != null) {
-            this.objectArrayList = CollectionUdfSource.merge(() -> {
-                return new Object[] { objectArrayList, dataArrays };
-            });
+    public Map<String, Udf> putAll(Map<String, Object> dataMap) {
+        if (dataMap != null) {
+            this.objectMap.putAll(dataMap);
         }
         return this.self;
     }
 
     /** 数组大小 */
     public int size() {
-        return this.objectArrayList.size();
+        return this.objectMap.size();
     }
 
-    /** 有状态集合的数据 */
-    public List<Object> data() {
-        return this.objectArrayList;
+    /** 有状态集合的数据
+     * @return*/
+    public Map<String, Object> data() {
+        return this.objectMap;
     }
 }

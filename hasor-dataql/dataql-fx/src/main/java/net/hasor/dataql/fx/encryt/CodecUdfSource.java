@@ -41,8 +41,11 @@ public class CodecUdfSource implements UdfSourceAssembly {
 
     /** 对字节数组进行 Base64编码 */
     public static String encodeBytes(List<Byte> content) {
-        if (content == null || content.size() == 0) {
+        if (content == null) {
             return null;
+        }
+        if (content.size() == 0) {
+            return "";
         }
         byte[] bytes = ArrayUtils.toPrimitive(content.toArray(new Byte[0]));
         return Base64.getEncoder().encodeToString(bytes);

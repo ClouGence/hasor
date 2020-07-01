@@ -5,6 +5,13 @@ Hasor v4.1.10 (2020-07-?)
 ------------------------------------
 **新增**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1IZ16>`_ 增加 LookupDataSourceListener 扩展接口，允许每次执行 DataQL 的 SQL 片段时都动态的查找 DataSource 以实现动态数据源。
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1M4FY>`_ CollectionUdfSource 函数库需要一个 size 函数
+    - collect 函数库新增 size、newMap、groupBy 三个函数。
+    - convert 函数库开放 byteToHex、hexToByte、stringToByte、byteToString 四个新的函数。
+    - codec 函数库开放 encodeString、decodeString、encodeBytes、decodeBytes、urlEncode、urlDecode 六个的函数。
+**优化**
+    - 多个 Notify SPI 下，必须要有仲裁。
+    - AppContext 接口的 joinSignal 方法废弃。增加一个 waitSignal 方法（可以利用对象锁的形式进行等待）
 **修复**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1M4CH>`_ 带有 content-path 的工程生成的 Swagger 文档中 BaseURL少了一级路径
     - `issue <https://gitee.com/zycgit/hasor/issues/I1M4FS>`_ ResultStructure 取消勾选之后，在刷新又显示被勾选了

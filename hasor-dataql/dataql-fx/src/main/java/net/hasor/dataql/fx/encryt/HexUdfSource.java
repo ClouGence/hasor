@@ -15,12 +15,10 @@
  */
 package net.hasor.dataql.fx.encryt;
 import net.hasor.dataql.UdfSourceAssembly;
-import net.hasor.utils.ArrayUtils;
-import net.hasor.utils.CommonCodeUtils;
+import net.hasor.dataql.fx.basic.ConvertUdfSource;
 
 import javax.inject.Singleton;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -29,38 +27,25 @@ import java.util.List;
  * @version : 2019-12-12
  */
 @Singleton
+@Deprecated
 public class HexUdfSource implements UdfSourceAssembly {
     /** 将二进制数据转换为 16进制字符串 */
     public static String byteToHex(List<Byte> content) {
-        if (content == null || content.size() == 0) {
-            return null;
-        }
-        Byte[] bytes = content.toArray(new Byte[0]);
-        return CommonCodeUtils.HexConversion.byte2HexStr(ArrayUtils.toPrimitive(bytes));
+        return ConvertUdfSource.byteToHex(content);
     }
 
     /** 将二进制数据转换为 16进制字符串 */
     public static byte[] hexToByte(String content) {
-        if (content == null || content.equals("")) {
-            return new byte[0];
-        }
-        return CommonCodeUtils.HexConversion.hexStr2Bytes(content);
+        return ConvertUdfSource.hexToByte(content);
     }
 
     /** 二进制数据转换为字符串 */
     public static String byteToString(List<Byte> content, String charset) {
-        if (content == null || content.size() == 0) {
-            return null;
-        }
-        Byte[] bytes = content.toArray(new Byte[0]);
-        return new String(ArrayUtils.toPrimitive(bytes), Charset.forName(charset));
+        return ConvertUdfSource.byteToString(content, charset);
     }
 
     /** 字符串转换为二进制数据 */
     public static byte[] stringToByte(String content, String charset) throws UnsupportedEncodingException {
-        if (content == null || content.equals("")) {
-            return new byte[0];
-        }
-        return content.getBytes(charset);
+        return ConvertUdfSource.stringToByte(content, charset);
     }
 }

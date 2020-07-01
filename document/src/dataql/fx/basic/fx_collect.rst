@@ -28,6 +28,31 @@ isEmpty
     collect.isEmpty({'key':123}) = false // 对象含有至少一个属性
     collect.isEmpty(null)        = false // 不支持的基本类型会返回 false
 
+size
+------------------------------------
+函数定义：``int size(target)``
+
+- **参数定义：** ``target`` 类型：任意
+- **返回类型：** ``int``
+- **作用：** 返回对象或数组的长度。
+
+**作用**
+
+- 如果是空：返回 0，
+- 如果是 Map 返回字段数量
+- 如果是数组：返回数组长度
+
+**例子**
+
+.. code-block:: js
+    :linenos:
+
+    collect.size(null)   = 0
+    collect.size([]),    = 0
+    collect.size([null]) = 1
+    collect.size({}),    = 0
+    collect.size({"key1":1, "key2":2, "key3":3 }) = 3
+
 merge
 ------------------------------------
 函数定义：``List merge(target_1, target_2, target_3, ..., target_n)``
@@ -168,7 +193,7 @@ newList
 **作用**
 
 - 带有状态的 List ，类似于 ArrayList 对象。
-- 提供三个子方法来使用：``addFirst(target)``、``addLast(target)``、``data()``
+- 提供三个子方法来使用：``addFirst(target)``、``addLast(target)``、``data()``、``size()``
 - 提示：由于 DataQL 只能表示无状态的数据，并不能表示有状态的对象。因此为了表示一个带有状态的对象，通常是创建一组UDF，这些 UDF 内部共享同一个对象。
 
 **例子**
@@ -192,7 +217,49 @@ newList
     }
     var newList = collect.newList();
     var result = foo(data, newList).data();
-    // result = [1,2,3,,5,6,7,8,9,0]
+    // result = [1,2,3,5,6,7,8,9,0]
+
+newMap
+------------------------------------
+函数定义：``Map newMap(target)``
+
+- **参数定义：** ``target`` 类型：任意，初始化数据或集合；
+- **返回类型：** ``Map``
+- **作用：** 创建一个带有状态的List。
+
+**作用**
+
+- 带有状态的 Map，类似于 LinkedHashMap 对象。
+- 提供三个子方法来使用：``put(target)``、``putAll(target)``、``data()``、``size()``
+- 提示：由于 DataQL 只能表示无状态的数据，并不能表示有状态的对象。因此为了表示一个带有状态的对象，通常是创建一组UDF，这些 UDF 内部共享同一个对象。
+
+**例子**
+
+.. code-block:: js
+    :linenos:
+
+    var mapData = collect.newMap({'key':123 });
+    // 调用 sss.data() 的结果是
+    // {
+    //   "key": 123
+    // }
+
+    var mapData = mapData.put('sss','sss')
+    // 调用 sss.data() 的结果是
+    // {
+    //   "key": 123,
+    //   "sss": "sss"
+    // }
+
+    var mapData = mapData.putAll({'id':1, 'parent_id':null, 'label': 't1'})
+    // 调用 sss.data() 的结果是
+    // {
+    //   "key": 123,
+    //   "sss": "sss",
+    //   "id": 1,
+    //   "parent_id": null,
+    //   "label": "t1"
+    // }
 
 mapJoin
 ------------------------------------
@@ -603,3 +670,43 @@ listSort
     //   { "key": "key2", "value": 2},
     //   { "key": "key1", "value": 1}
     // ];
+
+groupBy
+------------------------------------
+函数定义：``Map<String,List> groupBy(dataList, groupByKey)``
+
+- **参数定义：** ``dataList`` 类型：List，待处理的数据；``groupByKey`` 类型：String，要分组的字段名
+- **返回类型：** ``Map<String,List>``
+- **作用：** 根据公共字段对数据进行分组，例如：
+
+**作用**
+
+- 数据集中需要有一个公共字段，并根据公共字段对数据进行分组。
+
+**例子**
+
+.. code-block:: js
+    :linenos:
+
+    var dataSet = [
+        {'id': 1, 'parent_id':null, 'label' : 't1'},
+        {'id': 2, 'parent_id':1   , 'label' : 't2'},
+        {'id': 3, 'parent_id':1   , 'label' : 't3'},
+        {'id': 4, 'parent_id':2   , 'label' : 't4'},
+        {'id': 5, 'parent_id':null, 'label' : 't5'}
+    ]
+    var result = collect.groupBy(dataSet, "parent_id")
+
+    // result = {
+    //   "1": [
+    //     {'id': 2, 'parent_id':1   , 'label' : 't2'},
+    //     {'id': 3, 'parent_id':1   , 'label' : 't3'}
+    //   ],
+    //   "2": [
+    //     {'id': 4, 'parent_id':2   , 'label' : 't4'}
+    //   ],
+    //   "null": [
+    //     {'id': 1, 'parent_id':null, 'label' : 't1'},
+    //     {'id': 5, 'parent_id':null, 'label' : 't5'}
+    //   ]
+    // }
