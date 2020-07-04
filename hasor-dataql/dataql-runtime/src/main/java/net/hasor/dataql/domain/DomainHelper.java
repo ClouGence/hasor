@@ -51,8 +51,11 @@ public class DomainHelper {
             // 基础类型：数字
             return new ValueModel(object);
         } else if (object instanceof Date) {
-            // 外部类型：时间
+            // 外部类型：时间 -> Long
             return new ValueModel(((Date) object).getTime());
+        } else if (object instanceof UUID) {
+            // 外部类型：UUID -> String
+            return new ValueModel(((UUID) object).toString());
         } else if (object.getClass().isEnum()) {
             // 外部类型：枚举 -> ValueModel（字符串）
             return new ValueModel(((Enum<?>) object).name());

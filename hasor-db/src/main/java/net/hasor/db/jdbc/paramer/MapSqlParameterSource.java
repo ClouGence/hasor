@@ -26,7 +26,7 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MapSqlParameterSource implements SqlParameterSource, ParameterDisposer {
-    private Map<String, ?> values;
+    private final Map<String, ?> values;
 
     public MapSqlParameterSource(final Map<String, ?> values) {
         this.values = values;

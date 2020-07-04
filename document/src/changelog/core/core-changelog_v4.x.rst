@@ -11,6 +11,7 @@ Hasor v4.1.10 (2020-07-?)
     - 函数库调整：已有 hex 函数库合入 convert 函数库；已有 compare 函数库合入 string 函数库；已有 hmac 函数库合入 codec 函数库；
     - 多个 Notify SPI 下，必须要有仲裁。
     - AppContext 接口的 joinSignal 方法废弃。增加一个 waitSignal 方法（可以利用对象锁的形式进行等待）
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1KFAZ>`_ 优化 DomainHelper 增加对 UUID 类型的默认支持，将其转换为 String
 **修复**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1M4CH>`_ 带有 content-path 的工程生成的 Swagger 文档中 BaseURL少了一级路径
     - `issue <https://gitee.com/zycgit/hasor/issues/I1M4FS>`_ ResultStructure 取消勾选之后，在刷新又显示被勾选了
