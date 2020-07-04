@@ -428,3 +428,20 @@ AuthorizationChainSpi界面操作权限检查
     apiBinder.bindSpiListener(AuthorizationChainSpi.class, (checkType, apiInfo, defaultCheck) -> {
         return checkType.testAuthorization(codeSet);
     });
+
+
+LookupDataSourceListener动态数据源
+---------------------------------------
+``LookupDataSourceListener`` 是 4.1.10 加入的新特性，应用可以自己管理数据源。每次 DataQL 在需要数据库连接的时候，都会经过该接口来获取对应的数据源。
+有了 LookupDataSourceListener 之后就应用就可以在不停机的情况下动态的改变某个数据源的连接。
+
+例如：
+
+.. code-block:: java
+    :linenos:
+
+    Map<String,DataSource> dataSourcePool = ...
+    final Set<String> codeSet = AuthorizationType.Group_ReadOnly.toCodeSet();
+    apiBinder.bindSpiListener(LookupDataSourceListener.class, (lookupName) -> {
+        return dataSourcePool.get(lookupName);
+    });
