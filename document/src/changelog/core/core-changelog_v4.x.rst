@@ -15,6 +15,7 @@ Hasor v4.1.10 (2020-07-?)
 **修复**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1M4CH>`_ 带有 content-path 的工程生成的 Swagger 文档中 BaseURL少了一级路径
     - `issue <https://gitee.com/zycgit/hasor/issues/I1M4FS>`_ ResultStructure 取消勾选之后，在刷新又显示被勾选了
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1MM4L>`_ 4.1.9版本获取header参数Bug
 
 Hasor v4.1.9 (2020-06-29)
 ------------------------------------

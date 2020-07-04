@@ -94,9 +94,11 @@ public class InvokerContext {
                 break;
             }
         }
-        final Invoker invoker = this.newInvoker(foundDefine, httpReq, httpRes);
+        //
+        Invoker invoker = this.newInvoker(foundDefine, httpReq, httpRes);
+        ExceuteCaller exceuteCaller = null;
         if (foundDefine == null) {
-            return (chain) -> {
+            exceuteCaller = (chain) -> {
                 BasicFuture<Object> future = new BasicFuture<>();
                 future.completed(new InvokerChainInvocation(filters, innerInv -> {
                     if (chain != null) {
@@ -106,8 +108,14 @@ public class InvokerContext {
                 }).doNext(invoker));
                 return future;
             };
+        } else {
+            exceuteCaller = new InvokerCaller(() -> invoker, this.filters);
         }
         //
-        return new InvokerCaller(() -> invoker, this.filters);
+        //
+        ExceuteCaller finalExceuteCaller = exceuteCaller;
+        return chain -> HttpParameters.preInvoke(invoker, (paramData) -> {
+            return finalExceuteCaller.invoke(chain);
+        });
     }
 }

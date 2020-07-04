@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSON;
 import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
+import net.hasor.web.invoker.HttpParameters;
 
 import javax.inject.Singleton;
 import javax.servlet.http.Cookie;
@@ -44,12 +45,12 @@ public class WebUdfSource implements UdfSourceAssembly {
 
     /** cookieMap */
     public static Map<String, String> cookieMap() {
-        return FxWebInterceptor.cookieMap();
+        return HttpParameters.cookieMap();
     }
 
     /** cookieMap,Value是数组 */
     public static Map<String, List<String>> cookieArrayMap() {
-        return FxWebInterceptor.cookieArrayMap();
+        return HttpParameters.cookieArrayMap();
     }
 
     /** 获取Cookie */
@@ -121,12 +122,12 @@ public class WebUdfSource implements UdfSourceAssembly {
 
     /** headerMap */
     public static Map<String, String> headerMap() {
-        return FxWebInterceptor.headerMap();
+        return HttpParameters.headerMap();
     }
 
     /** headerMap,Value是数组 */
     public static Map<String, List<String>> headerArrayMap() {
-        return FxWebInterceptor.headerArrayMap();
+        return HttpParameters.headerArrayMap();
     }
 
     /** 获取 Header */
@@ -134,7 +135,7 @@ public class WebUdfSource implements UdfSourceAssembly {
         if (StringUtils.isBlank(headerName)) {
             return null;
         }
-        return FxWebInterceptor.invoker().getHttpRequest().getHeader(headerName);
+        return headerMap().get(headerName);
     }
 
     /** 获取所有名字相同的 Header */
@@ -142,12 +143,7 @@ public class WebUdfSource implements UdfSourceAssembly {
         if (StringUtils.isBlank(headerName)) {
             return null;
         }
-        List<String> headerList = new ArrayList<>();
-        Enumeration<String> headers = FxWebInterceptor.invoker().getHttpRequest().getHeaders(headerName);
-        while (headers.hasMoreElements()) {
-            headerList.add(headers.nextElement());
-        }
-        return headerList;
+        return headerArrayMap().get(headerName);
     }
 
     /** 设置 Header */
