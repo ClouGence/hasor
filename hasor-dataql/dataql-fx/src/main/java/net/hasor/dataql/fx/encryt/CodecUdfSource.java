@@ -17,15 +17,20 @@ package net.hasor.dataql.fx.encryt;
 import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.utils.ArrayUtils;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Singleton;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.List;
 
 /**
- * 编码函数库。函数库引入 <code>import 'net.hasor.dataql.fx.encryt.CodecUdfSource' as codec;</code>
+ * 签名/编码函数库。函数库引入 <code>import 'net.hasor.dataql.fx.encryt.CodecUdfSource' as codec;</code>
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-31
  */
@@ -69,17 +74,92 @@ public class CodecUdfSource implements UdfSourceAssembly {
 
     /** 对字符串进行 URL 编码 */
     public static String urlEncode(String content) throws UnsupportedEncodingException {
+        return urlEncodeBy(content, "UTF-8");
+    }
+
+    /** 对字符串进行 URL 编码 */
+    public static String urlEncodeBy(String content, String enc) throws UnsupportedEncodingException {
         if (content == null) {
             return null;
         }
-        return URLEncoder.encode(content, "utf-8");
+        return URLEncoder.encode(content, enc);
     }
 
     /** 对字符串进行 URL 解码 */
     public static String urlDecode(String content) throws UnsupportedEncodingException {
+        return urlDecodeBy(content, "UTF-8");
+    }
+
+    /** 对字符串进行 URL 解码 */
+    public static String urlDecodeBy(String content, String enc) throws UnsupportedEncodingException {
         if (content == null) {
             return null;
         }
-        return URLDecoder.decode(content, "utf-8");
+        return URLDecoder.decode(content, enc);
+    }
+
+    /** 摘要算法，使用指定方式进行摘要计算 */
+    public static byte[] digestBytes(String digestString, List<Byte> content) throws NoSuchAlgorithmException {
+        DigestType digestType = DigestType.formString(digestString);
+        if (digestType == null) {
+            throw new NoSuchAlgorithmException("'" + digestString + "' digestType not found.");
+        }
+        if (content == null) {
+            return null;
+        }
+        //
+        MessageDigest mdTemp = MessageDigest.getInstance(digestType.getDigestDesc());
+        Byte[] bytes = content.toArray(new Byte[0]);
+        mdTemp.update(ArrayUtils.toPrimitive(bytes));
+        return mdTemp.digest();
+    }
+
+    /** 摘要算法，使用指定方式进行摘要计算 */
+    public static byte[] digestString(String digestString, String content) throws NoSuchAlgorithmException {
+        DigestType digestType = DigestType.formString(digestString);
+        if (digestType == null) {
+            throw new NoSuchAlgorithmException("'" + digestString + "' digestType not found.");
+        }
+        if (content == null) {
+            return null;
+        }
+        //
+        MessageDigest mdTemp = MessageDigest.getInstance(digestType.getDigestDesc());
+        mdTemp.update(content.getBytes());
+        return mdTemp.digest();
+    }
+
+    /** 指定摘要算法，对字节数组进行Hmac签名计算 */
+    public static String hmacBytes(String hmacTypeString, String signKey, List<Byte> content) throws NoSuchAlgorithmException, InvalidKeyException {
+        HmacType hmacType = HmacType.formString(hmacTypeString);
+        if (hmacType == null) {
+            throw new NoSuchAlgorithmException("'" + hmacTypeString + "' hmacType not found.");
+        }
+        if (content == null) {
+            return null;
+        }
+        //
+        Mac mac = Mac.getInstance(hmacType.getHmacType());//Mac 算法对象
+        mac.init(new SecretKeySpec(signKey.getBytes(), HmacType.HmacMD5.getHmacType()));//初始化 Mac 对象
+        //
+        Byte[] bytes = content.toArray(new Byte[0]);
+        byte[] rawHmac = mac.doFinal(ArrayUtils.toPrimitive(bytes));
+        return Base64.getEncoder().encodeToString(rawHmac);
+    }
+
+    /** 指定摘要算法，对字符串组进行Hmac签名计算 */
+    public static String hmacString(String hmacTypeString, String signKey, String content) throws NoSuchAlgorithmException, InvalidKeyException {
+        HmacType hmacType = HmacType.formString(hmacTypeString);
+        if (hmacType == null) {
+            throw new NoSuchAlgorithmException("'" + hmacTypeString + "' hmacType not found.");
+        }
+        if (content == null) {
+            return null;
+        }
+        Mac mac = Mac.getInstance(hmacType.getHmacType());//Mac 算法对象
+        mac.init(new SecretKeySpec(signKey.getBytes(), HmacType.HmacMD5.getHmacType()));//初始化 Mac 对象
+        //
+        byte[] rawHmac = mac.doFinal(content.getBytes());
+        return Base64.getEncoder().encodeToString(rawHmac);
     }
 }

@@ -15,14 +15,10 @@
  */
 package net.hasor.dataql.fx.encryt;
 import net.hasor.dataql.UdfSourceAssembly;
-import net.hasor.utils.ArrayUtils;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Singleton;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.List;
 
 /**
@@ -31,88 +27,45 @@ import java.util.List;
  * @version : 2019-12-12
  */
 @Singleton
+@Deprecated
 public class HmacUdfSource implements UdfSourceAssembly {
-    private enum SignType {
-        HmacMD5("HmacMD5"),         //
-        HmacSHA1("HmacSHA1"),       //
-        HmacSHA256("HmacSHA256"),   //
-        HmacSHA512("HmacSHA512");   //
-        private String signType;
-
-        private SignType(String signType) {
-            this.signType = signType;
-        }
-
-        public String getSignType() {
-            return signType;
-        }
-    }
-
     /** 使用 HMAC-MD5 签名方法对 content 进行签名 */
     public static String hmacMD5_string(String signKey, String content) throws NoSuchAlgorithmException, InvalidKeyException {
-        Mac mac = Mac.getInstance(SignType.HmacMD5.getSignType());//Mac 算法对象
-        mac.init(new SecretKeySpec(signKey.getBytes(), SignType.HmacMD5.getSignType()));//初始化 Mac 对象
-        byte[] rawHmac = mac.doFinal(content.getBytes());
-        return Base64.getEncoder().encodeToString(rawHmac);
+        return CodecUdfSource.hmacString(HmacType.HmacMD5.getHmacType(), signKey, content);
     }
 
     /** 使用 HMAC-MD5 签名方法对 content 进行签名 */
     public static String hmacMD5_bytes(String signKey, List<Byte> content) throws NoSuchAlgorithmException, InvalidKeyException {
-        Mac mac = Mac.getInstance(SignType.HmacMD5.getSignType());//Mac 算法对象
-        mac.init(new SecretKeySpec(signKey.getBytes(), SignType.HmacMD5.getSignType()));//初始化 Mac 对象
-        Byte[] bytes = content.toArray(new Byte[0]);
-        byte[] rawHmac = mac.doFinal(ArrayUtils.toPrimitive(bytes));
-        return Base64.getEncoder().encodeToString(rawHmac);
+        return CodecUdfSource.hmacBytes(HmacType.HmacMD5.getHmacType(), signKey, content);
     }
 
     /** 使用 HMAC-SHA1 签名方法对 content 进行签名 */
     public static String hmacSHA1_string(String signKey, String content) throws NoSuchAlgorithmException, InvalidKeyException {
-        Mac mac = Mac.getInstance(SignType.HmacSHA1.getSignType());//Mac 算法对象
-        mac.init(new SecretKeySpec(signKey.getBytes(), SignType.HmacSHA1.getSignType()));//初始化 Mac 对象
-        byte[] rawHmac = mac.doFinal(content.getBytes());
-        return Base64.getEncoder().encodeToString(rawHmac);
+        return CodecUdfSource.hmacString(HmacType.HmacSHA1.getHmacType(), signKey, content);
     }
 
     /** 使用 HMAC-SHA1 签名方法对 content 进行签名 */
     public static String hmacSHA1_bytes(String signKey, List<Byte> content) throws NoSuchAlgorithmException, InvalidKeyException {
-        Mac mac = Mac.getInstance(SignType.HmacSHA1.getSignType());//Mac 算法对象
-        mac.init(new SecretKeySpec(signKey.getBytes(), SignType.HmacSHA1.getSignType()));//初始化 Mac 对象
-        Byte[] bytes = content.toArray(new Byte[0]);
-        byte[] rawHmac = mac.doFinal(ArrayUtils.toPrimitive(bytes));
-        return Base64.getEncoder().encodeToString(rawHmac);
+        return CodecUdfSource.hmacBytes(HmacType.HmacSHA1.getHmacType(), signKey, content);
     }
 
     /** 使用 HMAC-SHA256 签名方法对 content 进行签名 */
     public static String hmacSHA256_string(String signKey, String content) throws NoSuchAlgorithmException, InvalidKeyException {
-        Mac mac = Mac.getInstance(SignType.HmacSHA256.getSignType());//Mac 算法对象
-        mac.init(new SecretKeySpec(signKey.getBytes(), SignType.HmacSHA256.getSignType()));//初始化 Mac 对象
-        byte[] rawHmac = mac.doFinal(content.getBytes());
-        return Base64.getEncoder().encodeToString(rawHmac);
+        return CodecUdfSource.hmacString(HmacType.HmacSHA256.getHmacType(), signKey, content);
     }
 
     /** 使用 HMAC-SHA256 签名方法对 content 进行签名 */
     public static String hmacSHA256_bytes(String signKey, List<Byte> content) throws NoSuchAlgorithmException, InvalidKeyException {
-        Mac mac = Mac.getInstance(SignType.HmacSHA256.getSignType());//Mac 算法对象
-        mac.init(new SecretKeySpec(signKey.getBytes(), SignType.HmacSHA256.getSignType()));//初始化 Mac 对象
-        Byte[] bytes = content.toArray(new Byte[0]);
-        byte[] rawHmac = mac.doFinal(ArrayUtils.toPrimitive(bytes));
-        return Base64.getEncoder().encodeToString(rawHmac);
+        return CodecUdfSource.hmacBytes(HmacType.HmacSHA256.getHmacType(), signKey, content);
     }
 
     /** 使用 HMAC-SHA512 签名方法对 content 进行签名 */
     public static String hmacSHA512_string(String signKey, String content) throws NoSuchAlgorithmException, InvalidKeyException {
-        Mac mac = Mac.getInstance(SignType.HmacSHA512.getSignType());//Mac 算法对象
-        mac.init(new SecretKeySpec(signKey.getBytes(), SignType.HmacSHA512.getSignType()));//初始化 Mac 对象
-        byte[] rawHmac = mac.doFinal(content.getBytes());
-        return Base64.getEncoder().encodeToString(rawHmac);
+        return CodecUdfSource.hmacString(HmacType.HmacSHA512.getHmacType(), signKey, content);
     }
 
     /** 使用 HMAC-SHA512 签名方法对 content 进行签名 */
     public static String hmacSHA512_bytes(String signKey, List<Byte> content) throws NoSuchAlgorithmException, InvalidKeyException {
-        Mac mac = Mac.getInstance(SignType.HmacSHA512.getSignType());//Mac 算法对象
-        mac.init(new SecretKeySpec(signKey.getBytes(), SignType.HmacSHA512.getSignType()));//初始化 Mac 对象
-        Byte[] bytes = content.toArray(new Byte[0]);
-        byte[] rawHmac = mac.doFinal(ArrayUtils.toPrimitive(bytes));
-        return Base64.getEncoder().encodeToString(rawHmac);
+        return CodecUdfSource.hmacBytes(HmacType.HmacSHA512.getHmacType(), signKey, content);
     }
 }

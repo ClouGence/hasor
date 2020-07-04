@@ -577,6 +577,70 @@ alignCenter
     string.alignCenter("a", 4, ' ')    = " a  "
     string.alignCenter("a", 4, 'y')    = "yayy"
 
+compareString
+------------------------------------
+函数定义：``int compareString(str1, str2)``
+
+- **参数定义：** ``str1`` 类型：String，``str2`` 类型：String
+- **返回类型：** ``Number``
+- **作用：** 比较两个字符串，使用Java原生的字符串 compareTo 比较方法来实现。
+
+**作用**
+
+- 比较两个字符串大小，主要用作排序场景。
+
+**例子**
+
+.. code-block:: js
+    :linenos:
+
+    compare.compareString("A","a")      = -32
+    compare.compareString("a","A")      = 32
+    compare.compareString("abd","abc")  = 1
+    compare.compareString("abc","abd")  = -1
+
+compareStringIgnoreCase
+------------------------------------
+函数定义：``int compareStringIgnoreCase(str1, str2)``
+
+- **参数定义：** ``str1`` 类型：String，``str2`` 类型：String
+- **返回类型：** ``Number``
+- **作用：** 忽略大小写比较两个字符串，使用Java原生的字符串 compareToIgnoreCase 比较方法来实现。
+
+**作用**
+
+- 比较两个字符串大小，主要用作排序场景。
+
+**例子**
+
+.. code-block:: js
+    :linenos:
+
+    compare.compareStringIgnoreCase("a","A")      = 0
+    compare.compareStringIgnoreCase("A","a")      = 0
+    compare.compareStringIgnoreCase("abd","abc")  = 1
+    compare.compareStringIgnoreCase("abc","abd")  = -1
+
+split
+------------------------------------
+函数定义：``List split(str, separatorChars)``
+
+- **参数定义：** ``str`` 类型：String；``separatorChars`` 类型：String
+- **返回类型：** ``List``
+- **作用：** Splits the provided text into an array, separators specified. This is an alternative to using StringTokenizer.
+
+**例子**
+
+.. code-block:: js
+    :linenos:
+
+    string.split(null, *)         = null
+    string.split("", *)           = []
+    string.split("abc def", null) = ["abc", "def"]
+    string.split("abc def", " ")  = ["abc", "def"]
+    string.split("abc  def", " ") = ["abc", "def"]
+    string.split("ab:cd:ef", ":") = ["ab", "cd", "ef"]
+
 join
 ------------------------------------
 函数定义：``String join(str, padChar, len)``
@@ -634,23 +698,3 @@ equalsIgnoreCase
     string.equalsIgnoreCase("abc", null)  = false
     string.equalsIgnoreCase("abc", "abc") = true
     string.equalsIgnoreCase("abc", "ABC") = true
-
-split
-------------------------------------
-函数定义：``List split(str, separatorChars)``
-
-- **参数定义：** ``str`` 类型：String；``separatorChars`` 类型：String
-- **返回类型：** ``List``
-- **作用：** Splits the provided text into an array, separators specified. This is an alternative to using StringTokenizer.
-
-**例子**
-
-.. code-block:: js
-    :linenos:
-
-    string.split(null, *)         = null
-    string.split("", *)           = []
-    string.split("abc def", null) = ["abc", "def"]
-    string.split("abc def", " ")  = ["abc", "def"]
-    string.split("abc  def", " ") = ["abc", "def"]
-    string.split("ab:cd:ef", ":") = ["ab", "cd", "ef"]

@@ -24,6 +24,7 @@ import javax.inject.Singleton;
  * @version : 2020-03-31
  */
 @Singleton
+@Deprecated
 public class CompareUdfSource implements UdfSourceAssembly {
     /**
      * Compares two strings lexicographically.
@@ -68,9 +69,7 @@ public class CompareUdfSource implements UdfSourceAssembly {
      *          lexicographically greater than the string argument.
      */
     public static int compareString(String str1, String str2) {
-        str1 = str1 == null ? "" : str1;
-        str2 = str2 == null ? "" : str2;
-        return str1.compareTo(str2);
+        return StringUdfSource.compareString(str1, str2);
     }
 
     /**
@@ -95,8 +94,6 @@ public class CompareUdfSource implements UdfSourceAssembly {
      * @since 1.2
      */
     public static int compareStringIgnoreCase(String str1, String str2) {
-        str1 = str1 == null ? "" : str1;
-        str2 = str2 == null ? "" : str2;
-        return str1.compareToIgnoreCase(str2);
+        return StringUdfSource.compareStringIgnoreCase(str1, str2);
     }
 }
