@@ -88,6 +88,8 @@ Dataway接口配置服务
 .. toctree::
     :maxdepth: 3
 
+    dataway/about
+    dataway/for_boot
     dataway/index
 
 样例集

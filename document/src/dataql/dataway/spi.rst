@@ -24,7 +24,7 @@ Dataway 在 4.1.4 版本开始提供了 ``DatawayService`` 接口。通过这个
     Map<String, Object> result = dataway.invokeApi("post", "/api/demos/find_user_by_name", paramData);
 
 
-PreExecute拦截器
+PreExecuteChainSpi
 ------------------------------------
 当一个API发起调用之后，可以通过API请求拦截器处理一些特殊的逻辑。比方说下面这些场景：
 
@@ -113,7 +113,7 @@ PreExecute拦截器
     // }
 
 
-ResultProcess拦截器
+ResultProcessChainSpi
 ------------------------------------
 一个已经发布的接口被调用之后，一定会触发这个拦截器。而 ``ResultProcessChainSpi`` 拦截器的处理有两个方法，分别应对了两个不同的情况：
 
@@ -227,7 +227,7 @@ ResultProcess拦截器
     }
 
 
-Compiler拦截器
+CompilerSpiListener
 ------------------------------------
 ``CompilerSpiListener`` 也叫做编译拦截器，DataQL 在真正执行查询之前调用。
 
@@ -276,7 +276,7 @@ Compiler拦截器
     }
 
 
-SerializationChainSpi结果序列化
+SerializationChainSpi
 ---------------------------------------
 ``SerializationChainSpi`` 是 4.1.7 加入的新特性，这个接口允许开发者自定义 Dataway 结果的序列化逻辑。
 
@@ -406,14 +406,14 @@ SerializationChainSpi结果序列化
 
 此时作为二进制输出，UI 界面会自动将二进制数据以十六进制字符串形式展示。我们可以点击 ``下载`` 按钮把，十六进制数据保存为本地文件。
 
-.. image:: ../_static/response-serialization-1.png
+.. image:: ../../_static/response-serialization-1.png
 
 接口发布之后调用这个接口就可以看到一个配置的 API 将返回值顺利的渲染成了 图片。
 
-.. image:: ../_static/response-serialization-2.png
+.. image:: ../../_static/response-serialization-2.png
 
 
-AuthorizationChainSpi界面操作权限检查
+AuthorizationChainSpi
 ---------------------------------------
 ``AuthorizationChainSpi`` 是 4.1.9 加入的新特性。在此之前针对界面的权限校验，通常需要通过 InvokerFilter 接口来辅助完成。
 有了 AuthorizationChainSpi 之后就可以更加简单方便的对界面操作进行权限控制了。
@@ -430,7 +430,7 @@ AuthorizationChainSpi界面操作权限检查
     });
 
 
-LookupDataSourceListener动态数据源
+LookupDataSourceListener
 ---------------------------------------
 ``LookupDataSourceListener`` 是 4.1.10 加入的新特性，应用可以自己管理数据源。每次 DataQL 在需要数据库连接的时候，都会经过该接口来获取对应的数据源。
 有了 LookupDataSourceListener 之后就应用就可以在不停机的情况下动态的改变某个数据源的连接。
