@@ -15,7 +15,6 @@ Welcome to Hasor Framework
     web/index
 
     dataql/index
-    dataway/index
     tconsole/index
     spring/index
 

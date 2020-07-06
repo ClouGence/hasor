@@ -1,7 +1,7 @@
 --------------------
 Release Hasor v4.x
 --------------------
-Hasor v4.1.10 (2020-07-?)
+Hasor v4.1.10 (2020-07-6)
 ------------------------------------
 **新增**
     - `issue <https://gitee.com/zycgit/hasor/issues/I1IZ16>`_ 增加 LookupDataSourceListener 扩展接口，允许每次执行 DataQL 的 SQL 片段时都动态的查找 DataSource 以实现动态数据源。
@@ -13,9 +13,10 @@ Hasor v4.1.10 (2020-07-?)
     - AppContext 接口的 joinSignal 方法废弃。增加一个 waitSignal 方法（可以利用对象锁的形式进行等待）
     - `issue <https://gitee.com/zycgit/hasor/issues/I1KFAZ>`_ 优化 DomainHelper 增加对 UUID 类型的默认支持，将其转换为 String
 **修复**
-    - `issue <https://gitee.com/zycgit/hasor/issues/I1M4CH>`_ 带有 content-path 的工程生成的 Swagger 文档中 BaseURL少了一级路径
-    - `issue <https://gitee.com/zycgit/hasor/issues/I1M4FS>`_ ResultStructure 取消勾选之后，在刷新又显示被勾选了
-    - `issue <https://gitee.com/zycgit/hasor/issues/I1MM4L>`_ 4.1.9版本获取header参数Bug
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1M4CH>`_ 修复：带有 content-path 的工程生成的 Swagger 文档中 BaseURL少了一级路径
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1M4FS>`_ 修复：ResultStructure 取消勾选之后，在刷新又显示被勾选了
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1MM4L>`_ 修复：4.1.9版本获取header参数Bug
+    - `issue <https://gitee.com/zycgit/hasor/issues/I1MJV1>`_ 修复：自定义序列化返回，首页未展示结果，编辑页能展示结果并下载
 
 Hasor v4.1.9 (2020-06-29)
 ------------------------------------

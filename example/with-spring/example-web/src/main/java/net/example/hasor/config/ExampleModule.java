@@ -67,8 +67,11 @@ public class ExampleModule implements SpringModule {
         //
         //
         //        apiBinder.bindSpiListener(SerializationChainSpi.class, (apiInfo, mimeType, result) -> {
+        //            if (!"/api/serialization".equalsIgnoreCase(apiInfo.getApiPath())) {
+        //                return result;
+        //            }
         //            String jsonString = JSON.toJSONString(result);
-        //            return SerializationChainSpi.SerializationInfo.ofString("abc/text/plain", jsonString); //JSON.toJSONString(result);
+        //            return SerializationChainSpi.SerializationInfo.ofBytes("abc/text/plain", jsonString.getBytes()); //JSON.toJSONString(result);
         //        });
         //
         //        apiBinder.bindSpiListener(SerializationChainSpi.class, (apiInfo, mimeType, result) -> {

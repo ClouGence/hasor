@@ -1,7 +1,7 @@
 --------------------
 列表页
 --------------------
-.. image:: ../_static/dataway-ui-list-area.png
+.. image:: ../../_static/dataway-ui-list-area.png
 
 **List**：接口列表页，页面上分为三个区块分别为：
 
@@ -13,7 +13,7 @@ API列表
 ------------------------------------
 列表页的列表区块是用来展示在 Dataway 中管理的所有接口，按照 API 创建时间升序排序。
 
-.. image:: ../_static/list-apilist-block.png
+.. image:: ../../_static/list-apilist-block.png
 
 在这个区块中使用者可以做 五类事情。
 
@@ -27,7 +27,7 @@ API列表
 ------------------------------------
 接口调用有2个选项卡，如下分别是配置请求的 Body 和 Header 信息。整个区块内含有 5 个功能点。
 
-.. image:: ../_static/list-request.png
+.. image:: ../../_static/list-request.png
 
 **Parameters**
 
@@ -42,7 +42,7 @@ API列表
 
 响应结果区
 ------------------------------------
-.. image:: ../_static/list-response.png
+.. image:: ../../_static/list-response.png
 
 结果区是用来展示接口请求的结果，在这个区块中含有两个功能。
 

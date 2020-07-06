@@ -1,7 +1,7 @@
 --------------------
 新建/编辑页
 --------------------
-.. image:: ../_static/dataway-ui-edit-area.png
+.. image:: ../../_static/dataway-ui-edit-area.png
 
 新建/编辑页中操作区主要被分为四个区块，分别为：
 
@@ -13,7 +13,7 @@
 编辑区
 ------------------------------------
 
-.. image:: ../_static/editer-eidt.png
+.. image:: ../../_static/editer-eidt.png
 
 编辑器采用的是微软开源编辑器 MonacoEditor，编辑器自身提供了很多工具。例如：查找替换等能力。
 
@@ -22,7 +22,7 @@
 
 功能条
 ------------------------------------
-.. image:: ../_static/editer-toolbar.png
+.. image:: ../../_static/editer-toolbar.png
 
 其中功能条部分由下列三个部分组成，具体功能条中的操作将会下面功能介绍环节逐步涉略。
 

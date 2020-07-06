@@ -255,11 +255,12 @@ export default {
                 },
                 'data': JSON.parse(this.requestBody)
             }, response => {
+                debugger;
                 self.responseType = response.dataTypeMode;
                 if (response.dataTypeMode === 'json') {
                     self.responseBody = JSON.stringify(response.data, null, 2);
                 } else {
-                    self.responseBody = response.data.result;
+                    self.responseBody = response.data;
                 }
                 self.$nextTick(function () {
                     self.$refs.listResponsePanel.doUpdate();

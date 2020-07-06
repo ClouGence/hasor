@@ -5,7 +5,7 @@ Dataway 是基于 DataQL 服务聚合能力，为应用提供的一个接口配�
 
 这种内嵌集成方式模式的优点是，可以使得大部分老项目都可以在无侵入的情况下直接应用 Dataway。进而改进老项目的迭代效率，大大减少企业项目研发成本。
 
-.. image:: ../_static/CC2_A633_6D5C_MK4L.png
+.. image:: ../../_static/CC2_A633_6D5C_MK4L.png
 
 Dataway 工具化的提供 DataQL 配置能力。这种研发模式的变革使得，相当多的需求开发场景只需要配置即可完成交付。
 从而避免了从数据存取到前端接口之间的一系列开发任务，例如：Mapper、BO、VO、DO、DAO、Service、Controller 统统不在需要。
@@ -41,7 +41,7 @@ Dataway 工具化的提供 DataQL 配置能力。这种研发模式的变革使�
 - Dataway 的架构中需要两张数据库表用来存放配置和发布的 DataQL 查询。
 - 除此之外  Dataway 的架构极其简单，它只是相当于给 DataQL 披了一张皮。通过这张皮以界面的方式交互式执行 DataQL 语句，并将其管理起来。
 
-.. image:: ../_static/CC2_B633_6D5C_MK4L.png
+.. image:: ../../_static/CC2_B633_6D5C_MK4L.png
 
 刚刚接触 Dataway 很可能是由于看中它可以提取数据给前端这一个点，如果是这样可能会有一些错觉认为 DataQL 是一个高级别的 ORM 工具。因此这一点需要澄清，DataQL 的竞品应是 GraphQL，而非 ORM 框架。
 

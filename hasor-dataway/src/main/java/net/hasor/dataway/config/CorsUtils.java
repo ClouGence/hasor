@@ -36,7 +36,7 @@ public class CorsUtils {
         httpResponse.addHeader("Access-Control-Allow-Headers", StringUtils.join(new String[] {//
                 "Origin",           //
                 "X-Requested-With", //
-                "Content-Type",     //
+                "Content-Type", "X-InterfaceUI-Info",     //
                 "Accept",           //
                 "Accept-Encoding",  //
                 "Accept-Language",  //
@@ -51,7 +51,7 @@ public class CorsUtils {
                 "sw-useragent",     //
                 "sw-version"        //
         }, ","));
-        //        httpResponse.addHeader("Access-Control-Expose-Headers");
+        httpResponse.addHeader("Access-Control-Expose-Headers", "X-InterfaceUI-ContextType");
         httpResponse.addHeader("Access-Control-Max-Age", "3600");
     }
 }
