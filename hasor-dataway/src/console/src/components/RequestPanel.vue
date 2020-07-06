@@ -263,7 +263,6 @@ export default {
                     'optionInfo': this.optionInfoCopy
                 }
             }, response => {
-                debugger;
                 if (response.data.result) {
                     self.$message({message: 'Api Delete finish.', type: 'success'});
                 } else {
