@@ -63,10 +63,9 @@ public class ImportInstCompiler implements InstCompiler<ImportInst> {
         //
         // .导入对象保存到堆
         int index = compilerContext.containsWithCurrent(asName);
-        if (index >= 0) {
-            throw new CompilerException("import '" + asName + "' is defined.");
+        if (index < 0) {
+            index = compilerContext.push(asName);
         }
-        index = compilerContext.push(asName);
         instLocation(queue, asNameToken);
         queue.inst(STORE, index);
     }
