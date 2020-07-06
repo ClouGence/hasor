@@ -11,7 +11,7 @@
       </el-tooltip>
       <!-- 保存 -->
       <el-tooltip class="item" effect="dark" content="Save" placement="bottom-end">
-        <el-button size="mini" round :disabled="disabledBtn('saveAction')" @click.native="handleSaveAction">
+        <el-button size="mini" round @click.native="handleSaveAction">
           <svg class="icon" aria-hidden="true">
             <use xlink:href="#iconsave" />
           </svg>
@@ -19,7 +19,7 @@
       </el-tooltip>
       <!-- 执行 -->
       <el-tooltip class="item" effect="dark" content="Execute Query" placement="bottom-end">
-        <el-button size="mini" round :disabled="disabledBtn('executeAction')" @click.native="handleExecuteAction">
+        <el-button size="mini" round @click.native="handleExecuteAction">
           <svg class="icon" aria-hidden="true">
             <use xlink:href="#iconexecute" />
           </svg>
@@ -136,8 +136,16 @@ export default {
                     comment: '',
                     apiStatus: 0,
                     codeType: 'DataQL',
-                    codeValue: 'return true;',
-                    editorSubmitted: true
+                    codeValue: 'return true;'
+                };
+            }
+        },
+        actionStatus: {
+            type: Object,
+            default: function () {
+                return {
+                    newMode: true,
+                    disablePublish: true
                 };
             }
         },
@@ -152,17 +160,10 @@ export default {
             default: function () {
                 return [];
             }
-        },
-        newMode: {
-            type: Boolean,
-            default: function () {
-                return true;
-            }
         }
     },
     data() {
         return {
-            smokeTest: false,
             moreConfig: false,
             historyList: [],
             optionInfoCopy: {},
@@ -177,19 +178,6 @@ export default {
                 this.$emit('onOptionChange', this.optionInfoCopy);
             },
             deep: true
-        },
-        'apiInfo': {
-            handler(val, oldVal) {
-                this.smokeTest = false;
-            },
-            deep: true
-        },
-        'apiInfo.editorSubmitted': {
-            handler(val, oldVal) {
-                if (!this.apiInfo.editorSubmitted) {
-                    this.smokeTest = false;
-                }
-            }
         }
     },
     mounted() {
@@ -200,30 +188,21 @@ export default {
     },
     methods: {
         disabledBtn(btnName) {
-            if (btnName === 'saveAction') {
-                return this.newMode ? false : this.apiInfo.editorSubmitted;
-            }
-            if (btnName === 'executeAction') {
-                return false;
-            }
             if (btnName === 'testAction') {
-                return this.newMode ||
-                    (this.apiInfo.editorSubmitted && this.apiInfo.apiStatus === 1) ||
-                    !(this.apiInfo.editorSubmitted && this.apiInfo.apiStatus !== 1 && !this.smokeTest);
+                return this.actionStatus.newMode || !(this.apiInfo.apiStatus === 2 || this.apiInfo.apiStatus === 3);
             }
             if (btnName === 'publishAction') {
-                return this.newMode ||
-                    !(this.apiInfo.apiStatus !== 1 && this.smokeTest);
+                return this.actionStatus.newMode || !(this.apiInfo.apiStatus === 2 || this.apiInfo.apiStatus === 3) || (this.apiInfo.apiStatus !== 1 && this.actionStatus.disablePublish);
             }
             if (btnName === 'historyAction') {
-                return this.newMode;
+                return this.actionStatus.newMode;
             }
             if (btnName === 'disableAction') {
-                return this.newMode ||
+                return this.actionStatus.newMode ||
                     !(this.apiInfo.apiStatus === 1 || this.apiInfo.apiStatus === 2);
             }
             if (btnName === 'deleteAction') {
-                return this.newMode;
+                return this.actionStatus.newMode;
             }
             return false;
         },
@@ -308,7 +287,6 @@ export default {
                     'requestHeader': headerData(this.requestHeader),
                 }
             }, response => {
-                this.smokeTest = true;
                 self.$emit('onSmokeTest', response.data, response.dataTypeMode);
             });
         },

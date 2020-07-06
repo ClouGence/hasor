@@ -3,8 +3,8 @@
     <div class="monacoEditorHeader">
       <div style="width: 50%; margin-top: 2px; display: inline-table;">
         <el-tooltip class="item" effect="dark" placement="bottom" :content="apiInfo.comment || defaultComment" :disabled="showComment">
-          <el-input v-model="apiInfo.apiPath" placeholder="the path to access this Api" class="input-with-select" size="mini" :disabled="!newCode">
-            <el-select slot="prepend" v-model="apiInfo.select" placeholder="Choose" :disabled="!newCode" style="width: 90px;">
+          <el-input v-model="apiInfo.apiPath" placeholder="the path to access this Api" class="input-with-select" size="mini" :disabled="!editerActions.newMode">
+            <el-select slot="prepend" v-model="apiInfo.select" placeholder="Choose" :disabled="!editerActions.newMode" style="width: 90px;">
               <el-option label="POST" value="POST" />
               <el-option label="PUT" value="PUT" />
               <el-option label="GET" value="GET" />
@@ -31,10 +31,10 @@
       </div>
       <div style="float: right;">
         <EditerActions ref="editerActionsPanel"
-                       :api-info="apiInfo" :request-body="requestBody" :request-header="headerData" :new-mode="newCode"
+                       :api-info="apiInfo" :request-body="requestBody" :request-header="headerData" :action-status="editerActions"
                        :option-info="optionData" @onOptionChange="(data)=> { this.optionData = data}"
                        @onAfterSave="onAfterSave" @onPublish="onAfterSave" @onDisable="onAfterSave"
-                       @onExecute="onExecute" @onSmokeTest="onExecute"
+                       @onExecute="onExecute" @onSmokeTest="onSmokeTest"
                        @onRecover="onRecover" @onDelete="onDelete"
         />
         <div style="display: inline-table;padding-left: 5px;">
@@ -95,13 +95,18 @@ export default {
                 apiStatus: 0,
                 codeType: 'DataQL',
                 codeValue: '// a new Query.\nreturn ${message};',
-                editorSubmitted: true,
             },
+            //
+            //
+            editerActions: {
+                newMode: false,
+                disablePublish: true
+            },
+            //
             //
             tagInfo: {css: 'info', title: 'Editor'},
             defaultComment: "There is no comment, Click 'info' icon to add comment",
             showComment: false,
-            newCode: false,
             apiBaseUrl: apiBaseUrl('/'),
             //
             //
@@ -140,11 +145,11 @@ export default {
         if (this.$route.path.startsWith('/new')) {
             this.apiInfo.apiID = -1;
             this.apiInfo.apiPath = this.apiBaseUrl;
-            this.newCode = true;
+            this.editerActions.newMode = true;
             this.showComment = false; // 新增模式下也隐藏 备注输入框
         } else {
             this.apiInfo.apiID = this.$route.params.id;
-            this.newCode = false;
+            this.editerActions.newMode = false;
             this.showComment = false;
             this.loadApiDetail();
         }
@@ -191,7 +196,6 @@ export default {
             this.showComment = !this.showComment;
         },
         handleCommentOnchange() {
-            this.apiInfo.editorSubmitted = false;
             // console.log('handleCommentOnchange -> apiInfo.editorSubmitted = false');
         },
         //
@@ -210,7 +214,6 @@ export default {
             const self = this;
             this.monacoEditor.onDidChangeModelContent(function (event) { // 编辑器内容changge事件
                 self.apiInfo.codeValue = self.monacoEditor.getValue();
-                self.apiInfo.editorSubmitted = false;
             });
             // // 自定义键盘事件
             // self.monacoEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function () {
@@ -249,25 +252,24 @@ export default {
                     self.$refs.editerActionsPanel.doUpdate();
                     self.$refs.editerRequestPanel.doUpdate();
                     self.$refs.editerResponsePanel.doUpdate();
-                    self.$nextTick(function () {
-                        self.apiInfo.editorSubmitted = true;
-                        // console.log('loadApiDetail -> apiInfo.editorSubmitted = true');
-                    });
+                    self.editerActions.disablePublish = true;
+                    // console.log('loadApiDetail -> editerActions.disablePublish = true');
                 });
             });
         },
         // 刷新编辑器模式
         loadEditorMode() {
-            this.apiInfo.editorSubmitted = false;
+            this.editerActions.disablePublish = true;
+            // console.log('loadApiDetail -> editerActions.disablePublish = true');
             if (this.apiInfo.codeType.toLowerCase() === 'dataql') {
                 this.monacoEditor.updateOptions({language: 'javascript'});
-                if (this.newCode && this.monacoEditor.getValue().trim() === '-- a new Query.\nselect #{message};') {
+                if (this.editerActions.newMode && this.monacoEditor.getValue().trim() === '-- a new Query.\nselect #{message};') {
                     this.monacoEditor.setValue('// a new Query.\nreturn ${message};');
                 }
             }
             if (this.apiInfo.codeType.toLowerCase() === 'sql') {
                 this.monacoEditor.updateOptions({language: 'sql'});
-                if (this.newCode && this.monacoEditor.getValue().trim() === '// a new Query.\nreturn ${message};') {
+                if (this.editerActions.newMode && this.monacoEditor.getValue().trim() === '// a new Query.\nreturn ${message};') {
                     this.monacoEditor.setValue('-- a new Query.\nselect #{message};');
                 }
             }
@@ -279,6 +281,11 @@ export default {
                 self.loadApiDetail();
             });
         },
+        onSmokeTest(resultValue, dataTypeMode) {
+            this.onExecute(resultValue, dataTypeMode);
+            this.editerActions.disablePublish = false;
+            // console.log('loadApiDetail -> editerActions.disablePublish = false');
+        },
         onExecute(resultValue, dataTypeMode) {
             this.responseType = dataTypeMode;
             if (dataTypeMode === 'json') {
@@ -286,10 +293,7 @@ export default {
             } else {
                 this.responseBody = resultValue;
             }
-            const self = this;
-            self.$nextTick(function () {
-                self.$refs.editerResponsePanel.doUpdate();
-            });
+            this.$refs.editerResponsePanel.doUpdate();
         },
         onRecover(historyId) {
             const self = this;
@@ -310,7 +314,8 @@ export default {
                 self.loadEditorMode();
                 self.$nextTick(function () {
                     self.monacoEditor.setValue(self.apiInfo.codeValue);
-                    self.apiInfo.editorSubmitted = false;
+                    self.editerActions.disablePublish = false;
+                    // console.log('loadApiDetail -> editerActions.disablePublish = false');
                     self.$refs.editerRequestPanel.doUpdate();
                     self.$refs.editerResponsePanel.doUpdate();
                 });
