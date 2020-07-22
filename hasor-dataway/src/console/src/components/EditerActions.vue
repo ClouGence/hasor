@@ -231,7 +231,7 @@ export default {
                     errorBox(`${response.data.code}: ${response.data.message}`);
                     return;
                 }
-                if (!self.newMode) {
+                if (!self.actionStatus.newMode) {
                     self.$message({message: 'Save successfully.', type: 'success'});
                     self.$emit('onAfterSave', self.apiInfo.apiStatus, response.data.status);
                 } else {

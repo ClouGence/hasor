@@ -246,15 +246,10 @@ export default {
                 //
                 self.tagInfo = statusTagInfo(self.apiInfo.apiStatus);
                 self.loadEditorMode();
-                //
-                self.$nextTick(function () {
-                    self.monacoEditor.setValue(self.apiInfo.codeValue);
-                    self.$refs.editerActionsPanel.doUpdate();
-                    self.$refs.editerRequestPanel.doUpdate();
-                    self.$refs.editerResponsePanel.doUpdate();
-                    self.editerActions.disablePublish = true;
-                    // console.log('loadApiDetail -> editerActions.disablePublish = true');
-                });
+                self.monacoEditor.setValue(self.apiInfo.codeValue);
+                self.editerActions.disablePublish = true;
+                // console.log('loadApiDetail -> editerActions.disablePublish = true');
+                self.doNextTickUpdate();
             });
         },
         // 刷新编辑器模式
@@ -274,12 +269,18 @@ export default {
                 }
             }
         },
+        // 下一个周期更新页面
+        doNextTickUpdate() {
+            const self = this;
+            self.$nextTick(function () {
+                self.$refs.editerRequestPanel.doUpdate();
+                self.$refs.editerResponsePanel.doUpdate();
+                self.$refs.editerActionsPanel.doUpdate();
+            });
+        },
         //
         onAfterSave() {
-            const self = this;
-            this.$nextTick(function () {
-                self.loadApiDetail();
-            });
+            this.loadApiDetail();
         },
         onSmokeTest(resultValue, dataTypeMode) {
             this.onExecute(resultValue, dataTypeMode);
@@ -293,7 +294,7 @@ export default {
             } else {
                 this.responseBody = resultValue;
             }
-            this.$refs.editerResponsePanel.doUpdate();
+            this.doNextTickUpdate();
         },
         onRecover(historyId) {
             const self = this;
@@ -312,13 +313,11 @@ export default {
                 };
                 //
                 self.loadEditorMode();
-                self.$nextTick(function () {
-                    self.monacoEditor.setValue(self.apiInfo.codeValue);
-                    self.editerActions.disablePublish = false;
-                    // console.log('loadApiDetail -> editerActions.disablePublish = false');
-                    self.$refs.editerRequestPanel.doUpdate();
-                    self.$refs.editerResponsePanel.doUpdate();
-                });
+                self.monacoEditor.setValue(self.apiInfo.codeValue);
+                self.editerActions.disablePublish = false;
+                // console.log('loadApiDetail -> editerActions.disablePublish = false');
+                //
+                this.doNextTickUpdate();
             });
         },
         onDelete(apiId) {

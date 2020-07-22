@@ -3,6 +3,8 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.DimModule;
 import net.hasor.dataway.DatawayService;
+import net.hasor.dataway.spi.ApiInfo;
+import net.hasor.dataway.spi.ResultProcessChainSpi;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
 import net.hasor.spring.SpringModule;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 
 @DimModule
 @Component
@@ -38,31 +41,15 @@ public class ExampleModule implements SpringModule {
         //            }
         //            // future.failed(new StatusMessageException(401, "not power"));
         //        });
-        //        apiBinder.bindSpiListener(ResultProcessChainSpi.class, new ResultProcessChainSpi() {
-        //            public Object callAfter(boolean formPre, ApiInfo apiInfo, Object result) {
-        //                if (formPre) {
-        //                    //为了避免和 PreExecuteChainSpi 的冲突，如果前置拦截器处理了。那么后置拦截器就不处理。
-        //                    return result;
-        //                }
-        //                if (apiInfo.getApiPath().equals("/demos/mock")) {
-        //                    throw new StatusMessageException(401, "not power2222");
-        //                }
-        //                return new HashMap<String, Object>() {{
-        //                    put("method", apiInfo.getMethod());
-        //                    put("path", apiInfo.getApiPath());
-        //                    put("result", result);
-        //                }};
-        //            }
-        //
-        //            public Object callError(boolean formPre, ApiInfo apiInfo, Throwable e) {
-        //                e.printStackTrace();
-        //                return new HashMap<String, Object>() {{
-        //                    put("method", apiInfo.getMethod());
-        //                    put("path", apiInfo.getApiPath());
-        //                    put("errorMessage", e.getMessage());
-        //                }};
-        //            }
-        //        });
+        apiBinder.bindSpiListener(ResultProcessChainSpi.class, new ResultProcessChainSpi() {
+            public Object callError(boolean formPre, ApiInfo apiInfo, Throwable e) {
+                return new HashMap<String, Object>() {{
+                    put("method", apiInfo.getMethod());
+                    put("path", apiInfo.getApiPath());
+                    put("errorMessage", e.getMessage());
+                }};
+            }
+        });
         //        {
         //
         //

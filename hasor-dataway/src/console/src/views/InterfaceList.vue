@@ -255,7 +255,6 @@ export default {
                 },
                 'data': JSON.parse(this.requestBody)
             }, response => {
-                debugger;
                 self.responseType = response.dataTypeMode;
                 if (response.dataTypeMode === 'json') {
                     self.responseBody = JSON.stringify(response.data, null, 2);

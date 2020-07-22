@@ -84,11 +84,12 @@ class InterfaceApiFilter implements InvokerFilter {
         // .查询接口数据
         ApiInfo apiInfo = new ApiInfo();
         apiInfo.setCallSource(CallSource.External);
+        String apiPath = URLDecoder.decode(requestURI, "UTF-8");
         String script = null;
         try {
             QueryResult queryResult = new ReleaseDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
                 put("apiMethod", httpMethod);
-                put("apiPath", URLDecoder.decode(requestURI, "UTF-8"));
+                put("apiPath", apiPath);
             }});
             ObjectModel dataModel = (ObjectModel) queryResult.getData();
             apiInfo.setApiID(dataModel.getValue("apiID").asString());
@@ -98,8 +99,13 @@ class InterfaceApiFilter implements InvokerFilter {
             apiInfo.setOptionMap(dataModel.getObject("optionData").unwrap());
             script = dataModel.getValue("script").asString();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             Object result = DatawayUtils.exceptionToResult(e).getResult();
+            LoggerUtils loggerUtils = LoggerUtils.create()  //
+                    .addLog("httpMethod", httpMethod)       //
+                    .addLog("apiPath", apiPath)             //
+                    .addLog("result", result)               //
+                    .logException(e);
+            logger.error("requestFailed - " + loggerUtils.toJson(), e);
             return DatawayUtils.responseData(this.spiTrigger, apiInfo, mimeType, invoker, result);
         }
         //
