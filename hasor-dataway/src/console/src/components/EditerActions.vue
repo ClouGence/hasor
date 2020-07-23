@@ -189,10 +189,10 @@ export default {
     methods: {
         disabledBtn(btnName) {
             if (btnName === 'testAction') {
-                return this.actionStatus.newMode || !(this.apiInfo.apiStatus === 2 || this.apiInfo.apiStatus === 3);
+                return this.actionStatus.newMode || this.apiInfo.apiStatus === 1;
             }
             if (btnName === 'publishAction') {
-                return this.actionStatus.newMode || !(this.apiInfo.apiStatus === 2 || this.apiInfo.apiStatus === 3) || (this.apiInfo.apiStatus !== 1 && this.actionStatus.disablePublish);
+                return this.actionStatus.newMode || this.apiInfo.apiStatus === 1 || this.actionStatus.disablePublish;
             }
             if (btnName === 'historyAction') {
                 return this.actionStatus.newMode;

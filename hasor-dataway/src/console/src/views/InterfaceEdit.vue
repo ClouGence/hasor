@@ -254,7 +254,7 @@ export default {
         },
         // 刷新编辑器模式
         loadEditorMode() {
-            this.editerActions.disablePublish = true;
+            this.editerActions.disablePublish = false;
             // console.log('loadApiDetail -> editerActions.disablePublish = true');
             if (this.apiInfo.codeType.toLowerCase() === 'dataql') {
                 this.monacoEditor.updateOptions({language: 'javascript'});
@@ -285,6 +285,7 @@ export default {
         onSmokeTest(resultValue, dataTypeMode) {
             this.onExecute(resultValue, dataTypeMode);
             this.editerActions.disablePublish = false;
+            this.doNextTickUpdate();
             // console.log('loadApiDetail -> editerActions.disablePublish = false');
         },
         onExecute(resultValue, dataTypeMode) {
