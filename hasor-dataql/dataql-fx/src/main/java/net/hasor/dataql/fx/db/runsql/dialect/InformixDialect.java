@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db.runsql.dialect;
-import net.hasor.dataql.fx.db.parser.FxQuery;
+import net.hasor.dataql.fx.db.fxquery.FxQuery;
 
 import java.util.ArrayList;
 import java.util.List;

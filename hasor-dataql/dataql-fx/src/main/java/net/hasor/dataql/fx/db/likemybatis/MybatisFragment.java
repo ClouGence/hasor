@@ -15,20 +15,17 @@
  */
 package net.hasor.dataql.fx.db.likemybatis;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.fx.db.parser.FxQuery;
+import net.hasor.dataql.fx.db.fxquery.FxQuery;
 import net.hasor.dataql.fx.db.runsql.SqlFragment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import javax.inject.Singleton;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -49,13 +46,11 @@ public class MybatisFragment extends SqlFragment {
             // 解析失败在来一次，二次都不行直接抛出异常
             sqlNode = parseSqlNode(fragmentString.trim());
         }
-
-        SqlMode sqlMode = sqlNode.getSqlMode();
         FxQuery fxSql = new MybatisSqlQuery(sqlNode);
-        if (usePage(hint, sqlMode, fxSql)) {
-            return this.usePageFragment(fxSql, sqlMode, hint, paramMap);
+        if (usePage(hint)) {
+            return this.usePageFragment(fxSql, hint, paramMap);
         } else {
-            return this.noPageFragment(fxSql, sqlMode, hint, paramMap);
+            return this.noPageFragment(fxSql, hint, paramMap);
         }
     }
 
@@ -65,7 +60,7 @@ public class MybatisFragment extends SqlFragment {
      * @return
      * @throws Exception
      */
-    private synchronized SqlNode parseSqlNode(String fragmentString) throws Exception{
+    private synchronized SqlNode parseSqlNode(String fragmentString) throws Exception {
         DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = documentBuilder.parse(new ByteArrayInputStream(fragmentString.getBytes()));
         Element root = document.getDocumentElement();
@@ -80,7 +75,6 @@ public class MybatisFragment extends SqlFragment {
         } else if ("delete".equalsIgnoreCase(tagName)) {
             sqlNode.setSqlNode(SqlMode.Delete);
         } else {
-            sqlNode.setSqlNode(SqlMode.Unknown);
             return sqlNode;
         }
         parseNodeList(sqlNode, root.getChildNodes());

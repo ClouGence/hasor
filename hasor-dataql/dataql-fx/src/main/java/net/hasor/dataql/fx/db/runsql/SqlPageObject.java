@@ -18,7 +18,6 @@ import net.hasor.dataql.Hints;
 import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.dataql.fx.db.runsql.SqlPageQuery.SqlPageQueryConvertResult;
 import net.hasor.dataql.fx.db.runsql.dialect.SqlPageDialect.BoundSql;
-import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.convert.ConverterUtils;
 
 import java.sql.SQLException;
@@ -74,10 +73,10 @@ class SqlPageObject implements UdfSourceAssembly {
     private int totalCount() throws SQLException {
         if (!this.totalCountInited) {
             final BoundSql countBoundSql = this.sqlPageQuery.getCountBoundSql();
-            this.totalCount = this.sqlPageQuery.doQuery(con -> {
+            this.totalCount = this.sqlPageQuery.doQuery(jdbcTemplate -> {
                 String countFxSql = countBoundSql.getSqlString();
                 Object[] paramArrays = countBoundSql.getParamMap();
-                return new JdbcTemplate(con).queryForInt(countFxSql, paramArrays);
+                return jdbcTemplate.queryForInt(countFxSql, paramArrays);
             });
             this.totalCountInited = true;
         }
@@ -178,10 +177,10 @@ class SqlPageObject implements UdfSourceAssembly {
     /** 移动到最后一页 */
     public Object data() throws SQLException {
         final BoundSql countBoundSql = this.sqlPageQuery.getPageBoundSql(firstRecordPosition(), pageSize());
-        return this.sqlPageQuery.doQuery(con -> {
+        return this.sqlPageQuery.doQuery(jdbcTemplate -> {
             String countFxSql = countBoundSql.getSqlString();
             Object[] paramArrays = countBoundSql.getParamMap();
-            List<Map<String, Object>> resultData = new JdbcTemplate(con).queryForList(countFxSql, paramArrays);
+            List<Map<String, Object>> resultData = jdbcTemplate.queryForList(countFxSql, paramArrays);
             return this.convertResult.convertPageResult(resultData);
         });
     }

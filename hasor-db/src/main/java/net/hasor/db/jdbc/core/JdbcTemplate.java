@@ -37,12 +37,12 @@ import java.util.*;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
-    private static Logger  logger                 = LoggerFactory.getLogger(JdbcTemplate.class);
+    private static final Logger  logger                 = LoggerFactory.getLogger(JdbcTemplate.class);
     /*是否忽略出现的 SQL 警告*/
-    private        boolean ignoreWarnings         = true;
+    private              boolean ignoreWarnings         = true;
     /*当JDBC 结果集中如出现相同的列名仅仅大小写不同时。是否保留大小写列名敏感。
      * 如果为 true 表示敏感，并且结果集Map中保留两个记录。如果为 false 则表示不敏感，如出现冲突列名后者将会覆盖前者。*/
-    private        boolean resultsCaseInsensitive = false;
+    private              boolean resultsCaseInsensitive = false;
 
     /**
      * Construct a new JdbcTemplate for bean usage.

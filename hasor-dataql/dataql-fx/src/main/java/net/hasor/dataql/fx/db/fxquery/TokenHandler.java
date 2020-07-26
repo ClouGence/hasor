@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package net.hasor.dataql.fx.db.parser;
+package net.hasor.dataql.fx.db.fxquery;
 /**
  * 原版在 mybatis 中同名类，本类接口增加了2个参数。
  * @author Clinton Begin

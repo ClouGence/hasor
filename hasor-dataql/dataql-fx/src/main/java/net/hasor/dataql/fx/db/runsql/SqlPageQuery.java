@@ -15,7 +15,7 @@
  */
 package net.hasor.dataql.fx.db.runsql;
 import net.hasor.dataql.fx.db.runsql.dialect.SqlPageDialect.BoundSql;
-import net.hasor.db.jdbc.ConnectionCallback;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -34,9 +34,13 @@ interface SqlPageQuery {
     public BoundSql getPageBoundSql(int start, int limit);
 
     /** 执行 SQL */
-    public <T> T doQuery(ConnectionCallback<T> connectionCallback) throws SQLException;
+    public <T> T doQuery(SqlJdbcTemplateCallback<T> connectionCallback) throws SQLException;
 
     public interface SqlPageQueryConvertResult {
         Object convertPageResult(List<Map<String, Object>> mapList);
+    }
+
+    public interface SqlJdbcTemplateCallback<T> {
+        public T doQuery(JdbcTemplate jdbcTemplate) throws SQLException;
     }
 }

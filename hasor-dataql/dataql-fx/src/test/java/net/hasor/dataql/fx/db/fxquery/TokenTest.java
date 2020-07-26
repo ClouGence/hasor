@@ -1,4 +1,4 @@
-package net.hasor.dataql.fx.db.parser;
+package net.hasor.dataql.fx.db.fxquery;
 import org.junit.Test;
 
 public class TokenTest {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx.db.parser;
+package net.hasor.dataql.fx.db.fxquery;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import ognl.Ognl;

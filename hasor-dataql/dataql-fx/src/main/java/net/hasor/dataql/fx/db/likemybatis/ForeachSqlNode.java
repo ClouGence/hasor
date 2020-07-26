@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db.likemybatis;
-import net.hasor.dataql.fx.db.parser.DefaultFxQuery;
+import net.hasor.dataql.fx.db.fxquery.DefaultFxQuery;
 import net.hasor.utils.StringUtils;
 
 import java.lang.reflect.Array;

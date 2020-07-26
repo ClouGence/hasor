@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db.runsql.dialect;
-import net.hasor.dataql.fx.db.parser.FxQuery;
+import net.hasor.dataql.fx.db.fxquery.FxQuery;
 
 import java.util.Map;
 
@@ -32,8 +32,8 @@ public interface SqlPageDialect {
 
     /** SQL */
     public static class BoundSql {
-        private String   sqlString;
-        private Object[] paramArray;
+        private final String   sqlString;
+        private final Object[] paramArray;
 
         public BoundSql(String sqlString, Object[] paramArray) {
             this.sqlString = sqlString;

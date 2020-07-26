@@ -43,9 +43,9 @@ import java.util.function.Supplier;
  * @version : 2017-03-23
  */
 public class JdbcModule implements Module {
-    private Set<Level>           loadLevel;
-    private String               dataSourceID;
-    private Supplier<DataSource> dataSource;
+    private final Set<Level>           loadLevel;
+    private final String               dataSourceID;
+    private final Supplier<DataSource> dataSource;
 
     /** 添加数据源 */
     public JdbcModule(Level loadLevel, DataSource dataSource) {

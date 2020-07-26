@@ -22,15 +22,19 @@ import net.hasor.dataql.Hints;
 import net.hasor.dataql.fx.FxHintNames;
 import net.hasor.dataql.fx.FxHintValue;
 import net.hasor.dataql.fx.basic.StringUdfSource;
+import net.hasor.dataql.fx.db.LookupConnectionListener;
 import net.hasor.dataql.fx.db.LookupDataSourceListener;
-import net.hasor.dataql.fx.db.parser.DefaultFxQuery;
-import net.hasor.dataql.fx.db.parser.FxQuery;
+import net.hasor.dataql.fx.db.fxquery.DefaultFxQuery;
+import net.hasor.dataql.fx.db.fxquery.FxQuery;
 import net.hasor.dataql.fx.db.runsql.dialect.SqlPageDialect;
 import net.hasor.db.jdbc.BatchPreparedStatementSetter;
-import net.hasor.db.jdbc.ConnectionCallback;
+import net.hasor.db.jdbc.PreparedStatementCallback;
 import net.hasor.db.jdbc.PreparedStatementSetter;
+import net.hasor.db.jdbc.ResultSetExtractor;
 import net.hasor.db.jdbc.core.ArgPreparedStatementSetter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.jdbc.core.RowMapperResultSetExtractor;
+import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
 
@@ -40,13 +44,15 @@ import javax.inject.Singleton;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.StringReader;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static net.hasor.dataql.fx.FxHintNames.FRAGMENT_SQL_DATA_SOURCE;
-import static net.hasor.dataql.fx.FxHintNames.FRAGMENT_SQL_PAGE_DIALECT;
+import static net.hasor.dataql.fx.FxHintNames.*;
 import static net.hasor.dataql.fx.FxHintValue.*;
 
 /**
@@ -60,11 +66,11 @@ import static net.hasor.dataql.fx.FxHintValue.*;
 @Singleton
 public class SqlFragment implements FragmentProcess {
     @Inject
-    protected AppContext                appContext;
+    protected AppContext              appContext;
     @Inject
-    protected SpiTrigger                spiTrigger;
-    protected JdbcTemplate              defaultJdbcTemplate;
-    protected Map<String, JdbcTemplate> jdbcTemplateMap;
+    protected SpiTrigger              spiTrigger;
+    private   DataSource              defaultDataSource;
+    private   Map<String, DataSource> dataSourceMap;
 
     public static enum SqlMode {
         /** DML：insert、update、delete、replace、exec */
@@ -74,35 +80,51 @@ public class SqlFragment implements FragmentProcess {
         /** DDL：create、drop、alter */
         Create, Drop, Alter,
         /** Other */
-        Unknown,
+        Other,
     }
+
+    private static ThreadLocal<ResultSetExtractor<List<Map<String, Object>>>> RESULT_EXTRACTOR = ThreadLocal.withInitial(() -> {
+        return new RowMapperResultSetExtractor<>(new ColumnMapRowMapper());
+    });
 
     @PostConstruct
     public void init() {
-        this.jdbcTemplateMap = new HashMap<>();
-        List<BindInfo<JdbcTemplate>> bindInfos = this.appContext.findBindingRegister(JdbcTemplate.class);
-        for (BindInfo<JdbcTemplate> bindInfo : bindInfos) {
+        this.dataSourceMap = new HashMap<>();
+        List<BindInfo<DataSource>> bindInfos = this.appContext.findBindingRegister(DataSource.class);
+        for (BindInfo<DataSource> bindInfo : bindInfos) {
             if (StringUtils.isBlank(bindInfo.getBindName())) {
-                if (this.defaultJdbcTemplate == null) {
-                    this.defaultJdbcTemplate = this.appContext.getInstance(bindInfo);
+                if (this.defaultDataSource == null) {
+                    this.defaultDataSource = this.appContext.getInstance(bindInfo);
                 }
             } else {
-                JdbcTemplate jdbcTemplate = this.appContext.getInstance(bindInfo);
-                if (jdbcTemplate != null) {
-                    this.jdbcTemplateMap.put(bindInfo.getBindName(), jdbcTemplate);
+                DataSource dataSource = this.appContext.getInstance(bindInfo);
+                if (dataSource != null) {
+                    this.dataSourceMap.put(bindInfo.getBindName(), dataSource);
                 }
             }
         }
     }
 
     protected JdbcTemplate getJdbcTemplate(final String sourceName) {
-        JdbcTemplate jdbcTemplate = null;
-        if (StringUtils.isBlank(sourceName)) {
-            jdbcTemplate = this.defaultJdbcTemplate;
-        } else {
-            jdbcTemplate = this.jdbcTemplateMap.get(sourceName);
+        // .首先尝试 Connection
+        if (this.spiTrigger.hasSpi(LookupConnectionListener.class)) {
+            // .通过 SPI 查找数据源
+            Connection jdbcConnection = this.spiTrigger.notifySpi(LookupConnectionListener.class, (listener, lastResult) -> {
+                return listener.lookUp(sourceName);
+            }, null);
+            // .构造JdbcTemplate
+            if (jdbcConnection != null) {
+                return new JdbcTemplate(jdbcConnection);
+            }
         }
-        if (jdbcTemplate == null) {
+        // .其次在通过数据源获取
+        DataSource useDataSource = null;
+        if (StringUtils.isBlank(sourceName)) {
+            useDataSource = this.defaultDataSource;
+        } else {
+            useDataSource = this.dataSourceMap.get(sourceName);
+        }
+        if (useDataSource == null) {
             if (this.spiTrigger.hasSpi(LookupDataSourceListener.class)) {
                 // .通过 SPI 查找数据源
                 DataSource dataSource = this.spiTrigger.notifySpi(LookupDataSourceListener.class, (listener, lastResult) -> {
@@ -115,74 +137,80 @@ public class SqlFragment implements FragmentProcess {
             }
             throw new NullPointerException("DataSource " + sourceName + " is undefined.");
         }
-        return jdbcTemplate;
-    }
-
-    protected FxQuery analysisSQL(Hints hint, SqlMode sqlMode, String fragmentString) {
-        return DefaultFxQuery.analysisSQL(fragmentString);
+        return new JdbcTemplate(useDataSource);
     }
 
     public List<Object> batchRunFragment(Hints hint, List<Map<String, Object>> params, String fragmentString) throws Throwable {
-        // 如果批量参数为空或者只有一个时，自动退化为非批量
         if (params == null || params.size() == 0) {
+            // 如果批量参数为空退：退化为 非批量
             return Collections.singletonList(this.runFragment(hint, Collections.emptyMap(), fragmentString));
         }
         if (params.size() == 1) {
+            // 批量参数只有一组：退化为 非批量
             return Collections.singletonList(this.runFragment(hint, params.get(0), fragmentString));
         }
-        //
-        SqlMode sqlMode = evalSqlMode(fragmentString);
-        FxQuery fxSql = analysisSQL(hint, sqlMode, fragmentString);
-        if ((SqlMode.Insert == sqlMode || SqlMode.Update == sqlMode || SqlMode.Delete == sqlMode) && !fxSql.isHavePlaceholder()) {
-            fragmentString = fxSql.buildQueryString(params.get(0));
-            PreparedStatementSetter[] parameterArrays = new PreparedStatementSetter[params.size()];
-            for (int i = 0; i < params.size(); i++) {
-                parameterArrays[i] = new ArgPreparedStatementSetter(fxSql.buildParameterSource(params.get(i)).toArray());
-            }
-            //
-            String sourceName = hint.getOrDefault(FRAGMENT_SQL_DATA_SOURCE.name(), "").toString();
-            int[] executeBatch = this.getJdbcTemplate(sourceName).executeBatch(fragmentString, new BatchPreparedStatementSetter() {
-                public void setValues(PreparedStatement ps, int i) throws SQLException {
-                    parameterArrays[i].setValues(ps);
-                }
-
-                public int getBatchSize() {
-                    return parameterArrays.length;
-                }
-            });
-            return Arrays.stream(executeBatch).boxed().collect(Collectors.toList());
+        FxQuery fxSql = analysisSQL(hint, fragmentString);
+        String tempFragmentString = fxSql.buildQueryString(params.get(0));
+        boolean useBatch = true;
+        if (fxSql.isHavePlaceholder()) {
+            // 分析SQL后如果含有占位符：退化为 非批量（占位符会导致每次执行的SQL语句可能不一样）
+            useBatch = false;
         } else {
+            // Insert/Update/Delete 语句之外的：退化为 非批量
+            SqlMode sqlMode = evalSqlMode(tempFragmentString);
+            useBatch = (SqlMode.Insert == sqlMode || SqlMode.Update == sqlMode || SqlMode.Delete == sqlMode);
+        }
+        //
+        // --- 非批量模式
+        if (!useBatch) {
             List<Object> resultList = new ArrayList<>(params.size());
             for (Map<String, Object> paramItem : params) {
-                if (usePage(hint, sqlMode, fxSql)) {
-                    resultList.add(this.usePageFragment(fxSql, sqlMode, hint, paramItem));
+                if (usePage(hint)) {
+                    resultList.add(this.usePageFragment(fxSql, hint, paramItem));
                 } else {
-                    resultList.add(this.noPageFragment(fxSql, sqlMode, hint, paramItem));
+                    resultList.add(this.noPageFragment(fxSql, hint, paramItem));
                 }
             }
             return resultList;
         }
+        //
+        // --- 批量模式
+        final PreparedStatementSetter[] parameterArrays = params.parallelStream().map(new Function<Map<String, Object>, PreparedStatementSetter>() {
+            public PreparedStatementSetter apply(Map<String, Object> preparedParams) {
+                return new ArgPreparedStatementSetter(fxSql.buildParameterSource(preparedParams).toArray());
+            }
+        }).toArray(PreparedStatementSetter[]::new);
+        //
+        String sourceName = hint.getOrDefault(FRAGMENT_SQL_DATA_SOURCE.name(), "").toString();
+        int[] executeBatch = this.getJdbcTemplate(sourceName).executeBatch(tempFragmentString, new BatchPreparedStatementSetter() {
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                parameterArrays[i].setValues(ps);
+            }
+
+            public int getBatchSize() {
+                return parameterArrays.length;
+            }
+        });
+        return Arrays.stream(executeBatch).boxed().collect(Collectors.toList());
     }
 
     @Override
     public Object runFragment(Hints hint, Map<String, Object> paramMap, String fragmentString) throws Throwable {
-        SqlMode sqlMode = evalSqlMode(fragmentString);
-        FxQuery fxSql = analysisSQL(hint, sqlMode, fragmentString);
-        if (usePage(hint, sqlMode, fxSql)) {
-            return this.usePageFragment(fxSql, sqlMode, hint, paramMap);
+        FxQuery fxSql = analysisSQL(hint, fragmentString);
+        if (usePage(hint) && evalSqlMode(fragmentString) == SqlMode.Query) {
+            return this.usePageFragment(fxSql, hint, paramMap);
         } else {
-            return this.noPageFragment(fxSql, sqlMode, hint, paramMap);
+            return this.noPageFragment(fxSql, hint, paramMap);
         }
     }
 
-    protected Object usePageFragment(FxQuery fxSql, SqlMode sqlMode, Hints hint, Map<String, Object> paramMap) {
+    protected Object usePageFragment(FxQuery fxSql, Hints hint, Map<String, Object> paramMap) {
         String sqlDialect = this.appContext.getEnvironment().getVariable("HASOR_DATAQL_FX_PAGE_DIALECT");
         sqlDialect = hint.getOrDefault(FRAGMENT_SQL_PAGE_DIALECT.name(), sqlDialect).toString();
         if (StringUtils.isBlank(sqlDialect)) {
             throw new IllegalArgumentException("Query dialect missing.");
         }
-        SqlPageDialect pageDialect = SqlPageDialectRegister.findOrCreate(sqlDialect, this.appContext);
-        //
+        final SqlPageDialect pageDialect = SqlPageDialectRegister.findOrCreate(sqlDialect, this.appContext);
         return new SqlPageObject(hint, mapList -> {
             return convertResult(hint, mapList);
         }, new SqlPageQuery() {
@@ -202,38 +230,59 @@ public class SqlFragment implements FragmentProcess {
             }
 
             @Override
-            public <T> T doQuery(ConnectionCallback<T> connectionCallback) throws SQLException {
+            public <T> T doQuery(SqlJdbcTemplateCallback<T> templateCallback) throws SQLException {
                 String sourceName = hint.getOrDefault(FRAGMENT_SQL_DATA_SOURCE.name(), "").toString();
-                return getJdbcTemplate(sourceName).execute(connectionCallback);
+                return templateCallback.doQuery(getJdbcTemplate(sourceName));
             }
         });
     }
 
-    protected Object noPageFragment(FxQuery fxSql, SqlMode sqlMode, Hints hint, Map<String, Object> paramMap) throws Throwable {
-        String sourceName = hint.getOrDefault(FRAGMENT_SQL_DATA_SOURCE.name(), "").toString();
-        String fragmentString = fxSql.buildQueryString(paramMap);
-        Object[] source = fxSql.buildParameterSource(paramMap).toArray();
+    protected Object noPageFragment(FxQuery fxSql, Hints hint, Map<String, Object> paramMap) throws Throwable {
+        final String sourceName = hint.getOrDefault(FRAGMENT_SQL_DATA_SOURCE.name(), "").toString();
+        final String fragmentString = fxSql.buildQueryString(paramMap);
+        final Object[] source = fxSql.buildParameterSource(paramMap).toArray();
         //
-        if (SqlMode.Query == sqlMode) {
-            List<Map<String, Object>> mapList = this.getJdbcTemplate(sourceName).queryForList(fragmentString, source);
-            return this.convertResult(hint, mapList);
-        } else if (SqlMode.Insert == sqlMode || SqlMode.Update == sqlMode || SqlMode.Delete == sqlMode) {
-            return this.getJdbcTemplate(sourceName).executeUpdate(fragmentString, source);
-        } else if (SqlMode.Procedure == sqlMode) {
-            throw new SQLException("Procedure not support.");
-        } else if (SqlMode.Create == sqlMode || SqlMode.Drop == sqlMode || SqlMode.Alter == sqlMode) {
-            return this.getJdbcTemplate(sourceName).executeUpdate(fragmentString, source);
-        }
-        throw new SQLException("Unknown SqlMode.");//不可能走到这里
+        return this.getJdbcTemplate(sourceName).execute(fragmentString, (PreparedStatementCallback<Object>) ps -> {
+            // 接收返回结果使用
+            ArrayList<Object> resultDataSet = new ArrayList<>();
+            String keepType = hint.getOrDefault(FRAGMENT_SQL_MULTIPLE_QUERIES.name(), FRAGMENT_SQL_MULTIPLE_QUERIES_LAST).toString();
+            // 设置请求参数
+            new ArgPreparedStatementSetter(source).setValues(ps);
+            // 执行多Sql执行
+            if (ps.execute()) {
+                // -- 第一个结果是个结果集
+                ResultSet resultSet = ps.getResultSet();
+                resultDataSet.add(RESULT_EXTRACTOR.get().extractData(resultSet));
+            } else {
+                // -- 第一个结果是个影响行数
+                resultDataSet.add(ps.getUpdateCount());
+            }
+            // 接收其它结果
+            while (ps.getMoreResults()) {
+                ResultSet resultSet = ps.getResultSet();
+                if (FRAGMENT_SQL_MULTIPLE_QUERIES_FIRST.equalsIgnoreCase(keepType)) {
+                    continue;
+                }
+                if (FRAGMENT_SQL_MULTIPLE_QUERIES_LAST.equalsIgnoreCase(keepType)) {
+                    resultDataSet.set(0, RESULT_EXTRACTOR.get().extractData(resultSet));
+                    continue;
+                }
+                if (FRAGMENT_SQL_MULTIPLE_QUERIES_ALL.equalsIgnoreCase(keepType)) {
+                    resultDataSet.add(RESULT_EXTRACTOR.get().extractData(resultSet));
+                    continue;
+                }
+            }
+            //
+            if (resultDataSet.size() <= 1) {
+                return resultDataSet.get(0);
+            } else {
+                return resultDataSet;
+            }
+        });
     }
 
-    protected boolean usePage(Hints hint, SqlMode sqlMode, FxQuery fxSql) {
-        if (SqlMode.Query == sqlMode) {
-            FxHintNames queryByPage = FxHintNames.FRAGMENT_SQL_QUERY_BY_PAGE;
-            Object hintOrDefault = hint.getOrDefault(queryByPage.name(), queryByPage.getDefaultVal());
-            return FRAGMENT_SQL_QUERY_BY_PAGE_ENABLE.equalsIgnoreCase(hintOrDefault.toString());
-        }
-        return false;
+    protected FxQuery analysisSQL(Hints hint, String fragmentString) {
+        return DefaultFxQuery.analysisSQL(fragmentString);
     }
 
     protected Object convertResult(Hints hint, List<Map<String, Object>> mapList) {
@@ -289,7 +338,13 @@ public class SqlFragment implements FragmentProcess {
         return rowObject;
     }
 
-    private static SqlMode evalSqlMode(String fragmentString) throws SQLException, IOException {
+    protected boolean usePage(Hints hint) {
+        FxHintNames queryByPage = FxHintNames.FRAGMENT_SQL_QUERY_BY_PAGE;
+        Object hintOrDefault = hint.getOrDefault(queryByPage.name(), queryByPage.getDefaultVal());
+        return FRAGMENT_SQL_QUERY_BY_PAGE_ENABLE.equalsIgnoreCase(hintOrDefault.toString());
+    }
+
+    private static SqlMode evalSqlMode(String fragmentString) throws IOException {
         List<String> readLines = IOUtils.readLines(new StringReader(fragmentString));
         SqlMode sqlMode = null;
         boolean multipleLines = false;
@@ -342,12 +397,9 @@ public class SqlFragment implements FragmentProcess {
             } else if (tempLine.startsWith("alter")) {
                 sqlMode = SqlMode.Alter;
             } else {
-                sqlMode = SqlMode.Unknown;
+                sqlMode = SqlMode.Other;
             }
             break;
-        }
-        if (sqlMode == null) {
-            throw new SQLException("Unknown query statement. -> " + fragmentString);
         }
         return sqlMode;
     }

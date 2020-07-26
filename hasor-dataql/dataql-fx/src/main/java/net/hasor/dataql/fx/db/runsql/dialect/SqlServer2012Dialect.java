@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db.runsql.dialect;
-import net.hasor.dataql.fx.db.parser.FxQuery;
+import net.hasor.dataql.fx.db.fxquery.FxQuery;
 import net.hasor.utils.ExceptionUtils;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.OrderByElement;

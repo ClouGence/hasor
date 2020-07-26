@@ -18,4 +18,4 @@
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-28
  */
-package net.hasor.dataql.fx.db.parser;
+package net.hasor.dataql.fx.db.fxquery;

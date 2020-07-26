@@ -36,9 +36,12 @@ public enum FxHintNames {
     /** SqlFragment 分页查询在改写分页查询语句时使用的方言（默认：空，需要明确指定） */
     FRAGMENT_SQL_PAGE_DIALECT(""),
     /** SqlFragment 数据源名字 */
-    FRAGMENT_SQL_DATA_SOURCE("");
+    FRAGMENT_SQL_DATA_SOURCE(""),
+    /** SqlFragment 当遇到多条 SQL 同时执行时，结果集的行为（默认：返回最后一个结果） */
+    FRAGMENT_SQL_MULTIPLE_QUERIES(FRAGMENT_SQL_MULTIPLE_QUERIES_LAST),
+    ;
     //
-    private String defaultVal;
+    private final String defaultVal;
 
     public String getDefaultVal() {
         return this.defaultVal;
