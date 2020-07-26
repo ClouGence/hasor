@@ -26,7 +26,6 @@ public class ExampleModule implements SpringModule {
         apiBinder.installModule(new JdbcModule(Level.Full, this.dataSource));
         // .custom DataQL
         //apiBinder.tryCast(QueryApiBinder.class).loadUdfSource(apiBinder.findClass(DimUdfSource.class));
-        //
         //        final Set<String> codeSet = AuthorizationType.Group_ReadOnly.toCodeSet();
         //        apiBinder.bindSpiListener(AuthorizationChainSpi.class, (checkType, apiId, defaultCheck) -> {
         //            return checkType.testAuthorization(codeSet);
@@ -41,6 +40,7 @@ public class ExampleModule implements SpringModule {
         //            }
         //            // future.failed(new StatusMessageException(401, "not power"));
         //        });
+        //
         apiBinder.bindSpiListener(ResultProcessChainSpi.class, new ResultProcessChainSpi() {
             public Object callError(boolean formPre, ApiInfo apiInfo, Throwable e) {
                 return new HashMap<String, Object>() {{

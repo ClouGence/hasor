@@ -83,7 +83,7 @@ public class SqlFragment implements FragmentProcess {
         Other,
     }
 
-    private static ThreadLocal<ResultSetExtractor<List<Map<String, Object>>>> RESULT_EXTRACTOR = ThreadLocal.withInitial(() -> {
+    private static final ThreadLocal<ResultSetExtractor<List<Map<String, Object>>>> RESULT_EXTRACTOR = ThreadLocal.withInitial(() -> {
         return new RowMapperResultSetExtractor<>(new ColumnMapRowMapper());
     });
 
@@ -175,7 +175,7 @@ public class SqlFragment implements FragmentProcess {
         }
         //
         // --- 批量模式
-        final PreparedStatementSetter[] parameterArrays = params.parallelStream().map(new Function<Map<String, Object>, PreparedStatementSetter>() {
+        PreparedStatementSetter[] parameterArrays = params.parallelStream().map(new Function<Map<String, Object>, PreparedStatementSetter>() {
             public PreparedStatementSetter apply(Map<String, Object> preparedParams) {
                 return new ArgPreparedStatementSetter(fxSql.buildParameterSource(preparedParams).toArray());
             }
@@ -248,7 +248,8 @@ public class SqlFragment implements FragmentProcess {
             String keepType = hint.getOrDefault(FRAGMENT_SQL_MULTIPLE_QUERIES.name(), FRAGMENT_SQL_MULTIPLE_QUERIES_LAST).toString();
             // 设置请求参数
             new ArgPreparedStatementSetter(source).setValues(ps);
-            // 执行多Sql执行
+            //
+            // 执行多Sql执行，并处理第一个结果
             if (ps.execute()) {
                 // -- 第一个结果是个结果集
                 ResultSet resultSet = ps.getResultSet();
@@ -257,6 +258,7 @@ public class SqlFragment implements FragmentProcess {
                 // -- 第一个结果是个影响行数
                 resultDataSet.add(ps.getUpdateCount());
             }
+            //
             // 接收其它结果
             while (ps.getMoreResults()) {
                 ResultSet resultSet = ps.getResultSet();
@@ -272,7 +274,7 @@ public class SqlFragment implements FragmentProcess {
                     continue;
                 }
             }
-            //
+            // 返回结果
             if (resultDataSet.size() <= 1) {
                 return resultDataSet.get(0);
             } else {
