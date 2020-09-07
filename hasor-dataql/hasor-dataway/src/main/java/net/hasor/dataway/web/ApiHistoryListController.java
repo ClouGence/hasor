@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataql.QueryResult;
-import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.authorization.AuthorizationType;
+import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
-import net.hasor.dataway.daos.ApiHistoryListQuery;
+import net.hasor.dataway.daos.impl.EntityDef;
+import net.hasor.dataway.daos.impl.FieldDef;
+import net.hasor.dataway.domain.ApiStatusEnum;
 import net.hasor.web.annotation.Get;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
-import java.io.IOException;
-import java.util.HashMap;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Api 历史列表
@@ -38,10 +41,27 @@ import java.util.HashMap;
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class ApiHistoryListController extends BasicController {
     @Get
-    public Result<Object> apiHistory(@QueryParameter("id") String apiId) throws IOException {
-        QueryResult queryResult = new ApiHistoryListQuery(this.dataQL).execute(new HashMap<String, String>() {{
-            put("apiId", apiId);
-        }});
-        return Result.of(queryResult.getData().unwrap());
+    public Result<List<Map<String, Object>>> apiHistory(@QueryParameter("id") String apiId) {
+        List<Map<FieldDef, String>> releaseList = this.dataAccessLayer.listObjectBy(//
+                EntityDef.RELEASE,      //
+                conditionByApiId(apiId) //
+        );
+        releaseList = (releaseList == null) ? Collections.emptyList() : releaseList;
+        //
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        List<Map<String, Object>> dataList = releaseList.parallelStream()//
+                .filter(releaseItem -> {
+                    if (releaseItem == null) {
+                        return false;
+                    }
+                    ApiStatusEnum statusEnum = ApiStatusEnum.typeOf(releaseItem.get(FieldDef.STATUS));
+                    return statusEnum != null && statusEnum != ApiStatusEnum.Delete;
+                }).map((Function<Map<FieldDef, String>, Map<String, Object>>) releaseItem -> {
+                    return new HashMap<String, Object>() {{
+                        put("historyId", releaseItem.get(FieldDef.ID));
+                        put("time", dateFormat.format(new Date(Long.parseLong(releaseItem.get(FieldDef.RELEASE_TIME)))));
+                    }};
+                }).collect(Collectors.toList());
+        return Result.of(dataList);
     }
 }

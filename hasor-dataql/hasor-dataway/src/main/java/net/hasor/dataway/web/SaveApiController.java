@@ -14,28 +14,32 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataql.Query;
-import net.hasor.dataql.QueryResult;
-import net.hasor.dataql.domain.ObjectModel;
+import com.alibaba.fastjson.JSON;
+import net.hasor.core.Inject;
+import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
-import net.hasor.dataway.daos.ApiInfoQuery;
-import net.hasor.dataway.daos.InsertApiQuery;
-import net.hasor.dataway.daos.UpdateApiQuery;
+import net.hasor.dataway.daos.impl.EntityDef;
+import net.hasor.dataway.daos.impl.FieldDef;
+import net.hasor.dataway.domain.ApiStatusEnum;
+import net.hasor.dataway.domain.ApiTypeEnum;
+import net.hasor.dataway.domain.HeaderData;
 import net.hasor.dataway.service.CheckService;
+import net.hasor.dataway.service.schema.types.Type;
+import net.hasor.dataway.service.schema.types.TypesUtils;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.interceptor.Transactional;
+import net.hasor.utils.convert.ConverterUtils;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 把编辑的结果保存起来。
@@ -51,28 +55,77 @@ public class SaveApiController extends BasicController {
 
     @Post
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Result<Object> doSave(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws Throwable {
+    public Result<Object> doSave(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
         //
-        Query query = null;
+        String apiPath = (String) requestBody.get("apiPath");
+        Map<FieldDef, String> apiInfo = null;
         if ("-1".equalsIgnoreCase(apiId)) {
-            this.checkService.checkApi((String) requestBody.get("apiPath"));
-            query = new InsertApiQuery(this.dataQL);
+            this.checkService.checkApi(apiPath);
+            apiInfo = new LinkedHashMap<>();
+            apiInfo.put(FieldDef.ID, this.dataAccessLayer.generateId(EntityDef.INFO));
+            apiInfo.put(FieldDef.METHOD, (String) requestBody.get("select"));
+            apiInfo.put(FieldDef.PATH, apiPath);
+            apiInfo.put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Editor.typeNum()));
+            apiInfo.put(FieldDef.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
         } else {
-            QueryResult queryResult = new ApiInfoQuery(this.dataQL).execute(new HashMap<String, String>() {{
-                put("apiId", apiId);
-            }});
-            int status = ((ObjectModel) queryResult.getData()).getValue("status").asInt();
-            requestBody.put("newStatus", (status == 1 || status == 2) ? 2 : 0);
-            query = new UpdateApiQuery(this.dataQL);
+            apiInfo = this.dataAccessLayer.getObjectBy(EntityDef.INFO, FieldDef.ID, apiId);
+            ApiStatusEnum statusEnum = ApiStatusEnum.typeOf(apiInfo.get(FieldDef.STATUS));
+            if (statusEnum != ApiStatusEnum.Editor) {
+                apiInfo.put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Changes.typeNum()));
+            }
         }
         //
-        QueryResult queryResult = query.execute(new HashMap<String, Object>() {{
-            put("postData", requestBody);
-        }});
+        AtomicInteger atomicInteger = new AtomicInteger();
+        ApiTypeEnum codeType = Objects.requireNonNull(ApiTypeEnum.typeOf(requestBody.get("codeType")), "Undefined code type");
+        String codeValue = (String) requestBody.get("codeValue");
+        String apiID = apiInfo.get(FieldDef.ID);
+        apiInfo.put(FieldDef.API_ID, apiID);
+        apiInfo.put(FieldDef.TYPE, codeType.typeString());
+        apiInfo.put(FieldDef.COMMENT, (String) requestBody.get("comment"));
+        apiInfo.put(FieldDef.SCRIPT, codeValue);
+        apiInfo.put(FieldDef.SCRIPT_ORI, codeValue);
         //
-        return Result.of(queryResult.getData().unwrap());
+        List<Map<String, Object>> headerData = (List) requestBody.get("headerData");
+        List<HeaderData> headerDataList = new ArrayList<>();
+        Map<String, String> headerDataMap = new LinkedHashMap<>();
+        headerData.forEach(dataMap -> {
+            HeaderData dat = new HeaderData();
+            dat.setChecked((Boolean) ConverterUtils.convert(Boolean.TYPE, dataMap.get("checked")));
+            dat.setName(dataMap.get("name").toString());
+            dat.setValue(dataMap.get("value").toString());
+            headerDataList.add(dat);
+            if (dat.isChecked()) {
+                headerDataMap.put(dat.getName(), dat.getValue());
+            }
+        });
+        Type rehType = TypesUtils.extractType(("RehApiType_" + apiID + "_"), atomicInteger, DomainHelper.convertTo(headerDataMap));
+        apiInfo.put(FieldDef.REQ_HEADER_SCHEMA, TypesUtils.toJsonSchema(rehType, false).toJSONString());
+        apiInfo.put(FieldDef.REQ_HEADER_SAMPLE, JSON.toJSONString(headerDataList));
+        //
+        String requestJsonBody = (String) requestBody.get("requestBody");
+        Object sampleObj = JSON.parseObject(requestJsonBody);
+        Type reqType = TypesUtils.extractType(("ReqApiType_" + apiID + "_"), atomicInteger, DomainHelper.convertTo(sampleObj));
+        apiInfo.put(FieldDef.REQ_BODY_SCHEMA, TypesUtils.toJsonSchema(reqType, false).toJSONString());
+        apiInfo.put(FieldDef.REQ_BODY_SAMPLE, requestJsonBody);
+        //
+        apiInfo.put(FieldDef.RES_HEADER_SCHEMA, null);
+        apiInfo.put(FieldDef.RES_HEADER_SAMPLE, null);
+        apiInfo.put(FieldDef.RES_BODY_SCHEMA, null);
+        apiInfo.put(FieldDef.RES_BODY_SAMPLE, null);
+        //
+        Map<String, Object> optionInfo = (Map) requestBody.get("optionInfo");
+        apiInfo.put(FieldDef.OPTION, JSON.toJSONString(optionInfo));
+        apiInfo.put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
+        //
+        boolean result = false;
+        if ("-1".equalsIgnoreCase(apiId)) {
+            result = this.dataAccessLayer.createObjectBy(EntityDef.INFO, apiInfo);
+        } else {
+            result = this.dataAccessLayer.updateObjectBy(EntityDef.INFO, FieldDef.ID, apiId, apiInfo);
+        }
+        return Result.of(result);
     }
 }

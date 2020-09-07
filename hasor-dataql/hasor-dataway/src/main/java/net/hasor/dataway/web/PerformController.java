@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
+import net.hasor.core.Inject;
 import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.DatawayUtils;
@@ -29,7 +30,6 @@ import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
 import net.hasor.web.invoker.HttpParameters;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

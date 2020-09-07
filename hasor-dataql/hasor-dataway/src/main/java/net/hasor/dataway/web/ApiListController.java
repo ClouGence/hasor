@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataql.QueryResult;
-import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.authorization.AuthorizationType;
+import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
-import net.hasor.dataway.daos.ApiListQuery;
+import net.hasor.dataway.daos.impl.EntityDef;
+import net.hasor.dataway.daos.impl.FieldDef;
+import net.hasor.dataway.domain.ApiStatusEnum;
 import net.hasor.web.annotation.Get;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
-import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Api 列表
@@ -37,10 +42,24 @@ import java.util.HashMap;
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class ApiListController extends BasicController {
     @Get
-    public Result<Object> apiList() throws IOException {
-        QueryResult queryResult = new ApiListQuery(this.dataQL).execute(new HashMap<String, String>() {{
-            //
-        }});
-        return Result.of(queryResult.getData().unwrap());
+    public Result<List<Map<String, Object>>> apiList() {
+        List<Map<FieldDef, String>> infoList = this.dataAccessLayer.listObjectBy(//
+                EntityDef.INFO,         //
+                conditionByOrderByTime()//
+        );
+        infoList = (infoList == null) ? Collections.emptyList() : infoList;
+        //
+        List<Map<String, Object>> dataList = infoList.parallelStream()//
+                .map((Function<Map<FieldDef, String>, Map<String, Object>>) infoMap -> {
+                    return new HashMap<String, Object>() {{
+                        put("id", infoMap.get(FieldDef.ID));
+                        put("checked", false);
+                        put("select", infoMap.get(FieldDef.METHOD));
+                        put("path", infoMap.get(FieldDef.PATH));
+                        put("status", ApiStatusEnum.typeOf(infoMap.get(FieldDef.STATUS)).typeNum());
+                        put("comment", infoMap.get(FieldDef.COMMENT));
+                    }};
+                }).collect(Collectors.toList());
+        return Result.of(dataList);
     }
 }
