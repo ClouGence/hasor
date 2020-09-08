@@ -44,13 +44,11 @@ import java.util.concurrent.ExecutionException;
  */
 @Singleton
 public class ApiCallService {
-    protected static Logger         logger = LoggerFactory.getLogger(ApiCallService.class);
+    protected static Logger     logger = LoggerFactory.getLogger(ApiCallService.class);
     @Inject
-    private          SpiTrigger     spiTrigger;
+    private          SpiTrigger spiTrigger;
     @Inject
-    private          ApiServiceImpl apiService;
-    @Inject
-    private          DataQL         executeDataQL;
+    private          DataQL     executeDataQL;
 
     public Object doCallWithoutError(ApiInfo apiInfo, QueryScriptBuild scriptBuild) throws Throwable {
         return this._doCall(apiInfo, scriptBuild, false);

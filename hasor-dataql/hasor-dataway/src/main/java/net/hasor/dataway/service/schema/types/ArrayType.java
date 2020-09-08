@@ -13,14 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.schema.types;
+package net.hasor.dataway.service.schema.types;
 /**
- * 数
+ * 数组或集合类型
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-05-21
  */
-public class NumberType extends DefaultValue<Number> {
+public class ArrayType extends Type {
+    /** 获取集合中的对象类型 */
+    private Type genericType;
+
     public TypeEnum getType() {
-        return TypeEnum.Number;
+        return TypeEnum.Array;
+    }
+
+    public Type getGenericType() {
+        return genericType;
+    }
+
+    public void setGenericType(Type genricType) {
+        this.genericType = genricType;
     }
 }

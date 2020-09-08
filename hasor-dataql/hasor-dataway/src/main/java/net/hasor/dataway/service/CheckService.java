@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.dataway.service;
+import net.hasor.core.Inject;
 import net.hasor.core.InjectSettings;
-import net.hasor.dataql.DataQL;
-import net.hasor.dataql.QueryResult;
-import net.hasor.dataql.domain.ValueModel;
-import net.hasor.dataway.daos.TestPathQuery;
+import net.hasor.core.Singleton;
+import net.hasor.dataway.daos.impl.ApiDataAccessLayer;
+import net.hasor.dataway.daos.impl.EntityDef;
+import net.hasor.dataway.daos.impl.FieldDef;
 import net.hasor.utils.StringUtils;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 检测服务。
@@ -34,11 +32,11 @@ import java.util.HashMap;
 @Singleton
 public class CheckService {
     @InjectSettings("${HASOR_DATAQL_DATAWAY_API_URL}")
-    private String apiUrl;
+    private String             apiUrl;
     @Inject
-    private DataQL dataQL;
+    private ApiDataAccessLayer dataAccessLayer;
 
-    public void checkApi(String apiPath) throws IOException {
+    public void checkApi(String apiPath) {
         if (StringUtils.isBlank(this.apiUrl)) {
             throw new IllegalArgumentException("The API path is empty.");
         }
@@ -49,10 +47,8 @@ public class CheckService {
             throw new IllegalArgumentException("Allowed characters： !  $  '  (  )  *  +  ,  -  .  /  :  ;  =  @  _  ~  0-9  a-z  A-Z");
         }
         //
-        QueryResult queryResult = new TestPathQuery(this.dataQL).execute(new HashMap<String, String>() {{
-            put("apiPath", apiPath);
-        }});
-        if (((ValueModel) queryResult.getData()).asBoolean()) {
+        Map<FieldDef, String> object = this.dataAccessLayer.getObjectBy(EntityDef.INFO, FieldDef.PATH, apiPath);
+        if (object != null) {
             throw new IllegalArgumentException("this API path has been used.");
         }
     }

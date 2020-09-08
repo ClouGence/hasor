@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.schema.types;
+package net.hasor.dataway.service.schema.types;
 /**
  * 引用其它类型
  * @author 赵永春 (zyc@hasor.net)

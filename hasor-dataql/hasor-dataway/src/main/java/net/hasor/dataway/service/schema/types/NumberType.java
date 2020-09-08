@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.schema.types;
+package net.hasor.dataway.service.schema.types;
 /**
- * 参数类型
+ * 数
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-05-21
  */
-public abstract class DefaultValue<T> extends Type {
-    private T defaultValue;
-
-    public T getDefaultValue() {
-        return this.defaultValue;
-    }
-
-    public void setDefaultValue(T defaultValue) {
-        this.defaultValue = defaultValue;
+public class NumberType extends DefaultValue<Number> {
+    public TypeEnum getType() {
+        return TypeEnum.Number;
     }
 }

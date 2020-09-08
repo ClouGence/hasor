@@ -25,7 +25,7 @@ import java.util.Map;
  * @version : 2020-04-19
  */
 public class ApiInfo implements DatawayApi {
-    private CallSource          callSource;        // 本次调用是否perform
+    private CallSource          callSource;     // 本次调用是否perform
     private String              apiID;          // API ID
     private String              releaseID;      // 发布的版本ID
     private String              method;         // Http Method

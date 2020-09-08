@@ -24,15 +24,27 @@ import java.util.Map;
  * @version : 2020-04-19
  */
 public interface DatawayService {
-    public static final String VERSION = "4.1.9";
+    public static final String VERSION = "4.1.14";
 
     /** 执行配置的接口。*/
-    public Object invokeApi(String method, String apiPath, Map<String, Object> jsonParam) throws Throwable;
+    @Deprecated
+    public default Object invokeApi(String method, String apiPath, Map<String, Object> jsonParam) throws Throwable {
+        return invokeApi(apiPath, jsonParam);
+    }
 
     /** 执行配置的接口。*/
+    @Deprecated
     public default Object invokeApiWithoutThrow(String method, String apiPath, Map<String, Object> jsonParam) {
+        return invokeApiWithoutThrow(apiPath, jsonParam);
+    }
+
+    /** 执行配置的接口。*/
+    public Object invokeApi(String apiPath, Map<String, Object> jsonParam) throws Throwable;
+
+    /** 执行配置的接口。*/
+    public default Object invokeApiWithoutThrow(String apiPath, Map<String, Object> jsonParam) {
         try {
-            return invokeApi(method, apiPath, jsonParam);
+            return invokeApi(apiPath, jsonParam);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }

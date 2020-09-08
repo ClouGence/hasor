@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.schema.types;
+package net.hasor.dataway.service.schema.types;
 /**
- * 可能是任何类型
+ * 布尔类型
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-05-21
  */
-public class AnyType extends Type {
+public class BooleanType extends DefaultValue<Boolean> {
     public TypeEnum getType() {
-        return TypeEnum.Any;
+        return TypeEnum.Boolean;
     }
 }

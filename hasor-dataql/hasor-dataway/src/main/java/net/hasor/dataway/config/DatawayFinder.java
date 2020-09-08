@@ -15,19 +15,18 @@
  */
 package net.hasor.dataway.config;
 import net.hasor.core.AppContext;
-import net.hasor.dataql.DataQL;
-import net.hasor.dataql.QueryResult;
+import net.hasor.core.ConstructorBy;
+import net.hasor.core.Singleton;
 import net.hasor.dataql.binder.AppContextFinder;
-import net.hasor.dataql.domain.ListModel;
-import net.hasor.dataway.daos.GetScriptByPathQuery;
+import net.hasor.dataway.daos.impl.ApiDataAccessLayer;
+import net.hasor.dataway.daos.impl.EntityDef;
+import net.hasor.dataway.daos.impl.FieldDef;
 import net.hasor.utils.ResourcesUtils;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Dataway 启动入口
@@ -36,12 +35,12 @@ import java.util.HashMap;
  */
 @Singleton
 public class DatawayFinder extends AppContextFinder {
-    private final DataQL dataQL;
+    private final ApiDataAccessLayer dataAccessLayer;
 
-    @Inject
+    @ConstructorBy
     public DatawayFinder(AppContext appContext) {
         super(appContext);
-        this.dataQL = appContext.getInstance(DataQL.class);
+        this.dataAccessLayer = appContext.getInstance(ApiDataAccessLayer.class);
     }
 
     /** 负责处理 <code>import @"/net/hasor/demo.ql" as demo;</code>方式中 ‘/net/hasor/demo.ql’ 资源的加载 */
@@ -50,15 +49,11 @@ public class DatawayFinder extends AppContextFinder {
             String newResourceName = resourceName.substring("classpath:".length());
             return ResourcesUtils.getResourceAsStream(newResourceName);
         } else {
-            QueryResult queryResult = new GetScriptByPathQuery(this.dataQL).execute(new HashMap<String, String>() {{
-                put("apiPath", resourceName);
-            }});
-            //pub_script
-            ListModel listModel = (ListModel) queryResult.getData();
-            if (listModel == null || listModel.size() == 0) {
+            Map<FieldDef, String> object = this.dataAccessLayer.getObjectBy(EntityDef.RELEASE, FieldDef.PATH, resourceName);
+            if (object == null) {
                 throw new NullPointerException("import compiler failed -> '" + resourceName + "' not found.");
             }
-            String scriptBody = listModel.getObject(0).getValue("pub_script").asString();
+            String scriptBody = object.get(FieldDef.SCRIPT);
             return new ByteArrayInputStream(scriptBody.getBytes());
         }
     }

@@ -13,27 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.schema.types;
-import java.util.Map;
-
+package net.hasor.dataway.service.schema.types;
 /**
- * 结构类型
+ * 字符串值类型
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-05-21
  */
-public class StrutsType extends Type {
-    /** 每个字段Map */
-    private Map<String, Type> properties;
-
+public class StringType extends DefaultValue<String> {
     public TypeEnum getType() {
-        return TypeEnum.Struts;
-    }
-
-    public Map<String, Type> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Map<String, Type> properties) {
-        this.properties = properties;
+        return TypeEnum.String;
     }
 }

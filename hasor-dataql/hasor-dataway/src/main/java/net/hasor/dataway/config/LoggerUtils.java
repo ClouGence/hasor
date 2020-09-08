@@ -29,8 +29,8 @@ import java.util.TreeMap;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class LoggerUtils {
-    private static Logger              logger = LoggerFactory.getLogger(LoggerUtils.class);
-    private        Map<String, Object> map    = new TreeMap<>();
+    private static final Logger              logger = LoggerFactory.getLogger(LoggerUtils.class);
+    private final        Map<String, Object> map    = new TreeMap<>();
 
     private LoggerUtils() {
     }

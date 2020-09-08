@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.schema.types;
+package net.hasor.dataway.service.schema.types;
 /**
- * 类型定义
+ * Map类型，和StrutsType类似但对 key 无限制
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-05-21
  */
-public enum TypeEnum {
-    Any,        // 不确定的，可能是任何中的一个
-    String,     // 字符串
-    Boolean,    // Boolean
-    Number,     // 数字
-    Array,      // 数组或集合
-    Struts,     // 结构体
-    Ref,        // 引用其它结构
-    Map         // Key-Value 映射对
+public class MapType extends Type {
+    public TypeEnum getType() {
+        return TypeEnum.Map;
+    }
 }

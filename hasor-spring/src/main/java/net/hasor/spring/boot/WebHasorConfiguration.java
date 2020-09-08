@@ -47,12 +47,12 @@ import java.util.Set;
 @Configuration(proxyBeanMethods = false)
 public class WebHasorConfiguration extends AbstractTypeSupplierTools//
         implements ImportAware, WebMvcConfigurer {
-    private static Logger     logger      = LoggerFactory.getLogger(WebHasorConfiguration.class);
+    private static final Logger     logger      = LoggerFactory.getLogger(WebHasorConfiguration.class);
     @Autowired
-    private        AppContext appContext;
-    private        String     filterPath  = "/*";
-    private        int        filterOrder = 0;
-    private        WorkAt     filterWorkAt;
+    private              AppContext appContext;
+    private              String     filterPath  = "/*";
+    private              int        filterOrder = 0;
+    private              WorkAt     filterWorkAt;
 
     @Override
     public void setImportMetadata(AnnotationMetadata importMetadata) {

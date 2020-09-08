@@ -17,17 +17,20 @@ package net.hasor.dataway.service;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.core.spi.SpiTrigger;
-import net.hasor.dataql.DataQL;
-import net.hasor.dataql.QueryResult;
-import net.hasor.dataql.domain.ObjectModel;
+import net.hasor.dataql.Hints;
+import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataway.DatawayApi;
 import net.hasor.dataway.DatawayService;
-import net.hasor.dataway.daos.ReleaseDetailQuery;
+import net.hasor.dataway.config.DatawayUtils;
+import net.hasor.dataway.daos.impl.ApiDataAccessLayer;
+import net.hasor.dataway.daos.impl.EntityDef;
+import net.hasor.dataway.daos.impl.FieldDef;
+import net.hasor.dataway.domain.ApiInfoData;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.CallSource;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 服务调用。
@@ -37,35 +40,67 @@ import java.util.Map;
 @Singleton
 public class DatawayServiceImpl implements DatawayService {
     @Inject
-    private DataQL         dataQL;
+    private ApiCallService     callService;
     @Inject
-    private ApiCallService callService;
+    private ApiDataAccessLayer dataAccessLayer;
     @Inject
-    private ApiServiceImpl apiService;
-    @Inject
-    private SpiTrigger     spiTrigger;
+    private SpiTrigger         spiTrigger;
 
     @Override
-    public Object invokeApi(String method, String apiPath, Map<String, Object> jsonParam) throws Throwable {
-        String httpMethod = method.trim().toUpperCase();
+    public Object invokeApi(String apiPath, Map<String, Object> jsonParam) throws Throwable {
+        Map<FieldDef, String> object = this.dataAccessLayer.getObjectBy(EntityDef.RELEASE, FieldDef.PATH, apiPath);
         ApiInfo apiInfo = new ApiInfo();
-        QueryResult queryResult = new ReleaseDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
-            put("apiMethod", httpMethod);
-            put("apiPath", apiPath);
-        }});
-        ObjectModel dataModel = (ObjectModel) queryResult.getData();
         apiInfo.setCallSource(CallSource.Internal);
-        apiInfo.setApiID(dataModel.getValue("apiID").asString());
-        apiInfo.setReleaseID(dataModel.getValue("releaseID").asString());
-        apiInfo.setMethod(httpMethod);
-        apiInfo.setApiPath(apiPath);
+        apiInfo.setReleaseID(object.get(FieldDef.ID));
+        apiInfo.setApiID(object.get(FieldDef.API_ID));
+        apiInfo.setMethod(object.get(FieldDef.METHOD));
+        apiInfo.setApiPath(object.get(FieldDef.PATH));
         apiInfo.setParameterMap(jsonParam);
         //
-        String script = dataModel.getValue("script").asString();
+        String script = object.get(FieldDef.SCRIPT);
         return this.callService.doCall(apiInfo, param -> script);
     }
 
     public DatawayApi getApiById(String apiId) throws Throwable {
-        return this.apiService.getApiById(apiId);
+        Map<FieldDef, String> objectBy = this.dataAccessLayer.getObjectBy(EntityDef.INFO, FieldDef.ID, apiId);
+        ApiInfoData infoData = DatawayUtils.fillApiInfo(objectBy, new ApiInfoData());
+        return new BasicDatawayApi(infoData);
+    }
+
+    private static final class BasicDatawayApi extends HintsSet implements DatawayApi {
+        private ApiInfoData infoData;
+
+        public BasicDatawayApi(ApiInfoData infoData) {
+            this.infoData = Objects.requireNonNull(infoData, "is null");
+            Map<String, Object> prepareHint = this.infoData.getPrepareHint();
+            if (prepareHint != null) {
+                prepareHint.forEach((key, value) -> super.setHint(key, value.toString()));
+            }
+        }
+
+        @Override
+        public String getApiID() {
+            return this.infoData.getApiId();
+        }
+
+        @Override
+        public String getMethod() {
+            return this.infoData.getMethod();
+        }
+
+        @Override
+        public String getApiPath() {
+            return this.infoData.getApiPath();
+        }
+
+        @Override
+        public Map<String, Object> getOptionMap() {
+            return this.infoData.getOptionMap();
+        }
+
+        @Override
+        public Hints getPrepareHint() {
+            return this;
+        }
     }
 }
