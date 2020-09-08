@@ -25,6 +25,7 @@ import net.hasor.dataway.daos.impl.EntityDef;
 import net.hasor.dataway.daos.impl.FieldDef;
 import net.hasor.dataway.domain.ApiStatusEnum;
 import net.hasor.dataway.domain.ApiTypeEnum;
+import net.hasor.dataway.domain.Constant;
 import net.hasor.dataway.domain.HeaderData;
 import net.hasor.dataway.service.CheckService;
 import net.hasor.dataway.service.schema.types.Type;
@@ -49,7 +50,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @MappingToUrl("/api/save-api")
 @RefAuthorization(AuthorizationType.ApiEdit)
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
-public class SaveApiController extends BasicController {
+public class SaveApiController extends BasicController implements Constant {
     @Inject
     private CheckService checkService;
 
@@ -101,13 +102,13 @@ public class SaveApiController extends BasicController {
                 headerDataMap.put(dat.getName(), dat.getValue());
             }
         });
-        Type rehType = TypesUtils.extractType(("RehApiType_" + apiID + "_"), atomicInteger, DomainHelper.convertTo(headerDataMap));
+        Type rehType = TypesUtils.extractType(ReqHeadSchemaPrefix.apply(apiID), atomicInteger, DomainHelper.convertTo(headerDataMap));
         apiInfo.put(FieldDef.REQ_HEADER_SCHEMA, TypesUtils.toJsonSchema(rehType, false).toJSONString());
         apiInfo.put(FieldDef.REQ_HEADER_SAMPLE, JSON.toJSONString(headerDataList));
         //
         String requestJsonBody = (String) requestBody.get("requestBody");
         Object sampleObj = JSON.parseObject(requestJsonBody);
-        Type reqType = TypesUtils.extractType(("ReqApiType_" + apiID + "_"), atomicInteger, DomainHelper.convertTo(sampleObj));
+        Type reqType = TypesUtils.extractType(ReqBodySchemaPrefix.apply(apiID), atomicInteger, DomainHelper.convertTo(sampleObj));
         apiInfo.put(FieldDef.REQ_BODY_SCHEMA, TypesUtils.toJsonSchema(reqType, false).toJSONString());
         apiInfo.put(FieldDef.REQ_BODY_SAMPLE, requestJsonBody);
         //

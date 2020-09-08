@@ -15,23 +15,23 @@
  */
 package net.hasor.dataway.web;
 import com.alibaba.fastjson.JSON;
-import net.hasor.dataql.QueryResult;
+import net.hasor.core.Inject;
 import net.hasor.dataql.domain.DomainHelper;
-import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
-import net.hasor.dataway.daos.ApiDetailQuery;
-import net.hasor.dataway.daos.UpdateSchemaQuery;
-import net.hasor.dataway.schema.types.Type;
-import net.hasor.dataway.schema.types.TypesUtils;
+import net.hasor.dataway.daos.impl.EntityDef;
+import net.hasor.dataway.daos.impl.FieldDef;
+import net.hasor.dataway.domain.Constant;
+import net.hasor.dataway.domain.HeaderData;
 import net.hasor.dataway.service.ApiCallService;
+import net.hasor.dataway.service.schema.types.Type;
+import net.hasor.dataway.service.schema.types.TypesUtils;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.CallSource;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.interceptor.Transactional;
-import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
@@ -40,8 +40,6 @@ import net.hasor.web.invoker.HttpParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +53,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @MappingToUrl("/api/smoke")
 @RefAuthorization(AuthorizationType.ApiEdit)
-public class SmokeController extends BasicController {
+public class SmokeController extends BasicController implements Constant {
     protected static Logger         logger = LoggerFactory.getLogger(SmokeController.class);
     @Inject
     private          ApiCallService apiCallService;
@@ -68,41 +66,34 @@ public class SmokeController extends BasicController {
         }
         //
         // .查询接口数据
-        QueryResult queryDetail = new ApiDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
-            put("apiId", apiId);
-        }});
-        ObjectModel objectModel = ((ObjectModel) queryDetail.getData());
-        //
-        // .获取API信息
+        Map<FieldDef, String> objectBy = this.dataAccessLayer.getObjectBy(EntityDef.INFO, FieldDef.ID, apiId);
         ApiInfo apiInfo = new ApiInfo();
         apiInfo.setCallSource(CallSource.InterfaceUI);
-        apiInfo.setApiID(apiId);
+        apiInfo.setApiID(objectBy.get(FieldDef.ID));
         apiInfo.setReleaseID("");
-        apiInfo.setMethod(objectModel.getValue("select").asString());
-        apiInfo.setApiPath(objectModel.getValue("path").asString());
-        String strCodeType = objectModel.getValue("codeType").asString();
-        String strCodeValue = objectModel.getObject("codeInfo").getValue("codeValue").asString();
+        apiInfo.setMethod(objectBy.get(FieldDef.METHOD));
+        apiInfo.setApiPath(objectBy.get(FieldDef.PATH));
+        String strCodeType = objectBy.get(FieldDef.TYPE);
+        String strCodeValue = objectBy.get(FieldDef.SCRIPT);
         //
         // .准备参数
-        String jsonParamValue = objectModel.getObject("codeInfo").getValue("requestBody").asString();
-        jsonParamValue = (StringUtils.isBlank(jsonParamValue)) ? "{}" : jsonParamValue;
-        apiInfo.setParameterMap(JSON.parseObject(jsonParamValue));
-        apiInfo.setOptionMap(objectModel.getObject("optionData").unwrap());
+        apiInfo.setParameterMap(JSON.parseObject(objectBy.get(FieldDef.REQ_BODY_SAMPLE)));
+        apiInfo.setOptionMap(JSON.parseObject(objectBy.get(FieldDef.OPTION)));
         //
         // 把 Header 设置到 HttpParameter 中。
-        Map<String, Object> requestHeader = (Map<String, Object>) requestBody.get("requestHeader");
-        if (requestHeader != null) {
-            Map<String, List<String>> headerArrayMap = HttpParameters.headerArrayMap();
-            requestHeader.forEach((key, value) -> {
-                headerArrayMap.merge(key, Collections.singletonList(value.toString()), (var1, var2) -> {
-                    var1.addAll(var2);
-                    return var1;
-                });
-            });
-        }
+        List<HeaderData> headerDataList = JSON.parseArray(objectBy.get(FieldDef.REQ_HEADER_SAMPLE), HeaderData.class);
+        Map<String, String> reqHeader = new HashMap<>();
+        Map<String, List<String>> reqHeaderList = new HashMap<>();
+        headerDataList.forEach(headerData -> {
+            if (headerData.isChecked()) {
+                reqHeader.put(headerData.getName(), headerData.getValue());
+                reqHeaderList.put(headerData.getName(), Collections.singletonList(headerData.getValue()));
+            }
+        });
+        HttpParameters.clearReplaceHeaderArrayMap(reqHeaderList);// 替换 Header
         //
         // .执行调用
-        Object objectMap = this.apiCallService.doCallWithoutError(apiInfo, jsonParam -> {
+        Object resData = this.apiCallService.doCallWithoutError(apiInfo, jsonParam -> {
             if ("sql".equalsIgnoreCase(strCodeType)) {
                 // .如果是 SQL 还需要进行代码替换
                 return DatawayUtils.evalCodeValueForSQL(strCodeValue, jsonParam);
@@ -111,26 +102,35 @@ public class SmokeController extends BasicController {
                 return strCodeValue;
             }
         });
-        this.updateSchema(apiId, requestHeader, apiInfo.getParameterMap(), objectMap);
+        this.updateSchema(apiId, objectBy,              //
+                reqHeader, apiInfo.getParameterMap(),   //
+                Collections.emptyMap(), resData         //
+        );
         //
         DatawayUtils.responseData(//
-                this.spiTrigger, apiInfo, invoker.getMimeType("json"), invoker, objectMap//
+                this.spiTrigger, apiInfo, invoker.getMimeType("json"), invoker, resData//
         );
     }
 
-    private void updateSchema(String apiID, Map<String, Object> requestHeader, Object requestData, Object responseData) throws IOException {
-        AtomicInteger atomicInteger = new AtomicInteger();
-        final Type headerType = TypesUtils.extractType(("HeaderType_" + apiID + "_"), atomicInteger, DomainHelper.convertTo(requestHeader));
-        final Type reqType = TypesUtils.extractType(("ReqApiType_" + apiID + "_"), atomicInteger, DomainHelper.convertTo(requestData));
-        final Type resType = TypesUtils.extractType(("ResApiType_" + apiID + "_"), atomicInteger, DomainHelper.convertTo(responseData));
+    private void updateSchema(String apiID, Map<FieldDef, String> objectBy, //
+            Map<String, String> reqHeader, Map<String, Object> reqData,     //
+            Map<String, String> resHeader, Object resData) {
         //
-        // .查询接口数据
-        QueryResult result = new UpdateSchemaQuery(this.dataQL).execute(new HashMap<String, Object>() {{
-            put("apiID", apiID);
-            put("headerSchema", TypesUtils.toJsonSchema(headerType, false));
-            put("requestSchema", TypesUtils.toJsonSchema(reqType, false));
-            put("responseSchema", TypesUtils.toJsonSchema(resType, false));
-        }});
-        logger.info("update schema apiID = " + apiID, ", result = " + JSON.toJSONString(result));
+        AtomicInteger atomicInteger = new AtomicInteger();
+        Type reqHeaderType = TypesUtils.extractType(ReqHeadSchemaPrefix.apply(apiID), atomicInteger, DomainHelper.convertTo(reqHeader));
+        Type reqBodyType = TypesUtils.extractType(ReqBodySchemaPrefix.apply(apiID), atomicInteger, DomainHelper.convertTo(reqData));
+        Type resHeaderType = TypesUtils.extractType(ResHeadSchemaPrefix.apply(apiID), atomicInteger, DomainHelper.convertTo(resHeader));
+        Type resBodyType = TypesUtils.extractType(ResBodySchemaPrefix.apply(apiID), atomicInteger, DomainHelper.convertTo(resData));
+        //
+        objectBy.put(FieldDef.REQ_HEADER_SCHEMA, TypesUtils.toJsonSchema(reqHeaderType, false).toJSONString());
+        objectBy.put(FieldDef.REQ_BODY_SCHEMA, TypesUtils.toJsonSchema(reqBodyType, false).toJSONString());
+        //
+        objectBy.put(FieldDef.RES_HEADER_SCHEMA, TypesUtils.toJsonSchema(resHeaderType, false).toJSONString());
+        objectBy.put(FieldDef.RES_BODY_SCHEMA, TypesUtils.toJsonSchema(resBodyType, false).toJSONString());
+        objectBy.put(FieldDef.RES_HEADER_SAMPLE, JSON.toJSONString(resHeader));
+        objectBy.put(FieldDef.RES_BODY_SAMPLE, JSON.toJSONString(resData));
+        //
+        this.dataAccessLayer.updateObjectBy(EntityDef.INFO, FieldDef.ID, apiID, objectBy);
+        //logger.info("update schema apiID = " + apiID, ", result = " + JSON.toJSONString(result));
     }
 }
