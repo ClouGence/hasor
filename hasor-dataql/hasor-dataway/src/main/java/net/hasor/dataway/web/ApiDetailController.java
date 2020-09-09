@@ -43,6 +43,10 @@ public class ApiDetailController extends BasicController {
     @Get
     public Result<Map<String, Object>> apiDetail(@QueryParameter("id") String apiId) {
         Map<FieldDef, String> object = this.dataAccessLayer.getObjectBy(EntityDef.INFO, FieldDef.ID, apiId);
+        if (object == null) {
+            return Result.of(404, "not found Api.");
+        }
+        //
         ApiInfoData apiInfo = DatawayUtils.fillApiInfo(object, new ApiInfoData());
         String apiScript = object.get(FieldDef.SCRIPT_ORI);
         //

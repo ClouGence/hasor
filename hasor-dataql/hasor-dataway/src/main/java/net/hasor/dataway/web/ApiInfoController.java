@@ -43,6 +43,9 @@ public class ApiInfoController extends BasicController {
     @Get
     public Result<Object> apiInfo(@QueryParameter("id") String apiId) {
         Map<FieldDef, String> object = this.dataAccessLayer.getObjectBy(EntityDef.INFO, FieldDef.ID, apiId);
+        if (object == null) {
+            return Result.of(404, "not found Api.");
+        }
         ApiInfoData apiInfo = DatawayUtils.fillApiInfo(object, new ApiInfoData());
         //
         return Result.of(new HashMap<String, Object>() {{

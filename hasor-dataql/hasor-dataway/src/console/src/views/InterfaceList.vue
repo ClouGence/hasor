@@ -221,6 +221,12 @@ export default {
             request(ApiUrl.apiInfo + '?id=' + row.id, {
                 'method': 'GET'
             }, response => {
+                // 如果服务端失败那么弹出错误消息
+                if (!response.data.success) {
+                    this.$message.error(`${response.data.code}: ${response.data.message}`);
+                    return;
+                }
+                // 加载 API 信息
                 const data = response.data.result;
                 self.requestApiInfo = data;
                 self.requestBody = data.requestBody || '{}';

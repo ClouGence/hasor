@@ -63,6 +63,7 @@ public class SaveApiController extends BasicController implements Constant {
         //
         String apiPath = (String) requestBody.get("apiPath");
         Map<FieldDef, String> apiInfo = null;
+        boolean useCreate = false;
         if ("-1".equalsIgnoreCase(apiId)) {
             this.checkService.checkApi(apiPath);
             apiInfo = new LinkedHashMap<>();
@@ -71,19 +72,20 @@ public class SaveApiController extends BasicController implements Constant {
             apiInfo.put(FieldDef.PATH, apiPath);
             apiInfo.put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Editor.typeNum()));
             apiInfo.put(FieldDef.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
+            useCreate = true;
         } else {
             apiInfo = this.dataAccessLayer.getObjectBy(EntityDef.INFO, FieldDef.ID, apiId);
             ApiStatusEnum statusEnum = ApiStatusEnum.typeOf(apiInfo.get(FieldDef.STATUS));
             if (statusEnum != ApiStatusEnum.Editor) {
                 apiInfo.put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Changes.typeNum()));
             }
+            useCreate = false;
         }
         //
         AtomicInteger atomicInteger = new AtomicInteger();
         ApiTypeEnum codeType = Objects.requireNonNull(ApiTypeEnum.typeOf(requestBody.get("codeType")), "Undefined code type");
         String codeValue = (String) requestBody.get("codeValue");
-        String apiID = apiInfo.get(FieldDef.ID);
-        apiInfo.put(FieldDef.API_ID, apiID);
+        apiInfo.put(FieldDef.API_ID, apiInfo.get(FieldDef.ID));
         apiInfo.put(FieldDef.TYPE, codeType.typeString());
         apiInfo.put(FieldDef.COMMENT, (String) requestBody.get("comment"));
         apiInfo.put(FieldDef.SCRIPT, codeValue);
@@ -102,13 +104,13 @@ public class SaveApiController extends BasicController implements Constant {
                 headerDataMap.put(dat.getName(), dat.getValue());
             }
         });
-        Type rehType = TypesUtils.extractType(ReqHeadSchemaPrefix.apply(apiID), atomicInteger, DomainHelper.convertTo(headerDataMap));
+        Type rehType = TypesUtils.extractType(ReqHeadSchemaPrefix.apply(apiId), atomicInteger, DomainHelper.convertTo(headerDataMap));
         apiInfo.put(FieldDef.REQ_HEADER_SCHEMA, TypesUtils.toJsonSchema(rehType, false).toJSONString());
         apiInfo.put(FieldDef.REQ_HEADER_SAMPLE, JSON.toJSONString(headerDataList));
         //
         String requestJsonBody = (String) requestBody.get("requestBody");
         Object sampleObj = JSON.parseObject(requestJsonBody);
-        Type reqType = TypesUtils.extractType(ReqBodySchemaPrefix.apply(apiID), atomicInteger, DomainHelper.convertTo(sampleObj));
+        Type reqType = TypesUtils.extractType(ReqBodySchemaPrefix.apply(apiId), atomicInteger, DomainHelper.convertTo(sampleObj));
         apiInfo.put(FieldDef.REQ_BODY_SCHEMA, TypesUtils.toJsonSchema(reqType, false).toJSONString());
         apiInfo.put(FieldDef.REQ_BODY_SAMPLE, requestJsonBody);
         //
@@ -121,12 +123,13 @@ public class SaveApiController extends BasicController implements Constant {
         apiInfo.put(FieldDef.OPTION, JSON.toJSONString(optionInfo));
         apiInfo.put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
         //
-        boolean result = false;
-        if ("-1".equalsIgnoreCase(apiId)) {
-            result = this.dataAccessLayer.createObjectBy(EntityDef.INFO, apiInfo);
+        boolean result = useCreate ?//
+                this.dataAccessLayer.createObjectBy(EntityDef.INFO, apiInfo) ://
+                this.dataAccessLayer.updateObjectBy(EntityDef.INFO, FieldDef.ID, apiId, apiInfo);
+        if (result) {
+            return Result.of(apiId);
         } else {
-            result = this.dataAccessLayer.updateObjectBy(EntityDef.INFO, FieldDef.ID, apiId, apiInfo);
+            throw new IllegalArgumentException("db update failed.");
         }
-        return Result.of(result);
     }
 }

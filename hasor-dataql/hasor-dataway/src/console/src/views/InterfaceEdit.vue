@@ -229,6 +229,17 @@ export default {
             request(ApiUrl.apiDetail + '?id=' + self.apiInfo.apiID, {
                 'method': 'GET'
             }, response => {
+                // 如果服务端失败那么弹出错误消息，在回到列表页面
+                if (!response.data.success) {
+                    self.$alert(`${response.data.code}: ${response.data.message}`, 'Error', {
+                        confirmButtonText: 'OK.',
+                        callback: action => {
+                            self.$router.push('/');
+                        }
+                    });
+                    return;
+                }
+                // 加载 API 信息
                 const data = response.data.result;
                 self.apiInfo.select = data.select;
                 self.apiInfo.apiPath = data.path;
