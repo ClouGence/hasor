@@ -189,6 +189,43 @@ public class HttpParameters {
         return headerMap;
     }
 
+    /** 清空并合并， */
+    private static boolean clearReplaceMap(Map<String, List<String>> target, Map<String, List<String>> newData) {
+        if (newData == null) {
+            return false;
+        }
+        target.clear();
+        target.putAll(newData);
+        return true;
+    }
+
+    /** 替换并合并， */
+    private static boolean mergeReplaceMap(Map<String, List<String>> target, Map<String, List<String>> newData) {
+        if (newData == null) {
+            return false;
+        }
+        target.putAll(newData);
+        return true;
+    }
+
+    /** 追加合并， */
+    private static boolean appendMap(Map<String, List<String>> target, Map<String, List<String>> newData) {
+        if (newData == null) {
+            return false;
+        }
+        Map<String, List<String>> listMap = target;
+        newData.forEach((key, val) -> {
+            List<String> merge = listMap.merge(key, val, (first, second) -> {
+                HashSet<String> hashSet = new HashSet<>(first);
+                hashSet.addAll(second);
+                return Arrays.asList(hashSet.toArray(new String[0]));
+            });
+        });
+        target.putAll(newData);
+        return true;
+    }
+    // ---------------------------------------------------------------------------
+
     /** 获取 cookie ，数据是 Map 形式 */
     public static Map<String, String> cookieMap() {
         return mapList2Map(cookieParamLocal.get());
@@ -198,6 +235,22 @@ public class HttpParameters {
     public static Map<String, List<String>> cookieArrayMap() {
         return cookieParamLocal.get();
     }
+
+    /** 清空并替换 cookie */
+    public static boolean clearReplaceCookieArrayMap(Map<String, List<String>> newCookie) {
+        return clearReplaceMap(cookieParamLocal.get(), newCookie);
+    }
+
+    /** 将 newCookie 合并到 cookie 中，遇到冲突 key 用新的进行替换 */
+    public static boolean mergeReplaceCookieArrayMap(Map<String, List<String>> newCookie) {
+        return mergeReplaceMap(cookieParamLocal.get(), newCookie);
+    }
+
+    /** 将 newCookie 合并到 cookie 中，遇到冲突 key 合并它们 */
+    public static boolean appendCookieArrayMap(Map<String, List<String>> newCookie) {
+        return appendMap(cookieParamLocal.get(), newCookie);
+    }
+    // ---------------------------------------------------------------------------
 
     /** 获取 header ，数据是 Map 形式 */
     public static Map<String, String> headerMap() {
@@ -209,6 +262,22 @@ public class HttpParameters {
         return headerParamLocal.get();
     }
 
+    /** 清空并替换 newHeader */
+    public static boolean clearReplaceHeaderArrayMap(Map<String, List<String>> newHeader) {
+        return clearReplaceMap(headerParamLocal.get(), newHeader);
+    }
+
+    /** 将 newHeader 合并到 header 中，遇到冲突 key 用新的进行替换 */
+    public static boolean mergeReplaceHeaderArrayMap(Map<String, List<String>> newHeader) {
+        return mergeReplaceMap(headerParamLocal.get(), newHeader);
+    }
+
+    /** 将 newHeader 合并到 header 中，遇到冲突 key 合并它们 */
+    public static boolean appendHeaderArrayMap(Map<String, List<String>> newHeader) {
+        return appendMap(headerParamLocal.get(), newHeader);
+    }
+    // ---------------------------------------------------------------------------
+
     /** 获取 URL "?" 后面的查询参数 ，数据是 Map 形式 */
     public static Map<String, String> queryMap() {
         return mapList2Map(queryParamLocal.get());
@@ -218,6 +287,22 @@ public class HttpParameters {
     public static Map<String, List<String>> queryArrayMap() {
         return queryParamLocal.get();
     }
+
+    /** 清空并替换 `查询参数` */
+    public static boolean clearReplaceQueryArrayMap(Map<String, List<String>> newQuery) {
+        return clearReplaceMap(queryParamLocal.get(), newQuery);
+    }
+
+    /** 将 newQuery 合并到 `查询参数` 中，遇到冲突 key 用新的进行替换 */
+    public static boolean mergeReplaceQueryArrayMap(Map<String, List<String>> newQuery) {
+        return mergeReplaceMap(queryParamLocal.get(), newQuery);
+    }
+
+    /** 将 newQuery 合并到 `查询参数` 中，遇到冲突 key 合并它们 */
+    public static boolean appendQueryArrayMap(Map<String, List<String>> newQuery) {
+        return appendMap(queryParamLocal.get(), newQuery);
+    }
+    // ---------------------------------------------------------------------------
 
     /** 获取 URL 请求路径上的查询参数 ，数据是 Map 形式 */
     public static Map<String, String> pathMap() {
@@ -229,6 +314,22 @@ public class HttpParameters {
         return pathParamLocal.get();
     }
 
+    /** 清空并替换 `查询参数` */
+    public static boolean clearReplacePathArrayMap(Map<String, List<String>> newPath) {
+        return clearReplaceMap(pathParamLocal.get(), newPath);
+    }
+
+    /** 将 newPath 合并到 `查询参数` 中，遇到冲突 key 用新的进行替换 */
+    public static boolean mergeReplacePathArrayMap(Map<String, List<String>> newPath) {
+        return mergeReplaceMap(pathParamLocal.get(), newPath);
+    }
+
+    /** 将 newPath 合并到 `查询参数` 中，遇到冲突 key 合并它们 */
+    public static boolean appendPathArrayMap(Map<String, List<String>> newPath) {
+        return appendMap(pathParamLocal.get(), newPath);
+    }
+    // ---------------------------------------------------------------------------
+
     /** 获取 Http 标准的请求参数 ，数据是 Map 形式 */
     public static Map<String, String> requestMap() {
         return mapList2Map(requestParamLocal.get());
@@ -237,5 +338,20 @@ public class HttpParameters {
     /** 获取 Http 标准的请求参数 ，Map 的 Value 是数组 */
     public static Map<String, List<String>> requestArrayMap() {
         return requestParamLocal.get();
+    }
+
+    /** 清空并替换 `请求参数` */
+    public static boolean clearReplaceRequestArrayMap(Map<String, List<String>> newRequestParam) {
+        return clearReplaceMap(requestParamLocal.get(), newRequestParam);
+    }
+
+    /** 将 newPath 合并到 `请求参数` 中，遇到冲突 key 用新的进行替换 */
+    public static boolean mergeReplaceRequestArrayMap(Map<String, List<String>> newRequestParam) {
+        return mergeReplaceMap(requestParamLocal.get(), newRequestParam);
+    }
+
+    /** 将 newPath 合并到 `请求参数` 中，遇到冲突 key 合并它们 */
+    public static boolean appendRequestArrayMap(Map<String, List<String>> newRequestParam) {
+        return appendMap(requestParamLocal.get(), newRequestParam);
     }
 }
