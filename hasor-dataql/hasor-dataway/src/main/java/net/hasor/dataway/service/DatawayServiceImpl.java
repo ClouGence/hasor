@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataway.service;
+import com.alibaba.fastjson.JSON;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.core.spi.SpiTrigger;
@@ -21,16 +22,13 @@ import net.hasor.dataql.Hints;
 import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataway.DatawayApi;
 import net.hasor.dataway.DatawayService;
-import net.hasor.dataway.config.DatawayUtils;
-import net.hasor.dataway.daos.impl.ApiDataAccessLayer;
-import net.hasor.dataway.daos.impl.EntityDef;
-import net.hasor.dataway.daos.impl.FieldDef;
-import net.hasor.dataway.domain.ApiInfoData;
+import net.hasor.dataway.daos.ApiDataAccessLayer;
+import net.hasor.dataway.daos.EntityDef;
+import net.hasor.dataway.daos.FieldDef;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.CallSource;
 
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * 服务调用。
@@ -63,16 +61,15 @@ public class DatawayServiceImpl implements DatawayService {
 
     public DatawayApi getApiById(String apiId) throws Throwable {
         Map<FieldDef, String> objectBy = this.dataAccessLayer.getObjectBy(EntityDef.INFO, FieldDef.ID, apiId);
-        ApiInfoData infoData = DatawayUtils.fillApiInfo(objectBy, new ApiInfoData());
-        return new BasicDatawayApi(infoData);
+        return new BasicDatawayApi(objectBy);
     }
 
     private static final class BasicDatawayApi extends HintsSet implements DatawayApi {
-        private ApiInfoData infoData;
+        private final Map<FieldDef, String> objectBy;
 
-        public BasicDatawayApi(ApiInfoData infoData) {
-            this.infoData = Objects.requireNonNull(infoData, "is null");
-            Map<String, Object> prepareHint = this.infoData.getPrepareHint();
+        public BasicDatawayApi(Map<FieldDef, String> objectBy) {
+            this.objectBy = objectBy;
+            Map<String, Object> prepareHint = JSON.parseObject(this.objectBy.get(FieldDef.PREPARE_HINT));
             if (prepareHint != null) {
                 prepareHint.forEach((key, value) -> super.setHint(key, value.toString()));
             }
@@ -80,22 +77,22 @@ public class DatawayServiceImpl implements DatawayService {
 
         @Override
         public String getApiID() {
-            return this.infoData.getApiId();
+            return this.objectBy.get(FieldDef.ID);
         }
 
         @Override
         public String getMethod() {
-            return this.infoData.getMethod();
+            return this.objectBy.get(FieldDef.METHOD);
         }
 
         @Override
         public String getApiPath() {
-            return this.infoData.getApiPath();
+            return this.objectBy.get(FieldDef.PATH);
         }
 
         @Override
         public Map<String, Object> getOptionMap() {
-            return this.infoData.getOptionMap();
+            return JSON.parseObject(this.objectBy.get(FieldDef.OPTION));
         }
 
         @Override

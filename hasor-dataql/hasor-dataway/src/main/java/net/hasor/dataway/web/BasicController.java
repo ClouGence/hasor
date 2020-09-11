@@ -16,16 +16,15 @@
 package net.hasor.dataway.web;
 import net.hasor.core.Inject;
 import net.hasor.core.spi.SpiTrigger;
-import net.hasor.dataway.daos.impl.ApiDataAccessLayer;
-import net.hasor.dataway.daos.impl.FieldDef;
-import net.hasor.dataway.daos.impl.QueryCondition;
-import net.hasor.dataway.domain.ApiStatusEnum;
-import net.hasor.dataway.domain.ApiTypeData;
-import net.hasor.dataway.domain.HeaderData;
+import net.hasor.dataway.daos.ApiDataAccessLayer;
+import net.hasor.dataway.daos.ApiStatusEnum;
+import net.hasor.dataway.daos.FieldDef;
+import net.hasor.dataway.daos.QueryCondition;
 import net.hasor.web.WebController;
 
-import java.util.*;
-import java.util.function.Predicate;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * 基础
@@ -33,21 +32,36 @@ import java.util.function.Predicate;
  * @version : 2020-03-24
  */
 public abstract class BasicController extends WebController {
-    public static final Map<FieldDef, String> STATUS_UPDATE_TO_EDITOR    = new HashMap<FieldDef, String>() {{
-        put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Editor.typeNum()));
-    }};
-    public static final Map<FieldDef, String> STATUS_UPDATE_TO_PUBLISHED = new HashMap<FieldDef, String>() {{
-        put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Published.typeNum()));
-    }};
-    public static final Map<FieldDef, String> STATUS_UPDATE_TO_CHANGES   = new HashMap<FieldDef, String>() {{
-        put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Changes.typeNum()));
-    }};
-    public static final Map<FieldDef, String> STATUS_UPDATE_TO_DISABLE   = new HashMap<FieldDef, String>() {{
-        put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Disable.typeNum()));
-    }};
-    public static final Map<FieldDef, String> STATUS_UPDATE_TO_DELETE    = new HashMap<FieldDef, String>() {{
-        put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Delete.typeNum()));
-    }};
+    public static final Supplier<Map<FieldDef, String>> STATUS_UPDATE_TO_EDITOR    = () -> {
+        return new HashMap<FieldDef, String>() {{
+            put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Editor.typeNum()));
+            put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
+        }};
+    };
+    public static final Supplier<Map<FieldDef, String>> STATUS_UPDATE_TO_PUBLISHED = () -> {
+        return new HashMap<FieldDef, String>() {{
+            put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Published.typeNum()));
+            put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
+        }};
+    };
+    public static final Supplier<Map<FieldDef, String>> STATUS_UPDATE_TO_CHANGES   = () -> {
+        return new HashMap<FieldDef, String>() {{
+            put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Changes.typeNum()));
+            put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
+        }};
+    };
+    public static final Supplier<Map<FieldDef, String>> STATUS_UPDATE_TO_DISABLE   = () -> {
+        return new HashMap<FieldDef, String>() {{
+            put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Disable.typeNum()));
+            put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
+        }};
+    };
+    public static final Supplier<Map<FieldDef, String>> STATUS_UPDATE_TO_DELETE    = () -> {
+        return new HashMap<FieldDef, String>() {{
+            put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Delete.typeNum()));
+            put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
+        }};
+    };
 
     public static Map<QueryCondition, Object> conditionByApiId(String apiId) {
         return new HashMap<QueryCondition, Object>() {{
@@ -61,33 +75,8 @@ public abstract class BasicController extends WebController {
         }};
     }
 
-    //
-    //
     @Inject
     protected SpiTrigger         spiTrigger;
     @Inject
     protected ApiDataAccessLayer dataAccessLayer;
-
-    protected static List<Map<String, Object>> headerToList(ApiTypeData requestInfo) {
-        return headerToList(requestInfo, headerValue -> true);
-    }
-
-    protected static List<Map<String, Object>> headerToList(ApiTypeData requestInfo, Predicate<HeaderData> predicate) {
-        if (requestInfo != null && requestInfo.getHeaderData() != null) {
-            List<HeaderData> headerData = requestInfo.getHeaderData();
-            List<Map<String, Object>> list = new ArrayList<>();
-            for (HeaderData header : headerData) {
-                if (!predicate.test(header)) {
-                    continue;
-                }
-                list.add(new HashMap<String, Object>() {{
-                    put("checked", header.isChecked());
-                    put("name", header.getName());
-                    put("value", header.getValue());
-                }});
-            }
-            return list;
-        }
-        return Collections.emptyList();
-    }
 }

@@ -1,4 +1,4 @@
-package net.hasor.dataway.domain;
+package net.hasor.dataway.daos;
 public enum ApiTypeEnum {
     DataQL("DataQL"), SQL("SQL");
     private final String typeString;

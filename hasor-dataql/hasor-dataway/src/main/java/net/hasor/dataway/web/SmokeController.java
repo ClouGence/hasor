@@ -21,10 +21,10 @@ import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
-import net.hasor.dataway.daos.impl.EntityDef;
-import net.hasor.dataway.daos.impl.FieldDef;
-import net.hasor.dataway.domain.Constant;
-import net.hasor.dataway.domain.HeaderData;
+import net.hasor.dataway.daos.Constant;
+import net.hasor.dataway.daos.EntityDef;
+import net.hasor.dataway.daos.FieldDef;
+import net.hasor.dataway.daos.HeaderData;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.service.schema.types.Type;
 import net.hasor.dataway.service.schema.types.TypesUtils;
@@ -73,7 +73,6 @@ public class SmokeController extends BasicController implements Constant {
         apiInfo.setReleaseID("");
         apiInfo.setMethod(objectBy.get(FieldDef.METHOD));
         apiInfo.setApiPath(objectBy.get(FieldDef.PATH));
-        String strCodeType = objectBy.get(FieldDef.TYPE);
         String strCodeValue = objectBy.get(FieldDef.SCRIPT);
         //
         // .准备参数
@@ -93,15 +92,7 @@ public class SmokeController extends BasicController implements Constant {
         HttpParameters.clearReplaceHeaderArrayMap(reqHeaderList);// 替换 Header
         //
         // .执行调用
-        Object resData = this.apiCallService.doCallWithoutError(apiInfo, jsonParam -> {
-            if ("sql".equalsIgnoreCase(strCodeType)) {
-                // .如果是 SQL 还需要进行代码替换
-                return DatawayUtils.evalCodeValueForSQL(strCodeValue, jsonParam);
-            } else {
-                // .如果是 DataQL 那么就返回
-                return strCodeValue;
-            }
-        });
+        Object resData = this.apiCallService.doCallWithoutError(apiInfo, jsonParam -> strCodeValue);
         this.updateSchema(apiId, objectBy,              //
                 reqHeader, apiInfo.getParameterMap(),   //
                 Collections.emptyMap(), resData         //
@@ -128,7 +119,7 @@ public class SmokeController extends BasicController implements Constant {
         objectBy.put(FieldDef.RES_HEADER_SCHEMA, TypesUtils.toJsonSchema(resHeaderType, false).toJSONString());
         objectBy.put(FieldDef.RES_BODY_SCHEMA, TypesUtils.toJsonSchema(resBodyType, false).toJSONString());
         objectBy.put(FieldDef.RES_HEADER_SAMPLE, JSON.toJSONString(resHeader));
-        objectBy.put(FieldDef.RES_BODY_SAMPLE, JSON.toJSONString(resData));
+        objectBy.put(FieldDef.RES_BODY_SAMPLE, JSON.toJSONString(resData, true));
         //
         this.dataAccessLayer.updateObjectBy(EntityDef.INFO, FieldDef.ID, apiID, objectBy);
         //logger.info("update schema apiID = " + apiID, ", result = " + JSON.toJSONString(result));

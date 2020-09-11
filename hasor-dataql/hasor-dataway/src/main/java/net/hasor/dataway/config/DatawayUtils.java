@@ -21,8 +21,6 @@ import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
-import net.hasor.dataway.daos.impl.FieldDef;
-import net.hasor.dataway.domain.*;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.SerializationChainSpi;
 import net.hasor.dataway.spi.SerializationChainSpi.SerializationInfo;
@@ -37,7 +35,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -260,49 +257,5 @@ public class DatawayUtils {
             }
         }
         return objectMap;
-    }
-
-    public static <T extends ApiInfoData> T fillApiInfo(Map<FieldDef, String> objectMap, T target) {
-        if (target == null) {
-            return null;
-        }
-        //
-        target.setApiId(objectMap.get(FieldDef.ID));              // Api ID
-        target.setMethod(objectMap.get(FieldDef.METHOD));         // 请求方法
-        target.setApiPath(objectMap.get(FieldDef.PATH));          // 请求路径
-        target.setType(ApiTypeEnum.typeOf(objectMap.get(FieldDef.TYPE)));         // 脚本类型 DataQL or SQL
-        target.setStatus(ApiStatusEnum.typeOf(objectMap.get(FieldDef.STATUS)));   // 接口状态
-        target.setApiPath(objectMap.get(FieldDef.PATH));          // 请求路径
-        target.setComment(objectMap.get(FieldDef.COMMENT));       // 注释
-        //
-        target.setRequestInfo(new ApiTypeData() {{
-            setExampleData(objectMap.get(FieldDef.REQ_BODY_SAMPLE));
-            setJsonSchema(objectMap.get(FieldDef.REQ_BODY_SCHEMA));
-            setHeaderData(JSON.parseArray(objectMap.get(FieldDef.REQ_HEADER_SAMPLE), HeaderData.class));
-        }});
-        //
-        target.setResponseInfo(new ApiTypeData() {{
-            setExampleData(objectMap.get(FieldDef.RES_BODY_SAMPLE));
-            setJsonSchema(objectMap.get(FieldDef.RES_BODY_SCHEMA));
-            setHeaderData(JSON.parseArray(objectMap.get(FieldDef.RES_HEADER_SAMPLE), HeaderData.class));
-        }});
-        //
-        target.setOptionMap(JSON.parseObject(objectMap.get(FieldDef.OPTION)));        // 接口选项
-        target.setPrepareHint(JSON.parseObject(objectMap.get(FieldDef.PREPARE_HINT)));// 预定义 Hint
-        //
-        return target;
-    }
-
-    public static <T extends ApiReleaseData> T fillApiRelease(Map<FieldDef, String> objectMap, T target) {
-        if (target == null) {
-            return null;
-        }
-        //
-        target = fillApiInfo(objectMap, target);
-        target.setReleaseId(objectMap.get(FieldDef.ID));    // 请求路径
-        target.setApiId(objectMap.get(FieldDef.API_ID));    // ReleaseId
-        String time = objectMap.get(FieldDef.RELEASE_TIME);
-        target.setReleaseTime(new Date(Long.parseLong(time)));
-        return target;
     }
 }

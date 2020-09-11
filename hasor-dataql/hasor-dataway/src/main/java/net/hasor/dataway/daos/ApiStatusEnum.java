@@ -1,4 +1,4 @@
-package net.hasor.dataway.domain;
+package net.hasor.dataway.daos;
 public enum ApiStatusEnum {
     Editor(0),      //
     Published(1),   //

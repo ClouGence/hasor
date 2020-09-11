@@ -14,26 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import com.alibaba.fastjson.JSON;
-import net.hasor.dataql.QueryResult;
-import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.authorization.RefAuthorization;
-import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
-import net.hasor.dataway.daos.ApiDetailQuery;
-import net.hasor.dataway.daos.PublishApiQuery;
+import net.hasor.dataway.daos.EntityDef;
+import net.hasor.dataway.daos.FieldDef;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.interceptor.Transactional;
-import net.hasor.utils.StringUtils;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -47,30 +41,29 @@ import java.util.Map;
 public class PublishController extends BasicController {
     @Post
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Result<Object> doPublish(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws Throwable {
+    public Result<Object> doPublish(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
-        //
-        QueryResult queryDetail = new ApiDetailQuery(this.dataQL).execute(new HashMap<String, String>() {{
-            put("apiId", apiId);
-        }});
-        String strCodeType = ((ObjectModel) queryDetail.getData()).getValue("codeType").asString();
-        String strCodeValue = ((ObjectModel) queryDetail.getData()).getObject("codeInfo").getValue("codeValue").asString();
-        String requestBodyJson = ((ObjectModel) queryDetail.getData()).getObject("codeInfo").getValue("requestBody").asString();
-        if (StringUtils.isBlank(requestBodyJson)) {
-            requestBodyJson = "{}";
-        }
-        Map<String, Object> strRequestBody = JSON.parseObject(requestBodyJson);
-        if ("sql".equalsIgnoreCase(strCodeType)) {
-            strCodeValue = DatawayUtils.evalCodeValueForSQL(strCodeValue, strRequestBody);
+        // 接口状态更新
+        Map<FieldDef, String> object = this.dataAccessLayer.getObjectBy(EntityDef.INFO, FieldDef.ID, apiId);
+        object.putAll(STATUS_UPDATE_TO_PUBLISHED.get());// 把状态更新为发布
+        boolean updateResult = this.dataAccessLayer.updateObjectBy(//
+                EntityDef.INFO, // 更新接口数据
+                FieldDef.ID,    // 接口ID字段
+                apiId,          // 接口ID
+                object          // 把状态更新掉
+        );
+        if (!updateResult) {
+            throw new RuntimeException("interface Published failed.");
         }
         //
-        String finalStrCodeValue = strCodeValue;
-        new PublishApiQuery(dataQL).execute(new HashMap<String, String>() {{
-            put("apiId", apiId);
-            put("newScript", finalStrCodeValue);
-        }});
-        return Result.of(true);
+        // 保存到发布列表
+        object.put(FieldDef.API_ID, object.get(FieldDef.ID));
+        object.put(FieldDef.ID, this.dataAccessLayer.generateId(EntityDef.RELEASE));
+        object.put(FieldDef.RELEASE_TIME, String.valueOf(System.currentTimeMillis()));
+        object.put(FieldDef.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
+        object.put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
+        return Result.of(this.dataAccessLayer.createObjectBy(EntityDef.RELEASE, object));
     }
 }

@@ -16,20 +16,13 @@
 package net.hasor.dataway.web;
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.Inject;
-import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.authorization.RefAuthorization;
+import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
-import net.hasor.dataway.daos.impl.EntityDef;
-import net.hasor.dataway.daos.impl.FieldDef;
-import net.hasor.dataway.domain.ApiStatusEnum;
-import net.hasor.dataway.domain.ApiTypeEnum;
-import net.hasor.dataway.domain.Constant;
-import net.hasor.dataway.domain.HeaderData;
+import net.hasor.dataway.daos.*;
 import net.hasor.dataway.service.CheckService;
-import net.hasor.dataway.service.schema.types.Type;
-import net.hasor.dataway.service.schema.types.TypesUtils;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.interceptor.Transactional;
 import net.hasor.utils.convert.ConverterUtils;
@@ -40,7 +33,6 @@ import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 把编辑的结果保存起来。
@@ -60,11 +52,11 @@ public class SaveApiController extends BasicController implements Constant {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
-        //
-        String apiPath = (String) requestBody.get("apiPath");
+        // 新增或更新
         Map<FieldDef, String> apiInfo = null;
         boolean useCreate = false;
         if ("-1".equalsIgnoreCase(apiId)) {
+            String apiPath = (String) requestBody.get("apiPath");
             this.checkService.checkApi(apiPath);
             apiInfo = new LinkedHashMap<>();
             apiInfo.put(FieldDef.ID, this.dataAccessLayer.generateId(EntityDef.INFO));
@@ -82,46 +74,47 @@ public class SaveApiController extends BasicController implements Constant {
             useCreate = false;
         }
         //
-        AtomicInteger atomicInteger = new AtomicInteger();
+        // 基础信息
         ApiTypeEnum codeType = Objects.requireNonNull(ApiTypeEnum.typeOf(requestBody.get("codeType")), "Undefined code type");
-        String codeValue = (String) requestBody.get("codeValue");
         apiInfo.put(FieldDef.API_ID, apiInfo.get(FieldDef.ID));
         apiInfo.put(FieldDef.TYPE, codeType.typeString());
         apiInfo.put(FieldDef.COMMENT, (String) requestBody.get("comment"));
-        apiInfo.put(FieldDef.SCRIPT, codeValue);
-        apiInfo.put(FieldDef.SCRIPT_ORI, codeValue);
+        Map<String, Object> optionInfo = (Map) requestBody.get("optionInfo");
+        apiInfo.put(FieldDef.OPTION, JSON.toJSONString(optionInfo));
+        apiInfo.put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
         //
+        // Sample 和 Schema
         List<Map<String, Object>> headerData = (List) requestBody.get("headerData");
         List<HeaderData> headerDataList = new ArrayList<>();
-        Map<String, String> headerDataMap = new LinkedHashMap<>();
         headerData.forEach(dataMap -> {
             HeaderData dat = new HeaderData();
             dat.setChecked((Boolean) ConverterUtils.convert(Boolean.TYPE, dataMap.get("checked")));
             dat.setName(dataMap.get("name").toString());
             dat.setValue(dataMap.get("value").toString());
             headerDataList.add(dat);
-            if (dat.isChecked()) {
-                headerDataMap.put(dat.getName(), dat.getValue());
-            }
         });
-        Type rehType = TypesUtils.extractType(ReqHeadSchemaPrefix.apply(apiId), atomicInteger, DomainHelper.convertTo(headerDataMap));
-        apiInfo.put(FieldDef.REQ_HEADER_SCHEMA, TypesUtils.toJsonSchema(rehType, false).toJSONString());
         apiInfo.put(FieldDef.REQ_HEADER_SAMPLE, JSON.toJSONString(headerDataList));
+        apiInfo.put(FieldDef.REQ_BODY_SAMPLE, (String) requestBody.get("requestBody"));
+        // schema 和 response 样本会在 smoke 中最终确定
+        apiInfo.put(FieldDef.REQ_BODY_SCHEMA, null);    //
+        apiInfo.put(FieldDef.RES_HEADER_SCHEMA, null);  //
+        apiInfo.put(FieldDef.RES_BODY_SCHEMA, null);    //
+        apiInfo.put(FieldDef.RES_HEADER_SAMPLE, null);  //
+        apiInfo.put(FieldDef.RES_BODY_SAMPLE, null);    //
         //
-        String requestJsonBody = (String) requestBody.get("requestBody");
-        Object sampleObj = JSON.parseObject(requestJsonBody);
-        Type reqType = TypesUtils.extractType(ReqBodySchemaPrefix.apply(apiId), atomicInteger, DomainHelper.convertTo(sampleObj));
-        apiInfo.put(FieldDef.REQ_BODY_SCHEMA, TypesUtils.toJsonSchema(reqType, false).toJSONString());
-        apiInfo.put(FieldDef.REQ_BODY_SAMPLE, requestJsonBody);
-        //
-        apiInfo.put(FieldDef.RES_HEADER_SCHEMA, null);
-        apiInfo.put(FieldDef.RES_HEADER_SAMPLE, null);
-        apiInfo.put(FieldDef.RES_BODY_SCHEMA, null);
-        apiInfo.put(FieldDef.RES_BODY_SAMPLE, null);
-        //
-        Map<String, Object> optionInfo = (Map) requestBody.get("optionInfo");
-        apiInfo.put(FieldDef.OPTION, JSON.toJSONString(optionInfo));
-        apiInfo.put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
+        // Script 和 SQL 模式下的改写
+        String codeValueOri = (String) requestBody.get("codeValue");
+        if (ApiTypeEnum.SQL == codeType) {
+            String requestBodySample = (String) requestBody.get("requestBody");
+            Map<String, Object> strRequestBody = JSON.parseObject(requestBodySample);
+            strRequestBody = strRequestBody == null ? Collections.emptyMap() : strRequestBody;
+            String strCodeValueTarget = DatawayUtils.evalCodeValueForSQL(codeValueOri, strRequestBody);
+            apiInfo.put(FieldDef.SCRIPT_ORI, codeValueOri);     // 原始脚本
+            apiInfo.put(FieldDef.SCRIPT, strCodeValueTarget);   // 改写后的脚本
+        } else {
+            apiInfo.put(FieldDef.SCRIPT_ORI, codeValueOri);     // 原始脚本
+            apiInfo.put(FieldDef.SCRIPT, codeValueOri);         // 无需改写
+        }
         //
         boolean result = useCreate ?//
                 this.dataAccessLayer.createObjectBy(EntityDef.INFO, apiInfo) ://

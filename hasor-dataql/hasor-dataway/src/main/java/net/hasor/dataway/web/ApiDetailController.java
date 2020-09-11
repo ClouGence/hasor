@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
+import com.alibaba.fastjson.JSON;
 import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.authorization.RefAuthorization;
-import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
-import net.hasor.dataway.daos.impl.EntityDef;
-import net.hasor.dataway.daos.impl.FieldDef;
-import net.hasor.dataway.domain.ApiInfoData;
+import net.hasor.dataway.daos.*;
 import net.hasor.web.annotation.Get;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -47,23 +45,19 @@ public class ApiDetailController extends BasicController {
             return Result.of(404, "not found Api.");
         }
         //
-        ApiInfoData apiInfo = DatawayUtils.fillApiInfo(object, new ApiInfoData());
-        String apiScript = object.get(FieldDef.SCRIPT_ORI);
-        //
-        Map<String, Object> optionMap = apiInfo.getOptionMap();
-        return Result.of(new HashMap<String, Object>() {{
-            put("id", apiInfo.getApiId());
-            put("select", apiInfo.getMethod());
-            put("path", apiInfo.getApiPath());
-            put("status", apiInfo.getStatus().typeNum());
-            put("apiComment", apiInfo.getComment());
-            put("codeType", apiInfo.getType().typeString());
-            put("codeInfo", new HashMap<String, Object>() {{
-                put("codeValue", apiScript);
-                put("requestBody", apiInfo.getRequestInfo().getExampleData());
-                put("headerData", BasicController.headerToList(apiInfo.getRequestInfo()));
-            }});
-            put("optionData", optionMap == null ? Collections.emptyMap() : optionMap);
+        Map<String, Object> dataMap = new LinkedHashMap<>();
+        dataMap.put("id", object.get(FieldDef.ID));
+        dataMap.put("select", object.get(FieldDef.METHOD));
+        dataMap.put("path", object.get(FieldDef.PATH));
+        dataMap.put("status", ApiStatusEnum.typeOf(object.get(FieldDef.STATUS)).typeNum());
+        dataMap.put("apiComment", object.get(FieldDef.COMMENT));
+        dataMap.put("codeType", ApiTypeEnum.typeOf(object.get(FieldDef.TYPE)).typeString());
+        dataMap.put("codeInfo", new HashMap<String, Object>() {{
+            put("codeValue", object.get(FieldDef.SCRIPT_ORI));
+            put("requestBody", object.get(FieldDef.REQ_BODY_SAMPLE));
+            put("headerData", JSON.parseArray(object.get(FieldDef.REQ_HEADER_SAMPLE), HeaderData.class));
         }});
+        dataMap.put("optionData", JSON.parseObject(object.get(FieldDef.OPTION)));
+        return Result.of(dataMap);
     }
 }

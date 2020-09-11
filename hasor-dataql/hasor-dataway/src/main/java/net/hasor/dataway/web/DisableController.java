@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataql.QueryResult;
 import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
-import net.hasor.dataway.daos.DisableApiQuery;
+import net.hasor.dataway.daos.ApiStatusEnum;
+import net.hasor.dataway.daos.EntityDef;
+import net.hasor.dataway.daos.FieldDef;
+import net.hasor.dataway.daos.QueryCondition;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.interceptor.Transactional;
 import net.hasor.web.annotation.Post;
@@ -28,8 +30,9 @@ import net.hasor.web.annotation.RequestBody;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
-import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,14 +46,46 @@ import java.util.Map;
 public class DisableController extends BasicController {
     @Post
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Result<Object> doDisable(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws IOException {
+    public Result<Object> doDisable(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }
+        Map<FieldDef, String> apiObject = this.dataAccessLayer.getObjectBy(EntityDef.INFO, FieldDef.ID, apiId);
+        if (apiObject == null) {
+            return Result.of(404, "not found Api.");
+        }
         //
-        QueryResult queryResult = new DisableApiQuery(this.dataQL).execute(new HashMap<String, String>() {{
-            put("apiId", apiId);
-        }});
-        return Result.of(queryResult.getData().unwrap());
+        // 查询所有相关的 Release
+        Map<QueryCondition, Object> queryCondition = new HashMap<QueryCondition, Object>() {{
+            put(QueryCondition.ApiId, apiId);
+        }};
+        List<Map<FieldDef, String>> releaseList = this.dataAccessLayer.listObjectBy(EntityDef.RELEASE, queryCondition);
+        //
+        // 更新每一个 Release
+        releaseList = (releaseList == null) ? Collections.emptyList() : releaseList;
+        releaseList.parallelStream().filter(apiRelease -> {
+            // 已经是 Disable 的不在处理
+            ApiStatusEnum statusEnum = ApiStatusEnum.typeOf(apiRelease.get(FieldDef.STATUS));
+            return statusEnum != ApiStatusEnum.Disable;
+        }).forEach(apiRelease -> {
+            // 更新状态为 Disable
+            String releaseId = apiRelease.get(FieldDef.ID);
+            apiRelease = this.dataAccessLayer.getObjectBy(EntityDef.RELEASE, FieldDef.ID, releaseId);
+            apiRelease.putAll(STATUS_UPDATE_TO_DISABLE.get());
+            this.dataAccessLayer.updateObjectBy(    //
+                    EntityDef.RELEASE,  //
+                    FieldDef.ID,        //
+                    releaseId,          //
+                    apiRelease          //
+            );
+        });
+        // 更新主Api
+        apiObject.putAll(STATUS_UPDATE_TO_DISABLE.get());
+        return Result.of(this.dataAccessLayer.updateObjectBy(//
+                EntityDef.INFO, //
+                FieldDef.ID,    //
+                apiId,          //
+                apiObject       //
+        ));
     }
 }

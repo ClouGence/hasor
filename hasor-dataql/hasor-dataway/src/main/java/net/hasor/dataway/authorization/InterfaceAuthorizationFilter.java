@@ -77,8 +77,8 @@ public class InterfaceAuthorizationFilter implements InvokerFilter {
             }
         }
         // .执行权限检查SPI
-        DatawayApi datawayApi = StringUtils.isNotBlank(apiId) ? //
-                this.datawayService.getApiById(apiId) :         //
+        DatawayApi datawayApi = (StringUtils.isNotBlank(apiId) && !"-1".equalsIgnoreCase(apiId)) ?  //
+                this.datawayService.getApiById(apiId) :                                             //
                 null;
         Boolean checkResult = spiTrigger.chainSpi(AuthorizationChainSpi.class, (listener, lastResult) -> {
             return listener.doCheck(uiAuthorization, datawayApi, lastResult);

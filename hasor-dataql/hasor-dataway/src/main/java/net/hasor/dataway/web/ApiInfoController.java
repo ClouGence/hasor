@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
+import com.alibaba.fastjson.JSON;
 import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.authorization.RefAuthorization;
-import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
-import net.hasor.dataway.daos.impl.EntityDef;
-import net.hasor.dataway.daos.impl.FieldDef;
-import net.hasor.dataway.domain.ApiInfoData;
-import net.hasor.dataway.domain.HeaderData;
+import net.hasor.dataway.daos.*;
 import net.hasor.web.annotation.Get;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Api 信息
@@ -46,17 +46,21 @@ public class ApiInfoController extends BasicController {
         if (object == null) {
             return Result.of(404, "not found Api.");
         }
-        ApiInfoData apiInfo = DatawayUtils.fillApiInfo(object, new ApiInfoData());
         //
-        return Result.of(new HashMap<String, Object>() {{
-            put("id", apiInfo.getApiId());
-            put("select", apiInfo.getMethod());
-            put("path", apiInfo.getApiPath());
-            put("status", apiInfo.getStatus().typeNum());
-            //put("apiComment", apiInfo.getComment());
-            put("codeType", apiInfo.getType().typeString());
-            put("requestBody", apiInfo.getRequestInfo().getExampleData());
-            put("headerData", headerToList(apiInfo.getRequestInfo(), HeaderData::isChecked));
-        }});
+        Map<String, Object> hashMap = new HashMap<>();
+        hashMap.put("id", object.get(FieldDef.ID));
+        hashMap.put("select", object.get(FieldDef.METHOD));
+        hashMap.put("path", object.get(FieldDef.PATH));
+        hashMap.put("status", ApiStatusEnum.typeOf(object.get(FieldDef.STATUS)).typeNum());
+        //hashMap.put("apiComment", apiInfo.getComment());
+        hashMap.put("codeType", ApiTypeEnum.typeOf(object.get(FieldDef.TYPE)).typeString());
+        hashMap.put("requestBody", object.get(FieldDef.REQ_BODY_SAMPLE));
+        //
+        List<HeaderData> headerData = JSON.parseArray(object.get(FieldDef.REQ_HEADER_SAMPLE), HeaderData.class);
+        headerData = (headerData == null) ?//
+                Collections.emptyList() ://
+                headerData.parallelStream().filter(HeaderData::isChecked).collect(Collectors.toList());
+        hashMap.put("headerData", headerData);
+        return Result.of(hashMap);
     }
 }

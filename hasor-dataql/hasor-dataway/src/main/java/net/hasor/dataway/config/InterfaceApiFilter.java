@@ -17,10 +17,9 @@ package net.hasor.dataway.config;
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.Inject;
 import net.hasor.core.spi.SpiTrigger;
-import net.hasor.dataway.daos.impl.ApiDataAccessLayer;
-import net.hasor.dataway.daos.impl.EntityDef;
-import net.hasor.dataway.daos.impl.FieldDef;
-import net.hasor.dataway.domain.ApiReleaseData;
+import net.hasor.dataway.daos.ApiDataAccessLayer;
+import net.hasor.dataway.daos.EntityDef;
+import net.hasor.dataway.daos.FieldDef;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.CallSource;
@@ -86,12 +85,11 @@ class InterfaceApiFilter implements InvokerFilter {
         String script = null;
         try {
             Map<FieldDef, String> object = this.dataAccessLayer.getObjectBy(EntityDef.RELEASE, FieldDef.PATH, apiPath);
-            ApiReleaseData releaseDO = DatawayUtils.fillApiRelease(object, new ApiReleaseData());
-            apiInfo.setApiID(releaseDO.getApiId());
-            apiInfo.setReleaseID(releaseDO.getReleaseId());
-            apiInfo.setMethod(releaseDO.getMethod());
-            apiInfo.setApiPath(releaseDO.getApiPath());
-            apiInfo.setOptionMap(releaseDO.getOptionMap());
+            apiInfo.setReleaseID(object.get(FieldDef.ID));
+            apiInfo.setApiID(object.get(FieldDef.API_ID));
+            apiInfo.setMethod(object.get(FieldDef.METHOD));
+            apiInfo.setApiPath(object.get(FieldDef.PATH));
+            apiInfo.setOptionMap(JSON.parseObject(object.get(FieldDef.OPTION)));
             script = object.get(FieldDef.SCRIPT);
         } catch (Exception e) {
             Object result = DatawayUtils.exceptionToResult(e).getResult();

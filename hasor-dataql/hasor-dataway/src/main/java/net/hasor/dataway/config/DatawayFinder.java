@@ -18,9 +18,9 @@ import net.hasor.core.AppContext;
 import net.hasor.core.ConstructorBy;
 import net.hasor.core.Singleton;
 import net.hasor.dataql.binder.AppContextFinder;
-import net.hasor.dataway.daos.impl.ApiDataAccessLayer;
-import net.hasor.dataway.daos.impl.EntityDef;
-import net.hasor.dataway.daos.impl.FieldDef;
+import net.hasor.dataway.daos.ApiDataAccessLayer;
+import net.hasor.dataway.daos.EntityDef;
+import net.hasor.dataway.daos.FieldDef;
 import net.hasor.utils.ResourcesUtils;
 
 import java.io.ByteArrayInputStream;
