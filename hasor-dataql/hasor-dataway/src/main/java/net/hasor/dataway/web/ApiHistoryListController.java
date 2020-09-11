@@ -59,6 +59,7 @@ public class ApiHistoryListController extends BasicController {
                 }).map((Function<Map<FieldDef, String>, Map<String, Object>>) releaseItem -> {
                     return new HashMap<String, Object>() {{
                         put("historyId", releaseItem.get(FieldDef.ID));
+                        put("status", ApiStatusEnum.typeOf(releaseItem.get(FieldDef.STATUS)).typeNum());
                         put("time", dateFormat.format(new Date(Long.parseLong(releaseItem.get(FieldDef.RELEASE_TIME)))));
                     }};
                 }).collect(Collectors.toList());

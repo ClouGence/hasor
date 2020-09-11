@@ -76,7 +76,7 @@
     <div style="display: block;position: absolute;z-index: 1000;">
       <el-popover ref="releaseHistoryPopover" placement="bottom" title="History Version" width="250">
         <el-timeline style="max-height: 300px;overflow-y: scroll; padding-top: 5px;">
-          <el-timeline-item v-for="history in historyList" :key="history.historyId" :hide-timestamp="true" size="large">
+          <el-timeline-item v-for="history in historyList" :key="history.historyId" :color="historyIconColor(history.status)" :hide-timestamp="true" size="large">
             <span>{{ history.time }}</span>
             <el-button size="mini" circle icon="el-icon-edit" style="float:right;margin-top: 5px;" @click.native="handleRecoverAction(history.historyId)" />
           </el-timeline-item>
@@ -116,7 +116,7 @@
 <script>
 import request from '../utils/request';
 import {ApiUrl, defaultOptionData} from '../utils/api-const';
-import {checkRequestBody, errorBox, fixGetRequestBody, headerData} from '../utils/utils';
+import {checkRequestBody, errorBox, fixGetRequestBody, headerData, statusTagInfo} from '../utils/utils';
 
 export default {
     props: {
@@ -187,6 +187,9 @@ export default {
         });
     },
     methods: {
+        historyIconColor(status) {
+            return statusTagInfo(status).tagColor;
+        },
         disabledBtn(btnName) {
             if (btnName === 'testAction') {
                 return this.actionStatus.newMode || this.apiInfo.apiStatus === 1;
@@ -206,6 +209,7 @@ export default {
             }
             return false;
         },
+        //
         // 更多配置按钮
         handleMoreAction() {
             this.moreConfig = true;
@@ -343,6 +347,7 @@ export default {
         handleDeleteAction() {
             this.$emit('onDelete', this.apiInfo.apiID);
         },
+        //
         doUpdate() {
             this.optionInfoCopy = { ...defaultOptionData, ...this.optionInfo};
         }

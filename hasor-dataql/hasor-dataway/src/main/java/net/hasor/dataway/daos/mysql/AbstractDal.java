@@ -38,6 +38,7 @@ public abstract class AbstractDal {
         add("pub_method");
         add("pub_path");
         add("pub_type");
+        add("pub_comment");
         add("pub_script");
         add("pub_script_ori");
         add("pub_schema");
@@ -47,7 +48,7 @@ public abstract class AbstractDal {
     }};
     /** 列对应数据类型 */
     protected static final Map<String, Class<?>>                   columnTypes      = new HashMap<String, Class<?>>() {{
-        put("api_id", Integer.class);
+        put("api_id", String.class);
         put("api_method", String.class);
         put("api_path", String.class);
         put("api_status", Integer.class);
@@ -60,11 +61,12 @@ public abstract class AbstractDal {
         put("api_create_time", Date.class);
         put("api_gmt_time", Date.class);
         //
-        put("pub_id", Integer.class);
-        put("pub_api_id", Integer.class);
+        put("pub_id", String.class);
+        put("pub_api_id", String.class);
         put("pub_method", String.class);
         put("pub_path", String.class);
         put("pub_status", Integer.class);
+        put("pub_comment", String.class);
         put("pub_type", String.class);
         put("pub_script", String.class);
         put("pub_script_ori", String.class);
