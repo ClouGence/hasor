@@ -16,10 +16,10 @@
 package net.hasor.dataway.web;
 import net.hasor.core.Inject;
 import net.hasor.core.spi.SpiTrigger;
-import net.hasor.dataway.daos.ApiDataAccessLayer;
-import net.hasor.dataway.daos.ApiStatusEnum;
-import net.hasor.dataway.daos.FieldDef;
-import net.hasor.dataway.daos.QueryCondition;
+import net.hasor.dataway.dal.ApiDataAccessLayer;
+import net.hasor.dataway.dal.ApiStatusEnum;
+import net.hasor.dataway.dal.FieldDef;
+import net.hasor.dataway.dal.QueryCondition;
 import net.hasor.web.WebController;
 
 import java.util.HashMap;

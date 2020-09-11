@@ -17,9 +17,9 @@ package net.hasor.dataway.service;
 import net.hasor.core.Inject;
 import net.hasor.core.InjectSettings;
 import net.hasor.core.Singleton;
-import net.hasor.dataway.daos.ApiDataAccessLayer;
-import net.hasor.dataway.daos.EntityDef;
-import net.hasor.dataway.daos.FieldDef;
+import net.hasor.dataway.dal.ApiDataAccessLayer;
+import net.hasor.dataway.dal.EntityDef;
+import net.hasor.dataway.dal.FieldDef;
 import net.hasor.utils.StringUtils;
 
 import java.util.Map;

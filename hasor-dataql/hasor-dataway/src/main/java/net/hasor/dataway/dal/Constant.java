@@ -1,4 +1,4 @@
-package net.hasor.dataway.daos;
+package net.hasor.dataway.dal;
 import java.util.function.Function;
 
 public interface Constant {

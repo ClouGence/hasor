@@ -1,4 +1,4 @@
-package net.hasor.dataway.daos;
+package net.hasor.dataway.dal;
 public class HeaderData {
     private boolean checked;
     private String  name;

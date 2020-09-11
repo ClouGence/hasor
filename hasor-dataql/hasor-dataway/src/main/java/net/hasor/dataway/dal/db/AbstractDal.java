@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.daos.mysql;
+package net.hasor.dataway.dal.db;
 import net.hasor.core.Inject;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 
@@ -51,7 +51,7 @@ public abstract class AbstractDal {
         put("api_id", String.class);
         put("api_method", String.class);
         put("api_path", String.class);
-        put("api_status", Integer.class);
+        put("api_status", String.class);
         put("api_comment", String.class);
         put("api_type", String.class);
         put("api_script", String.class);
@@ -65,7 +65,7 @@ public abstract class AbstractDal {
         put("pub_api_id", String.class);
         put("pub_method", String.class);
         put("pub_path", String.class);
-        put("pub_status", Integer.class);
+        put("pub_status", String.class);
         put("pub_comment", String.class);
         put("pub_type", String.class);
         put("pub_script", String.class);
@@ -78,7 +78,6 @@ public abstract class AbstractDal {
     /** target列对应数据类型 */
     protected static final Map<Class<?>, Function<String, Object>> targetConvert    = new HashMap<Class<?>, Function<String, Object>>() {{
         put(String.class, s -> s);
-        put(Integer.class, String::valueOf);
         put(Date.class, s -> new Date(Long.parseLong(s)));
     }};
     @Inject

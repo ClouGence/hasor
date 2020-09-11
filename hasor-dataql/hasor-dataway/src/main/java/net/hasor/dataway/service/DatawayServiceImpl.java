@@ -22,9 +22,9 @@ import net.hasor.dataql.Hints;
 import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataway.DatawayApi;
 import net.hasor.dataway.DatawayService;
-import net.hasor.dataway.daos.ApiDataAccessLayer;
-import net.hasor.dataway.daos.EntityDef;
-import net.hasor.dataway.daos.FieldDef;
+import net.hasor.dataway.dal.ApiDataAccessLayer;
+import net.hasor.dataway.dal.EntityDef;
+import net.hasor.dataway.dal.FieldDef;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.CallSource;
 

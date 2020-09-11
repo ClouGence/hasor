@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.dataway.config;
-import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
-import net.hasor.dataql.DataQL;
 import net.hasor.dataql.QueryApiBinder;
 import net.hasor.dataql.fx.db.runsql.SqlFragment;
 import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.authorization.InterfaceAuthorizationFilter;
 import net.hasor.dataway.service.DatawayServiceImpl;
 import net.hasor.dataway.web.*;
-import net.hasor.db.jdbc.ConnectionCallback;
-import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.SQLException;
 
 /**
  * Dataway 启动入口
@@ -116,54 +110,5 @@ public class DatawayModule implements WebModule {
 
     private static String fixUrl(String url) {
         return url.replaceAll("/+", "/");
-    }
-
-    @Override
-    public void onStart(AppContext appContext) throws SQLException {
-        if (!this.datawayApi) {
-            return;
-        }
-        JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        if (jdbcTemplate == null) {
-            throw new IllegalStateException("jdbcTemplate is not init.");
-        }
-        //
-        String databaseProductName = appContext.getEnvironment().getVariable("HASOR_DATAQL_DATAWAY_FORCE_DBTYPE");
-        DataBaseMapping dataBaseType = null;
-        if (StringUtils.isBlank(databaseProductName)) {
-            DbInfo dbInfo = jdbcTemplate.execute((ConnectionCallback<DbInfo>) con -> {
-                return DbInfo.of(//
-                        con.getMetaData().getDatabaseProductName(),//
-                        con.getMetaData().getDatabaseMajorVersion()//
-                );
-            });
-            dataBaseType = DataBaseMapping.formName(dbInfo);
-        } else {
-            for (DataBaseMapping mapping : DataBaseMapping.values()) {
-                if (StringUtils.equalsIgnoreCase(mapping.name(), databaseProductName)) {
-                    dataBaseType = mapping;
-                    break;
-                }
-            }
-        }
-        //
-        if (dataBaseType == null) {
-            throw new IllegalStateException("unknown DataBaseType -> " + databaseProductName);
-        }
-        //
-        logger.info("dataway dbMapping {}", dataBaseType.mappingType());
-        appContext.getInstance(DataQL.class).addShareVarInstance("dbMapping", dataBaseType.mappingType().toLowerCase());
-    }
-
-    public static class DbInfo {
-        public String productName;
-        public int    majorVersion;
-
-        public static DbInfo of(String productName, int majorVersion) {
-            DbInfo info = new DbInfo();
-            info.productName = productName;
-            info.majorVersion = majorVersion;
-            return info;
-        }
     }
 }

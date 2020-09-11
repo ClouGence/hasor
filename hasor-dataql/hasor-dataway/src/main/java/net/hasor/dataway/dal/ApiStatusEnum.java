@@ -1,4 +1,4 @@
-package net.hasor.dataway.daos;
+package net.hasor.dataway.dal;
 public enum ApiStatusEnum {
     Editor(0),      //
     Published(1),   //

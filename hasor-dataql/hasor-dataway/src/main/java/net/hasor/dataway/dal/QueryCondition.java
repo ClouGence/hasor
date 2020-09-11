@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.daos;
+package net.hasor.dataway.dal;
 /**
  * 查询条件
  * @author 赵永春 (zyc@hasor.net)

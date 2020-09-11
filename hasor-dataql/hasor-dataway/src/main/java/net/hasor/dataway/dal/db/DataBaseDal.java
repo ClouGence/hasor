@@ -13,14 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.daos.mysql;
+package net.hasor.dataway.dal.db;
+import net.hasor.core.AppContext;
+import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.dataway.daos.ApiDataAccessLayer;
-import net.hasor.dataway.daos.EntityDef;
-import net.hasor.dataway.daos.FieldDef;
-import net.hasor.dataway.daos.QueryCondition;
+import net.hasor.dataway.dal.ApiDataAccessLayer;
+import net.hasor.dataway.dal.EntityDef;
+import net.hasor.dataway.dal.FieldDef;
+import net.hasor.dataway.dal.QueryCondition;
+import net.hasor.db.jdbc.ConnectionCallback;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -33,10 +40,35 @@ import java.util.Map;
  */
 @Singleton
 public class DataBaseDal implements ApiDataAccessLayer {
+    protected static Logger              logger = LoggerFactory.getLogger(DataBaseDal.class);
     @Inject
-    private InterfaceInfoDal    infoDal;
+    private          InterfaceInfoDal    infoDal;
     @Inject
-    private InterfaceReleaseDal releaseDal;
+    private          InterfaceReleaseDal releaseDal;
+    @Inject
+    private          AppContext          appContext;
+
+    @Init
+    public void init() throws SQLException {
+        JdbcTemplate jdbcTemplate = this.appContext.getInstance(JdbcTemplate.class);
+        if (jdbcTemplate == null) {
+            throw new IllegalStateException("jdbcTemplate is not init.");
+        }
+        //
+        String dbType = null;//appContext.getEnvironment().getVariable("HASOR_DATAQL_DATAWAY_FORCE_DBTYPE");
+        if (StringUtils.isBlank(dbType)) {
+            dbType = jdbcTemplate.execute((ConnectionCallback<String>) con -> {
+                String jdbcUrl = con.getMetaData().getURL();
+                String jdbcDriverName = con.getMetaData().getDriverName();
+                return InnerJdbcConstants.getDbType(jdbcUrl, jdbcDriverName);
+            });
+        }
+        if (dbType == null) {
+            throw new IllegalStateException("unknown dbType.");
+        }
+        //
+        logger.info("dataway dbType is {}", dbType);
+    }
 
     @Override
     public Map<FieldDef, String> getObjectBy(EntityDef objectType, FieldDef indexKey, String index) {

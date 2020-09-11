@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.daos.mysql;
+package net.hasor.dataway.dal.db;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import net.hasor.core.Singleton;
-import net.hasor.dataway.daos.ApiStatusEnum;
-import net.hasor.dataway.daos.FieldDef;
-import net.hasor.dataway.daos.QueryCondition;
+import net.hasor.dataway.dal.ApiStatusEnum;
+import net.hasor.dataway.dal.FieldDef;
+import net.hasor.dataway.dal.QueryCondition;
 import net.hasor.utils.StringUtils;
 
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static net.hasor.dataway.daos.FieldDef.ID;
-import static net.hasor.dataway.daos.FieldDef.PATH;
+import static net.hasor.dataway.dal.FieldDef.ID;
+import static net.hasor.dataway.dal.FieldDef.PATH;
 
 /**
  * DAO 层接口

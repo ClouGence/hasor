@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.daos;
+package net.hasor.dataway.dal;
 import net.hasor.core.ImplBy;
-import net.hasor.dataway.daos.mysql.DataBaseDal;
+import net.hasor.dataway.dal.db.DataBaseDal;
 
 import java.util.List;
 import java.util.Map;
