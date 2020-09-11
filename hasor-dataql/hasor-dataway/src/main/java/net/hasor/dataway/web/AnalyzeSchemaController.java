@@ -15,12 +15,13 @@
  */
 package net.hasor.dataway.web;
 import com.alibaba.fastjson.JSONObject;
+import net.hasor.core.Inject;
 import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
-import net.hasor.dataway.schema.types.Type;
-import net.hasor.dataway.schema.types.TypesUtils;
 import net.hasor.dataway.service.ApiCallService;
+import net.hasor.dataway.service.schema.types.Type;
+import net.hasor.dataway.service.schema.types.TypesUtils;
 import net.hasor.utils.convert.ConverterUtils;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
@@ -30,7 +31,6 @@ import net.hasor.web.render.RenderType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,7 +48,7 @@ public class AnalyzeSchemaController extends BasicController {
     private          ApiCallService apiCallService;
 
     @Post
-    public Result<Object> doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) throws Throwable {
+    public Result<Object> doSmoke(@QueryParameter("id") String apiId, @RequestBody() Map<String, Object> requestBody) {
         if (!apiId.equalsIgnoreCase(requestBody.get("id").toString())) {
             throw new IllegalArgumentException("id Parameters of the ambiguity.");
         }

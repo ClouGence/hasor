@@ -66,14 +66,10 @@ public class DataBaseDal implements ApiDataAccessLayer {
 
     @Override
     public String generateId(EntityDef objectType) {
-        try {
-            if (EntityDef.INFO == objectType) {
-                return this.infoDal.generateId();
-            } else {
-                return this.releaseDal.generateId();
-            }
-        } catch (SQLException e) {
-            throw ExceptionUtils.toRuntimeException(e);
+        if (EntityDef.INFO == objectType) {
+            return "i_" + Long.toString(System.currentTimeMillis(), 24);
+        } else {
+            return "r_" + Long.toString(System.currentTimeMillis(), 24);
         }
     }
 

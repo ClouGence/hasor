@@ -16,13 +16,10 @@
 package net.hasor.dataway.daos.mysql;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import net.hasor.core.Inject;
-import net.hasor.core.Singleton;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.daos.ApiTypeEnum;
 import net.hasor.dataway.daos.FieldDef;
 import net.hasor.dataway.daos.QueryCondition;
-import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
 
 import java.sql.SQLException;
@@ -34,17 +31,11 @@ import java.util.stream.Collectors;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-06-03
  */
-@Singleton
-public class InterfaceInfoDal {
-    @Inject
-    private              JdbcTemplate          jdbcTemplate;
-    private static final Map<FieldDef, String> indexMapping = new HashMap<FieldDef, String>() {{
+public class InterfaceInfoDal extends AbstractDal {
+    /** INFO 表中的唯一索引列 */
+    private static final Map<FieldDef, String> infoIndexColumn = new HashMap<FieldDef, String>() {{
         put(FieldDef.ID, "api_id");
         put(FieldDef.PATH, "api_path");
-    }};
-    private static final Set<String>           dataColumn   = new HashSet<String>() {{
-        add("api_gmt_time");
-        add("api_create_time");
     }};
 
     private static Map<FieldDef, String> mapToDef(Map<String, Object> entMap) {
@@ -174,50 +165,43 @@ public class InterfaceInfoDal {
     }
 
     public Map<FieldDef, String> getObjectBy(FieldDef indexKey, String index) throws SQLException {
-        String indexField = indexMapping.get(indexKey);
+        String indexField = infoIndexColumn.get(indexKey);
         if (StringUtils.isBlank(indexField)) {
             throw new SQLException("table interface_info not index " + indexKey.name());
         }
+        //
         String sqlQuery = "select * from interface_info where " + indexField + " = ?";
         Map<String, Object> data = this.jdbcTemplate.queryForMap(sqlQuery, index);
         return (data != null) ? mapToDef(data) : null;
     }
 
     public List<Map<FieldDef, String>> listObjectBy(Map<QueryCondition, Object> conditions) throws SQLException {
-        String sqlQuery = "select api_id,api_method,api_path,api_status,api_comment,api_type,api_create_time,api_gmt_time from interface_info";
-        if (conditions.get(QueryCondition.OrderByTime) != null) {
-            sqlQuery += " order by api_create_time asc";
-        }
+        String sqlQuery = "" +//
+                "select api_id,api_method,api_path,api_status,api_comment,api_type,api_create_time,api_gmt_time " +//
+                "from interface_info " + //
+                "order by api_create_time asc";
         //
         List<Map<String, Object>> mapList = this.jdbcTemplate.queryForList(sqlQuery);
         return mapList.parallelStream().map(InterfaceInfoDal::mapToDef).collect(Collectors.toList());
     }
 
-    public String generateId() throws SQLException {
-        return String.valueOf(this.jdbcTemplate.queryForInt("select max(api_id) from interface_info") + 1);
-    }
-
     public boolean deleteObjectBy(FieldDef indexKey, String index) throws SQLException {
-        String indexField = indexMapping.get(indexKey);
+        String indexField = infoIndexColumn.get(indexKey);
         if (StringUtils.isBlank(indexField)) {
             throw new SQLException("table interface_info not index " + indexKey.name());
         }
-        return this.jdbcTemplate.executeUpdate("delete from interface_info where " + indexMapping.get(indexKey) + " = ?", index) > 0;
+        return this.jdbcTemplate.executeUpdate("delete from interface_info where " + infoIndexColumn.get(indexKey) + " = ?", index) > 0;
     }
 
     public boolean updateObjectBy(FieldDef indexKey, String index, Map<FieldDef, String> newData) throws SQLException {
         List<Object> updateData = new ArrayList<>();
         StringBuffer sqlBuffer = new StringBuffer();
         defToMap(newData).forEach((key, value) -> {
-            if (key.equalsIgnoreCase("api_id")) {
+            if (wontUpdateColumn.contains(key.toLowerCase())) {
                 return;
             }
             sqlBuffer.append("," + key + " = ? ");
-            if (dataColumn.contains(key)) {
-                updateData.add(new Date(Long.parseLong(value.toString())));
-            } else {
-                updateData.add(value);
-            }
+            updateData.add(targetConvert.get(columnTypes.get(key)).apply(value.toString()));
         });
         sqlBuffer.deleteCharAt(0);
         //
@@ -225,7 +209,7 @@ public class InterfaceInfoDal {
         String sqlQuery = "" + //
                 "update interface_info set " + //
                 sqlBuffer.toString() + //
-                "where " + indexMapping.get(indexKey) + " = ?";
+                "where " + infoIndexColumn.get(indexKey) + " = ?";
         return this.jdbcTemplate.executeUpdate(sqlQuery, updateData.toArray()) > 0;
     }
 
@@ -236,11 +220,7 @@ public class InterfaceInfoDal {
         defToMap(newData).forEach((key, value) -> {
             insertColumnBuffer.append("," + key);
             insertParamsBuffer.append(",?");
-            if (dataColumn.contains(key)) {
-                insertData.add(new Date(Long.parseLong(value.toString())));
-            } else {
-                insertData.add(value);
-            }
+            insertData.add(targetConvert.get(columnTypes.get(key)).apply(value.toString()));
         });
         insertColumnBuffer.deleteCharAt(0);
         insertParamsBuffer.deleteCharAt(0);

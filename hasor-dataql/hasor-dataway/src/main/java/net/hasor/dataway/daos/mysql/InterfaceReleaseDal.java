@@ -16,11 +16,10 @@
 package net.hasor.dataway.daos.mysql;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
+import net.hasor.dataway.daos.ApiStatusEnum;
 import net.hasor.dataway.daos.FieldDef;
 import net.hasor.dataway.daos.QueryCondition;
-import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
 
 import java.sql.SQLException;
@@ -36,16 +35,10 @@ import static net.hasor.dataway.daos.FieldDef.PATH;
  * @version : 2020-06-03
  */
 @Singleton
-public class InterfaceReleaseDal {
-    @Inject
-    private              JdbcTemplate          jdbcTemplate;
-    private static final Map<FieldDef, String> indexMapping = new HashMap<FieldDef, String>() {{
-        put(ID, "pub_id");
-    }};
-    private static final Set<String>           dataColumn   = new HashSet<String>() {{
-        add("api_gmt_time");
-        add("api_create_time");
-        add("pub_release_time");
+public class InterfaceReleaseDal extends AbstractDal {
+    /** INFO 表中的唯一索引列 */
+    protected static final Map<FieldDef, String> pubIndexColumn = new HashMap<FieldDef, String>() {{
+        put(FieldDef.ID, "pub_id");
     }};
 
     private static Map<FieldDef, String> mapToDef(Map<String, Object> entMap) {
@@ -56,7 +49,8 @@ public class InterfaceReleaseDal {
         dataMap.put(PATH, entMap.get("pub_path").toString());
         dataMap.put(FieldDef.STATUS, entMap.get("pub_status").toString());
         if (entMap.containsKey("pub_comment")) {
-            dataMap.put(FieldDef.COMMENT, entMap.get("pub_comment").toString());
+            Object pubComment = entMap.get("pub_comment");
+            dataMap.put(FieldDef.COMMENT, pubComment == null ? "" : pubComment.toString());
         }
         dataMap.put(FieldDef.TYPE, entMap.get("pub_type").toString());
         //
@@ -122,7 +116,7 @@ public class InterfaceReleaseDal {
         dataMap.computeIfAbsent("pub_method", s -> entMap.get(FieldDef.METHOD));
         dataMap.computeIfAbsent("pub_path", s -> entMap.get(FieldDef.PATH));
         dataMap.computeIfAbsent("pub_status", s -> entMap.get(FieldDef.STATUS));
-        //dataMap.put("api_comment", entMap.get(FieldDef.COMMENT));
+        dataMap.computeIfAbsent("pub_comment", s -> entMap.get(FieldDef.COMMENT));
         dataMap.computeIfAbsent("pub_type", s -> entMap.get(FieldDef.TYPE));
         dataMap.computeIfAbsent("pub_script", s -> entMap.get(FieldDef.SCRIPT));
         dataMap.computeIfAbsent("pub_script_ori", s -> entMap.get(FieldDef.SCRIPT_ORI));
@@ -155,30 +149,43 @@ public class InterfaceReleaseDal {
     }
 
     public Map<FieldDef, String> getObjectBy(FieldDef indexKey, String index) throws SQLException {
-        String indexField = indexMapping.get(indexKey);
-        if (StringUtils.isBlank(indexField)) {
-            throw new SQLException("table interface_release not index " + indexKey.name());
+        // .如果是 Path 那么要先查询最近一次发布ID
+        if (indexKey == PATH) {
+            String sqlQuery = "" + //
+                    "select pub_id,pub_api_id from interface_release " +//
+                    "where pub_status != ? and pub_path = ? " + //
+                    "order by pub_release_time desc";//
+            List<Object> data = new ArrayList<>();
+            data.add(targetConvert.get(columnTypes.get("pub_status")).apply(String.valueOf(ApiStatusEnum.Delete.typeNum())));
+            data.add(targetConvert.get(columnTypes.get("pub_path")).apply(index));
+            //
+            List<Map<String, Object>> tempList = this.jdbcTemplate.queryForList(sqlQuery, data.toArray());
+            if (tempList == null || tempList.isEmpty()) {
+                return null;
+            }
+            Map<String, Object> objectMap = tempList.get(0);
+            index = objectMap.get("pub_id").toString();
         }
+        // 根据发布 ID 查询
         String sqlQuery = "" +//
-                "select r.*,tab.api_comment pub_comment from interface_release r " +//
-                "left join interface_info tab on r.pub_api_id = tab.api_id " + //
-                "where r." + indexField + " = ?";
-        Map<String, Object> data = this.jdbcTemplate.queryForMap(sqlQuery, index);
-        return (data != null) ? mapToDef(data) : null;
+                "select * from interface_release " +//
+                "where pub_status != ? and pub_id = ?";
+        List<Object> data = new ArrayList<>();
+        data.add(targetConvert.get(columnTypes.get("pub_status")).apply(String.valueOf(ApiStatusEnum.Delete.typeNum())));
+        data.add(targetConvert.get(columnTypes.get("pub_id")).apply(index));
+        Map<String, Object> objectMap = this.jdbcTemplate.queryForMap(sqlQuery, data.toArray());
+        //
+        return (objectMap != null) ? mapToDef(objectMap) : null;
     }
 
     public List<Map<FieldDef, String>> listObjectBy(Map<QueryCondition, Object> conditions) throws SQLException {
         String releaseList = "" +//
                 "select pub_id,pub_api_id,pub_method,pub_path,pub_status,pub_type,pub_release_time " +//
                 "from interface_release " +//
-                "where pub_api_id = ?" + //
-                "order by pub_release_time asc";
+                "where pub_status != -1 and pub_api_id = ? " + //
+                "order by pub_release_time desc";
         List<Map<String, Object>> mapList = jdbcTemplate.queryForList(releaseList, conditions.get(QueryCondition.ApiId));
         return mapList.parallelStream().map(InterfaceReleaseDal::mapToDef).collect(Collectors.toList());
-    }
-
-    public String generateId() throws SQLException {
-        return String.valueOf(this.jdbcTemplate.queryForInt("select max(pub_id) from interface_release") + 1);
     }
 
     public boolean deleteObjectBy(FieldDef indexKey, String index) throws SQLException {
@@ -189,18 +196,11 @@ public class InterfaceReleaseDal {
         List<Object> updateData = new ArrayList<>();
         StringBuffer sqlBuffer = new StringBuffer();
         defToMap(newData).forEach((key, value) -> {
-            if (key.equalsIgnoreCase("pub_id")) {
-                return;
-            }
-            if (key.equalsIgnoreCase("pub_api_id")) {
+            if (wontUpdateColumn.contains(key.toLowerCase())) {
                 return;
             }
             sqlBuffer.append("," + key + " = ? ");
-            if (dataColumn.contains(key)) {
-                updateData.add(new Date(Long.parseLong(value.toString())));
-            } else {
-                updateData.add(value);
-            }
+            updateData.add(targetConvert.get(columnTypes.get(key)).apply(value.toString()));
         });
         sqlBuffer.deleteCharAt(0);
         //
@@ -208,7 +208,7 @@ public class InterfaceReleaseDal {
         String sqlQuery = "" + //
                 "update interface_release set " + //
                 sqlBuffer.toString() + //
-                "where " + indexMapping.get(indexKey) + " = ?";
+                "where " + pubIndexColumn.get(indexKey) + " = ?";
         return this.jdbcTemplate.executeUpdate(sqlQuery, updateData.toArray()) > 0;
     }
 
@@ -219,11 +219,7 @@ public class InterfaceReleaseDal {
         defToMap(newData).forEach((key, value) -> {
             insertColumnBuffer.append("," + key);
             insertParamsBuffer.append(",?");
-            if (dataColumn.contains(key)) {
-                insertData.add(new Date(Long.parseLong(value.toString())));
-            } else {
-                insertData.add(value);
-            }
+            insertData.add(targetConvert.get(columnTypes.get(key)).apply(value.toString()));
         });
         insertColumnBuffer.deleteCharAt(0);
         insertParamsBuffer.deleteCharAt(0);

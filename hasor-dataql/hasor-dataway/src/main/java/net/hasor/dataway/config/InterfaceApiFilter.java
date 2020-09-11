@@ -85,6 +85,9 @@ class InterfaceApiFilter implements InvokerFilter {
         String script = null;
         try {
             Map<FieldDef, String> object = this.dataAccessLayer.getObjectBy(EntityDef.RELEASE, FieldDef.PATH, apiPath);
+            if (object == null) {
+                throw new NullPointerException("API is not published.");
+            }
             apiInfo.setReleaseID(object.get(FieldDef.ID));
             apiInfo.setApiID(object.get(FieldDef.API_ID));
             apiInfo.setMethod(object.get(FieldDef.METHOD));

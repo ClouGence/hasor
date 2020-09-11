@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataql.QueryResult;
 import net.hasor.dataway.config.MappingToUrl;
-import net.hasor.dataway.daos.ReleaseListQuery;
-import net.hasor.dataway.schema.swagger.v2.Swagger2_0Query;
+import net.hasor.dataway.daos.EntityDef;
+import net.hasor.dataway.daos.FieldDef;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Get;
@@ -26,7 +25,8 @@ import net.hasor.web.render.RenderType;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Swagger 导出 "http://127.0.0.1:8080/interface-ui/api/docs/swagger2.json"
@@ -45,16 +45,18 @@ public class Swagger2Controller extends BasicController {
             localName = httpRequest.getLocalAddr() + ((localPort == 80) ? "" : (":" + localPort));
         }
         //
-        QueryResult apiList = new ReleaseListQuery(this.dataQL).execute(new HashMap<String, Object>() {{
-            //
-        }});
+        List<Map<FieldDef, String>> doList = this.dataAccessLayer.listObjectBy(EntityDef.RELEASE, conditionByOrderByTime());
+        //        List<ApiReleaseData> infoDataList = doList.parallelStream().map(fieldDefStringMap -> {
+        //            return DatawayUtils.fillApiInfo(fieldDefStringMap, new ApiReleaseData());
+        //        }).collect(Collectors.toList());
         //
         String serverHost = localName;
         String serverBasePath = invoker.getHttpRequest().getContextPath();
-        return new Swagger2_0Query(this.dataQL).execute(new HashMap<String, Object>() {{
-            put("apiDataList", apiList.getData());
-            put("serverHost", serverHost);
-            put("serverBasePath", StringUtils.isNotBlank(serverBasePath) ? serverBasePath : "/");
-        }}).getData().unwrap();
+        //        return new Swagger2_0Query(this.dataQL).execute(new HashMap<String, Object>() {{
+        //            put("apiDataList", apiList.getData());
+        //            put("serverHost", serverHost);
+        //            put("serverBasePath", StringUtils.isNotBlank(serverBasePath) ? serverBasePath : "/");
+        //        }}).getData().unwrap();
+        return null;
     }
 }

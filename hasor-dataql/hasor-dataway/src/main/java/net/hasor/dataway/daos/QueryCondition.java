@@ -21,8 +21,6 @@ package net.hasor.dataway.daos;
  */
 public enum QueryCondition {
     /** 主键匹配 */
-    PrimaryKey,
-    /** 主键匹配 */
     ApiId,
     /** 模糊匹配路径 */
     LinkPath,
