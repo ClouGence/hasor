@@ -7,10 +7,8 @@ import "net.hasor.dataql.fx.basic.CollectionUdfSource" as collect;
 
 var apiDataList = ${apiDataList};
 
-var converRequestSchema = (apiMethod, apiSchema) -> {
-    var requestSchema = apiSchema.requestSchema;
-    var headerSchema = apiSchema.headerSchema;
-    if (requestSchema == null && headerSchema == null) {
+var convertRequestSchema = (apiMethod, bodySchema, headerSchema) -> {
+    if (bodySchema == null && headerSchema == null) {
         return null;
     }
     //
@@ -29,11 +27,11 @@ var converRequestSchema = (apiMethod, apiSchema) -> {
             {
                 "in"     : "body",
                 "name"   : "mainBody",
-                "schema" : requestSchema
+                "schema" : bodySchema
             }
         ])
     } else {
-        return collect.merge(headerParams, collect.map2list(requestSchema.properties) => [
+        return collect.merge(headerSchema, collect.map2list(bodySchema.properties) => [
             {
                 "name"       : key,
                 "in"         : "query",
@@ -53,10 +51,10 @@ var converRequestSchema = (apiMethod, apiSchema) -> {
     // }
 }
 
-var converResponseSchema = (typeData, sample) -> {
+var convertResponseSchema = (bodySchema, headerSchema) -> {
     return {
         "description": "OK",
-        "schema": typeData//,
+        "schema": bodySchema//,
         // "headers" : {},
         // "examples" : {
         //     "application/json" : sample
@@ -64,20 +62,24 @@ var converResponseSchema = (typeData, sample) -> {
     }
 }
 
-var converApi = (apiData) -> {
+var convertApi = (apiData) -> {
     return {
         "tags": [],
         "summary": apiData.comment,
-        "operationId": ("api" + apiData.releaseID + "_" + apiData.apiMethod),
+        "operationId": ("api" + apiData.id + "_" + apiData.method),
         "consumes": [
             "application/json"
         ],
         "produces": [
             "*/*"
         ],
-        "parameters": converRequestSchema(apiData.apiMethod, apiData.apiSchema),
+        "parameters": convertRequestSchema( apiData.method,
+                                            json.fromJson(apiData.reqBodySchema),
+                                            json.fromJson(apiData.reqHeaderSchema)),
         "responses": {
-            "200": converResponseSchema(apiData.apiSchema.responseSchema)
+            "200": convertResponseSchema(   json.fromJson(apiData.resBodySchema),
+                                            json.fromJson(apiData.resHeaderSchema)
+                                            )
         }
     }
 }
@@ -106,15 +108,15 @@ return {
   "produces":["*/*"],
   "paths" : collect.list2map(
     apiDataList,
-    "apiPath",
+    "path",
     (idx, val) -> {
         var newResult = collect.mapKeyReplace(
             { "value" : val },
-            (key, val) -> { return string.toLowerCase(val.apiMethod) }
+            (key, val) -> { return string.toLowerCase(val.method) }
         );
         var newResult = collect.mapValueReplace(
             newResult,
-            (key, val) -> { return converApi(val); }
+            (key, val) -> { return convertApi(val); }
         );
         return newResult;
     }

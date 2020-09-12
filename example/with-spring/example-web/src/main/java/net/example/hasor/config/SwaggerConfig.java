@@ -25,8 +25,8 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()//
                 .title("Spring Boot中使用Swagger2构建RESTful APIs")//
-                .description("欢迎到我的GitHub：https://github.com/1610wang/")//
-                .termsOfServiceUrl("https://github.com/1610wang/")//
+                .description("参考手册：https://www.hasor.net/doc/display/dataql/")//
+                .termsOfServiceUrl("https://www.hasor.net/doc/display/dataql/")//
                 .contact("wxy").version("1.0")//
                 .build();
     }

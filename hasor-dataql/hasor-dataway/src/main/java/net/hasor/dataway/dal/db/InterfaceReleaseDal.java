@@ -180,11 +180,22 @@ public class InterfaceReleaseDal extends AbstractDal {
 
     public List<Map<FieldDef, String>> listObjectBy(Map<QueryCondition, Object> conditions) throws SQLException {
         String releaseList = "" +//
-                "select pub_id,pub_api_id,pub_method,pub_path,pub_status,pub_type,pub_release_time " +//
-                "from interface_release " +//
-                "where pub_status != -1 and pub_api_id = ? " + //
-                "order by pub_release_time desc";
-        List<Map<String, Object>> mapList = jdbcTemplate.queryForList(releaseList, conditions.get(QueryCondition.ApiId));
+                "select pub_id,pub_api_id,pub_method,pub_path,pub_status,pub_type,pub_comment,pub_schema,pub_release_time " +//
+                "from interface_release ";
+        //
+        List<Object> data = new ArrayList<>();
+        if (conditions.containsKey(QueryCondition.ApiId)) {
+            releaseList += "where pub_status != ? and pub_api_id = ? " + //
+                    "order by pub_release_time desc";
+            data.add(targetConvert.get(columnTypes.get("pub_status")).apply(String.valueOf(ApiStatusEnum.Delete.typeNum())));
+            data.add(targetConvert.get(columnTypes.get("pub_api_id")).apply(conditions.get(QueryCondition.ApiId).toString()));
+        } else {
+            releaseList += "where pub_status != ? " + //
+                    "order by pub_release_time desc";
+            data.add(targetConvert.get(columnTypes.get("pub_status")).apply(String.valueOf(ApiStatusEnum.Delete.typeNum())));
+        }
+        //
+        List<Map<String, Object>> mapList = jdbcTemplate.queryForList(releaseList, data.toArray());
         return mapList.parallelStream().map(InterfaceReleaseDal::mapToDef).collect(Collectors.toList());
     }
 

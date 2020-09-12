@@ -22,9 +22,22 @@ public class ExampleModule implements SpringModule {
 
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
+        //        apiBinder.tryCast(QueryApiBinder.class).loadUdf(Object.class, springTypeSupplier(apiBinder));
         // .DataSource form Spring boot into Hasor
         apiBinder.installModule(new JdbcModule(Level.Full, this.dataSource));
         // .custom DataQL
+        //
+        //        // .负责首页导出 CVS
+        //        apiBinder.bindSpiListener(SerializationChainSpi.class, (apiInfo, mimeType, result) -> {
+        //            Object cvs = apiInfo.getParameterMap().get("exportCVS");
+        //            String exportCVS = WebUdfSource.getHeader("exportCVS");
+        //            if ("true".equalsIgnoreCase(exportCVS)) {
+        //                //                result
+        //                //
+        //            }
+        //            return result;
+        //        });
+        //
         //apiBinder.tryCast(QueryApiBinder.class).loadUdfSource(apiBinder.findClass(DimUdfSource.class));
         //        final Set<String> codeSet = AuthorizationType.Group_ReadOnly.toCodeSet();
         //        apiBinder.bindSpiListener(AuthorizationChainSpi.class, (checkType, apiId, defaultCheck) -> {

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
+import net.hasor.dataql.fx.basic.StringUdfSource;
 import net.hasor.dataway.config.MappingToUrl;
-import net.hasor.dataway.daos.EntityDef;
-import net.hasor.dataway.daos.FieldDef;
+import net.hasor.dataway.dal.EntityDef;
+import net.hasor.dataway.dal.FieldDef;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Get;
@@ -25,8 +26,10 @@ import net.hasor.web.render.RenderType;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Swagger 导出 "http://127.0.0.1:8080/interface-ui/api/docs/swagger2.json"
@@ -37,7 +40,7 @@ import java.util.Map;
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class Swagger2Controller extends BasicController {
     @Get
-    public Object doReleaseList(Invoker invoker) throws IOException {
+    public Object doSwaggerApi(Invoker invoker) throws IOException {
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         String localName = httpRequest.getHeader("Host");
         if (StringUtils.isBlank(localName)) {
@@ -45,18 +48,21 @@ public class Swagger2Controller extends BasicController {
             localName = httpRequest.getLocalAddr() + ((localPort == 80) ? "" : (":" + localPort));
         }
         //
-        List<Map<FieldDef, String>> doList = this.dataAccessLayer.listObjectBy(EntityDef.RELEASE, conditionByOrderByTime());
-        //        List<ApiReleaseData> infoDataList = doList.parallelStream().map(fieldDefStringMap -> {
-        //            return DatawayUtils.fillApiInfo(fieldDefStringMap, new ApiReleaseData());
-        //        }).collect(Collectors.toList());
+        List<Map<FieldDef, String>> doList = this.dataAccessLayer.listObjectBy(EntityDef.RELEASE, emptyCondition());
+        List<Map<String, String>> collectList = doList.parallelStream().map(defMap -> {
+            Map<String, String> dataMap = new HashMap<>();
+            defMap.forEach((fieldDef, s) -> {
+                dataMap.put(StringUdfSource.lineToHump(fieldDef.name()), s);
+            });
+            return dataMap;
+        }).collect(Collectors.toList());
         //
         String serverHost = localName;
         String serverBasePath = invoker.getHttpRequest().getContextPath();
-        //        return new Swagger2_0Query(this.dataQL).execute(new HashMap<String, Object>() {{
-        //            put("apiDataList", apiList.getData());
-        //            put("serverHost", serverHost);
-        //            put("serverBasePath", StringUtils.isNotBlank(serverBasePath) ? serverBasePath : "/");
-        //        }}).getData().unwrap();
-        return null;
+        return new Swagger2Query().execute(new HashMap<String, Object>() {{
+            put("apiDataList", collectList);
+            put("serverHost", serverHost);
+            put("serverBasePath", StringUtils.isNotBlank(serverBasePath) ? serverBasePath : "/");
+        }}).getData().unwrap();
     }
 }

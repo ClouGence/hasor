@@ -190,7 +190,8 @@ public class InterfaceInfoDal extends AbstractDal {
         if (StringUtils.isBlank(indexField)) {
             throw new SQLException("table interface_info not index " + indexKey.name());
         }
-        return this.jdbcTemplate.executeUpdate("delete from interface_info where " + infoIndexColumn.get(indexKey) + " = ?", index) > 0;
+        String sqlQuery = "delete from interface_info where " + infoIndexColumn.get(indexKey) + " = ?";
+        return this.jdbcTemplate.executeUpdate(sqlQuery, index) > 0;
     }
 
     public boolean updateObjectBy(FieldDef indexKey, String index, Map<FieldDef, String> newData) throws SQLException {

@@ -22,8 +22,4 @@ package net.hasor.dataway.dal;
 public enum QueryCondition {
     /** 主键匹配 */
     ApiId,
-    /** 模糊匹配路径 */
-    LinkPath,
-    /** 根据时间进行先后排序 */
-    OrderByTime
 }

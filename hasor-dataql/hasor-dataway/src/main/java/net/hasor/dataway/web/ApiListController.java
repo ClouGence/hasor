@@ -44,8 +44,8 @@ public class ApiListController extends BasicController {
     @Get
     public Result<List<Map<String, Object>>> apiList() {
         List<Map<FieldDef, String>> infoList = this.dataAccessLayer.listObjectBy(//
-                EntityDef.INFO,         //
-                conditionByOrderByTime()//
+                EntityDef.INFO, //
+                emptyCondition()//
         );
         infoList = (infoList == null) ? Collections.emptyList() : infoList;
         //

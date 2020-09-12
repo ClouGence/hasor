@@ -69,10 +69,8 @@ public abstract class BasicController extends WebController {
         }};
     }
 
-    public static Map<QueryCondition, Object> conditionByOrderByTime() {
-        return new HashMap<QueryCondition, Object>() {{
-            put(QueryCondition.OrderByTime, true);
-        }};
+    public static Map<QueryCondition, Object> emptyCondition() {
+        return new HashMap<>();
     }
 
     @Inject

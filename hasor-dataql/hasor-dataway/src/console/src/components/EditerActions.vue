@@ -108,7 +108,6 @@
           <!--            <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>-->
           <!--          </el-collapse-item>-->
         </el-collapse>
-
       </div>
     </el-drawer>
   </div>
