@@ -26,8 +26,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static net.hasor.dataway.dal.FieldDef.ID;
-import static net.hasor.dataway.dal.FieldDef.PATH;
+import static net.hasor.dataway.dal.FieldDef.*;
 
 /**
  * DAO 层接口
@@ -38,27 +37,29 @@ import static net.hasor.dataway.dal.FieldDef.PATH;
 public class InterfaceReleaseDal extends AbstractDal {
     /** INFO 表中的唯一索引列 */
     protected static final Map<FieldDef, String> pubIndexColumn = new HashMap<FieldDef, String>() {{
-        put(FieldDef.ID, "pub_id");
+        put(ID, "pub_id");
+        put(API_ID, "pub_api_id");
+        put(PATH, "pub_path");
     }};
 
     private static Map<FieldDef, String> mapToDef(Map<String, Object> entMap) {
         Map<FieldDef, String> dataMap = new HashMap<>();
         dataMap.put(ID, entMap.get("pub_id").toString());
-        dataMap.put(FieldDef.API_ID, entMap.get("pub_api_id").toString());
-        dataMap.put(FieldDef.METHOD, entMap.get("pub_method").toString());
+        dataMap.put(API_ID, entMap.get("pub_api_id").toString());
+        dataMap.put(METHOD, entMap.get("pub_method").toString());
         dataMap.put(PATH, entMap.get("pub_path").toString());
-        dataMap.put(FieldDef.STATUS, entMap.get("pub_status").toString());
+        dataMap.put(STATUS, entMap.get("pub_status").toString());
         if (entMap.containsKey("pub_comment")) {
             Object pubComment = entMap.get("pub_comment");
-            dataMap.put(FieldDef.COMMENT, pubComment == null ? "" : pubComment.toString());
+            dataMap.put(COMMENT, pubComment == null ? "" : pubComment.toString());
         }
-        dataMap.put(FieldDef.TYPE, entMap.get("pub_type").toString());
+        dataMap.put(TYPE, entMap.get("pub_type").toString());
         //
         if (entMap.containsKey("pub_script")) {
-            dataMap.put(FieldDef.SCRIPT, entMap.get("pub_script").toString());
+            dataMap.put(SCRIPT, entMap.get("pub_script").toString());
         }
         if (entMap.containsKey("pub_script_ori")) {
-            dataMap.put(FieldDef.SCRIPT_ORI, entMap.get("pub_script_ori").toString());
+            dataMap.put(SCRIPT_ORI, entMap.get("pub_script_ori").toString());
         }
         //
         if (entMap.containsKey("pub_schema")) {
@@ -74,10 +75,10 @@ public class InterfaceReleaseDal extends AbstractDal {
                 responseBodySchema = jsonObject.getJSONObject("responseSchema");
             }
             //
-            dataMap.put(FieldDef.REQ_HEADER_SCHEMA, (requestHeaderSchema != null) ? requestHeaderSchema.toJSONString() : null);
-            dataMap.put(FieldDef.REQ_BODY_SCHEMA, (requestBodySchema != null) ? requestBodySchema.toJSONString() : null);
-            dataMap.put(FieldDef.RES_HEADER_SCHEMA, (responseHeaderSchema != null) ? responseHeaderSchema.toJSONString() : null);
-            dataMap.put(FieldDef.RES_BODY_SCHEMA, (responseBodySchema != null) ? responseBodySchema.toJSONString() : null);
+            dataMap.put(REQ_HEADER_SCHEMA, (requestHeaderSchema != null) ? requestHeaderSchema.toJSONString() : null);
+            dataMap.put(REQ_BODY_SCHEMA, (requestBodySchema != null) ? requestBodySchema.toJSONString() : null);
+            dataMap.put(RES_HEADER_SCHEMA, (responseHeaderSchema != null) ? responseHeaderSchema.toJSONString() : null);
+            dataMap.put(RES_BODY_SCHEMA, (responseBodySchema != null) ? responseBodySchema.toJSONString() : null);
         }
         //
         if (entMap.containsKey("pub_sample")) {
@@ -92,42 +93,42 @@ public class InterfaceReleaseDal extends AbstractDal {
                 requestHeader = sampleObject.getJSONArray("headerData").toJSONString();
             }
             //
-            dataMap.put(FieldDef.REQ_HEADER_SAMPLE, (requestHeader == null) ? "[]" : requestHeader);
-            dataMap.put(FieldDef.REQ_BODY_SAMPLE, StringUtils.isBlank(requestBody) ? "{}" : requestBody);
-            dataMap.put(FieldDef.RES_HEADER_SAMPLE, (responseHeader == null) ? "[]" : responseHeader);
-            dataMap.put(FieldDef.RES_BODY_SAMPLE, StringUtils.isBlank(responseBody) ? "{}" : responseBody);
+            dataMap.put(REQ_HEADER_SAMPLE, (requestHeader == null) ? "[]" : requestHeader);
+            dataMap.put(REQ_BODY_SAMPLE, StringUtils.isBlank(requestBody) ? "{}" : requestBody);
+            dataMap.put(RES_HEADER_SAMPLE, (responseHeader == null) ? "[]" : responseHeader);
+            dataMap.put(RES_BODY_SAMPLE, StringUtils.isBlank(responseBody) ? "{}" : responseBody);
         }
         //
         // PREPARE_HINT
         //
         Object apiOption = entMap.get("pub_option");
-        dataMap.put(FieldDef.OPTION, apiOption != null ? apiOption.toString() : null);
-        //dataMap.put(FieldDef.CREATE_TIME, String.valueOf(((Date) entMap.get("api_create_time")).getTime()));
-        //dataMap.put(FieldDef.GMT_TIME, String.valueOf(((Date) entMap.get("api_gmt_time")).getTime()));
-        dataMap.put(FieldDef.RELEASE_TIME, String.valueOf(((Date) entMap.get("pub_release_time")).getTime()));
+        dataMap.put(OPTION, apiOption != null ? apiOption.toString() : null);
+        //dataMap.put(CREATE_TIME, String.valueOf(((Date) entMap.get("api_create_time")).getTime()));
+        //dataMap.put(GMT_TIME, String.valueOf(((Date) entMap.get("api_gmt_time")).getTime()));
+        dataMap.put(RELEASE_TIME, String.valueOf(((Date) entMap.get("pub_release_time")).getTime()));
         //
         return dataMap;
     }
 
     private static Map<String, Object> defToMap(Map<FieldDef, String> entMap) {
         Map<String, Object> dataMap = new HashMap<>();
-        dataMap.computeIfAbsent("pub_id", s -> entMap.get(FieldDef.ID));
-        dataMap.computeIfAbsent("pub_api_id", s -> entMap.get(FieldDef.API_ID));
-        dataMap.computeIfAbsent("pub_method", s -> entMap.get(FieldDef.METHOD));
-        dataMap.computeIfAbsent("pub_path", s -> entMap.get(FieldDef.PATH));
-        dataMap.computeIfAbsent("pub_status", s -> entMap.get(FieldDef.STATUS));
-        dataMap.computeIfAbsent("pub_comment", s -> entMap.get(FieldDef.COMMENT));
-        dataMap.computeIfAbsent("pub_type", s -> entMap.get(FieldDef.TYPE));
-        dataMap.computeIfAbsent("pub_script", s -> entMap.get(FieldDef.SCRIPT));
-        dataMap.computeIfAbsent("pub_script_ori", s -> entMap.get(FieldDef.SCRIPT_ORI));
+        dataMap.computeIfAbsent("pub_id", s -> entMap.get(ID));
+        dataMap.computeIfAbsent("pub_api_id", s -> entMap.get(API_ID));
+        dataMap.computeIfAbsent("pub_method", s -> entMap.get(METHOD));
+        dataMap.computeIfAbsent("pub_path", s -> entMap.get(PATH));
+        dataMap.computeIfAbsent("pub_status", s -> entMap.get(STATUS));
+        dataMap.computeIfAbsent("pub_comment", s -> entMap.get(COMMENT));
+        dataMap.computeIfAbsent("pub_type", s -> entMap.get(TYPE));
+        dataMap.computeIfAbsent("pub_script", s -> entMap.get(SCRIPT));
+        dataMap.computeIfAbsent("pub_script_ori", s -> entMap.get(SCRIPT_ORI));
         //
         dataMap.computeIfAbsent("pub_schema", s -> {
             StringBuilder schemaData = new StringBuilder();
             schemaData.append("{");
-            schemaData.append("\"requestHeader\":" + entMap.get(FieldDef.REQ_HEADER_SCHEMA) + ",");
-            schemaData.append("\"requestBody\":" + entMap.get(FieldDef.REQ_BODY_SCHEMA) + ",");
-            schemaData.append("\"responseHeader\":" + entMap.get(FieldDef.RES_HEADER_SCHEMA) + ",");
-            schemaData.append("\"responseBody\":" + entMap.get(FieldDef.RES_BODY_SCHEMA));
+            schemaData.append("\"requestHeader\":" + entMap.get(REQ_HEADER_SCHEMA) + ",");
+            schemaData.append("\"requestBody\":" + entMap.get(REQ_BODY_SCHEMA) + ",");
+            schemaData.append("\"responseHeader\":" + entMap.get(RES_HEADER_SCHEMA) + ",");
+            schemaData.append("\"responseBody\":" + entMap.get(RES_BODY_SCHEMA));
             schemaData.append("}");
             return schemaData.toString();
         });
@@ -135,16 +136,16 @@ public class InterfaceReleaseDal extends AbstractDal {
         dataMap.computeIfAbsent("pub_sample", s -> {
             StringBuffer sampleData = new StringBuffer();
             sampleData.append("{");
-            sampleData.append("\"requestHeader\":" + JSON.toJSONString(entMap.get(FieldDef.REQ_HEADER_SAMPLE)) + ",");
-            sampleData.append("\"requestBody\":" + JSON.toJSONString(entMap.get(FieldDef.REQ_BODY_SAMPLE)) + ",");
-            sampleData.append("\"responseHeader\":" + JSON.toJSONString(entMap.get(FieldDef.RES_HEADER_SAMPLE)) + ",");
-            sampleData.append("\"responseBody\":" + JSON.toJSONString(entMap.get(FieldDef.RES_BODY_SAMPLE)));
+            sampleData.append("\"requestHeader\":" + JSON.toJSONString(entMap.get(REQ_HEADER_SAMPLE)) + ",");
+            sampleData.append("\"requestBody\":" + JSON.toJSONString(entMap.get(REQ_BODY_SAMPLE)) + ",");
+            sampleData.append("\"responseHeader\":" + JSON.toJSONString(entMap.get(RES_HEADER_SAMPLE)) + ",");
+            sampleData.append("\"responseBody\":" + JSON.toJSONString(entMap.get(RES_BODY_SAMPLE)));
             sampleData.append("}");
             return sampleData.toString();
         });
         //
-        dataMap.computeIfAbsent("pub_option", s -> entMap.get(FieldDef.OPTION));
-        dataMap.computeIfAbsent("pub_release_time", s -> entMap.get(FieldDef.RELEASE_TIME));
+        dataMap.computeIfAbsent("pub_option", s -> entMap.get(OPTION));
+        dataMap.computeIfAbsent("pub_release_time", s -> entMap.get(RELEASE_TIME));
         return dataMap;
     }
 
@@ -240,7 +241,7 @@ public class InterfaceReleaseDal extends AbstractDal {
                 insertColumnBuffer.toString() + //
                 ") values (" +//
                 insertParamsBuffer.toString() + //
-                ");";
+                ")";
         return this.jdbcTemplate.executeUpdate(sqlQuery, insertData.toArray()) > 0;
     }
 }

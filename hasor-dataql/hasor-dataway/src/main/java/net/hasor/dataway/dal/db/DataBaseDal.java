@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * DAO 层接口
@@ -98,11 +99,17 @@ public class DataBaseDal implements ApiDataAccessLayer {
 
     @Override
     public String generateId(EntityDef objectType) {
-        if (EntityDef.INFO == objectType) {
-            return "i_" + Long.toString(System.currentTimeMillis(), 24);
+        long timeMillis = System.currentTimeMillis();
+        int nextInt = new Random(timeMillis).nextInt();
+        String s = Integer.toString(nextInt, 24);
+        if (s.length() > 4) {
+            s = s.substring(0, 4);
         } else {
-            return "r_" + Long.toString(System.currentTimeMillis(), 24);
+            s = StringUtils.rightPad(s, 4, "0");
         }
+        //
+        String newId = Long.toString(timeMillis, 24) + s;
+        return ((EntityDef.INFO == objectType) ? "i_" : "r_") + newId;
     }
 
     @Override

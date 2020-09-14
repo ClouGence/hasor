@@ -26,6 +26,8 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static net.hasor.dataway.dal.FieldDef.*;
+
 /**
  * DAO 层接口
  * @author 赵永春 (zyc@hasor.net)
@@ -34,23 +36,24 @@ import java.util.stream.Collectors;
 public class InterfaceInfoDal extends AbstractDal {
     /** INFO 表中的唯一索引列 */
     private static final Map<FieldDef, String> infoIndexColumn = new HashMap<FieldDef, String>() {{
-        put(FieldDef.ID, "api_id");
-        put(FieldDef.PATH, "api_path");
+        put(ID, "api_id");
+        put(PATH, "api_path");
     }};
 
     private static Map<FieldDef, String> mapToDef(Map<String, Object> entMap) {
         Map<FieldDef, String> dataMap = new HashMap<>();
-        dataMap.put(FieldDef.ID, entMap.get("api_id").toString());
-        dataMap.put(FieldDef.API_ID, entMap.get("api_id").toString());
-        dataMap.put(FieldDef.METHOD, entMap.get("api_method").toString());
-        dataMap.put(FieldDef.PATH, entMap.get("api_path").toString());
-        dataMap.put(FieldDef.STATUS, entMap.get("api_status").toString());
-        dataMap.put(FieldDef.COMMENT, entMap.get("api_comment").toString());
-        dataMap.put(FieldDef.TYPE, entMap.get("api_type").toString());
+        dataMap.put(ID, String.valueOf(entMap.get("api_id")));
+        dataMap.put(API_ID, String.valueOf(entMap.get("api_id")));
+        dataMap.put(METHOD, String.valueOf(entMap.get("api_method")));
+        dataMap.put(PATH, String.valueOf(entMap.get("api_path")));
+        dataMap.put(STATUS, String.valueOf(entMap.get("api_status")));
+        Object apiComment = entMap.get("api_comment");
+        dataMap.put(COMMENT, apiComment != null ? apiComment.toString() : null);
+        dataMap.put(TYPE, String.valueOf(entMap.get("api_type")));
         Object apiOption = entMap.get("api_option");
-        dataMap.put(FieldDef.OPTION, apiOption != null ? apiOption.toString() : null);
-        dataMap.put(FieldDef.CREATE_TIME, String.valueOf(((Date) entMap.get("api_create_time")).getTime()));
-        dataMap.put(FieldDef.GMT_TIME, String.valueOf(((Date) entMap.get("api_gmt_time")).getTime()));
+        dataMap.put(OPTION, apiOption != null ? apiOption.toString() : null);
+        dataMap.put(CREATE_TIME, String.valueOf(((Date) entMap.get("api_create_time")).getTime()));
+        dataMap.put(GMT_TIME, String.valueOf(((Date) entMap.get("api_gmt_time")).getTime()));
         //
         if (entMap.containsKey("api_schema")) {
             JSONObject jsonObject = JSON.parseObject(entMap.get("api_schema").toString());
@@ -65,10 +68,10 @@ public class InterfaceInfoDal extends AbstractDal {
                 responseBodySchema = jsonObject.getJSONObject("responseSchema");
             }
             //
-            dataMap.put(FieldDef.REQ_HEADER_SCHEMA, (requestHeaderSchema != null) ? requestHeaderSchema.toJSONString() : null);
-            dataMap.put(FieldDef.REQ_BODY_SCHEMA, (requestBodySchema != null) ? requestBodySchema.toJSONString() : null);
-            dataMap.put(FieldDef.RES_HEADER_SCHEMA, (responseHeaderSchema != null) ? responseHeaderSchema.toJSONString() : null);
-            dataMap.put(FieldDef.RES_BODY_SCHEMA, (responseBodySchema != null) ? responseBodySchema.toJSONString() : null);
+            dataMap.put(REQ_HEADER_SCHEMA, (requestHeaderSchema != null) ? requestHeaderSchema.toJSONString() : null);
+            dataMap.put(REQ_BODY_SCHEMA, (requestBodySchema != null) ? requestBodySchema.toJSONString() : null);
+            dataMap.put(RES_HEADER_SCHEMA, (responseHeaderSchema != null) ? responseHeaderSchema.toJSONString() : null);
+            dataMap.put(RES_BODY_SCHEMA, (responseBodySchema != null) ? responseBodySchema.toJSONString() : null);
         }
         //
         if (entMap.containsKey("api_sample")) {
@@ -83,24 +86,24 @@ public class InterfaceInfoDal extends AbstractDal {
                 requestHeader = sampleObject.getJSONArray("headerData").toJSONString();
             }
             //
-            dataMap.put(FieldDef.REQ_HEADER_SAMPLE, (requestHeader == null) ? "[]" : requestHeader);
-            dataMap.put(FieldDef.REQ_BODY_SAMPLE, StringUtils.isBlank(requestBody) ? "{}" : requestBody);
-            dataMap.put(FieldDef.RES_HEADER_SAMPLE, (responseHeader == null) ? "[]" : responseHeader);
-            dataMap.put(FieldDef.RES_BODY_SAMPLE, StringUtils.isBlank(responseBody) ? "{}" : responseBody);
+            dataMap.put(REQ_HEADER_SAMPLE, (requestHeader == null) ? "[]" : requestHeader);
+            dataMap.put(REQ_BODY_SAMPLE, StringUtils.isBlank(requestBody) ? "{}" : requestBody);
+            dataMap.put(RES_HEADER_SAMPLE, (responseHeader == null) ? "[]" : responseHeader);
+            dataMap.put(RES_BODY_SAMPLE, StringUtils.isBlank(responseBody) ? "{}" : responseBody);
         }
         //
         if (entMap.containsKey("api_script")) {
             String scriptOri = entMap.get("api_script").toString();
             String scriptTarget = scriptOri;
-            ApiTypeEnum typeEnum = ApiTypeEnum.typeOf(dataMap.get(FieldDef.TYPE));
+            ApiTypeEnum typeEnum = ApiTypeEnum.typeOf(dataMap.get(TYPE));
             if (ApiTypeEnum.SQL == typeEnum) {
-                String requestBodySample = dataMap.get(FieldDef.REQ_BODY_SAMPLE);
+                String requestBodySample = dataMap.get(REQ_BODY_SAMPLE);
                 Map<String, Object> strRequestBody = JSON.parseObject(requestBodySample);
                 strRequestBody = strRequestBody == null ? Collections.emptyMap() : strRequestBody;
                 scriptTarget = DatawayUtils.evalCodeValueForSQL(scriptOri, strRequestBody);
             }
-            dataMap.put(FieldDef.SCRIPT, scriptTarget);
-            dataMap.put(FieldDef.SCRIPT_ORI, scriptOri);
+            dataMap.put(SCRIPT, scriptTarget);
+            dataMap.put(SCRIPT_ORI, scriptOri);
         }
         //
         return dataMap;
@@ -108,27 +111,27 @@ public class InterfaceInfoDal extends AbstractDal {
 
     private static Map<String, Object> defToMap(Map<FieldDef, String> entMap) {
         Map<String, Object> dataMap = new HashMap<>();
-        dataMap.computeIfAbsent("api_id", s -> entMap.get(FieldDef.ID));
-        dataMap.computeIfAbsent("api_method", s -> entMap.get(FieldDef.METHOD));
-        dataMap.computeIfAbsent("api_path", s -> entMap.get(FieldDef.PATH));
-        dataMap.computeIfAbsent("api_status", s -> entMap.get(FieldDef.STATUS));
-        dataMap.computeIfAbsent("api_comment", s -> entMap.get(FieldDef.COMMENT));
-        dataMap.computeIfAbsent("api_type", s -> entMap.get(FieldDef.TYPE));
-        dataMap.computeIfAbsent("api_script", s -> entMap.get(FieldDef.SCRIPT_ORI));
+        dataMap.computeIfAbsent("api_id", s -> entMap.get(ID));
+        dataMap.computeIfAbsent("api_method", s -> entMap.get(METHOD));
+        dataMap.computeIfAbsent("api_path", s -> entMap.get(PATH));
+        dataMap.computeIfAbsent("api_status", s -> entMap.get(STATUS));
+        dataMap.computeIfAbsent("api_comment", s -> entMap.get(COMMENT));
+        dataMap.computeIfAbsent("api_type", s -> entMap.get(TYPE));
+        dataMap.computeIfAbsent("api_script", s -> entMap.get(SCRIPT_ORI));
         dataMap.computeIfAbsent("api_schema", s -> {
             StringBuilder schemaData = new StringBuilder();
             schemaData.append("{");
-            if (entMap.get(FieldDef.REQ_HEADER_SCHEMA) != null) {
-                schemaData.append("\"requestHeader\":" + entMap.get(FieldDef.REQ_HEADER_SCHEMA) + ",");
+            if (entMap.get(REQ_HEADER_SCHEMA) != null) {
+                schemaData.append("\"requestHeader\":" + entMap.get(REQ_HEADER_SCHEMA) + ",");
             }
-            if (entMap.get(FieldDef.REQ_BODY_SCHEMA) != null) {
-                schemaData.append("\"requestBody\":" + entMap.get(FieldDef.REQ_BODY_SCHEMA) + ",");
+            if (entMap.get(REQ_BODY_SCHEMA) != null) {
+                schemaData.append("\"requestBody\":" + entMap.get(REQ_BODY_SCHEMA) + ",");
             }
-            if (entMap.get(FieldDef.RES_HEADER_SCHEMA) != null) {
-                schemaData.append("\"responseHeader\":" + entMap.get(FieldDef.RES_HEADER_SCHEMA) + ",");
+            if (entMap.get(RES_HEADER_SCHEMA) != null) {
+                schemaData.append("\"responseHeader\":" + entMap.get(RES_HEADER_SCHEMA) + ",");
             }
-            if (entMap.get(FieldDef.RES_BODY_SCHEMA) != null) {
-                schemaData.append("\"responseBody\":" + entMap.get(FieldDef.RES_BODY_SCHEMA) + ",");
+            if (entMap.get(RES_BODY_SCHEMA) != null) {
+                schemaData.append("\"responseBody\":" + entMap.get(RES_BODY_SCHEMA) + ",");
             }
             if (schemaData.length() > 1) {
                 schemaData.deleteCharAt(schemaData.length() - 1);
@@ -139,17 +142,17 @@ public class InterfaceInfoDal extends AbstractDal {
         dataMap.computeIfAbsent("api_sample", s -> {
             StringBuilder sampleData = new StringBuilder();
             sampleData.append("{");
-            if (entMap.get(FieldDef.REQ_HEADER_SAMPLE) != null) {
-                sampleData.append("\"requestHeader\":" + JSON.toJSONString(entMap.get(FieldDef.REQ_HEADER_SAMPLE)) + ",");
+            if (entMap.get(REQ_HEADER_SAMPLE) != null) {
+                sampleData.append("\"requestHeader\":" + JSON.toJSONString(entMap.get(REQ_HEADER_SAMPLE)) + ",");
             }
-            if (entMap.get(FieldDef.REQ_BODY_SAMPLE) != null) {
-                sampleData.append("\"requestBody\":" + JSON.toJSONString(entMap.get(FieldDef.REQ_BODY_SAMPLE)) + ",");
+            if (entMap.get(REQ_BODY_SAMPLE) != null) {
+                sampleData.append("\"requestBody\":" + JSON.toJSONString(entMap.get(REQ_BODY_SAMPLE)) + ",");
             }
-            if (entMap.get(FieldDef.RES_HEADER_SAMPLE) != null) {
-                sampleData.append("\"responseHeader\":" + JSON.toJSONString(entMap.get(FieldDef.RES_HEADER_SAMPLE)) + ",");
+            if (entMap.get(RES_HEADER_SAMPLE) != null) {
+                sampleData.append("\"responseHeader\":" + JSON.toJSONString(entMap.get(RES_HEADER_SAMPLE)) + ",");
             }
-            if (entMap.get(FieldDef.RES_BODY_SAMPLE) != null) {
-                sampleData.append("\"responseBody\":" + JSON.toJSONString(entMap.get(FieldDef.RES_BODY_SAMPLE)) + ",");
+            if (entMap.get(RES_BODY_SAMPLE) != null) {
+                sampleData.append("\"responseBody\":" + JSON.toJSONString(entMap.get(RES_BODY_SAMPLE)) + ",");
             }
             if (sampleData.length() > 1) {
                 sampleData.deleteCharAt(sampleData.length() - 1);
@@ -157,9 +160,9 @@ public class InterfaceInfoDal extends AbstractDal {
             sampleData.append("}");
             return sampleData.toString();
         });
-        dataMap.computeIfAbsent("api_option", s -> entMap.get(FieldDef.OPTION));
-        dataMap.computeIfAbsent("api_gmt_time", s -> entMap.get(FieldDef.GMT_TIME));
-        dataMap.computeIfAbsent("api_create_time", s -> entMap.get(FieldDef.CREATE_TIME));
+        dataMap.computeIfAbsent("api_option", s -> entMap.get(OPTION));
+        dataMap.computeIfAbsent("api_gmt_time", s -> entMap.get(GMT_TIME));
+        dataMap.computeIfAbsent("api_create_time", s -> entMap.get(CREATE_TIME));
         //    PREPARE_HINT,//
         return dataMap;
     }
@@ -231,7 +234,7 @@ public class InterfaceInfoDal extends AbstractDal {
                 insertColumnBuffer.toString() + //
                 ") values (" +//
                 insertParamsBuffer.toString() + //
-                ");";
+                ")";
         return this.jdbcTemplate.executeUpdate(sqlQuery, insertData.toArray()) > 0;
     }
 }

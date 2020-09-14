@@ -1,16 +1,16 @@
 create table interface_info (
-	api_id          number(8)       generated as identity constraint pk_interface_info primary key,
-	api_method      varchar(12)     NOT NULL,
-	api_path        varchar(512)    NOT NULL,
-	api_status      number(8)       NOT null,
-	api_comment     varchar(255)        NULL,
-	api_type        varchar(24)     NOT null,
-	api_script      clob            NOT NULL,
-	api_schema      clob                NULL,
-	api_sample      clob                NULL,
-	api_option      clob                NULL,
-	api_create_time timestamp           default sysdate,
-	api_gmt_time    timestamp           default sysdate
+  api_id          varchar(64)     NOT NULL constraint pk_interface_info primary key,
+  api_method      varchar(12)     NOT NULL,
+  api_path        varchar(512)    NOT NULL,
+  api_status      varchar(4)      NOT null,
+  api_comment     varchar(255)        NULL,
+  api_type        varchar(24)     NOT null,
+  api_script      clob            NOT NULL,
+  api_schema      clob                NULL,
+  api_sample      clob                NULL,
+  api_option      clob                NULL,
+  api_create_time timestamp           default sysdate,
+  api_gmt_time    timestamp           default sysdate
 )
 
 /comment on table interface_info is 'Dataway 中的API'
@@ -27,5 +27,5 @@ create table interface_info (
 /comment on column interface_info.api_create_time is '创建时间'
 /comment on column interface_info.api_gmt_time is '修改时间'
 /
-create unique index idx_interface_info on interface_info (api_method, api_path)
+create unique index uk_interface_info on interface_info (api_path)
 /

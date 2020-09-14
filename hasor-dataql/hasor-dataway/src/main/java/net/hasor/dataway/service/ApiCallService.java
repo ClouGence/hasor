@@ -108,7 +108,7 @@ public class ApiCallService {
                     );
                 }
             } else {
-                // .全参数包裹
+                // .全参数包裹,这个包裹参数不加入到 SCHEMA 和 SAMPLE 中
                 String wrapParameterName = DatawayUtils.wrapParameterName(apiInfo.getOptionMap());
                 if (StringUtils.isNotBlank(wrapParameterName)) {
                     Map<String, Object> tmpParameterMap = new HashMap<>();

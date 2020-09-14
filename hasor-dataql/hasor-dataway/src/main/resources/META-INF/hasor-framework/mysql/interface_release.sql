@@ -3,8 +3,8 @@ CREATE TABLE `interface_release` (
   `pub_api_id`      varchar(64)  NOT NULL                  COMMENT '所属API ID',
   `pub_method`      varchar(12)  NOT NULL                  COMMENT 'HttpMethod：GET、PUT、POST',
   `pub_path`        varchar(512) NOT NULL                  COMMENT '拦截路径',
-  `pub_status`      int(2)       NOT NULL                  COMMENT '状态：0有效，1无效（可能被下线）',
-  `pub_comment`     varchar(255)     NULL                  COMMENT '拦截路径',
+  `pub_status`      varchar(4)   NOT NULL                  COMMENT '状态：0有效，1无效（可能被下线）',
+  `pub_comment`     varchar(255)     NULL                  COMMENT '注释',
   `pub_type`        varchar(24)  NOT NULL                  COMMENT '脚本类型：SQL、DataQL',
   `pub_script`      mediumtext   NOT NULL                  COMMENT '查询脚本：xxxxxxx',
   `pub_script_ori`  mediumtext   NOT NULL                  COMMENT '原始查询脚本，仅当类型为SQL时不同',
@@ -13,6 +13,6 @@ CREATE TABLE `interface_release` (
   `pub_option`      mediumtext       NULL                  COMMENT '扩展配置信息',
   `pub_release_time`datetime     DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间（下线不更新）',
   PRIMARY KEY (`pub_id`),
-  KEY `idx_interface_release`      (`pub_api_id`),
+  KEY `idx_interface_release_api`  (`pub_api_id`),
   KEY `idx_interface_release_path` (`pub_path`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Dataway API 发布历史。'
