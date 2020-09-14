@@ -61,6 +61,9 @@ public class DatawayServiceImpl implements DatawayService {
 
     public DatawayApi getApiById(String apiId) throws Throwable {
         Map<FieldDef, String> objectBy = this.dataAccessLayer.getObjectBy(EntityDef.INFO, FieldDef.ID, apiId);
+        if (objectBy == null) {
+            return null;
+        }
         return new BasicDatawayApi(objectBy);
     }
 
