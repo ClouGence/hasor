@@ -1,17 +1,17 @@
 create table interface_release (
-	pub_id           varchar(64)    constraint pk_interface_release primary key,
-	pub_api_id       varchar(64)    not null,
-	pub_method       varchar(12)    not null,
-	pub_path         varchar(512)   not null,
-	pub_status       varchar(4)     not null,
-	pub_comment      varchar(255)       null,
-	pub_type         varchar(24)    not null,
-	pub_script       text           not null,
-	pub_script_ori   text           not null,
-	pub_schema       text,
-	pub_sample       text,
-	pub_option       text,
-	pub_release_time datetime       default getdate()
+  pub_id           varchar(64)    constraint pk_interface_release primary key,
+  pub_api_id       varchar(64)    not null,
+  pub_method       varchar(12)    not null,
+  pub_path         varchar(512)   not null,
+  pub_status       varchar(4)     not null,
+  pub_comment      varchar(255)   not null,
+  pub_type         varchar(24)    not null,
+  pub_script       text           not null,
+  pub_script_ori   text           not null,
+  pub_schema       text           not null,
+  pub_sample       text           not null,
+  pub_option       text           not null,
+  pub_release_time varchar(32)    not null
 )
 go
 exec sp_addextendedproperty 'MS_Description', 'Dataway API 发布记录', 'SCHEMA', 'dbo', 'TABLE', 'interface_release'

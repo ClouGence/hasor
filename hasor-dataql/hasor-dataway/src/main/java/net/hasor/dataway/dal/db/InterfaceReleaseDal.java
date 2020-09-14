@@ -23,7 +23,10 @@ import net.hasor.dataway.dal.QueryCondition;
 import net.hasor.utils.StringUtils;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static net.hasor.dataway.dal.FieldDef.*;
@@ -102,10 +105,8 @@ public class InterfaceReleaseDal extends AbstractDal {
         // PREPARE_HINT
         //
         Object apiOption = entMap.get("pub_option");
-        dataMap.put(OPTION, apiOption != null ? apiOption.toString() : null);
-        //dataMap.put(CREATE_TIME, String.valueOf(((Date) entMap.get("api_create_time")).getTime()));
-        //dataMap.put(GMT_TIME, String.valueOf(((Date) entMap.get("api_gmt_time")).getTime()));
-        dataMap.put(RELEASE_TIME, String.valueOf(((Date) entMap.get("pub_release_time")).getTime()));
+        dataMap.put(OPTION, apiOption != null ? apiOption.toString() : "{}");
+        dataMap.put(RELEASE_TIME, entMap.get("pub_release_time").toString());
         //
         return dataMap;
     }
@@ -157,8 +158,8 @@ public class InterfaceReleaseDal extends AbstractDal {
                     "where pub_status != ? and pub_path = ? " + //
                     "order by pub_release_time desc";//
             List<Object> data = new ArrayList<>();
-            data.add(targetConvert.get(columnTypes.get("pub_status")).apply(String.valueOf(ApiStatusEnum.Delete.typeNum())));
-            data.add(targetConvert.get(columnTypes.get("pub_path")).apply(index));
+            data.add(String.valueOf(ApiStatusEnum.Delete.typeNum()));
+            data.add(index);
             //
             List<Map<String, Object>> tempList = this.jdbcTemplate.queryForList(sqlQuery, data.toArray());
             if (tempList == null || tempList.isEmpty()) {
@@ -172,8 +173,8 @@ public class InterfaceReleaseDal extends AbstractDal {
                 "select * from interface_release " +//
                 "where pub_status != ? and pub_id = ?";
         List<Object> data = new ArrayList<>();
-        data.add(targetConvert.get(columnTypes.get("pub_status")).apply(String.valueOf(ApiStatusEnum.Delete.typeNum())));
-        data.add(targetConvert.get(columnTypes.get("pub_id")).apply(index));
+        data.add(String.valueOf(ApiStatusEnum.Delete.typeNum()));
+        data.add(index);
         Map<String, Object> objectMap = this.jdbcTemplate.queryForMap(sqlQuery, data.toArray());
         //
         return (objectMap != null) ? mapToDef(objectMap) : null;
@@ -188,12 +189,12 @@ public class InterfaceReleaseDal extends AbstractDal {
         if (conditions.containsKey(QueryCondition.ApiId)) {
             releaseList += "where pub_status != ? and pub_api_id = ? " + //
                     "order by pub_release_time desc";
-            data.add(targetConvert.get(columnTypes.get("pub_status")).apply(String.valueOf(ApiStatusEnum.Delete.typeNum())));
-            data.add(targetConvert.get(columnTypes.get("pub_api_id")).apply(conditions.get(QueryCondition.ApiId).toString()));
+            data.add(String.valueOf(ApiStatusEnum.Delete.typeNum()));
+            data.add(conditions.get(QueryCondition.ApiId).toString());
         } else {
             releaseList += "where pub_status != ? " + //
                     "order by pub_release_time desc";
-            data.add(targetConvert.get(columnTypes.get("pub_status")).apply(String.valueOf(ApiStatusEnum.Delete.typeNum())));
+            data.add(String.valueOf(ApiStatusEnum.Delete.typeNum()));
         }
         //
         List<Map<String, Object>> mapList = jdbcTemplate.queryForList(releaseList, data.toArray());
@@ -212,7 +213,7 @@ public class InterfaceReleaseDal extends AbstractDal {
                 return;
             }
             sqlBuffer.append("," + key + " = ? ");
-            updateData.add(targetConvert.get(columnTypes.get(key)).apply(value.toString()));
+            updateData.add(fixString(value.toString()));
         });
         sqlBuffer.deleteCharAt(0);
         //
@@ -231,7 +232,7 @@ public class InterfaceReleaseDal extends AbstractDal {
         defToMap(newData).forEach((key, value) -> {
             insertColumnBuffer.append("," + key);
             insertParamsBuffer.append(",?");
-            insertData.add(targetConvert.get(columnTypes.get(key)).apply(value.toString()));
+            insertData.add(fixString(value.toString()));
         });
         insertColumnBuffer.deleteCharAt(0);
         insertParamsBuffer.deleteCharAt(0);

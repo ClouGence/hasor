@@ -61,13 +61,15 @@ public class DataBaseDal implements ApiDataAccessLayer {
             dbType = jdbcTemplate.execute((ConnectionCallback<String>) con -> {
                 String jdbcUrl = con.getMetaData().getURL();
                 String jdbcDriverName = con.getMetaData().getDriverName();
-                return InnerJdbcConstants.getDbType(jdbcUrl, jdbcDriverName);
+                return JdbcUtils.getDbType(jdbcUrl, jdbcDriverName);
             });
         }
         if (dbType == null) {
             throw new IllegalStateException("unknown dbType.");
         }
         //
+        this.infoDal.dbType = dbType;
+        this.releaseDal.dbType = dbType;
         logger.info("dataway dbType is {}", dbType);
     }
 

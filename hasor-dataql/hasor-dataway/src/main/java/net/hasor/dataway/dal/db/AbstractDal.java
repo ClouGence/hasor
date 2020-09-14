@@ -16,9 +16,10 @@
 package net.hasor.dataway.dal.db;
 import net.hasor.core.Inject;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.utils.StringUtils;
 
-import java.util.*;
-import java.util.function.Function;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * DAO 层接口
@@ -27,7 +28,7 @@ import java.util.function.Function;
  */
 public abstract class AbstractDal {
     /** 不参与更新的列 */
-    protected static final Set<String>                             wontUpdateColumn = new HashSet<String>() {{
+    protected static final Set<String>  wontUpdateColumn = new HashSet<String>() {{
         add("api_id");
         add("api_method");
         add("api_path");
@@ -46,40 +47,16 @@ public abstract class AbstractDal {
         add("pub_option");
         add("pub_release_time");
     }};
-    /** 列对应数据类型 */
-    protected static final Map<String, Class<?>>                   columnTypes      = new HashMap<String, Class<?>>() {{
-        put("api_id", String.class);
-        put("api_method", String.class);
-        put("api_path", String.class);
-        put("api_status", String.class);
-        put("api_comment", String.class);
-        put("api_type", String.class);
-        put("api_script", String.class);
-        put("api_schema", String.class);
-        put("api_sample", String.class);
-        put("api_option", String.class);
-        put("api_create_time", Date.class);
-        put("api_gmt_time", Date.class);
-        //
-        put("pub_id", String.class);
-        put("pub_api_id", String.class);
-        put("pub_method", String.class);
-        put("pub_path", String.class);
-        put("pub_status", String.class);
-        put("pub_comment", String.class);
-        put("pub_type", String.class);
-        put("pub_script", String.class);
-        put("pub_script_ori", String.class);
-        put("pub_schema", String.class);
-        put("pub_sample", String.class);
-        put("pub_option", String.class);
-        put("pub_release_time", Date.class);
-    }};
-    /** target列对应数据类型 */
-    protected static final Map<Class<?>, Function<String, Object>> targetConvert    = new HashMap<Class<?>, Function<String, Object>>() {{
-        put(String.class, s -> s);
-        put(Date.class, s -> new Date(Long.parseLong(s)));
-    }};
     @Inject
-    protected              JdbcTemplate                            jdbcTemplate;
+    protected              JdbcTemplate jdbcTemplate;
+    protected              String       dbType;
+
+    protected String fixString(String val) {
+        if (JdbcUtils.ORACLE.equalsIgnoreCase(this.dbType) && StringUtils.isBlank(val)) {
+            // Oracle 下 NULL 和 '' 是一个意思 - see：https://www.cnblogs.com/memory4young/p/use-null-empty-space-in-oracle.html
+            return "there is no comment";
+        } else {
+            return val;
+        }
+    }
 }

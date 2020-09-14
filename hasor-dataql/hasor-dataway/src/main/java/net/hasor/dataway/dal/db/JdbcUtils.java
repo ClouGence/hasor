@@ -21,46 +21,46 @@ package net.hasor.dataway.dal.db;
  * @author wenshao [szujobs@hotmail.com]
  * @version : 2020-09-12
  */
-class InnerJdbcConstants {
-    private static final String JTDS             = "jtds";
-    private static final String MOCK             = "mock";
-    private static final String HSQL             = "hsql";
-    private static final String DB2              = "db2";
-    private static final String POSTGRESQL       = "postgresql";
-    private static final String SYBASE           = "sybase";
-    private static final String SQL_SERVER       = "sqlserver";
-    private static final String ORACLE           = "oracle";
-    private static final String ALI_ORACLE       = "AliOracle";
-    private static final String MYSQL            = "mysql";
-    private static final String MARIADB          = "mariadb";
-    private static final String DERBY            = "derby";
-    private static final String HBASE            = "hbase";
-    private static final String HIVE             = "hive";
-    private static final String H2               = "h2";
-    private static final String DM               = "dm";
-    private static final String KINGBASE         = "kingbase";
-    private static final String GBASE            = "gbase";
-    private static final String XUGU             = "xugu";
-    private static final String OCEANBASE        = "oceanbase";
-    private static final String OCEANBASE_ORACLE = "oceanbase_oracle";
-    private static final String INFORMIX         = "informix";
+public class JdbcUtils {
+    public static final String JTDS             = "jtds";
+    public static final String MOCK             = "mock";
+    public static final String HSQL             = "hsql";
+    public static final String DB2              = "db2";
+    public static final String POSTGRESQL       = "postgresql";
+    public static final String SYBASE           = "sybase";
+    public static final String SQL_SERVER       = "sqlserver";
+    public static final String ORACLE           = "oracle";
+    public static final String ALI_ORACLE       = "AliOracle";
+    public static final String MYSQL            = "mysql";
+    public static final String MARIADB          = "mariadb";
+    public static final String DERBY            = "derby";
+    public static final String HBASE            = "hbase";
+    public static final String HIVE             = "hive";
+    public static final String H2               = "h2";
+    public static final String DM               = "dm";
+    public static final String KINGBASE         = "kingbase";
+    public static final String GBASE            = "gbase";
+    public static final String XUGU             = "xugu";
+    public static final String OCEANBASE        = "oceanbase";
+    public static final String OCEANBASE_ORACLE = "oceanbase_oracle";
+    public static final String INFORMIX         = "informix";
     /** 阿里云 odps */
-    private static final String ODPS             = "odps";
-    private static final String TERADATA         = "teradata";
+    public static final String ODPS             = "odps";
+    public static final String TERADATA         = "teradata";
     /** Log4JDBC */
-    private static final String LOG4JDBC         = "log4jdbc";
-    private static final String PHOENIX          = "phoenix";
-    private static final String ENTERPRISEDB     = "edb";
-    private static final String KYLIN            = "kylin";
-    private static final String SQLITE           = "sqlite";
-    private static final String ALIYUN_ADS       = "aliyun_ads";
-    private static final String ALIYUN_DRDS      = "aliyun_drds";
-    private static final String PRESTO           = "presto";
-    private static final String ELASTIC_SEARCH   = "elastic_search";
-    private static final String CLICKHOUSE       = "clickhouse";
-    private static final String KDB              = "kdb";
+    public static final String LOG4JDBC         = "log4jdbc";
+    public static final String PHOENIX          = "phoenix";
+    public static final String ENTERPRISEDB     = "edb";
+    public static final String KYLIN            = "kylin";
+    public static final String SQLITE           = "sqlite";
+    public static final String ALIYUN_ADS       = "aliyun_ads";
+    public static final String ALIYUN_DRDS      = "aliyun_drds";
+    public static final String PRESTO           = "presto";
+    public static final String ELASTIC_SEARCH   = "elastic_search";
+    public static final String CLICKHOUSE       = "clickhouse";
+    public static final String KDB              = "kdb";
     /** Aliyun PolarDB */
-    private static final String POLARDB          = "polardb";
+    public static final String POLARDB          = "polardb";
 
     public static String getDbType(String rawUrl, String driverClassName) {
         if (rawUrl == null) {

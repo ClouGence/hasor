@@ -48,12 +48,12 @@ public class InterfaceInfoDal extends AbstractDal {
         dataMap.put(PATH, String.valueOf(entMap.get("api_path")));
         dataMap.put(STATUS, String.valueOf(entMap.get("api_status")));
         Object apiComment = entMap.get("api_comment");
-        dataMap.put(COMMENT, apiComment != null ? apiComment.toString() : null);
+        dataMap.put(COMMENT, apiComment != null ? apiComment.toString() : "");
         dataMap.put(TYPE, String.valueOf(entMap.get("api_type")));
         Object apiOption = entMap.get("api_option");
-        dataMap.put(OPTION, apiOption != null ? apiOption.toString() : null);
-        dataMap.put(CREATE_TIME, String.valueOf(((Date) entMap.get("api_create_time")).getTime()));
-        dataMap.put(GMT_TIME, String.valueOf(((Date) entMap.get("api_gmt_time")).getTime()));
+        dataMap.put(OPTION, apiOption != null ? apiOption.toString() : "{}");
+        dataMap.put(CREATE_TIME, String.valueOf(entMap.get("api_create_time")));
+        dataMap.put(GMT_TIME, String.valueOf(entMap.get("api_gmt_time")));
         //
         if (entMap.containsKey("api_schema")) {
             JSONObject jsonObject = JSON.parseObject(entMap.get("api_schema").toString());
@@ -205,7 +205,7 @@ public class InterfaceInfoDal extends AbstractDal {
                 return;
             }
             sqlBuffer.append("," + key + " = ? ");
-            updateData.add(targetConvert.get(columnTypes.get(key)).apply(value.toString()));
+            updateData.add(fixString(value.toString()));
         });
         sqlBuffer.deleteCharAt(0);
         //
@@ -224,7 +224,7 @@ public class InterfaceInfoDal extends AbstractDal {
         defToMap(newData).forEach((key, value) -> {
             insertColumnBuffer.append("," + key);
             insertParamsBuffer.append(",?");
-            insertData.add(targetConvert.get(columnTypes.get(key)).apply(value.toString()));
+            insertData.add(fixString(value.toString()));
         });
         insertColumnBuffer.deleteCharAt(0);
         insertParamsBuffer.deleteCharAt(0);

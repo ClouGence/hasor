@@ -1,16 +1,16 @@
 create table interface_info (
-	api_id          varchar(64)     constraint pk_interface_info primary key,
-	api_method      varchar(12)     not null,
-	api_path        varchar(512)    not null,
-	api_status      varchar(4)      not null,
-	api_comment     varchar(255)        null,
-	api_type        varchar(24)     not null,
-	api_script      text            not null,
-	api_schema      text,
-	api_sample      text,
-	api_option      text,
-	api_create_time datetime       default getdate(),
-	api_gmt_time    datetime       default getdate()
+  api_id          varchar(64)     constraint pk_interface_info primary key,
+  api_method      varchar(12)     not null,
+  api_path        varchar(512)    not null,
+  api_status      varchar(4)      not null,
+  api_comment     varchar(255)    not null,
+  api_type        varchar(24)     not null,
+  api_script      text            not null,
+  api_schema      text            not null,
+  api_sample      text            not null,
+  api_option      text            not null,
+  api_create_time varchar(32)     not null,
+  api_gmt_time    varchar(32)     not null
 )
 go
 exec sp_addextendedproperty 'MS_Description', 'Dataway 中的API', 'SCHEMA', 'dbo', 'TABLE', 'interface_info'
