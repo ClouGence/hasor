@@ -1,9 +1,10 @@
 create table interface_release (
-	pub_id           int            identity(0, 1) constraint pk_interface_release primary key,
-	pub_api_id       int            not null,
+	pub_id           varchar(64)    constraint pk_interface_release primary key,
+	pub_api_id       varchar(64)    not null,
 	pub_method       varchar(12)    not null,
 	pub_path         varchar(512)   not null,
-	pub_status       int            not null,
+	pub_status       varchar(4)     not null,
+	pub_comment      varchar(255)       null,
 	pub_type         varchar(24)    not null,
 	pub_script       text           not null,
 	pub_script_ori   text           not null,
@@ -19,6 +20,7 @@ exec sp_addextendedproperty 'MS_Description', '所属API ID', 'SCHEMA', 'dbo', '
 exec sp_addextendedproperty 'MS_Description', 'HttpMethod：GET、PUT、POST', 'SCHEMA', 'dbo', 'TABLE', 'interface_release', 'COLUMN', 'pub_method'
 exec sp_addextendedproperty 'MS_Description', '拦截路径', 'SCHEMA', 'dbo', 'TABLE', 'interface_release', 'COLUMN', 'pub_path'
 exec sp_addextendedproperty 'MS_Description', '状态：0有效，1无效（可能被下线）', 'SCHEMA', 'dbo', 'TABLE', 'interface_release', 'COLUMN', 'pub_status'
+exec sp_addextendedproperty 'MS_Description', '注释', 'SCHEMA', 'dbo', 'TABLE', 'interface_release', 'COLUMN', 'pub_comment'
 exec sp_addextendedproperty 'MS_Description', '脚本类型：SQL、DataQL', 'SCHEMA', 'dbo', 'TABLE', 'interface_release', 'COLUMN', 'pub_type'
 exec sp_addextendedproperty 'MS_Description', '查询脚本：xxxxxxx', 'SCHEMA', 'dbo', 'TABLE', 'interface_release', 'COLUMN', 'pub_script'
 exec sp_addextendedproperty 'MS_Description', '原始查询脚本，仅当类型为SQL时不同', 'SCHEMA', 'dbo', 'TABLE', 'interface_release', 'COLUMN', 'pub_script_ori'
@@ -28,5 +30,7 @@ exec sp_addextendedproperty 'MS_Description', '扩展配置信息', 'SCHEMA', 'd
 exec sp_addextendedproperty 'MS_Description', '发布时间（下线不更新）', 'SCHEMA', 'dbo', 'TABLE', 'interface_release', 'COLUMN', 'pub_release_time'
 go
 
-create index idx_interface_release on interface_release (pub_api_id)
+create index idx_interface_release_api on interface_release (pub_api_id)
+go
+create index idx_interface_release_path on interface_release (pub_path)
 go

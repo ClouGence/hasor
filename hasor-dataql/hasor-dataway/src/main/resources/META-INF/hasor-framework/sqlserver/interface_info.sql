@@ -1,9 +1,9 @@
 create table interface_info (
-	api_id          int             identity(0, 1) constraint pk_interface_info primary key,
+	api_id          varchar(64)     constraint pk_interface_info primary key,
 	api_method      varchar(12)     not null,
 	api_path        varchar(512)    not null,
-	api_status      int             not null,
-	api_comment     varchar(255),
+	api_status      varchar(4)      not null,
+	api_comment     varchar(255)        null,
 	api_type        varchar(24)     not null,
 	api_script      text            not null,
 	api_schema      text,
@@ -28,5 +28,5 @@ exec sp_addextendedproperty 'MS_Description', '创建时间', 'SCHEMA', 'dbo', '
 exec sp_addextendedproperty 'MS_Description', '修改时间', 'SCHEMA', 'dbo', 'TABLE', 'interface_info', 'COLUMN', 'api_gmt_time'
 go
 
-create unique index idx_interface_info on interface_info (api_method, api_path)
+create unique index uk_interface_info on interface_info (api_path)
 go
