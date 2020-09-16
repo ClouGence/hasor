@@ -3,15 +3,22 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.DimModule;
 import net.hasor.dataway.DatawayService;
+import net.hasor.dataway.dal.db.JdbcUtils;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.ResultProcessChainSpi;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
+import net.hasor.db.jdbc.ConnectionCallback;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.spring.SpringModule;
+import net.hasor.utils.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.io.IOException;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 @DimModule
@@ -22,6 +29,27 @@ public class ExampleModule implements SpringModule {
 
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
+        new JdbcTemplate(this.dataSource).execute((ConnectionCallback<String>) con -> {
+            DatabaseMetaData metaData = con.getMetaData();
+            String dbType = JdbcUtils.getDbType(metaData.getURL(), metaData.getDriverName());
+            boolean localDB = dbType.equalsIgnoreCase(JdbcUtils.SQLITE) || dbType.equalsIgnoreCase(JdbcUtils.H2);
+            if (localDB) {
+                try {
+                    new JdbcTemplate(con).execute("drop table interface_info;");
+                } catch (SQLException e) { /**/ }
+                try {
+                    new JdbcTemplate(con).execute("drop table interface_release;");
+                } catch (SQLException e) { /**/ }
+                try {
+                    new JdbcTemplate(con).loadSQL("/META-INF/hasor-framework/" + dbType.toLowerCase() + "/interface_info.sql");
+                    new JdbcTemplate(con).loadSQL("/META-INF/hasor-framework/" + dbType.toLowerCase() + "/interface_release.sql");
+                } catch (IOException e) {
+                    throw ExceptionUtils.toRuntimeException(e);
+                }
+            }
+            return "OK";
+        });
+        //
         //        apiBinder.tryCast(QueryApiBinder.class).loadUdf(Object.class, springTypeSupplier(apiBinder));
         // .DataSource form Spring boot into Hasor
         apiBinder.installModule(new JdbcModule(Level.Full, this.dataSource));

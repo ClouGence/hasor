@@ -40,7 +40,7 @@
             <artifactId>hasor-dataway</artifactId>
             <version>${hasor.version}</version>
         </dependency>
-        
+
         <!-- Swagger -->
         <dependency>
             <groupId>io.springfox</groupId>
@@ -55,16 +55,6 @@
 
         <!-- database -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.30</version>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.2.12</version>
-        </dependency>
-        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>1.1.23</version>
@@ -77,6 +67,94 @@
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.1.10</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.30</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.16</version>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>8.4.1.jre8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.32.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+        </dependency>
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/ojdbc8-full/ojdbc8.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>ons</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/ojdbc8-full/ons.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>oraclepki</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/ojdbc8-full/oraclepki.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>orai18n</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/ojdbc8-full/orai18n.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>osdt_cert</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/ojdbc8-full/osdt_cert.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>osdt_core</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/ojdbc8-full/osdt_core.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>simplefan</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/ojdbc8-full/simplefan.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>ucp</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/ojdbc8-full/ucp.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>xdb6</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/ojdbc8-full/xdb6.jar</systemPath>
         </dependency>
 
         <!-- utils -->

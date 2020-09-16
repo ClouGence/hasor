@@ -6,7 +6,7 @@ CREATE TABLE interface_release (              -- Dataway API 发布历史。
   pub_status        TEXT NOT NULL,            -- 状态：-1-删除, 0-草稿，1-发布，2-有变更，3-禁用
   pub_comment       TEXT NOT NULL,            -- 注释
   pub_type          TEXT NOT NULL,            -- 脚本类型：SQL、DataQL
-  pub_script        TEXT NOT NULL,            -- 查询脚本：xxxxxxx',
+  pub_script        TEXT NOT NULL,            -- 查询脚本：xxxxxxx
   pub_script_ori    TEXT NOT NULL,            -- 原始查询脚本，仅当类型为SQL时不同
   pub_schema        TEXT NOT NULL,            -- 接口的请求/响应数据结构
   pub_sample        TEXT NOT NULL,            -- 请求/响应/请求头样本数据
