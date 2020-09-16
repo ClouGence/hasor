@@ -49,7 +49,7 @@ public class Swagger2Controller extends BasicController {
         }
         //
         List<Map<FieldDef, String>> doList = this.dataAccessLayer.listObjectBy(EntityDef.RELEASE, emptyCondition());
-        List<Map<String, String>> collectList = doList.parallelStream().map(defMap -> {
+        List<Map<String, String>> collectList = doList.stream().map(defMap -> {
             Map<String, String> dataMap = new HashMap<>();
             defMap.forEach((fieldDef, s) -> {
                 dataMap.put(StringUdfSource.lineToHump(fieldDef.name()), s);

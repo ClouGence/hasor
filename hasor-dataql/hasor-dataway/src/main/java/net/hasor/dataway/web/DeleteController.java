@@ -56,7 +56,7 @@ public class DeleteController extends BasicController {
         //
         // 更新每一个 Release
         releaseList = (releaseList == null) ? Collections.emptyList() : releaseList;
-        releaseList.parallelStream().filter(apiRelease -> {
+        releaseList.stream().filter(apiRelease -> {
             // 已经是 Delete 的不在处理
             ApiStatusEnum statusEnum = ApiStatusEnum.typeOf(apiRelease.get(FieldDef.STATUS));
             return statusEnum != ApiStatusEnum.Delete;

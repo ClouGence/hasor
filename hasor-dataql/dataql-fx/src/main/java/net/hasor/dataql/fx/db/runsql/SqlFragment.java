@@ -175,7 +175,7 @@ public class SqlFragment implements FragmentProcess {
         }
         //
         // --- 批量模式
-        PreparedStatementSetter[] parameterArrays = params.parallelStream().map(new Function<Map<String, Object>, PreparedStatementSetter>() {
+        PreparedStatementSetter[] parameterArrays = params.stream().map(new Function<Map<String, Object>, PreparedStatementSetter>() {
             public PreparedStatementSetter apply(Map<String, Object> preparedParams) {
                 return new ArgPreparedStatementSetter(fxSql.buildParameterSource(preparedParams).toArray());
             }

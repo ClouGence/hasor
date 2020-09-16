@@ -18,16 +18,22 @@ import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
+import net.hasor.dataway.dal.ApiStatusEnum;
 import net.hasor.dataway.dal.EntityDef;
 import net.hasor.dataway.dal.FieldDef;
+import net.hasor.dataway.dal.QueryCondition;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.interceptor.Transactional;
+import net.hasor.utils.StringUtils;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,11 +65,39 @@ public class PublishController extends BasicController {
         }
         //
         // 保存到发布列表
+        String releaseID = this.dataAccessLayer.generateId(EntityDef.RELEASE);
         object.put(FieldDef.API_ID, object.get(FieldDef.ID));
-        object.put(FieldDef.ID, this.dataAccessLayer.generateId(EntityDef.RELEASE));
+        object.put(FieldDef.ID, releaseID);
         object.put(FieldDef.RELEASE_TIME, String.valueOf(System.currentTimeMillis()));
         object.put(FieldDef.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
         object.put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
-        return Result.of(this.dataAccessLayer.createObjectBy(EntityDef.RELEASE, object));
+        boolean publishResult = this.dataAccessLayer.createObjectBy(EntityDef.RELEASE, object);
+        if (!publishResult) {
+            throw new RuntimeException("release Published failed.");
+        }
+        /*      排除最后一个 Release 其余的全部更新为禁用      */
+        //
+        Map<QueryCondition, Object> releaseQueryCondition = new HashMap<>();
+        releaseQueryCondition.put(QueryCondition.ApiId, apiId);
+        List<Map<FieldDef, String>> releaseList = this.dataAccessLayer.listObjectBy(EntityDef.RELEASE, releaseQueryCondition);
+        releaseList = (releaseList == null) ? Collections.emptyList() : releaseList;
+        releaseList.stream().filter(apiRelease -> {
+            String releaseItem = apiRelease.get(FieldDef.ID);
+            ApiStatusEnum statusEnum = ApiStatusEnum.typeOf(apiRelease.get(FieldDef.STATUS));
+            // 已经是 Disable 的不在处理
+            return statusEnum != ApiStatusEnum.Disable && !StringUtils.equalsIgnoreCase(releaseID, releaseItem);
+        }).forEach(apiRelease -> {
+            // 更新状态为 Disable
+            String releaseId = apiRelease.get(FieldDef.ID);
+            apiRelease = this.dataAccessLayer.getObjectBy(EntityDef.RELEASE, FieldDef.ID, releaseId);
+            apiRelease.putAll(STATUS_UPDATE_TO_DISABLE.get());
+            this.dataAccessLayer.updateObjectBy(    //
+                    EntityDef.RELEASE,  //
+                    FieldDef.ID,        //
+                    releaseId,          //
+                    apiRelease          //
+            );
+        });
+        return Result.of(true);
     }
 }

@@ -63,7 +63,7 @@ public class DisableController extends BasicController {
         //
         // 更新每一个 Release
         releaseList = (releaseList == null) ? Collections.emptyList() : releaseList;
-        releaseList.parallelStream().filter(apiRelease -> {
+        releaseList.stream().filter(apiRelease -> {
             // 已经是 Disable 的不在处理
             ApiStatusEnum statusEnum = ApiStatusEnum.typeOf(apiRelease.get(FieldDef.STATUS));
             return statusEnum != ApiStatusEnum.Disable;
