@@ -20,6 +20,7 @@ import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
 import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
 import net.hasor.utils.ResourcesUtils;
+import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
 import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 数据库操作模板方法。
@@ -87,23 +89,46 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
         this.resultsCaseInsensitive = resultsCaseInsensitive;
     }
 
-    public void loadSQL(final String sqlResource) throws IOException, SQLException {
-        this.loadSQL("UTF-8", sqlResource);
+    public void loadSQL(String sqlResource) throws IOException, SQLException {
+        this.loadSplitSQL(null, sqlResource);
     }
 
-    public void loadSQL(final String charsetName, final String sqlResource) throws IOException, SQLException {
+    public void loadSQL(String charsetName, String sqlResource) throws IOException, SQLException {
+        this.loadSplitSQL(null, charsetName, sqlResource);
+    }
+
+    public void loadSQL(Reader sqlReader) throws IOException, SQLException {
+        this.loadSplitSQL(null, sqlReader);
+    }
+
+    public void loadSplitSQL(String splitString, String sqlResource) throws IOException, SQLException {
+        this.loadSplitSQL(splitString, "UTF-8", sqlResource);
+    }
+
+    public void loadSplitSQL(String splitString, String charsetName, final String sqlResource) throws IOException, SQLException {
         InputStream inStream = ResourcesUtils.getResourceAsStream(sqlResource);
         if (inStream == null) {
             throw new IOException("can't find :" + sqlResource);
         }
         InputStreamReader reader = new InputStreamReader(inStream, Charset.forName(charsetName));
-        this.loadSQL(reader);
+        this.loadSplitSQL(splitString, reader);
     }
 
-    public void loadSQL(final Reader sqlReader) throws IOException, SQLException {
+    public void loadSplitSQL(String splitString, Reader sqlReader) throws IOException, SQLException {
         StringWriter outWriter = new StringWriter();
         IOUtils.copy(sqlReader, outWriter);
-        this.execute(outWriter.toString());
+        //
+        List<String> taskList = null;
+        if (StringUtils.isBlank(splitString)) {
+            taskList = Collections.singletonList(outWriter.toString());
+        } else {
+            taskList = Arrays.asList(outWriter.toString().split(splitString));
+        }
+        taskList = taskList.parallelStream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
+        //
+        for (String str : taskList) {
+            this.execute(str);
+        }
     }
 
     @Override

@@ -17,7 +17,9 @@ package net.hasor.db.jdbc.mapper;
 import net.hasor.db.jdbc.RowMapper;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.convert.ConverterUtils;
+import net.hasor.utils.io.IOUtils;
 
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Blob;
@@ -43,7 +45,13 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
             obj = rs.getBytes(index);
         } else if (obj instanceof Clob) {
             /*Clob 转换为 String*/
-            obj = rs.getString(index);
+            try {
+                StringWriter writer = new StringWriter();
+                IOUtils.copy(((Clob) obj).getCharacterStream(), writer);
+                obj = writer.toString();
+            } catch (Exception e) {
+                throw new SQLException(e);
+            }
         } else if (("oracle.sql.TIMESTAMP".equals(className) || "oracle.sql.TIMESTAMPTZ".equals(className))) {
             /*oracle TIMESTAMP 转换为 Timestamp*/
             obj = rs.getTimestamp(index);

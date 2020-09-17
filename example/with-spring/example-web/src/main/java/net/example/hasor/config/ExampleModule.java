@@ -32,17 +32,33 @@ public class ExampleModule implements SpringModule {
         new JdbcTemplate(this.dataSource).execute((ConnectionCallback<String>) con -> {
             DatabaseMetaData metaData = con.getMetaData();
             String dbType = JdbcUtils.getDbType(metaData.getURL(), metaData.getDriverName());
-            boolean localDB = dbType.equalsIgnoreCase(JdbcUtils.SQLITE) || dbType.equalsIgnoreCase(JdbcUtils.H2);
+            boolean localDB = dbType.equalsIgnoreCase(JdbcUtils.SQLITE) //
+                    || dbType.equalsIgnoreCase(JdbcUtils.H2)//
+                    || dbType.equalsIgnoreCase(JdbcUtils.DERBY)//
+                    || dbType.equalsIgnoreCase(JdbcUtils.HSQL);
             if (localDB) {
                 try {
-                    new JdbcTemplate(con).execute("drop table interface_info;");
+                    if (dbType.equalsIgnoreCase(JdbcUtils.HSQL)) {
+                        new JdbcTemplate(con).execute("drop table interface_info if exists");
+                    } else {
+                        new JdbcTemplate(con).execute("drop table interface_info");
+                    }
                 } catch (SQLException e) { /**/ }
                 try {
-                    new JdbcTemplate(con).execute("drop table interface_release;");
+                    if (dbType.equalsIgnoreCase(JdbcUtils.HSQL)) {
+                        new JdbcTemplate(con).execute("drop table interface_release if exists");
+                    } else {
+                        new JdbcTemplate(con).execute("drop table interface_release");
+                    }
                 } catch (SQLException e) { /**/ }
                 try {
-                    new JdbcTemplate(con).loadSQL("/META-INF/hasor-framework/" + dbType.toLowerCase() + "/interface_info.sql");
-                    new JdbcTemplate(con).loadSQL("/META-INF/hasor-framework/" + dbType.toLowerCase() + "/interface_release.sql");
+                    if (dbType.equalsIgnoreCase(JdbcUtils.DERBY)) {
+                        new JdbcTemplate(con).loadSplitSQL(";", "/META-INF/hasor-framework/" + dbType.toLowerCase() + "/interface_info.sql");
+                        new JdbcTemplate(con).loadSplitSQL(";", "/META-INF/hasor-framework/" + dbType.toLowerCase() + "/interface_release.sql");
+                    } else {
+                        new JdbcTemplate(con).loadSQL("/META-INF/hasor-framework/" + dbType.toLowerCase() + "/interface_info.sql");
+                        new JdbcTemplate(con).loadSQL("/META-INF/hasor-framework/" + dbType.toLowerCase() + "/interface_release.sql");
+                    }
                 } catch (IOException e) {
                     throw ExceptionUtils.toRuntimeException(e);
                 }
