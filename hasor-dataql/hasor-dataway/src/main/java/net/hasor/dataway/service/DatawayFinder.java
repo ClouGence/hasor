@@ -17,6 +17,7 @@ package net.hasor.dataway.service;
 import net.hasor.core.AppContext;
 import net.hasor.core.ConstructorBy;
 import net.hasor.core.Singleton;
+import net.hasor.core.provider.SingleProvider;
 import net.hasor.dataql.binder.AppContextFinder;
 import net.hasor.dataway.dal.ApiDataAccessLayer;
 import net.hasor.dataway.dal.EntityDef;
@@ -27,6 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Dataway 启动入口
@@ -35,12 +37,12 @@ import java.util.Map;
  */
 @Singleton
 public class DatawayFinder extends AppContextFinder {
-    private final ApiDataAccessLayer dataAccessLayer;
+    private final Supplier<ApiDataAccessLayer> dataAccessLayer;
 
     @ConstructorBy
     public DatawayFinder(AppContext appContext) {
         super(appContext);
-        this.dataAccessLayer = appContext.getInstance(ApiDataAccessLayer.class);
+        this.dataAccessLayer = SingleProvider.of(() -> appContext.getInstance(ApiDataAccessLayer.class));
     }
 
     /** 负责处理 <code>import @"/net/hasor/demo.ql" as demo;</code>方式中 ‘/net/hasor/demo.ql’ 资源的加载 */
@@ -49,7 +51,7 @@ public class DatawayFinder extends AppContextFinder {
             String newResourceName = resourceName.substring("classpath:".length());
             return ResourcesUtils.getResourceAsStream(newResourceName);
         } else {
-            Map<FieldDef, String> object = this.dataAccessLayer.getObjectBy(EntityDef.RELEASE, FieldDef.PATH, resourceName);
+            Map<FieldDef, String> object = this.dataAccessLayer.get().getObjectBy(EntityDef.RELEASE, FieldDef.PATH, resourceName);
             if (object == null) {
                 throw new NullPointerException("import compiler failed -> '" + resourceName + "' not found.");
             }
