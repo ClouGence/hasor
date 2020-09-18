@@ -39,13 +39,7 @@ import java.util.Map;
 public class MybatisFragment extends SqlFragment {
     @Override
     public Object runFragment(Hints hint, Map<String, Object> paramMap, String fragmentString) throws Throwable {
-        SqlNode sqlNode = null;
-        try {
-            sqlNode = parseSqlNode(fragmentString.trim());
-        } catch (Exception e) {
-            // 解析失败在来一次，二次都不行直接抛出异常
-            sqlNode = parseSqlNode(fragmentString.trim());
-        }
+        SqlNode sqlNode = parseSqlNode(fragmentString.trim());
         FxQuery fxSql = new MybatisSqlQuery(sqlNode);
         if (usePage(hint)) {
             return this.usePageFragment(fxSql, hint, paramMap);

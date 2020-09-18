@@ -22,9 +22,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * DAO 层接口
+ * 数据库存储层访问 DAO 层公共方法。
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2020-06-03
+ * @version : 2020-09-11
  */
 public abstract class AbstractDal {
     /** 不参与更新的列 */

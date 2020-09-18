@@ -32,9 +32,9 @@ import java.util.stream.Collectors;
 import static net.hasor.dataway.dal.FieldDef.*;
 
 /**
- * DAO 层接口
+ * 数据库存储层访问接口 - interface_release 表
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2020-06-03
+ * @version : 2020-09-11
  */
 @Singleton
 public class InterfaceReleaseDal extends AbstractDal {

@@ -51,8 +51,6 @@ public class AopClassConfig {
     protected static String                             aopMethodSuffix   = "aop$";
     protected static String                             aopClassSuffix    = "$Auto$";
     private          File                               classWritePath;
-    //
-    //
 
     /**创建{@link AopClassConfig}类型对象。 */
     public AopClassConfig() {
@@ -78,8 +76,6 @@ public class AopClassConfig {
             this.parentLoader = new AopClassLoader(parentLoader);
         }
     }
-    //
-    //
 
     /**添加Aop拦截器。*/
     public void addAopInterceptors(Predicate<Method> aopMatcher, MethodInterceptor... aopInterceptor) {

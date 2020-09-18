@@ -35,9 +35,9 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * DAO 层接口
+ * 数据库存储层访问 ApiDataAccessLayer 接口实现。
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2020-06-03
+ * @version : 2020-09-11
  */
 @Singleton
 public class DataBaseDal implements ApiDataAccessLayer {

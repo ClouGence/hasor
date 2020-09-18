@@ -27,9 +27,15 @@ import java.util.EventListener;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface SpiTrigger {
+    /** 判断某类 SPI 是否有注册 */
+    public boolean hasSpi(Class<? extends EventListener> spiType);
+
+    /** 判断某类 SPI 是否有注册了仲裁 */
+    public boolean hasJudge(Class<? extends SpiJudge> spiJudge);
+
     /**
      * 通知型 SPI：保证所有 SPI 都会被触发，每一个SPI监听器 都可以拿到最初的值。
-     *  - 也可以理解是异步工作思想
+     *  - 是异步工作思想
      * @param spiType SPI 接口类型
      * @param spiCaller spiCaller
      */
@@ -39,7 +45,7 @@ public interface SpiTrigger {
 
     /**
      * 通知型 SPI：保证所有 SPI 都会被触发，每一个SPI监听器 都可以拿到最初的值。
-     *  - 也可以理解是异步工作思想
+     *  - 异步工作思想
      * @param spiType SPI 接口类型
      * @param spiCaller spiCaller
      */
@@ -47,7 +53,7 @@ public interface SpiTrigger {
 
     /**
      * 链型 SPI： 监听器工作模式类似Aop拦截器，下一个 SPI监听器 可以获取上一个 SPI监听器的值。
-     *  - 也可以理解是同步工作思想
+     *  - 同步工作思想
      * @param spiType SPI 接口类型
      * @param spiCaller spiCaller
      */
@@ -56,17 +62,11 @@ public interface SpiTrigger {
     }
 
     /**
-     * 链型 SPI： 监听器工作模式类似Aop拦截器，下一个 SPI监听器 可以获取上一个 SPI监听器的值。
-     *  - 也可以理解是同步工作思想
+     * 链型 SPI： 下一个 SPI监听器 可以获取上一个 SPI监听器的值。
+     *  - 同步工作思想
      * @param spiType SPI 接口类型
      * @param spiCaller spiCaller
      * @param defaultResult 默认值
      */
     public <R, T extends EventListener> R chainSpi(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult);
-
-    /** 判断某类 SPI 是否有注册 */
-    public boolean hasSpi(Class<? extends EventListener> spiType);
-
-    /** 判断某类 SPI 是否有注册了仲裁 */
-    public boolean hasJudge(Class<? extends SpiJudge> spiJudge);
 }

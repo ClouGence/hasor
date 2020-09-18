@@ -22,6 +22,8 @@ import net.hasor.dataql.Hints;
 import net.hasor.dataql.fx.FxHintNames;
 import net.hasor.dataql.fx.FxHintValue;
 import net.hasor.dataql.fx.basic.StringUdfSource;
+import net.hasor.dataql.fx.db.FxSqlCheckChainSpi;
+import net.hasor.dataql.fx.db.FxSqlCheckChainSpi.FxSqlInfo;
 import net.hasor.dataql.fx.db.LookupConnectionListener;
 import net.hasor.dataql.fx.db.LookupDataSourceListener;
 import net.hasor.dataql.fx.db.fxquery.DefaultFxQuery;
@@ -49,7 +51,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.function.Function;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static net.hasor.dataql.fx.FxHintNames.*;
@@ -58,7 +60,6 @@ import static net.hasor.dataql.fx.FxHintValue.*;
 /**
  * 支持 SQL 的代码片段执行器。整合了分页、批处理能力。
  *  已支持的语句有：insert、update、delete、replace、select、create、drop、alter
- *  暂不支持语句有：exec、其它语句
  *  已经提供原生：insert、update、delete、replace 语句的批量能力。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-28
@@ -105,7 +106,7 @@ public class SqlFragment implements FragmentProcess {
         }
     }
 
-    protected JdbcTemplate getJdbcTemplate(final String sourceName) {
+    protected JdbcTemplate getJdbcTemplate(String sourceName) {
         // .首先尝试 Connection
         if (this.spiTrigger.hasSpi(LookupConnectionListener.class)) {
             // .通过 SPI 查找数据源
@@ -175,23 +176,28 @@ public class SqlFragment implements FragmentProcess {
         }
         //
         // --- 批量模式
-        PreparedStatementSetter[] parameterArrays = params.stream().map(new Function<Map<String, Object>, PreparedStatementSetter>() {
-            public PreparedStatementSetter apply(Map<String, Object> preparedParams) {
-                return new ArgPreparedStatementSetter(fxSql.buildParameterSource(preparedParams).toArray());
-            }
-        }).toArray(PreparedStatementSetter[]::new);
-        //
+        List<Object[]> batchParam = params.stream().map(preparedParams -> {
+            return fxSql.buildParameterSource(preparedParams).toArray();
+        }).collect(Collectors.toList());
         String sourceName = hint.getOrDefault(FRAGMENT_SQL_DATA_SOURCE.name(), "").toString();
-        int[] executeBatch = this.getJdbcTemplate(sourceName).executeBatch(tempFragmentString, new BatchPreparedStatementSetter() {
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                parameterArrays[i].setValues(ps);
-            }
+        //
+        return this.executeSQL(true, sourceName, tempFragmentString, batchParam.toArray(), new SqlQuery<List<Object>>() {
+            public List<Object> doQuery(String querySQL, Object[] params, JdbcTemplate useJdbcTemplate) throws SQLException {
+                PreparedStatementSetter[] parameterArrays = Arrays.stream(params).map(o -> {
+                    return new ArgPreparedStatementSetter((Object[]) o);
+                }).toArray(PreparedStatementSetter[]::new);
+                int[] executeBatch = useJdbcTemplate.executeBatch(querySQL, new BatchPreparedStatementSetter() {
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        parameterArrays[i].setValues(ps);
+                    }
 
-            public int getBatchSize() {
-                return parameterArrays.length;
+                    public int getBatchSize() {
+                        return parameterArrays.length;
+                    }
+                });
+                return Arrays.stream(executeBatch).boxed().collect(Collectors.toList());
             }
         });
-        return Arrays.stream(executeBatch).boxed().collect(Collectors.toList());
     }
 
     @Override
@@ -204,6 +210,7 @@ public class SqlFragment implements FragmentProcess {
         }
     }
 
+    /** 分页模式 */
     protected Object usePageFragment(FxQuery fxSql, Hints hint, Map<String, Object> paramMap) {
         String sqlDialect = this.appContext.getEnvironment().getVariable("HASOR_DATAQL_FX_PAGE_DIALECT");
         sqlDialect = hint.getOrDefault(FRAGMENT_SQL_PAGE_DIALECT.name(), sqlDialect).toString();
@@ -211,83 +218,109 @@ public class SqlFragment implements FragmentProcess {
             throw new IllegalArgumentException("Query dialect missing.");
         }
         final SqlPageDialect pageDialect = SqlPageDialectRegister.findOrCreate(sqlDialect, this.appContext);
-        return new SqlPageObject(hint, mapList -> {
-            return convertResult(hint, mapList);
-        }, new SqlPageQuery() {
-            @Override
-            public SqlPageDialect.BoundSql getCountBoundSql() {
-                return pageDialect.getCountSql(fxSql, paramMap);
-            }
-
-            @Override
-            public SqlPageDialect.BoundSql getPageBoundSql(int start, int limit) {
-                if (limit < 0) {
-                    String sqlString = fxSql.buildQueryString(paramMap);
-                    Object[] paramArrays = fxSql.buildParameterSource(paramMap).toArray();
-                    return new SqlPageDialect.BoundSql(sqlString, paramArrays);
-                }
-                return pageDialect.getPageSql(fxSql, paramMap, start, limit);
-            }
-
-            @Override
-            public <T> T doQuery(SqlJdbcTemplateCallback<T> templateCallback) throws SQLException {
-                String sourceName = hint.getOrDefault(FRAGMENT_SQL_DATA_SOURCE.name(), "").toString();
-                return templateCallback.doQuery(getJdbcTemplate(sourceName));
-            }
-        });
+        //        Hints hints,                        // 查询包含的 Hint
+        //        FxQuery fxQuery,                    // 查询语句
+        //        Map<String, Object> queryParamMap,  // 查询参数
+        //        SqlPageDialect pageDialect,         // 分页方言服务
+        //        SqlPageQuery pageQuery              // 用于执行分页查询的服务
+        return new SqlPageObject(hint, fxSql, paramMap, pageDialect, this);
     }
 
+    /** 非分页模式 */
     protected Object noPageFragment(FxQuery fxSql, Hints hint, Map<String, Object> paramMap) throws Throwable {
-        final String sourceName = hint.getOrDefault(FRAGMENT_SQL_DATA_SOURCE.name(), "").toString();
-        final String fragmentString = fxSql.buildQueryString(paramMap);
-        final Object[] source = fxSql.buildParameterSource(paramMap).toArray();
-        //
-        return this.getJdbcTemplate(sourceName).execute(fragmentString, (PreparedStatementCallback<Object>) ps -> {
-            // 接收返回结果使用
-            ArrayList<Object> resultDataSet = new ArrayList<>();
-            String keepType = hint.getOrDefault(FRAGMENT_SQL_MULTIPLE_QUERIES.name(), FRAGMENT_SQL_MULTIPLE_QUERIES_LAST).toString();
-            // 设置请求参数
-            new ArgPreparedStatementSetter(source).setValues(ps);
-            //
-            // 执行多Sql执行，并处理第一个结果
-            if (ps.execute()) {
-                // -- 第一个结果是个结果集
-                ResultSet resultSet = ps.getResultSet();
-                resultDataSet.add(RESULT_EXTRACTOR.get().extractData(resultSet));
-            } else {
-                // -- 第一个结果是个影响行数
-                resultDataSet.add(ps.getUpdateCount());
-            }
-            //
-            // 接收其它结果
-            while (ps.getMoreResults()) {
-                ResultSet resultSet = ps.getResultSet();
-                if (FRAGMENT_SQL_MULTIPLE_QUERIES_FIRST.equalsIgnoreCase(keepType)) {
-                    continue;
-                }
-                if (FRAGMENT_SQL_MULTIPLE_QUERIES_LAST.equalsIgnoreCase(keepType)) {
-                    resultDataSet.set(0, RESULT_EXTRACTOR.get().extractData(resultSet));
-                    continue;
-                }
-                if (FRAGMENT_SQL_MULTIPLE_QUERIES_ALL.equalsIgnoreCase(keepType)) {
+        // 获取必要的参数
+        String useSourceName = hint.getOrDefault(FRAGMENT_SQL_DATA_SOURCE.name(), "").toString();
+        String buildQueryString = fxSql.buildQueryString(paramMap);
+        Object[] buildQueryParams = fxSql.buildParameterSource(paramMap).toArray();
+        // 使用 preparedCallback 执行查询
+        return this.executeSQL(useSourceName, buildQueryString, buildQueryParams, (queryString, queryParams, useJdbcTemplate) -> {
+            // 准备 preparedCallback
+            PreparedStatementCallback<Object> preparedCallback = ps -> {
+                // 接收返回结果使用
+                List<Object> resultDataSet = new ArrayList<>();
+                String keepType = hint.getOrDefault(FRAGMENT_SQL_MULTIPLE_QUERIES.name(), FRAGMENT_SQL_MULTIPLE_QUERIES_LAST).toString();
+                // 设置请求参数
+                new ArgPreparedStatementSetter(queryParams).setValues(ps);
+                //
+                // 执行多Sql执行，并处理第一个结果
+                if (ps.execute()) {
+                    // -- 第一个结果是个结果集
+                    ResultSet resultSet = ps.getResultSet();
                     resultDataSet.add(RESULT_EXTRACTOR.get().extractData(resultSet));
-                    continue;
+                } else {
+                    // -- 第一个结果是个影响行数
+                    resultDataSet.add(ps.getUpdateCount());
                 }
-            }
-            // 返回结果
-            if (resultDataSet.size() <= 1) {
-                return resultDataSet.get(0);
-            } else {
-                return resultDataSet;
-            }
+                //
+                // 接收其它结果
+                while (ps.getMoreResults()) {
+                    ResultSet resultSet = ps.getResultSet();
+                    if (FRAGMENT_SQL_MULTIPLE_QUERIES_FIRST.equalsIgnoreCase(keepType)) {
+                        continue;
+                    }
+                    if (FRAGMENT_SQL_MULTIPLE_QUERIES_LAST.equalsIgnoreCase(keepType)) {
+                        resultDataSet.set(0, RESULT_EXTRACTOR.get().extractData(resultSet));
+                        continue;
+                    }
+                    if (FRAGMENT_SQL_MULTIPLE_QUERIES_ALL.equalsIgnoreCase(keepType)) {
+                        resultDataSet.add(RESULT_EXTRACTOR.get().extractData(resultSet));
+                        continue;
+                    }
+                }
+                // 返回结果
+                if (resultDataSet.size() <= 1) {
+                    return resultDataSet.get(0);
+                } else {
+                    return resultDataSet;
+                }
+            };
+            // 执行查询
+            return useJdbcTemplate.execute(queryString, preparedCallback);
         });
     }
 
+    <T> T executeSQL(String sourceName, String sqlString, Object[] paramArrays, SqlQuery<T> sqlQuery) throws SQLException {
+        return executeSQL(false, sourceName, sqlString, paramArrays, sqlQuery);
+    }
+
+    /** 执行 SQL */
+    protected <T> T executeSQL(boolean batch, String sourceName, String sqlString, Object[] paramArrays, SqlQuery<T> sqlQuery) throws SQLException {
+        if (this.spiTrigger.hasSpi(FxSqlCheckChainSpi.class)) {
+            final FxSqlInfo fxSqlInfo = new FxSqlInfo(batch, sourceName, sqlString, paramArrays) {
+                public JdbcTemplate getJdbcTemplate(String sourceName) {
+                    return SqlFragment.this.getJdbcTemplate(sourceName);
+                }
+            };
+            final AtomicBoolean doExit = new AtomicBoolean(false);
+            this.spiTrigger.chainSpi(FxSqlCheckChainSpi.class, (listener, lastResult) -> {
+                if (doExit.get()) {
+                    return lastResult;
+                }
+                int doCheck = listener.doCheck(fxSqlInfo);
+                if (doCheck == FxSqlCheckChainSpi.EXIT) {
+                    doExit.set(true);
+                }
+                return lastResult;
+            }, fxSqlInfo);
+            //
+            return sqlQuery.doQuery(fxSqlInfo.getQueryString(), fxSqlInfo.getQueryParams(), this.getJdbcTemplate(sourceName));
+        } else {
+            return sqlQuery.doQuery(sqlString, paramArrays, this.getJdbcTemplate(sourceName));
+        }
+    }
+
+    public interface SqlQuery<T> {
+        /** 执行 SQL */
+        public T doQuery(String querySQL, Object[] params, JdbcTemplate useJdbcTemplate) throws SQLException;
+    }
+
+    /** 分析 SQL */
     protected FxQuery analysisSQL(Hints hint, String fragmentString) {
         return DefaultFxQuery.analysisSQL(fragmentString);
     }
 
-    protected Object convertResult(Hints hint, List<Map<String, Object>> mapList) {
+    /** 结果转换 */
+    public Object convertResult(Hints hint, List<Map<String, Object>> mapList) {
         String openPackage = hint.getOrDefault(FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.name(), FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.getDefaultVal()).toString();
         String caseModule = hint.getOrDefault(FxHintNames.FRAGMENT_SQL_COLUMN_CASE.name(), FxHintNames.FRAGMENT_SQL_COLUMN_CASE.getDefaultVal()).toString();
         if (!FRAGMENT_SQL_COLUMN_CASE_DEFAULT.equalsIgnoreCase(caseModule)) {
@@ -340,12 +373,18 @@ public class SqlFragment implements FragmentProcess {
         return rowObject;
     }
 
+    /** 判断是否需要分页 */
     protected boolean usePage(Hints hint) {
         FxHintNames queryByPage = FxHintNames.FRAGMENT_SQL_QUERY_BY_PAGE;
         Object hintOrDefault = hint.getOrDefault(queryByPage.name(), queryByPage.getDefaultVal());
         return FRAGMENT_SQL_QUERY_BY_PAGE_ENABLE.equalsIgnoreCase(hintOrDefault.toString());
     }
 
+    /**
+     * 尝试推断SQL语句类型（仅在分页、批量场景下有作用）
+     *  - Query 可以执行分页，其它类型语句会退化。
+     *  - Insert/Update/Delete 语句之外的：退化为 非批量
+     * */
     private static SqlMode evalSqlMode(String fragmentString) throws IOException {
         List<String> readLines = IOUtils.readLines(new StringReader(fragmentString));
         SqlMode sqlMode = null;

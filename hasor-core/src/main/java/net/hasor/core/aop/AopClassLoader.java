@@ -36,7 +36,6 @@ public class AopClassLoader extends ClassLoader {
         super(parentLoader);
     }
 
-    //
     public AopClassConfig findClassConfig(String className) {
         InnerClassInfo ci = this.classMap.get(className);
         return ci == null ? null : ci.classConfig;

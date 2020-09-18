@@ -43,7 +43,7 @@ public interface MethodInvocation {
      */
     public Object proceed() throws Throwable;
 
-    /** Returns the object that holds the current joinpoint's static part.
+    /** Returns the object that holds the current join point's static part.
      * <p>For instance, the target object for an invocation.
      * @return the object (can be null if the accessible object is
      */

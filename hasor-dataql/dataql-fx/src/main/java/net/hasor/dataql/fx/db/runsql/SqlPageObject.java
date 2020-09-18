@@ -16,7 +16,8 @@
 package net.hasor.dataql.fx.db.runsql;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.UdfSourceAssembly;
-import net.hasor.dataql.fx.db.runsql.SqlPageQuery.SqlPageQueryConvertResult;
+import net.hasor.dataql.fx.db.fxquery.FxQuery;
+import net.hasor.dataql.fx.db.runsql.dialect.SqlPageDialect;
 import net.hasor.dataql.fx.db.runsql.dialect.SqlPageDialect.BoundSql;
 import net.hasor.utils.convert.ConverterUtils;
 
@@ -25,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static net.hasor.dataql.fx.FxHintNames.FRAGMENT_SQL_DATA_SOURCE;
 import static net.hasor.dataql.fx.FxHintNames.FRAGMENT_SQL_QUERY_BY_PAGE_NUMBER_OFFSET;
 
 /**
@@ -34,25 +36,39 @@ import static net.hasor.dataql.fx.FxHintNames.FRAGMENT_SQL_QUERY_BY_PAGE_NUMBER_
  */
 class SqlPageObject implements UdfSourceAssembly {
     /**满足条件的总记录数*/
-    private int                       totalCount       = 0;
+    private int                 totalCount        = 0;
     /**每页记录数（-1表示无限大）*/
-    private int                       pageSize         = -1;
+    private int                 pageSize          = -1;
     /**当前页号*/
-    private int                       currentPage      = 0;
+    private int                 currentPage       = 0;
     //
-    private boolean                   totalCountInited = false;
-    private SqlPageQuery              sqlPageQuery     = null;
-    private SqlPageQueryConvertResult convertResult    = null;
-    private int                       pageNumberOffset = 0;
+    private boolean             totalCountInited  = false;
+    private int                 pageNumberOffset  = 0;
+    private String              useDataSource     = null;
+    private Hints               hints             = null;
+    private FxQuery             fxQuery           = null;
+    private Map<String, Object> queryParamMap     = null;
+    private SqlPageDialect      pageDialect       = null;
+    private SqlFragment         sourceSqlFragment = null;
 
-    public SqlPageObject(Hints hints, SqlPageQueryConvertResult convertResult, SqlPageQuery sqlPageQuery) {
+    SqlPageObject(                              //
+            Hints hints,                        // 查询包含的 Hint
+            FxQuery fxQuery,                    // 查询语句
+            Map<String, Object> queryParamMap,  // 查询参数
+            SqlPageDialect pageDialect,         // 分页方言服务
+            SqlFragment sourceSqlFragment       // 用于执行分页查询的服务
+    ) {
         this.pageNumberOffset = (int) ConverterUtils.convert(String.valueOf(hints.getOrDefault(//
                 FRAGMENT_SQL_QUERY_BY_PAGE_NUMBER_OFFSET.name(),//
                 FRAGMENT_SQL_QUERY_BY_PAGE_NUMBER_OFFSET.getDefaultVal())//
         ), Integer.TYPE);
         //
-        this.convertResult = convertResult;
-        this.sqlPageQuery = sqlPageQuery;
+        this.useDataSource = hints.getOrDefault(FRAGMENT_SQL_DATA_SOURCE.name(), "").toString();
+        this.hints = hints;
+        this.fxQuery = fxQuery;
+        this.queryParamMap = queryParamMap;
+        this.pageDialect = pageDialect;
+        this.sourceSqlFragment = sourceSqlFragment;
         this.totalCountInited = false;
     }
 
@@ -72,12 +88,19 @@ class SqlPageObject implements UdfSourceAssembly {
     /** 获取记录总数 */
     private int totalCount() throws SQLException {
         if (!this.totalCountInited) {
-            final BoundSql countBoundSql = this.sqlPageQuery.getCountBoundSql();
-            this.totalCount = this.sqlPageQuery.doQuery(jdbcTemplate -> {
-                String countFxSql = countBoundSql.getSqlString();
-                Object[] paramArrays = countBoundSql.getParamMap();
-                return jdbcTemplate.queryForInt(countFxSql, paramArrays);
-            });
+            // 准备SQL和执行的参数
+            BoundSql countBoundSql = this.pageDialect.getCountSql(this.fxQuery, this.queryParamMap);
+            String countFxSql = countBoundSql.getSqlString();
+            Object[] countParams = countBoundSql.getParamMap();
+            // 通过 doQuery 方法来执行SQL。
+            this.totalCount = this.sourceSqlFragment.executeSQL(//
+                    this.useDataSource, //
+                    countFxSql,         //
+                    countParams,        //
+                    (querySQL, params, useJdbcTemplate) -> {
+                        // 不直接使用 countFxSql, paramArrays 的原因是 doQuery 被调用的时会执行 FxSqlInterceptorChainSpi 拦截器。
+                        return useJdbcTemplate.queryForInt(querySQL, params);
+                    });
             this.totalCountInited = true;
         }
         return this.totalCount;
@@ -176,12 +199,28 @@ class SqlPageObject implements UdfSourceAssembly {
 
     /** 移动到最后一页 */
     public Object data() throws SQLException {
-        final BoundSql countBoundSql = this.sqlPageQuery.getPageBoundSql(firstRecordPosition(), pageSize());
-        return this.sqlPageQuery.doQuery(jdbcTemplate -> {
-            String countFxSql = countBoundSql.getSqlString();
-            Object[] paramArrays = countBoundSql.getParamMap();
-            List<Map<String, Object>> resultData = jdbcTemplate.queryForList(countFxSql, paramArrays);
-            return this.convertResult.convertPageResult(resultData);
-        });
+        String pageFxSql = null;
+        Object[] pageParams = null;
+        //
+        if (pageSize() < 0) {
+            // 如果分页的页码小于0  -> 那么查询所有数据
+            pageFxSql = this.fxQuery.buildQueryString(this.queryParamMap);
+            pageParams = this.fxQuery.buildParameterSource(this.queryParamMap).toArray();
+        } else {
+            // 如果分页的页码不等于0  -> 那么执行分页查询
+            BoundSql pageBoundSql = this.pageDialect.getPageSql(this.fxQuery, this.queryParamMap, firstRecordPosition(), pageSize());
+            pageFxSql = pageBoundSql.getSqlString();
+            pageParams = pageBoundSql.getParamMap();
+        }
+        // 通过 doQuery 方法来执行SQL。
+        return this.sourceSqlFragment.executeSQL(//
+                this.useDataSource, //
+                pageFxSql,          //
+                pageParams,         //
+                (querySQL, params, useJdbcTemplate) -> {
+                    // 不直接使用 countFxSql, paramArrays 的原因是 doQuery 被调用的时会执行 FxSqlInterceptorChainSpi 拦截器。
+                    List<Map<String, Object>> resultData = useJdbcTemplate.queryForList(querySQL, params);
+                    return sourceSqlFragment.convertResult(hints, resultData);
+                });
     }
 }

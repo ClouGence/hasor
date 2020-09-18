@@ -21,27 +21,27 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * DAO 层接口
+ * 数据访问层接口
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-06-03
  */
 @ImplBy(DataBaseDal.class)
 public interface ApiDataAccessLayer {
-    // 点查 or 唯一索引
+    /** 点查 or 唯一索引 */
     public Map<FieldDef, String> getObjectBy(EntityDef objectType, FieldDef indexKey, String index);
 
-    // 列表/搜索
+    /** 列表/搜索 */
     public List<Map<FieldDef, String>> listObjectBy(EntityDef objectType, Map<QueryCondition, Object> conditions);
 
-    // 生成 ID
+    /** 生成 ID */
     public String generateId(EntityDef objectType);
 
-    // 删除对象
+    /** 删除对象 */
     public boolean deleteObjectBy(EntityDef objectType, FieldDef indexKey, String index);
 
-    // 更新对象
+    /** 更新对象 */
     public boolean updateObjectBy(EntityDef objectType, FieldDef indexKey, String index, Map<FieldDef, String> newData);
 
-    // 新增对象
+    /** 新增对象 */
     public boolean createObjectBy(EntityDef objectType, Map<FieldDef, String> newData);
 }

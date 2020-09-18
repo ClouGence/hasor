@@ -20,6 +20,11 @@ import net.hasor.web.Invoker;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 跨域工具
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-04-04
+ */
 public class CorsUtils {
     public static void setup(Invoker invoker) {
         HttpServletRequest httpRequest = invoker.getHttpRequest();
