@@ -40,8 +40,8 @@ import java.util.Random;
  * @version : 2020-09-11
  */
 @Singleton
-public class DataBaseDal implements ApiDataAccessLayer {
-    protected static Logger              logger = LoggerFactory.getLogger(DataBaseDal.class);
+public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
+    protected static Logger              logger = LoggerFactory.getLogger(DataBaseApiDataAccessLayer.class);
     @Inject
     private          InterfaceInfoDal    infoDal;
     @Inject
@@ -56,7 +56,7 @@ public class DataBaseDal implements ApiDataAccessLayer {
             throw new IllegalStateException("jdbcTemplate is not init.");
         }
         //
-        String dbType = null;//appContext.getEnvironment().getVariable("HASOR_DATAQL_DATAWAY_FORCE_DBTYPE");
+        String dbType = null;//this.appContext.getEnvironment().getVariable("HASOR_DATAQL_DATAWAY_FORCE_DBTYPE");
         if (StringUtils.isBlank(dbType)) {
             dbType = jdbcTemplate.execute((ConnectionCallback<String>) con -> {
                 String jdbcUrl = con.getMetaData().getURL();

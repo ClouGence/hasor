@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.config;
+package net.hasor.dataway.service;
 import com.alibaba.fastjson.JSON;
 import net.hasor.dataway.DatawayService;
+import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.FilenameUtils;
@@ -42,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-20
  */
-class InterfaceUiFilter implements InvokerFilter {
+public class InterfaceUiFilter implements InvokerFilter {
     protected static     Logger               logger           = LoggerFactory.getLogger(InterfaceUiFilter.class);
     private static final String               resourceBaseUri  = "/META-INF/hasor-framework/dataway-ui/";
     private static final String               datawayVersion;

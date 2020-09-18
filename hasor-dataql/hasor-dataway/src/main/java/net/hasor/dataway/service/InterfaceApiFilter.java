@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.config;
+package net.hasor.dataway.service;
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.Inject;
 import net.hasor.core.spi.SpiTrigger;
+import net.hasor.dataway.config.CorsUtils;
+import net.hasor.dataway.config.DatawayUtils;
+import net.hasor.dataway.config.LoggerUtils;
 import net.hasor.dataway.dal.ApiDataAccessLayer;
 import net.hasor.dataway.dal.EntityDef;
 import net.hasor.dataway.dal.FieldDef;
-import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.CallSource;
 import net.hasor.utils.StringUtils;
@@ -43,7 +45,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-20
  */
-class InterfaceApiFilter implements InvokerFilter {
+public class InterfaceApiFilter implements InvokerFilter {
     protected static Logger             logger = LoggerFactory.getLogger(InterfaceApiFilter.class);
     @Inject
     private          ApiCallService     callService;

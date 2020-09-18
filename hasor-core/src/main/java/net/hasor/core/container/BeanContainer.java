@@ -318,7 +318,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
                         targetObject = tConstructor.newInstance(ArrayUtils.EMPTY_OBJECT_ARRAY);
                     }
                 } catch (InvocationTargetException e) {
-                    throw new IllegalStateException(e.getTargetException());
+                    throw ExceptionUtils.toRuntimeException(e.getTargetException(), IllegalStateException::new);
                 } catch (Exception e) {
                     throw ExceptionUtils.toRuntimeException(e, IllegalStateException::new);
                 }

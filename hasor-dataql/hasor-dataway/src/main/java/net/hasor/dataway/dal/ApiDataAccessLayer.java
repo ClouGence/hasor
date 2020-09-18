@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataway.dal;
-import net.hasor.core.ImplBy;
-import net.hasor.dataway.dal.db.DataBaseDal;
-
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +22,6 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-06-03
  */
-@ImplBy(DataBaseDal.class)
 public interface ApiDataAccessLayer {
     /** 点查 or 唯一索引 */
     public Map<FieldDef, String> getObjectBy(EntityDef objectType, FieldDef indexKey, String index);

@@ -15,11 +15,16 @@
  */
 package net.hasor.dataway.config;
 import net.hasor.core.Environment;
+import net.hasor.core.HasorUtils;
+import net.hasor.core.XmlNode;
 import net.hasor.dataql.QueryApiBinder;
-import net.hasor.dataql.fx.db.runsql.SqlFragment;
 import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.authorization.InterfaceAuthorizationFilter;
+import net.hasor.dataway.dal.ApiDataAccessLayer;
+import net.hasor.dataway.service.DatawayFinder;
 import net.hasor.dataway.service.DatawayServiceImpl;
+import net.hasor.dataway.service.InterfaceApiFilter;
+import net.hasor.dataway.service.InterfaceUiFilter;
 import net.hasor.dataway.web.*;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.WebApiBinder;
@@ -33,18 +38,15 @@ import org.slf4j.LoggerFactory;
  * @version : 2020-03-20
  */
 public class DatawayModule implements WebModule {
-    protected static Logger  logger = LoggerFactory.getLogger(DatawayModule.class);
-    private          boolean datawayApi;
-    private          boolean datawayAdmin;
+    protected static Logger logger = LoggerFactory.getLogger(DatawayModule.class);
 
     @Override
-    public void loadModule(WebApiBinder apiBinder) {
-        //
+    public void loadModule(WebApiBinder apiBinder) throws Throwable {
         // .是否启用 Dataway
         Environment environment = apiBinder.getEnvironment();
-        this.datawayApi = Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY"));
-        this.datawayAdmin = Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY_ADMIN"));
-        if (!this.datawayApi) {
+        boolean datawayApi = Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY"));
+        boolean datawayAdmin = Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY_ADMIN"));
+        if (!datawayApi) {
             logger.info("dataway is disable.");
             return;
         }
@@ -62,14 +64,40 @@ public class DatawayModule implements WebModule {
         QueryApiBinder defaultContext = apiBinder.tryCast(QueryApiBinder.class);
         defaultContext.bindFinder(apiBinder.getProvider(DatawayFinder.class));
         //
-        // .注册 sql 执行器
-        defaultContext.bindFragment("sql", SqlFragment.class);
+        String dalType = environment.getVariable("HASOR_DATAQL_DATAWAY_DAL_TYPE");
+        if (StringUtils.isBlank(dalType)) {
+            throw new RuntimeException("dataway HASOR_DATAQL_DATAWAY_DAL_TYPE is missing.");
+        }
+        boolean setupProvider = false;
+        XmlNode[] nodeArray = environment.getSettings().getXmlNodeArray("hasor.dataway.dataAccessLayer.provider");
+        if (nodeArray != null) {
+            for (XmlNode xmlNode : nodeArray) {
+                if (!"provider".equalsIgnoreCase(xmlNode.getName())) {
+                    continue;
+                }
+                String providerName = xmlNode.getAttribute("name");
+                String providerType = xmlNode.getText();
+                if (!dalType.equalsIgnoreCase(providerName) || StringUtils.isBlank(providerType)) {
+                    continue;
+                }
+                setupProvider = true;
+                Class<?> loadClass = environment.getClassLoader().loadClass(providerType);
+                logger.info("use '" + providerName + "' as the dataAccessLayer provider ,type is " + loadClass.getName());
+                apiBinder.bindType(ApiDataAccessLayer.class).toProvider(//
+                        HasorUtils.autoAware(environment, new InnerApiDalCreator(loadClass))//
+                );
+                break;
+            }
+        }
+        if (!setupProvider) {
+            throw new RuntimeException("DataAccessLayer is not specified.");
+        }
         //
         // .注册 DatawayService接口
         apiBinder.bindType(DatawayService.class).to(DatawayServiceImpl.class);
         //
         // .Dataway 后台管理界面
-        if (!this.datawayAdmin) {
+        if (!datawayAdmin) {
             logger.info("dataway admin is disable.");
             return;
         }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.config;
+package net.hasor.dataway.service;
 import net.hasor.core.AppContext;
 import net.hasor.core.ConstructorBy;
 import net.hasor.core.Singleton;

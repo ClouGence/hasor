@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx;
+import net.hasor.core.Environment;
+import net.hasor.core.XmlNode;
+import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.QueryApiBinder;
 import net.hasor.dataql.QueryModule;
-import net.hasor.dataql.fx.db.likemybatis.MybatisFragment;
-import net.hasor.dataql.fx.db.runsql.SqlFragment;
 import net.hasor.dataql.fx.web.FxWebInterceptor;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.web.WebApiBinder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Fx 函数包的自动配置
@@ -28,13 +31,25 @@ import net.hasor.web.WebApiBinder;
  * @version : 2020-03-29
  */
 public class FxModule implements QueryModule {
+    protected static Logger logger = LoggerFactory.getLogger(FxModule.class);
+
     @Override
     public void loadModule(QueryApiBinder apiBinder) throws Throwable {
-        //
-        // .SQL代码片段执行器
-        apiBinder.bindFragment("sql", SqlFragment.class);
-        // 2020-05-18 新增@@mybatis
-        apiBinder.bindFragment("mybatis", MybatisFragment.class);
+        Environment environment = apiBinder.getEnvironment();
+        // .注册外部执行器
+        XmlNode[] nodeArray = environment.getSettings().getXmlNodeArray("hasor.dataqlFx.bindFragmentSet.bindFragment");
+        if (nodeArray != null) {
+            for (XmlNode xmlNode : nodeArray) {
+                if (!"bindFragment".equalsIgnoreCase(xmlNode.getName())) {
+                    continue;
+                }
+                String fragmentName = xmlNode.getAttribute("name");
+                String fragmentType = xmlNode.getText();
+                Class<?> loadClass = environment.getClassLoader().loadClass(fragmentType);
+                logger.info("bindFragment '" + fragmentName + "' to " + loadClass.getName());
+                apiBinder.bindFragment(fragmentName, (Class<? extends FragmentProcess>) loadClass);
+            }
+        }
         //
         // .如果是 Web 环境那么初始化 web 相关的 函数包。
         if (ResourcesUtils.getResource("/net/hasor/web/WebApiBinder.class") != null) {

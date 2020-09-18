@@ -10,5 +10,15 @@
             <!-- SQL 方言，默认为空。使用时必须设置 -->
             <HASOR_DATAQL_FX_PAGE_DIALECT></HASOR_DATAQL_FX_PAGE_DIALECT>
         </environmentVar>
+
+        <!-- 内置 Fragment -->
+        <dataqlFx>
+            <bindFragmentSet>
+                <!-- @@sql -->
+                <bindFragment name="sql">net.hasor.dataql.fx.db.runsql.SqlFragment</bindFragment>
+                <!-- 2020-05-18 新增@@mybatis -->
+                <bindFragment name="mybatis">net.hasor.dataql.fx.db.likemybatis.MybatisFragment</bindFragment>
+            </bindFragmentSet>
+        </dataqlFx>
     </hasor>
 </config>

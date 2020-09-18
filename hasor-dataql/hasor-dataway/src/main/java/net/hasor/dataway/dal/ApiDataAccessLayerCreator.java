@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.authorization;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+package net.hasor.dataway.dal;
+import net.hasor.core.AppContext;
 
 /**
- * 负责UI界面调用的权限判断。
+ * 数据访问层接口
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-06-03
  */
-@Retention(RetentionPolicy.RUNTIME)
-public @interface RefAuthorization {
-    /** 标定点权限 */
-    public AuthorizationType value();
+public interface ApiDataAccessLayerCreator {
+    public ApiDataAccessLayer create(AppContext appContext);
 }

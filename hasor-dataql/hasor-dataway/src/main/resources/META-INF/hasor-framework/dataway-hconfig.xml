@@ -9,6 +9,9 @@
         <HASOR_DATAQL_DATAWAY_ADMIN>false</HASOR_DATAQL_DATAWAY_ADMIN>
         <!-- dataway-ui 的工作路径，必须开启管理功能 -->
         <HASOR_DATAQL_DATAWAY_UI_URL>/interface-ui/</HASOR_DATAQL_DATAWAY_UI_URL>
+
+        <!-- 元信息访问层默认使用的是哪种类型，提供者在 hasor.dataway.dataAccessLayer 中定义 -->
+        <HASOR_DATAQL_DATAWAY_DAL_TYPE>db</HASOR_DATAQL_DATAWAY_DAL_TYPE>
     </hasor.environmentVar>
 
     <hasor>
@@ -16,5 +19,14 @@
         <modules>
             <module>net.hasor.dataway.config.DatawayModule</module>
         </modules>
+
+        <dataway>
+            <dataAccessLayer>
+                <!-- 使用数据库充当 Dataway 的元信息存储器 -->
+                <provider name="db">net.hasor.dataway.dal.db.DataBaseApiDataAccessLayerCreator</provider>
+                <!-- 使用 eureka 充当 Dataway 的元信息存储器 -->
+                <provider name="eureka">net.hasor.dataway.dal.eureka.EurekaApiDataAccessLayerCreator</provider>
+            </dataAccessLayer>
+        </dataway>
     </hasor>
 </config>
