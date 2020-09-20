@@ -15,6 +15,7 @@
     <modules>
         <module>with-spring/example-cli-dataql</module>
         <module>with-spring/example-web</module>
+        <module>with-spring/eureka-server</module>
         <!-- <module>with-spring/example-web</module>-->
         <!-- <module>example-rsf</module>-->
         <!-- <module>example-nutz</module>-->

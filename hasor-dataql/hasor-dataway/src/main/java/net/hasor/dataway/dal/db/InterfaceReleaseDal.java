@@ -221,7 +221,7 @@ public class InterfaceReleaseDal extends AbstractDal {
         String sqlQuery = "" + //
                 "update interface_release set " + //
                 sqlBuffer.toString() + //
-                "where pub_id = ?";
+                "where pub_id = ?";// TODO 需要在加上一个 乐观锁，用以处理并发导致数据丢失的风险
         return this.jdbcTemplate.executeUpdate(sqlQuery, updateData.toArray()) > 0;
     }
 

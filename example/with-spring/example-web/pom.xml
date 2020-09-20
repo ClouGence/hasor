@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.4.RELEASE</version>
+        <version>2.3.4.RELEASE</version>
     </parent>
 
     <!-- Maven Info -->
@@ -68,6 +68,8 @@
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.1.10</version>
         </dependency>
+
+        <!-- driver -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -94,67 +96,31 @@
             <version>1.4.200</version>
         </dependency>
         <dependency>
-            <groupId>oracle</groupId>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.14.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm.db2</groupId>
+            <artifactId>jcc</artifactId>
+            <version>11.5.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc8</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/ojdbc8-full/ojdbc8.jar</systemPath>
+            <version>19.3.0.0</version>
         </dependency>
+
+        <!-- nacos -->
         <dependency>
-            <groupId>oracle</groupId>
-            <artifactId>ons</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/ojdbc8-full/ons.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>oracle</groupId>
-            <artifactId>oraclepki</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/ojdbc8-full/oraclepki.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>oracle</groupId>
-            <artifactId>orai18n</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/ojdbc8-full/orai18n.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>oracle</groupId>
-            <artifactId>osdt_cert</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/ojdbc8-full/osdt_cert.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>oracle</groupId>
-            <artifactId>osdt_core</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/ojdbc8-full/osdt_core.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>oracle</groupId>
-            <artifactId>simplefan</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/ojdbc8-full/simplefan.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>oracle</groupId>
-            <artifactId>ucp</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/ojdbc8-full/ucp.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>oracle</groupId>
-            <artifactId>xdb6</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/ojdbc8-full/xdb6.jar</systemPath>
+            <groupId>com.alibaba.boot</groupId>
+            <artifactId>nacos-config-spring-boot-starter</artifactId>
+            <version>0.2.7</version>
         </dependency>
 
         <!-- utils -->
@@ -204,6 +170,18 @@
             </exclusions>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Hoxton.SR8</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <repositories>
         <repository>

@@ -1,7 +1,10 @@
 package net.example.hasor.config;
+import com.alibaba.nacos.api.annotation.NacosInjected;
+import com.alibaba.nacos.api.config.ConfigService;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.DimModule;
+import net.hasor.dataql.fx.db.FxSqlCheckChainSpi;
 import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.dal.db.JdbcUtils;
 import net.hasor.dataway.spi.ApiInfo;
@@ -25,10 +28,29 @@ import java.util.HashMap;
 @Component
 public class ExampleModule implements SpringModule {
     @Autowired
-    private DataSource dataSource = null;
+    private DataSource    dataSource = null;
+    @NacosInjected
+    private ConfigService configService;
 
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
+        //apiBinder.bindType(EurekaClient.class).toProvider(getSupplierOfType(apiBinder, EurekaClient.class));
+        apiBinder.bindType(ConfigService.class).toInstance(this.configService);
+        //apiBinder.bindType(NamingService.class).toInstance(this.namingService);
+        //        try {
+        //            String serverAddr = "{serverAddr}";
+        //            String dataId = "{dataId}";
+        //            String group = "{group}";
+        //            Properties properties = new Properties();
+        //            properties.put("serverAddr", serverAddr);
+        //            ConfigService configService = NacosFactory.createConfigService(properties);
+        //            String content = configService.getConfig(dataId, group, 5000);
+        //            System.out.println(content);
+        //        } catch (NacosException e) {
+        //            // TODO Auto-generated catch block
+        //            e.printStackTrace();
+        //        }
+        //
         new JdbcTemplate(this.dataSource).execute((ConnectionCallback<String>) con -> {
             DatabaseMetaData metaData = con.getMetaData();
             String dbType = JdbcUtils.getDbType(metaData.getURL(), metaData.getDriverName());
@@ -72,15 +94,10 @@ public class ExampleModule implements SpringModule {
         // .custom DataQL
         //
         //        // .负责首页导出 CVS
-        //        apiBinder.bindSpiListener(SerializationChainSpi.class, (apiInfo, mimeType, result) -> {
-        //            Object cvs = apiInfo.getParameterMap().get("exportCVS");
-        //            String exportCVS = WebUdfSource.getHeader("exportCVS");
-        //            if ("true".equalsIgnoreCase(exportCVS)) {
-        //                //                result
-        //                //
-        //            }
-        //            return result;
-        //        });
+        apiBinder.bindSpiListener(FxSqlCheckChainSpi.class, infoObject -> {
+            System.out.println(String.format("[%s] %s", infoObject.getSourceName(), infoObject.getQueryString().trim()));
+            return FxSqlCheckChainSpi.NEXT;
+        });
         //
         //apiBinder.tryCast(QueryApiBinder.class).loadUdfSource(apiBinder.findClass(DimUdfSource.class));
         //        final Set<String> codeSet = AuthorizationType.Group_ReadOnly.toCodeSet();

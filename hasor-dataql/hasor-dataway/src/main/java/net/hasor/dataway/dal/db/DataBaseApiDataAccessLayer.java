@@ -36,6 +36,7 @@ import java.util.Random;
 
 /**
  * 数据库存储层访问 ApiDataAccessLayer 接口实现。
+ *   -- 利用数据库事务来实现集群情况下的数据一致性。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-09-11
  */

@@ -189,7 +189,7 @@ public class InterfaceInfoDal extends AbstractDal {
     }
 
     public boolean deleteObject(String id) throws SQLException {
-        String sqlQuery = "delete from interface_info where api_id = ?";
+        String sqlQuery = "delete from interface_info where api_id = ?";// TODO 需要在加上一个 乐观锁，用以处理并发导致数据丢失的风险
         return this.jdbcTemplate.executeUpdate(sqlQuery, id) > 0;
     }
 
@@ -209,7 +209,7 @@ public class InterfaceInfoDal extends AbstractDal {
         String sqlQuery = "" + //
                 "update interface_info set " + //
                 sqlBuffer.toString() + //
-                "where api_id = ?";
+                "where api_id = ?";// TODO 需要在加上一个 乐观锁，用以处理并发导致数据丢失的风险
         return this.jdbcTemplate.executeUpdate(sqlQuery, updateData.toArray()) > 0;
     }
 
