@@ -64,15 +64,14 @@ public class DeleteController extends BasicController {
             // 更新状态为 Delete
             String releaseId = apiRelease.get(FieldDef.ID);
             apiRelease.putAll(STATUS_UPDATE_TO_DELETE.get());
-            this.dataAccessLayer.updateObjectBy(    //
+            this.dataAccessLayer.updateObject(//
                     EntityDef.RELEASE,  //
-                    FieldDef.ID,        //
                     releaseId,          //
                     apiRelease          //
             );
         });
         //
         // 删除主Api
-        return Result.of(this.dataAccessLayer.deleteObjectBy(EntityDef.INFO, FieldDef.ID, apiId));
+        return Result.of(this.dataAccessLayer.deleteObject(EntityDef.INFO, apiId));
     }
 }

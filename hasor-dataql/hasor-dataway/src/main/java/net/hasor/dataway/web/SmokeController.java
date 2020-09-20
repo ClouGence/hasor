@@ -121,7 +121,7 @@ public class SmokeController extends BasicController implements Constant {
         objectBy.put(FieldDef.RES_HEADER_SAMPLE, JSON.toJSONString(resHeader));
         objectBy.put(FieldDef.RES_BODY_SAMPLE, JSON.toJSONString(resData, true));
         //
-        this.dataAccessLayer.updateObjectBy(EntityDef.INFO, FieldDef.ID, apiID, objectBy);
+        this.dataAccessLayer.updateObject(EntityDef.INFO, apiID, objectBy);
         //logger.info("update schema apiID = " + apiID, ", result = " + JSON.toJSONString(result));
     }
 }

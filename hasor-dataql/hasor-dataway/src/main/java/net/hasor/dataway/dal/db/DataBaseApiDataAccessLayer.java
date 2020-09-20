@@ -74,12 +74,12 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
     }
 
     @Override
-    public Map<FieldDef, String> getObjectBy(EntityDef objectType, FieldDef indexKey, String index) {
+    public Map<FieldDef, String> getObjectBy(EntityDef objectType, FieldDef indexKey, String indexValue) {
         try {
             if (EntityDef.INFO == objectType) {
-                return this.infoDal.getObjectBy(indexKey, index);
+                return this.infoDal.getObjectBy(indexKey, indexValue);
             } else {
-                return this.releaseDal.getObjectBy(indexKey, index);
+                return this.releaseDal.getObjectBy(indexKey, indexValue);
             }
         } catch (SQLException e) {
             throw ExceptionUtils.toRuntimeException(e);
@@ -115,12 +115,12 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
     }
 
     @Override
-    public boolean deleteObjectBy(EntityDef objectType, FieldDef indexKey, String index) {
+    public boolean deleteObject(EntityDef objectType, String id) {
         try {
             if (EntityDef.INFO == objectType) {
-                return this.infoDal.deleteObjectBy(indexKey, index);
+                return this.infoDal.deleteObject(id);
             } else {
-                return this.releaseDal.deleteObjectBy(indexKey, index);
+                return this.releaseDal.deleteObject(id);
             }
         } catch (SQLException e) {
             throw ExceptionUtils.toRuntimeException(e);
@@ -128,12 +128,12 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
     }
 
     @Override
-    public boolean updateObjectBy(EntityDef objectType, FieldDef indexKey, String index, Map<FieldDef, String> newData) {
+    public boolean updateObject(EntityDef objectType, String id, Map<FieldDef, String> newData) {
         try {
             if (EntityDef.INFO == objectType) {
-                return this.infoDal.updateObjectBy(indexKey, index, newData);
+                return this.infoDal.updateObject(id, newData);
             } else {
-                return this.releaseDal.updateObjectBy(indexKey, index, newData);
+                return this.releaseDal.updateObject(id, newData);
             }
         } catch (SQLException e) {
             throw ExceptionUtils.toRuntimeException(e);
@@ -141,12 +141,12 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
     }
 
     @Override
-    public boolean createObjectBy(EntityDef objectType, Map<FieldDef, String> newData) {
+    public boolean createObject(EntityDef objectType, Map<FieldDef, String> newData) {
         try {
             if (EntityDef.INFO == objectType) {
-                return this.infoDal.createObjectBy(newData);
+                return this.infoDal.createObject(newData);
             } else {
-                return this.releaseDal.createObjectBy(newData);
+                return this.releaseDal.createObject(newData);
             }
         } catch (SQLException e) {
             throw ExceptionUtils.toRuntimeException(e);

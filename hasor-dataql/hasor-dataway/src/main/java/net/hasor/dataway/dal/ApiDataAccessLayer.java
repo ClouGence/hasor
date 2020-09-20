@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public interface ApiDataAccessLayer {
     /** 点查 or 唯一索引 */
-    public Map<FieldDef, String> getObjectBy(EntityDef objectType, FieldDef indexKey, String index);
+    public Map<FieldDef, String> getObjectBy(EntityDef objectType, FieldDef indexKey, String indexValue);
 
     /** 列表/搜索 */
     public List<Map<FieldDef, String>> listObjectBy(EntityDef objectType, Map<QueryCondition, Object> conditions);
@@ -33,11 +33,11 @@ public interface ApiDataAccessLayer {
     public String generateId(EntityDef objectType, String apiPath);
 
     /** 删除对象 */
-    public boolean deleteObjectBy(EntityDef objectType, FieldDef indexKey, String index);
+    public boolean deleteObject(EntityDef objectType, String id);
 
     /** 更新对象 */
-    public boolean updateObjectBy(EntityDef objectType, FieldDef indexKey, String index, Map<FieldDef, String> newData);
+    public boolean updateObject(EntityDef objectType, String id, Map<FieldDef, String> newData);
 
     /** 新增对象 */
-    public boolean createObjectBy(EntityDef objectType, Map<FieldDef, String> newData);
+    public boolean createObject(EntityDef objectType, Map<FieldDef, String> newData);
 }

@@ -118,8 +118,8 @@ public class SaveApiController extends BasicController implements Constant {
         }
         //
         boolean result = useCreate ?//
-                this.dataAccessLayer.createObjectBy(EntityDef.INFO, apiInfo) ://
-                this.dataAccessLayer.updateObjectBy(EntityDef.INFO, FieldDef.ID, apiId, apiInfo);
+                this.dataAccessLayer.createObject(EntityDef.INFO, apiInfo) ://
+                this.dataAccessLayer.updateObject(EntityDef.INFO, apiId, apiInfo);
         if (result) {
             return Result.of(apiId);
         } else {

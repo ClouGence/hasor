@@ -167,14 +167,14 @@ public class InterfaceInfoDal extends AbstractDal {
         return dataMap;
     }
 
-    public Map<FieldDef, String> getObjectBy(FieldDef indexKey, String index) throws SQLException {
+    public Map<FieldDef, String> getObjectBy(FieldDef indexKey, String indexValue) throws SQLException {
         String indexField = infoIndexColumn.get(indexKey);
         if (StringUtils.isBlank(indexField)) {
             throw new SQLException("table interface_info not index " + indexKey.name());
         }
         //
         String sqlQuery = "select * from interface_info where " + indexField + " = ?";
-        Map<String, Object> data = this.jdbcTemplate.queryForMap(sqlQuery, index);
+        Map<String, Object> data = this.jdbcTemplate.queryForMap(sqlQuery, indexValue);
         return (data != null) ? mapToDef(data) : null;
     }
 
@@ -188,16 +188,12 @@ public class InterfaceInfoDal extends AbstractDal {
         return mapList.parallelStream().map(InterfaceInfoDal::mapToDef).collect(Collectors.toList());
     }
 
-    public boolean deleteObjectBy(FieldDef indexKey, String index) throws SQLException {
-        String indexField = infoIndexColumn.get(indexKey);
-        if (StringUtils.isBlank(indexField)) {
-            throw new SQLException("table interface_info not index " + indexKey.name());
-        }
-        String sqlQuery = "delete from interface_info where " + infoIndexColumn.get(indexKey) + " = ?";
-        return this.jdbcTemplate.executeUpdate(sqlQuery, index) > 0;
+    public boolean deleteObject(String id) throws SQLException {
+        String sqlQuery = "delete from interface_info where api_id = ?";
+        return this.jdbcTemplate.executeUpdate(sqlQuery, id) > 0;
     }
 
-    public boolean updateObjectBy(FieldDef indexKey, String index, Map<FieldDef, String> newData) throws SQLException {
+    public boolean updateObject(String id, Map<FieldDef, String> newData) throws SQLException {
         List<Object> updateData = new ArrayList<>();
         StringBuffer sqlBuffer = new StringBuffer();
         defToMap(newData).forEach((key, value) -> {
@@ -209,15 +205,15 @@ public class InterfaceInfoDal extends AbstractDal {
         });
         sqlBuffer.deleteCharAt(0);
         //
-        updateData.add(index);
+        updateData.add(id);
         String sqlQuery = "" + //
                 "update interface_info set " + //
                 sqlBuffer.toString() + //
-                "where " + infoIndexColumn.get(indexKey) + " = ?";
+                "where api_id = ?";
         return this.jdbcTemplate.executeUpdate(sqlQuery, updateData.toArray()) > 0;
     }
 
-    public boolean createObjectBy(Map<FieldDef, String> newData) throws SQLException {
+    public boolean createObject(Map<FieldDef, String> newData) throws SQLException {
         List<Object> insertData = new ArrayList<>();
         StringBuffer insertColumnBuffer = new StringBuffer();
         StringBuffer insertParamsBuffer = new StringBuffer();

@@ -150,7 +150,7 @@ public class InterfaceReleaseDal extends AbstractDal {
         return dataMap;
     }
 
-    public Map<FieldDef, String> getObjectBy(FieldDef indexKey, String index) throws SQLException {
+    public Map<FieldDef, String> getObjectBy(FieldDef indexKey, String indexValue) throws SQLException {
         // .如果是 Path 那么要先查询最近一次发布ID
         if (indexKey == PATH) {
             String sqlQuery = "" + //
@@ -159,14 +159,14 @@ public class InterfaceReleaseDal extends AbstractDal {
                     "order by pub_release_time desc";//
             List<Object> data = new ArrayList<>();
             data.add(String.valueOf(ApiStatusEnum.Delete.typeNum()));
-            data.add(index);
+            data.add(indexValue);
             //
             List<Map<String, Object>> tempList = this.jdbcTemplate.queryForList(sqlQuery, data.toArray());
             if (tempList == null || tempList.isEmpty()) {
                 return null;
             }
             Map<String, Object> objectMap = tempList.get(0);
-            index = objectMap.get("pub_id").toString();
+            indexValue = objectMap.get("pub_id").toString();
         }
         // 根据发布 ID 查询
         String sqlQuery = "" +//
@@ -174,7 +174,7 @@ public class InterfaceReleaseDal extends AbstractDal {
                 "where pub_status != ? and pub_id = ?";
         List<Object> data = new ArrayList<>();
         data.add(String.valueOf(ApiStatusEnum.Delete.typeNum()));
-        data.add(index);
+        data.add(indexValue);
         Map<String, Object> objectMap = this.jdbcTemplate.queryForMap(sqlQuery, data.toArray());
         //
         return (objectMap != null) ? mapToDef(objectMap) : null;
@@ -201,11 +201,11 @@ public class InterfaceReleaseDal extends AbstractDal {
         return mapList.parallelStream().map(InterfaceReleaseDal::mapToDef).collect(Collectors.toList());
     }
 
-    public boolean deleteObjectBy(FieldDef indexKey, String index) throws SQLException {
+    public boolean deleteObject(String id) throws SQLException {
         throw new SQLException("table interface_release cannot be modified.");
     }
 
-    public boolean updateObjectBy(FieldDef indexKey, String index, Map<FieldDef, String> newData) throws SQLException {
+    public boolean updateObject(String id, Map<FieldDef, String> newData) throws SQLException {
         List<Object> updateData = new ArrayList<>();
         StringBuffer sqlBuffer = new StringBuffer();
         defToMap(newData).forEach((key, value) -> {
@@ -217,15 +217,15 @@ public class InterfaceReleaseDal extends AbstractDal {
         });
         sqlBuffer.deleteCharAt(0);
         //
-        updateData.add(index);
+        updateData.add(id);
         String sqlQuery = "" + //
                 "update interface_release set " + //
                 sqlBuffer.toString() + //
-                "where " + pubIndexColumn.get(indexKey) + " = ?";
+                "where pub_id = ?";
         return this.jdbcTemplate.executeUpdate(sqlQuery, updateData.toArray()) > 0;
     }
 
-    public boolean createObjectBy(Map<FieldDef, String> newData) throws SQLException {
+    public boolean createObject(Map<FieldDef, String> newData) throws SQLException {
         List<Object> insertData = new ArrayList<>();
         StringBuffer insertColumnBuffer = new StringBuffer();
         StringBuffer insertParamsBuffer = new StringBuffer();

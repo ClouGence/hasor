@@ -54,9 +54,8 @@ public class PublishController extends BasicController {
         // 接口状态更新
         Map<FieldDef, String> object = this.dataAccessLayer.getObjectBy(EntityDef.INFO, FieldDef.ID, apiId);
         object.putAll(STATUS_UPDATE_TO_PUBLISHED.get());// 把状态更新为发布
-        boolean updateResult = this.dataAccessLayer.updateObjectBy(//
+        boolean updateResult = this.dataAccessLayer.updateObject(//
                 EntityDef.INFO, // 更新接口数据
-                FieldDef.ID,    // 接口ID字段
                 apiId,          // 接口ID
                 object          // 把状态更新掉
         );
@@ -71,7 +70,7 @@ public class PublishController extends BasicController {
         object.put(FieldDef.RELEASE_TIME, String.valueOf(System.currentTimeMillis()));
         object.put(FieldDef.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
         object.put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
-        boolean publishResult = this.dataAccessLayer.createObjectBy(EntityDef.RELEASE, object);
+        boolean publishResult = this.dataAccessLayer.createObject(EntityDef.RELEASE, object);
         if (!publishResult) {
             throw new RuntimeException("release Published failed.");
         }
@@ -91,9 +90,8 @@ public class PublishController extends BasicController {
             String releaseId = apiRelease.get(FieldDef.ID);
             apiRelease = this.dataAccessLayer.getObjectBy(EntityDef.RELEASE, FieldDef.ID, releaseId);
             apiRelease.putAll(STATUS_UPDATE_TO_DISABLE.get());
-            this.dataAccessLayer.updateObjectBy(    //
+            this.dataAccessLayer.updateObject(    //
                     EntityDef.RELEASE,  //
-                    FieldDef.ID,        //
                     releaseId,          //
                     apiRelease          //
             );

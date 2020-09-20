@@ -72,18 +72,16 @@ public class DisableController extends BasicController {
             String releaseId = apiRelease.get(FieldDef.ID);
             apiRelease = this.dataAccessLayer.getObjectBy(EntityDef.RELEASE, FieldDef.ID, releaseId);
             apiRelease.putAll(STATUS_UPDATE_TO_DISABLE.get());
-            this.dataAccessLayer.updateObjectBy(    //
+            this.dataAccessLayer.updateObject(//
                     EntityDef.RELEASE,  //
-                    FieldDef.ID,        //
                     releaseId,          //
                     apiRelease          //
             );
         });
         // 更新主Api
         apiObject.putAll(STATUS_UPDATE_TO_DISABLE.get());
-        return Result.of(this.dataAccessLayer.updateObjectBy(//
+        return Result.of(this.dataAccessLayer.updateObject(//
                 EntityDef.INFO, //
-                FieldDef.ID,    //
                 apiId,          //
                 apiObject       //
         ));
