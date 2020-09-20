@@ -58,7 +58,7 @@ public class SaveApiController extends BasicController implements Constant {
         if ("-1".equalsIgnoreCase(apiId)) {
             String apiPath = (String) requestBody.get("apiPath");
             this.checkService.checkApi(apiPath);
-            apiId = this.dataAccessLayer.generateId(EntityDef.INFO);
+            apiId = this.dataAccessLayer.generateId(EntityDef.INFO, apiPath);
             apiInfo = new LinkedHashMap<>();
             apiInfo.put(FieldDef.ID, apiId);
             apiInfo.put(FieldDef.METHOD, (String) requestBody.get("select"));

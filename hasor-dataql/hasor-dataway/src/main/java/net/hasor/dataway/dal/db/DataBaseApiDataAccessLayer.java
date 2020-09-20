@@ -100,7 +100,7 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
     }
 
     @Override
-    public String generateId(EntityDef objectType) {
+    public String generateId(EntityDef objectType, String apiPath) {
         long timeMillis = System.currentTimeMillis();
         int nextInt = new Random(timeMillis).nextInt();
         String s = Integer.toString(nextInt, 24);

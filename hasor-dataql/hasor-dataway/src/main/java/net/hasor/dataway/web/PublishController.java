@@ -65,7 +65,7 @@ public class PublishController extends BasicController {
         }
         //
         // 保存到发布列表
-        String releaseID = this.dataAccessLayer.generateId(EntityDef.RELEASE);
+        String releaseID = this.dataAccessLayer.generateId(EntityDef.RELEASE, object.get(FieldDef.PATH));
         object.put(FieldDef.API_ID, object.get(FieldDef.ID));
         object.put(FieldDef.ID, releaseID);
         object.put(FieldDef.RELEASE_TIME, String.valueOf(System.currentTimeMillis()));

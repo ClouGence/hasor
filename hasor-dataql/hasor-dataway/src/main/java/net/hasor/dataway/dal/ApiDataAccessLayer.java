@@ -30,7 +30,7 @@ public interface ApiDataAccessLayer {
     public List<Map<FieldDef, String>> listObjectBy(EntityDef objectType, Map<QueryCondition, Object> conditions);
 
     /** 生成 ID */
-    public String generateId(EntityDef objectType);
+    public String generateId(EntityDef objectType, String apiPath);
 
     /** 删除对象 */
     public boolean deleteObjectBy(EntityDef objectType, FieldDef indexKey, String index);
