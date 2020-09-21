@@ -120,9 +120,7 @@ public class BasicBeanContainerTest {
             assert false;
         } catch (Exception e) {
             assert e instanceof IllegalStateException;
-            assert e.getMessage().equals("java.lang.IllegalStateException: create Error.");
-            assert e.getCause() instanceof IllegalStateException;
-            assert e.getCause().getMessage().equals("create Error.");
+            assert e.getMessage().equals("create Error.");
         }
         //
         try {

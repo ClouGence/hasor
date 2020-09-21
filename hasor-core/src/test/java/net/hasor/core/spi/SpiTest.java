@@ -88,31 +88,23 @@ public class SpiTest {
 
     @Test
     public void spiJudgeTest1() {
-        final String defaultResult = "ORI";
-        final String spiResultA = "ResultA";
-        final String spiResultB = "ResultB";
         //
-        ArrayList<String> call = new ArrayList<>();
         AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.bindSpiListener(TestSpi.class, (obj) -> {
-                call.add(spiResultA);
-                return spiResultA;
+                return "ResultA";
             });
             apiBinder.bindSpiListener(TestSpi.class, (obj) -> {
-                call.add(spiResultB);
-                return spiResultB;
+                return "ResultB";
             });
         });
         //
-        SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
-        Object resultSpi = spiTrigger.notifySpi(TestSpi.class, (SpiCaller<TestSpi, Object>) (listener, lastResult) -> {
-            return listener.doSpi(lastResult);
-        }, defaultResult);
-        //
-        assert call.size() == 2;
-        assert call.contains(spiResultA);
-        assert call.contains(spiResultB);
-        assert resultSpi.equals(spiResultB);
+        try {
+            SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
+            spiTrigger.notifySpi(TestSpi.class, TestSpi::doSpi, "ORI");
+            assert false;
+        } catch (UnsupportedOperationException e) {
+            assert e.getMessage().endsWith("encounters Multiple, require SpiJudge.");
+        }
     }
 
     @Test

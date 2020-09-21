@@ -19,6 +19,8 @@ import java.lang.annotation.*;
 
 /**
  * 在一个实现类上标记该注解，用来表示实现了哪些 SPI
+ * @version : 2020年5月21日
+ * @author 赵永春 (zyc@byshell.org)
  */
 @Qualifier
 @Documented
