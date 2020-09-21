@@ -44,17 +44,21 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
-    protected static Logger                   logger            = LoggerFactory.getLogger(NacosApiDataAccessLayer.class);
+    protected static Logger                   logger                 = LoggerFactory.getLogger(NacosApiDataAccessLayer.class);
     @Inject
     private          AppContext               appContext;
-    private          String                   groupName         = "myApp";
+    private          String                   groupName              = "myApp";
     private          ConfigService            configService;
     private          ScheduledExecutorService executorService;
     private          Thread                   asyncLoadDataToCacheWork;
-    //
-    private final    Map<String, Listener>    indexDirectoryMap = new ConcurrentHashMap<>();
-    private final    Map<String, DataEnt>     dataCache         = new ConcurrentHashMap<>();
-    private final    Queue<ApiJson>           asyncLoadTask     = new LinkedBlockingDeque<>();
+    // index
+    private          String                   indexDirectoryBody;       // 主索引的全部内容（分片编号，逗号分割）
+    private          int                      indexDirectoryShardMax;   // 当前最大的分片编号，用于追加数据
+    private final    Map<String, String>      indexDirectoryShardMap = new ConcurrentHashMap<>(); // 每个分片中的索引内容
+    private final    Map<String, Listener>    indexDirectoryMap      = new ConcurrentHashMap<>();
+    // data
+    private final    Map<String, DataEnt>     dataCache              = new ConcurrentHashMap<>();
+    private final    Queue<ApiJson>           asyncLoadTask          = new LinkedBlockingDeque<>();
 
     @Override
     public Map<FieldDef, String> getObjectBy(EntityDef objectType, FieldDef indexKey, String index) {
@@ -121,8 +125,12 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
 
     @Override
     public boolean deleteObject(EntityDef objectType, String id) {
-        this.dataCache.remove(id);
-        return this.removeData(id);
+        if (this.removeData(id)) {
+            this.dataCache.remove(id);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -167,17 +175,15 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) this.executorService;
         threadPool.setCorePoolSize(3);
         threadPool.setMaximumPoolSize(3);
-        this.configService.addListener("INDEX_DIRECTORY", groupName, new NacosListener(executorService) {
+        this.configService.addListener("INDEX_DIRECTORY", this.groupName, new NacosListener(executorService) {
             public void receiveConfigInfo(String configInfo) {
-                refreshDirectory(JSON.parseArray(configInfo, String.class));
+                tryInitIndexDirectory(configInfo);
+                refreshDirectory(configInfo);
             }
         });
-        String configInfo = this.configService.getConfig("INDEX_DIRECTORY", groupName, 3000);
-        if (StringUtils.isBlank(configInfo)) {
-            configInfo = "[]";
-            this.configService.publishConfig("INDEX_DIRECTORY", groupName, configInfo);
-        }
-        this.refreshDirectory(JSON.parseArray(configInfo, String.class));
+        String configInfo = this.configService.getConfig("INDEX_DIRECTORY", this.groupName, 3000);
+        configInfo = this.tryInitIndexDirectory(configInfo);
+        this.refreshDirectory(configInfo);
         // 启动异步加载线程
         this.asyncLoadDataToCacheWork = new Thread(this::asyncLoadDataToCache);
         this.asyncLoadDataToCacheWork.setDaemon(true);
@@ -185,13 +191,54 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         this.asyncLoadDataToCacheWork.start();
     }
 
+    private String tryInitIndexDirectory(String configInfo) {
+        try {
+            if (StringUtils.isBlank(configInfo)) {
+                String newConfigInfo = "0";
+                this.configService.publishConfig("INDEX_DIRECTORY", this.groupName, newConfigInfo);
+                return newConfigInfo;
+            } else {
+                return configInfo;
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return configInfo;
+        }
+    }
+
     /** 监听 INDEX_DIRECTORY 配置，并处理索引目录更新 */
-    private void refreshDirectory(List<String> indexDirectory) {
-        if (indexDirectory == null || indexDirectory.isEmpty()) {
+    private void refreshDirectory(String indexDirectory) {
+        // 解析为字符串数组
+        Set<String> indexDirectorySet = null;
+        if (StringUtils.isBlank(indexDirectory)) {
             logger.info("nacosDal directory is empty.");
             return;
         }
-        Set<String> indexDirectorySet = new HashSet<>(indexDirectory);
+        String[] splitDirectory = indexDirectory.split(",");
+        indexDirectorySet = Arrays.stream(splitDirectory)//
+                .filter(StringUtils::isNotBlank)//
+                .map(String::valueOf)           //
+                .collect(Collectors.toSet());   //
+        if (indexDirectorySet.isEmpty()) {
+            logger.info("nacosDal directory is empty.");
+            return;
+        }
+        // 对数据进行检查，必须都是数字
+        try {
+            int maxInt = 0;
+            for (String s : indexDirectorySet) {
+                int parseInt = Integer.parseInt(s);
+                if (maxInt <= parseInt) {
+                    maxInt = parseInt;
+                }
+            }
+            this.indexDirectoryShardMax = maxInt;    // 最大数
+            this.indexDirectoryBody = indexDirectory;// 主目录数据
+        } catch (NumberFormatException e) {
+            logger.error("nacosDal directory data error :" + e.getMessage(), e);
+            return;
+        }
+        // 准备 hasLost 和 hasNew
         List<String> hasLost = new ArrayList<>();
         List<String> hasNew = new ArrayList<>();
         for (String localItem : this.indexDirectoryMap.keySet()) {
@@ -206,14 +253,16 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         }
         // 移除已经失效的索引
         for (String lostItem : hasLost) {
-            String dataId = "DIRECTORY_" + lostItem;
-            Listener listener = this.indexDirectoryMap.get(lostItem);
+            String dataId = evalDirectoryKey(lostItem);
             logger.info("nacosDal removeDirectoryListener -> '" + dataId + "'");
-            this.configService.removeListener(dataId, groupName, listener);
+            Listener listener = this.indexDirectoryMap.get(lostItem);
+            this.indexDirectoryMap.remove(lostItem);
+            this.indexDirectoryShardMap.remove(lostItem);
+            this.configService.removeListener(dataId, this.groupName, listener);
         }
         // 注册还未监听的索引
         for (String newItem : hasNew) {
-            String directoryDataId = "DIRECTORY_" + newItem;
+            String directoryDataId = evalDirectoryKey(newItem);
             Listener listener = new NacosListener(this.executorService) {
                 public void receiveConfigInfo(String configInfo) {
                     refreshData(directoryDataId, JSON.parseArray(configInfo, ApiJson.class));
@@ -231,12 +280,14 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         }
         try {
             // 注册监听器
-            this.configService.addListener(directoryDataId, "DATAWAY_INDEX", listener);
-            String indexData = this.configService.getConfig(directoryDataId, groupName, 3000);
+            this.configService.addListener(directoryDataId, this.groupName, listener);
+            String indexData = this.configService.getConfig(directoryDataId, this.groupName, 3000);
             if (StringUtils.isBlank(indexData)) {
                 indexData = "[]";
+                this.configService.publishConfig(directoryDataId, this.groupName, indexData);
             }
             this.indexDirectoryMap.put(directoryDataId, listener);
+            this.indexDirectoryShardMap.remove(indexData);
             logger.info("nacosDal addDirectoryListener -> '" + directoryDataId + "' done.");
             // 刷新数据
             refreshData(directoryDataId, JSON.parseArray(indexData, ApiJson.class));
@@ -314,6 +365,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
                 ent.setPath(dataMap.get(FieldDef.PATH));
                 ent.setStatus(dataMap.get(FieldDef.STATUS));
                 ent.setDataEnt(dataMap);
+                ent.setTime(apiJson.getTime());
                 this.dataCache.put(jsonId, ent);
                 logger.info(String.format("nacosDal loadData '%s' done.", jsonId));
                 //
@@ -354,26 +406,73 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         return dataMap;
     }
 
+    private static String evalDirectoryKey(String dat) {
+        return "DIRECTORY_" + dat;
+    }
+
     /** 保存或更新数据 */
     protected boolean saveData(String dataId, Map<FieldDef, String> newData) {
         String jsonData = JSON.toJSONString(defToMap(newData));
-        //        this.configService.publishConfig();
-        return false;// TODO
+        try {
+            return this.configService.publishConfig(dataId, this.groupName, jsonData);
+        } catch (Exception e1) {
+            try {
+                return this.configService.publishConfig(dataId, this.groupName, jsonData);
+            } catch (NacosException e2) {
+                try {
+                    return this.configService.publishConfig(dataId, this.groupName, jsonData);
+                } catch (NacosException e3) {
+                    throw ExceptionUtils.toRuntimeException(e3);
+                }
+            }
+        }
     }
 
     /** 追加索引更新 */
     private boolean appendIndex(DataEnt dataEnt) {
+        String directoryKey = evalDirectoryKey(String.valueOf(this.indexDirectoryShardMax));
+        List<ApiJson> apiJsonList = null;
+        String shardData = this.indexDirectoryShardMap.get(directoryKey);
+        if (StringUtils.isNotBlank(shardData)) {
+            apiJsonList = JSON.parseArray(shardData, ApiJson.class);
+        }
+        if (apiJsonList == null) {
+            apiJsonList = new ArrayList<>();
+        }
+        //
         ApiJson json = new ApiJson();
         json.setId(dataEnt.getId());
         json.setPath(dataEnt.getPath());
         json.setStatus(dataEnt.getStatus());
         json.setTime(dataEnt.getTime());
-        return false; // TODO 写
+        apiJsonList.add(json);
+        //
+        try {
+            String jsonData = JSON.toJSONString(apiJsonList);
+            this.indexDirectoryShardMap.put(directoryKey, jsonData);
+            this.configService.publishConfig(directoryKey, this.groupName, jsonData);
+            return true;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
     }
 
     /** 删除数据 */
     protected boolean removeData(String dataId) {
-        return false;// TODO
+        try {
+            return this.configService.removeConfig(dataId, this.groupName);
+        } catch (Exception e1) {
+            try {
+                return this.configService.removeConfig(dataId, this.groupName);
+            } catch (NacosException e2) {
+                try {
+                    return this.configService.removeConfig(dataId, this.groupName);
+                } catch (NacosException e3) {
+                    throw ExceptionUtils.toRuntimeException(e3);
+                }
+            }
+        }
     }
 
     /** 加载数据 */
@@ -382,7 +481,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         String config = null;
         while (true) {
             try {
-                config = this.configService.getConfig(dataId, groupName, 3000);
+                config = this.configService.getConfig(dataId, this.groupName, 3000);
                 if (StringUtils.isBlank(config)) {
                     return null;
                 } else {
