@@ -35,6 +35,8 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
+import static net.hasor.dataway.dal.providers.nacos.NacosUtils.evalDirectoryKey;
+
 /**
  * 基于 Nacos 的 ApiDataAccessLayer 接口实现。
  * @author 赵永春 (zyc@hasor.net)
@@ -267,7 +269,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         }
         // 移除已经失效的索引
         for (String lostItem : hasLost) {
-            String dataId = NacosUtils.evalDirectoryKey(lostItem);
+            String dataId = evalDirectoryKey(lostItem);
             logger.info("nacosDal removeDirectoryListener -> '" + dataId + "'");
             this.indexDirectoryMap.remove(lostItem);
             this.indexDirectoryShardMap.remove(lostItem);
@@ -278,7 +280,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         }
         // 注册还未监听的索引
         for (String newItem : hasNew) {
-            String directoryDataId = NacosUtils.evalDirectoryKey(newItem);
+            String directoryDataId = evalDirectoryKey(newItem);
             Listener listener = new NacosListener(this.executorService) {
                 public void receiveConfigInfo(String configInfo) {
                     refreshData(directoryDataId, configInfo);
@@ -415,7 +417,13 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
 
     /** 追加索引更新 */
     private boolean appendIndex(DataEnt dataEnt) {
-        String directoryKey = NacosUtils.evalDirectoryKey(String.valueOf(this.indexDirectoryShardMax));
+        ApiJson json = new ApiJson();
+        json.setId(dataEnt.getId());
+        json.setPath(dataEnt.getPath());
+        json.setStatus(dataEnt.getStatus());
+        json.setTime(dataEnt.getTime());
+        //
+        String directoryKey = evalDirectoryKey(String.valueOf(this.indexDirectoryShardMax));
         List<ApiJson> apiJsonList = null;
         String shardData = this.indexDirectoryShardMap.get(directoryKey);
         if (StringUtils.isNotBlank(shardData)) {
@@ -424,19 +432,39 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         if (apiJsonList == null) {
             apiJsonList = new ArrayList<>();
         }
-        // 超限制了
+        // 分片满了,要写到新分片上
+        boolean writeToNew = false;
         if (apiJsonList.size() > this.directoryShardMaxRecord) {
             apiJsonList = new ArrayList<>();
-            directoryKey = NacosUtils.evalDirectoryKey(String.valueOf(this.indexDirectoryShardMax + 1));
+            apiJsonList.add(json);
+            this.indexDirectoryShardMax = this.indexDirectoryShardMax + 1;
+            directoryKey = evalDirectoryKey(String.valueOf(this.indexDirectoryShardMax));
+            writeToNew = true;
+            //
+            if (StringUtils.isNotBlank(this.indexDirectoryBody)) {
+                this.indexDirectoryBody = this.indexDirectoryBody + "," + this.indexDirectoryShardMax;
+            } else {
+                this.indexDirectoryBody = String.valueOf(this.indexDirectoryShardMax);
+            }
         }
-        //
-        ApiJson json = new ApiJson();
-        json.setId(dataEnt.getId());
-        json.setPath(dataEnt.getPath());
-        json.setStatus(dataEnt.getStatus());
-        json.setTime(dataEnt.getTime());
         apiJsonList.add(json);
-        //
+        boolean res = this.saveShardData(directoryKey, apiJsonList);
+        if (!res) {
+            return false;
+        }
+        // 更新索引目录
+        if (writeToNew) {
+            try {
+                this.configService.publishConfig("INDEX_DIRECTORY", this.groupName, this.indexDirectoryBody);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean saveShardData(String directoryKey, List<ApiJson> apiJsonList) {
         try {
             String jsonData = JSON.toJSONString(apiJsonList);
             this.indexDirectoryShardMap.put(directoryKey, jsonData);
