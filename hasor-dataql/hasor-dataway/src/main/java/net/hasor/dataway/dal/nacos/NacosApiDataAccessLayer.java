@@ -18,10 +18,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
-import net.hasor.core.AppContext;
-import net.hasor.core.Init;
-import net.hasor.core.Inject;
-import net.hasor.core.Singleton;
+import net.hasor.core.*;
+import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.dal.*;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.NameThreadFactory;
@@ -37,6 +35,8 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
+import static net.hasor.dataway.dal.nacos.NacosUtils.*;
+
 /**
  * 基于 Nacos 的 ApiDataAccessLayer 接口实现。
  * @author 赵永春 (zyc@hasor.net)
@@ -47,7 +47,9 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
     protected static Logger                   logger                 = LoggerFactory.getLogger(NacosApiDataAccessLayer.class);
     @Inject
     private          AppContext               appContext;
-    private          String                   groupName              = "myApp";
+    private          String                   groupName;
+    private          boolean                  enableHistory;
+    private          int                      directoryShardMaxRecord;
     private          ConfigService            configService;
     private          ScheduledExecutorService executorService;
     private          Thread                   asyncLoadDataToCacheWork;
@@ -105,22 +107,27 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
             }).sorted((o1, o2) -> {
                 long t1 = Long.parseLong(o1.getDataEnt().get(FieldDef.RELEASE_TIME));
                 long t2 = Long.parseLong(o2.getDataEnt().get(FieldDef.RELEASE_TIME));
-                return Long.compare(t1, t2);
+                return -Long.compare(t1, t2);
             }).map(DataEnt::getDataEnt).collect(Collectors.toList());
         }
     }
 
     @Override
     public String generateId(EntityDef objectType, String apiPath) {
-        try {
-            MessageDigest mdTemp = MessageDigest.getInstance("SHA1");
-            mdTemp.update(apiPath.getBytes());
-            byte[] digest = mdTemp.digest();
-            String hexStr = new BigInteger(digest).toString(24);
-            return ((EntityDef.INFO == objectType) ? "i_" : "r_") + hexStr.toLowerCase();
-        } catch (NoSuchAlgorithmException e) {
-            throw ExceptionUtils.toRuntimeException(e);
+        String generateId = null;
+        if (this.enableHistory && EntityDef.RELEASE == objectType) {
+            generateId = DatawayUtils.generateID();
+        } else {
+            try {
+                MessageDigest mdTemp = MessageDigest.getInstance("SHA1");
+                mdTemp.update(apiPath.getBytes());
+                byte[] digest = mdTemp.digest();
+                generateId = new BigInteger(digest).toString(24);
+            } catch (NoSuchAlgorithmException e) {
+                throw ExceptionUtils.toRuntimeException(e);
+            }
         }
+        return ((EntityDef.INFO == objectType) ? "i_" : "r_") + generateId.toLowerCase();
     }
 
     @Override
@@ -144,6 +151,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
     }
 
     private boolean createOrUpdate(String id, Map<FieldDef, String> newData) {
+        newData = new HashMap<>(newData); // Copy 一个防止出现引用重用问题
         DataEnt oldEnt = null;
         DataEnt newEnt = new DataEnt();
         if (this.dataCache.containsKey(id)) {
@@ -166,10 +174,16 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
     // ------------------------------------------------------------------------------------------------------------------------
     @Init
     public void init() throws NacosException {
-        // 本地数据容器
+        // .获取配置参数
         this.configService = this.appContext.getInstance(ConfigService.class);
-        // 注册和初始化 nacos
         Objects.requireNonNull(this.configService, "nacos not init.");
+        Environment env = this.appContext.getEnvironment();
+        this.groupName = env.getOrDefault("HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP", "HASOR_DATAWAY");
+        this.directoryShardMaxRecord = Integer.parseInt(env.getOrDefault("HASOR_DATAQL_DATAWAY_NACOSDAL_SHARD_MAX", "2000"));
+        this.enableHistory = Boolean.parseBoolean(env.getOrDefault("HASOR_DATAQL_DATAWAY_NACOSDAL_HISTORY", "true"));
+        logger.info("nacosDal init groupName = " + this.groupName + ", directoryShardMaxRecord = " + this.directoryShardMaxRecord + ", enableHistory=" + this.enableHistory);
+        //
+        // 注册和初始化 nacos
         NameThreadFactory threadFactory = new NameThreadFactory("NacosSyncThreadPool-%s", this.appContext.getClassLoader());
         this.executorService = Executors.newScheduledThreadPool(3, threadFactory);
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) this.executorService;
@@ -184,6 +198,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         String configInfo = this.configService.getConfig("INDEX_DIRECTORY", this.groupName, 3000);
         configInfo = this.tryInitIndexDirectory(configInfo);
         this.refreshDirectory(configInfo);
+        //
         // 启动异步加载线程
         this.asyncLoadDataToCacheWork = new Thread(this::asyncLoadDataToCache);
         this.asyncLoadDataToCacheWork.setDaemon(true);
@@ -205,6 +220,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
             return configInfo;
         }
     }
+    // ------------------------------------------------------------
 
     /** 监听 INDEX_DIRECTORY 配置，并处理索引目录更新 */
     private void refreshDirectory(String indexDirectory) {
@@ -232,8 +248,8 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
                     maxInt = parseInt;
                 }
             }
-            this.indexDirectoryShardMax = maxInt;    // 最大数
-            this.indexDirectoryBody = indexDirectory;// 主目录数据
+            this.indexDirectoryShardMax = maxInt;    // 取出最大数
+            this.indexDirectoryBody = indexDirectory;// 记录主目录数据
         } catch (NumberFormatException e) {
             logger.error("nacosDal directory data error :" + e.getMessage(), e);
             return;
@@ -255,17 +271,19 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         for (String lostItem : hasLost) {
             String dataId = evalDirectoryKey(lostItem);
             logger.info("nacosDal removeDirectoryListener -> '" + dataId + "'");
-            Listener listener = this.indexDirectoryMap.get(lostItem);
             this.indexDirectoryMap.remove(lostItem);
             this.indexDirectoryShardMap.remove(lostItem);
-            this.configService.removeListener(dataId, this.groupName, listener);
+            Listener listener = this.indexDirectoryMap.get(lostItem);
+            if (listener != null) {
+                this.configService.removeListener(dataId, this.groupName, listener);
+            }
         }
         // 注册还未监听的索引
         for (String newItem : hasNew) {
             String directoryDataId = evalDirectoryKey(newItem);
             Listener listener = new NacosListener(this.executorService) {
                 public void receiveConfigInfo(String configInfo) {
-                    refreshData(directoryDataId, JSON.parseArray(configInfo, ApiJson.class));
+                    refreshData(directoryDataId, configInfo);
                 }
             };
             this.loadDirectory(0, directoryDataId, listener);
@@ -286,11 +304,11 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
                 indexData = "[]";
                 this.configService.publishConfig(directoryDataId, this.groupName, indexData);
             }
-            this.indexDirectoryMap.put(directoryDataId, listener);
-            this.indexDirectoryShardMap.remove(indexData);
-            logger.info("nacosDal addDirectoryListener -> '" + directoryDataId + "' done.");
             // 刷新数据
-            refreshData(directoryDataId, JSON.parseArray(indexData, ApiJson.class));
+            refreshData(directoryDataId, indexData);
+            this.indexDirectoryMap.put(directoryDataId, listener);
+            this.indexDirectoryShardMap.put(directoryDataId, indexData);
+            logger.info("nacosDal addDirectoryListener -> '" + directoryDataId + "' done.");
         } catch (NacosException e) {
             logger.info(String.format("nacosDal addDirectoryListener '%s' failed, tryTimes %s of %s", directoryDataId, tryTimes, maxTryTimes));
             try {
@@ -301,42 +319,44 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
     }
 
     /** 索引片段是一个变更log流水，每条数据都转换为异步任务进行加载。 */
-    private void refreshData(String indexId, List<ApiJson> indexDirectory) {
-        if (indexDirectory == null || indexDirectory.isEmpty()) {
-            logger.info(String.format("nacosDal refreshData '%s' is empty, ignore.", indexId));
-            return;
+    private void refreshData(String indexId, String configInfo) {
+        if (StringUtils.isBlank(configInfo)) {
+            configInfo = "[]";
         }
-        // 预处理，留下最新的 ApiJson
-        Map<String, ApiJson> pretreatment = new HashMap<>();
-        for (ApiJson apiJson : indexDirectory) {
-            String jsonId = apiJson.getId();
-            // 删除状态不处理
-            ApiStatusEnum statusEnum = ApiStatusEnum.typeOf(apiJson.getStatus());
-            if (statusEnum == ApiStatusEnum.Delete) {
-                logger.info(String.format("nacosDal refreshData '%s' of '%s' is delete, ignore.", jsonId, indexId));
-                continue;
-            }
-            // 比本地中数据还要旧的不处理
-            if (this.dataCache.containsKey(jsonId)) {
-                DataEnt dataEnt = this.dataCache.get(jsonId);
-                long jsonTime = apiJson.getTime();
-                if (dataEnt.getTime() > jsonTime) {
-                    logger.info(String.format("nacosDal refreshData '%s' of '%s' is old, ignore.", jsonId, indexId));
-                    continue;
-                }
-            }
-            // 预处理中如果存在，那么比对一下留下最新的
-            if (pretreatment.containsKey(jsonId)) {
-                ApiJson dataEnt = pretreatment.get(jsonId);
-                if (apiJson.getTime() >= dataEnt.getTime()) {
-                    pretreatment.put(jsonId, apiJson);
-                }
+        // .预计算索引分片数据
+        String oriData = this.indexDirectoryShardMap.get(indexId);
+        this.indexDirectoryShardMap.put(indexId, configInfo);
+        Map<String, ApiJson> oldIndexDirectory = removeDuplicate(JSON.parseArray(oriData, ApiJson.class));
+        Map<String, ApiJson> newIndexDirectory = removeDuplicate(JSON.parseArray(configInfo, ApiJson.class));
+        // .合并新老两个索引分片
+        oldIndexDirectory.forEach((key, oldApiJson) -> {
+            if (!newIndexDirectory.containsKey(key)) {
+                logger.info(String.format("nacosDal refreshData '%s' of '%s' delete form local.", key, indexId));
+                dataCache.remove(key);//新的索引数据中如果没有这个数据，那么从本地删掉
             } else {
-                pretreatment.put(jsonId, apiJson);
+                ApiJson newApiJson = newIndexDirectory.get(key);
+                if (oldApiJson.getTime() >= newApiJson.getTime()) {
+                    newIndexDirectory.put(key, oldApiJson);// 老的数据比新的分片数据中的时间戳要新，那么仍然使用老数据
+                }
             }
+        });
+        // 索引合并之后，在根据内存中的数据进行比较把落后于内存数据的过滤掉。
+        List<ApiJson> asyncTask = new ArrayList<>(newIndexDirectory.size());
+        newIndexDirectory.forEach((key, apiJson) -> {
+            if (dataCache.containsKey(key)) {
+                if (dataCache.get(key).getTime() >= apiJson.getTime()) {
+                    logger.info(String.format("nacosDal refreshData '%s' of '%s' is old, ignore.", key, indexId));
+                    return;
+                }
+            }
+            asyncTask.add(apiJson);
+        });
+        // 转为异步处理
+        if (asyncTask.isEmpty()) {
+            logger.info(String.format("nacosDal refreshData '%s' is empty, ignore.", indexId));
+        } else {
+            asyncTask.forEach(asyncLoadTask::offer);
         }
-        // 转为异步加载
-        pretreatment.forEach((jsonId, apiJson) -> asyncLoadTask.offer(apiJson));
     }
 
     /** 异步加载任务，负责读取 ApiJson 中的API信息到 cache。*/
@@ -357,6 +377,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
                 String jsonId = apiJson.getId();
                 Map<FieldDef, String> dataMap = mapToDef(loadData(jsonId));
                 if (dataMap == null || ApiStatusEnum.Delete == ApiStatusEnum.typeOf(dataMap.get(FieldDef.STATUS))) {
+                    this.dataCache.remove(jsonId);// 不存在或者已删除的从内存中清理出去
                     logger.info(String.format("nacosDal loadData '%s' is delete, ignore.", jsonId));
                     continue;
                 }
@@ -374,41 +395,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
             }
         }
     }
-
     // ------------------------------------------------------------------------------------------------------------------------
-    private static Map<FieldDef, String> mapToDef(Map<String, Object> entMap) {
-        if (entMap == null) {
-            return null;
-        }
-        final Map<FieldDef, String> dataMap = new HashMap<>();
-        entMap.forEach((key, value) -> {
-            for (FieldDef def : FieldDef.values()) {
-                if (def.name().equalsIgnoreCase(key)) {
-                    dataMap.put(def, (value == null) ? "" : value.toString());
-                }
-            }
-        });
-        return dataMap;
-    }
-
-    private static Map<String, Object> defToMap(Map<FieldDef, String> entMap) {
-        if (entMap == null) {
-            return null;
-        }
-        final Map<String, Object> dataMap = new HashMap<>();
-        entMap.forEach((key, value) -> {
-            if (value == null) {
-                dataMap.put(key.name().toUpperCase(), "");
-            } else {
-                dataMap.put(key.name().toUpperCase(), value);
-            }
-        });
-        return dataMap;
-    }
-
-    private static String evalDirectoryKey(String dat) {
-        return "DIRECTORY_" + dat;
-    }
 
     /** 保存或更新数据 */
     protected boolean saveData(String dataId, Map<FieldDef, String> newData) {
@@ -438,6 +425,11 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         }
         if (apiJsonList == null) {
             apiJsonList = new ArrayList<>();
+        }
+        // 超限制了
+        if (apiJsonList.size() > this.directoryShardMaxRecord) {
+            apiJsonList = new ArrayList<>();
+            directoryKey = evalDirectoryKey(String.valueOf(this.indexDirectoryShardMax + 1));
         }
         //
         ApiJson json = new ApiJson();

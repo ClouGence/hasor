@@ -9,9 +9,16 @@
         <HASOR_DATAQL_DATAWAY_ADMIN>false</HASOR_DATAQL_DATAWAY_ADMIN>
         <!-- dataway-ui 的工作路径，必须开启管理功能 -->
         <HASOR_DATAQL_DATAWAY_UI_URL>/interface-ui/</HASOR_DATAQL_DATAWAY_UI_URL>
-
         <!-- 元信息访问层默认使用的是哪种类型，提供者在 hasor.dataway.dataAccessLayer 中定义 -->
         <HASOR_DATAQL_DATAWAY_DAL_TYPE>db</HASOR_DATAQL_DATAWAY_DAL_TYPE>
+
+        <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
+        <!--      存储在 nacos 中的数据位于哪个 GROUP -->
+        <HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP>HASOR_DATAWAY</HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP>
+        <!--      INDEX_DIRECTORY 中存储的是 shard 编号，该配置用来配置每个 shard 最多可以保存多少条记录 -->
+        <HASOR_DATAQL_DATAWAY_NACOSDAL_SHARD_MAX>2000</HASOR_DATAQL_DATAWAY_NACOSDAL_SHARD_MAX>
+        <!--      是否启用历史记录功能，每个历史数据都会被永久保存在 nacos 中，直至触发 shard optimize。  -->
+        <HASOR_DATAQL_DATAWAY_NACOSDAL_HISTORY>true</HASOR_DATAQL_DATAWAY_NACOSDAL_HISTORY>
     </hasor.environmentVar>
 
     <hasor>

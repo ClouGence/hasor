@@ -82,7 +82,7 @@ public class DatawayModule implements WebModule {
                 }
                 setupProvider = true;
                 Class<?> loadClass = environment.getClassLoader().loadClass(providerType);
-                logger.info("use '" + providerName + "' as the dataAccessLayer provider ,type is " + loadClass.getName());
+                logger.info("use '" + providerName + "' as the dataAccessLayer, provider = " + loadClass.getName());
                 apiBinder.bindType(ApiDataAccessLayer.class).toProvider(//
                         HasorUtils.autoAware(environment, new InnerApiDalCreator(loadClass))//
                 );

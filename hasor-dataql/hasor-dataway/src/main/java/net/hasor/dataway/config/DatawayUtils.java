@@ -37,6 +37,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * 工具。
@@ -257,5 +258,18 @@ public class DatawayUtils {
             }
         }
         return objectMap;
+    }
+
+    public static String generateID() {
+        long timeMillis = System.currentTimeMillis();
+        int nextInt = new Random(timeMillis).nextInt();
+        String s = Integer.toString(nextInt, 24);
+        if (s.length() > 4) {
+            s = s.substring(0, 4);
+        } else {
+            s = StringUtils.rightPad(s, 4, "0");
+        }
+        //
+        return Long.toString(timeMillis, 24) + s;
     }
 }

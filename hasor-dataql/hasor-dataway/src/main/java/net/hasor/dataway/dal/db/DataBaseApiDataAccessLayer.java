@@ -18,6 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
+import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.dal.ApiDataAccessLayer;
 import net.hasor.dataway.dal.EntityDef;
 import net.hasor.dataway.dal.FieldDef;
@@ -32,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * 数据库存储层访问 ApiDataAccessLayer 接口实现。
@@ -102,16 +102,7 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
 
     @Override
     public String generateId(EntityDef objectType, String apiPath) {
-        long timeMillis = System.currentTimeMillis();
-        int nextInt = new Random(timeMillis).nextInt();
-        String s = Integer.toString(nextInt, 24);
-        if (s.length() > 4) {
-            s = s.substring(0, 4);
-        } else {
-            s = StringUtils.rightPad(s, 4, "0");
-        }
-        //
-        String newId = Long.toString(timeMillis, 24) + s;
+        String newId = DatawayUtils.generateID();
         return ((EntityDef.INFO == objectType) ? "i_" : "r_") + newId;
     }
 
