@@ -66,7 +66,7 @@ public class DatawayModule implements WebModule {
         //
         String dalType = environment.getVariable("HASOR_DATAQL_DATAWAY_DAL_TYPE");
         if (StringUtils.isBlank(dalType)) {
-            throw new RuntimeException("dataway HASOR_DATAQL_DATAWAY_DAL_TYPE is missing.");
+            throw new NullPointerException("dataway HASOR_DATAQL_DATAWAY_DAL_TYPE is missing.");
         }
         boolean setupProvider = false;
         XmlNode[] nodeArray = environment.getSettings().getXmlNodeArray("hasor.dataway.dataAccessLayer.provider");

@@ -179,6 +179,10 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         Objects.requireNonNull(this.configService, "nacos not init.");
         Environment env = this.appContext.getEnvironment();
         this.groupName = env.getOrDefault("HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP", "HASOR_DATAWAY");
+        if (StringUtils.isBlank(this.groupName)) {
+            throw new NullPointerException("HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP is missing.");
+        }
+        //
         this.directoryShardMaxRecord = Integer.parseInt(env.getOrDefault("HASOR_DATAQL_DATAWAY_NACOSDAL_SHARD_MAX", "2000"));
         this.enableHistory = Boolean.parseBoolean(env.getOrDefault("HASOR_DATAQL_DATAWAY_NACOSDAL_HISTORY", "true"));
         logger.info("nacosDal init groupName = " + this.groupName + ", directoryShardMaxRecord = " + this.directoryShardMaxRecord + ", enableHistory=" + this.enableHistory);
