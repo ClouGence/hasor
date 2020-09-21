@@ -418,7 +418,7 @@ public class BeanUtils {
         }
     }
 
-    /**执行注入，该方法首先会视图执行属性方法注入。如果失败则执行字段注入。注意：该方法会根据属性类型进行尝试类型转换。*/
+    /**执行注入，该方法首先会试图执行属性方法注入。如果失败则执行字段注入。注意：该方法会根据属性类型进行尝试类型转换。*/
     public static boolean writePropertyOrField(final Object object, final String attName, final Object value) {
         Class<?> defineType = object.getClass();
         if (BeanUtils.canWriteProperty(attName, defineType)) {
@@ -468,7 +468,7 @@ public class BeanUtils {
         }
     }
 
-    /**执行注入，该方法首先会视图执行属性方法注入。如果失败则执行字段注入。注意：该方法会根据属性类型进行尝试类型转换。*/
+    /**执行注入，该方法首先会试图执行属性方法注入。如果失败则执行字段注入。注意：该方法会根据属性类型进行尝试类型转换。*/
     public static Object readPropertyOrField(final Object object, final String attName) {
         Class<?> defineType = object.getClass();
         if (BeanUtils.canReadProperty(attName, defineType)) {
