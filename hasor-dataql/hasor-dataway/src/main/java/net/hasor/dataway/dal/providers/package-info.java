@@ -13,19 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.dal.nacos;
-import net.hasor.core.AppContext;
-import net.hasor.dataway.dal.ApiDataAccessLayer;
-import net.hasor.dataway.dal.ApiDataAccessLayerCreator;
-
 /**
- * Nacos 存储层访问 ApiDataAccessLayer 接口实现。
- * @author 赵永春 (zyc@hasor.net)
- * @version : 2020-09-20
+ * 基于 ApiDataAccessLayer 接口的各种存储实现。
  */
-public class NacosApiDataAccessLayerCreator implements ApiDataAccessLayerCreator {
-    @Override
-    public ApiDataAccessLayer create(AppContext appContext) {
-        return appContext.getInstance(NacosApiDataAccessLayer.class);
-    }
-}
+@AopIgnore
+package net.hasor.dataway.dal.providers;
+import net.hasor.core.AopIgnore;

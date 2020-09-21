@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.dal.db;
+package net.hasor.dataway.dal.providers.db;
 /**
  * 工具类来自于 druid-1.1.23.jar
  * com.alibaba.druid.util.JdbcConstants

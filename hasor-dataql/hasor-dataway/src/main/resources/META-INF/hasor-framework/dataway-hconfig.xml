@@ -30,9 +30,9 @@
         <dataway>
             <dataAccessLayer>
                 <!-- 使用数据库充当 Dataway 的元信息存储器 -->
-                <provider name="db">net.hasor.dataway.dal.db.DataBaseApiDataAccessLayerCreator</provider>
+                <provider name="db">net.hasor.dataway.dal.providers.db.DataBaseApiDataAccessLayerCreator</provider>
                 <!-- 使用 nacos 充当 Dataway 的元信息存储器 -->
-                <provider name="nacos">net.hasor.dataway.dal.nacos.NacosApiDataAccessLayerCreator</provider>
+                <provider name="nacos">net.hasor.dataway.dal.providers.nacos.NacosApiDataAccessLayerCreator</provider>
             </dataAccessLayer>
         </dataway>
     </hasor>

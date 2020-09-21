@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.dal.nacos;
+package net.hasor.dataway.dal.providers.nacos;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
@@ -34,8 +34,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
-
-import static net.hasor.dataway.dal.nacos.NacosUtils.*;
 
 /**
  * 基于 Nacos 的 ApiDataAccessLayer 接口实现。
@@ -269,7 +267,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         }
         // 移除已经失效的索引
         for (String lostItem : hasLost) {
-            String dataId = evalDirectoryKey(lostItem);
+            String dataId = NacosUtils.evalDirectoryKey(lostItem);
             logger.info("nacosDal removeDirectoryListener -> '" + dataId + "'");
             this.indexDirectoryMap.remove(lostItem);
             this.indexDirectoryShardMap.remove(lostItem);
@@ -280,7 +278,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         }
         // 注册还未监听的索引
         for (String newItem : hasNew) {
-            String directoryDataId = evalDirectoryKey(newItem);
+            String directoryDataId = NacosUtils.evalDirectoryKey(newItem);
             Listener listener = new NacosListener(this.executorService) {
                 public void receiveConfigInfo(String configInfo) {
                     refreshData(directoryDataId, configInfo);
@@ -326,8 +324,8 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         // .预计算索引分片数据
         String oriData = this.indexDirectoryShardMap.get(indexId);
         this.indexDirectoryShardMap.put(indexId, configInfo);
-        Map<String, ApiJson> oldIndexDirectory = removeDuplicate(JSON.parseArray(oriData, ApiJson.class));
-        Map<String, ApiJson> newIndexDirectory = removeDuplicate(JSON.parseArray(configInfo, ApiJson.class));
+        Map<String, ApiJson> oldIndexDirectory = NacosUtils.removeDuplicate(JSON.parseArray(oriData, ApiJson.class));
+        Map<String, ApiJson> newIndexDirectory = NacosUtils.removeDuplicate(JSON.parseArray(configInfo, ApiJson.class));
         // .合并新老两个索引分片
         oldIndexDirectory.forEach((key, oldApiJson) -> {
             if (!newIndexDirectory.containsKey(key)) {
@@ -375,7 +373,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
                 }
                 // 加载数据
                 String jsonId = apiJson.getId();
-                Map<FieldDef, String> dataMap = mapToDef(loadData(jsonId));
+                Map<FieldDef, String> dataMap = NacosUtils.mapToDef(loadData(jsonId));
                 if (dataMap == null || ApiStatusEnum.Delete == ApiStatusEnum.typeOf(dataMap.get(FieldDef.STATUS))) {
                     this.dataCache.remove(jsonId);// 不存在或者已删除的从内存中清理出去
                     logger.info(String.format("nacosDal loadData '%s' is delete, ignore.", jsonId));
@@ -399,7 +397,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
 
     /** 保存或更新数据 */
     protected boolean saveData(String dataId, Map<FieldDef, String> newData) {
-        String jsonData = JSON.toJSONString(defToMap(newData));
+        String jsonData = JSON.toJSONString(NacosUtils.defToMap(newData));
         try {
             return this.configService.publishConfig(dataId, this.groupName, jsonData);
         } catch (Exception e1) {
@@ -417,7 +415,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
 
     /** 追加索引更新 */
     private boolean appendIndex(DataEnt dataEnt) {
-        String directoryKey = evalDirectoryKey(String.valueOf(this.indexDirectoryShardMax));
+        String directoryKey = NacosUtils.evalDirectoryKey(String.valueOf(this.indexDirectoryShardMax));
         List<ApiJson> apiJsonList = null;
         String shardData = this.indexDirectoryShardMap.get(directoryKey);
         if (StringUtils.isNotBlank(shardData)) {
@@ -429,7 +427,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         // 超限制了
         if (apiJsonList.size() > this.directoryShardMaxRecord) {
             apiJsonList = new ArrayList<>();
-            directoryKey = evalDirectoryKey(String.valueOf(this.indexDirectoryShardMax + 1));
+            directoryKey = NacosUtils.evalDirectoryKey(String.valueOf(this.indexDirectoryShardMax + 1));
         }
         //
         ApiJson json = new ApiJson();

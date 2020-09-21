@@ -1,4 +1,4 @@
-package net.hasor.dataway.dal.nacos;
+package net.hasor.dataway.dal.providers.nacos;
 import com.alibaba.nacos.api.config.listener.Listener;
 
 import java.util.concurrent.Executor;

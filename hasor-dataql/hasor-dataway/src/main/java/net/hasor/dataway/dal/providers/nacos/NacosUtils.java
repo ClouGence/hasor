@@ -1,4 +1,4 @@
-package net.hasor.dataway.dal.nacos;
+package net.hasor.dataway.dal.providers.nacos;
 import net.hasor.dataway.dal.FieldDef;
 
 import java.util.*;

@@ -13,9 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.dataway.dal.providers.db;
+import net.hasor.core.AppContext;
+import net.hasor.dataway.dal.ApiDataAccessLayer;
+import net.hasor.dataway.dal.ApiDataAccessLayerCreator;
+
 /**
  * 数据库存储层访问 ApiDataAccessLayer 接口实现。
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-09-11
  */
-@AopIgnore
-package net.hasor.dataway.dal.db;
-import net.hasor.core.AopIgnore;
+public class DataBaseApiDataAccessLayerCreator implements ApiDataAccessLayerCreator {
+    @Override
+    public ApiDataAccessLayer create(AppContext appContext) {
+        return appContext.getInstance(DataBaseApiDataAccessLayer.class);
+    }
+}

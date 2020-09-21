@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 /**
- * 基于 Nacos 的 ApiDataAccessLayer 接口实现。
+ * 数据库存储层访问 ApiDataAccessLayer 接口实现。
  */
 @AopIgnore
-package net.hasor.dataway.dal.nacos;
+package net.hasor.dataway.dal.providers.db;
 import net.hasor.core.AopIgnore;

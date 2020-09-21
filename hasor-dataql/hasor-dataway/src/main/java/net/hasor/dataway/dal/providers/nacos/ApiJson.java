@@ -1,4 +1,4 @@
-package net.hasor.dataway.dal.nacos;
+package net.hasor.dataway.dal.providers.nacos;
 public class ApiJson {
     private String id;
     private String path;
