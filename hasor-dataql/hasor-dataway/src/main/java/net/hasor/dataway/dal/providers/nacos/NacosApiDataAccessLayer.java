@@ -131,7 +131,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
     }
 
     @Override
-    public boolean deleteObject(EntityDef objectType, String id) {
+    public synchronized boolean deleteObject(EntityDef objectType, String id) {
         if (this.removeData(id)) {
             this.dataCache.remove(id);
             return true;
@@ -141,12 +141,12 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
     }
 
     @Override
-    public boolean updateObject(EntityDef objectType, String id, Map<FieldDef, String> newData) {
+    public synchronized boolean updateObject(EntityDef objectType, String id, Map<FieldDef, String> newData) {
         return this.createOrUpdate(id, newData);
     }
 
     @Override
-    public boolean createObject(EntityDef objectType, Map<FieldDef, String> newData) {
+    public synchronized boolean createObject(EntityDef objectType, Map<FieldDef, String> newData) {
         return this.createOrUpdate(newData.get(FieldDef.ID), newData);
     }
 
