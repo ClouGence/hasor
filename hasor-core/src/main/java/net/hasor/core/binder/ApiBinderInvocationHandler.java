@@ -29,13 +29,12 @@ import java.util.Map;
  */
 public class ApiBinderInvocationHandler implements InvocationHandler {
     private static Logger                logger = LoggerFactory.getLogger(ApiBinderInvocationHandler.class);
-    private        Map<Class<?>, Object> supportMap;
+    private final  Map<Class<?>, Object> supportMap;
 
     protected Map<Class<?>, Object> supportMap() {
         return Collections.unmodifiableMap(supportMap);
     }
 
-    //
     public ApiBinderInvocationHandler(Map<Class<?>, Object> supportMap) {
         this.supportMap = supportMap;
         for (Map.Entry<Class<?>, Object> entry : supportMap.entrySet()) {

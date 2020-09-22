@@ -469,7 +469,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         doShutdownCompleted();
         logger.debug("shutdown - doShutdownCompleted.");
         this.getContainer().close();
-        logger.info("Hasor StartCompleted.");
+        logger.info("Hasor ShutdownCompleted.");
         try {
             Runtime.getRuntime().removeShutdownHook(shutdownHook);
         } catch (IllegalStateException e) {

@@ -29,7 +29,7 @@ import java.util.function.Predicate;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AopModule implements Module {
-    private static Logger logger = LoggerFactory.getLogger(AopModule.class);
+    private static final Logger logger = LoggerFactory.getLogger(AopModule.class);
 
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //Aop拦截器

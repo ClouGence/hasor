@@ -493,13 +493,13 @@ public interface ApiBinder {
     }
 
     /**处理类型和实现的绑定。*/
-    public interface LinkedBindingBuilder<T> extends InjectPropertyBindingBuilder<T> {
+    public interface LinkedBindingBuilder<T> extends TypeSupplierBindingBuilder<T> {
         /**
          * 为绑定设置一个实现类。
          * @param implementation 实现类型
          * @return 返回 - {@link InjectPropertyBindingBuilder}。
          */
-        public InjectPropertyBindingBuilder<T> to(Class<? extends T> implementation);
+        public TypeSupplierBindingBuilder<T> to(Class<? extends T> implementation);
 
         /**
          * 为绑定设置一个实例
@@ -558,6 +558,16 @@ public interface ApiBinder {
          * @return 返回 - {@link InjectConstructorBindingBuilder}。
          */
         public InjectConstructorBindingBuilder<T> inject(int index, Class<?> valueType);
+    }
+
+    /** 可以委托创建 Bean */
+    public interface TypeSupplierBindingBuilder<T> extends InjectPropertyBindingBuilder<T> {
+        /**
+         * 将 Bean 的创建委托出去，委托创建相当于设置了 toProvider Hasor 将不会执行 Aop 和注入的逻辑。
+         * @param typeSupplier typeSupplier 用来委托创建。
+         * @return 返回 - {@link InjectPropertyBindingBuilder}。
+         */
+        public LifeBindingBuilder<T> toTypeSupplier(TypeSupplier typeSupplier);
     }
 
     /**属性依赖注入*/

@@ -190,6 +190,7 @@ public abstract class AbstractBinder implements ApiBinder {
             InjectConstructorBindingBuilder<T>, InjectPropertyBindingBuilder<T>, //
             NamedBindingBuilder<T>, LinkedBindingBuilder<T>, LifeBindingBuilder<T>, ScopedBindingBuilder<T>, MetaDataBindingBuilder<T> {
         private BindInfoBuilder<T> typeBuilder = null;
+        private Class<? extends T> sourceType  = null;
         private Class<?>[]         initParams  = new Class<?>[0];
 
         public BindingBuilderImpl(final BindInfoBuilder<T> typeBuilder) {
@@ -252,8 +253,9 @@ public abstract class AbstractBinder implements ApiBinder {
         }
 
         @Override
-        public InjectPropertyBindingBuilder<T> to(final Class<? extends T> implementation) {
+        public TypeSupplierBindingBuilder<T> to(final Class<? extends T> implementation) {
             Objects.requireNonNull(implementation, "implementation is null.");
+            this.sourceType = implementation;
             this.typeBuilder.setSourceType(implementation);
             return this;
         }
@@ -301,7 +303,6 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
 
-        //
         @Override
         public InjectPropertyBindingBuilder<T> injectValue(final String property, final Object value) {
             return this.inject(property, new InstanceProvider<>(value));
@@ -360,6 +361,16 @@ public abstract class AbstractBinder implements ApiBinder {
         @Override
         public BindInfo<T> toInfo() {
             return this.typeBuilder.toInfo();
+        }
+
+        @Override
+        public LifeBindingBuilder<T> toTypeSupplier(TypeSupplier typeSupplier) {
+            final Class<? extends T> bindType = (this.sourceType == null) ?//
+                    this.typeBuilder.toInfo().getBindType() ://
+                    this.sourceType;
+            //
+            this.toProvider(() -> typeSupplier.get(bindType));
+            return this;
         }
     }
 

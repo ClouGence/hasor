@@ -52,6 +52,5 @@
         <innerApiBinderSet>
             <!--<binder type="net.hasor.plugins.data.DataApiBinder">net.hasor.plugins.data.DataApiBinderCreater</binder>-->
         </innerApiBinderSet>
-
     </hasor>
 </config>

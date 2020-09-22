@@ -42,7 +42,7 @@ public final class Hasor extends HashMap<String, String> {
     private          StreamType                       mainSettingsStreamType = null;
     private final    List<Module>                     moduleList             = new ArrayList<>();
     private          ClassLoader                      loader;
-    private          Map<String, Map<String, Object>> initSettingMap         = new HashMap<>();
+    private final    Map<String, Map<String, Object>> initSettingMap         = new HashMap<>();
     private          Level                            asLevel                = Level.Full;
 
     protected Hasor(Object context) {

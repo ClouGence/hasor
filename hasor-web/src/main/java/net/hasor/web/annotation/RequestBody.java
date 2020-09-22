@@ -18,7 +18,7 @@ import java.lang.annotation.*;
 
 /**
  * 查询参数Body
- * @version : 2013-5-9
+ * @version : 2020-03-22
  * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
