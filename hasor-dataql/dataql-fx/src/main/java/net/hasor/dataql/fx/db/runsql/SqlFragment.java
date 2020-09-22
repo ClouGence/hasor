@@ -73,6 +73,7 @@ public class SqlFragment implements FragmentProcess {
     private   DataSource              defaultDataSource;
     private   Map<String, DataSource> dataSourceMap;
 
+    /** SqlMode 目前只会在 '批量' 和 '分页' 两个场景下才参与判断。 */
     public static enum SqlMode {
         /** DML：insert、update、delete、replace、exec */
         Insert, Update, Delete, Procedure,

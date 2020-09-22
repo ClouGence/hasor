@@ -84,7 +84,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
     /**
      * 仅通过 targetType 类型创建Bean（不参考BindInfoContainer）
      */
-    public <T> Supplier<? extends T> providerOnlyType(Class<T> targetType, AppContext appContext, Object[] params) {
+    public <T> Supplier<? extends T> providerOnlyType(Class<T> targetType, AppContext appContext, final Object[] params) {
         if (targetType == null) {
             return null;
         }
@@ -96,11 +96,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         Supplier<Executable> constructorSupplier = new SingleProvider<>(() -> {
             Constructor<?>[] constructors = Arrays.stream(implClass.getConstructors()).filter(constructor -> {
                 return constructor.getParameterCount() == 0 || isInjectConstructor(constructor);
-            }).sorted((o1, o2) -> {
-                int a = o1.getParameterCount() == 0 ? -1 : 1;
-                int b = o2.getParameterCount() == 0 ? -1 : 1;
-                return Integer.compare(a, b);
-            }).toArray(Constructor[]::new);
+            }).sorted(Comparator.comparingInt(Constructor::getParameterCount)).toArray(Constructor[]::new);
             //
             // .查找构造方法
             Constructor<?> constructor = null;
@@ -249,7 +245,6 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
 
     /**
      * 创建Bean {@link BindInfo}创建Bean。
-     *
      * @param targetType           表示目标类型
      * @param referConstructor     表示使用的构造方法
      * @param constructorParameter 构造方法所使用的参数
@@ -367,7 +362,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         // .动态代理，需要满足三个条件（1.类型必须支持Aop、2.没有被@AopIgnore排除在外、3.具有至少一个有效的拦截器）
         Class<?> newType = targetType;
         if (AsmTools.isSupport(targetType) && !aopList.isEmpty()) {
-            AopClassConfig engine = classEngineMap.get(targetType);
+            AopClassConfig engine = this.classEngineMap.get(targetType);
             if (engine == null) {
                 engine = new AopClassConfig(targetType, rootLoader);
                 for (AopBindInfoAdapter aop : aopList) {
@@ -376,9 +371,9 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
                     }
                     engine.addAopInterceptor(aop.getMatcherMethod(), aop);
                 }
-                engine = classEngineMap.putIfAbsent(targetType, engine);
+                engine = this.classEngineMap.putIfAbsent(targetType, engine);
                 if (engine == null) {
-                    engine = classEngineMap.get(targetType);
+                    engine = this.classEngineMap.get(targetType);
                 }
             }
             try {
