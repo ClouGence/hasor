@@ -78,16 +78,16 @@ public class RenderLayoutTest extends AbstractTest {
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(DefaultLayoutHtmlAction.class);
         });
         //
-        Field layoutPathField = RenderWebPlugin.class.getDeclaredField("layoutPath");
-        Field useLayoutField = RenderWebPlugin.class.getDeclaredField("useLayout");
-        Field templatePathField = RenderWebPlugin.class.getDeclaredField("templatePath");
-        Field engineMapField = RenderWebPlugin.class.getDeclaredField("engineMap");
+        Field layoutPathField = RenderInvokerFilter.class.getDeclaredField("layoutPath");
+        Field useLayoutField = RenderInvokerFilter.class.getDeclaredField("useLayout");
+        Field templatePathField = RenderInvokerFilter.class.getDeclaredField("templatePath");
+        Field engineMapField = RenderInvokerFilter.class.getDeclaredField("engineMap");
         layoutPathField.setAccessible(true);
         useLayoutField.setAccessible(true);
         templatePathField.setAccessible(true);
         engineMapField.setAccessible(true);
         //
-        RenderWebPlugin renderPlugin = appContext.getInstance(RenderWebPlugin.class.getName());
+        RenderInvokerFilter renderPlugin = appContext.getInstance(RenderInvokerFilter.class);
         String layoutPath = (String) layoutPathField.get(renderPlugin);
         boolean useLayout = (boolean) useLayoutField.get(renderPlugin);
         String templatePath = (String) templatePathField.get(renderPlugin);

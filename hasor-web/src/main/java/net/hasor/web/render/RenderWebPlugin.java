@@ -16,7 +16,6 @@
 package net.hasor.web.render;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.web.InvokerFilter;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 
@@ -28,8 +27,9 @@ import net.hasor.web.WebModule;
 public class RenderWebPlugin implements WebModule {
     @Override
     public void loadModule(WebApiBinder apiBinder) {
-        BindInfo<InvokerFilter> filterInfo = apiBinder.bindType(InvokerFilter.class)  //
-                .idWith(RenderInvokerFilter.class.getName()).toInstance(new RenderInvokerFilter()).toInfo();
+        BindInfo<RenderInvokerFilter> filterInfo = apiBinder.bindType(RenderInvokerFilter.class) //
+                .idWith(RenderInvokerFilter.class.getName())//
+                .toInstance(new RenderInvokerFilter()).toInfo();
         apiBinder.filter("/*").through(Integer.MIN_VALUE, filterInfo);
     }
 

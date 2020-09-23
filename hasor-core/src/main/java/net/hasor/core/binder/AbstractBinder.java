@@ -37,8 +37,8 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractBinder implements ApiBinder {
-    protected Logger      logger = LoggerFactory.getLogger(getClass());
-    private   Environment environment;
+    protected     Logger      logger = LoggerFactory.getLogger(getClass());
+    private final Environment environment;
 
     public AbstractBinder(Environment environment) {
         this.environment = Objects.requireNonNull(environment, "environment is null.");
@@ -242,13 +242,6 @@ public abstract class AbstractBinder implements ApiBinder {
         public LinkedBindingBuilder<T> uniqueName() {
             String newID = UUID.randomUUID().toString().replace("-", "");
             this.typeBuilder.setBindName(newID);
-            return this;
-        }
-
-        @Override
-        public LinkedBindingBuilder<T> uniqueID() {
-            String newID = UUID.randomUUID().toString().replace("-", "");
-            this.typeBuilder.setBindID(newID);
             return this;
         }
 

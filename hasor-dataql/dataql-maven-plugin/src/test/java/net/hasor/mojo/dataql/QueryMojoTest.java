@@ -5,7 +5,6 @@
  */
 
 package net.hasor.mojo.dataql;
-import io.takari.maven.testing.TestMavenRuntime;
 import io.takari.maven.testing.TestResources;
 import io.takari.maven.testing.executor.MavenExecutionResult;
 import io.takari.maven.testing.executor.MavenRuntime;

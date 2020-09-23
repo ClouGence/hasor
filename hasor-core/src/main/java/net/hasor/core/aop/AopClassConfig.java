@@ -17,7 +17,6 @@ package net.hasor.core.aop;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.asm.*;
-import net.hasor.utils.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -92,9 +91,6 @@ public class AopClassConfig {
     /**添加Aop拦截器。*/
     public void addAopInterceptor(Predicate<Method> aopMatcher, MethodInterceptor aopInterceptor) {
         Objects.requireNonNull(aopMatcher, "aopMatcher is null.");
-        if (this.interceptorList == null) {
-            this.interceptorList = new ArrayList<>();
-        }
         this.interceptorList.add(new InnerMethodInterceptorDefine(aopMatcher, aopInterceptor));
     }
 
@@ -446,17 +442,13 @@ public class AopClassConfig {
         classWriter.visitEnd();
         this.classBytes = classWriter.toByteArray();
         if (this.classWritePath != null) {
-            FileOutputStream fos = null;
-            try {
-                File outFile = new File(this.classWritePath, thisClassName + ".class");
-                outFile.getParentFile().mkdirs();
-                fos = new FileOutputStream(outFile, false);
+            File outFile = new File(this.classWritePath, thisClassName + ".class");
+            outFile.getParentFile().mkdirs();
+            try (FileOutputStream fos = new FileOutputStream(outFile, false);) {
                 fos.write(this.classBytes);
                 fos.flush();
             } catch (Throwable e) {
                 e.printStackTrace();
-            } finally {
-                IOUtils.closeQuietly(fos);
             }
         }
         this.parentLoader.addClassConfig(this);

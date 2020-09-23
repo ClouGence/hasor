@@ -100,6 +100,8 @@ public class SpiTest {
         //
         try {
             SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
+            assert spiTrigger.hasSpi(TestSpi.class);
+            assert !spiTrigger.hasJudge(TestSpi.class);
             spiTrigger.notifySpi(TestSpi.class, TestSpi::doSpi, "ORI");
             assert false;
         } catch (UnsupportedOperationException e) {
@@ -137,6 +139,7 @@ public class SpiTest {
         SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
         Object resultSpi = spiTrigger.notifySpi(TestSpi.class, TestSpi::doSpi, defaultResult);
         //
+        assert spiTrigger.hasJudge(TestSpi.class);
         assert call.size() == 2;
         assert call.contains(spiResultA);
         assert call.contains(spiResultB);
@@ -176,7 +179,7 @@ public class SpiTest {
         });
         //
         SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
-        Object resultSpi = spiTrigger.notifySpi(TestSpi.class, TestSpi::doSpi, defaultResult);
+        Object resultSpi = spiTrigger.chainSpi(TestSpi.class, TestSpi::doSpi, defaultResult);
         //
         assert call.size() == 1;
         assert call.contains(spiResultA);

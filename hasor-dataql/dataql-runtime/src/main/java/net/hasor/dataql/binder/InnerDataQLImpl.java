@@ -43,7 +43,7 @@ class InnerDataQLImpl extends HintsSet implements DataQL {
     private final Map<String, Supplier<?>>   compilerVarMap       = new HashMap<>();
     private       AppContext                 appContext;
     private       Supplier<? extends Finder> finderObject;
-    private final CompilerArguments          useCompilerArguments = CompilerArguments.DEFAULT;
+    private final CompilerArguments          useCompilerArguments = CompilerArguments.DEFAULT.copyAsNew();
 
     public void initConfig(AppContext appContext) {
         this.appContext = appContext;
