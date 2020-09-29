@@ -24,6 +24,9 @@ import net.hasor.test.core.basic.pojo.SampleBean;
 import net.hasor.utils.BeanUtils;
 import org.junit.Test;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 /**
  *
  * @version : 2020-09-29
@@ -117,5 +120,20 @@ public class PropertyDelegateTest {
         // 更改 delegate 值被修改
         delegate.setValue(321.321);
         assert JSON.toJSONString(pojoBean, SerializerFeature.UseSingleQuotes).equals("{'dynamicName':321.321}");
+    }
+
+    @Test
+    public void propertyTest6() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            apiBinder.bindType(PojoBean.class).dynamicProperty("dynamicName", String.class);
+        });
+        PojoBean pojoBean = appContext.getInstance(PojoBean.class);
+        //
+        Method getMethod = pojoBean.getClass().getMethod("getDynamicName");
+        Method setMethod = pojoBean.getClass().getMethod("setDynamicName", String.class);
+        //
+        setMethod.invoke(pojoBean, "Hello");
+        //
+        assert "Hello".equals(getMethod.invoke(pojoBean));
     }
 }
