@@ -15,6 +15,8 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.*;
+import net.hasor.core.aop.ReadWriteType;
+import net.hasor.core.aop.SimplePropertyDelegate;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.provider.InstanceProvider;
@@ -363,6 +365,45 @@ public abstract class AbstractBinder implements ApiBinder {
                     this.sourceType;
             //
             this.toProvider(() -> typeSupplier.get(bindType));
+            return this;
+        }
+
+        @Override
+        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType) {
+            Object defaultValue = BeanUtils.getDefaultValue(propertyType);
+            return this.dynamicProperty(name, propertyType, new SimplePropertyDelegate(defaultValue));
+        }
+
+        @Override
+        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, Class<? extends PropertyDelegate> delegate) {
+            return this.dynamicProperty(name, propertyType, getProvider(delegate));
+        }
+
+        @Override
+        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, BindInfo<? extends PropertyDelegate> delegate) {
+            return this.dynamicProperty(name, propertyType, getProvider(delegate));
+        }
+
+        @Override
+        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, Supplier<? extends PropertyDelegate> delegate) {
+            this.typeBuilder.addDynamicProperty(name, propertyType, delegate, ReadWriteType.ReadWrite);
+            return this;
+        }
+
+        @Override
+        public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, Class<? extends PropertyDelegate> delegate) {
+            Object defaultValue = BeanUtils.getDefaultValue(propertyType);
+            return this.dynamicReadOnlyProperty(name, propertyType, new SimplePropertyDelegate(defaultValue));
+        }
+
+        @Override
+        public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, BindInfo<? extends PropertyDelegate> delegate) {
+            return this.dynamicReadOnlyProperty(name, propertyType, getProvider(delegate));
+        }
+
+        @Override
+        public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, Supplier<? extends PropertyDelegate> delegate) {
+            this.typeBuilder.addDynamicProperty(name, propertyType, delegate, ReadWriteType.ReadOnly);
             return this;
         }
     }

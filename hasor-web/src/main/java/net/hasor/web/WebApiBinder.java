@@ -36,7 +36,10 @@ import java.io.Reader;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -171,26 +174,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
     public FilterBindingBuilder<Filter> jeeFilterRegex(String[] regexes);
 
-    /**
-     * 注册一个 Web Listener
-     * @see javax.servlet.ServletContextListener
-     * @see javax.servlet.http.HttpSessionListener
-     * @see javax.servlet.ServletRequestListener
-     * @see #bindSpiListener(Class, EventListener)
-     */
-    public default <T extends EventListener> void bindSpiListener(Class<T> spiType, T listener) {
-        this.bindSpiListener(spiType, (Supplier<T>) () -> listener);
-    }
-
-    /**
-     * 注册一个 Web Listener
-     * @see javax.servlet.ServletContextListener
-     * @see javax.servlet.http.HttpSessionListener
-     * @see javax.servlet.ServletRequestListener
-     * @see #bindSpiListener(Class, Supplier)
-     */
-    public <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<T> listener);
-
     public void addMimeType(String type, String mimeType);
 
     public default void loadMimeType(String resource) throws IOException {
@@ -211,7 +194,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     public void loadMimeType(Reader reader) throws IOException;
 
-    /**负责配置Filter。*/
+    /** 负责配置Filter */
     public static interface FilterBindingBuilder<T> {
         public default void through(Class<? extends T> filterKey) {
             this.through(0, filterKey, null);

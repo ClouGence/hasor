@@ -16,6 +16,8 @@
 package net.hasor.core.info;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
+import net.hasor.core.PropertyDelegate;
+import net.hasor.core.aop.ReadWriteType;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.reflect.ConstructorUtils;
@@ -32,15 +34,17 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderAdapter<T> {
-    private Map<Integer, ParamInfo> constructorParams;
-    private Map<String, ParamInfo>  injectProperty;
-    private boolean                 overwriteAnnotation;
-    private String                  initMethod;
-    private String                  destroyMethod;
+    private final Map<Integer, ParamInfo>              constructorParams;
+    private final Map<String, ParamInfo>               injectProperty;
+    private final Map<String, DelegateBindInfoAdapter> propertyDelegate;
+    private       boolean                              overwriteAnnotation;
+    private       String                               initMethod;
+    private       String                               destroyMethod;
 
     public DefaultBindInfoProviderAdapter() {
         this.injectProperty = new HashMap<>();
         this.constructorParams = new HashMap<>();
+        this.propertyDelegate = new HashMap<>();
     }
 
     public DefaultBindInfoProviderAdapter(Class<T> bindingType) {
@@ -77,6 +81,20 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         Objects.requireNonNull(valueInfo, "valueInfo parameter is null.");
         Class<?> propertyType = Objects.requireNonNull(lookupPropertyType(property), "not found '" + property + "' property.");
         this.injectProperty.put(property, new ParamInfo(propertyType, valueInfo));
+    }
+
+    @Override
+    public void addDynamicProperty(String name, Class<?> propertyType, Supplier<? extends PropertyDelegate> delegate, ReadWriteType rwType) {
+        if (StringUtils.isBlank(name)) {
+            throw new IllegalArgumentException("args propertyName is null.");
+        }
+        if (propertyType == null) {
+            throw new IllegalArgumentException("args propertyType is null.");
+        }
+        if (delegate == null) {
+            throw new IllegalArgumentException("args delegate is null.");
+        }
+        this.propertyDelegate.put(name, new DelegateBindInfoAdapter(aClass -> true, name, propertyType, delegate, rwType));
     }
 
     private Class<?> lookupPropertyType(String propertyName) {
@@ -121,8 +139,8 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     }
 
     /**获得需要IoC的属性列表*/
-    public Map<String, Supplier<?>> getPropertys(AppContext appContext) {
-        Map<String, Supplier<?>> propertys = new HashMap<>();
+    public Map<String, Supplier<?>> getPropertyMap(AppContext appContext) {
+        Map<String, Supplier<?>> PropertyMap = new HashMap<>();
         for (Entry<String, ParamInfo> ent : injectProperty.entrySet()) {
             String propKey = ent.getKey();
             ParamInfo propVal = ent.getValue();
@@ -130,12 +148,16 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
                 continue;
             }
             if (propVal.useProvider) {
-                propertys.put(propKey, propVal.valueProvider);
+                PropertyMap.put(propKey, propVal.valueProvider);
             } else {
-                propertys.put(propKey, appContext.getProvider(propVal.valueInfo));
+                PropertyMap.put(propKey, appContext.getProvider(propVal.valueInfo));
             }
         }
-        return propertys;
+        return PropertyMap;
+    }
+
+    public Map<String, DelegateBindInfoAdapter> getPropertyDelegate() {
+        return this.propertyDelegate;
     }
 
     @Override

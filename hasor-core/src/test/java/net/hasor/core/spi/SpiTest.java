@@ -15,7 +15,9 @@
  */
 package net.hasor.core.spi;
 import net.hasor.core.*;
+import net.hasor.test.core.basic.pojo.SampleBean;
 import net.hasor.test.core.event.AppContextListener;
+import net.hasor.test.core.spi.SpiDemo;
 import net.hasor.test.core.spi.TestSpi;
 import org.junit.Test;
 
@@ -185,5 +187,18 @@ public class SpiTest {
         assert call.contains(spiResultA);
         assert !call.contains(spiResultB);
         assert resultSpi.equals(spiResultA);
+    }
+
+    @Test
+    public void spiAnnoTest() {
+        final SpiDemo spiDemo = new SpiDemo();
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            apiBinder.bindType(SpiDemo.class).toInstance(spiDemo);
+            apiBinder.loadSpiListener(SpiDemo.class);
+        });
+        //
+        SampleBean sampleBean = appContext.getInstance(SampleBean.class);
+        assert spiDemo.getBindInfo() == null;
+        assert spiDemo.getNewObject() == sampleBean;
     }
 }

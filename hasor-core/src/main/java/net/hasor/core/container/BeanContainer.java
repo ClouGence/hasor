@@ -18,9 +18,11 @@ import net.hasor.core.EventListener;
 import net.hasor.core.*;
 import net.hasor.core.aop.AopClassConfig;
 import net.hasor.core.aop.AsmTools;
+import net.hasor.core.aop.ReadWriteType;
 import net.hasor.core.binder.BindInfoBuilderFactory;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
+import net.hasor.core.info.DelegateBindInfoAdapter;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.provider.SingleProvider;
 import net.hasor.core.scope.PrototypeScope;
@@ -295,7 +297,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
             targetSupplier = () -> {
                 //
                 // .Aop 代理
-                Class<T> proxyType = proxyType(targetType, appContext);
+                Class<T> proxyType = proxyType(targetType, appContext, defBinder);
                 //
                 // .重定向构造方法
                 Constructor<T> tConstructor = (Constructor<T>) referConstructor.get();
@@ -344,7 +346,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
     /**
      * 生成动态代理类型
      */
-    private <T> Class<T> proxyType(Class<T> targetType, AppContext appContext) {
+    private <T> Class<T> proxyType(Class<T> targetType, AppContext appContext, DefaultBindInfoProviderAdapter<?> defBinder) {
         // .@AopIgnore排除在外
         ClassLoader rootLoader = Objects.requireNonNull(appContext.getClassLoader());
         if (testAopIgnore(targetType, rootLoader)) {
@@ -358,19 +360,41 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
                     Supplier<? extends AopBindInfoAdapter> bindInfo = providerOnlyBindInfo(info, appContext);
                     return bindInfo.get();
                 }).collect(Collectors.toList());
+        // .准备动态属性
+        Map<String, DelegateBindInfoAdapter> finalDelegate = new HashMap<>();
+        List<BindInfo<DelegateBindInfoAdapter>> delegateBindList = this.bindInfoContainer.findBindInfoList(DelegateBindInfoAdapter.class);
+        delegateBindList.stream().map((Function<BindInfo<DelegateBindInfoAdapter>, DelegateBindInfoAdapter>) info -> {
+            Supplier<? extends DelegateBindInfoAdapter> bindInfo = providerOnlyBindInfo(info, appContext);
+            return bindInfo.get();
+        }).forEach(delegateBindInfoAdapter -> {
+            finalDelegate.put(delegateBindInfoAdapter.getName(), delegateBindInfoAdapter);
+        });
+        if (defBinder != null) {
+            Map<String, DelegateBindInfoAdapter> delegate = defBinder.getPropertyDelegate();
+            if (delegate != null) {
+                finalDelegate.putAll(delegate);// Info 级别的优先
+            }
+        }
+        Collection<DelegateBindInfoAdapter> delegateList = finalDelegate.values();
         //
         // .动态代理，需要满足三个条件（1.类型必须支持Aop、2.没有被@AopIgnore排除在外、3.具有至少一个有效的拦截器）
         Class<?> newType = targetType;
-        if (AsmTools.isSupport(targetType) && !aopList.isEmpty()) {
+        if (AsmTools.isSupport(targetType) && (!aopList.isEmpty() || !delegateList.isEmpty())) {
             AopClassConfig engine = this.classEngineMap.get(targetType);
             if (engine == null) {
                 engine = new AopClassConfig(targetType, rootLoader);
                 for (AopBindInfoAdapter aop : aopList) {
-                    if (!aop.getMatcherClass().test(targetType)) {
-                        continue;
+                    if (aop.getMatcherClass().test(targetType)) {
+                        engine.addAopInterceptor(aop.getMatcherMethod(), aop);
                     }
-                    engine.addAopInterceptor(aop.getMatcherMethod(), aop);
                 }
+                for (DelegateBindInfoAdapter delegate : delegateList) {
+                    if (delegate.getMatcherClass().test(targetType)) {
+                        ReadWriteType readWriteType = delegate.getRwType();
+                        engine.addProperty(delegate.getName(), delegate.getType(), delegate, readWriteType);
+                    }
+                }
+                //
                 engine = this.classEngineMap.putIfAbsent(targetType, engine);
                 if (engine == null) {
                     engine = this.classEngineMap.get(targetType);
@@ -434,7 +458,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
             DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
             isOverwriteAnnotation = defBinder.isOverwriteAnnotation();
             //
-            Map<String, Supplier<?>> propMaps = defBinder.getPropertys(appContext);
+            Map<String, Supplier<?>> propMaps = defBinder.getPropertyMap(appContext);
             for (Map.Entry<String, Supplier<?>> propItem : propMaps.entrySet()) {
                 String propertyName = propItem.getKey();
                 Class<?> propertyType = BeanUtils.getPropertyOrFieldType(targetType, propertyName);

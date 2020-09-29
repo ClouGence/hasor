@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
-import javax.inject.Qualifier;
-import java.lang.annotation.*;
-import java.util.EventListener;
-
+package net.hasor.core.aop;
 /**
- * 在一个实现类上标记该注解，用来表示实现了哪些 SPI
- * @version : 2020年5月21日
- * @author 赵永春 (zyc@byshell.org)
+ * 属性的读写特性
+ * @version : 2020-09-29
+ * @author 赵永春 (zyc@hasor.net)
  */
-@Qualifier
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Spi {
-    /** 指出实现了哪些 SPI，如果不设置值。那么会自动抽取实现的接口并将符合 SPI 规范的接口注册为 Hasor SPI。*/
-    public Class<? extends EventListener>[] value() default {};
+public enum ReadWriteType {
+    /** 只读 */
+    ReadOnly,
+    /** 读写 */
+    ReadWrite
 }
