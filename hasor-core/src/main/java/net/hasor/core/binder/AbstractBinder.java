@@ -19,6 +19,7 @@ import net.hasor.core.aop.ReadWriteType;
 import net.hasor.core.aop.SimplePropertyDelegate;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.info.AopBindInfoAdapter;
+import net.hasor.core.info.DelegateBindInfoAdapter;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.SpiJudge;
 import net.hasor.utils.BeanUtils;
@@ -158,6 +159,37 @@ public abstract class AbstractBinder implements ApiBinder {
         AopBindInfoAdapter aopAdapter = new AopBindInfoAdapter(matcherClass, matcherMethod, interceptor);
         aopAdapter = HasorUtils.autoAware(this.getEnvironment(), aopAdapter);
         this.bindType(AopBindInfoAdapter.class).uniqueName().toInstance(aopAdapter);
+    }
+
+    @Override
+    public LinkedBindingBuilder<PropertyDelegate> dynamicProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType) {
+        return _dynamicProperty(matcherClass, propertyName, propertyType, ReadWriteType.ReadWrite);
+    }
+
+    @Override
+    public LinkedBindingBuilder<PropertyDelegate> dynamicReadOnlyProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType) {
+        return _dynamicProperty(matcherClass, propertyName, propertyType, ReadWriteType.ReadOnly);
+    }
+
+    private LinkedBindingBuilder<PropertyDelegate> _dynamicProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType, ReadWriteType rwType) {
+        if (matcherClass == null) {
+            throw new IllegalArgumentException("args matcherClass is null.");
+        }
+        if (StringUtils.isBlank(propertyName)) {
+            throw new IllegalArgumentException("args propertyName is null.");
+        }
+        if (propertyType == null) {
+            throw new IllegalArgumentException("args propertyType is null.");
+        }
+        //
+        LinkedBindingBuilder<PropertyDelegate> bindingBuilder = bindType(PropertyDelegate.class).uniqueName();
+        BindInfo<PropertyDelegate> bindInfo = bindingBuilder.toInfo();
+        Object defaultValue = BeanUtils.getDefaultValue(propertyType);
+        bindingBuilder.toInstance(new SimplePropertyDelegate(defaultValue));
+        //
+        DelegateBindInfoAdapter adapter = new DelegateBindInfoAdapter(matcherClass, propertyName, propertyType, getProvider(bindInfo), rwType);
+        bindType(DelegateBindInfoAdapter.class).toInstance(adapter);
+        return bindingBuilder;
     }
 
     @Override

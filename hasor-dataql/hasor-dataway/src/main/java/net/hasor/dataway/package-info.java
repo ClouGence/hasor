@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 /**
- * RSF 分布式RPC框架。
+ * 接口配置服务。
  */
 @IgnoreProxy
-package net.hasor.rsf;
+package net.hasor.dataway;
 import net.hasor.core.IgnoreProxy;

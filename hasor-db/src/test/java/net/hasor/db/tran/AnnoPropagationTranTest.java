@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.tran;
-import net.hasor.core.AopIgnore;
+import net.hasor.core.IgnoreProxy;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Inject;
@@ -34,7 +34,7 @@ import java.sql.SQLException;
  * @version : 2015年11月10日
  * @author 赵永春 (zyc@hasor.net)
  */
-@AopIgnore(ignore = false)
+@IgnoreProxy(ignore = false)
 public class AnnoPropagationTranTest extends AbstractDbTest {
     @Inject
     private JdbcTemplate jdbcTemplate;

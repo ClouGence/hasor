@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 /**
- * RSF 分布式RPC框架。
+ * Hasor 和 Spring 的整合框架。
  */
 @IgnoreProxy
-package net.hasor.rsf;
+package net.hasor.spring;
 import net.hasor.core.IgnoreProxy;

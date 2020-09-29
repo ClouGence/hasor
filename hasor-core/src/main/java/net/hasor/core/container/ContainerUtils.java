@@ -248,7 +248,7 @@ public class ContainerUtils {
     }
 
     private static Boolean testAopIgnore(Class<?> targetType, boolean isRootClass) {
-        AopIgnore aopIgnore = targetType.getAnnotation(AopIgnore.class);
+        IgnoreProxy aopIgnore = targetType.getAnnotation(IgnoreProxy.class);
         if (aopIgnore != null) {
             // 1.被测试的类标记了@AopIgnore
             // 2.继承的父类中标记了AopIgnore 注解并且 遗传属性genetic 的值为 true。
@@ -310,7 +310,7 @@ public class ContainerUtils {
                     classReader.accept(new ClassVisitor(Opcodes.ASM7) {
                         @Override
                         public AnnotationVisitor visitAnnotation(final String desc, final boolean visible) {
-                            if (!AsmTools.toAsmType(AopIgnore.class).equals(desc)) {
+                            if (!AsmTools.toAsmType(IgnoreProxy.class).equals(desc)) {
                                 return super.visitAnnotation(desc, visible);
                             }
                             return new AopIgnoreFinderVisitor(Opcodes.ASM7, super.visitAnnotation(desc, visible));

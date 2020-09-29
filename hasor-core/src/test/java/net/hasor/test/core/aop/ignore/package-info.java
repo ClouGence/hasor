@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /** 默认所有子包都忽略 */
-@Noise @AopIgnore()
+@Noise @IgnoreProxy()
 package net.hasor.test.core.aop.ignore;
-import net.hasor.core.AopIgnore;
+import net.hasor.core.IgnoreProxy;
 import net.hasor.test.core.basic.inject.jsr330.Noise;

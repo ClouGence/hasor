@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 /**
- * RSF 分布式RPC框架。
+ * DataQL 扩展函数包。
  */
 @IgnoreProxy
-package net.hasor.rsf;
+package net.hasor.dataql.fx;
 import net.hasor.core.IgnoreProxy;

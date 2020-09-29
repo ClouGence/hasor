@@ -157,6 +157,24 @@ public interface ApiBinder {
      */
     public void bindInterceptor(Predicate<Class<?>> matcherClass, Predicate<Method> matcherMethod, MethodInterceptor interceptor);
 
+    /**
+     * 匹配类，将符合条件的 Bean 新增一个属性，该方法会生成属性对应的 get/set 方法。
+     * @param matcherClass 属性名
+     * @param propertyName 属性名
+     * @param propertyType 属性类型
+     * @return 返回 - {@link LinkedBindingBuilder}。
+     */
+    public LinkedBindingBuilder<PropertyDelegate> dynamicProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType);
+
+    /**
+     * 匹配类，将符合条件的 Bean 新增一个只读属性，该方法会生成属性对应的 get 方法。
+     * @param matcherClass 属性名
+     * @param propertyName 属性名
+     * @param propertyType 属性类型
+     * @return 返回 - {@link LinkedBindingBuilder}。
+     */
+    public LinkedBindingBuilder<PropertyDelegate> dynamicReadOnlyProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType);
+
     /*--------------------------------------------------------------------------------------Finds*/
 
     /** 根据ID获取{@link BindInfo} */
@@ -572,7 +590,7 @@ public interface ApiBinder {
          * 动态的给 Bean 新增一个属性，该方法会生成属性对应的 get/set 方法。
          * @param name 属性名
          * @param propertyType 属性类型
-         * @return 返回 - {@link InjectPropertyBindingBuilder}。
+         * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
         public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType);
 
@@ -581,7 +599,7 @@ public interface ApiBinder {
          * @param name 属性名
          * @param propertyType 属性类型
          * @param delegate 属性的委托
-         * @return 返回 - {@link InjectPropertyBindingBuilder}。
+         * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
         public default TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, PropertyDelegate delegate) {
             return dynamicProperty(name, propertyType, InstanceProvider.of(delegate));
@@ -592,7 +610,7 @@ public interface ApiBinder {
          * @param name 属性名
          * @param propertyType 属性类型
          * @param delegate 属性的委托
-         * @return 返回 - {@link InjectPropertyBindingBuilder}。
+         * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
         public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, Supplier<? extends PropertyDelegate> delegate);
 
@@ -601,7 +619,7 @@ public interface ApiBinder {
          * @param name 属性名
          * @param propertyType 属性类型
          * @param delegate 属性的委托
-         * @return 返回 - {@link InjectPropertyBindingBuilder}。
+         * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
         public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, Class<? extends PropertyDelegate> delegate);
 
@@ -610,7 +628,7 @@ public interface ApiBinder {
          * @param name 属性名
          * @param propertyType 属性类型
          * @param delegate 属性的委托
-         * @return 返回 - {@link InjectPropertyBindingBuilder}。
+         * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
         public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, BindInfo<? extends PropertyDelegate> delegate);
 
@@ -619,7 +637,7 @@ public interface ApiBinder {
          * @param name 属性名
          * @param propertyType 属性类型
          * @param delegate 属性的委托
-         * @return 返回 - {@link InjectPropertyBindingBuilder}。
+         * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
         public default TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, PropertyDelegate delegate) {
             return dynamicReadOnlyProperty(name, propertyType, InstanceProvider.of(delegate));
@@ -630,7 +648,7 @@ public interface ApiBinder {
          * @param name 属性名
          * @param propertyType 属性类型
          * @param delegate 属性的委托
-         * @return 返回 - {@link InjectPropertyBindingBuilder}。
+         * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
         public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, Supplier<? extends PropertyDelegate> delegate);
 
@@ -639,7 +657,7 @@ public interface ApiBinder {
          * @param name 属性名
          * @param propertyType 属性类型
          * @param delegate 属性的委托
-         * @return 返回 - {@link InjectPropertyBindingBuilder}。
+         * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
         public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, Class<? extends PropertyDelegate> delegate);
 
@@ -648,7 +666,7 @@ public interface ApiBinder {
          * @param name 属性名
          * @param propertyType 属性类型
          * @param delegate 属性的委托
-         * @return 返回 - {@link InjectPropertyBindingBuilder}。
+         * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
         public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, BindInfo<? extends PropertyDelegate> delegate);
     }

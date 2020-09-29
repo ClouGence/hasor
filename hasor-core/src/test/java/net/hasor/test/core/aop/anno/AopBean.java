@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.test.core.aop.anno;
-import net.hasor.core.AopIgnore;
+import net.hasor.core.IgnoreProxy;
 import net.hasor.core.Settings;
 import net.hasor.core.exts.aop.Aop;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Aop(ClassAnnoInterceptor.class)
-@AopIgnore(ignore = false)
+@IgnoreProxy(ignore = false)
 public class AopBean {
     public void doInit(List<String> event) {
         event.add("DO");

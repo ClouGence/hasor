@@ -16,6 +16,6 @@
 /**
  * hasor-web 开发框架。
  */
-@AopIgnore
+@IgnoreProxy
 package net.hasor.web;
-import net.hasor.core.AopIgnore;
+import net.hasor.core.IgnoreProxy;

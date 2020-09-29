@@ -80,4 +80,42 @@ public class PropertyDelegateTest {
         delegate.setValue(321.321);
         assert JSON.toJSONString(pojoBean, SerializerFeature.UseSingleQuotes).equals("{'dynamicName':321.321}");
     }
+
+    @Test
+    public void propertyTest4() {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            apiBinder.dynamicProperty(t -> true, "dynamicName", String.class);
+        });
+        PojoBean pojoBean = appContext.getInstance(PojoBean.class);
+        SampleBean sampleBean = appContext.getInstance(SampleBean.class);
+        //
+        assert !BeanUtils.hasPropertyOrField("dynamicName", SampleBean.class);
+        assert BeanUtils.hasPropertyOrField("dynamicName", sampleBean.getClass());
+        assert !BeanUtils.hasPropertyOrField("dynamicName", PojoBean.class);
+        assert BeanUtils.hasPropertyOrField("dynamicName", pojoBean.getClass());
+        //
+        BeanUtils.writeProperty(pojoBean, "dynamicName", "abc");
+        assert JSON.toJSONString(pojoBean, SerializerFeature.UseSingleQuotes).equals("{'dynamicName':'abc'}");
+        BeanUtils.writeProperty(pojoBean, "dynamicName", "def");
+        assert JSON.toJSONString(pojoBean, SerializerFeature.UseSingleQuotes).equals("{'dynamicName':'def'}");
+    }
+
+    @Test
+    public void propertyTest5() {
+        SimplePropertyDelegate delegate = new SimplePropertyDelegate(123.123d);
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            apiBinder.dynamicReadOnlyProperty(t -> true, "dynamicName", Double.TYPE).toInstance(delegate);
+        });
+        PojoBean pojoBean = appContext.getInstance(PojoBean.class);
+        //
+        assert BeanUtils.canReadPropertyOrField("dynamicName", pojoBean.getClass());
+        assert !BeanUtils.canWritePropertyOrField("dynamicName", pojoBean.getClass());
+        //
+        // 没有写属性
+        BeanUtils.writeProperty(pojoBean, "dynamicName", 12);
+        assert JSON.toJSONString(pojoBean, SerializerFeature.UseSingleQuotes).equals("{'dynamicName':123.123}");
+        // 更改 delegate 值被修改
+        delegate.setValue(321.321);
+        assert JSON.toJSONString(pojoBean, SerializerFeature.UseSingleQuotes).equals("{'dynamicName':321.321}");
+    }
 }

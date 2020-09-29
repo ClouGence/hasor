@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /** 这个包不忽略 */
-@Noise @AopIgnore(ignore = false, propagate = false)
+@Noise @IgnoreProxy(ignore = false, propagate = false)
 package net.hasor.test.core.aop.ignore.level;
-import net.hasor.core.AopIgnore;
+import net.hasor.core.IgnoreProxy;
 import net.hasor.test.core.basic.inject.jsr330.Noise;

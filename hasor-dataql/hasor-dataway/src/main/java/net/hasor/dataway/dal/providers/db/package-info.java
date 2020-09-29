@@ -16,6 +16,6 @@
 /**
  * 数据库存储层访问 ApiDataAccessLayer 接口实现。
  */
-@AopIgnore
+@IgnoreProxy
 package net.hasor.dataway.dal.providers.db;
-import net.hasor.core.AopIgnore;
+import net.hasor.core.IgnoreProxy;

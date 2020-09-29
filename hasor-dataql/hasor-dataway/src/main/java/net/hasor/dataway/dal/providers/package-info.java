@@ -16,6 +16,4 @@
 /**
  * 基于 ApiDataAccessLayer 接口的各种存储实现。
  */
-@AopIgnore
 package net.hasor.dataway.dal.providers;
-import net.hasor.core.AopIgnore;
