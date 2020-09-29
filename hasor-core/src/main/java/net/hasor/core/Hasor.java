@@ -114,29 +114,35 @@ public final class Hasor extends HashMap<String, String> {
         return this;
     }
 
+    /** 添加 Hasor 环境变量 */
     public Hasor addVariable(String key, String value) {
         this.put(key, value);
         return this;
     }
 
+    /** 添加 Hasor 环境变量 */
     public Hasor addVariableMap(Map<String, String> mapData) {
         this.putAll(mapData);
         return this;
     }
 
+    /** 从文件中加载环境变量到 Hasor 框架中 */
     public Hasor loadVariables(File resourceName) throws IOException {
         return loadVariables(new FileReader(resourceName));
     }
 
+    /** 从资源文件中加载环境变量到 Hasor 框架中 */
     public Hasor loadVariables(String resourceName) throws IOException {
         InputStream inStream = ResourcesUtils.getResourceAsStream(resourceName);
         return loadVariables(new InputStreamReader(inStream, Settings.DefaultCharset));
     }
 
+    /** 从资源文件中加载环境变量到 Hasor 框架中 */
     public Hasor loadVariables(String encodeing, InputStream inStream) throws IOException {
         return loadVariables(new InputStreamReader(inStream, encodeing));
     }
 
+    /** 从属性对象中加载环境变量到 Hasor 框架中 */
     public Hasor loadVariables(Properties properties) {
         if (properties != null) {
             for (Object key : properties.keySet()) {
@@ -146,6 +152,7 @@ public final class Hasor extends HashMap<String, String> {
         return this;
     }
 
+    /** 从资源文件中加载环境变量到 Hasor 框架中 */
     public Hasor loadVariables(Reader propertiesReader) throws IOException {
         Properties properties = new Properties();
         properties.load(propertiesReader);

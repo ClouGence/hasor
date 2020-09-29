@@ -73,10 +73,10 @@ public interface Scope {
         Supplier<T> nextSupplier = provider;
         if (start < end) {
             for (int i = start; i < end; i++) {
-                Scope curentScope = scopeChain[end - i - 1];
+                Scope currentScope = scopeChain[end - i - 1];
                 Supplier<T> finalNextSupplier = nextSupplier;
                 nextSupplier = () -> {
-                    return curentScope.scope(key, finalNextSupplier).get();
+                    return currentScope.scope(key, finalNextSupplier).get();
                 };
             }
         }

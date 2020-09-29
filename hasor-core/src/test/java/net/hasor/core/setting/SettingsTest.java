@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.settings;
+package net.hasor.core.setting;
 import net.hasor.core.Settings;
-import net.hasor.core.setting.InputStreamSettings;
-import net.hasor.core.setting.SettingsWrap;
-import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.test.core.enums.SelectEnum;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -291,23 +288,26 @@ public class SettingsTest {
         settings.addSetting("charValue", ' ');
         assert settings.getChar("charValue") == ' ';
     }
-    //
-    //    @Test
-    //    public void valueTest4() throws Exception {
-    //        StandardContextSettings settings = new StandardContextSettings("/net_hasor_core_settings/value-config.xml");
-    //        //
-    //        assert "%JAVA_HOME%/bin/javac.exe".equals(settings.getString("valueGroup.evalValue"));
-    //        settings.resetValues(new UpdateValue() {
-    //            @Override
-    //            public void update(SettingValue oldValue, Settings context) {
-    //                Object defaultVar = oldValue.getDefaultVar();
-    //                if (defaultVar instanceof XmlNode) {
-    //                    if (((XmlNode) defaultVar).getName().equals("valueGroup.evalValue")) {
-    //                        oldValue.setDefaultVar("/root/java8/bin/javac.exe");
-    //                    }
-    //                }
-    //            }
-    //        });
-    //        assert "/root/java8/bin/javac.exe".equals(settings.getString("valueGroup.evalValue"));
-    //    }
+
+    @Test
+    public void valueTest5() throws Exception {
+        String data = "" + //
+                "<?xml version='1.0' encoding='UTF-8'?>\n" +//
+                "<config xmlns='http://www.hasor.net/sechma/main'>\n" +//
+                "    <hasor debug='false'>\n" + //
+                "        <debug>true</debug>\n" +//
+                "    </hasor>\n" +//
+                "</config>";
+        //
+        InputStreamSettings settings = new InputStreamSettings();
+        settings.addReader(data, StreamType.Xml);
+        settings.loadSettings();
+        //
+        Boolean aBoolean = settings.getBoolean("hasor.debug");
+        Boolean[] aBooleanArray = settings.getBooleanArray("hasor.debug");
+        assert aBoolean;
+        assert aBooleanArray.length == 2;
+        assert !aBooleanArray[0];
+        assert aBooleanArray[1];
+    }
 }

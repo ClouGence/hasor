@@ -25,7 +25,9 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 /**
@@ -111,6 +113,7 @@ public class StandardContextSettings extends InputStreamSettings {
     protected void readyLoad() throws IOException {
         super.readyLoad();
         //1.装载所有 xxx-hconfig.xml
+        Map<String, URL> toLoading = new HashMap<>();
         List<URL> schemaUrlList = ResourcesUtils.getResources(SchemaName);
         for (URL schemaUrl : schemaUrlList) {
             InputStream schemaStream = ResourcesUtils.getResourceAsStream(schemaUrl);
@@ -125,13 +128,18 @@ public class StandardContextSettings extends InputStreamSettings {
                     continue;
                 }
                 //
-                try (InputStream stream = ResourcesUtils.getResourceAsStream(schema)) {
-                    if (stream != null) {
-                        logger.info("addConfig '{}' in '{}'", schema, schemaUrl.toString());
-                        _addStream(ResourcesUtils.getResource(schema));
-                    } else {
-                        logger.error("cannot be read '{}' in '{}'", schema, schemaUrl.toString());
-                    }
+                toLoading.put(schema, schemaUrl);
+            }
+        }
+        for (Map.Entry<String, URL> entry : toLoading.entrySet()) {
+            String schema = entry.getKey();
+            URL schemaUrl = entry.getValue();
+            try (InputStream stream = ResourcesUtils.getResourceAsStream(schema)) {
+                if (stream != null) {
+                    logger.info("addConfig '{}' in '{}'", schema, schemaUrl.toString());
+                    _addStream(ResourcesUtils.getResource(schema));
+                } else {
+                    logger.error("cannot be read '{}' in '{}'", schema, schemaUrl.toString());
                 }
             }
         }

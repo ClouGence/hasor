@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.settings;
+package net.hasor.core.setting;
 import net.hasor.core.setting.xml.DefaultXmlNode;
 import org.junit.Test;
 import org.slf4j.Logger;

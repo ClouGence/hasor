@@ -17,7 +17,7 @@
         <HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP>HASOR_DATAWAY</HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP>
         <!--      INDEX_DIRECTORY 中存储的是 shard 编号，该配置用来配置每个 shard 最多可以保存多少条记录 -->
         <HASOR_DATAQL_DATAWAY_NACOSDAL_SHARD_MAX>2000</HASOR_DATAQL_DATAWAY_NACOSDAL_SHARD_MAX>
-        <!--      是否启用历史记录功能，每个历史数据都会被永久保存在 nacos 中，直至触发 shard optimize。  -->
+        <!--      是否启用历史记录功能，每个历史数据都会被永久保存在 nacos 中，直至触发 shard optimize -->
         <HASOR_DATAQL_DATAWAY_NACOSDAL_HISTORY>true</HASOR_DATAQL_DATAWAY_NACOSDAL_HISTORY>
     </hasor.environmentVar>
 
