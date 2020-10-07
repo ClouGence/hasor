@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.container;
+
 import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.spi.SpiJudge;
@@ -31,11 +32,12 @@ import java.util.function.Supplier;
 
 /**
  * 服务注册器
- * @version : 2014年11月12日
+ *
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2014年11月12日
  */
 public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiBinder {
-    private final ApiBinder      apiBinder;
+    private final ApiBinder apiBinder;
     private final RsfEnvironment rsfEnvironment;
 
     protected InnerRsfApiBinder(ApiBinder apiBinder, RsfEnvironment rsfEnvironment) {
@@ -118,6 +120,16 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
     @Override
     public void bindInterceptor(Predicate<Class<?>> matcherClass, Predicate<Method> matcherMethod, MethodInterceptor interceptor) {
         this.apiBinder.bindInterceptor(matcherClass, matcherMethod, interceptor);
+    }
+
+    @Override
+    public LinkedBindingBuilder<PropertyDelegate> dynamicProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType) {
+        return this.apiBinder.dynamicProperty(matcherClass, propertyName, propertyType);
+    }
+
+    @Override
+    public LinkedBindingBuilder<PropertyDelegate> dynamicReadOnlyProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType) {
+        return this.apiBinder.dynamicReadOnlyProperty(matcherClass, propertyName, propertyType);
     }
 
     @Override
