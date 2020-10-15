@@ -29,10 +29,8 @@ import net.hasor.dataql.fx.db.LookupDataSourceListener;
 import net.hasor.dataql.fx.db.fxquery.DefaultFxQuery;
 import net.hasor.dataql.fx.db.fxquery.FxQuery;
 import net.hasor.dataql.fx.db.runsql.dialect.SqlPageDialect;
-import net.hasor.db.jdbc.BatchPreparedStatementSetter;
-import net.hasor.db.jdbc.PreparedStatementCallback;
-import net.hasor.db.jdbc.PreparedStatementSetter;
-import net.hasor.db.jdbc.ResultSetExtractor;
+import net.hasor.db.JdbcUtils;
+import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.core.ArgPreparedStatementSetter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.RowMapperResultSetExtractor;
@@ -212,19 +210,28 @@ public class SqlFragment implements FragmentProcess {
     }
 
     /** 分页模式 */
-    protected Object usePageFragment(FxQuery fxSql, Hints hint, Map<String, Object> paramMap) {
-        String sqlDialect = this.appContext.getEnvironment().getVariable("HASOR_DATAQL_FX_PAGE_DIALECT");
-        sqlDialect = hint.getOrDefault(FRAGMENT_SQL_PAGE_DIALECT.name(), sqlDialect).toString();
+    protected Object usePageFragment(FxQuery fxSql, Hints hints, Map<String, Object> paramMap) throws SQLException {
+        // .优先从 hint 中取方言，取不到在自动推断
+        String sqlDialect = hints.getOrDefault(FRAGMENT_SQL_PAGE_DIALECT.name(), "").toString();
         if (StringUtils.isBlank(sqlDialect)) {
-            throw new IllegalArgumentException("Query dialect missing.");
+            String useDataSource = hints.getOrDefault(FRAGMENT_SQL_DATA_SOURCE.name(), "").toString();
+            sqlDialect = getJdbcTemplate(useDataSource).execute((ConnectionCallback<String>) con -> {
+                String jdbcUrl = con.getMetaData().getURL();
+                String jdbcDriverName = con.getMetaData().getDriverName();
+                return JdbcUtils.getDbType(jdbcUrl, jdbcDriverName);
+            });
+            if (StringUtils.isBlank(sqlDialect)) {
+                throw new IllegalArgumentException("Query dialect missing.");
+            }
         }
+        //
         final SqlPageDialect pageDialect = SqlPageDialectRegister.findOrCreate(sqlDialect, this.appContext);
         //        Hints hints,                        // 查询包含的 Hint
         //        FxQuery fxQuery,                    // 查询语句
         //        Map<String, Object> queryParamMap,  // 查询参数
         //        SqlPageDialect pageDialect,         // 分页方言服务
         //        SqlPageQuery pageQuery              // 用于执行分页查询的服务
-        return new SqlPageObject(hint, fxSql, paramMap, pageDialect, this);
+        return new SqlPageObject(hints, fxSql, paramMap, pageDialect, this);
     }
 
     /** 非分页模式 */

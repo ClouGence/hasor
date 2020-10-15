@@ -16,6 +16,7 @@
 package net.hasor.dataql.fx.db.runsql;
 import net.hasor.core.AppContext;
 import net.hasor.dataql.fx.db.runsql.dialect.*;
+import net.hasor.db.JdbcUtils;
 import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 
 import java.util.Map;
@@ -60,23 +61,23 @@ public class SqlPageDialectRegister {
 
     static {
         //
-        registerDialectAlias("postgresql", PostgreSqlDialect.class);
-        registerDialectAlias("h2", PostgreSqlDialect.class);
-        registerDialectAlias("hsqldb", PostgreSqlDialect.class);
-        registerDialectAlias("phoenix", PostgreSqlDialect.class);
+        registerDialectAlias(JdbcUtils.POSTGRESQL, PostgreSqlDialect.class);
+        registerDialectAlias(JdbcUtils.H2, PostgreSqlDialect.class);
+        registerDialectAlias(JdbcUtils.HSQL, PostgreSqlDialect.class);
+        registerDialectAlias(JdbcUtils.PHOENIX, PostgreSqlDialect.class);
         //
-        registerDialectAlias("mysql", MySqlDialect.class);
-        registerDialectAlias("mariadb", MySqlDialect.class);
-        registerDialectAlias("sqlite", MySqlDialect.class);
-        registerDialectAlias("herddb", MySqlDialect.class);
+        registerDialectAlias(JdbcUtils.MYSQL, MySqlDialect.class);
+        registerDialectAlias(JdbcUtils.MARIADB, MySqlDialect.class);
+        registerDialectAlias(JdbcUtils.SQLITE, MySqlDialect.class);
+        registerDialectAlias(JdbcUtils.HERDDB, MySqlDialect.class);
         //
         registerDialectAlias("sqlserver2012", SqlServer2012Dialect.class);
-        registerDialectAlias("derby", SqlServer2012Dialect.class);// Apache Derby
+        registerDialectAlias(JdbcUtils.DERBY, SqlServer2012Dialect.class);// Apache Derby
         //
-        registerDialectAlias("oracle", OracleDialect.class);
+        registerDialectAlias(JdbcUtils.ORACLE, OracleDialect.class);
         //
-        registerDialectAlias("db2", Db2Dialect.class);
+        registerDialectAlias(JdbcUtils.DB2, Db2Dialect.class);
         //
-        registerDialectAlias("informix", InformixDialect.class);
+        registerDialectAlias(JdbcUtils.INFORMIX, InformixDialect.class);
     }
 }

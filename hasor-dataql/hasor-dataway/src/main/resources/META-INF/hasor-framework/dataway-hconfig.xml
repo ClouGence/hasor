@@ -12,6 +12,10 @@
         <!-- 元信息访问层默认使用的是哪种类型，提供者在 hasor.dataway.dataAccessLayer 中定义 -->
         <HASOR_DATAQL_DATAWAY_DAL_TYPE>db</HASOR_DATAQL_DATAWAY_DAL_TYPE>
 
+        <!-- 当使用 db 作为 元信息存储器的时候的配置项目 -->
+        <!--      指定数据库类型，如未能正确识别可以从 JdbcUtils 中选取，否则请留空 -->
+        <HASOR_DATAQL_DATAWAY_DB_DBTYPE></HASOR_DATAQL_DATAWAY_DB_DBTYPE>
+
         <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
         <!--      存储在 nacos 中的数据位于哪个 GROUP -->
         <HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP>HASOR_DATAWAY</HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP>

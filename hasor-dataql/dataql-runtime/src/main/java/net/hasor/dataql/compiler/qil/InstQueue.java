@@ -32,12 +32,12 @@ import static net.hasor.dataql.compiler.qil.Opcodes.LINE;
  * @version : 2017-07-03
  */
 public class InstQueue {
-    private final int                               name;
-    private final AtomicInteger                     labelIndex;
-    private final AtomicInteger                     methodName;
-    private final List<LinkedList<InstructionInfo>> instSet;
-    private final CompilerArguments                 compilerArguments;
-    private       Object[]                          lastLine;
+    private final     int                               name;
+    private final     AtomicInteger                     labelIndex;
+    private final     AtomicInteger                     methodName;
+    private final     List<LinkedList<InstructionInfo>> instSet;
+    private final     CompilerArguments                 compilerArguments;
+    private transient Object[]                          lastLine;
 
     public InstQueue(CompilerArguments compilerArguments) {
         this.name = 0;

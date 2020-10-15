@@ -213,7 +213,7 @@ public class InterfaceReleaseDal extends AbstractDal {
                 return;
             }
             sqlBuffer.append("," + key + " = ? ");
-            updateData.add(fixString(value.toString()));
+            updateData.add(fixString(key, value.toString()));
         });
         sqlBuffer.deleteCharAt(0);
         //
@@ -232,7 +232,7 @@ public class InterfaceReleaseDal extends AbstractDal {
         defToMap(newData).forEach((key, value) -> {
             insertColumnBuffer.append("," + key);
             insertParamsBuffer.append(",?");
-            insertData.add(fixString(value.toString()));
+            insertData.add(fixString(key, value.toString()));
         });
         insertColumnBuffer.deleteCharAt(0);
         insertParamsBuffer.deleteCharAt(0);

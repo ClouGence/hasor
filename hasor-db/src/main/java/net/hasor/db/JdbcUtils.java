@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.dal.providers.db;
+package net.hasor.db;
 /**
  * 工具类来自于 druid-1.1.23.jar
  * com.alibaba.druid.util.JdbcConstants
@@ -44,6 +44,7 @@ public class JdbcUtils {
     public static final String OCEANBASE        = "oceanbase";
     public static final String OCEANBASE_ORACLE = "oceanbase_oracle";
     public static final String INFORMIX         = "informix";
+    public static final String HERDDB           = "herddb";
     /** 阿里云 odps */
     public static final String ODPS             = "odps";
     public static final String TERADATA         = "teradata";
