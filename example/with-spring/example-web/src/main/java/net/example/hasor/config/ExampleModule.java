@@ -6,7 +6,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.DimModule;
 import net.hasor.dataql.fx.db.FxSqlCheckChainSpi;
 import net.hasor.dataway.DatawayService;
-import net.hasor.dataway.dal.providers.db.JdbcUtils;
+import net.hasor.db.JdbcUtils;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.ResultProcessChainSpi;
 import net.hasor.db.JdbcModule;

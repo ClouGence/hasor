@@ -163,15 +163,15 @@ public abstract class AbstractBinder implements ApiBinder {
 
     @Override
     public LinkedBindingBuilder<PropertyDelegate> dynamicProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType) {
-        return _dynamicProperty(matcherClass, propertyName, propertyType, ReadWriteType.ReadWrite);
+        return dynamicProperty(matcherClass, propertyName, propertyType, ReadWriteType.ReadWrite);
     }
 
     @Override
     public LinkedBindingBuilder<PropertyDelegate> dynamicReadOnlyProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType) {
-        return _dynamicProperty(matcherClass, propertyName, propertyType, ReadWriteType.ReadOnly);
+        return dynamicProperty(matcherClass, propertyName, propertyType, ReadWriteType.ReadOnly);
     }
 
-    private LinkedBindingBuilder<PropertyDelegate> _dynamicProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType, ReadWriteType rwType) {
+    private LinkedBindingBuilder<PropertyDelegate> dynamicProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType, ReadWriteType rwType) {
         if (matcherClass == null) {
             throw new IllegalArgumentException("args matcherClass is null.");
         }
