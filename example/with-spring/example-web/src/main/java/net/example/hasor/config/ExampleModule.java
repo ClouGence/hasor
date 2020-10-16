@@ -1,15 +1,13 @@
 package net.example.hasor.config;
-import com.alibaba.nacos.api.annotation.NacosInjected;
-import com.alibaba.nacos.api.config.ConfigService;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.DimModule;
 import net.hasor.dataql.fx.db.FxSqlCheckChainSpi;
 import net.hasor.dataway.DatawayService;
-import net.hasor.db.JdbcUtils;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.ResultProcessChainSpi;
 import net.hasor.db.JdbcModule;
+import net.hasor.db.JdbcUtils;
 import net.hasor.db.Level;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -28,14 +26,14 @@ import java.util.HashMap;
 @Component
 public class ExampleModule implements SpringModule {
     @Autowired
-    private DataSource    dataSource = null;
-    @NacosInjected
-    private ConfigService configService;
+    private DataSource dataSource = null;
+    //    @NacosInjected
+    //    private ConfigService configService;
 
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //apiBinder.bindType(EurekaClient.class).toProvider(getSupplierOfType(apiBinder, EurekaClient.class));
-        apiBinder.bindType(ConfigService.class).toInstance(this.configService);
+        //        apiBinder.bindType(ConfigService.class).toInstance(this.configService);
         //apiBinder.bindType(NamingService.class).toInstance(this.namingService);
         //        try {
         //            String serverAddr = "{serverAddr}";

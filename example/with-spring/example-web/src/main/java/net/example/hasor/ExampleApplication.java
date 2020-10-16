@@ -6,7 +6,7 @@ import net.hasor.spring.boot.WorkAt;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@EnableNacosConfig()
+//@EnableNacosConfig()
 //@EnableDiscoveryClient()
 @EnableHasor()
 @EnableHasorWeb(at = WorkAt.Interceptor)

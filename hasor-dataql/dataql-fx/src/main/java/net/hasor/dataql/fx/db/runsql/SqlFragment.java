@@ -254,7 +254,8 @@ public class SqlFragment implements FragmentProcess {
                 if (ps.execute()) {
                     // -- 第一个结果是个结果集
                     ResultSet resultSet = ps.getResultSet();
-                    resultDataSet.add(RESULT_EXTRACTOR.get().extractData(resultSet));
+                    // -- 结果
+                    resultDataSet.add(dataExtractor(hint, resultSet));
                 } else {
                     // -- 第一个结果是个影响行数
                     resultDataSet.add(ps.getUpdateCount());
@@ -267,11 +268,11 @@ public class SqlFragment implements FragmentProcess {
                         continue;
                     }
                     if (FRAGMENT_SQL_MULTIPLE_QUERIES_LAST.equalsIgnoreCase(keepType)) {
-                        resultDataSet.set(0, RESULT_EXTRACTOR.get().extractData(resultSet));
+                        resultDataSet.set(0, dataExtractor(hint, resultSet));
                         continue;
                     }
                     if (FRAGMENT_SQL_MULTIPLE_QUERIES_ALL.equalsIgnoreCase(keepType)) {
-                        resultDataSet.add(RESULT_EXTRACTOR.get().extractData(resultSet));
+                        resultDataSet.add(dataExtractor(hint, resultSet));
                         continue;
                     }
                 }
@@ -294,11 +295,7 @@ public class SqlFragment implements FragmentProcess {
     /** 执行 SQL */
     protected <T> T executeSQL(boolean batch, String sourceName, String sqlString, Object[] paramArrays, SqlQuery<T> sqlQuery) throws SQLException {
         if (this.spiTrigger.hasSpi(FxSqlCheckChainSpi.class)) {
-            final FxSqlInfo fxSqlInfo = new FxSqlInfo(batch, sourceName, sqlString, paramArrays) {
-                public JdbcTemplate getJdbcTemplate(String sourceName) {
-                    return SqlFragment.this.getJdbcTemplate(sourceName);
-                }
-            };
+            final FxSqlInfo fxSqlInfo = new FxSqlInfo(batch, sourceName, sqlString, paramArrays);
             final AtomicBoolean doExit = new AtomicBoolean(false);
             this.spiTrigger.chainSpi(FxSqlCheckChainSpi.class, (listener, lastResult) -> {
                 if (doExit.get()) {
@@ -328,7 +325,7 @@ public class SqlFragment implements FragmentProcess {
     }
 
     /** 结果转换 */
-    public Object convertResult(Hints hint, List<Map<String, Object>> mapList) {
+    protected Object convertResult(Hints hint, List<Map<String, Object>> mapList) {
         String openPackage = hint.getOrDefault(FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.name(), FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.getDefaultVal()).toString();
         String caseModule = hint.getOrDefault(FxHintNames.FRAGMENT_SQL_COLUMN_CASE.name(), FxHintNames.FRAGMENT_SQL_COLUMN_CASE.getDefaultVal()).toString();
         if (!FRAGMENT_SQL_COLUMN_CASE_DEFAULT.equalsIgnoreCase(caseModule)) {
@@ -451,5 +448,10 @@ public class SqlFragment implements FragmentProcess {
             break;
         }
         return sqlMode;
+    }
+
+    protected Object dataExtractor(Hints hint, ResultSet resultSet) throws SQLException {
+        List<Map<String, Object>> tempData = RESULT_EXTRACTOR.get().extractData(resultSet);
+        return convertResult(hint, tempData);
     }
 }

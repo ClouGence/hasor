@@ -13,7 +13,10 @@
         <HASOR_DATAQL_DATAWAY_DAL_TYPE>db</HASOR_DATAQL_DATAWAY_DAL_TYPE>
 
         <!-- 当使用 db 作为 元信息存储器的时候的配置项目 -->
-        <!--      指定数据库类型，如未能正确识别可以从 JdbcUtils 中选取，否则请留空 -->
+        <!--      指定数据库类型，一般情况下 Dataway 可以自动识别数据库类型。
+                  如未能正确识数据库类型时，会引发 "dataway dbType unknown." 警告日志。
+                  可以通过配置该选项来强制指定数据库类型，配置项值可以参考 JdbcUtils
+        -->
         <HASOR_DATAQL_DATAWAY_DB_DBTYPE></HASOR_DATAQL_DATAWAY_DB_DBTYPE>
 
         <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->

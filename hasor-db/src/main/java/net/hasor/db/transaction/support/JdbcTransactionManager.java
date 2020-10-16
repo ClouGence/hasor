@@ -71,12 +71,6 @@ public class JdbcTransactionManager implements TransactionManager {
 
     /**开启事务*/
     @Override
-    public final TransactionStatus getTransaction(final Propagation behavior) throws SQLException {
-        return this.getTransaction(behavior, Isolation.DEFAULT);
-    }
-
-    /**开启事务*/
-    @Override
     public final TransactionStatus getTransaction(final Propagation behavior, final Isolation level) throws SQLException {
         Objects.requireNonNull(behavior);
         Objects.requireNonNull(level);

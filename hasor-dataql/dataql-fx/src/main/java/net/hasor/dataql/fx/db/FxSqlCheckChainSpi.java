@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db;
-import net.hasor.db.jdbc.core.JdbcTemplate;
-
 /**
  * SQL 执行前的检查。
  * @author 赵永春 (zyc@hasor.net)
@@ -27,7 +25,7 @@ public interface FxSqlCheckChainSpi extends java.util.EventListener {
 
     public int doCheck(FxSqlInfo infoObject) throws Throwable;
 
-    public abstract class FxSqlInfo {
+    public final class FxSqlInfo {
         private boolean  batch;
         private String   sourceName;
         private String   queryString;
@@ -59,8 +57,5 @@ public interface FxSqlCheckChainSpi extends java.util.EventListener {
         public Object[] getQueryParams() {
             return this.queryParams.clone();
         }
-
-        /** 小工具 */
-        public abstract JdbcTemplate getJdbcTemplate(String sourceName);
     }
 }

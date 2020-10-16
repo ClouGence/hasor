@@ -25,7 +25,9 @@ public interface TransactionManager {
     /**开启事务，使用默认事务隔离级别。
      * @see Propagation
      * @see TransactionManager#getTransaction(Propagation, Isolation)*/
-    public TransactionStatus getTransaction(Propagation behavior) throws SQLException;
+    public default TransactionStatus getTransaction(Propagation behavior) throws SQLException {
+        return this.getTransaction(behavior, Isolation.DEFAULT);
+    }
 
     /**开启事务
      * @see Propagation
