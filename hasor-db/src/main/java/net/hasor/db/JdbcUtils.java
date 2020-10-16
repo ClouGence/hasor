@@ -104,6 +104,8 @@ public class JdbcUtils {
             return DB2;
         } else if (rawUrl.startsWith("jdbc:sqlite:")) {
             return SQLITE;
+        } else if (rawUrl.startsWith("jdbc:impala:")) {
+            return IMPALA;
         } else if (rawUrl.startsWith("jdbc:ingres:")) {
             return "ingres";
         } else if (rawUrl.startsWith("jdbc:h2:") || rawUrl.startsWith("jdbc:log4jdbc:h2:")) {
