@@ -65,6 +65,7 @@ public class SqlPageDialectRegister {
         registerDialectAlias(JdbcUtils.H2, PostgreSqlDialect.class);
         registerDialectAlias(JdbcUtils.HSQL, PostgreSqlDialect.class);
         registerDialectAlias(JdbcUtils.PHOENIX, PostgreSqlDialect.class);
+        registerDialectAlias(JdbcUtils.IMPALA, PostgreSqlDialect.class);
         //
         registerDialectAlias(JdbcUtils.MYSQL, MySqlDialect.class);
         registerDialectAlias(JdbcUtils.MARIADB, MySqlDialect.class);
