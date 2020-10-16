@@ -2,6 +2,7 @@ package net.example.hasor.config;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.DimModule;
+import net.hasor.dataql.QueryApiBinder;
 import net.hasor.dataql.fx.db.FxSqlCheckChainSpi;
 import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.spi.ApiInfo;
@@ -25,13 +26,24 @@ import java.util.HashMap;
 @DimModule
 @Component
 public class ExampleModule implements SpringModule {
-    @Autowired
-    private DataSource dataSource = null;
     //    @NacosInjected
     //    private ConfigService configService;
+    @Autowired
+    private DataSource dataSource = null;
 
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
+        //        apiBinder.tryCast(QueryApiBinder.class).loadUdf(
+        //                Object.class,
+        //                springTypeSupplier(apiBinder)
+        //        );
+        //        apiBinder.tryCast(QueryApiBinder.class).addShareVarInstance(
+        //                "name",
+        //                ..
+        //        );
+        //
+        //
+        //
         //apiBinder.bindType(EurekaClient.class).toProvider(getSupplierOfType(apiBinder, EurekaClient.class));
         //        apiBinder.bindType(ConfigService.class).toInstance(this.configService);
         //apiBinder.bindType(NamingService.class).toInstance(this.namingService);
@@ -113,15 +125,15 @@ public class ExampleModule implements SpringModule {
         //            // future.failed(new StatusMessageException(401, "not power"));
         //        });
         //
-        apiBinder.bindSpiListener(ResultProcessChainSpi.class, new ResultProcessChainSpi() {
-            public Object callError(boolean formPre, ApiInfo apiInfo, Throwable e) {
-                return new HashMap<String, Object>() {{
-                    put("method", apiInfo.getMethod());
-                    put("path", apiInfo.getApiPath());
-                    put("errorMessage", e.getMessage());
-                }};
-            }
-        });
+//        apiBinder.bindSpiListener(ResultProcessChainSpi.class, new ResultProcessChainSpi() {
+//            public Object callError(boolean formPre, ApiInfo apiInfo, Throwable e) {
+//                return new HashMap<String, Object>() {{
+//                    put("method", apiInfo.getMethod());
+//                    put("path", apiInfo.getApiPath());
+//                    put("errorMessage", e.getMessage());
+//                }};
+//            }
+//        });
         //        {
         //
         //
