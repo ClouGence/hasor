@@ -15,6 +15,7 @@
  */
 package net.hasor.dataway.dal.providers.nacos;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
@@ -175,12 +176,21 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
     @Init
     public void init() throws NacosException {
         // .获取配置参数
-        this.configService = this.appContext.getInstance(ConfigService.class);
-        Objects.requireNonNull(this.configService, "nacos not init.");
         Environment env = this.appContext.getEnvironment();
+        this.configService = this.appContext.getInstance(ConfigService.class);
+        if (this.configService == null) {
+            String nacosAddr = env.getVariable("HASOR_DATAQL_DATAWAY_NACOSDAL_ADDR");
+            if (StringUtils.isBlank(nacosAddr)) {
+                throw new IllegalArgumentException("nacos serverAddr is missing.");
+            }
+            Properties properties = new Properties();
+            properties.put("serverAddr", nacosAddr);
+            this.configService = NacosFactory.createConfigService(properties);
+        }
+        //
         this.groupName = env.getOrDefault("HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP", "HASOR_DATAWAY");
         if (StringUtils.isBlank(this.groupName)) {
-            throw new NullPointerException("HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP is missing.");
+            throw new IllegalArgumentException("HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP is missing.");
         }
         //
         this.directoryShardMaxRecord = Integer.parseInt(env.getOrDefault("HASOR_DATAQL_DATAWAY_NACOSDAL_SHARD_MAX", "2000"));
