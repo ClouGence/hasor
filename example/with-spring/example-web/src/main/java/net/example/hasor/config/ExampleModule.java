@@ -104,10 +104,10 @@ public class ExampleModule implements SpringModule {
         // .custom DataQL
         //
         //        // .负责首页导出 CVS
-        apiBinder.bindSpiListener(FxSqlCheckChainSpi.class, infoObject -> {
-            System.out.println(String.format("[%s] %s", infoObject.getSourceName(), infoObject.getQueryString().trim()));
-            return FxSqlCheckChainSpi.NEXT;
-        });
+        //        apiBinder.bindSpiListener(FxSqlCheckChainSpi.class, infoObject -> {
+        //            System.out.println(String.format("[%s] %s", infoObject.getSourceName(), infoObject.getQueryString().trim()));
+        //            return FxSqlCheckChainSpi.NEXT;
+        //        });
         //
         //apiBinder.tryCast(QueryApiBinder.class).loadUdfSource(apiBinder.findClass(DimUdfSource.class));
         //        final Set<String> codeSet = AuthorizationType.Group_ReadOnly.toCodeSet();
@@ -125,15 +125,15 @@ public class ExampleModule implements SpringModule {
         //            // future.failed(new StatusMessageException(401, "not power"));
         //        });
         //
-//        apiBinder.bindSpiListener(ResultProcessChainSpi.class, new ResultProcessChainSpi() {
-//            public Object callError(boolean formPre, ApiInfo apiInfo, Throwable e) {
-//                return new HashMap<String, Object>() {{
-//                    put("method", apiInfo.getMethod());
-//                    put("path", apiInfo.getApiPath());
-//                    put("errorMessage", e.getMessage());
-//                }};
-//            }
-//        });
+        //        apiBinder.bindSpiListener(ResultProcessChainSpi.class, new ResultProcessChainSpi() {
+        //            public Object callError(boolean formPre, ApiInfo apiInfo, Throwable e) {
+        //                return new HashMap<String, Object>() {{
+        //                    put("method", apiInfo.getMethod());
+        //                    put("path", apiInfo.getApiPath());
+        //                    put("errorMessage", e.getMessage());
+        //                }};
+        //            }
+        //        });
         //        {
         //
         //

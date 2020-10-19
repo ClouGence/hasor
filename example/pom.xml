@@ -13,11 +13,8 @@
     <name>example-root</name>
 
     <modules>
-        <module>with-spring/example-cli-dataql</module>
-        <module>with-spring/example-web</module>
-        <module>with-spring/eureka-server</module>
-        <!-- <module>with-spring/example-web</module>-->
-        <!-- <module>example-rsf</module>-->
-        <!-- <module>example-nutz</module>-->
+        <module>springboot-dataway-db</module>
+        <module>springboot-dataway-nacos1</module>
+        <module>springboot-dataway-nacos2</module>
     </modules>
 </project>

@@ -11,13 +11,13 @@
 
     <!-- Maven Info -->
     <groupId>net.hasor</groupId>
-    <artifactId>springboot-dataway</artifactId>
+    <artifactId>springboot-dataway-db</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
     <properties>
         <java.version>1.8</java.version>
-        <hasor.version>4.2.1</hasor.version>
+        <hasor.version>4.2.2-SNAPSHOT</hasor.version>
         <swagger.version>2.7.0</swagger.version>
     </properties>
 
@@ -76,18 +76,7 @@
             <version>1.1.10</version>
         </dependency>
 
-        <!-- logger related -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
-        </dependency>
-
         <!-- springboot related -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -98,11 +87,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- test related -->
+        <!-- logger related -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
         </dependency>
     </dependencies>
 </project>
