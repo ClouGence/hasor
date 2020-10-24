@@ -73,7 +73,7 @@ class PULL implements InsetProcess {
             data = Arrays.asList((Object[]) data);
         }
         //
-        String indexOverflow = context.getOrMap(INDEX_OVERFLOW.name(), val -> {
+        String indexOverflow = context.currentHints().getOrMap(INDEX_OVERFLOW.name(), val -> {
             return (val == null) ? INDEX_OVERFLOW_NEAR : val.toString();
         });
         //

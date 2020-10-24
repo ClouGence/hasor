@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.dataql.CustomizeScope;
-import net.hasor.dataql.Finder;
-import net.hasor.dataql.FragmentProcess;
-import net.hasor.dataql.Query;
+import net.hasor.dataql.*;
 import net.hasor.dataql.runtime.operator.OperatorManager;
 import net.hasor.dataql.runtime.operator.OperatorProcess;
 
 import java.util.Map;
+import java.util.Stack;
 
 /**
  * 指令执行器接口
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-14
  */
-public class InsetProcessContext extends HintsSet implements CustomizeScope {
+public class InsetProcessContext implements CustomizeScope {
     private final static OperatorManager opeManager = OperatorManager.defaultManager();
     private final        long            startTime  = System.currentTimeMillis();
     private final        CustomizeScope  customizeScope;
     private final        Finder          finder;
+    private final        Stack<HintsSet> hintStack  = new Stack<>();
 
     InsetProcessContext(CustomizeScope customizeScope, Finder finder) {
         if (finder == null) {
@@ -41,6 +40,23 @@ public class InsetProcessContext extends HintsSet implements CustomizeScope {
         }
         this.customizeScope = customizeScope;
         this.finder = finder;
+        this.hintStack.push(new HintsSet());
+    }
+
+    public Hints currentHints() {
+        return this.hintStack.peek();
+    }
+
+    public void createHintStack() {
+        HintsSet hintsSet = new HintsSet();
+        hintsSet.setHints(this.hintStack.peek());
+        this.hintStack.push(hintsSet);
+    }
+
+    public void dropHintStack() {
+        if (this.hintStack.size() > 1) {
+            this.hintStack.pop();
+        }
     }
 
     public long executionTime() {

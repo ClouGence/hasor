@@ -62,6 +62,8 @@ public interface Opcodes {
     public static final byte LOCAL  = 66;   // 将入参存入堆，也用于标记变量名称
     // -------------------------------------------------------------------------- 辅助指令
     public static final byte HINT   = 71;   // 设置 Hint，影响执行引擎的参数选项。
-    public static final byte LABEL  = 72;   // 协助GOTO定位用，无实际作用
-    public static final byte LINE   = 73;   // 行号，无实际作用
+    public static final byte HINT_S = 72;   // 对当前的 Hint 执行快照，后续的 Hint 变更将在快照上进行
+    public static final byte HINT_D = 73;   // 丢弃当前 Hint 快照，如果不存在任何快照指令会报错
+    public static final byte LABEL  = 74;   // 协助GOTO定位用，无实际作用
+    public static final byte LINE   = 75;   // 行号，无实际作用
 }

@@ -89,6 +89,8 @@ public class OpcodesPool {
         pool.addInsetProcess(new IF());
         pool.addInsetProcess(new GOTO());
         pool.addInsetProcess(new HINT());
+        pool.addInsetProcess(new HINT_D());
+        pool.addInsetProcess(new HINT_S());
         pool.addInsetProcess(new POP());
         pool.addInsetProcess(new LOAD_C());
         pool.addInsetProcess(new E_PUSH());
