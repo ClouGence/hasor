@@ -35,15 +35,16 @@ import java.util.*;
  * @version : 2013-4-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public final class Hasor extends HashMap<String, String> {
-    protected static Logger                           logger                 = LoggerFactory.getLogger(Hasor.class);
-    private final    Object                           context;
-    private          Object                           mainSettings           = TemplateAppContext.DefaultSettings;
-    private          StreamType                       mainSettingsStreamType = null;
-    private final    List<Module>                     moduleList             = new ArrayList<>();
-    private          ClassLoader                      loader;
-    private final    Map<String, Map<String, Object>> initSettingMap         = new HashMap<>();
-    private          Level                            asLevel                = Level.Full;
+public final class Hasor {
+    protected final static Logger                           logger                 = LoggerFactory.getLogger(Hasor.class);
+    private final          Object                           context;
+    private                Object                           mainSettings           = TemplateAppContext.DefaultSettings;
+    private                StreamType                       mainSettingsStreamType = null;
+    private final          List<Module>                     moduleList             = new ArrayList<>();
+    private                ClassLoader                      loader;
+    private final          Map<String, Map<String, Object>> initSettingMap         = new HashMap<>();
+    private final          Map<String, String>              variableMap            = new HashMap<>();
+    private                Level                            asLevel                = Level.Full;
 
     protected Hasor(Object context) {
         this.context = context;
@@ -116,13 +117,13 @@ public final class Hasor extends HashMap<String, String> {
 
     /** 添加 Hasor 环境变量 */
     public Hasor addVariable(String key, String value) {
-        this.put(key, value);
+        this.variableMap.put(key, value);
         return this;
     }
 
     /** 添加 Hasor 环境变量 */
     public Hasor addVariableMap(Map<String, String> mapData) {
-        this.putAll(mapData);
+        this.variableMap.putAll(mapData);
         return this;
     }
 
@@ -146,7 +147,7 @@ public final class Hasor extends HashMap<String, String> {
     public Hasor loadVariables(Properties properties) {
         if (properties != null) {
             for (Object key : properties.keySet()) {
-                this.put(key.toString(), properties.getProperty(key.toString()));
+                this.variableMap.put(key.toString(), properties.getProperty(key.toString()));
             }
         }
         return this;
@@ -169,8 +170,8 @@ public final class Hasor extends HashMap<String, String> {
         if (StringUtils.isBlank(namespace)) {
             throw new IllegalArgumentException("namespace is not null.");
         }
-        for (String key : this.keySet()) {
-            addSettings(namespace, key, get(key));
+        for (String key : this.variableMap.keySet()) {
+            addSettings(namespace, key, this.variableMap.get(key));
         }
         return this;
     }
@@ -228,7 +229,7 @@ public final class Hasor extends HashMap<String, String> {
         this.addVariable("RUN_PATH", runPath);
         this.addVariable("RUN_MODE", this.asLevel.name());
         if (logger.isInfoEnabled()) {
-            logger.info("runMode at {} ,runPath at {}", this.get("RUN_MODE"), runPath);
+            logger.info("runMode at {} ,runPath at {}", this.variableMap.get("RUN_MODE"), runPath);
         }
         //
         if (this.asLevel == Level.Tiny) {
@@ -273,7 +274,7 @@ public final class Hasor extends HashMap<String, String> {
                 }
             }
             //
-            Environment env = new StandardEnvironment(this.context, mainSettings, this, this.loader);
+            Environment env = new StandardEnvironment(this.context, mainSettings, this.variableMap, this.loader);
             AppContext appContext = new StatusAppContext(env);
             appContext.start(this.moduleList.toArray(new Module[0]));
             return appContext;

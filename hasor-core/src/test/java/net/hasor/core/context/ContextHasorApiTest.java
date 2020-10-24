@@ -249,7 +249,7 @@ public class ContextHasorApiTest {
     @Test
     public void hasorTest9() {
         Hasor hasor = Hasor.create();
-        hasor.put("abc", "abc");
+        hasor.addVariable("abc", "abc");
         AppContext build = hasor.importVariablesToSettings().build();
         //
         assert build.getEnvironment().getVariable("abc").equalsIgnoreCase("abc");
