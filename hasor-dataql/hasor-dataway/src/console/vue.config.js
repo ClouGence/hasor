@@ -1,6 +1,4 @@
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
-const apiMocker = require('mocker-api');
-const path = require('path');
 
 module.exports = {
     assetsDir: 'static',
@@ -30,8 +28,14 @@ module.exports = {
         config.output.filename('[name].[hash].js').end();
     },
     devServer: {
-        before(app) {
-            apiMocker(app, path.resolve('./src/mocker/index.js'))
+        host: 'localhost',//target host
+        port: 8888,
+        proxy:{
+            '/api':{
+                target: 'http://localhost:8888/interface-ui/',
+                changeOrigin: true,
+                ws: true
+            }
         }
     }
 };

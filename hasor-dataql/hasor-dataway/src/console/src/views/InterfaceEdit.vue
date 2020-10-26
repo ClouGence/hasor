@@ -1,15 +1,15 @@
 <template>
   <div>
     <div class="monacoEditorHeader">
-      <div style="width: 50%; margin-top: 2px; display: inline-table;">
+      <div style="width: 50%; margin-top: 2px; display: inline-flex;">
+        <el-select v-model="apiInfo.select" placeholder="Choose" style="width: 95px;padding-right: 5px;" size="mini">
+          <el-option label="POST" value="POST" />
+          <el-option label="PUT" value="PUT" />
+          <el-option label="GET" value="GET" />
+          <el-option label="DELETE" value="DELETE" />
+        </el-select>
         <el-tooltip class="item" effect="dark" placement="bottom" :content="apiInfo.comment || defaultComment" :disabled="showComment">
           <el-input v-model="apiInfo.apiPath" placeholder="the path to access this Api" class="input-with-select" size="mini" :disabled="!editerActions.newMode">
-            <el-select slot="prepend" v-model="apiInfo.select" placeholder="Choose" :disabled="!editerActions.newMode" style="width: 90px;">
-              <el-option label="POST" value="POST" />
-              <el-option label="PUT" value="PUT" />
-              <el-option label="GET" value="GET" />
-              <el-option label="DELETE" value="DELETE" />
-            </el-select>
             <el-button slot="append" icon="el-icon-info" @click.native="handleShowComment" />
           </el-input>
         </el-tooltip>
@@ -367,7 +367,7 @@ export default {
 
     .el-radio {
         margin-right: 1px;
-        width: 85px;
+        width: 80px;
     }
 
     .el-radio--mini.is-bordered {
@@ -382,4 +382,9 @@ export default {
     .el-radio.is-bordered + .el-radio.is-bordered {
         margin-left: 1px;
     }
+
+    .input-with-select .el-input-group__prepend {
+        cursor: copy !important;
+    }
+
 </style>
