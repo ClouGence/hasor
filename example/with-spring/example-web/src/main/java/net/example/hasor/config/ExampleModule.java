@@ -2,11 +2,7 @@ package net.example.hasor.config;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.DimModule;
-import net.hasor.dataql.QueryApiBinder;
-import net.hasor.dataql.fx.db.FxSqlCheckChainSpi;
 import net.hasor.dataway.DatawayService;
-import net.hasor.dataway.spi.ApiInfo;
-import net.hasor.dataway.spi.ResultProcessChainSpi;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.JdbcUtils;
 import net.hasor.db.Level;
@@ -21,7 +17,6 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import java.util.HashMap;
 
 @DimModule
 @Component
