@@ -20,6 +20,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+
 /**
  * <p>Operates on classes without using reflection.</p>
  *
@@ -97,6 +98,7 @@ public class ClassUtils {
      * Maps an abbreviation used in array class names to corresponding primitive class name.
      */
     private static final Map<String, String> reverseAbbreviationMap = new HashMap<>();
+
     /**
      * Add primitive type abbreviation to maps of abbreviations.
      *
@@ -107,6 +109,7 @@ public class ClassUtils {
         ClassUtils.abbreviationMap.put(primitive, abbreviation);
         ClassUtils.reverseAbbreviationMap.put(abbreviation, primitive);
     }
+
     /**
      * Feed abbreviation maps
      */
@@ -134,6 +137,7 @@ public class ClassUtils {
     }
     // Short class name
     // ----------------------------------------------------------------------
+
     /**
      * <p>Gets the class name minus the package name for an <code>Object</code>.</p>
      *
@@ -147,6 +151,7 @@ public class ClassUtils {
         }
         return ClassUtils.getShortClassName(object.getClass());
     }
+
     /**
      * <p>Gets the class name minus the package name from a <code>Class</code>.</p>
      *
@@ -159,6 +164,7 @@ public class ClassUtils {
         }
         return ClassUtils.getShortClassName(cls.getName());
     }
+
     /**
      * <p>Gets the class name minus the package name from a String.</p>
      *
@@ -199,6 +205,7 @@ public class ClassUtils {
     }
     // Package name
     // ----------------------------------------------------------------------
+
     /**
      * <p>Gets the package name of an <code>Object</code>.</p>
      *
@@ -212,6 +219,7 @@ public class ClassUtils {
         }
         return ClassUtils.getPackageName(object.getClass());
     }
+
     /**
      * <p>Gets the package name of a <code>Class</code>.</p>
      *
@@ -224,6 +232,7 @@ public class ClassUtils {
         }
         return ClassUtils.getPackageName(cls.getName());
     }
+
     /**
      * <p>Gets the package name from a <code>String</code>.</p>
      *
@@ -253,6 +262,7 @@ public class ClassUtils {
     }
     // Superclasses/Superinterfaces
     // ----------------------------------------------------------------------
+
     /**
      * <p>Gets a <code>List</code> of superclasses for the given class.</p>
      *
@@ -272,6 +282,7 @@ public class ClassUtils {
         }
         return classes;
     }
+
     /**
      * <p>Gets a <code>List</code> of all interfaces implemented by the given
      * class and its superclasses.</p>
@@ -293,6 +304,7 @@ public class ClassUtils {
         ClassUtils.getAllInterfaces(cls, interfacesFound);
         return interfacesFound;
     }
+
     /**
      * Get the interfaces for the specified class.
      *
@@ -313,6 +325,7 @@ public class ClassUtils {
     }
     // Convert list
     // ----------------------------------------------------------------------
+
     /**
      * <p>Given a <code>List</code> of class names, this method converts them into classes.</p>
      *
@@ -340,6 +353,7 @@ public class ClassUtils {
         }
         return classes;
     }
+
     /**
      * <p>Given a <code>List</code> of <code>Class</code> objects, this method converts
      * them into class names.</p>
@@ -369,6 +383,7 @@ public class ClassUtils {
     }
     // Is assignable
     // ----------------------------------------------------------------------
+
     /**
      * <p>Checks if an array of Classes can be assigned to another array of Classes.</p>
      *
@@ -403,6 +418,7 @@ public class ClassUtils {
     public static boolean isAssignable(final Class<?>[] classArray, final Class<?>[] toClassArray) {
         return ClassUtils.isAssignable(classArray, toClassArray, false);
     }
+
     /**
      * <p>Checks if an array of Classes can be assigned to another array of Classes.</p>
      *
@@ -453,6 +469,7 @@ public class ClassUtils {
         }
         return true;
     }
+
     /**
      * <p>Checks if one <code>Class</code> can be assigned to a variable of
      * another <code>Class</code>.</p>
@@ -482,6 +499,7 @@ public class ClassUtils {
     public static boolean isAssignable(final Class<?> cls, final Class<?> toClass) {
         return ClassUtils.isAssignable(cls, toClass, false);
     }
+
     /**
      * <p>Checks if one <code>Class</code> can be assigned to a variable of
      * another <code>Class</code>.</p>
@@ -569,6 +587,7 @@ public class ClassUtils {
         }
         return toClass.isAssignableFrom(cls);
     }
+
     /**
      * <p>Converts the specified primitive Class object to its corresponding
      * wrapper Class object.</p>
@@ -588,6 +607,7 @@ public class ClassUtils {
         }
         return convertedClass;
     }
+
     /**
      * <p>Converts the specified array of primitive Class objects to an array of
      * its corresponding wrapper Class objects.</p>
@@ -611,6 +631,7 @@ public class ClassUtils {
         }
         return convertedClasses;
     }
+
     /**
      * <p>Converts the specified wrapper class to its corresponding primitive
      * class.</p>
@@ -630,6 +651,7 @@ public class ClassUtils {
     public static Class<?> wrapperToPrimitive(final Class<?> cls) {
         return ClassUtils.wrapperPrimitiveMap.get(cls);
     }
+
     /**
      * <p>Converts the specified array of wrapper Class objects to an array of
      * its corresponding primitive Class objects.</p>
@@ -659,6 +681,7 @@ public class ClassUtils {
     }
     // Inner class
     // ----------------------------------------------------------------------
+
     /**
      * <p>Is the specified class an inner class or static nested class.</p>
      *
@@ -674,6 +697,7 @@ public class ClassUtils {
     }
     // Class loading
     // ----------------------------------------------------------------------
+
     /**
      * Returns the class represented by <code>className</code> using the
      * <code>classLoader</code>.  This implementation supports the syntaxes
@@ -708,6 +732,7 @@ public class ClassUtils {
             throw ex;
         }
     }
+
     /**
      * Returns the (initialized) class represented by <code>className</code>
      * using the <code>classLoader</code>.  This implementation supports
@@ -723,6 +748,7 @@ public class ClassUtils {
     public static Class<?> getClass(final ClassLoader classLoader, final String className) throws ClassNotFoundException {
         return ClassUtils.getClass(classLoader, className, true);
     }
+
     /**
      * Returns the (initialized) class represented by <code>className</code>
      * using the current thread's context class loader. This implementation
@@ -737,6 +763,7 @@ public class ClassUtils {
     public static Class<?> getClass(final String className) throws ClassNotFoundException {
         return ClassUtils.getClass(className, true);
     }
+
     /**
      * Returns the class represented by <code>className</code> using the
      * current thread's context class loader. This implementation supports the
@@ -755,6 +782,7 @@ public class ClassUtils {
     }
     // Public method
     // ----------------------------------------------------------------------
+
     /**
      * <p>Returns the desired Method much like <code>Class.getMethod</code>, however
      * it ensures that the returned Method is from a public class or interface and not
@@ -808,6 +836,7 @@ public class ClassUtils {
         throw new NoSuchMethodException("Can't find a public method for " + methodName + " " + sb.toString());
     }
     // ----------------------------------------------------------------------
+
     /**
      * Converts a class name to a JLS style class name.
      *
@@ -834,6 +863,7 @@ public class ClassUtils {
         }
         return className;
     }
+
     /**
      * <p>Converts an array of <code>Object</code> in to an array of <code>Class</code> objects.
      * If any of these objects is null, a null element will be inserted into the array.</p>
@@ -858,6 +888,7 @@ public class ClassUtils {
     }
     // Short canonical name
     // ----------------------------------------------------------------------
+
     /**
      * <p>Gets the canonical name minus the package name for an <code>Object</code>.</p>
      *
@@ -872,6 +903,7 @@ public class ClassUtils {
         }
         return ClassUtils.getShortCanonicalName(object.getClass().getName());
     }
+
     /**
      * <p>Gets the canonical name minus the package name from a <code>Class</code>.</p>
      *
@@ -885,6 +917,7 @@ public class ClassUtils {
         }
         return ClassUtils.getShortCanonicalName(cls.getName());
     }
+
     /**
      * <p>Gets the canonical name minus the package name from a String.</p>
      *
@@ -899,6 +932,7 @@ public class ClassUtils {
     }
     // Package name
     // ----------------------------------------------------------------------
+
     /**
      * <p>Gets the package name from the canonical name of an <code>Object</code>.</p>
      *
@@ -913,6 +947,7 @@ public class ClassUtils {
         }
         return ClassUtils.getPackageCanonicalName(object.getClass().getName());
     }
+
     /**
      * <p>Gets the package name from the canonical name of a <code>Class</code>.</p>
      *
@@ -926,6 +961,7 @@ public class ClassUtils {
         }
         return ClassUtils.getPackageCanonicalName(cls.getName());
     }
+
     /**
      * <p>Gets the package name from the canonical name. </p>
      *
@@ -939,12 +975,14 @@ public class ClassUtils {
     public static String getPackageCanonicalName(final String canonicalName) {
         return ClassUtils.getPackageName(ClassUtils.getCanonicalName(canonicalName));
     }
+
     // ClassLoader
     // ----------------------------------------------------------------------
     public static ClassLoader getClassLoader(ClassLoader classLoader) {
         classLoader = classLoader == null ? Thread.currentThread().getContextClassLoader() : classLoader;
         return classLoader == null ? ClassLoader.getSystemClassLoader() : classLoader;
     }
+
     /**
      * <p>Converts a given name of class into canonical format.
      * If name of class is not a name of array class it returns
@@ -989,11 +1027,14 @@ public class ClassUtils {
             }
         }
     }
+
     /**判断某个类是否为一个lang包的类。*/
     public static boolean isLangClass(final Class<?> target) {
         return target.getName().startsWith("java.lang.");
     }
+
     ;
+
     /**获取方法的标识代码，在不考虑其所属类的情况下。*/
     public static String getDescName(final Class<?> type) {
         if (type == Void.class) {
@@ -1006,6 +1047,7 @@ public class ClassUtils {
             return type.getName();
         }
     }
+
     /**获取方法的标识代码，在不考虑其所属类的情况下。
      * 格式为：<code>&lt;修饰符&gt;&nbsp;&lt;返回值&gt;&nbsp;&lt;类名&gt;.&lt;方法名&gt;(&lt;参数签名列表&gt;)</code>*/
     public static String getDescNameWithOutModifiers(final Method method) {
@@ -1034,6 +1076,7 @@ public class ClassUtils {
         //
         return str.toString();
     }
+
     /**获取方法的标识代码，在不考虑其所属类的情况下。
      * 格式为：<code>&lt;修饰符&gt;&nbsp;&lt;返回值&gt;&nbsp;&lt;类名&gt;.&lt;方法名&gt;(&lt;参数签名列表&gt;)</code>*/
     public static String getDescName(final Method method) {
@@ -1054,6 +1097,7 @@ public class ClassUtils {
         //
         return str.toString();
     }
+
     /**获取泛型类型。*/
     public static Class<?> getSuperClassGenricType(final Class<?> clazz, final int index) {
         //返回表示此 Class 所表示的实体（类、接口、基本类型或 void）的直接超类的 Type。

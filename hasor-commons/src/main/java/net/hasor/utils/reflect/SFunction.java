@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.core;
-import net.hasor.db.jdbc.BatchPreparedStatementSetter;
+package net.hasor.utils.reflect;
+import java.io.Serializable;
+import java.util.function.Function;
 
 /**
- * 扩展 BatchPreparedStatementSetter 接口，提供了一个方法可以中断某一个批操作。
- * @version : 2013-10-14
+ * 辅助 lambda 写法的工具接口
+ * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface InterruptibleBatchPreparedStatementSetter extends BatchPreparedStatementSetter {
-    /**测试批处理是否继续，返回 true 表示处理。false 表示在批处理中放弃这个条目。*/
-    public boolean isBatchExhausted(int i);
+public interface SFunction<T, R> extends Function<T, R>, Serializable {
 }

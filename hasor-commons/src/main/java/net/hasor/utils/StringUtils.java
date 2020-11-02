@@ -2292,6 +2292,71 @@ public class StringUtils {
     //-----------------------------------------------------------------------
 
     /**
+     * <p>Splits the provided text into an array, using whitespace as the separator. but keep separator.</p>
+     *
+     * <pre>
+     * StringUtils.splitKeep(null)          = null
+     * StringUtils.splitKeep("")            = []
+     * StringUtils.splitKeep("a b c", " ")  = ["a", " ", "b", " ", "c"]
+     * StringUtils.splitKeep("abc def", " ")= ["abc", " ", "def"]
+     * StringUtils.splitKeep(" abc ", " ")  = [" ", "abc", " "]
+     * </pre>
+     *
+     * @param str  the String to parse, may be null
+     * @return an array of parsed Strings, <code>null</code> if null String input
+     */
+    public static String[] splitKeep(String str, char separatorChar) {
+        return splitKeep(str, String.valueOf(separatorChar));
+    }
+
+    /**
+     * <p>Splits the provided text into an array, using whitespace as the separator. but keep separator.</p>
+     *
+     * <pre>
+     * StringUtils.splitKeep(null)          = null
+     * StringUtils.splitKeep("")            = []
+     * StringUtils.splitKeep("a b c", " ")  = ["a", " ", "b", " ", "c"]
+     * StringUtils.splitKeep("abc def", " ")= ["abc", " ", "def"]
+     * StringUtils.splitKeep(" abc ", " ")  = [" ", "abc", " "]
+     * </pre>
+     *
+     * @param str  the String to parse, may be null
+     * @return an array of parsed Strings, <code>null</code> if null String input
+     */
+    public static String[] splitKeep(String str, String separatorStr) {
+        if (str == null) {
+            return null;
+        }
+        if (str.length() == 0) {
+            return ArrayUtils.EMPTY_STRING_ARRAY;
+        }
+        int CHARS = separatorStr.length();
+        if (CHARS == 0) {
+            throw new IllegalArgumentException("chars must be > 0");
+        }
+        int lastIndex = 0;
+        ArrayList<String> dat = new ArrayList<>();
+        while (true) {
+            int lookIndex = str.indexOf(separatorStr, lastIndex);
+            if (lookIndex == -1) {
+                String substring = str.substring(lastIndex);
+                if (substring.length() > 0) {
+                    dat.add(substring);
+                }
+                break;
+            } else {
+                if (lastIndex != lookIndex) {
+                    String term = str.substring(lastIndex, lookIndex);
+                    dat.add(term);
+                }
+                dat.add(separatorStr);
+                lastIndex = lookIndex + CHARS;
+            }
+        }
+        return dat.toArray(new String[0]);
+    }
+
+    /**
      * <p>Splits the provided text into an array, using whitespace as the
      * separator.
      * Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
@@ -2684,7 +2749,7 @@ public class StringUtils {
         if (len == 0) {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         int i = 0, start = 0;
         boolean match = false;
         boolean lastMatch = false;
