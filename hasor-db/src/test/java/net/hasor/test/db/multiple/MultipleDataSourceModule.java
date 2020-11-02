@@ -31,8 +31,8 @@ import static net.hasor.test.db.AbstractDbTest.newID;
  */
 public class MultipleDataSourceModule implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        apiBinder.installModule(new JdbcModule(Level.Full, "hsql1", DataSourceUtils.loadDB("demo1", apiBinder.getEnvironment().getSettings())));
-        apiBinder.installModule(new JdbcModule(Level.Full, "hsql2", DataSourceUtils.loadDB("demo2", apiBinder.getEnvironment().getSettings())));
+        apiBinder.installModule(new JdbcModule(Level.Full, "h2_1", DataSourceUtils.loadDB("demo1")));
+        apiBinder.installModule(new JdbcModule(Level.Full, "h2_2", DataSourceUtils.loadDB("demo2")));
     }
 
     @Override

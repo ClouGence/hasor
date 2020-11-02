@@ -41,11 +41,11 @@ public class ArgPreparedStatementSetter implements PreparedStatementSetter, Para
     }
 
     protected void doSetValue(final PreparedStatement ps, final int parameterPosition, final Object argValue) throws SQLException {
-        InnerStatementSetterUtils.setParameterValue(ps, parameterPosition, argValue);
+        StatementSetterUtils.setParameterValue(ps, parameterPosition, argValue);
     }
 
     @Override
     public void cleanupParameters() {
-        InnerStatementSetterUtils.cleanupParameters(this.args);
+        StatementSetterUtils.cleanupParameters(this.args);
     }
 }

@@ -15,6 +15,10 @@
  */
 package net.hasor.db.jdbc.core;
 import net.hasor.db.jdbc.*;
+import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
+import net.hasor.db.jdbc.lambda.LambdaOperations;
+import net.hasor.db.jdbc.lambda.query.LambdaQueryWrapper;
+import net.hasor.db.jdbc.lambda.mapping.ColumnMeta;
 import net.hasor.db.jdbc.mapper.BeanPropertyRowMapper;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
@@ -38,7 +42,7 @@ import java.util.stream.Collectors;
  * @version : 2013-10-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
+public class JdbcTemplate extends JdbcConnection implements JdbcOperations, LambdaOperations {
     private static final Logger  logger                 = LoggerFactory.getLogger(JdbcTemplate.class);
     /*是否忽略出现的 SQL 警告*/
     private              boolean ignoreWarnings         = true;
@@ -714,12 +718,11 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
         return this.execute(sql, (PreparedStatementCallback<int[]>) ps -> {
             try {
                 int batchSize = pss.getBatchSize();
-                InterruptibleBatchPreparedStatementSetter ipss = pss instanceof InterruptibleBatchPreparedStatementSetter ? (InterruptibleBatchPreparedStatementSetter) pss : null;
                 DatabaseMetaData dbMetaData = ps.getConnection().getMetaData();
                 if (dbMetaData.supportsBatchUpdates()) {
                     for (int i = 0; i < batchSize; i++) {
                         pss.setValues(ps, i);
-                        if (ipss != null && ipss.isBatchExhausted(i)) {
+                        if (pss.isBatchExhausted(i)) {
                             break;
                         }
                         ps.addBatch();
@@ -729,7 +732,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
                     List<Integer> rowsAffected = new ArrayList<>();
                     for (int i = 0; i < batchSize; i++) {
                         pss.setValues(ps, i);
-                        if (ipss != null && ipss.isBatchExhausted(i)) {
+                        if (pss.isBatchExhausted(i)) {
                             break;
                         }
                         rowsAffected.add(ps.executeUpdate());
@@ -746,6 +749,11 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
                 }
             }
         });
+    }
+
+    @Override
+    public <T> LambdaQuery<T> lambdaSelect(Class<T> exampleType, ColumnMeta... columns) {
+        return new LambdaQueryWrapper<>(exampleType, columns, this);
     }
 
     /** Create a new RowMapper for reading columns as key-value pairs. */
@@ -942,9 +950,9 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
             //3.创建PreparedStatement对象，并设置参数
             PreparedStatement statement = con.prepareStatement(sqlToUse);
             for (int i = 0; i < paramArray.length; i++) {
-                InnerStatementSetterUtils.setParameterValue(statement, i + 1, paramArray[i]);
+                StatementSetterUtils.setParameterValue(statement, i + 1, paramArray[i]);
             }
-            InnerStatementSetterUtils.cleanupParameters(paramArray);
+            StatementSetterUtils.cleanupParameters(paramArray);
             return statement;
         }
 
@@ -985,7 +993,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
             //2.设置参数
             int sqlColIndx = 1;
             for (Object element : sqlValue) {
-                InnerStatementSetterUtils.setParameterValue(ps, sqlColIndx++, element);
+                StatementSetterUtils.setParameterValue(ps, sqlColIndx++, element);
             }
         }
 

@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.test.db;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-import net.hasor.core.Settings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.alibaba.druid.pool.DruidDataSource;
 
 import javax.sql.DataSource;
 
@@ -27,33 +24,21 @@ import javax.sql.DataSource;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DataSourceUtils {
-    protected static Logger logger = LoggerFactory.getLogger(DataSourceUtils.class);
-
-    public static DataSource loadDB(String dbID, Settings settings) throws Throwable {
-        // 1.获取数据库连接配置信息
-        String driverString = settings.getString(dbID + ".driver");
-        String urlString = settings.getString(dbID + ".url");
-        String userString = settings.getString(dbID + ".user");
-        String pwdString = settings.getString(dbID + ".password");
-        // 2.创建数据库连接池
-        int poolMaxSize = 40;
-        logger.info("C3p0 Pool Info maxSize is ‘%s’ driver is ‘%s’ jdbcUrl is‘%s’", poolMaxSize, driverString, urlString);
-        ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        dataSource.setDriverClass(driverString);
-        dataSource.setJdbcUrl(urlString);
-        dataSource.setUser(userString);
-        dataSource.setPassword(pwdString);
-        dataSource.setMaxPoolSize(poolMaxSize);
-        dataSource.setInitialPoolSize(1);
-        // dataSource.setAutomaticTestTable("DB_TEST_ATest001");
-        dataSource.setIdleConnectionTestPeriod(18000);
-        dataSource.setCheckoutTimeout(3000);
-        dataSource.setTestConnectionOnCheckin(true);
-        dataSource.setAcquireRetryDelay(1000);
-        dataSource.setAcquireRetryAttempts(30);
-        dataSource.setAcquireIncrement(1);
-        dataSource.setMaxIdleTime(25000);
-        // 3.启用默认事务拦截器
-        return dataSource;
+    public static DataSource loadDB(String dbID) throws Throwable {
+        DruidDataSource druid = new DruidDataSource();
+        druid.setUrl("jdbc:h2:mem:test_" + dbID);
+        druid.setDriverClassName("org.h2.Driver");
+        druid.setUsername("sa");
+        druid.setPassword("");
+        druid.setMaxActive(5);
+        druid.setMaxWait(3 * 1000);
+        druid.setInitialSize(1);
+        druid.setConnectionErrorRetryAttempts(1);
+        druid.setBreakAfterAcquireFailure(true);
+        druid.setTestOnBorrow(true);
+        druid.setTestWhileIdle(true);
+        druid.setFailFast(true);
+        druid.init();
+        return druid;
     }
 }

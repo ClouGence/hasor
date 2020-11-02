@@ -10,15 +10,14 @@ import java.util.*;
  * @version : 2014-3-29
  * @author 赵永春 (zyc@byshell.org)
  */
-class InnerStatementSetterUtils {
-    public static final int                    TYPE_UNKNOWN         = Integer.MIN_VALUE;
-    private static      Map<Class<?>, Integer> javaTypeToSqlTypeMap = new HashMap<>(32);
+public class StatementSetterUtils {
+    public static final  int                    TYPE_UNKNOWN         = Integer.MIN_VALUE;
+    private static final Map<Class<?>, Integer> javaTypeToSqlTypeMap = new HashMap<>(32);
 
     static {
         /* JDBC 3.0 only - not compatible with e.g. MySQL at present*/
-        javaTypeToSqlTypeMap.put(boolean.class, new Integer(Types.BOOLEAN));
-        javaTypeToSqlTypeMap.put(Boolean.class, new Integer(Types.BOOLEAN));
-        //
+        javaTypeToSqlTypeMap.put(boolean.class, Types.BOOLEAN);
+        javaTypeToSqlTypeMap.put(Boolean.class, Types.BOOLEAN);
         javaTypeToSqlTypeMap.put(byte.class, Types.TINYINT);
         javaTypeToSqlTypeMap.put(Byte.class, Types.TINYINT);
         javaTypeToSqlTypeMap.put(short.class, Types.SMALLINT);

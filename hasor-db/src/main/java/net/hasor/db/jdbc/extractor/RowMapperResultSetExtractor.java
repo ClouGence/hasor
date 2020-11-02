@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.core;
+package net.hasor.db.jdbc.extractor;
 import net.hasor.db.jdbc.ResultSetExtractor;
 import net.hasor.db.jdbc.RowMapper;
 
@@ -72,8 +72,15 @@ public class RowMapperResultSetExtractor<T> implements ResultSetExtractor<List<T
         List<T> results = this.rowsExpected > 0 ? new ArrayList<>(this.rowsExpected) : new ArrayList<T>();
         int rowNum = 0;
         while (rs.next()) {
-            results.add(this.rowMapper.mapRow(rs, rowNum++));
+            T mapRow = this.rowMapper.mapRow(rs, rowNum++);
+            if (testRow(mapRow)) {
+                results.add(mapRow);
+            }
         }
         return results;
+    }
+
+    protected boolean testRow(T mapRow) {
+        return true;
     }
 }

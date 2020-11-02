@@ -10,7 +10,7 @@ import java.util.Map;
  * @version : 2014-3-31
  * @author 赵永春 (zyc@hasor.net)
  */
-class InnerCallableStatementGetter {
+public class CallableStatementGetter {
     /** Maps primitive <code>Class</code>es to their corresponding wrapper <code>Class</code>. */
     private static final Map<Class<?>, Class<?>> primitiveWrapperMap = new HashMap<>();
     /** Maps wrapper <code>Class</code>es to their corresponding primitive types. */

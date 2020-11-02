@@ -17,11 +17,9 @@ package net.hasor.dataway.config;
 import net.hasor.core.Environment;
 import net.hasor.core.HasorUtils;
 import net.hasor.core.XmlNode;
-import net.hasor.dataql.QueryApiBinder;
 import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.authorization.InterfaceAuthorizationFilter;
 import net.hasor.dataway.dal.ApiDataAccessLayer;
-import net.hasor.dataway.service.DatawayFinder;
 import net.hasor.dataway.service.DatawayServiceImpl;
 import net.hasor.dataway.service.InterfaceApiFilter;
 import net.hasor.dataway.service.InterfaceUiFilter;
@@ -59,10 +57,6 @@ public class DatawayModule implements WebModule {
         logger.info("dataway api workAt " + apiBaseUri);
         environment.addVariable("HASOR_DATAQL_DATAWAY_API_URL", apiBaseUri);
         apiBinder.filter(fixUrl(apiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceApiFilter(apiBaseUri));
-        //
-        // .Finder,实现引用其它定义的 DataQL
-        QueryApiBinder defaultContext = apiBinder.tryCast(QueryApiBinder.class);
-        defaultContext.bindFinder(apiBinder.getProvider(DatawayFinder.class));
         //
         String dalType = environment.getVariable("HASOR_DATAQL_DATAWAY_DAL_TYPE");
         if (StringUtils.isBlank(dalType)) {

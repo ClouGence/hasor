@@ -33,7 +33,7 @@ import net.hasor.db.JdbcUtils;
 import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.core.ArgPreparedStatementSetter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.jdbc.core.RowMapperResultSetExtractor;
+import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;

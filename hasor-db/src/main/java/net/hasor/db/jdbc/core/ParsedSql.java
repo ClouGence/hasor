@@ -82,7 +82,7 @@ public class ParsedSql {
         //
         //2.分析SQL，提取出SQL中参数信息
         Objects.requireNonNull(originalSql, "SQL must not be null");
-        Set<String> namedParameters = new HashSet<String>();
+        Set<String> namedParameters = new HashSet<>();
         char[] statement = originalSql.toCharArray();
         int i = 0;
         while (i < statement.length) {
