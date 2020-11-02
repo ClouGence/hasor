@@ -88,10 +88,6 @@ public class InsetProcessContext implements CustomizeScope {
     public Object loadObject(String udfType) throws ClassNotFoundException {
         // .确定ClassLoader
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Class<?> c = classLoader.loadClass(Query.class.getName());
-        if (c != Query.class) {
-            classLoader = Query.class.getClassLoader();
-        }
         Class<?> loadClass = classLoader.loadClass(udfType);
         return this.finder.findBean(loadClass);
     }

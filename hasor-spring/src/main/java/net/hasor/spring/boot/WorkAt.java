@@ -22,6 +22,6 @@ package net.hasor.spring.boot;
 public enum WorkAt {
     /** 过滤器模式 */
     Filter,
-    /** SpringWebMvc 拦截器模式 */
+    /** 把 hasor-web 的 入口 filter 以 springwebmvc 的拦截器方式进行集成。 */
     Interceptor
 }

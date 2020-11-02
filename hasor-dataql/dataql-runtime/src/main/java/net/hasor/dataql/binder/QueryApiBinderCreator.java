@@ -94,16 +94,14 @@ public class QueryApiBinderCreator implements ApiBinderCreator<QueryApiBinder> {
         }
 
         @Override
-        public QueryApiBinder bindFinder(Supplier<? extends Finder> finderSupplier) {
-            this.innerDqlConfig.setFinder(finderSupplier);
+        public <T extends FragmentProcess> QueryApiBinder bindFragment(String fragmentType, Supplier<T> provider) {
+            this.innerDqlConfig.addFragmentProcess(fragmentType, provider);
             return this;
         }
 
         @Override
-        public <T extends FragmentProcess> QueryApiBinder bindFragment(String fragmentType, Supplier<T> provider) {
-            HasorUtils.pushStartListener(getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
-                innerDqlConfig.addFragmentProcess(fragmentType, provider);
-            });
+        public QueryApiBinder bindFinder(Finder finder) {
+            this.innerDqlConfig.setFinder(finder);
             return this;
         }
     }

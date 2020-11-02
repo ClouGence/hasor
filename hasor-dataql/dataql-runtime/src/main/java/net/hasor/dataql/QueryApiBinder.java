@@ -40,6 +40,8 @@ public interface QueryApiBinder extends ApiBinder, Hints {
     /** 配置编译参数 */
     public void configOption(ConfigOption optionKey, Object value);
 
+    public QueryApiBinder bindFinder(Finder finder);
+
     /** 加载带有 @DimFragment 注解的类 */
     public default QueryApiBinder loadFragment(Set<Class<?>> fragmentTypeSet) {
         return this.loadFragment(fragmentTypeSet, Matchers.anyClass(), null);
@@ -205,8 +207,6 @@ public interface QueryApiBinder extends ApiBinder, Hints {
 
     /** 添加全局变量（等同于 compilerVar） */
     public <T> QueryApiBinder addShareVar(String name, Supplier<T> provider);
-
-    public QueryApiBinder bindFinder(Supplier<? extends Finder> finderSupplier);
 
     /** 注册 FragmentProcess */
     public default QueryApiBinder bindFragment(String fragmentType, FragmentProcess instance) {

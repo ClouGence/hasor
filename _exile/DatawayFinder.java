@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.ConstructorBy;
 import net.hasor.core.Singleton;
 import net.hasor.core.provider.SingleProvider;
-import net.hasor.dataql.binder.AppContextFinder;
+import net.hasor.dataql.Finder;
 import net.hasor.dataway.dal.ApiDataAccessLayer;
 import net.hasor.dataway.dal.EntityDef;
 import net.hasor.dataway.dal.FieldDef;
@@ -36,12 +36,11 @@ import java.util.function.Supplier;
  * @version : 2020-03-20
  */
 @Singleton
-public class DatawayFinder extends AppContextFinder {
+public class DatawayFinder implements Finder {
     private final Supplier<ApiDataAccessLayer> dataAccessLayer;
 
     @ConstructorBy
     public DatawayFinder(AppContext appContext) {
-        super(appContext);
         this.dataAccessLayer = SingleProvider.of(() -> appContext.getInstance(ApiDataAccessLayer.class));
     }
 
