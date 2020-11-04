@@ -16,7 +16,6 @@
 package net.hasor.db.jdbc.core;
 import net.hasor.db.datasource.ConnectionProxy;
 import net.hasor.db.jdbc.ConnectionCallback;
-import net.hasor.db.transaction.TranManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,7 +110,7 @@ public class JdbcConnection extends JdbcAccessor {
         ConnectionProxy useConn = null;
         try {
             if (usingDS) {
-                localConn = TranManager.currentConnection(localDS);
+                localConn = this.getDsApply().apply(localDS);
                 useConn = this.newProxyConnection(localConn, localDS);//代理连接
             } else {
                 useConn = this.newProxyConnection(localConn, null);//代理连接

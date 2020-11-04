@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
+import net.hasor.db.transaction.TranManager;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.function.Function;
 
 /**
  *
@@ -23,17 +26,18 @@ import java.sql.Connection;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcAccessor {
-    private DataSource dataSource;
-    private Connection connection;
-
-    /**Set the JDBC DataSource to obtain connections from.*/
-    public void setDataSource(final DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    private DataSource                       dataSource;
+    private Connection                       connection;
+    private Function<DataSource, Connection> dsApply = TranManager::currentConnection;
 
     /**Return the DataSource used by this template.*/
     public DataSource getDataSource() {
         return this.dataSource;
+    }
+
+    /**Set the JDBC DataSource to obtain connections from.*/
+    public void setDataSource(final DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     /**Return the Connection used by this template.*/
@@ -44,5 +48,17 @@ public class JdbcAccessor {
     /**Set the JDBC Connection to obtain connection from.*/
     public void setConnection(final Connection connection) {
         this.connection = connection;
+    }
+
+    public Function<DataSource, Connection> getDsApply() {
+        return this.dsApply;
+    }
+
+    public void setDsApply(Function<DataSource, Connection> dsApply) {
+        this.dsApply = dsApply;
+    }
+
+    protected Connection applyConnection(DataSource dataSource) {
+        return this.dsApply.apply(dataSource);
     }
 }
