@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda.dialect;
-import net.hasor.db.jdbc.lambda.mapping.ColumnMeta;
-import net.hasor.db.jdbc.lambda.mapping.TableMeta;
+import net.hasor.db.jdbc.mapping.FieldMeta;
+import net.hasor.db.jdbc.mapping.TableMeta;
 import net.hasor.utils.StringUtils;
 
 /**
@@ -25,9 +25,9 @@ import net.hasor.utils.StringUtils;
  */
 public class MySqlDialect implements SqlDialect {
     @Override
-    public String buildSelect(ColumnMeta columnMeta) {
-        String columnName = columnMeta.getColumnName();
-        String aliasName = columnMeta.getAliasName();
+    public String buildSelect(FieldMeta fieldMeta) {
+        String columnName = fieldMeta.getColumnName();
+        String aliasName = fieldMeta.getAliasName();
         if (StringUtils.isNotBlank(aliasName)) {
             return "`" + columnName + "` AS `" + aliasName + "`";
         } else {
@@ -41,7 +41,7 @@ public class MySqlDialect implements SqlDialect {
     }
 
     @Override
-    public String buildConditionName(ColumnMeta columnName) {
+    public String buildConditionName(FieldMeta columnName) {
         return "`" + columnName.getColumnName() + "`";
     }
 }

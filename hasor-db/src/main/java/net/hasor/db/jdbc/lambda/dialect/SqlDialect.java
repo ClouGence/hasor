@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda.dialect;
-import net.hasor.db.jdbc.lambda.mapping.ColumnMeta;
-import net.hasor.db.jdbc.lambda.mapping.TableMeta;
 import net.hasor.db.jdbc.lambda.segment.SqlLike;
+import net.hasor.db.jdbc.mapping.FieldMeta;
+import net.hasor.db.jdbc.mapping.TableMeta;
 import net.hasor.utils.StringUtils;
 
 /**
@@ -28,13 +28,13 @@ public interface SqlDialect {
     public static final SqlDialect DEFAULT = new DefaultSqlDialect();
 
     /** 生成 select 时的列信息 */
-    public String buildSelect(ColumnMeta columnMeta);
+    public String buildSelect(FieldMeta fieldMeta);
 
     /** 生成 form 后面的表名 */
     public String buildTableName(TableMeta tableMeta);
 
     /** 生成 where 中用到的条件名（包括 group by、order by） */
-    public String buildConditionName(ColumnMeta columnName);
+    public String buildConditionName(FieldMeta columnName);
 
     public default String buildLike(SqlLike likeType, String paramName, Object value) {
         if (value == null || StringUtils.isBlank(value.toString())) {

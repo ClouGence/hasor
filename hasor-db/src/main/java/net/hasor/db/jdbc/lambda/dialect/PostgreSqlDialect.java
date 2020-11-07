@@ -19,29 +19,29 @@ import net.hasor.db.jdbc.mapping.TableMeta;
 import net.hasor.utils.StringUtils;
 
 /**
- * 默认 SqlDialect 实现
+ * PostgreSQL 对象名有大小写敏感不敏感的问题
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DefaultSqlDialect implements SqlDialect {
+public class PostgreSqlDialect implements SqlDialect {
     @Override
     public String buildSelect(FieldMeta fieldMeta) {
         String columnName = fieldMeta.getColumnName();
         String aliasName = fieldMeta.getAliasName();
         if (StringUtils.isNotBlank(aliasName)) {
-            return columnName + " AS " + aliasName;
+            return "\"" + columnName + "\" AS \"" + aliasName + "\"";
         } else {
-            return columnName;
+            return "\"" + columnName + "\"";
         }
     }
 
     @Override
     public String buildTableName(TableMeta tableMeta) {
-        return tableMeta.getTable();
+        return "\"" + tableMeta.getTable() + "\"";
     }
 
     @Override
     public String buildConditionName(FieldMeta columnName) {
-        return columnName.getColumnName();
+        return "\"" + columnName.getColumnName() + "\"";
     }
 }

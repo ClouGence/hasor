@@ -17,11 +17,11 @@ package net.hasor.db.jdbc.lambda.query;
 import net.hasor.db.jdbc.JdbcOperations;
 import net.hasor.db.jdbc.lambda.Compare;
 import net.hasor.db.jdbc.lambda.dialect.SqlDialect;
-import net.hasor.db.jdbc.lambda.mapping.ColumnMeta;
-import net.hasor.db.jdbc.lambda.mapping.MetaManager;
 import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
 import net.hasor.db.jdbc.lambda.segment.Segment;
 import net.hasor.db.jdbc.lambda.segment.SqlLike;
+import net.hasor.db.jdbc.mapping.FieldMeta;
+import net.hasor.db.jdbc.mapping.MetaManager;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
@@ -44,21 +44,29 @@ import static net.hasor.db.jdbc.lambda.segment.SqlKeyword.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T> implements Compare<T, R> {
-    private static final Map<String, ColumnMeta> COLUMN_CACHE      = Collections.synchronizedMap(new WeakHashMap<>());
-    private static final ReadWriteLock           COLUMN_CACHE_LOCK = new ReentrantReadWriteLock();
+    private static final Map<String, FieldMeta> COLUMN_CACHE      = Collections.synchronizedMap(new WeakHashMap<>());
+    private static final ReadWriteLock          COLUMN_CACHE_LOCK = new ReentrantReadWriteLock();
     protected            MergeSqlSegment         queryTemplate     = new MergeSqlSegment();
     protected            AtomicInteger           paramNameSeq      = new AtomicInteger();
     protected            Map<String, Object>     queryParam        = new HashMap<>();
 
-    protected static <T> ColumnMeta columnName(SFunction<T, ?> property) {
+    public AbstractCompareQuery(Class<T> exampleType, JdbcOperations jdbcOperations) {
+        super(exampleType, jdbcOperations);
+    }
+
+    AbstractCompareQuery(Class<T> exampleType, JdbcOperations jdbcOperations, String dbType, SqlDialect dialect) {
+        super(exampleType, jdbcOperations, dbType, dialect);
+    }
+
+    protected static <T> FieldMeta columnName(SFunction<T, ?> property) {
         Method targetMethod = MethodUtils.lambdaMethodName(property);
         String cacheKey = targetMethod.toGenericString();
         Lock readLock = COLUMN_CACHE_LOCK.readLock();
         try {
             readLock.lock();
-            ColumnMeta columnMeta = COLUMN_CACHE.get(cacheKey);
-            if (columnMeta != null) {
-                return columnMeta;
+            FieldMeta fieldMeta = COLUMN_CACHE.get(cacheKey);
+            if (fieldMeta != null) {
+                return fieldMeta;
             }
         } finally {
             readLock.unlock();
@@ -67,9 +75,9 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
         Lock writeLock = COLUMN_CACHE_LOCK.writeLock();
         try {
             writeLock.lock();
-            ColumnMeta columnMeta = COLUMN_CACHE.get(cacheKey);
-            if (columnMeta != null) {
-                return columnMeta;
+            FieldMeta fieldMeta = COLUMN_CACHE.get(cacheKey);
+            if (fieldMeta != null) {
+                return fieldMeta;
             }
             String methodName = targetMethod.getName();
             String attr = null;
@@ -80,21 +88,13 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
             }
             String fieldName = StringUtils.firstCharToLowerCase(attr);
             Field field = BeanUtils.getField(fieldName, targetMethod.getDeclaringClass());
-            columnMeta = MetaManager.loadColumnMeta(field);
-            columnMeta = columnMeta == null ? MetaManager.toColumnMeta(fieldName, field.getType()) : columnMeta;
-            COLUMN_CACHE.put(cacheKey, columnMeta);
-            return columnMeta;
+            fieldMeta = MetaManager.loadColumnMeta(field);
+            fieldMeta = fieldMeta == null ? MetaManager.toColumnMeta(fieldName, field.getType()) : fieldMeta;
+            COLUMN_CACHE.put(cacheKey, fieldMeta);
+            return fieldMeta;
         } finally {
             writeLock.unlock();
         }
-    }
-
-    public AbstractCompareQuery(Class<T> exampleType, JdbcOperations jdbcOperations) {
-        super(exampleType, jdbcOperations);
-    }
-
-    AbstractCompareQuery(Class<T> exampleType, JdbcOperations jdbcOperations, String dbType, SqlDialect dialect) {
-        super(exampleType, jdbcOperations, dbType, dialect);
     }
 
     public R andEq(SFunction<T, ?> property, Object value) {

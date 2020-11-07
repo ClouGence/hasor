@@ -18,10 +18,10 @@ import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.lambda.LambdaOperations;
 import net.hasor.db.jdbc.lambda.query.LambdaQueryWrapper;
-import net.hasor.db.jdbc.lambda.mapping.ColumnMeta;
 import net.hasor.db.jdbc.mapper.BeanPropertyRowMapper;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
+import net.hasor.db.jdbc.mapping.FieldMeta;
 import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
@@ -752,7 +752,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     }
 
     @Override
-    public <T> LambdaQuery<T> lambdaSelect(Class<T> exampleType, ColumnMeta... columns) {
+    public <T> LambdaQuery<T> lambdaSelect(Class<T> exampleType, FieldMeta... columns) {
         return new LambdaQueryWrapper<>(exampleType, columns, this);
     }
 
@@ -826,7 +826,6 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
             return parsedSql;
         }
     }
-    //
 
     /**处理潜在的 SQL 警告。当要求不忽略 SQL 警告时，检测到 SQL 警告抛出 SQL 异常。*/
     private void handleWarnings(final Statement stmt) throws SQLException {

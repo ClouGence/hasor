@@ -18,12 +18,12 @@ import net.hasor.db.jdbc.JdbcOperations;
 import net.hasor.db.jdbc.lambda.LambdaOperations;
 import net.hasor.db.jdbc.lambda.LambdaOperations.LambdaQuery;
 import net.hasor.db.jdbc.lambda.dialect.SqlDialect;
-import net.hasor.db.jdbc.lambda.mapping.ColumnMeta;
-import net.hasor.db.jdbc.lambda.mapping.MetaManager;
-import net.hasor.db.jdbc.lambda.mapping.TableMeta;
 import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
 import net.hasor.db.jdbc.lambda.segment.OrderByKeyword;
 import net.hasor.db.jdbc.lambda.segment.Segment;
+import net.hasor.db.jdbc.mapping.FieldMeta;
+import net.hasor.db.jdbc.mapping.MetaManager;
+import net.hasor.db.jdbc.mapping.TableMeta;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.reflect.SFunction;
 
@@ -44,11 +44,40 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
     private final Map<String, Segment> orderBySegments = new LinkedHashMap<>();
     private       String               result          = null;
 
-    public LambdaQueryWrapper(Class<T> exampleType, ColumnMeta[] selectColumns, JdbcOperations jdbcOperations) {
+    public LambdaQueryWrapper(Class<T> exampleType, FieldMeta[] selectColumns, JdbcOperations jdbcOperations) {
         super(exampleType, jdbcOperations);
-        for (ColumnMeta cm : selectColumns) {
+        for (FieldMeta cm : selectColumns) {
             addSelection(cm);
         }
+    }
+
+    private static Segment buildTabName(Class<?> exampleType, SqlDialect dialect) {
+        TableMeta tableMeta = MetaManager.loadTableMeta(exampleType);
+        if (tableMeta == null) {
+            return () -> dialect.buildTableName(MetaManager.toTableMeta(exampleType.getSimpleName()));
+        } else {
+            return () -> dialect.buildTableName(tableMeta);
+        }
+    }
+
+    private static Segment buildColumns(Map<String, Segment> columnSegments) {
+        if (columnSegments.isEmpty()) {
+            return COLUMNS;
+        }
+        return buildBySeparator(columnSegments, ",");
+    }
+
+    private static Segment buildBySeparator(Map<String, Segment> orderBySegments, String separator) {
+        MergeSqlSegment sqlSegment = new MergeSqlSegment();
+        Iterator<Map.Entry<String, Segment>> columnIterator = orderBySegments.entrySet().iterator();
+        while (columnIterator.hasNext()) {
+            Map.Entry<String, Segment> entry = columnIterator.next();
+            sqlSegment.addSegment(entry.getValue());
+            if (columnIterator.hasNext()) {
+                sqlSegment.addSegment(() -> separator);
+            }
+        }
+        return sqlSegment;
     }
 
     @Override
@@ -84,10 +113,10 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
 
     @Override
     public LambdaQuery<T> select(String... columns) {
-        ColumnMeta[] columnMetas = MetaManager.loadColumnMeta(exampleType());
-        if (columnMetas != null) {
+        FieldMeta[] fieldMetas = MetaManager.loadColumnMeta(exampleType());
+        if (fieldMetas != null) {
             Set<String> matching = new HashSet<>(Arrays.asList(columns));
-            Arrays.stream(columnMetas).filter(cm -> {
+            Arrays.stream(fieldMetas).filter(cm -> {
                 return matching.contains(cm.getColumnName());
             }).forEach(this::addSelection);
         }
@@ -113,7 +142,7 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
         return this;
     }
 
-    private LambdaQuery<T> addSelection(ColumnMeta cm) {
+    private LambdaQuery<T> addSelection(FieldMeta cm) {
         String name = cm.getColumnName();
         String alias = cm.getAliasName();
         String key = StringUtils.isNotBlank(alias) ? alias : name;
@@ -153,7 +182,7 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
     }
 
     protected LambdaQuery<T> addGroupBy(SFunction<T, ?> column, Segment segment) {
-        ColumnMeta cm = columnName(column);
+        FieldMeta cm = columnName(column);
         this.groupBySegments.put(cm.getColumnName(), segment);
         return this.getSelf();
     }
@@ -178,7 +207,7 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
     }
 
     protected LambdaQuery<T> addOrderBy(SFunction<T, ?> column, Segment segment) {
-        ColumnMeta cm = columnName(column);
+        FieldMeta cm = columnName(column);
         this.orderBySegments.put(cm.getColumnName(), segment);
         return this.getSelf();
     }
@@ -207,34 +236,5 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
         }
         this.result = sqlSegment.getSqlSegment();
         return this.result;
-    }
-
-    private static Segment buildTabName(Class<?> exampleType, SqlDialect dialect) {
-        TableMeta tableMeta = MetaManager.loadTableMeta(exampleType);
-        if (tableMeta == null) {
-            return () -> dialect.buildTableName(MetaManager.toTableMeta(exampleType.getSimpleName()));
-        } else {
-            return () -> dialect.buildTableName(tableMeta);
-        }
-    }
-
-    private static Segment buildColumns(Map<String, Segment> columnSegments) {
-        if (columnSegments.isEmpty()) {
-            return COLUMNS;
-        }
-        return buildBySeparator(columnSegments, ",");
-    }
-
-    private static Segment buildBySeparator(Map<String, Segment> orderBySegments, String separator) {
-        MergeSqlSegment sqlSegment = new MergeSqlSegment();
-        Iterator<Map.Entry<String, Segment>> columnIterator = orderBySegments.entrySet().iterator();
-        while (columnIterator.hasNext()) {
-            Map.Entry<String, Segment> entry = columnIterator.next();
-            sqlSegment.addSegment(entry.getValue());
-            if (columnIterator.hasNext()) {
-                sqlSegment.addSegment(() -> separator);
-            }
-        }
-        return sqlSegment;
     }
 }

@@ -32,10 +32,10 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractQueryExecute<T> implements QueryExecute<T>, BoundSql {
-    private final   Class<T>       exampleType;
-    private final   JdbcOperations jdbcOperations;
     protected final String         dbType;
     protected final SqlDialect     dialect;
+    private final   Class<T>       exampleType;
+    private final   JdbcOperations jdbcOperations;
 
     public AbstractQueryExecute(Class<T> exampleType, JdbcOperations jdbcOperations) {
         this.exampleType = exampleType;

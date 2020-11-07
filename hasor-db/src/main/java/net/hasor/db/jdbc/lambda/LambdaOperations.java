@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda;
-import net.hasor.db.jdbc.lambda.mapping.ColumnMeta;
-import net.hasor.db.jdbc.lambda.mapping.MetaManager;
+import net.hasor.db.jdbc.mapping.FieldMeta;
+import net.hasor.db.jdbc.mapping.MetaManager;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.reflect.MethodUtils;
 import net.hasor.utils.reflect.SFunction;
@@ -51,17 +51,17 @@ public interface LambdaOperations {
     /** 相当于 select xxx,xxx,xxx form */
     public default <T> LambdaQuery<T> lambdaSelect(Class<T> exampleType, SFunction<T, ?>... columns) {
         if (columns == null || columns.length == 0) {
-            return lambdaSelect(exampleType, new ColumnMeta[0]);
+            return lambdaSelect(exampleType, new FieldMeta[0]);
         }
-        ColumnMeta[] toArray = Arrays.stream(columns).map(columnName -> {
+        FieldMeta[] toArray = Arrays.stream(columns).map(columnName -> {
             Method lambdaMethod = MethodUtils.lambdaMethodName(columnName);
             return MetaManager.toColumnMeta(lambdaMethod);
-        }).toArray(ColumnMeta[]::new);
+        }).toArray(FieldMeta[]::new);
         return lambdaSelect(exampleType, toArray);
     }
 
     /** 相当于 select xxx,xxx,xxx form */
-    public <T> LambdaQuery<T> lambdaSelect(Class<T> exampleType, ColumnMeta... columns);
+    public <T> LambdaQuery<T> lambdaSelect(Class<T> exampleType, FieldMeta... columns);
 
     /** 封装 */
     public interface LambdaQuery<T> extends AbstractLambdaQuery<T, LambdaQuery<T>>, BoundSql, QueryExecute<T> {
