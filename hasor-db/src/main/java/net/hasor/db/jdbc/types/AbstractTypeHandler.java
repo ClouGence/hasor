@@ -15,9 +15,8 @@
  */
 package net.hasor.db.jdbc.types;
 import net.hasor.db.jdbc.TypeHandler;
-import net.hasor.utils.ClassUtils;
+import net.hasor.db.jdbc.mapping.TypeReference;
 
-import java.lang.reflect.Type;
 import java.sql.*;
 
 /**
@@ -32,18 +31,7 @@ import java.sql.*;
  * @author Simone Tripodi
  * @author Kzuki Shimizu
  */
-public abstract class AbstractTypeHandler<T> implements TypeHandler<T> {
-    private final Type rawType = ClassUtils.getSuperClassGenricType(getClass(), 0);
-
-    public final Type getRawType() {
-        return rawType;
-    }
-
-    @Override
-    public String toString() {
-        return rawType.toString();
-    }
-
+public abstract class AbstractTypeHandler<T> extends TypeReference<T> implements TypeHandler<T> {
     @Override
     public void setParameter(PreparedStatement ps, int i, T parameter, JDBCType jdbcType) throws SQLException {
         if (parameter == null) {
