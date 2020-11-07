@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.lambda.mapping;
+package net.hasor.db.jdbc.mapping;
 import net.hasor.db.jdbc.core.StatementSetterUtils;
 
 import java.util.function.Predicate;
@@ -23,14 +23,14 @@ import java.util.function.Predicate;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ColumnMeta implements Predicate<String> {
+public class FieldMeta implements Predicate<String> {
     private final String   columnName;
-    private       String   aliasName;
     private final Class<?> javaType;
     private final int      jdbcType;
+    private       String   aliasName;
     private       boolean  caseStrategy;
 
-    public ColumnMeta(String columnName, Class<?> javaType) {
+    public FieldMeta(String columnName, Class<?> javaType) {
         this.columnName = columnName;
         this.javaType = javaType;
         this.jdbcType = StatementSetterUtils.javaTypeToSqlParameterType(javaType);

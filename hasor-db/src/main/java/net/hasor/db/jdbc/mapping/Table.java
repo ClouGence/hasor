@@ -13,17 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.lambda.mapping;
+package net.hasor.db.jdbc.mapping;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
- * 大小写策略。
+ * 标记在类型上表示映射到的表
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum CaseStrategy {
-    /** 使用小写 */
-    LowerCase,
-    /** 使用大写 */
-    UpperCase,
-    /** 大小写敏感 */
-    Sensitive
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Table {
+    /** 表名，为空的话表示采用类名为表名 see: {@link #name()} */
+    public String value() default "";
+
+    /** 表名，为空的话表示采用类名为表名 see: {@link #value()} */
+    public String name() default "";
+
+    /** 大小写策略 */
+    public CaseStrategy caseStrategy() default CaseStrategy.Sensitive;
 }

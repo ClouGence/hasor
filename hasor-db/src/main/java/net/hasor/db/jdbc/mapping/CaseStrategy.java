@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.lambda.mapping;
+package net.hasor.db.jdbc.mapping;
 /**
- * 映射到数据库的表信息。
+ * 大小写策略。
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TableMeta {
-    private final String tableName;   // 表名
-
-    public TableMeta(String tableName) {
-        this.tableName = tableName;
-    }
-
-    /** 表名 */
-    public String getTable() {
-        return this.tableName;
-    }
+public enum CaseStrategy {
+    /** 使用小写 */
+    LowerCase,
+    /** 使用大写 */
+    UpperCase,
+    /** 大小写敏感 */
+    Sensitive
 }

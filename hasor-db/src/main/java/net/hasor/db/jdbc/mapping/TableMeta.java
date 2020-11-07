@@ -13,26 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.lambda.mapping;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
+package net.hasor.db.jdbc.mapping;
 /**
- * 标记在类型上表示映射到的表
+ * 映射到数据库的表信息。
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Table {
-    /** 表名，为空的话表示采用类名为表名 see: {@link #name()} */
-    public String value() default "";
+public class TableMeta {
+    private final String tableName;   // 表名
 
-    /** 表名，为空的话表示采用类名为表名 see: {@link #value()} */
-    public String name() default "";
+    public TableMeta(String tableName) {
+        this.tableName = tableName;
+    }
 
-    /** 大小写策略 */
-    public CaseStrategy caseStrategy() default CaseStrategy.Sensitive;
+    /** 表名 */
+    public String getTable() {
+        return this.tableName;
+    }
 }
