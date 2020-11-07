@@ -14,46 +14,53 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.types;
+import net.hasor.utils.io.IOUtils;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.sql.*;
 
 /**
- * Convert <code>String</code> to/from <code>SQLXML</code>.
- * @since 3.5.0
- * @author Iwao AVE!
+ * @version : 2020-10-31
+ * @author 赵永春 (zyc@hasor.net)
  */
-public class SqlxmlTypeHandler extends AbstractTypeHandler<String> {
+public class SqlXmlForReaderTypeHandler extends AbstractTypeHandler<Reader> {
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JDBCType jdbcType) throws SQLException {
+    public void setNonNullParameter(PreparedStatement ps, int i, Reader parameter, JDBCType jdbcType) throws SQLException {
         SQLXML sqlxml = ps.getConnection().createSQLXML();
         try {
-            sqlxml.setString(parameter);
+            Writer writer = sqlxml.setCharacterStream();
+            IOUtils.copy(parameter, writer);
             ps.setSQLXML(i, sqlxml);
+        } catch (IOException e) {
+            throw new SQLException("Error copy xml data to SQLXML for parameter #" + i + " with JdbcType " + jdbcType + ", Cause: " + e.getMessage(), e);
         } finally {
             sqlxml.free();
         }
     }
 
     @Override
-    public String getNullableResult(ResultSet rs, String columnName) throws SQLException {
+    public Reader getNullableResult(ResultSet rs, String columnName) throws SQLException {
         return sqlxmlToString(rs.getSQLXML(columnName));
     }
 
     @Override
-    public String getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+    public Reader getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         return sqlxmlToString(rs.getSQLXML(columnIndex));
     }
 
     @Override
-    public String getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+    public Reader getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         return sqlxmlToString(cs.getSQLXML(columnIndex));
     }
 
-    protected String sqlxmlToString(SQLXML sqlxml) throws SQLException {
+    protected Reader sqlxmlToString(SQLXML sqlxml) throws SQLException {
         if (sqlxml == null) {
             return null;
         }
         try {
-            return sqlxml.getString();
+            return sqlxml.getCharacterStream();
         } finally {
             sqlxml.free();
         }

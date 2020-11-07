@@ -19,24 +19,24 @@ import java.sql.*;
 /**
  * @author Clinton Begin
  */
-public class ByteArrayTypeHandler extends AbstractTypeHandler<byte[]> {
+public class ObjectTypeHandler extends AbstractTypeHandler<Object> {
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, byte[] parameter, JDBCType jdbcType) throws SQLException {
-        ps.setBytes(i, parameter);
+    public void setNonNullParameter(PreparedStatement ps, int i, Object parameter, JDBCType jdbcType) throws SQLException {
+        ps.setObject(i, parameter);
     }
 
     @Override
-    public byte[] getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        return rs.getBytes(columnName);
+    public Object getNullableResult(ResultSet rs, String columnName) throws SQLException {
+        return rs.getObject(columnName);
     }
 
     @Override
-    public byte[] getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        return rs.getBytes(columnIndex);
+    public Object getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+        return rs.getObject(columnIndex);
     }
 
     @Override
-    public byte[] getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        return cs.getBytes(columnIndex);
+    public Object getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+        return cs.getObject(columnIndex);
     }
 }

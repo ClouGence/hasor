@@ -16,34 +16,29 @@
 package net.hasor.db.jdbc.types;
 import java.sql.*;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 /**
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class OffsetDateTimeTypeHandler extends AbstractTypeHandler<OffsetDateTime> {
+public class OffsetDateTimeForSqlTypeHandler extends AbstractTypeHandler<OffsetDateTime> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, OffsetDateTime parameter, JDBCType jdbcType) throws SQLException {
-        Timestamp timestamp = Timestamp.valueOf(parameter.atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
-        ps.setTimestamp(i, timestamp);
+        ps.setObject(i, parameter);
     }
 
     @Override
     public OffsetDateTime getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        Timestamp timestamp = rs.getTimestamp(columnName);
-        return (timestamp == null) ? null : timestamp.toInstant().atOffset(ZoneOffset.UTC);
+        return rs.getObject(columnName, OffsetDateTime.class);
     }
 
     @Override
     public OffsetDateTime getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        Timestamp timestamp = rs.getTimestamp(columnIndex);
-        return (timestamp == null) ? null : timestamp.toInstant().atOffset(ZoneOffset.UTC);
+        return rs.getObject(columnIndex, OffsetDateTime.class);
     }
 
     @Override
     public OffsetDateTime getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        Timestamp timestamp = cs.getTimestamp(columnIndex);
-        return (timestamp == null) ? null : timestamp.toInstant().atOffset(ZoneOffset.UTC);
+        return cs.getObject(columnIndex, OffsetDateTime.class);
     }
 }

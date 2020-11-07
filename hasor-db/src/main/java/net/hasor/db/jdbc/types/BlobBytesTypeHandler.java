@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.types;
+import java.io.ByteArrayInputStream;
 import java.sql.*;
 
 /**
  * clob.free should be called.
  * @author Clinton Begin
  */
-public class BlobTypeHandler extends AbstractTypeHandler<byte[]> {
+public class BlobBytesTypeHandler extends AbstractTypeHandler<byte[]> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, byte[] parameter, JDBCType jdbcType) throws SQLException {
-        ps.setBytes(i, parameter);
+        ps.setBlob(i, new ByteArrayInputStream(parameter));
     }
 
     @Override

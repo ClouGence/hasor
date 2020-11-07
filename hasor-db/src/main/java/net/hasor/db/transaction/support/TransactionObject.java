@@ -27,9 +27,10 @@ import java.sql.SQLException;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TransactionObject {
-    private ConnectionHolder holder     = null;
-    private DataSource       dataSource = null;
+    private ConnectionHolder holder      = null;
+    private DataSource       dataSource  = null;
     private Isolation        oriIsolationLevel; //创建事务对象时的隔离级别，当事物结束之后用以恢复隔离级别
+    private boolean          recoverMark = false;
 
     public TransactionObject(final ConnectionHolder holder, final Isolation oriIsolationLevel, final DataSource dataSource) throws SQLException {
         this.holder = holder;
@@ -68,8 +69,6 @@ public class TransactionObject {
     public boolean hasTransaction() throws SQLException {
         return this.holder.hasTransaction();
     }
-
-    private boolean recoverMark = false;
 
     public void beginTransaction() throws SQLException {
         if (!this.holder.hasTransaction()) {
