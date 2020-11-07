@@ -203,7 +203,7 @@ public abstract class AbstractEnvironment implements Environment {
     /* ------------------------------------------------------------------------------------ init */
 
     /**初始化方法*/
-    protected final void initEnvironment(Map<String, String> frameworkEnvConfig) throws IOException {
+    protected final void initEnvironment(Map<String, String> frameworkEnvConfig) {
         // .load & init
         this.envMap = new ConcurrentHashMap<>();
         logger.debug("load envVars...");
@@ -250,7 +250,7 @@ public abstract class AbstractEnvironment implements Environment {
      * 3st，配置文件"hasor.environmentVar"
      * 4st，传入的配置
      */
-    private void initEnvConfig(Map<String, String> frameworkEnvConfig) throws IOException {
+    private void initEnvConfig(Map<String, String> frameworkEnvConfig) {
         //
         // .1st，System.getProperties()
         Properties prop = System.getProperties();

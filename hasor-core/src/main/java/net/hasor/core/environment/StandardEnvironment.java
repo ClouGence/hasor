@@ -72,7 +72,7 @@ public class StandardEnvironment extends AbstractEnvironment {
         this(context, new StandardContextSettings(mainSettings), frameworkEnvConfig, loader);
     }
 
-    public StandardEnvironment(Object context, AbstractSettings mainSettings, Map<String, String> frameworkEnvConfig, ClassLoader loader) throws IOException {
+    public StandardEnvironment(Object context, AbstractSettings mainSettings, Map<String, String> frameworkEnvConfig, ClassLoader loader) {
         super(context, mainSettings);
         logger.debug("create Environment, type = StandardEnvironment, mainSettings = {}", mainSettings);
         if (loader == null) {
