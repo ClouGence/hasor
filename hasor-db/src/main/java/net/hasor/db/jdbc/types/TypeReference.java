@@ -13,7 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * is like Mybatis type.
- */
 package net.hasor.db.jdbc.types;
+import net.hasor.utils.ClassUtils;
+
+/**
+ * @version : 2020-10-31
+ * @author 赵永春 (zyc@hasor.net)
+ */
+public abstract class TypeReference<T> {
+    private final Class<?> rawType = ClassUtils.getSuperClassGenricType(getClass(), 0);
+
+    public final Class<?> getRawType() {
+        return this.rawType;
+    }
+
+    @Override
+    public String toString() {
+        return this.rawType.toString();
+    }
+}

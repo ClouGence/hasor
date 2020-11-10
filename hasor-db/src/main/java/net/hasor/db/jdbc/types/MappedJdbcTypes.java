@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.mapping;
+package net.hasor.db.jdbc.types;
 import java.lang.annotation.*;
 import java.sql.JDBCType;
 

@@ -13,24 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.mapping;
-import net.hasor.utils.ClassUtils;
-
-import java.lang.reflect.Type;
+package net.hasor.db.jdbc.types;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * @version : 2020-10-31
+ * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class TypeReference<T> {
-    private final Type rawType = ClassUtils.getSuperClassGenricType(getClass(), 0);
-
-    public final Type getRawType() {
-        return rawType;
-    }
-
-    @Override
-    public String toString() {
-        return rawType.toString();
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface MappedCrossGroup {
+    public MappedCross[] value();
 }

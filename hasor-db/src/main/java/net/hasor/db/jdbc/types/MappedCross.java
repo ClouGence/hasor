@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.mapping;
-import java.lang.annotation.*;
+package net.hasor.db.jdbc.types;
+import java.lang.annotation.Repeatable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * @author Eduardo Macarron
+ * @version : 2020-10-31
+ * @author 赵永春 (zyc@hasor.net)
  */
-@Documented
+@Repeatable(MappedCrossGroup.class)
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface MappedTypes {
-    public Class<?>[] value();
+public @interface MappedCross {
+    public MappedJdbcTypes jdbcType();
+
+    public MappedJavaTypes javaTypes();
 }

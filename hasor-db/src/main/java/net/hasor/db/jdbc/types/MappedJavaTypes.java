@@ -13,7 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * is like Mybatis type.
- */
 package net.hasor.db.jdbc.types;
+import java.lang.annotation.*;
+
+/**
+ * code org.apache.ibatis.type.MappedTypes
+ * @author Eduardo Macarron
+ */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface MappedJavaTypes {
+    public Class<?>[] value();
+}
