@@ -23,12 +23,14 @@ import net.hasor.utils.ClassUtils;
 import net.hasor.utils.ExceptionUtils;
 
 import javax.inject.Singleton;
+import java.io.Closeable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.EventListener;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -77,6 +79,30 @@ public interface ApiBinder {
      * @see net.hasor.core.Module#loadModule(ApiBinder)
      */
     public ApiBinder installModule(Module... module) throws Throwable;
+
+    /** same as {@link Module#onStop(AppContext)} */
+    public default <T extends Closeable> T onShutdown(T closeable) {
+        HasorUtils.pushShutdownListener(getEnvironment(), (event, eventData) -> {
+            closeable.close();
+        });
+        return closeable;
+    }
+
+    /** same as {@link Module#onStop(AppContext)} */
+    public default ApiBinder onShutdown(Consumer<AppContext> consumer) {
+        HasorUtils.pushShutdownListener(getEnvironment(), (event, eventData) -> {
+            consumer.accept((AppContext) eventData);
+        });
+        return this;
+    }
+
+    /** same as {@link Module#onStart(AppContext)} */
+    public default ApiBinder lazyLoad(Consumer<AppContext> consumer) {
+        HasorUtils.pushStartListener(getEnvironment(), (event, eventData) -> {
+            consumer.accept((AppContext) eventData);
+        });
+        return this;
+    }
 
     /** 是否为单例 */
     public boolean isSingleton(BindInfo<?> bindInfo);
