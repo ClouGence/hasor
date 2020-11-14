@@ -75,6 +75,9 @@ public class RowMapperResultSetExtractor<T> implements ResultSetExtractor<List<T
             T mapRow = this.rowMapper.mapRow(rs, rowNum++);
             if (testRow(mapRow)) {
                 results.add(mapRow);
+                if (this.rowsExpected > 0 && results.size() >= this.rowsExpected) {
+                    break;
+                }
             }
         }
         return results;
