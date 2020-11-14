@@ -1,9 +1,9 @@
-create table TB_User (
-   userUUID             nvarchar(50)         not null,
-   name                 nvarchar(100)        null,
-   loginName            nvarchar(100)        not null,
-   loginPassword        nvarchar(100)        null,
-   email                nvarchar(200)        null,
-   registerTime         datetime             not null,
-   constraint PK_TB_User primary key (userUUID)
+create table tb_user (
+  userUUID      varchar(50)  not null PRIMARY KEY,
+  name          varchar(100) null,
+  loginName     varchar(100) null,
+  loginPassword varchar(100) null,
+  email         varchar(200) null,
+  index         int          null,
+  registerTime  timestamp    null
 );

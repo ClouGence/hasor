@@ -32,39 +32,14 @@ import java.util.Map.Entry;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractDbTest {
-    /**代码相当于：<code>UUID.randomUUID().toString()</code>*/
-    public static String newID() {
-        return UUID.randomUUID().toString();
-    }
-
-    protected void insertData_1(JdbcTemplate jdbcTemplate) throws SQLException {
-        String insertUser1_newData = "insert into TB_User values(?,'赵子龙','zhaoyun','123','zhaoyun@hasor.net','2011-06-08 20:08:08');";
-        jdbcTemplate.executeUpdate(insertUser1_newData, newID());
-    }
-
-    protected void insertData_2(JdbcTemplate jdbcTemplate) throws SQLException {
-        String insertUser1_newData = "insert into TB_User values(?,'诸葛亮','wolong','123','wolong@hasor.net','2011-06-08 20:08:08');";
-        jdbcTemplate.executeUpdate(insertUser1_newData, newID());
-    }
-
-    protected void insertData_3(JdbcTemplate jdbcTemplate) throws SQLException {
-        String insertUser1_newData = "insert into TB_User values(?,'张果老','guolao','123','guolao@hasor.net','2011-06-08 20:08:08');";
-        jdbcTemplate.executeUpdate(insertUser1_newData, newID());
-    }
-
-    protected void insertData_4(JdbcTemplate jdbcTemplate) throws SQLException {
-        String insertUser1_newData = "insert into TB_User values(?,'吴广','wuguang','123','wuguang@hasor.net','2011-06-08 20:08:08');";
-        jdbcTemplate.executeUpdate(insertUser1_newData, newID());
-    }
-
     protected int tableCountWithNew(JdbcTemplate jdbcTemplate) throws SQLException {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
-            return new JdbcTemplate(connection).queryForInt("select count(1) from TB_User");
+            return new JdbcTemplate(connection).queryForInt("select count(1) from tb_user");
         }
     }
 
     protected int tableCountWithCurrent(JdbcTemplate jdbcTemplate) throws SQLException {
-        return jdbcTemplate.queryForInt("select count(1) from TB_User");
+        return jdbcTemplate.queryForInt("select count(1) from tb_user");
     }
 
     /**打印列表内容*/

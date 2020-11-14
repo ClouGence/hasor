@@ -13,33 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.db.single;
+package net.hasor.test.db;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.test.db.DataSourceUtils;
+
+import javax.sql.DataSource;
+
+import static net.hasor.test.db.TestUtils.*;
 
 /***
  * 创建JDBC环境
  * @version : 2014-1-13
  * @author 赵永春 (zyc@hasor.net)
  */
-public class NoDataSingleDataSourceModule implements Module {
+public class SingleDsModule implements Module {
+    private final boolean initData;
+
+    public SingleDsModule(boolean initData) {
+        this.initData = initData;
+    }
+
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        apiBinder.installModule(new JdbcModule(Level.Full, DataSourceUtils.loadDB("demo1", apiBinder.getEnvironment().getSettings())));
+        DataSource ds = apiBinder.onShutdown(DsUtils.createDs("single"));
+        apiBinder.installModule(new JdbcModule(Level.Full, ds));
     }
 
     @Override
     public void onStart(AppContext appContext) throws Throwable {
-        // .初始化MySQL
+        // init table
         JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        if (jdbcTemplate.queryForInt("SELECT count(1) FROM information_schema.system_tables where TABLE_NAME ='TB_USER';") > 0) {
-            jdbcTemplate.executeUpdate("drop table TB_USER");
+        DsUtils.initDB(jdbcTemplate);
+        //
+        if (this.initData) {
+            jdbcTemplate.executeUpdate(INSERT_ARRAY, arrayForData1());
+            jdbcTemplate.executeUpdate(INSERT_ARRAY, arrayForData2());
+            jdbcTemplate.executeUpdate(INSERT_ARRAY, arrayForData3());
         }
-        jdbcTemplate.loadSQL("net_hasor_db/TB_User.sql");
     }
 }

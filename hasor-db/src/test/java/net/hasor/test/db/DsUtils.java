@@ -15,16 +15,23 @@
  */
 package net.hasor.test.db;
 import com.alibaba.druid.pool.DruidDataSource;
+import net.hasor.db.jdbc.ConnectionCallback;
+import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.jdbc.extractor.ColumnMapResultSetExtractor;
 
-import javax.sql.DataSource;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 /***
  * 创建JDBC环境
  * @version : 2014-1-13
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DataSourceUtils {
-    public static DataSource loadDB(String dbID) throws Throwable {
+public class DsUtils {
+    public static DruidDataSource createDs(String dbID) throws Throwable {
         DruidDataSource druid = new DruidDataSource();
         druid.setUrl("jdbc:h2:mem:test_" + dbID);
         druid.setDriverClassName("org.h2.Driver");
@@ -40,5 +47,18 @@ public class DataSourceUtils {
         druid.setFailFast(true);
         druid.init();
         return druid;
+    }
+
+    public static void initDB(JdbcTemplate jdbcTemplate) throws SQLException, IOException {
+        // init table
+        jdbcTemplate.execute((ConnectionCallback<Object>) con -> {
+            ResultSet resultSet = con.getMetaData().getTables(null, "tb_user", null, null);
+            List<Map<String, Object>> mapList = new ColumnMapResultSetExtractor().extractData(resultSet);
+            if (!mapList.isEmpty()) {
+                jdbcTemplate.executeUpdate("drop table tb_user");
+            }
+            return null;
+        });
+        jdbcTemplate.loadSQL("net_hasor_db/tb_user.sql");
     }
 }
