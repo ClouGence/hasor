@@ -6136,4 +6136,9 @@ public class StringUtils {
             throw new RuntimeException(x);
         }
     }
+
+    /** Object to String ,when null object then null else return toString(); */
+    public static String toString(Object object) {
+        return (object == null) ? null : object.toString();
+    }
 }

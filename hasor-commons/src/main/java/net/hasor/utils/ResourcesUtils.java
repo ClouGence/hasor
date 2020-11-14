@@ -225,6 +225,16 @@ public abstract class ResourcesUtils {
         }
         return iss;
     }
+
+    /**
+     * Loads a class
+     * @param className - the class to fetch
+     * @return The loaded class
+     * @throws ClassNotFoundException If the class cannot be found (duh!)
+     */
+    public static Class<?> classForName(String className) throws ClassNotFoundException {
+        return getCurrentLoader().loadClass(className);
+    }
     /*------------------------------------------------------------------------------*/
 
     /**对某一个目录执行扫描。*/
