@@ -33,53 +33,7 @@ import static net.hasor.test.db.TestUtils.*;
  * @version : 2020-11-12
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ExtractorTest extends AbstractDbTest {
-    @Test
-    public void testColumnMapResultSetExtractor_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            //
-            List<Map<String, Object>> mapList1 = jdbcTemplate.query("select * from tb_user", new ColumnMapResultSetExtractor(1));
-            List<Map<String, Object>> mapList2 = jdbcTemplate.query("select * from tb_user", new ColumnMapResultSetExtractor());
-            //
-            assert mapList1.size() == 1;
-            assert mapList2.size() == 3;
-        }
-    }
-
-    @Test
-    public void testRowMapperResultSetExtractor_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            ColumnMapRowMapper rowMapper = new ColumnMapRowMapper();
-            List<Map<String, Object>> mapList1 = jdbcTemplate.query("select * from tb_user", new RowMapperResultSetExtractor<>(rowMapper, 1));
-            List<Map<String, Object>> mapList2 = jdbcTemplate.query("select * from tb_user", new RowMapperResultSetExtractor<>(rowMapper));
-            //
-            assert mapList1.size() == 1;
-            assert mapList2.size() == 3;
-        }
-    }
-
-    @Test
-    public void testColumnMapResultSetExtractor_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            //
-            String dataId = beanForData4().getUserUUID();
-            Object[] dataArgs = arrayForData4();
-            List<Map<String, Object>> mapList = null;
-            //
-            // before
-            mapList = jdbcTemplate.query("select * from tb_user where userUUID =?", new ColumnMapResultSetExtractor(), dataId);
-            assert mapList.size() == 0;
-            // after
-            jdbcTemplate.executeUpdate(INSERT_ARRAY, dataArgs);
-            mapList = jdbcTemplate.query("select * from tb_user where userUUID =?", new ColumnMapResultSetExtractor(), dataId);
-            assert mapList.size() == 1;
-            assert mapList.get(0).get("name").equals(beanForData4().getName());
-        }
-    }
-
+public class FilterNullResultSetExtractorTest extends AbstractDbTest {
     @Test
     public void testFilterNullResultSetExtractor_1() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
