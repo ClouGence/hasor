@@ -13,34 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.provider;
+package net.hasor.utils.supplier;
 import java.util.function.Supplier;
 
 /**
- * 对象的{@link Supplier}封装形式。
+ * 线程单例对象的{@link Supplier}封装形式。
  * @version : 2014年7月8日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InstanceProvider<T> implements Supplier<T> {
-    private T instance = null;
+public class ThreadSingleProvider<T> implements Supplier<T> {
+    private final ThreadLocal<T> instance;
 
-    public InstanceProvider(final T instance) {
-        this.instance = instance;
+    public ThreadSingleProvider(final Supplier<T> provider) {
+        this.instance = ThreadLocal.withInitial(() -> newInstance(provider));
+    }
+
+    protected T newInstance(Supplier<T> provider) {
+        return provider.get();
     }
 
     public T get() {
-        return this.instance;
+        return this.instance.get();
     }
 
-    public void set(T instance) {
-        this.instance = instance;
-    }
-
-    public static <V, T extends V> Supplier<V> of(T target) {
-        return new InstanceProvider<>(target);
-    }
-
-    public static <T> Supplier<T> wrap(T target) {
-        return new InstanceProvider<>(target);
+    public String toString() {
+        return "ThreadSingleProvider->" + instance.toString();
     }
 }

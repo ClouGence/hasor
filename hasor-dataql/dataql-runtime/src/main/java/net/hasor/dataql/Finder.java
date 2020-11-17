@@ -15,9 +15,8 @@
  */
 package net.hasor.dataql;
 import net.hasor.core.AppContext;
+import net.hasor.core.Provider;
 import net.hasor.core.TypeSupplier;
-import net.hasor.core.provider.InstanceProvider;
-import net.hasor.core.provider.SingleProvider;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
 
@@ -45,7 +44,7 @@ public interface Finder {
     };
     /** 与 ofAppContext 类似不同的是允许 延迟生产 AppContext */
     public static final Function<Supplier<AppContext>, Finder> APP_CONTEXT_SUPPLIER = appContextSupplier -> {
-        Supplier<AppContext> single = SingleProvider.of(appContextSupplier);
+        Supplier<AppContext> single = Provider.of(appContextSupplier).asSingle();
         return new Finder() {
             public Object findBean(Class<?> beanType) {
                 return single.get().getInstance(beanType);
@@ -54,7 +53,7 @@ public interface Finder {
     };
     /** 通过 AppContext 委托 findBean 的类型创建 */
     public static final Function<AppContext, Finder>           APP_CONTEXT          = appContext -> {
-        return APP_CONTEXT_SUPPLIER.apply(InstanceProvider.of(appContext));
+        return APP_CONTEXT_SUPPLIER.apply(Provider.of(appContext));
     };
 
     /** 负责处理 <code>import @"/net/hasor/demo.ql" as demo;</code>方式中 ‘/net/hasor/demo.ql’ 资源的加载 */

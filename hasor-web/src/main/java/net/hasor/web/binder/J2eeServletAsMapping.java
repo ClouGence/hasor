@@ -16,7 +16,7 @@
 package net.hasor.web.binder;
 import net.hasor.core.Environment;
 import net.hasor.core.HasorUtils;
-import net.hasor.core.provider.SingleProvider;
+import net.hasor.core.Provider;
 import net.hasor.web.Controller;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Any;
@@ -42,7 +42,7 @@ public class J2eeServletAsMapping implements Controller {
     public J2eeServletAsMapping(OneConfig initParams, Supplier<? extends Servlet> j2eeServlet) {
         this.initParams = initParams;
         this.inited = new AtomicBoolean(false);
-        this.targetServlet = new SingleProvider<>(j2eeServlet);
+        this.targetServlet = Provider.of(j2eeServlet).asSingle();
     }
 
     public Supplier<? extends Servlet> getTarget() {

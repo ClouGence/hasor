@@ -16,10 +16,10 @@
 package net.hasor.web;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Provider;
 import net.hasor.core.TypeSupplier;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.web.annotation.MappingTo;
@@ -404,7 +404,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
         /**绑定实现。*/
         public default void toInstance(RenderEngine renderEngine) {
-            this.toProvider(new InstanceProvider<>(renderEngine));
+            this.toProvider(Provider.of(renderEngine));
         }
 
         /**绑定实现。*/

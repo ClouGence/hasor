@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.core.Provider;
 import net.hasor.core.Scope;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.BindInfoProvisionListener;
 import net.hasor.core.spi.ScopeProvisionListener;
 import org.junit.Test;
@@ -35,12 +35,12 @@ public class SpiCallerContainerTest {
         assert spiCallerContainer.getListenerSize() == 0;
         //
         BindInfoProvisionListener listener1 = PowerMockito.mock(BindInfoProvisionListener.class);
-        spiCallerContainer.addListener(BindInfoProvisionListener.class, InstanceProvider.of(listener1));
-        spiCallerContainer.addListener(BindInfoProvisionListener.class, InstanceProvider.of(listener1));
+        spiCallerContainer.addListener(BindInfoProvisionListener.class, Provider.of(listener1));
+        spiCallerContainer.addListener(BindInfoProvisionListener.class, Provider.of(listener1));
         ScopeProvisionListener listener2 = PowerMockito.mock(ScopeProvisionListener.class);
-        spiCallerContainer.addListener(ScopeProvisionListener.class, InstanceProvider.of(listener2));
-        spiCallerContainer.addListener(ScopeProvisionListener.class, InstanceProvider.of(listener2));
-        spiCallerContainer.addListener(ScopeProvisionListener.class, InstanceProvider.of(listener2));
+        spiCallerContainer.addListener(ScopeProvisionListener.class, Provider.of(listener2));
+        spiCallerContainer.addListener(ScopeProvisionListener.class, Provider.of(listener2));
+        spiCallerContainer.addListener(ScopeProvisionListener.class, Provider.of(listener2));
         //
         assert spiCallerContainer.getListenerTypeSize() == 2;
         assert spiCallerContainer.getListenerSize() == 5;
@@ -67,7 +67,7 @@ public class SpiCallerContainerTest {
     public void spiTest2() {
         ArrayList<Object> receive = new ArrayList<>();
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
-        spiCallerContainer.addListener(ScopeProvisionListener.class, InstanceProvider.of((scopeName, scopeSupplier) -> {
+        spiCallerContainer.addListener(ScopeProvisionListener.class, Provider.of((scopeName, scopeSupplier) -> {
             receive.add(scopeSupplier);
         }));
         //
@@ -88,7 +88,7 @@ public class SpiCallerContainerTest {
         spiCallerContainer.init();
         //
         ScopeProvisionListener listener = PowerMockito.mock(ScopeProvisionListener.class);
-        spiCallerContainer.addListener(ScopeProvisionListener.class, InstanceProvider.of(listener));
+        spiCallerContainer.addListener(ScopeProvisionListener.class, Provider.of(listener));
         //
         spiCallerContainer.forEachListener(entry -> {
             try {

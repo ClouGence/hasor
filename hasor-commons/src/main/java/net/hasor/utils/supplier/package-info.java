@@ -16,4 +16,4 @@
 /**
  * <p>各种类型的Provider接口工具。</p>
  */
-package net.hasor.core.provider;
+package net.hasor.utils.supplier;

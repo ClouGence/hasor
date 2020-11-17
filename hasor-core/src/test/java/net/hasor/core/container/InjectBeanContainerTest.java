@@ -18,7 +18,6 @@ import net.hasor.core.*;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.setting.InputStreamSettings;
 import net.hasor.test.core.basic.inject.PropertyPojoBeanRef;
 import net.hasor.test.core.basic.inject.constructor.BasicConstructorBean;
@@ -237,7 +236,7 @@ public class InjectBeanContainerTest {
         //
         BeanContainer container = new BeanContainer(mockEnv);
         DefaultBindInfoProviderAdapter<PropertyBean> adapter = container.getBindInfoContainer().createInfoAdapter(PropertyBean.class, null);
-        adapter.addInject("byteValue", InstanceProvider.of(123));
+        adapter.addInject("byteValue", Provider.of(123));
         PropertyBean confValue = new PropertyBean();
         PropertyBean propertyBean = container.justInject(confValue, adapter, appContext);
         //

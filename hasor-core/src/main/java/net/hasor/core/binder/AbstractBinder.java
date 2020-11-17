@@ -20,7 +20,6 @@ import net.hasor.core.aop.SimplePropertyDelegate;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DelegateBindInfoAdapter;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.SpiJudge;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
@@ -297,7 +296,7 @@ public abstract class AbstractBinder implements ApiBinder {
             Class<?>[] params = constructor.getParameterTypes();
             for (int i = 0; i < params.length; i++) {
                 Object defaultValue = BeanUtils.getDefaultValue(params[i]);//取得参数的默认值
-                this.typeBuilder.setConstructor(i, params[i], new InstanceProvider<>(defaultValue));
+                this.typeBuilder.setConstructor(i, params[i], Provider.of(defaultValue));
             }
             this.initParams = params;
             return this;
@@ -332,7 +331,7 @@ public abstract class AbstractBinder implements ApiBinder {
 
         @Override
         public InjectPropertyBindingBuilder<T> injectValue(final String property, final Object value) {
-            return this.inject(property, new InstanceProvider<>(value));
+            return this.inject(property, Provider.of(value));
         }
 
         @Override
@@ -361,7 +360,7 @@ public abstract class AbstractBinder implements ApiBinder {
 
         @Override
         public InjectConstructorBindingBuilder<T> injectValue(final int index, final Object value) {
-            return this.inject(index, new InstanceProvider<>(value));
+            return this.inject(index, Provider.of(value));
         }
 
         @Override

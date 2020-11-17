@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.scope.SingletonScope;
 import net.hasor.core.spi.ScopeProvisionListener;
 import net.hasor.test.core.basic.destroy.PrototypePublicCallDestroyBean;
@@ -287,7 +287,7 @@ public class ScopeContainerTest {
         //
         //
         HashMap<String, Object> spiTest = new HashMap<>();
-        spiCallerContainer.addListener(ScopeProvisionListener.class, InstanceProvider.of((scopeName, scopeSupplier) -> {
+        spiCallerContainer.addListener(ScopeProvisionListener.class, Provider.of((scopeName, scopeSupplier) -> {
             spiTest.put(scopeName, scopeSupplier.get());
             //
         }));

@@ -13,22 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.provider;
+package net.hasor.utils.supplier;
+import net.hasor.utils.ContextClassLoaderLocal;
+
 import java.util.function.Supplier;
 
 /**
- * 线程单例对象的{@link Supplier}封装形式。
+ * ClassLoader单例对象的{@link Supplier}封装形式。
  * @version : 2014年7月8日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ThreadSingleProvider<T> implements Supplier<T> {
-    private final ThreadLocal<T> instance;
+public class ClassLoaderSingleProvider<T> implements Supplier<T> {
+    private final ContextClassLoaderLocal<T> instance;
 
-    public ThreadSingleProvider(final Supplier<T> provider) {
-        this.instance = ThreadLocal.withInitial(() -> newInstance(provider));
+    public ClassLoaderSingleProvider(final Supplier<T> provider) {
+        this.instance = new ContextClassLoaderLocal<T>() {
+            @Override
+            protected T initialValue() {
+                return newInstance(provider);
+            }
+        };
     }
 
-    //
     protected T newInstance(Supplier<T> provider) {
         return provider.get();
     }
@@ -38,6 +44,6 @@ public class ThreadSingleProvider<T> implements Supplier<T> {
     }
 
     public String toString() {
-        return "ThreadSingleProvider->" + instance.toString();
+        return "ClassLoaderSingleProvider->" + instance.toString();
     }
 }

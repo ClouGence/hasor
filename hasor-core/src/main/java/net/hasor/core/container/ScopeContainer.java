@@ -15,9 +15,9 @@
  */
 package net.hasor.core.container;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.scope.PrototypeScope;
 import net.hasor.core.scope.SingletonScope;
 import net.hasor.core.spi.ScopeProvisionListener;
@@ -67,7 +67,7 @@ public class ScopeContainer extends AbstractContainer {
      * @return 成功注册之后返回scopeProvider自身, 如果存在同名的scope那么会引发异常。
      */
     public <T extends Scope> Supplier<T> registerScope(String scopeName, Scope scopeInstance) {
-        return this.registerScopeProvider(scopeName, (Supplier) InstanceProvider.of(scopeInstance));
+        return this.registerScopeProvider(scopeName, (Supplier) Provider.of(scopeInstance));
     }
 
     /**
@@ -182,9 +182,9 @@ public class ScopeContainer extends AbstractContainer {
 
     protected void doInitialize() {
         this.singletonScope = new SingletonScope();
-        this.scopeMapping.put(net.hasor.core.Prototype.class.getName(), InstanceProvider.of(prototypeScope));
-        this.scopeMapping.put(net.hasor.core.Singleton.class.getName(), InstanceProvider.of(singletonScope));
-        this.scopeMapping.put(javax.inject.Singleton.class.getName(), InstanceProvider.of(singletonScope));
+        this.scopeMapping.put(net.hasor.core.Prototype.class.getName(), Provider.of(prototypeScope));
+        this.scopeMapping.put(net.hasor.core.Singleton.class.getName(), Provider.of(singletonScope));
+        this.scopeMapping.put(javax.inject.Singleton.class.getName(), Provider.of(singletonScope));
     }
 
     @Override

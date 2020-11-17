@@ -15,8 +15,8 @@
  */
 package net.hasor.core.info;
 import net.hasor.core.PropertyDelegate;
+import net.hasor.core.Provider;
 import net.hasor.core.aop.ReadWriteType;
-import net.hasor.core.provider.SingleProvider;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -37,7 +37,7 @@ public class DelegateBindInfoAdapter implements Supplier<PropertyDelegate>, Prop
         this.matcherClass = matcherClass;
         this.propertyName = propertyName;
         this.propertyType = propertyType;
-        this.propertyDelegate = SingleProvider.of(propertyDelegate);
+        this.propertyDelegate = Provider.of(propertyDelegate).asSingle();
         this.rwType = rwType;
     }
 
