@@ -75,9 +75,7 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
         try {
             targetObject = this.requiredType.newInstance();
             return this.tranResultSet(rs, targetObject);
-        } catch (InstantiationException e) {
-            throw new SQLException(e);
-        } catch (IllegalAccessException e) {
+        } catch (ReflectiveOperationException e) {
             throw new SQLException(e);
         }
     }
@@ -103,12 +101,7 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
 
     /**取得指定列的值*/
     protected Object getColumnValue(final ResultSet rs, final int index, final Class<?> requiredType) throws SQLException {
-        Object resultData = getResultSetValue(rs, index);
-        if (requiredType != null) {
-            return convertValueToRequiredType(resultData, requiredType);
-        } else {
-            return resultData;
-        }
+        return getResultSetValue(rs, index, requiredType);
     }
 
     /**
@@ -116,7 +109,7 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
      * @param mappedClass the class that each row should be mapped to
      */
     public static <T> BeanPropertyRowMapper<T> newInstance(final Class<T> mappedClass) {
-        BeanPropertyRowMapper<T> newInstance = new BeanPropertyRowMapper<T>();
+        BeanPropertyRowMapper<T> newInstance = new BeanPropertyRowMapper<>();
         newInstance.setRequiredType(mappedClass);
         return newInstance;
     }

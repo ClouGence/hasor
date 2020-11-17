@@ -26,15 +26,11 @@ import java.sql.SQLException;
 public class SingleColumnRowMapper<T> extends AbstractRowMapper<T> {
     private Class<T> requiredType;
 
-    /** Create a new SingleColumnRowMapper. */
-    public SingleColumnRowMapper() {
-    }
-
     /**
      * Create a new SingleColumnRowMapper.
      * @param requiredType the type that each result object is expected to match
      */
-    public SingleColumnRowMapper(final Class<T> requiredType) {
+    public SingleColumnRowMapper(Class<T> requiredType) {
         this.requiredType = requiredType;
     }
 
@@ -43,23 +39,14 @@ public class SingleColumnRowMapper<T> extends AbstractRowMapper<T> {
         this.requiredType = requiredType;
     }
 
-    /**将当前行的第一列的值转换为指定的类型。*/
+    /** 将当前行的第一列的值转换为指定的类型。*/
     @Override
     public T mapRow(final ResultSet rs, final int rowNum) throws SQLException {
-        //1.Validate column count.
         ResultSetMetaData rsmd = rs.getMetaData();
         int nrOfColumns = rsmd.getColumnCount();
         if (nrOfColumns != 1) {
             throw new SQLException("Incorrect column count: expected 1, actual " + nrOfColumns);
         }
-        //2.Extract column value from JDBC ResultSet.
-        Object result = getResultSetValue(rs, 1);
-        if (this.requiredType != null) {
-            if (result != null && !this.requiredType.isInstance(result)) {
-                result = convertValueToRequiredType(result, this.requiredType);
-            }
-        }
-        //3.Return
-        return (T) result;
+        return (T) getResultSetValue(rs, 1, this.requiredType);
     }
 }
