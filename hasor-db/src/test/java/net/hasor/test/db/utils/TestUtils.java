@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.db;
+package net.hasor.test.db.utils;
+import net.hasor.test.db.dto.TB_User;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

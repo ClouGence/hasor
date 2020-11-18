@@ -5,7 +5,7 @@ import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.SingleDsModule;
-import net.hasor.test.db.TB_User;
+import net.hasor.test.db.dto.TB_User;
 import org.junit.Test;
 
 import javax.sql.DataSource;
@@ -15,7 +15,7 @@ import java.sql.Savepoint;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static net.hasor.test.db.TestUtils.*;
+import static net.hasor.test.db.utils.TestUtils.*;
 
 public class HolderTest extends AbstractDbTest {
     @Test

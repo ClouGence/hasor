@@ -20,10 +20,11 @@ import net.hasor.core.Module;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.test.db.utils.DsUtils;
 
 import javax.sql.DataSource;
 
-import static net.hasor.test.db.TestUtils.*;
+import static net.hasor.test.db.utils.TestUtils.*;
 
 /***
  * 多数剧源

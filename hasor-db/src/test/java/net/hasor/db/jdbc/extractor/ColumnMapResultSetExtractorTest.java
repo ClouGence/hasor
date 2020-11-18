@@ -26,7 +26,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import static net.hasor.test.db.TestUtils.*;
+import static net.hasor.test.db.utils.TestUtils.*;
 
 /***
  * @version : 2020-11-12

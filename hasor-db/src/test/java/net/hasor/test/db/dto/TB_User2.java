@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.db;
+package net.hasor.test.db.dto;
 import java.util.Date;
 
 /**
@@ -21,14 +21,15 @@ import java.util.Date;
  * @version : 2013-12-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TB_User {
-    private String userUUID;
-    private String name;
-    private String loginName;
-    private String loginPassword;
-    private String email;
-    private int    index;
-    private Date   registerTime;
+public class TB_User2 {
+    private String      userUUID;
+    private String      name;
+    private String      loginName;
+    private String      loginPassword;
+    private String      email;
+    private int         index;
+    private UserFutures futures;
+    private Date        registerTime;
 
     public String getUserUUID() {
         return userUUID;
@@ -76,6 +77,14 @@ public class TB_User {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public UserFutures getFutures() {
+        return futures;
+    }
+
+    public void setFutures(UserFutures futures) {
+        this.futures = futures;
     }
 
     public Date getRegisterTime() {

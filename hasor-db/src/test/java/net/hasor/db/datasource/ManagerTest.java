@@ -4,7 +4,7 @@ import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.SingleDsModule;
-import net.hasor.test.db.TB_User;
+import net.hasor.test.db.dto.TB_User;
 import org.junit.Test;
 
 import javax.sql.DataSource;

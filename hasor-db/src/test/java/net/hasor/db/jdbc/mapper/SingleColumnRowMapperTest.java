@@ -3,6 +3,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.test.db.SingleDsModule;
+import net.hasor.test.db.dto.TB_User2;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -24,6 +25,12 @@ public class SingleColumnRowMapperTest {
             jdbcTemplate.executeUpdate("insert into tb_h2types (c_int) values (123);");
             resultData = jdbcTemplate.queryForObject(//
                     "select c_int from tb_h2types where c_int = 123;", String.class);
+            assert "123".equals(resultData);
+            //
+            SingleColumnRowMapper<String> rowMapper = new SingleColumnRowMapper<>(String.class);
+            rowMapper.setRequiredType(String.class);
+            resultData = jdbcTemplate.queryForObject(//
+                    "select c_int from tb_h2types where c_int = 123;", rowMapper);
             assert "123".equals(resultData);
         }
     }
@@ -50,7 +57,21 @@ public class SingleColumnRowMapperTest {
             assert num3 == 123d;
             assert num4.intValue() == 123;
             assert num5 != null;
-            assert num5.intValue() > 0;
+            assert num5.longValue() != 0;
+        }
+    }
+
+    @Test
+    public void testSingleColumnRowMapper_3() {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            try {
+                jdbcTemplate.queryForList("select *,'' as futures from tb_user", TB_User2.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().startsWith("no typeHandler is matched to any available");
+            }
         }
     }
 }

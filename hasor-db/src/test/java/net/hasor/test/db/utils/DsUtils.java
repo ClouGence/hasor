@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.db;
+package net.hasor.test.db.utils;
 import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -52,13 +52,23 @@ public class DsUtils {
     public static void initDB(JdbcTemplate jdbcTemplate) throws SQLException, IOException {
         // init table
         jdbcTemplate.execute((ConnectionCallback<Object>) con -> {
-            ResultSet resultSet = con.getMetaData().getTables(null, "tb_user", null, null);
-            List<Map<String, Object>> mapList = new ColumnMapResultSetExtractor().extractData(resultSet);
+            ResultSet resultSet = null;
+            List<Map<String, Object>> mapList;
+            //
+            resultSet = con.getMetaData().getTables(null, "tb_user", null, null);
+            mapList = new ColumnMapResultSetExtractor().extractData(resultSet);
             if (!mapList.isEmpty()) {
                 jdbcTemplate.executeUpdate("drop table tb_user");
             }
+            resultSet = con.getMetaData().getTables(null, "tb_h2types", null, null);
+            mapList = new ColumnMapResultSetExtractor().extractData(resultSet);
+            if (!mapList.isEmpty()) {
+                jdbcTemplate.executeUpdate("drop table tb_h2types");
+            }
             return null;
         });
+        //
         jdbcTemplate.loadSQL("net_hasor_db/tb_user.sql");
+        jdbcTemplate.loadSQL("net_hasor_db/tb_h2types.sql");
     }
 }

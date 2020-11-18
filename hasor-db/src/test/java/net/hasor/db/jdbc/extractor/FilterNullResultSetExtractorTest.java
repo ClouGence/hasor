@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static net.hasor.test.db.TestUtils.*;
+import static net.hasor.test.db.utils.TestUtils.*;
 
 /***
  * @version : 2020-11-12
