@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataway.config;
+
 import net.hasor.core.Environment;
 import net.hasor.core.HasorUtils;
 import net.hasor.core.XmlNode;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Dataway 启动入口
+ *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-20
  */
@@ -56,9 +58,19 @@ public class DatawayModule implements WebModule {
         if (StringUtils.isBlank(apiBaseUri)) {
             apiBaseUri = "/api/";
         }
+        //
+        // .UI
+        String uiBaseUri = environment.getVariable("HASOR_DATAQL_DATAWAY_UI_URL");
+        if (StringUtils.isBlank(uiBaseUri)) {
+            uiBaseUri = "/interface-ui/";
+        }
+        if (!uiBaseUri.endsWith("/")) {
+            uiBaseUri = uiBaseUri + "/";
+        }
         logger.info("dataway api workAt " + apiBaseUri);
+        //
         environment.addVariable("HASOR_DATAQL_DATAWAY_API_URL", apiBaseUri);
-        apiBinder.filter(fixUrl(apiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceApiFilter(apiBaseUri));
+        apiBinder.filter(fixUrl(apiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceApiFilter(apiBaseUri, uiBaseUri));
         //
         // .Finder,实现引用其它定义的 DataQL
         QueryApiBinder defaultContext = apiBinder.tryCast(QueryApiBinder.class);
@@ -101,17 +113,11 @@ public class DatawayModule implements WebModule {
             logger.info("dataway admin is disable.");
             return;
         }
-        String uiBaseUri = environment.getVariable("HASOR_DATAQL_DATAWAY_UI_URL");
-        if (StringUtils.isBlank(uiBaseUri)) {
-            uiBaseUri = "/interface-ui/";
-        }
-        if (!uiBaseUri.endsWith("/")) {
-            uiBaseUri = uiBaseUri + "/";
-        }
+
         logger.info("dataway admin workAt " + uiBaseUri);
         //
         // 使用 findClass 虽然可以降低代码复杂度，但是会因为引入代码扫描而增加初始化时间
-        Class<?>[] controllerSet = new Class<?>[] { //
+        Class<?>[] controllerSet = new Class<?>[]{ //
                 ApiDetailController.class,          //
                 ApiHistoryListController.class,     //
                 ApiInfoController.class,            //
