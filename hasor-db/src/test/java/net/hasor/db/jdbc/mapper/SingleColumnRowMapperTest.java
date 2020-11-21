@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 public class SingleColumnRowMapperTest {
     @Test
@@ -62,16 +63,15 @@ public class SingleColumnRowMapperTest {
     }
 
     @Test
-    public void testSingleColumnRowMapper_3() {
+    public void testSingleColumnRowMapper_3() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            try {
-                jdbcTemplate.queryForList("select *,'' as futures from tb_user", TB_User2.class);
-                assert false;
-            } catch (Exception e) {
-                assert e.getMessage().startsWith("no typeHandler is matched to any available");
-            }
+            List<TB_User2> tbUser2s = jdbcTemplate.queryForList("select *,'' as futures from tb_user", TB_User2.class);
+            assert tbUser2s.size() == 3;
+            tbUser2s.forEach(tb_user2 -> {
+                assert tb_user2.getFutures() == null;
+            });
         }
     }
 }

@@ -15,6 +15,7 @@
  */
 package net.hasor.db.jdbc.mapper;
 import net.hasor.utils.BeanUtils;
+import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -32,7 +33,7 @@ import java.util.Objects;
 public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
     private Class<T>            requiredType;
     private boolean             caseInsensitive = false;
-    private Map<String, String> columnMapping   = new HashMap<>();
+    private Map<String, String> columnMapping;
 
     /** Create a new BeanPropertyRowMapper.*/
     public BeanPropertyRowMapper() {
@@ -53,8 +54,11 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
     }
 
     private void loadMapping() {
-        /*借助用属性名统一大写，来实现属性感性。*/
-        this.columnMapping.clear();
+        if (this.isCaseInsensitive()) {
+            this.columnMapping = new LinkedCaseInsensitiveMap<>();
+        } else {
+            this.columnMapping = new HashMap<>();
+        }
         List<String> prop = BeanUtils.getPropertysAndFields(this.requiredType);
         for (String pName : prop) {
             this.columnMapping.put(pName.toUpperCase(), pName);
