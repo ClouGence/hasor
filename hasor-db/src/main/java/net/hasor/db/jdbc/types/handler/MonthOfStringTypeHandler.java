@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.types.handler;
+import net.hasor.utils.NumberUtils;
 import net.hasor.utils.StringUtils;
 
 import java.sql.*;
@@ -26,24 +27,36 @@ import java.time.Month;
 public class MonthOfStringTypeHandler extends AbstractTypeHandler<Month> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, Month month, JDBCType jdbcType) throws SQLException {
-        ps.setString(i, month.name());
+        ps.setString(i, month.name().toUpperCase());
     }
 
     @Override
     public Month getNullableResult(ResultSet rs, String columnName) throws SQLException {
         String month = rs.getString(columnName);
-        return StringUtils.isBlank(month) ? null : Month.valueOf(month);
+        if (StringUtils.isBlank(month)) {
+            return null;
+        }
+        month = month.trim().toUpperCase();
+        return NumberUtils.isNumber(month) ? Month.of(Integer.parseInt(month)) : Month.valueOf(month);
     }
 
     @Override
     public Month getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         String month = rs.getString(columnIndex);
-        return StringUtils.isBlank(month) ? null : Month.valueOf(month);
+        if (StringUtils.isBlank(month)) {
+            return null;
+        }
+        month = month.trim().toUpperCase();
+        return NumberUtils.isNumber(month) ? Month.of(Integer.parseInt(month)) : Month.valueOf(month);
     }
 
     @Override
     public Month getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         String month = cs.getString(columnIndex);
-        return StringUtils.isBlank(month) ? null : Month.valueOf(month);
+        if (StringUtils.isBlank(month)) {
+            return null;
+        }
+        month = month.trim().toUpperCase();
+        return NumberUtils.isNumber(month) ? Month.of(Integer.parseInt(month)) : Month.valueOf(month);
     }
 }

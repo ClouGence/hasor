@@ -26,7 +26,7 @@ import java.time.YearMonth;
 public class YearMonthOfTimeTypeHandler extends AbstractTypeHandler<YearMonth> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, YearMonth parameter, JDBCType jdbcType) throws SQLException {
-        LocalDateTime dateTime = LocalDateTime.MIN.plusYears(parameter.getYear()).plusMonths(parameter.getMonthValue());
+        LocalDateTime dateTime = LocalDateTime.MIN.withYear(parameter.getYear()).withMonth(parameter.getMonthValue());
         ps.setTimestamp(i, Timestamp.valueOf(dateTime));
     }
 
