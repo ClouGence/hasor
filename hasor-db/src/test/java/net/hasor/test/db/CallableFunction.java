@@ -13,24 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
-import net.hasor.utils.ExceptionUtils;
+package net.hasor.test.db;
+import java.math.BigInteger;
 
 /**
- *  Provider 接口的变版本，提供了一个新方法 getWithThrow。通过这个方法允许 get 抛出异常。
- * @version : 2014年5月22日
- * @author 赵永春 (zyc@byshell.org)
+ *
+ * @version : 2014年7月11日
+ * @author 赵永春 (zyc@hasor.net)
  */
-public interface ProviderWithThrow<T> extends Provider<T> {
-    /** @return 获取对象。*/
-    public default T get() {
-        try {
-            return getWithThrow();
-        } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
-        }
+public class CallableFunction {
+    public static BigInteger asBigInteger(String value) {
+        return new BigInteger(value);
     }
-
-    /** @return 获取对象。*/
-    public T getWithThrow() throws Throwable;
 }

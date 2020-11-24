@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.tran;
+package net.hasor.db.transaction;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 
 import java.sql.SQLException;
@@ -23,6 +23,6 @@ import java.sql.SQLException;
  * @version : 2015年11月10日
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface CallBack {
-    public void call(JdbcTemplate jdbcTemplate) throws SQLException;
+public interface ConsumerThrow {
+    public void accept(JdbcTemplate jdbcTemplate) throws SQLException;
 }

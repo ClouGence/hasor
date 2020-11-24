@@ -21,7 +21,8 @@ create table tb_h2types (
     c_bigint        bigint,
     c_int8          int8,
     --
-    c_decimal       decimal(20,2),
+    c_decimal       decimal(20,10),
+    c_decimal_2     decimal(20,2),
     c_number        number(10),
     --
     c_double        double,
