@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.types;
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.sql.JDBCType;
 
 /**
  * @author Eduardo Macarron
  */
-@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface MappedJdbcTypes {

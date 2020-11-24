@@ -46,9 +46,9 @@ import static net.hasor.db.jdbc.lambda.segment.SqlKeyword.*;
 public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T> implements Compare<T, R> {
     private static final Map<String, FieldMeta> COLUMN_CACHE      = Collections.synchronizedMap(new WeakHashMap<>());
     private static final ReadWriteLock          COLUMN_CACHE_LOCK = new ReentrantReadWriteLock();
-    protected            MergeSqlSegment         queryTemplate     = new MergeSqlSegment();
-    protected            AtomicInteger           paramNameSeq      = new AtomicInteger();
-    protected            Map<String, Object>     queryParam        = new HashMap<>();
+    protected            MergeSqlSegment        queryTemplate     = new MergeSqlSegment();
+    protected            AtomicInteger          paramNameSeq      = new AtomicInteger();
+    protected            Map<String, Object>    queryParam        = new HashMap<>();
 
     public AbstractCompareQuery(Class<T> exampleType, JdbcOperations jdbcOperations) {
         super(exampleType, jdbcOperations);

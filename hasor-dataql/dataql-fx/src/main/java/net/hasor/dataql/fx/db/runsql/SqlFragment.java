@@ -141,14 +141,15 @@ public class SqlFragment implements FragmentProcess {
     }
 
     public List<Object> batchRunFragment(Hints hint, List<Map<String, Object>> params, String fragmentString) throws Throwable {
+        // 如果批量参数为空退：退化为 非批量
         if (params == null || params.size() == 0) {
-            // 如果批量参数为空退：退化为 非批量
             return Collections.singletonList(this.runFragment(hint, Collections.emptyMap(), fragmentString));
         }
+        // 批量参数只有一组：退化为 非批量
         if (params.size() == 1) {
-            // 批量参数只有一组：退化为 非批量
             return Collections.singletonList(this.runFragment(hint, params.get(0), fragmentString));
         }
+        // 有占位符 或者 Insert/Update/Delete 之外的
         FxQuery fxSql = analysisSQL(hint, fragmentString);
         String tempFragmentString = fxSql.buildQueryString(params.get(0));
         boolean useBatch = true;

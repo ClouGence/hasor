@@ -27,14 +27,6 @@ public class xxxTypeTest {
     //LocalDateTypeHandler
     //LocalTimeTypeHandler
     //
-    //YearMonthOfNumberTypeHandler
-    //YearMonthOfStringTypeHandler
-    //YearMonthOfTimeTypeHandler
-    //
-    //YearOfNumberTypeHandler
-    //YearOfStringTypeHandler
-    //YearOfTimeTypeHandler
-    //
     //InstantTypeHandler
     //JapaneseDateTypeHandler
     //ZonedDateTimeTypeHandler

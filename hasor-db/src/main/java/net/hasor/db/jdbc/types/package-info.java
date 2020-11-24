@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * is like Mybatis type.
+ * like Mybatis type. but JDBC 4.2 full compatible,
  */
 package net.hasor.db.jdbc.types;

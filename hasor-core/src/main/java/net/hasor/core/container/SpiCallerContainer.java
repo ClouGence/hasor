@@ -18,6 +18,8 @@ import net.hasor.core.spi.SpiCaller;
 import net.hasor.core.spi.SpiJudge;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.utils.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,13 +30,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * SPI 管理器
+ * SPI 管理器。
  * @version : 2019年06月20日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SpiCallerContainer extends AbstractContainer implements SpiTrigger {
-    private final ConcurrentHashMap<Class<?>, List<Supplier<EventListener>>> spiListener = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<Class<?>, Supplier<SpiJudge>>            spiSpiJudge = new ConcurrentHashMap<>();
+    protected static Logger                                                     logger      = LoggerFactory.getLogger(SpiCallerContainer.class);
+    //private final    CopyOnWriteArraySet<Class<?>>                            javaSpiLoaded = new CopyOnWriteArraySet<>();
+    private final    ConcurrentHashMap<Class<?>, List<Supplier<EventListener>>> spiListener = new ConcurrentHashMap<>();
+    private final    ConcurrentHashMap<Class<?>, Supplier<SpiJudge>>            spiSpiJudge = new ConcurrentHashMap<>();
 
     @Override
     public <R, T extends EventListener> R notifySpi(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult) {
@@ -63,6 +67,22 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
 
     private <R, T extends EventListener> R spiCommonCall(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult, boolean isNotify, boolean ignoreJudge) {
         List<Supplier<EventListener>> listeners = this.spiListener.get(spiType);
+        /*
+        if (listeners == null) {
+            listeners = new CopyOnWriteArrayList<>();
+            this.spiListener.put(spiType, listeners);
+        }
+        //
+        if (!this.javaSpiLoaded.contains(spiType)) {
+            try {
+                ServiceLoader.load(spiType).forEach(target -> {
+                    this.spiListener.get(spiType).add(Provider.of(target));
+                });
+                this.javaSpiLoaded.add(spiType);
+            } catch (Exception e) {
+                logger.warn("load javaSpi error:" + e.getMessage(), e);
+            }
+        }*/
         // .没有 SPI 监听器，那么返回默认值
         if (listeners == null || listeners.isEmpty()) {
             return defaultResult;
@@ -187,7 +207,6 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
 
     /** 初始化过程 */
     protected void doInitialize() {
-        //
     }
 
     /** 销毁过程，清理掉所有已经注册的 SPI 监听器 */

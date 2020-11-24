@@ -27,8 +27,8 @@ import java.util.Objects;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class BeanSqlParameterSource implements SqlParameterSource, ParameterDisposer {
-    private Object       dataBean;
-    private List<String> dataNames;
+    private final Object       dataBean;
+    private final List<String> dataNames;
 
     public BeanSqlParameterSource(Object dataBean) {
         this.dataBean = Objects.requireNonNull(dataBean);

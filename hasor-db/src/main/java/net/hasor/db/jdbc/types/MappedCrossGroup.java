@@ -23,8 +23,8 @@ import java.lang.annotation.Target;
  * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface MappedCrossGroup {
     public MappedCross[] value();
 }

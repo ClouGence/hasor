@@ -197,7 +197,7 @@ public final class NumberUtils {
             case 'F':
                 try {
                     Float f = NumberUtils.createFloat(numeric);
-                    if (!(f.isInfinite() || (f.floatValue() == 0.0F && !allZeros))) {
+                    if (!(f.isInfinite() || (f == 0.0F && !allZeros))) {
                         //If it's too big for a float or the float value = 0 and the string
                         //has non-zeros in it, then float does not have the precision we want
                         return f;
@@ -229,7 +229,7 @@ public final class NumberUtils {
             //User doesn't have a preference on the return type, so let's start
             //small and go from there...
             if (expPos > -1 && expPos < val.length() - 1) {
-                exp = val.substring(expPos + 1, val.length());
+                exp = val.substring(expPos + 1);
             } else {
                 exp = null;
             }
@@ -251,7 +251,7 @@ public final class NumberUtils {
                 boolean allZeros = isAllZeros(mant) && isAllZeros(exp);
                 try {
                     Float f = createFloat(val);
-                    if (!(f.isInfinite() || (f.floatValue() == 0.0F && !allZeros))) {
+                    if (!(f.isInfinite() || (f == 0.0F && !allZeros))) {
                         return f;
                     }
                 } catch (NumberFormatException nfe) {
@@ -259,7 +259,7 @@ public final class NumberUtils {
                 }
                 try {
                     Double d = createDouble(val);
-                    if (!(d.isInfinite() || (d.doubleValue() == 0.0D && !allZeros))) {
+                    if (!(d.isInfinite() || (d == 0.0D && !allZeros))) {
                         return d;
                     }
                 } catch (NumberFormatException nfe) {
@@ -345,8 +345,7 @@ public final class NumberUtils {
      * @throws NumberFormatException if the value cannot be converted
      */
     public static BigInteger createBigInteger(String val) {
-        BigInteger bi = new BigInteger(val);
-        return bi;
+        return new BigInteger(val);
     }
 
     /**
@@ -357,8 +356,7 @@ public final class NumberUtils {
      * @throws NumberFormatException if the value cannot be converted
      */
     public static BigDecimal createBigDecimal(String val) {
-        BigDecimal bd = new BigDecimal(val);
-        return bd;
+        return new BigDecimal(val);
     }
     //--------------------------------------------------------------------
 
@@ -683,27 +681,27 @@ public final class NumberUtils {
         return !allowSigns && foundDigit;
     }
 
-    public static boolean isByteType(Class targetType) {
+    public static boolean isByteType(Class<?> targetType) {
         return targetType.equals(Byte.class) || targetType.equals(Byte.TYPE);
     }
 
-    public static boolean isShortType(Class targetType) {
+    public static boolean isShortType(Class<?> targetType) {
         return targetType.equals(Short.class) || targetType.equals(Short.TYPE);
     }
 
-    public static boolean isIntType(Class targetType) {
+    public static boolean isIntType(Class<?> targetType) {
         return targetType.equals(Integer.class) || targetType.equals(Integer.TYPE);
     }
 
-    public static boolean isLongType(Class targetType) {
+    public static boolean isLongType(Class<?> targetType) {
         return targetType.equals(Long.class) || targetType.equals(Long.TYPE);
     }
 
-    public static boolean isFloatType(Class targetType) {
+    public static boolean isFloatType(Class<?> targetType) {
         return targetType.equals(Float.class) || targetType.equals(Float.TYPE);
     }
 
-    public static boolean isDoubleType(Class targetType) {
+    public static boolean isDoubleType(Class<?> targetType) {
         return targetType.equals(Double.class) || targetType.equals(Double.TYPE);
     }
 }
