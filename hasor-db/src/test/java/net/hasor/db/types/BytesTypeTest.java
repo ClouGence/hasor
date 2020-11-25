@@ -1,0 +1,235 @@
+package net.hasor.db.types;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.types.handler.BytesForWrapTypeHandler;
+import net.hasor.db.types.handler.BytesInputStreamTypeHandler;
+import net.hasor.db.types.handler.BytesTypeHandler;
+import net.hasor.test.db.SingleDsModule;
+import net.hasor.utils.CommonCodeUtils;
+import net.hasor.utils.io.IOUtils;
+import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
+import java.sql.JDBCType;
+import java.sql.SQLException;
+import java.util.List;
+
+public class BytesTypeTest {
+    private byte[] toPrimitive(Byte[] bytes) {
+        byte[] dat = new byte[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            dat[i] = bytes[i];
+        }
+        return dat;
+    }
+
+    private Byte[] toWrapped(byte[] bytes) {
+        Byte[] dat = new Byte[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            dat[i] = bytes[i];
+        }
+        return dat;
+    }
+
+    @Test
+    public void testBytesForWrapTypeHandler_1() throws SQLException, NoSuchAlgorithmException {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            jdbcTemplate.executeUpdate("insert into tb_h2types (c_blob) values (?);", new Object[] { testData });
+            List<Byte[]> dat = jdbcTemplate.query("select c_blob from tb_h2types where c_blob is not null limit 1;", (rs, rowNum) -> {
+                return new BytesForWrapTypeHandler().getResult(rs, 1);
+            });
+            //
+            String s1 = CommonCodeUtils.MD5.encodeMD5(testData);
+            String s2 = CommonCodeUtils.MD5.encodeMD5(toPrimitive(dat.get(0)));
+            assert s1.equals(s2);
+        }
+    }
+
+    @Test
+    public void testBytesForWrapTypeHandler_2() throws SQLException, NoSuchAlgorithmException {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            jdbcTemplate.executeUpdate("insert into tb_h2types (c_blob) values (?);", new Object[] { testData });
+            List<Byte[]> dat = jdbcTemplate.query("select c_blob from tb_h2types where c_blob is not null limit 1;", (rs, rowNum) -> {
+                return new BytesForWrapTypeHandler().getResult(rs, "c_blob");
+            });
+            //
+            String s1 = CommonCodeUtils.MD5.encodeMD5(testData);
+            String s2 = CommonCodeUtils.MD5.encodeMD5(toPrimitive(dat.get(0)));
+            assert s1.equals(s2);
+        }
+    }
+
+    @Test
+    public void testBytesForWrapTypeHandler_3() throws SQLException, NoSuchAlgorithmException {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            List<Byte[]> dat = jdbcTemplate.query("select ?", ps -> {
+                new BytesForWrapTypeHandler().setParameter(ps, 1, toWrapped(testData), JDBCType.BLOB);
+            }, (rs, rowNum) -> {
+                return new BytesForWrapTypeHandler().getNullableResult(rs, 1);
+            });
+            //
+            String s1 = CommonCodeUtils.MD5.encodeMD5(testData);
+            String s2 = CommonCodeUtils.MD5.encodeMD5(toPrimitive(dat.get(0)));
+            assert s1.equals(s2);
+        }
+    }
+
+    @Test
+    public void testBytesForWrapTypeHandler_4() throws SQLException {
+        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+        //            //
+        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
+        //            BigDecimal bigDecimal = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigDecimal>) cs -> {
+        //                cs.ge
+        //                return null;
+        //            });
+        //            assert bigDecimal.intValue() == 123;
+        //        }
+    }
+
+    @Test
+    public void testBytesTypeHandler_1() throws SQLException, NoSuchAlgorithmException {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            jdbcTemplate.executeUpdate("insert into tb_h2types (c_blob) values (?);", new Object[] { testData });
+            List<byte[]> dat = jdbcTemplate.query("select c_blob from tb_h2types where c_blob is not null limit 1;", (rs, rowNum) -> {
+                return new BytesTypeHandler().getResult(rs, 1);
+            });
+            //
+            String s1 = CommonCodeUtils.MD5.encodeMD5(testData);
+            String s2 = CommonCodeUtils.MD5.encodeMD5(dat.get(0));
+            assert s1.equals(s2);
+        }
+    }
+
+    @Test
+    public void testBytesTypeHandler_2() throws SQLException, NoSuchAlgorithmException {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            jdbcTemplate.executeUpdate("insert into tb_h2types (c_blob) values (?);", new Object[] { testData });
+            List<byte[]> dat = jdbcTemplate.query("select c_blob from tb_h2types where c_blob is not null limit 1;", (rs, rowNum) -> {
+                return new BytesTypeHandler().getResult(rs, "c_blob");
+            });
+            //
+            String s1 = CommonCodeUtils.MD5.encodeMD5(testData);
+            String s2 = CommonCodeUtils.MD5.encodeMD5(dat.get(0));
+            assert s1.equals(s2);
+        }
+    }
+
+    @Test
+    public void testBytesTypeHandler_3() throws SQLException, NoSuchAlgorithmException {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            List<byte[]> dat = jdbcTemplate.query("select ?", ps -> {
+                new BytesTypeHandler().setParameter(ps, 1, testData, JDBCType.BLOB);
+            }, (rs, rowNum) -> {
+                return new BytesTypeHandler().getNullableResult(rs, 1);
+            });
+            //
+            String s1 = CommonCodeUtils.MD5.encodeMD5(testData);
+            String s2 = CommonCodeUtils.MD5.encodeMD5(dat.get(0));
+            assert s1.equals(s2);
+        }
+    }
+
+    @Test
+    public void testBytesTypeHandler_4() throws SQLException {
+        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+        //            //
+        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
+        //            BigDecimal bigDecimal = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigDecimal>) cs -> {
+        //                cs.ge
+        //                return null;
+        //            });
+        //            assert bigDecimal.intValue() == 123;
+        //        }
+    }
+
+    @Test
+    public void testBytesInputStreamTypeHandler_1() throws Exception {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            jdbcTemplate.executeUpdate("insert into tb_h2types (c_blob) values (?);", new Object[] { testData });
+            List<InputStream> dat = jdbcTemplate.query("select c_blob from tb_h2types where c_blob is not null limit 1;", (rs, rowNum) -> {
+                return new BytesInputStreamTypeHandler().getResult(rs, 1);
+            });
+            //
+            String s1 = CommonCodeUtils.MD5.encodeMD5(testData);
+            String s2 = CommonCodeUtils.MD5.encodeMD5(IOUtils.toByteArray(dat.get(0)));
+            assert s1.equals(s2);
+        }
+    }
+
+    @Test
+    public void testBytesInputStreamTypeHandler_2() throws Exception {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            jdbcTemplate.executeUpdate("insert into tb_h2types (c_blob) values (?);", new Object[] { testData });
+            List<InputStream> dat = jdbcTemplate.query("select c_blob from tb_h2types where c_blob is not null limit 1;", (rs, rowNum) -> {
+                return new BytesInputStreamTypeHandler().getResult(rs, "c_blob");
+            });
+            //
+            String s1 = CommonCodeUtils.MD5.encodeMD5(testData);
+            String s2 = CommonCodeUtils.MD5.encodeMD5(IOUtils.toByteArray(dat.get(0)));
+            assert s1.equals(s2);
+        }
+    }
+
+    @Test
+    public void testBytesInputStreamTypeHandler_3() throws Exception {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            List<InputStream> dat = jdbcTemplate.query("select ?", ps -> {
+                new BytesInputStreamTypeHandler().setParameter(ps, 1, new ByteArrayInputStream(testData), JDBCType.BLOB);
+            }, (rs, rowNum) -> {
+                return new BytesInputStreamTypeHandler().getNullableResult(rs, 1);
+            });
+            //
+            String s1 = CommonCodeUtils.MD5.encodeMD5(testData);
+            String s2 = CommonCodeUtils.MD5.encodeMD5(IOUtils.toByteArray(dat.get(0)));
+            assert s1.equals(s2);
+        }
+    }
+
+    @Test
+    public void testBytesInputStreamTypeHandler_4() throws SQLException {
+        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+        //            //
+        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
+        //            BigDecimal bigDecimal = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigDecimal>) cs -> {
+        //                cs.ge
+        //                return null;
+        //            });
+        //            assert bigDecimal.intValue() == 123;
+        //        }
+    }
+    //
+}
