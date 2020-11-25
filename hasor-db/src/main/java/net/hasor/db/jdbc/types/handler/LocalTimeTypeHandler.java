@@ -26,7 +26,7 @@ import java.time.LocalTime;
 public class LocalTimeTypeHandler extends AbstractTypeHandler<LocalTime> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, LocalTime parameter, JDBCType jdbcType) throws SQLException {
-        LocalDateTime dateTime = parameter.atDate(LocalDate.MIN);
+        LocalDateTime dateTime = LocalDateTime.of(LocalDate.now(), parameter);
         ps.setTimestamp(i, Timestamp.valueOf(dateTime));
     }
 

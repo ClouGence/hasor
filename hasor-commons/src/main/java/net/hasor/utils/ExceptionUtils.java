@@ -40,14 +40,14 @@ public class ExceptionUtils {
     }
 
     /**将异常包装为 {@link RuntimeException}*/
-    public static RuntimeException toRuntimeException(Throwable proxy, Function<Throwable, RuntimeException> conver) {
+    public static RuntimeException toRuntimeException(Throwable proxy, Function<Throwable, RuntimeException> convert) {
         if (proxy instanceof InvocationTargetException && ((InvocationTargetException) proxy).getTargetException() != null) {
             proxy = ((InvocationTargetException) proxy).getTargetException();
         }
         if (proxy instanceof RuntimeException) {
             return (RuntimeException) proxy;
         }
-        return conver.apply(proxy);
+        return convert.apply(proxy);
     }
 
     public static Throwable toRuntimeException(Throwable proxy, Class<?>[] exceptionTypes) {
