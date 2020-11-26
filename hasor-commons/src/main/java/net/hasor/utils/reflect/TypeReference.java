@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.types;
+package net.hasor.utils.reflect;
 import net.hasor.utils.ClassUtils;
 
 /**
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class TypeReference<T> {
+public class TypeReference<T> {
     private final Class<?> rawType = ClassUtils.getSuperClassGenricType(getClass(), 0);
 
     public final Class<?> getRawType() {
