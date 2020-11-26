@@ -15,10 +15,7 @@
  */
 package net.hasor.db.types.handler;
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
+import java.time.*;
 
 /**
  * @version : 2020-10-31
@@ -27,8 +24,8 @@ import java.time.ZoneOffset;
 public class OffsetTimeForUTCTypeHandler extends AbstractTypeHandler<OffsetTime> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, OffsetTime parameter, JDBCType jdbcType) throws SQLException {
-        OffsetDateTime offsetDateTime = parameter.atDate(LocalDate.MIN);
-        Timestamp timestamp = Timestamp.valueOf(offsetDateTime.atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
+        LocalTime localTime = parameter.withOffsetSameLocal(ZoneOffset.UTC).toLocalTime();
+        Timestamp timestamp = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), localTime));
         ps.setTimestamp(i, timestamp);
     }
 

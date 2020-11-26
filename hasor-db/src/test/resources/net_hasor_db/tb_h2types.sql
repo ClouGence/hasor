@@ -42,6 +42,7 @@ create table tb_h2types (
     --
     c_date          date,
     c_timestamp     timestamp,
+    c_timestamp_z   timestamp(9) with time zone,
     c_datetime      datetime,
     --
     c_binary        binary(1024),

@@ -25,8 +25,7 @@ import java.time.ZoneOffset;
 public class OffsetDateTimeForUTCTypeHandler extends AbstractTypeHandler<OffsetDateTime> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, OffsetDateTime parameter, JDBCType jdbcType) throws SQLException {
-        Timestamp timestamp = Timestamp.valueOf(parameter.atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
-        ps.setTimestamp(i, timestamp);
+        ps.setTimestamp(i, Timestamp.valueOf(parameter.toLocalDateTime()));
     }
 
     @Override
