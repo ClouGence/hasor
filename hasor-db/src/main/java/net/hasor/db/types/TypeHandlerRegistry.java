@@ -376,6 +376,11 @@ public final class TypeHandlerRegistry {
         if (Enum.class.isAssignableFrom(typeClass)) {
             typeClass = typeClass.isAnonymousClass() ? typeClass.getSuperclass() : typeClass;
             typeHandler = this.javaTypeHandlerMap.get(typeClass);
+            if (typeHandler == null) {
+                EnumTypeHandler enumOfStringTypeHandler = new EnumTypeHandler(typeClass);
+                this.javaTypeHandlerMap.put(typeClass, enumOfStringTypeHandler);
+                return enumOfStringTypeHandler;
+            }
         }
         if (typeHandler == null) {
             return this.getTypeHandler(typeClass);
