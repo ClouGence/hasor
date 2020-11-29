@@ -2,35 +2,10 @@ package net.hasor.db.types;
 public class xxxTypeTest {
     //AbstractTypeHandler
     //ArrayTypeHandler
-    //NumberTypeHandler
     //ObjectTypeHandler
     //URLTypeHandler
     //
-    //SqlDateTypeHandler
-    //SqlTimestampTypeHandler
-    //SqlTimeTypeHandler
-    //DateTypeHandler
-    //DateOnlyTypeHandler
-    //TimeOnlyTypeHandler
-    //
-    //InstantTypeHandler
-    //JapaneseDateTypeHandler
-    //ZonedDateTimeTypeHandler
-    //
+    //SqlXmlTypeHandler
     //SqlXmlForInputStreamTypeHandler
     //SqlXmlForReaderTypeHandler
-    //SqlXmlTypeHandler
-    //
-    //BlobBytesForWrapTypeHandler
-    //BlobBytesTypeHandler
-    //BlobInputStreamTypeHandler
-    //
-    //BytesForWrapTypeHandler
-    //BytesInputStreamTypeHandler
-    //BytesTypeHandler
-    //
-    //OffsetDateTimeForSqlTypeHandler
-    //OffsetDateTimeForUTCTypeHandler
-    //OffsetTimeForSqlTypeHandler
-    //OffsetTimeForUTCTypeHandler
 }

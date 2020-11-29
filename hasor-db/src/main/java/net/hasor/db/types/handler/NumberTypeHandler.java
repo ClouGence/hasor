@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.types.handler;
-import net.hasor.db.jdbc.TypeHandler;
-import net.hasor.db.types.TypeHandlerRegistry;
 import net.hasor.utils.NumberUtils;
 import net.hasor.utils.io.IOUtils;
 
@@ -30,8 +28,7 @@ import java.sql.*;
 public class NumberTypeHandler extends AbstractTypeHandler<Number> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, Number parameter, JDBCType jdbcType) throws SQLException {
-        TypeHandler typeHandler = TypeHandlerRegistry.DEFAULT.getTypeHandler(parameter.getClass(), jdbcType);
-        typeHandler.setParameter(ps, i, parameter, jdbcType);
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -129,6 +126,12 @@ public class NumberTypeHandler extends AbstractTypeHandler<Number> {
         String className = obj.getClass().getName();
         if (obj instanceof Number) {
             return (Number) obj;
+        } else if (obj instanceof java.sql.Timestamp) {
+            return ((Timestamp) obj).getTime();
+        } else if (obj instanceof java.sql.Date) {
+            return ((java.sql.Date) obj).getTime();
+        } else if (obj instanceof java.sql.Time) {
+            return ((java.sql.Time) obj).getTime();
         } else if (("oracle.sql.TIMESTAMP".equals(className) || "oracle.sql.TIMESTAMPTZ".equals(className))) {
             /*oracle TIMESTAMP 转换为 Timestamp*/
             return rs.getTimestamp().getTime();
@@ -140,16 +143,8 @@ public class NumberTypeHandler extends AbstractTypeHandler<Number> {
             } else {
                 return rs.getDate().getTime();
             }
-        } else if (obj instanceof java.sql.Date) {
-            /*DATE 转换 Date*/
-            if ("java.sql.Timestamp".equals(rs.getColumnClassName())) {
-                return rs.getTimestamp().getTime();
-            } else {
-                return ((java.sql.Date) obj).getTime();
-            }
-        } else if (obj instanceof java.sql.Time) {
-            /*DATE 转换 Date*/
-            return ((java.sql.Time) obj).getTime();
+        } else if (obj instanceof java.util.Date) {
+            return ((java.util.Date) obj).getTime();
         }
         //
         String stringValue = null;
@@ -167,6 +162,7 @@ public class NumberTypeHandler extends AbstractTypeHandler<Number> {
         } else {
             stringValue = obj.toString();
         }
+        stringValue = stringValue.trim();
         //
         if (!NumberUtils.isNumber(stringValue)) {
             throw new SQLException("Cannot convert String to Number.");

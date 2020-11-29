@@ -2,10 +2,7 @@ package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.types.handler.OffsetDateTimeForSqlTypeHandler;
-import net.hasor.db.types.handler.OffsetDateTimeForUTCTypeHandler;
-import net.hasor.db.types.handler.OffsetTimeForSqlTypeHandler;
-import net.hasor.db.types.handler.OffsetTimeForUTCTypeHandler;
+import net.hasor.db.types.handler.*;
 import net.hasor.test.db.SingleDsModule;
 import org.junit.Test;
 
@@ -336,6 +333,88 @@ public class OffsetTimeTypeTest {
 
     @Test
     public void testOffsetTimeForUTCTypeHandler_4() throws SQLException {
+        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+        //            //
+        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
+        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
+        //                cs.ge
+        //                return null;
+        //            });
+        //            assert BigInteger.intValue() == 123;
+        //        }
+    }
+
+    @Test
+    public void testZonedDateTimeTypeHandler_1() throws SQLException {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
+            List<ZonedDateTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
+                return new ZonedDateTimeTypeHandler().getResult(rs, 1);
+            });
+            ZonedDateTime dateTime = dat.get(0);
+            OffsetDateTime localTime = LocalDateTime.of(1998, 4, 12, 18, 33, 20, 123)//
+                    .atOffset(ZoneOffset.ofHours(8));
+            //
+            assert dateTime.getOffset().getId().equals(localTime.getOffset().getId());
+            assert dateTime.getHour() == localTime.getHour();
+            assert dateTime.getMinute() == localTime.getMinute();
+            assert dateTime.getSecond() == localTime.getSecond();
+            assert dateTime.getNano() == localTime.getNano();
+        }
+    }
+
+    @Test
+    public void testZonedDateTimeTypeHandler_2() throws SQLException {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
+            List<ZonedDateTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
+                return new ZonedDateTimeTypeHandler().getResult(rs, "c_timestamp_z");
+            });
+            ZonedDateTime dateTime = dat.get(0);
+            OffsetDateTime localTime = LocalDateTime.of(1998, 4, 12, 18, 33, 20, 123)//
+                    .atOffset(ZoneOffset.ofHours(8));
+            //
+            assert dateTime.getOffset().getId().equals(localTime.getOffset().getId());
+            assert dateTime.getHour() == localTime.getHour();
+            assert dateTime.getMinute() == localTime.getMinute();
+            assert dateTime.getSecond() == localTime.getSecond();
+            assert dateTime.getNano() == localTime.getNano();
+        }
+    }
+
+    @Test
+    public void testZonedDateTimeTypeHandler_3() throws SQLException {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            ZonedDateTime localTime = ZonedDateTime.of(//
+                    LocalDate.of(1998, 4, 12),//
+                    LocalTime.of(18, 33, 20, 123),//
+                    ZoneOffset.ofHours(8));
+            //
+            List<ZonedDateTime> dat = jdbcTemplate.query("select ?", ps -> {
+                new ZonedDateTimeTypeHandler().setParameter(ps, 1, localTime, JDBCType.TIMESTAMP_WITH_TIMEZONE);
+            }, (rs, rowNum) -> {
+                return new ZonedDateTimeTypeHandler().getNullableResult(rs, 1);
+            });
+            //
+            ZonedDateTime dateTime = dat.get(0);
+            //
+            assert dateTime.getOffset().getId().equals(localTime.getOffset().getId());
+            assert dateTime.getHour() == localTime.getHour();
+            assert dateTime.getMinute() == localTime.getMinute();
+            assert dateTime.getSecond() == localTime.getSecond();
+            assert dateTime.getNano() == localTime.getNano();
+        }
+    }
+
+    @Test
+    public void testZonedDateTimeTypeHandler_4() throws SQLException {
         //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
         //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
         //            //
