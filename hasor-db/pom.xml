@@ -29,12 +29,6 @@
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
         </dependency>
-        <!-- 整合 MyBatis 提供MyBatis插件, 最终由项目环境的 MyBatis 提供依赖 -->
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- 测试 -->
         <dependency>
