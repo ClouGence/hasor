@@ -15,6 +15,7 @@
  */
 package net.hasor.db.jdbc.mapping;
 import net.hasor.db.jdbc.TypeHandler;
+import net.hasor.db.types.UnknownTypeHandler;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -40,5 +41,5 @@ public @interface Field {
     public JDBCType jdbcType() default JDBCType.OTHER;
 
     /** 使用的 typeHandler 功效和 Mybatis 的 TypeHandler 相同 */
-    public Class<? extends TypeHandler> typeHandler() default UnknownTypeHandler.class;
+    public Class<? extends TypeHandler<?>> typeHandler() default UnknownTypeHandler.class;
 }

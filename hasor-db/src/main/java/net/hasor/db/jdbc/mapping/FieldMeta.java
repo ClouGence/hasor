@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.mapping;
-import net.hasor.db.jdbc.core.StatementSetterUtils;
+import net.hasor.db.types.TypeHandlerRegistry;
 
+import java.sql.JDBCType;
 import java.util.function.Predicate;
 
 /**
@@ -26,14 +27,14 @@ import java.util.function.Predicate;
 public class FieldMeta implements Predicate<String> {
     private final String   columnName;
     private final Class<?> javaType;
-    private final int      jdbcType;
+    private final JDBCType jdbcType;
     private       String   aliasName;
     private       boolean  caseStrategy;
 
     public FieldMeta(String columnName, Class<?> javaType) {
         this.columnName = columnName;
         this.javaType = javaType;
-        this.jdbcType = StatementSetterUtils.javaTypeToSqlParameterType(javaType);
+        this.jdbcType = TypeHandlerRegistry.DEFAULT.toSqlType(javaType);
         this.caseStrategy = true;
     }
 
@@ -50,7 +51,7 @@ public class FieldMeta implements Predicate<String> {
     }
 
     public int getJdbcType() {
-        return this.jdbcType;
+        return this.jdbcType.getVendorTypeNumber();
     }
 
     @Override

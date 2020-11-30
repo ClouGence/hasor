@@ -33,6 +33,9 @@ public @interface Table {
     /** 表名，为空的话表示采用类名为表名 see: {@link #value()} */
     public String name() default "";
 
-    /** 大小写策略 */
-    public CaseStrategy caseStrategy() default CaseStrategy.Sensitive;
+    /** 列名是否不区分大小写，默认不区分 */
+    public boolean caseInsensitive() default true;
+
+    /** 自动配置列，@Field 成为非必选项。 */
+    public boolean autoFiled() default true;
 }

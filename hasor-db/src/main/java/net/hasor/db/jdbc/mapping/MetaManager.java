@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.lambda.mapping;
+package net.hasor.db.jdbc.mapping;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -26,26 +26,26 @@ import java.util.WeakHashMap;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MetaManager {
-    private static final Map<String, ColumnMeta> COLUMN_CACHE = Collections.synchronizedMap(new WeakHashMap<>());
+    private static final Map<String, FieldMeta> COLUMN_CACHE = Collections.synchronizedMap(new WeakHashMap<>());
 
     public static TableMeta loadTableMeta(Class<?> declaringClass) {
         return null;
     }
 
-    public static ColumnMeta[] loadColumnMeta(Class<?> declaringClass) {
+    public static FieldMeta[] loadColumnMeta(Class<?> declaringClass) {
         return null;
     }
 
-    public static ColumnMeta loadColumnMeta(Field declaringClass) {
+    public static FieldMeta loadColumnMeta(Field declaringClass) {
         return null;
     }
 
     public static Object toColumnMeta(Method columnMethod) {
-        return new ColumnMeta(columnMethod.getName(), columnMethod.getReturnType());
+        return new FieldMeta(columnMethod.getName(), columnMethod.getReturnType());
     }
 
-    public static ColumnMeta toColumnMeta(String columnName, Class<?> javaType) {
-        return new ColumnMeta(columnName, javaType);
+    public static FieldMeta toColumnMeta(String columnName, Class<?> javaType) {
+        return new FieldMeta(columnName, javaType);
     }
 
     public static TableMeta toTableMeta(String tableName) {
