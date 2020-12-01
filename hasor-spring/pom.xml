@@ -10,6 +10,7 @@
     <!-- Maven Info -->
     <artifactId>hasor-spring</artifactId>
     <packaging>jar</packaging>
+    <version>4.1.9-fix20201201</version>
 
     <!-- Project Info -->
     <name>Hasor-Spring</name>
@@ -26,11 +27,18 @@
     <dependencies>
         <dependency>
             <groupId>net.hasor</groupId>
+            <artifactId>hasor-commons</artifactId>
+            <version>4.1.9</version>
+        </dependency>
+        <dependency>
+            <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
+            <version>4.1.9</version>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-web</artifactId>
+            <version>4.1.9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
