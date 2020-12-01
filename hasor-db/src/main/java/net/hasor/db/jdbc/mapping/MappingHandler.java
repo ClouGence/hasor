@@ -73,7 +73,7 @@ public class MappingHandler {
                             throw ExceptionUtils.toRuntimeException(e);
                         }
                     }
-                    resultMapper.setupField(field.getName(), defField, typeHandler);
+                    resultMapper.setupField(field, defField, typeHandler);
                 }
                 //
                 this.resultMapperMap.put(dtoClass, resultMapper);
@@ -86,7 +86,7 @@ public class MappingHandler {
         if (dtoClass.isAnnotationPresent(Table.class)) {
             return dtoClass.getAnnotation(Table.class);
         } else {
-            return new TableInfo(dtoClass.getSimpleName());
+            return new TableImpl(dtoClass.getSimpleName());
         }
     }
 
@@ -96,7 +96,7 @@ public class MappingHandler {
         } else if (autoConfigField) {
             Class<?> fieldType = dtoField.getType();
             JDBCType jdbcType = typeRegistry.toSqlType(fieldType);
-            return new FieldInfo(dtoField.getName(), jdbcType);
+            return new FieldImpl(dtoField.getName(), jdbcType);
         } else {
             return null;
         }

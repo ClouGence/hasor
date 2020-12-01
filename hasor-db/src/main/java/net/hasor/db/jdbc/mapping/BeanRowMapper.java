@@ -21,6 +21,7 @@ import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
 
+import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -34,21 +35,26 @@ import java.util.Map;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class BeanRowMapper<T> implements RowMapper<T> {
+public class BeanRowMapper<T> implements RowMapper<T>, TableInfo {
     private final Class<T>                    mapperClass;
     private       String                      tableName;
     private       boolean                     caseInsensitive;
     //
-    private final List<String>                columnNames;
+    private final Map<String, String>         propertyColumnMapping;
     private final Map<String, String>         columnPropertyMapping;
+    //
+    private final List<String>                columnNames;
+    private final Map<String, FieldInfo>      columnFieldInfoMap;
     private final Map<String, TypeHandler<?>> columnTypeHandlerMap;
 
     /** Create a new ResultMapper.*/
     public BeanRowMapper(Class<T> mapperClass) {
         this.mapperClass = mapperClass;
         this.columnNames = new ArrayList<>();
-        this.columnPropertyMapping = new HashMap<>();
+        this.columnFieldInfoMap = new HashMap<>();
         this.columnTypeHandlerMap = new HashMap<>();
+        this.propertyColumnMapping = new HashMap<>();
+        this.columnPropertyMapping = new HashMap<>();
     }
 
     public Class<T> getMapperClass() {
@@ -67,6 +73,15 @@ public class BeanRowMapper<T> implements RowMapper<T> {
         this.caseInsensitive = caseInsensitive;
     }
 
+    public FieldInfo findFieldInfoByProperty(String propertyName) {
+        String columnName = this.propertyColumnMapping.get(propertyName);
+        return this.columnFieldInfoMap.get(columnName);
+    }
+
+    public TableInfo findTableInfo() {
+        return this;
+    }
+
     void setupTable(Table defTable) {
         if (StringUtils.isNotBlank(defTable.name())) {
             this.tableName = defTable.name();
@@ -76,23 +91,29 @@ public class BeanRowMapper<T> implements RowMapper<T> {
         this.caseInsensitive = defTable.caseInsensitive();
     }
 
-    void setupField(String property, net.hasor.db.jdbc.mapping.Field defField, TypeHandler<?> toTypeHandler) {
-        String fieldName = null;
+    void setupField(java.lang.reflect.Field property, net.hasor.db.jdbc.mapping.Field defField, TypeHandler<?> toTypeHandler) {
+        String columnName = null;
+        JDBCType jdbcType = defField.jdbcType();
         if (StringUtils.isNotBlank(defField.name())) {
-            fieldName = defField.name();
+            columnName = defField.name();
         } else {
-            fieldName = defField.value();
+            columnName = defField.value();
         }
-        if (StringUtils.isBlank(fieldName)) {
-            fieldName = property;
+        if (StringUtils.isBlank(columnName)) {
+            columnName = property.getName();
+        }
+        if (jdbcType == JDBCType.OTHER) {
+            jdbcType = TypeHandlerRegistry.DEFAULT.toSqlType(property.getType());
         }
         //
         if (this.caseInsensitive) {
-            fieldName = fieldName.toUpperCase();
+            columnName = columnName.toUpperCase();
         }
-        this.columnNames.add(fieldName);
-        this.columnPropertyMapping.put(fieldName, property);
-        this.columnTypeHandlerMap.put(fieldName, toTypeHandler);
+        this.columnNames.add(columnName);
+        this.columnFieldInfoMap.put(columnName, new FieldInfoImpl(columnName, jdbcType, property.getType()));
+        this.columnTypeHandlerMap.put(columnName, toTypeHandler);
+        this.columnPropertyMapping.put(columnName, property.getName());
+        this.propertyColumnMapping.put(property.getName(), columnName);
     }
 
     @Override

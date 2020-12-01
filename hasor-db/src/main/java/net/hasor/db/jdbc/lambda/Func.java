@@ -16,8 +16,6 @@
 package net.hasor.db.jdbc.lambda;
 import net.hasor.utils.reflect.SFunction;
 
-import java.util.Map;
-
 /**
  * 动态拼条件。
  * @version : 2020-10-31
@@ -33,16 +31,6 @@ public interface Func<T, R> {
      * 查询指定列。
      * 在分组查询下：设置参数中，只有 group by 列才会被查询。 */
     public R select(String... columns);
-
-    /**
-     * 查询指定列。
-     * 在分组查询下：设置参数中，只有 group by 列才会被查询。 */
-    public R select(String columns, Class<?> javaType);
-
-    /**
-     * 查询指定列。
-     * 在分组查询下：设置参数中，只有 group by 列才会被查询。 */
-    public R select(Map<String, Class<?>> columns);
 
     /**
      * 查询指定列。

@@ -14,16 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda;
-import net.hasor.db.jdbc.mapping.FieldMeta;
-import net.hasor.db.jdbc.mapping.MetaManager;
-import net.hasor.utils.ClassUtils;
-import net.hasor.utils.reflect.MethodUtils;
 import net.hasor.utils.reflect.SFunction;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.function.Predicate;
 
 /**
  * 提供 lambda 方式生成 SQL。
@@ -32,36 +25,12 @@ import java.util.function.Predicate;
  */
 public interface LambdaOperations {
     /** 相当于 select * form */
-    public default <T> LambdaQuery<T> lambdaSelect() {
-        return lambdaSelect((SFunction<T, ?>[]) null);
-    }
-
-    /** 相当于 select * form */
     public default <T> LambdaQuery<T> lambdaSelect(Class<T> exampleType) {
         return lambdaSelect(exampleType, (SFunction<T, ?>[]) null);
     }
 
     /** 相当于 select xxx,xxx,xxx form */
-    public default <T> LambdaQuery<T> lambdaSelect(SFunction<T, ?>... columns) {
-        Predicate<T> temp = t -> false;
-        Class<T> targetType = (Class<T>) ClassUtils.getSuperClassGenricType(temp.getClass(), 0);
-        return lambdaSelect(targetType, columns);
-    }
-
-    /** 相当于 select xxx,xxx,xxx form */
-    public default <T> LambdaQuery<T> lambdaSelect(Class<T> exampleType, SFunction<T, ?>... columns) {
-        if (columns == null || columns.length == 0) {
-            return lambdaSelect(exampleType, new FieldMeta[0]);
-        }
-        FieldMeta[] toArray = Arrays.stream(columns).map(columnName -> {
-            Method lambdaMethod = MethodUtils.lambdaMethodName(columnName);
-            return MetaManager.toColumnMeta(lambdaMethod);
-        }).toArray(FieldMeta[]::new);
-        return lambdaSelect(exampleType, toArray);
-    }
-
-    /** 相当于 select xxx,xxx,xxx form */
-    public <T> LambdaQuery<T> lambdaSelect(Class<T> exampleType, FieldMeta... columns);
+    public <T> LambdaQuery<T> lambdaSelect(Class<T> exampleType, SFunction<T, ?>... columns);
 
     /** 封装 */
     public interface LambdaQuery<T> extends AbstractLambdaQuery<T, LambdaQuery<T>>, BoundSql, QueryExecute<T> {

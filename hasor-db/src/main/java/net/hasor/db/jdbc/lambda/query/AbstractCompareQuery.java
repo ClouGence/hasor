@@ -20,15 +20,13 @@ import net.hasor.db.jdbc.lambda.dialect.SqlDialect;
 import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
 import net.hasor.db.jdbc.lambda.segment.Segment;
 import net.hasor.db.jdbc.lambda.segment.SqlLike;
-import net.hasor.db.jdbc.mapping.FieldMeta;
-import net.hasor.db.jdbc.mapping.MetaManager;
+import net.hasor.db.jdbc.mapping.FieldInfo;
+import net.hasor.db.jdbc.mapping.TableInfo;
 import net.hasor.utils.ArrayUtils;
-import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.reflect.MethodUtils;
 import net.hasor.utils.reflect.SFunction;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,7 +42,7 @@ import static net.hasor.db.jdbc.lambda.segment.SqlKeyword.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T> implements Compare<T, R> {
-    private static final Map<String, FieldMeta> COLUMN_CACHE      = Collections.synchronizedMap(new WeakHashMap<>());
+    private static final Map<String, FieldInfo> COLUMN_CACHE      = Collections.synchronizedMap(new WeakHashMap<>());
     private static final ReadWriteLock          COLUMN_CACHE_LOCK = new ReentrantReadWriteLock();
     protected            MergeSqlSegment        queryTemplate     = new MergeSqlSegment();
     protected            AtomicInteger          paramNameSeq      = new AtomicInteger();
@@ -58,13 +56,13 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
         super(exampleType, jdbcOperations, dbType, dialect);
     }
 
-    protected static <T> FieldMeta columnName(SFunction<T, ?> property) {
+    protected <T> FieldInfo columnName(SFunction<T, ?> property) {
         Method targetMethod = MethodUtils.lambdaMethodName(property);
         String cacheKey = targetMethod.toGenericString();
         Lock readLock = COLUMN_CACHE_LOCK.readLock();
         try {
             readLock.lock();
-            FieldMeta fieldMeta = COLUMN_CACHE.get(cacheKey);
+            FieldInfo fieldMeta = COLUMN_CACHE.get(cacheKey);
             if (fieldMeta != null) {
                 return fieldMeta;
             }
@@ -75,7 +73,7 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
         Lock writeLock = COLUMN_CACHE_LOCK.writeLock();
         try {
             writeLock.lock();
-            FieldMeta fieldMeta = COLUMN_CACHE.get(cacheKey);
+            FieldInfo fieldMeta = COLUMN_CACHE.get(cacheKey);
             if (fieldMeta != null) {
                 return fieldMeta;
             }
@@ -86,12 +84,11 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
             } else {
                 attr = methodName.substring(2);
             }
-            String fieldName = StringUtils.firstCharToLowerCase(attr);
-            Field field = BeanUtils.getField(fieldName, targetMethod.getDeclaringClass());
-            fieldMeta = MetaManager.loadColumnMeta(field);
-            fieldMeta = fieldMeta == null ? MetaManager.toColumnMeta(fieldName, field.getType()) : fieldMeta;
-            COLUMN_CACHE.put(cacheKey, fieldMeta);
-            return fieldMeta;
+            attr = StringUtils.firstCharToLowerCase(attr);
+            //
+            FieldInfo fieldInfo = super.getRowMapper().findFieldInfoByProperty(attr);
+            COLUMN_CACHE.put(cacheKey, fieldInfo);
+            return fieldInfo;
         } finally {
             writeLock.unlock();
         }
@@ -270,6 +267,7 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
     }
 
     protected String conditionName(SFunction<T, ?> property) {
-        return this.dialect.buildConditionName(columnName(property));
+        TableInfo tableInfo = super.getRowMapper().findTableInfo();
+        return this.dialect.buildConditionName(tableInfo, columnName(property));
     }
 }

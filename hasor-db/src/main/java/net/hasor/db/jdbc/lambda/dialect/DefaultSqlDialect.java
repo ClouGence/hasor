@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda.dialect;
-import net.hasor.db.jdbc.mapping.FieldMeta;
-import net.hasor.db.jdbc.mapping.TableMeta;
-import net.hasor.utils.StringUtils;
+import net.hasor.db.jdbc.mapping.FieldInfo;
+import net.hasor.db.jdbc.mapping.TableInfo;
 
 /**
  * 默认 SqlDialect 实现
@@ -25,23 +24,17 @@ import net.hasor.utils.StringUtils;
  */
 public class DefaultSqlDialect implements SqlDialect {
     @Override
-    public String buildSelect(FieldMeta fieldMeta) {
-        String columnName = fieldMeta.getColumnName();
-        String aliasName = fieldMeta.getAliasName();
-        if (StringUtils.isNotBlank(aliasName)) {
-            return columnName + " AS " + aliasName;
-        } else {
-            return columnName;
-        }
+    public String buildSelect(TableInfo tableInfo, FieldInfo fieldInfo) {
+        return fieldInfo.getColumnName();
     }
 
     @Override
-    public String buildTableName(TableMeta tableMeta) {
-        return tableMeta.getTable();
+    public String buildTableName(TableInfo tableInfo) {
+        return tableInfo.getTableName();
     }
 
     @Override
-    public String buildConditionName(FieldMeta columnName) {
-        return columnName.getColumnName();
+    public String buildConditionName(TableInfo tableInfo, FieldInfo fieldInfo) {
+        return fieldInfo.getColumnName();
     }
 }

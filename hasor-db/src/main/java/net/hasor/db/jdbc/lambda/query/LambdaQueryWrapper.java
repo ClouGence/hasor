@@ -21,9 +21,8 @@ import net.hasor.db.jdbc.lambda.dialect.SqlDialect;
 import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
 import net.hasor.db.jdbc.lambda.segment.OrderByKeyword;
 import net.hasor.db.jdbc.lambda.segment.Segment;
-import net.hasor.db.jdbc.mapping.FieldMeta;
-import net.hasor.db.jdbc.mapping.MetaManager;
-import net.hasor.db.jdbc.mapping.TableMeta;
+import net.hasor.db.jdbc.mapping.FieldInfo;
+import net.hasor.db.jdbc.mapping.TableInfo;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.reflect.SFunction;
 
@@ -44,20 +43,16 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
     private final Map<String, Segment> orderBySegments = new LinkedHashMap<>();
     private       String               result          = null;
 
-    public LambdaQueryWrapper(Class<T> exampleType, FieldMeta[] selectColumns, JdbcOperations jdbcOperations) {
+    public LambdaQueryWrapper(Class<T> exampleType, JdbcOperations jdbcOperations) {
         super(exampleType, jdbcOperations);
-        for (FieldMeta cm : selectColumns) {
-            addSelection(cm);
-        }
     }
 
-    private static Segment buildTabName(Class<?> exampleType, SqlDialect dialect) {
-        TableMeta tableMeta = MetaManager.loadTableMeta(exampleType);
-        if (tableMeta == null) {
-            return () -> dialect.buildTableName(MetaManager.toTableMeta(exampleType.getSimpleName()));
-        } else {
-            return () -> dialect.buildTableName(tableMeta);
+    private Segment buildTabName(SqlDialect dialect) {
+        TableInfo tableInfo = super.getRowMapper().findTableInfo();
+        if (tableInfo == null) {
+            throw new IllegalArgumentException("tableInfo not found.");
         }
+        return () -> dialect.buildTableName(tableInfo);
     }
 
     private static Segment buildColumns(Map<String, Segment> columnSegments) {
@@ -113,42 +108,29 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
 
     @Override
     public LambdaQuery<T> select(String... columns) {
-        FieldMeta[] fieldMetas = MetaManager.loadColumnMeta(exampleType());
-        if (fieldMetas != null) {
+        if (columns != null && columns.length > 0) {
             Set<String> matching = new HashSet<>(Arrays.asList(columns));
-            Arrays.stream(fieldMetas).filter(cm -> {
-                return matching.contains(cm.getColumnName());
-            }).forEach(this::addSelection);
+            matching.stream().map(column -> {
+                return super.getRowMapper().findFieldInfoByProperty(column);
+            }).filter(Objects::nonNull).forEach(this::addSelection);
         }
         return this;
     }
 
     @Override
-    public LambdaQuery<T> select(String columns, Class<?> javaType) {
-        return addSelection(MetaManager.toColumnMeta(columns, javaType));
-    }
-
-    @Override
-    public LambdaQuery<T> select(Map<String, Class<?>> columns) {
-        columns.forEach(this::select);
-        return this;
-    }
-
-    @Override
     public LambdaQuery<T> select(SFunction<T, ?>... columns) {
-        Arrays.stream(columns).forEach(property -> {
-            addSelection(columnName(property));
-        });
+        if (columns != null && columns.length > 0) {
+            Arrays.stream(columns).forEach(property -> {
+                addSelection(columnName(property));
+            });
+        }
         return this;
     }
 
-    private LambdaQuery<T> addSelection(FieldMeta cm) {
-        String name = cm.getColumnName();
-        String alias = cm.getAliasName();
-        String key = StringUtils.isNotBlank(alias) ? alias : name;
-        //
-        String select = this.dialect.buildSelect(cm);
-        this.selectSegments.put(key, () -> select);
+    private LambdaQuery<T> addSelection(FieldInfo fieldInfo) {
+        TableInfo tableInfo = super.getRowMapper().findTableInfo();
+        String select = this.dialect.buildSelect(tableInfo, fieldInfo);
+        this.selectSegments.put(fieldInfo.getColumnName(), () -> select);
         return this;
     }
 
@@ -182,7 +164,7 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
     }
 
     protected LambdaQuery<T> addGroupBy(SFunction<T, ?> column, Segment segment) {
-        FieldMeta cm = columnName(column);
+        FieldInfo cm = columnName(column);
         this.groupBySegments.put(cm.getColumnName(), segment);
         return this.getSelf();
     }
@@ -207,7 +189,7 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
     }
 
     protected LambdaQuery<T> addOrderBy(SFunction<T, ?> column, Segment segment) {
-        FieldMeta cm = columnName(column);
+        FieldInfo cm = columnName(column);
         this.orderBySegments.put(cm.getColumnName(), segment);
         return this.getSelf();
     }
@@ -221,7 +203,7 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
         sqlSegment.addSegment(SELECT);
         sqlSegment.addSegment(buildColumns((this.groupBySegments.isEmpty() ? this.selectSegments : this.groupBySegments)));
         sqlSegment.addSegment(FROM);
-        sqlSegment.addSegment(buildTabName(exampleType(), this.dialect));
+        sqlSegment.addSegment(buildTabName(this.dialect));
         if (!this.queryTemplate.isEmpty()) {
             sqlSegment.addSegment(WHERE);
             sqlSegment.addSegment(this.queryTemplate.sub(1));
