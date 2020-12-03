@@ -624,7 +624,7 @@ public class MethodUtils {
     private static final Map<String, Method> LAMBDA_METHODS      = new WeakHashMap<>();
     private static final ReadWriteLock       LAMBDA_METHODS_LOCK = new ReentrantReadWriteLock();
 
-    public static <T> Method lambdaMethodName(SFunction<T, ?> property) {
+    public static <T> Method lambdaMethodName(SFunction<T> property) {
         try {
             Method declaredMethod = property.getClass().getDeclaredMethod("writeReplace");
             declaredMethod.setAccessible(Boolean.TRUE);

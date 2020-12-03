@@ -22,5 +22,5 @@ import java.util.function.Function;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface SFunction<T, R> extends Function<T, R>, Serializable {
+public interface SFunction<T> extends Function<T, Object>, Serializable {
 }

@@ -20,7 +20,7 @@ import net.hasor.utils.ClassUtils;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TypeReference<T> {
+public abstract class TypeReference<T> {
     private final Class<?> rawType = ClassUtils.getSuperClassGenricType(getClass(), 0);
 
     public final Class<?> getRawType() {

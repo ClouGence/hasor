@@ -338,6 +338,25 @@ public class CollectionUdfSource implements UdfSourceAssembly {
         }, hints);
     }
 
+    /** 对 List 进行去重 */
+    public static Collection<Object> uniqueBy(final List<Object> valueList, final Object key, final Hints hints) throws Throwable {
+        return list2map(valueList, key, (readOnly1, params1) -> {
+            DataModel dataModel = DomainHelper.convertTo(params1[1]);
+            if (!dataModel.isObject()) {
+                throw new UnsupportedOperationException(params1[0] + " element require Object");
+            }
+            final Object parentKeyValue = ((ObjectModel) dataModel).getValue(key.toString()).unwrap();
+            return filter(valueList, (readOnly2, params2) -> {
+                if (params2 == null) {
+                    return false;
+                }
+                DataModel dataModel1 = DomainHelper.convertTo(params2[0]);
+                Object targetKeyValue = ((ObjectModel) dataModel1).getValue(key.toString()).unwrap();
+                return Objects.deepEquals(parentKeyValue, targetKeyValue);
+            }, hints).get(0);
+        }, hints).values();
+    }
+
     // -------------------------------------------------------------------------------------------------------------------------- Map
     private static String evalJoinKey(Object data, String[] joinField) {
         ObjectModel objectModel = (ObjectModel) DomainHelper.convertTo(data);
