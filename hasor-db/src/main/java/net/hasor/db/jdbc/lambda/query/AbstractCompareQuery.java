@@ -47,6 +47,8 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
     protected            MergeSqlSegment        queryTemplate     = new MergeSqlSegment();
     protected            AtomicInteger          paramNameSeq      = new AtomicInteger();
     protected            Map<String, Object>    queryParam        = new HashMap<>();
+    private              Segment                nextSegmentPrefix = null;
+    private              boolean                lookCondition     = false;
 
     public AbstractCompareQuery(Class<T> exampleType, JdbcOperations jdbcOperations) {
         super(exampleType, jdbcOperations);
@@ -56,7 +58,7 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
         super(exampleType, jdbcOperations, dbType, dialect);
     }
 
-    protected <T> FieldInfo columnName(SFunction<T, ?> property) {
+    protected FieldInfo columnName(SFunction<T> property) {
         Method targetMethod = MethodUtils.lambdaMethodName(property);
         String cacheKey = targetMethod.toGenericString();
         Lock readLock = COLUMN_CACHE_LOCK.readLock();
@@ -78,7 +80,7 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
                 return fieldMeta;
             }
             String methodName = targetMethod.getName();
-            String attr = null;
+            String attr;
             if (methodName.startsWith("get")) {
                 attr = methodName.substring(3);
             } else {
@@ -94,127 +96,120 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
         }
     }
 
-    public R andEq(SFunction<T, ?> property, Object value) {
-        return this.addCondition(AND, () -> conditionName(property), EQ, formatValue(value));
+    public R or() {
+        this.nextSegmentPrefix = OR;
+        return this.getSelf();
     }
 
-    public R orEq(SFunction<T, ?> property, Object value) {
-        return this.addCondition(OR, () -> conditionName(property), EQ, formatValue(value));
+    public R eq(SFunction<T> property, Object value) {
+        return this.addCondition(() -> conditionName(property), EQ, formatValue(value));
     }
 
-    public R andNe(SFunction<T, ?> property, Object value) {
-        return this.addCondition(AND, () -> conditionName(property), NE, formatValue(value));
+    public R ne(SFunction<T> property, Object value) {
+        return this.addCondition(() -> conditionName(property), NE, formatValue(value));
     }
 
-    public R orNe(SFunction<T, ?> property, Object value) {
-        return this.addCondition(OR, () -> conditionName(property), NE, formatValue(value));
+    public R gt(SFunction<T> property, Object value) {
+        return this.addCondition(() -> conditionName(property), GT, formatValue(value));
     }
 
-    public R andGt(SFunction<T, ?> property, Object value) {
-        return this.addCondition(AND, () -> conditionName(property), GT, formatValue(value));
+    public R ge(SFunction<T> property, Object value) {
+        return this.addCondition(() -> conditionName(property), GE, formatValue(value));
     }
 
-    public R orGt(SFunction<T, ?> property, Object value) {
-        return this.addCondition(OR, () -> conditionName(property), GT, formatValue(value));
+    public R lt(SFunction<T> property, Object value) {
+        return this.addCondition(() -> conditionName(property), LT, formatValue(value));
     }
 
-    public R andGe(SFunction<T, ?> property, Object value) {
-        return this.addCondition(AND, () -> conditionName(property), GE, formatValue(value));
+    public R le(SFunction<T> property, Object value) {
+        return this.addCondition(() -> conditionName(property), LE, formatValue(value));
     }
 
-    public R orGe(SFunction<T, ?> property, Object value) {
-        return this.addCondition(OR, () -> conditionName(property), GE, formatValue(value));
+    public R like(SFunction<T> property, Object value) {
+        return this.addCondition(() -> conditionName(property), LIKE, formatLikeValue(SqlLike.DEFAULT, value));
     }
 
-    public R andLt(SFunction<T, ?> property, Object value) {
-        return this.addCondition(AND, () -> conditionName(property), LT, formatValue(value));
+    public R notLike(SFunction<T> property, Object value) {
+        return this.addCondition(() -> conditionName(property), NOT, LIKE, formatLikeValue(SqlLike.DEFAULT, value));
     }
 
-    public R orLt(SFunction<T, ?> property, Object value) {
-        return this.addCondition(OR, () -> conditionName(property), LT, formatValue(value));
+    public R likeRight(SFunction<T> property, Object value) {
+        return this.addCondition(() -> conditionName(property), LIKE, formatLikeValue(SqlLike.RIGHT, value));
     }
 
-    public R andLe(SFunction<T, ?> property, Object value) {
-        return this.addCondition(AND, () -> conditionName(property), LE, formatValue(value));
+    public R notLikeRight(SFunction<T> property, Object value) {
+        return this.addCondition(() -> conditionName(property), NOT, LIKE, formatLikeValue(SqlLike.RIGHT, value));
     }
 
-    public R orLe(SFunction<T, ?> property, Object value) {
-        return this.addCondition(OR, () -> conditionName(property), LE, formatValue(value));
+    public R likeLeft(SFunction<T> property, Object value) {
+        return this.addCondition(() -> conditionName(property), LIKE, formatLikeValue(SqlLike.LEFT, value));
     }
 
-    public R andLike(SFunction<T, ?> property, Object value) {
-        return this.addCondition(AND, () -> conditionName(property), LIKE, formatLikeValue(SqlLike.DEFAULT, value));
+    public R notLikeLeft(SFunction<T> property, Object value) {
+        return this.addCondition(() -> conditionName(property), NOT, LIKE, formatLikeValue(SqlLike.LEFT, value));
     }
 
-    public R orLike(SFunction<T, ?> property, Object value) {
-        return this.addCondition(OR, () -> conditionName(property), LIKE, formatLikeValue(SqlLike.DEFAULT, value));
+    public R isNull(SFunction<T> property) {
+        return this.addCondition(() -> conditionName(property), IS_NULL);
     }
 
-    public R andNotLike(SFunction<T, ?> property, Object value) {
-        return this.addCondition(AND, () -> conditionName(property), NOT, LIKE, formatLikeValue(SqlLike.DEFAULT, value));
+    public R isNotNull(SFunction<T> property) {
+        return this.addCondition(() -> conditionName(property), IS_NOT_NULL);
     }
 
-    public R orNotLike(SFunction<T, ?> property, Object value) {
-        return this.addCondition(OR, () -> conditionName(property), NOT, LIKE, formatLikeValue(SqlLike.DEFAULT, value));
+    public R in(SFunction<T> property, Collection<?> value) {
+        return this.addCondition(() -> conditionName(property), IN, LEFT, formatValue(value.toArray()), RIGHT);
     }
 
-    public R andLikeRight(SFunction<T, ?> property, Object value) {
-        return this.addCondition(OR, () -> conditionName(property), NOT, LIKE, formatLikeValue(SqlLike.RIGHT, value));
+    public R notIn(SFunction<T> property, Collection<?> value) {
+        return this.addCondition(() -> conditionName(property), NOT, IN, LEFT, formatValue(value.toArray()), RIGHT);
     }
 
-    public R orLikeRight(SFunction<T, ?> property, Object value) {
-        return this.addCondition(OR, () -> conditionName(property), NOT, LIKE, formatLikeValue(SqlLike.RIGHT, value));
+    public R between(SFunction<T> property, Object value1, Object value2) {
+        return this.addCondition(() -> conditionName(property), BETWEEN, formatValue(value1), AND, formatValue(value2));
     }
 
-    public R andIsNull(SFunction<T, ?> property) {
-        return this.addCondition(AND, () -> conditionName(property), IS_NULL);
+    public R notBetween(SFunction<T> property, Object value1, Object value2) {
+        return this.addCondition(() -> conditionName(property), NOT, BETWEEN, formatValue(value1), AND, formatValue(value2));
     }
 
-    public R orIsNull(SFunction<T, ?> property) {
-        return this.addCondition(OR, () -> conditionName(property), IS_NULL);
+    public R apply(String sqlString, Object... args) {
+        if (StringUtils.isBlank(sqlString)) {
+            return this.getSelf();
+        }
+        if (args == null || args.length == 0) {
+            this.queryTemplate.addSegment(() -> sqlString);
+            return this.getSelf();
+        }
+        MergeSqlSegment mergeSqlSegment = new MergeSqlSegment();
+        String[] splitKeep = StringUtils.splitKeep(sqlString, "?");
+        int argIndex = 0;
+        for (String term : splitKeep) {
+            if ("?".equals(term)) {
+                mergeSqlSegment.addSegment(formatSegment(args[argIndex++]));
+            } else if (StringUtils.isNotBlank(term)) {
+                mergeSqlSegment.addSegment(term::trim);
+            }
+        }
+        this.queryTemplate.addSegment(mergeSqlSegment);
+        return this.getSelf();
     }
 
-    public R andIsNotNull(SFunction<T, ?> property) {
-        return this.addCondition(AND, () -> conditionName(property), IS_NOT_NULL);
+    protected void lockCondition() {
+        this.lookCondition = true;
     }
 
-    public R orIsNotNull(SFunction<T, ?> property) {
-        return this.addCondition(OR, () -> conditionName(property), IS_NOT_NULL);
-    }
-
-    public R andIn(SFunction<T, ?> property, Collection<?> value) {
-        return this.addCondition(AND, () -> conditionName(property), IN, LEFT, formatValue(value), RIGHT);
-    }
-
-    public R orIn(SFunction<T, ?> property, Collection<?> value) {
-        return this.addCondition(OR, () -> conditionName(property), IN, LEFT, formatValue(value), RIGHT);
-    }
-
-    public R andNotIn(SFunction<T, ?> property, Collection<?> value) {
-        return this.addCondition(AND, () -> conditionName(property), NOT, IN, LEFT, formatValue(value), RIGHT);
-    }
-
-    public R orNotIn(SFunction<T, ?> property, Collection<?> value) {
-        return this.addCondition(OR, () -> conditionName(property), NOT, IN, LEFT, formatValue(value), RIGHT);
-    }
-
-    public R andBetween(SFunction<T, ?> property, Object value1, Object value2) {
-        return this.addCondition(AND, () -> conditionName(property), BETWEEN, formatValue(value1), AND, formatValue(value2));
-    }
-
-    public R orBetween(SFunction<T, ?> property, Object value1, Object value2) {
-        return this.addCondition(OR, () -> conditionName(property), BETWEEN, formatValue(value1), AND, formatValue(value2));
-    }
-
-    public R andNotBetween(SFunction<T, ?> property, Object value1, Object value2) {
-        return this.addCondition(AND, () -> conditionName(property), NOT, BETWEEN, formatValue(value1), AND, formatValue(value2));
-    }
-
-    public R orNotBetween(SFunction<T, ?> property, Object value1, Object value2) {
-        return this.addCondition(OR, () -> conditionName(property), NOT, BETWEEN, formatValue(value1), AND, formatValue(value2));
-    }
-
-    protected R addCondition(Segment... segments) {
+    protected final R addCondition(Segment... segments) {
+        if (this.lookCondition) {
+            throw new UnsupportedOperationException("condition is locked.");
+        }
+        //
+        if (this.nextSegmentPrefix == null) {
+            this.queryTemplate.addSegment(AND);
+        } else {
+            this.queryTemplate.addSegment(this.nextSegmentPrefix);
+            this.nextSegmentPrefix = null;
+        }
         for (Segment segment : segments) {
             this.queryTemplate.addSegment(segment);
         }
@@ -266,7 +261,7 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
         return ":" + genParamName;
     }
 
-    protected String conditionName(SFunction<T, ?> property) {
+    protected String conditionName(SFunction<T> property) {
         TableInfo tableInfo = super.getRowMapper().findTableInfo();
         return this.dialect.buildConditionName(tableInfo, columnName(property));
     }

@@ -41,6 +41,8 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
     private final Map<String, Segment> selectSegments  = new LinkedHashMap<>();
     private final Map<String, Segment> groupBySegments = new LinkedHashMap<>();
     private final Map<String, Segment> orderBySegments = new LinkedHashMap<>();
+    private       boolean              lockGroupBy     = false;
+    private       boolean              lockOrderBy     = false;
     private       String               result          = null;
 
     public LambdaQueryWrapper(Class<T> exampleType, JdbcOperations jdbcOperations) {
@@ -75,6 +77,16 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
         return sqlSegment;
     }
 
+    protected void lockGroupBy() {
+        this.lockCondition();
+        this.lockGroupBy = true;
+    }
+
+    protected void lockOrderBy() {
+        this.lockGroupBy();
+        this.lockOrderBy = true;
+    }
+
     @Override
     protected LambdaQuery<T> getSelf() {
         return this;
@@ -86,7 +98,7 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
             lambda.accept(new NestedQueryWrapper<>(this));
             return "";
         };
-        this.addCondition(AND, new MergeSqlSegment(LEFT, andBody, RIGHT));
+        this.addCondition(new MergeSqlSegment(LEFT, andBody, RIGHT));
         return this;
     }
 
@@ -96,7 +108,8 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
             lambda.accept(new NestedQueryWrapper<>(this));
             return "";
         };
-        this.addCondition(OR, new MergeSqlSegment(LEFT, orBody, RIGHT));
+        this.or();
+        this.addCondition(new MergeSqlSegment(LEFT, orBody, RIGHT));
         return this;
     }
 
@@ -107,20 +120,24 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
     }
 
     @Override
-    public LambdaQuery<T> select(String... columns) {
-        if (columns != null && columns.length > 0) {
-            Set<String> matching = new HashSet<>(Arrays.asList(columns));
-            matching.stream().map(column -> {
-                return super.getRowMapper().findFieldInfoByProperty(column);
-            }).filter(Objects::nonNull).forEach(this::addSelection);
+    public LambdaQuery<T> select(String column, String... columns) {
+        List<String> matching = new ArrayList<>();
+        if (StringUtils.isNotBlank(column)) {
+            matching.add(column);
         }
+        if (columns != null && columns.length > 0) {
+            matching.addAll(Arrays.asList(columns));
+        }
+        matching.stream().map(c -> {
+            return super.getRowMapper().findFieldInfoByProperty(c);
+        }).filter(Objects::nonNull).forEach(this::addSelection);
         return this;
     }
 
     @Override
-    public LambdaQuery<T> select(SFunction<T, ?>... columns) {
-        if (columns != null && columns.length > 0) {
-            Arrays.stream(columns).forEach(property -> {
+    public final LambdaQuery<T> select(List<SFunction<T>> columns) {
+        if (columns != null) {
+            columns.stream().filter(Objects::nonNull).forEach(property -> {
                 addSelection(columnName(property));
             });
         }
@@ -134,63 +151,51 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
         return this;
     }
 
-    @Override
-    public LambdaQuery<T> apply(String sqlString, Object... args) {
-        if (StringUtils.isBlank(sqlString)) {
-            return this.getSelf();
+    public final LambdaQuery<T> groupBy(List<SFunction<T>> columns) {
+        if (this.lockGroupBy) {
+            throw new IllegalStateException("group by is locked.");
         }
-        if (args == null || args.length == 0) {
-            this.addCondition(() -> sqlString);
-            return null;
-        }
-        MergeSqlSegment mergeSqlSegment = new MergeSqlSegment();
-        String[] splitKeep = StringUtils.splitKeep(sqlString, "?");
-        for (int i = 0; i < splitKeep.length; i++) {
-            String term = splitKeep[i];
-            if ("?".equals(term)) {
-                mergeSqlSegment.addSegment(formatSegment(args[i]));
-            } else if (StringUtils.isNotBlank(term)) {
-                mergeSqlSegment.addSegment(() -> term);
+        this.lockCondition();
+        if (columns != null && !columns.isEmpty()) {
+            if (this.groupBySegments.isEmpty()) {
+                this.queryTemplate.addSegment(GROUP_BY);
             }
-        }
-        return this.addCondition(mergeSqlSegment);
-    }
-
-    public LambdaQuery<T> groupBy(SFunction<T, ?>... columns) {
-        for (SFunction<T, ?> fun : columns) {
-            this.addGroupBy(fun, () -> conditionName(fun));
+            for (SFunction<T> fun : columns) {
+                FieldInfo cm = columnName(fun);
+                this.groupBySegments.put(cm.getColumnName(), () -> conditionName(fun));
+            }
+            this.queryTemplate.addSegment(buildBySeparator(this.groupBySegments, ","));
         }
         return this.getSelf();
     }
 
-    protected LambdaQuery<T> addGroupBy(SFunction<T, ?> column, Segment segment) {
-        FieldInfo cm = columnName(column);
-        this.groupBySegments.put(cm.getColumnName(), segment);
-        return this.getSelf();
-    }
-
-    public LambdaQuery<T> orderBy(SFunction<T, ?>... columns) {
+    public LambdaQuery<T> orderBy(List<SFunction<T>> columns) {
         return this.addOrderBy(ORDER_DEFAULT, columns);
     }
 
-    public LambdaQuery<T> asc(SFunction<T, ?>... columns) {
+    public LambdaQuery<T> asc(List<SFunction<T>> columns) {
         return this.addOrderBy(ASC, columns);
     }
 
-    public LambdaQuery<T> desc(SFunction<T, ?>... columns) {
+    public LambdaQuery<T> desc(List<SFunction<T>> columns) {
         return this.addOrderBy(DESC, columns);
     }
 
-    private LambdaQuery<T> addOrderBy(OrderByKeyword keyword, SFunction<T, ?>... columns) {
-        for (SFunction<T, ?> fun : columns) {
-            this.addOrderBy(fun, new MergeSqlSegment(() -> conditionName(fun), keyword));
+    private LambdaQuery<T> addOrderBy(OrderByKeyword keyword, List<SFunction<T>> order) {
+        if (this.lockOrderBy) {
+            throw new IllegalStateException("order by is locked.");
         }
-        return this.getSelf();
-    }
-
-    protected LambdaQuery<T> addOrderBy(SFunction<T, ?> column, Segment segment) {
-        FieldInfo cm = columnName(column);
-        this.orderBySegments.put(cm.getColumnName(), segment);
+        this.lockGroupBy();
+        if (order != null && !order.isEmpty()) {
+            if (this.orderBySegments.isEmpty()) {
+                this.queryTemplate.addSegment(ORDER_BY);
+            }
+            for (SFunction<T> fun : order) {
+                FieldInfo cm = columnName(fun);
+                this.orderBySegments.put(cm.getColumnName(), new MergeSqlSegment(() -> conditionName(fun), keyword));
+            }
+            this.queryTemplate.addSegment(buildBySeparator(this.orderBySegments, ","));
+        }
         return this.getSelf();
     }
 
@@ -207,14 +212,6 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
         if (!this.queryTemplate.isEmpty()) {
             sqlSegment.addSegment(WHERE);
             sqlSegment.addSegment(this.queryTemplate.sub(1));
-        }
-        if (!this.groupBySegments.isEmpty()) {
-            sqlSegment.addSegment(GROUP_BY);
-            sqlSegment.addSegment(buildBySeparator(this.groupBySegments, ","));
-        }
-        if (!this.orderBySegments.isEmpty()) {
-            sqlSegment.addSegment(ORDER_BY);
-            sqlSegment.addSegment(buildBySeparator(this.orderBySegments, ","));
         }
         this.result = sqlSegment.getSqlSegment();
         return this.result;

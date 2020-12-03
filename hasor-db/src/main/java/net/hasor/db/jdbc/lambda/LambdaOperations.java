@@ -16,6 +16,8 @@
 package net.hasor.db.jdbc.lambda;
 import net.hasor.utils.reflect.SFunction;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,11 +28,11 @@ import java.util.Map;
 public interface LambdaOperations {
     /** 相当于 select * form */
     public default <T> LambdaQuery<T> lambdaSelect(Class<T> exampleType) {
-        return lambdaSelect(exampleType, (SFunction<T, ?>[]) null);
+        return lambdaSelect(exampleType, Collections.emptyList());
     }
 
     /** 相当于 select xxx,xxx,xxx form */
-    public <T> LambdaQuery<T> lambdaSelect(Class<T> exampleType, SFunction<T, ?>... columns);
+    public <T> LambdaQuery<T> lambdaSelect(Class<T> exampleType, List<SFunction<T>> columns);
 
     /** 封装 */
     public interface LambdaQuery<T> extends AbstractLambdaQuery<T, LambdaQuery<T>>, BoundSql, QueryExecute<T> {

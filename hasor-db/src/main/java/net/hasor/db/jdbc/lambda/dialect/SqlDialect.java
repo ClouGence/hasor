@@ -42,11 +42,11 @@ public interface SqlDialect {
         }
         switch (likeType) {
         case LEFT:
-            return "CONCAT('%'," + paramName + ")";
+            return "CONCAT('%', " + paramName + " )";
         case RIGHT:
-            return "CONCAT(" + paramName + ",'%')";
+            return "CONCAT( " + paramName + " ,'%')";
         default:
-            return "CONCAT('%'," + paramName + ",'%')";
+            return "CONCAT('%', " + paramName + " ,'%')";
         }
     }
 }

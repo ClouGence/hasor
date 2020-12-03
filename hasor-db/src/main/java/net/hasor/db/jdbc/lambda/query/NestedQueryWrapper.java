@@ -21,7 +21,8 @@ import net.hasor.db.jdbc.lambda.segment.Segment;
 
 import java.util.function.Consumer;
 
-import static net.hasor.db.jdbc.lambda.segment.SqlKeyword.*;
+import static net.hasor.db.jdbc.lambda.segment.SqlKeyword.LEFT;
+import static net.hasor.db.jdbc.lambda.segment.SqlKeyword.RIGHT;
 
 /**
  * 提供 lambda 方式生成 SQL。
@@ -47,7 +48,7 @@ class NestedQueryWrapper<T> extends AbstractCompareQuery<T, NestedQuery<T>> impl
             lambda.accept(this);
             return "";
         };
-        this.addCondition(AND, new MergeSqlSegment(LEFT, andBody, RIGHT));
+        this.addCondition(new MergeSqlSegment(LEFT, andBody, RIGHT));
         return this;
     }
 
@@ -57,7 +58,8 @@ class NestedQueryWrapper<T> extends AbstractCompareQuery<T, NestedQuery<T>> impl
             lambda.accept(this);
             return "";
         };
-        this.addCondition(OR, new MergeSqlSegment(LEFT, orBody, RIGHT));
+        this.or();
+        this.addCondition(new MergeSqlSegment(LEFT, orBody, RIGHT));
         return this;
     }
 }

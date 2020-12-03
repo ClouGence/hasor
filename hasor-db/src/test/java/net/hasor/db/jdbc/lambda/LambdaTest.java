@@ -62,18 +62,24 @@ public class LambdaTest extends AbstractDbTest {
             assert tbUsers2.size() == 3;
             //
             Map<String, Object> forData1 = mapForData1();
-            List<TbUser> tbUsers3 = jdbcTemplate.lambdaSelect(TbUser.class).andEq(TbUser::getAccount, forData1.get("loginName")).queryForList();
+            List<TbUser> tbUsers3 = jdbcTemplate.lambdaSelect(TbUser.class)//
+                    .eq(TbUser::getAccount, forData1.get("loginName")).queryForList();
             assert tbUsers3.size() == 1;
             assert tbUsers3.get(0).getAccount().equals("muhammad");
             assert tbUsers3.get(0).getAccount().equals(forData1.get("loginName"));
             assert tbUsers3.get(0).getUid().equals(forData1.get("userUUID"));
         }
-        //                .select(TB_User::getLoginName, TB_User::getLoginPassword, TB_User::getEmail)//
-        //                .andEq(TB_User::getLoginName, "zyc")//
-        //                .andEq(TB_User::getLoginPassword, "123456");//
-        //        String string = lambdaQuery.getSqlString();
-        //        Map<String, Object> args = lambdaQuery.getArgs();
-        //        System.out.println(string);
-        //        System.out.println(JSONObject.toJSONString(args, true));
+    }
+
+    @Test
+    public void lambda_select_3() throws SQLException {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            TbUser tbUser = jdbcTemplate.lambdaSelect(TbUser.class)//
+                    .eq(TbUser::getAccount, "muhammad").apply("limit 1").queryForObject();
+            //
+            assert tbUser.getName().equals("默罕默德");
+        }
     }
 }

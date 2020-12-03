@@ -106,14 +106,15 @@ public class BeanRowMapper<T> implements RowMapper<T>, TableInfo {
             jdbcType = TypeHandlerRegistry.DEFAULT.toSqlType(property.getType());
         }
         //
+        String useColumnName = columnName;
         if (this.caseInsensitive) {
-            columnName = columnName.toUpperCase();
+            useColumnName = useColumnName.toUpperCase();
         }
-        this.columnNames.add(columnName);
-        this.columnFieldInfoMap.put(columnName, new FieldInfoImpl(columnName, jdbcType, property.getType()));
-        this.columnTypeHandlerMap.put(columnName, toTypeHandler);
-        this.columnPropertyMapping.put(columnName, property.getName());
-        this.propertyColumnMapping.put(property.getName(), columnName);
+        this.columnNames.add(useColumnName);
+        this.columnFieldInfoMap.put(useColumnName, new FieldInfoImpl(columnName, jdbcType, property.getType()));
+        this.columnTypeHandlerMap.put(useColumnName, toTypeHandler);
+        this.columnPropertyMapping.put(useColumnName, property.getName());
+        this.propertyColumnMapping.put(property.getName(), useColumnName);
     }
 
     @Override
