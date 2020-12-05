@@ -1,9 +1,8 @@
 package net.hasor.dataql.fx.db.likemybatis;
+import net.hasor.utils.StringUtils;
 
 import java.util.List;
 import java.util.Map;
-
-import net.hasor.utils.StringUtils;
 
 /**
  * 对应XML中 <trim>，注意prefixOverrides和suffixOverrides大小写敏感
@@ -13,13 +12,10 @@ import net.hasor.utils.StringUtils;
 public class TrimSqlNode extends SqlNode {
     /** 前缀  prefix*/
     protected String prefix;
-
     /** 后缀  suffix*/
     protected String suffix;
-
     /** 前缀 prefixOverrides */
     protected String prefixOverrides;
-
     /** 后缀 suffixOverrides */
     protected String suffixOverrides;
 
@@ -42,14 +38,11 @@ public class TrimSqlNode extends SqlNode {
     @Override
     public String getSql(Map<String, Object> paramMap, List<Object> parameters) {
         StringBuilder sqlBuffer = new StringBuilder();
-
         String childrenSql = executeChildren(paramMap, parameters);
-
         // 如果子节点不为null，则转成数组
         if (StringUtils.isNotEmpty(childrenSql)) {
             // 开始拼接SQL,
             sqlBuffer.append(StringUtils.defaultString(this.prefix)).append(" ");
-
             //去掉prefixOverrides
             if (StringUtils.isNotEmpty(this.prefixOverrides)) {
                 String[] overrideArray = this.prefixOverrides.split("\\|");
@@ -59,9 +52,7 @@ public class TrimSqlNode extends SqlNode {
                         break;
                     }
                 }
-
             }
-
             //去掉suffixOverrides
             if (StringUtils.isNotEmpty(this.suffixOverrides)) {
                 String[] overrideArray = this.suffixOverrides.split("\\|");
@@ -72,13 +63,10 @@ public class TrimSqlNode extends SqlNode {
                     }
                 }
             }
-
             sqlBuffer.append(childrenSql);
             // 拼接结束SQL
             sqlBuffer.append(" ").append(StringUtils.defaultString(this.suffix));
         }
-
         return sqlBuffer.toString();
     }
-
 }

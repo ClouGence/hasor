@@ -114,7 +114,7 @@ public class MybatisFragment extends SqlFragment {
         foreachSqlNode.setItem(getNodeAttributeValue(node, "item"));
         return foreachSqlNode;
     }
-    
+
     /** 解析trim节点 */
     private TrimSqlNode parseTrimSqlNode(Node node) {
         TrimSqlNode trimSqlNode = new TrimSqlNode();
@@ -124,13 +124,13 @@ public class MybatisFragment extends SqlFragment {
         trimSqlNode.setSuffixOverrides(getNodeAttributeValue(node, "suffixOverrides"));
         return trimSqlNode;
     }
-    
+
     /** 解析set节点 */
     private SetSqlNode parseSetSqlNode() {
         SetSqlNode setSqlNode = new SetSqlNode();
         return setSqlNode;
     }
-    
+
     /** 解析where节点 */
     private WhereSqlNode parseWhereSqlNode() {
         WhereSqlNode whereSqlNode = new WhereSqlNode();
