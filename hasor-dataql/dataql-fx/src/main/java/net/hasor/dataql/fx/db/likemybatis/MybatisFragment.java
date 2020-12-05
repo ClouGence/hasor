@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * 支持 Mybatis 的代码片段执行器。整合了分页、批处理能力。
- * 已支持的标签有：select/insert/delete/update/if/foreach
+ * 已支持的标签有：select/insert/delete/update/if/foreach/trim/set/where
  *
  * @author jmxd
  * @version : 2020-05-18
@@ -87,15 +87,12 @@ public class MybatisFragment extends SqlFragment {
                     childNode = parseForeachSqlNode(node);
                 } else if ("if".equalsIgnoreCase(nodeName)) {
                     childNode = new IfSqlNode(getNodeAttributeValue(node, "test"));
-                // 增加@@mybatis对<trim>、<set>、<where>标签的支持 
-                // 添加 by zhangxu begin
                 } else if ("trim".equalsIgnoreCase(nodeName)) {
                     childNode = parseTrimSqlNode(node);
                 } else if ("set".equalsIgnoreCase(nodeName)) {
-                    childNode = parseSetSqlNode(node);
+                    childNode = parseSetSqlNode();
                 } else if ("where".equalsIgnoreCase(nodeName)) {
-                    childNode = parseWhereSqlNode(node);
-                //添加 by zhangxu end
+                    childNode = parseWhereSqlNode();
                 } else {
                     throw new UnsupportedOperationException("Unsupported tags :" + nodeName);
                 }
@@ -118,8 +115,6 @@ public class MybatisFragment extends SqlFragment {
         return foreachSqlNode;
     }
     
-    // 增加@@mybatis对<trim>、<set>、<where>标签的支持
-    // 添加 by zhangxu begin
     /** 解析trim节点 */
     private TrimSqlNode parseTrimSqlNode(Node node) {
         TrimSqlNode trimSqlNode = new TrimSqlNode();
@@ -131,17 +126,16 @@ public class MybatisFragment extends SqlFragment {
     }
     
     /** 解析set节点 */
-    private SetSqlNode parseSetSqlNode(Node node) {
+    private SetSqlNode parseSetSqlNode() {
         SetSqlNode setSqlNode = new SetSqlNode();
         return setSqlNode;
     }
     
     /** 解析where节点 */
-    private WhereSqlNode parseWhereSqlNode(Node node) {
+    private WhereSqlNode parseWhereSqlNode() {
         WhereSqlNode whereSqlNode = new WhereSqlNode();
         return whereSqlNode;
     }
-    //添加 by zhangxu end
 
     private String getNodeAttributeValue(Node node, String attributeKey) {
         Node item = node.getAttributes().getNamedItem(attributeKey);
