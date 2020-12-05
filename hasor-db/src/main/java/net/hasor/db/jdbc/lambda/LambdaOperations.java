@@ -27,30 +27,20 @@ import java.util.Map;
  */
 public interface LambdaOperations {
     /** 相当于 select * form */
-    public default <T> LambdaQuery<T> lambdaSelect(Class<T> exampleType) {
-        return lambdaSelect(exampleType, Collections.emptyList());
+    public default <T> LambdaQuery<T> lambda(Class<T> exampleType) {
+        return lambda(exampleType, Collections.emptyList());
     }
 
     /** 相当于 select xxx,xxx,xxx form */
-    public <T> LambdaQuery<T> lambdaSelect(Class<T> exampleType, List<SFunction<T>> columns);
+    public <T> LambdaQuery<T> lambda(Class<T> exampleType, List<SFunction<T>> columns);
 
     /** 封装 */
-    public interface LambdaQuery<T> extends AbstractLambdaQuery<T, LambdaQuery<T>>, BoundSql, QueryExecute<T> {
-    }
-
-    public interface AbstractLambdaQuery<T, R extends AbstractLambdaQuery<T, R>> extends //
-            Compare<T, R>, //
-            Nested<NestedQuery<T>, AbstractLambdaQuery<T, R>>,//
-            Func<T, R> {
+    public interface LambdaQuery<T> extends Compare<T, LambdaQuery<T>>, Func<T, LambdaQuery<T>>,//
+            BoundSql, QueryExecute<T> {
     }
 
     /** 嵌套 */
-    public interface NestedQuery<T> extends AbstractNestedQuery<T, NestedQuery<T>> {
-    }
-
-    public interface AbstractNestedQuery<T, R extends AbstractNestedQuery<T, R>> extends //
-            Compare<T, R>, //
-            Nested<AbstractNestedQuery<T, R>, AbstractNestedQuery<T, R>> {
+    public interface NestedQuery<T> extends Compare<T, NestedQuery<T>> {
     }
 
     public interface BoundSql {

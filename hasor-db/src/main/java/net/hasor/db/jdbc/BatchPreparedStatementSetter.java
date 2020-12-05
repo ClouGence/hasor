@@ -39,8 +39,8 @@ public interface BatchPreparedStatementSetter {
      */
     public int getBatchSize();
 
-    /**测试批处理是否继续，返回 true 表示处理。false 表示在批处理中放弃这个条目。*/
+    /** 测试批处理是否继续，返回 true 表示处理。false 表示在批处理中放弃这个条目。*/
     public default boolean isBatchExhausted(int i) {
-        return true;
+        return false;
     }
 }

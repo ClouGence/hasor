@@ -35,13 +35,13 @@ public interface QueryExecute<T> {
     public <V> QueryExecute<V> wrapperType(Class<V> wrapperType) throws SQLException;
 
     /** 执行查询，并通过 ResultSetExtractor 转换结果集。*/
-    public T query(ResultSetExtractor<T> rse) throws SQLException;
+    public <V> V query(ResultSetExtractor<V> rse) throws SQLException;
+
+    /** 执行查询，并使用 RowMapper 处理结果集。*/
+    public <V> List<V> query(RowMapper<V> rowMapper) throws SQLException;
 
     /** 执行查询，并通过 RowCallbackHandler 处理结果集。*/
     public void query(RowCallbackHandler rch) throws SQLException;
-
-    /** 执行查询，并使用 RowMapper 处理结果集。*/
-    public List<T> query(RowMapper<T> rowMapper) throws SQLException;
 
     /** 执行查询，并结果将被映射到一个列表(一个条目为每一行)的对象，列表中每一条记录都是<code>elementType</code>参数指定的类型对象。*/
     public List<T> queryForList() throws SQLException;
@@ -58,16 +58,4 @@ public interface QueryExecute<T> {
     /** 执行查询，结果将被映射到一个列表(一个条目为每一行)的对象，
      * 列表中每一条记录都是<code>Map</code>类型对象。*/
     public List<Map<String, Object>> queryForMapList() throws SQLException;
-
-    /** 执行查询，并取得 long 类型数据。
-     * 预计该方法只会处理一条数据，如果查询结果存在多条数据或者多列将会引发异常。
-     * @return the long value, or 0 in case of SQL NULL
-     */
-    public long queryForLong() throws SQLException;
-
-    /** 执行查询，并取得 int 类型数据。
-     * 预计该方法只会处理一条数据，如果查询结果存在多条数据或者多列将会引发异常。
-     * @return the int value, or 0 in case of SQL NULL
-     */
-    public int queryForInt() throws SQLException;
 }

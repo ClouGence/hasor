@@ -99,7 +99,7 @@ public abstract class AbstractQueryExecute<T> implements QueryExecute<T>, BoundS
     }
 
     @Override
-    public T query(ResultSetExtractor<T> rse) throws SQLException {
+    public <V> V query(ResultSetExtractor<V> rse) throws SQLException {
         return this.jdbcOperations.query(getSqlString(), getArgs(), rse);
     }
 
@@ -109,7 +109,7 @@ public abstract class AbstractQueryExecute<T> implements QueryExecute<T>, BoundS
     }
 
     @Override
-    public List<T> query(RowMapper<T> rowMapper) throws SQLException {
+    public <V> List<V> query(RowMapper<V> rowMapper) throws SQLException {
         return this.jdbcOperations.query(getSqlString(), getArgs(), rowMapper);
     }
 
@@ -131,15 +131,5 @@ public abstract class AbstractQueryExecute<T> implements QueryExecute<T>, BoundS
     @Override
     public List<Map<String, Object>> queryForMapList() throws SQLException {
         return this.jdbcOperations.queryForList(getSqlString(), getArgs());
-    }
-
-    @Override
-    public long queryForLong() throws SQLException {
-        return this.jdbcOperations.queryForLong(getSqlString(), getArgs());
-    }
-
-    @Override
-    public int queryForInt() throws SQLException {
-        return this.jdbcOperations.queryForInt(getSqlString(), getArgs());
     }
 }

@@ -16,8 +16,8 @@
 package net.hasor.db;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
+import net.hasor.core.Provider;
 import net.hasor.core.exts.aop.Matchers;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.db.jdbc.JdbcOperations;
 import net.hasor.db.jdbc.core.*;
 import net.hasor.db.transaction.TransactionManager;
@@ -49,7 +49,7 @@ public class JdbcModule implements Module {
 
     /** 添加数据源 */
     public JdbcModule(Level loadLevel, DataSource dataSource) {
-        this(new Level[] { loadLevel }, null, new InstanceProvider<>(Objects.requireNonNull(dataSource)));
+        this(new Level[] { loadLevel }, null, Provider.of(Objects.requireNonNull(dataSource)));
     }
 
     /** 添加数据源 */
@@ -59,12 +59,12 @@ public class JdbcModule implements Module {
 
     /** 添加数据源 */
     public JdbcModule(Level loadLevel, String name, DataSource dataSource) {
-        this(new Level[] { loadLevel }, name, new InstanceProvider<>(Objects.requireNonNull(dataSource)));
+        this(new Level[] { loadLevel }, name, Provider.of(Objects.requireNonNull(dataSource)));
     }
 
     /** 添加数据源 */
     public JdbcModule(Level[] loadLevel, DataSource dataSource) {
-        this(loadLevel, null, new InstanceProvider<>(Objects.requireNonNull(dataSource)));
+        this(loadLevel, null, Provider.of(Objects.requireNonNull(dataSource)));
     }
 
     /** 添加数据源 */

@@ -17,6 +17,7 @@ package net.hasor.db.jdbc.lambda;
 import net.hasor.utils.reflect.SFunction;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * 动态拼条件。
@@ -27,6 +28,24 @@ import java.util.Collection;
 public interface Compare<T, R> {
     /** 等于条件 查询，类似：'or ...' */
     public R or();
+
+    /** 等于条件 查询，类似：'or ...' */
+    public R and();
+
+    /** 括号方式嵌套一组查询条件，与现有条件为并且关系。类似：'and ( ...where... )' */
+    public default R and(Consumer<Compare<T, R>> lambda) {
+        this.and();
+        return this.nested(lambda);
+    }
+
+    /** 括号方式嵌套一组查询条件，与现有条件为或关系。类似：'or ( ...where... )' */
+    public default R or(Consumer<Compare<T, R>> lambda) {
+        this.or();
+        return this.nested(lambda);
+    }
+
+    /** 括号方式嵌套一组查询条件 */
+    public R nested(Consumer<Compare<T, R>> lambda);
 
     /** 等于条件 查询，类似：'col = ?' */
     public R eq(SFunction<T> property, Object value);

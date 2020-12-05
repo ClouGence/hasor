@@ -15,7 +15,6 @@
  */
 package net.hasor.db.jdbc.lambda.query;
 import net.hasor.db.jdbc.JdbcOperations;
-import net.hasor.db.jdbc.lambda.LambdaOperations;
 import net.hasor.db.jdbc.lambda.LambdaOperations.LambdaQuery;
 import net.hasor.db.jdbc.lambda.dialect.SqlDialect;
 import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
@@ -27,7 +26,6 @@ import net.hasor.utils.StringUtils;
 import net.hasor.utils.reflect.SFunction;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 import static net.hasor.db.jdbc.lambda.segment.OrderByKeyword.*;
 import static net.hasor.db.jdbc.lambda.segment.SqlKeyword.*;
@@ -89,27 +87,6 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
 
     @Override
     protected LambdaQuery<T> getSelf() {
-        return this;
-    }
-
-    @Override
-    public LambdaOperations.AbstractLambdaQuery<T, LambdaQuery<T>> and(Consumer<LambdaOperations.NestedQuery<T>> lambda) {
-        Segment andBody = () -> {
-            lambda.accept(new NestedQueryWrapper<>(this));
-            return "";
-        };
-        this.addCondition(new MergeSqlSegment(LEFT, andBody, RIGHT));
-        return this;
-    }
-
-    @Override
-    public LambdaOperations.AbstractLambdaQuery<T, LambdaQuery<T>> or(Consumer<LambdaOperations.NestedQuery<T>> lambda) {
-        Segment orBody = () -> {
-            lambda.accept(new NestedQueryWrapper<>(this));
-            return "";
-        };
-        this.or();
-        this.addCondition(new MergeSqlSegment(LEFT, orBody, RIGHT));
         return this;
     }
 

@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Consumer;
 
 import static net.hasor.db.jdbc.lambda.segment.SqlKeyword.*;
 
@@ -96,9 +97,30 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
         }
     }
 
+    @Override
     public R or() {
         this.nextSegmentPrefix = OR;
         return this.getSelf();
+    }
+
+    @Override
+    public R and() {
+        this.nextSegmentPrefix = AND;
+        return this.getSelf();
+    }
+
+    @Override
+    public R nested(Consumer<Compare<T, R>> lambda) {
+        this.addCondition(LEFT);
+        this.nextSegmentPrefix = EMPTY;
+        lambda.accept(this);
+        this.nextSegmentPrefix = EMPTY;
+        this.addCondition(RIGHT);
+        return this.getSelf();
+    }
+
+    protected final Segment nextSegment() {
+        return this.nextSegmentPrefix;
     }
 
     public R eq(SFunction<T> property, Object value) {
@@ -204,12 +226,16 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
             throw new UnsupportedOperationException("condition is locked.");
         }
         //
-        if (this.nextSegmentPrefix == null) {
+        if (this.nextSegmentPrefix == EMPTY) {
+            this.nextSegmentPrefix = null;
+        } else if (this.nextSegmentPrefix == null) {
             this.queryTemplate.addSegment(AND);
+            this.nextSegmentPrefix = null;
         } else {
             this.queryTemplate.addSegment(this.nextSegmentPrefix);
             this.nextSegmentPrefix = null;
         }
+        //
         for (Segment segment : segments) {
             this.queryTemplate.addSegment(segment);
         }

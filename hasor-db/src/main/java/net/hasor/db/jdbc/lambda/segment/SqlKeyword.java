@@ -43,6 +43,7 @@ public enum SqlKeyword implements Segment {
     COLUMNS("*"),//
     FROM("FROM"),//
     WHERE("WHERE"),//
+    EMPTY(""),//
     LEFT("("),  //
     RIGHT(")")  //
     ;
