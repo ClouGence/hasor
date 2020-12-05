@@ -6,7 +6,7 @@ import java.util.Map;
 import net.hasor.utils.StringUtils;
 
 /**
- * 对应XML中 <trim>
+ * 对应XML中 <trim>，注意prefixOverrides和suffixOverrides大小写敏感
  * @author zhangxu
  * @version : 2020-12-05
  */
@@ -41,7 +41,7 @@ public class TrimSqlNode extends SqlNode {
 
     @Override
     public String getSql(Map<String, Object> paramMap, List<Object> parameters) {
-        StringBuffer sqlBuffer = new StringBuffer();//StringUtils.EMPTY;
+        StringBuilder sqlBuffer = new StringBuilder();
 
         String childrenSql = executeChildren(paramMap, parameters);
 
