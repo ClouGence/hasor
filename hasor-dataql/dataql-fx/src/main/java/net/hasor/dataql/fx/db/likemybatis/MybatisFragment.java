@@ -87,6 +87,15 @@ public class MybatisFragment extends SqlFragment {
                     childNode = parseForeachSqlNode(node);
                 } else if ("if".equalsIgnoreCase(nodeName)) {
                     childNode = new IfSqlNode(getNodeAttributeValue(node, "test"));
+                // 增加@@mybatis对<trim>、<set>、<where>标签的支持 
+                // 添加 by zhangxu begin
+                } else if ("trim".equalsIgnoreCase(nodeName)) {
+                    childNode = parseTrimSqlNode(node);
+                } else if ("set".equalsIgnoreCase(nodeName)) {
+                    childNode = parseSetSqlNode(node);
+                } else if ("where".equalsIgnoreCase(nodeName)) {
+                    childNode = parseWhereSqlNode(node);
+                //添加 by zhangxu end
                 } else {
                     throw new UnsupportedOperationException("Unsupported tags :" + nodeName);
                 }
@@ -108,6 +117,31 @@ public class MybatisFragment extends SqlFragment {
         foreachSqlNode.setItem(getNodeAttributeValue(node, "item"));
         return foreachSqlNode;
     }
+    
+    // 增加@@mybatis对<trim>、<set>、<where>标签的支持
+    // 添加 by zhangxu begin
+    /** 解析trim节点 */
+    private TrimSqlNode parseTrimSqlNode(Node node) {
+        TrimSqlNode trimSqlNode = new TrimSqlNode();
+        trimSqlNode.setPrefix(getNodeAttributeValue(node, "prefix"));
+        trimSqlNode.setPrefixOverrides(getNodeAttributeValue(node, "prefixOverrides"));
+        trimSqlNode.setSuffix(getNodeAttributeValue(node, "suffix"));
+        trimSqlNode.setSuffixOverrides(getNodeAttributeValue(node, "suffixOverrides"));
+        return trimSqlNode;
+    }
+    
+    /** 解析set节点 */
+    private SetSqlNode parseSetSqlNode(Node node) {
+        SetSqlNode setSqlNode = new SetSqlNode();
+        return setSqlNode;
+    }
+    
+    /** 解析where节点 */
+    private WhereSqlNode parseWhereSqlNode(Node node) {
+        WhereSqlNode whereSqlNode = new WhereSqlNode();
+        return whereSqlNode;
+    }
+    //添加 by zhangxu end
 
     private String getNodeAttributeValue(Node node, String attributeKey) {
         Node item = node.getAttributes().getNamedItem(attributeKey);
