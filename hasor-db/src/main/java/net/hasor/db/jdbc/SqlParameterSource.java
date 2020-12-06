@@ -15,6 +15,8 @@
  */
 package net.hasor.db.jdbc;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
+import org.springframework.lang.Nullable;
 
 /**
  * Interface that defines common functionality for objects that can
@@ -48,4 +50,10 @@ public interface SqlParameterSource {
      * @throws IllegalArgumentException if there is no value for the requested parameter
      */
     public Object getValue(String paramName) throws IllegalArgumentException;
+
+    /**
+     * Enumerate all available parameter names if possible.
+     * @return the array of parameter names, or {@code null} if not determinable
+     */
+    public String[] getParameterNames();
 }

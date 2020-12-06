@@ -25,12 +25,12 @@ import java.util.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ParsedSql {
-    private String       originalSql;
-    private int          namedParameterCount;
-    private int          unnamedParameterCount;
-    private int          totalParameterCount;
-    private List<String> parameterNames;
-    private List<int[]>  parameterIndexes;
+    private final String       originalSql;
+    private       int          namedParameterCount;
+    private       int          unnamedParameterCount;
+    private       int          totalParameterCount;
+    private       List<String> parameterNames;
+    private       List<int[]>  parameterIndexes;
 
     private ParsedSql(final String originalSql) {
         this.originalSql = originalSql;

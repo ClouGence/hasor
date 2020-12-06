@@ -46,6 +46,11 @@ public class BeanSqlParameterSource implements SqlParameterSource, ParameterDisp
     }
 
     @Override
+    public String[] getParameterNames() {
+        return this.dataNames.toArray(new String[0]);
+    }
+
+    @Override
     public void cleanupParameters() {
         if (this.dataBean instanceof ParameterDisposer) {
             ((ParameterDisposer) this.dataBean).cleanupParameters();

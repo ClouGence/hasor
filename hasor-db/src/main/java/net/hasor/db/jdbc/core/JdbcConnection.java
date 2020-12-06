@@ -16,6 +16,7 @@
 package net.hasor.db.jdbc.core;
 import net.hasor.db.datasource.ConnectionProxy;
 import net.hasor.db.jdbc.ConnectionCallback;
+import net.hasor.db.jdbc.StatementCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,8 +27,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  *
@@ -35,16 +38,18 @@ import java.util.Objects;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcConnection extends JdbcAccessor {
-    private static final Logger logger       = LoggerFactory.getLogger(JdbcConnection.class);
+    private static final Logger  logger         = LoggerFactory.getLogger(JdbcConnection.class);
     /*JDBC查询和从结果集里面每次取设置行数，循环去取，直到取完。合理设置该参数可以避免内存异常。
      * 如果这个变量被设置为非零值,它将被用于设置 statements 的 fetchSize 属性。*/
-    private              int    fetchSize    = 0;
+    private              int     fetchSize      = 0;
     /*从 JDBC 中可以查询的最大行数。
      * 如果这个变量被设置为非零值,它将被用于设置 statements 的 maxRows 属性。*/
-    private              int    maxRows      = 0;
+    private              int     maxRows        = 0;
     /*从 JDBC 中可以查询的最大行数。
      * 如果这个变量被设置为非零值,它将被用于设置 statements 的 queryTimeout 属性。*/
-    private              int    queryTimeout = 0;
+    private              int     queryTimeout   = 0;
+    /*是否忽略出现的 SQL 警告*/
+    private              boolean ignoreWarnings = true;
 
     /**
      * Construct a new JdbcConnection for bean usage.
@@ -97,6 +102,14 @@ public class JdbcConnection extends JdbcAccessor {
         this.queryTimeout = queryTimeout;
     }
 
+    public boolean isIgnoreWarnings() {
+        return this.ignoreWarnings;
+    }
+
+    public void setIgnoreWarnings(final boolean ignoreWarnings) {
+        this.ignoreWarnings = ignoreWarnings;
+    }
+
     public <T> T execute(final ConnectionCallback<T> action) throws SQLException {
         Objects.requireNonNull(action, "Callback object must not be null");
         //
@@ -106,11 +119,18 @@ public class JdbcConnection extends JdbcAccessor {
         if (logger.isDebugEnabled()) {
             logger.debug("database connection using DataSource = {}", usingDS);
         }
+        if (localConn == null && localDS == null) {
+            throw new IllegalArgumentException("DataSource or Connection are not available.");
+        }
         //
         ConnectionProxy useConn = null;
         try {
             if (usingDS) {
-                localConn = this.getDsApply().apply(localDS);
+                Function<DataSource, Connection> dsApply = this.getDsApply();
+                if (dsApply == null) {
+                    throw new IllegalArgumentException("dsApply is null.");
+                }
+                localConn = dsApply.apply(localDS);
                 useConn = this.newProxyConnection(localConn, localDS);//代理连接
             } else {
                 useConn = this.newProxyConnection(localConn, null);//代理连接
@@ -123,6 +143,23 @@ public class JdbcConnection extends JdbcAccessor {
                 }
             }
         }
+    }
+
+    public <T> T execute(final StatementCallback<T> action) throws SQLException {
+        Objects.requireNonNull(action, "Callback object must not be null");
+        return this.execute((ConnectionCallback<T>) con -> {
+            String stmtSQL = "";
+            try (Statement stmt = con.createStatement()) {
+                JdbcConnection.this.applyStatementSettings(stmt);
+                stmtSQL = stmt.toString();
+                T result = action.doInStatement(stmt);
+                JdbcConnection.this.handleWarnings(stmt);
+                return result;
+            } catch (SQLException ex) {
+                logger.error(stmtSQL, ex);
+                throw ex;
+            }
+        });
     }
 
     /**对Statement的属性进行设置。设置 JDBC Statement 对象的 fetchSize、maxRows、Timeout等参数。*/
@@ -138,6 +175,25 @@ public class JdbcConnection extends JdbcAccessor {
         int timeout = this.getQueryTimeout();
         if (timeout > 0) {
             stmt.setQueryTimeout(timeout);
+        }
+    }
+
+    /**处理潜在的 SQL 警告。当要求不忽略 SQL 警告时，检测到 SQL 警告抛出 SQL 异常。*/
+    protected void handleWarnings(final Statement stmt) throws SQLException {
+        if (this.isIgnoreWarnings()) {
+            if (logger.isDebugEnabled()) {
+                SQLWarning warningToLog = stmt.getWarnings();
+                while (warningToLog != null) {
+                    logger.debug("SQLWarning ignored: SQL state '{}', error code '{}', message [{}].",//
+                            warningToLog.getSQLState(), warningToLog.getErrorCode(), warningToLog.getMessage());
+                    warningToLog = warningToLog.getNextWarning();
+                }
+            }
+        } else {
+            SQLWarning warning = stmt.getWarnings();
+            if (warning != null) {
+                throw new SQLException("Warning not ignored", warning);
+            }
         }
     }
 

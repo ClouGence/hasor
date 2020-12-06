@@ -47,6 +47,11 @@ public class MapSqlParameterSource implements SqlParameterSource, ParameterDispo
     }
 
     @Override
+    public String[] getParameterNames() {
+        return this.values.keySet().toArray(new String[0]);
+    }
+
+    @Override
     public void cleanupParameters() {
         for (Object val : this.values.values()) {
             if (val instanceof ParameterDisposer) {

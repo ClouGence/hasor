@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import net.hasor.core.provider.InstanceProvider;
+import net.hasor.core.Provider;
 
 import javax.sql.DataSource;
 import java.util.function.Supplier;
@@ -28,7 +28,7 @@ public class JdbcTemplateProvider implements Supplier<JdbcTemplate> {
     private final Supplier<DataSource> dataSource;
 
     public JdbcTemplateProvider(DataSource dataSource) {
-        this(new InstanceProvider<>(dataSource));
+        this(Provider.of(dataSource));
     }
 
     public JdbcTemplateProvider(Supplier<DataSource> dataSource) {
