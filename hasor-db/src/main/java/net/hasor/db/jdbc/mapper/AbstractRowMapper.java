@@ -34,11 +34,6 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
     }
 
     /**获取列的值*/
-    public static TypeHandler<?> getResultSetTypeHandler(ResultSet rs, int columnIndex) throws SQLException {
-        return getResultSetTypeHandler(rs, columnIndex, null);
-    }
-
-    /**获取列的值*/
     protected static Object getResultSetValue(ResultSet rs, int columnIndex, Class<?> targetType) throws SQLException {
         TypeHandler<?> typeHandler = getResultSetTypeHandler(rs, columnIndex, targetType);
         return typeHandler.getResult(rs, columnIndex);

@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda;
+import net.hasor.db.jdbc.mapping.FieldInfo;
 import net.hasor.utils.reflect.SFunction;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * 动态拼条件。
@@ -33,7 +35,7 @@ public interface Func<T, R> {
     /**
      * 查询指定列。
      * 在分组查询下：设置参数中，只有 group by 列才会被查询。 */
-    public R select(String column, String... columns);
+    public R select(String... columns);
 
     /**
      * 查询指定列。
@@ -46,6 +48,11 @@ public interface Func<T, R> {
      * 查询指定列。
      * 在分组查询下：设置参数中，只有 group by 列才会被查询。 */
     public R select(List<SFunction<T>> columns);
+
+    /**
+     * 按条件过滤查询指定列。
+     * 在分组查询下：设置参数中，只有 group by 列才会被查询。 */
+    public R select(Predicate<FieldInfo> tester);
 
     /**分组，类似：group by xxx */
     public default R groupBy(SFunction<T> column) {

@@ -20,8 +20,10 @@ import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.dto.TbUser;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /***
  *
@@ -270,7 +272,6 @@ public class QueryBuilderTest extends AbstractDbTest {
         assert boundSql3.getArgs().get("param_1").equals("a");
         assert boundSql3.getArgs().get("param_2").equals(1);
         assert boundSql3.getArgs().get("param_3").equals(2);
-        assert boundSql3.getArgs().get("param_4").equals(123);
         assert boundSql4.getSqlString().equals("SELECT * FROM tb_user WHERE loginName = :param_1 OR ( registerTime >= :param_2 AND registerTime <= :param_3 )");
         assert boundSql4.getArgs().get("param_1").equals("a");
         assert boundSql4.getArgs().get("param_2").equals(1);
@@ -347,5 +348,84 @@ public class QueryBuilderTest extends AbstractDbTest {
         assert boundSql5.getArgs().get("param_1").equals(1);
         assert boundSql5.getArgs().get("param_2").equals(2);
         assert boundSql5.getArgs().get("param_3").equals(1);
+    }
+
+    @Test
+    public void queryBuilder4() throws SQLException {
+        try{
+            JdbcTemplate jdbcTemplate = new JdbcTemplate();
+            Map<String, Object> tbUser = jdbcTemplate.lambda(TbUser.class)//
+                    .eq(TbUser::getAccount, "muhammad").apply("limit 1")//
+                    .queryForMap();
+            assert false;
+        }catch (Exception e) {
+            assert e.getMessage().contains("DataSource or Connection are not available.");
+        }
+    }
+
+    @Test
+    public void queryBuilder5() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        //
+        BoundSql boundSql1 = jdbcTemplate.lambda(TbUser.class).eq(TbUser::getAccount, "a").asc(TbUser::getAccount);
+        assert boundSql1.getSqlString().equals("SELECT * FROM tb_user WHERE loginName = :param_1 ORDER BY loginName ASC");
+        assert boundSql1.getArgs().get("param_1").equals("a");
+        //
+        BoundSql boundSql2 = jdbcTemplate.lambda(TbUser.class).eq(TbUser::getAccount, "a").asc(Arrays.asList(TbUser::getAccount, TbUser::getIndex));
+        assert boundSql2.getSqlString().equals("SELECT * FROM tb_user WHERE loginName = :param_1 ORDER BY loginName ASC , index ASC");
+        assert boundSql2.getArgs().get("param_1").equals("a");
+        //
+        BoundSql boundSql3 = jdbcTemplate.lambda(TbUser.class).eq(TbUser::getAccount, "a").desc(TbUser::getAccount);
+        assert boundSql3.getSqlString().equals("SELECT * FROM tb_user WHERE loginName = :param_1 ORDER BY loginName DESC");
+        assert boundSql3.getArgs().get("param_1").equals("a");
+        //
+        BoundSql boundSql4 = jdbcTemplate.lambda(TbUser.class).eq(TbUser::getAccount, "a").asc(TbUser::getIndex).desc(TbUser::getAccount);
+        assert boundSql4.getSqlString().equals("SELECT * FROM tb_user WHERE loginName = :param_1 ORDER BY index ASC , loginName DESC");
+        assert boundSql4.getArgs().get("param_1").equals("a");
+        //
+        BoundSql boundSql5 = jdbcTemplate.lambda(TbUser.class).eq(TbUser::getAccount, "a").orderBy(TbUser::getIndex);
+        assert boundSql5.getSqlString().equals("SELECT * FROM tb_user WHERE loginName = :param_1 ORDER BY index");
+        assert boundSql5.getArgs().get("param_1").equals("a");
+
+    }
+
+    @Test
+    public void queryBuilder6() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        //
+        BoundSql boundSql1 = jdbcTemplate.lambda(TbUser.class)
+                .select("a","b","c","d")//
+                .eq(TbUser::getIndex, 1).or()
+                .between(TbUser::getAccount, 2, 3);
+        assert boundSql1.getSqlString().equals("SELECT a , b , c , d FROM tb_user WHERE index = :param_1 OR loginName BETWEEN :param_2 AND :param_3");
+        assert boundSql1.getArgs().get("param_1").equals(1);
+        assert boundSql1.getArgs().get("param_2").equals(2);
+        assert boundSql1.getArgs().get("param_3").equals(3);
+    }
+    @Test
+    public void queryBuilder7() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        //
+        BoundSql boundSql1 = jdbcTemplate.lambda(TbUser.class)
+                .select(Arrays.asList(TbUser::getAccount,TbUser::getIndex))//
+                .eq(TbUser::getIndex, 1).or()
+                .between(TbUser::getAccount, 2, 3);
+        assert boundSql1.getSqlString().equals("SELECT loginName , index FROM tb_user WHERE index = :param_1 OR loginName BETWEEN :param_2 AND :param_3");
+        assert boundSql1.getArgs().get("param_1").equals(1);
+        assert boundSql1.getArgs().get("param_2").equals(2);
+        assert boundSql1.getArgs().get("param_3").equals(3);
+    }
+    @Test
+    public void queryBuilder8() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        //
+        BoundSql boundSql1 = jdbcTemplate.lambda(TbUser.class)
+                .select(TbUser::getAccount)//
+                .eq(TbUser::getIndex, 1).or()
+                .between(TbUser::getAccount, 2, 3);
+        assert boundSql1.getSqlString().equals("SELECT loginName FROM tb_user WHERE index = :param_1 OR loginName BETWEEN :param_2 AND :param_3");
+        assert boundSql1.getArgs().get("param_1").equals(1);
+        assert boundSql1.getArgs().get("param_2").equals(2);
+        assert boundSql1.getArgs().get("param_3").equals(3);
     }
 }

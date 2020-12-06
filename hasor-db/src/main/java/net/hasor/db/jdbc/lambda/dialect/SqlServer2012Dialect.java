@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.provider;
-import net.hasor.db.transaction.TranManager;
-import net.hasor.db.transaction.TransactionTemplate;
-
-import javax.sql.DataSource;
-import java.util.function.Supplier;
+package net.hasor.db.jdbc.lambda.dialect;
+import net.hasor.db.jdbc.mapping.FieldInfo;
+import net.hasor.db.jdbc.mapping.TableInfo;
 
 /**
- *
- * @version : 2015年11月10日
+ * SqlServer 的 SqlDialect 实现
+ * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TransactionTemplateProvider implements Supplier<TransactionTemplate> {
-    private final Supplier<DataSource> dataSource;
-
-    public TransactionTemplateProvider(Supplier<DataSource> dataSource) {
-        this.dataSource = dataSource;
+public class SqlServer2012Dialect implements SqlDialect {
+    @Override
+    public String buildSelect(TableInfo tableInfo, FieldInfo fieldInfo) {
+        return "[" + fieldInfo.getColumnName() + "]";
     }
 
-    public TransactionTemplate get() {
-        return TranManager.getTemplate(this.dataSource.get());
+    @Override
+    public String buildTableName(TableInfo tableInfo) {
+        return "[" + tableInfo.getTableName() + "]";
+    }
+
+    @Override
+    public String buildConditionName(TableInfo tableInfo, FieldInfo fieldInfo) {
+        return "[" + fieldInfo.getColumnName() + "]";
     }
 }

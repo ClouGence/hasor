@@ -25,8 +25,7 @@ import net.hasor.db.jdbc.mapping.TableInfo;
 public class PostgreSqlDialect implements SqlDialect {
     @Override
     public String buildSelect(TableInfo tableInfo, FieldInfo fieldInfo) {
-        String columnName = fieldInfo.getColumnName();
-        return "\"" + columnName + "\"";
+        return "\"" + fieldInfo.getColumnName() + "\"";
     }
 
     @Override

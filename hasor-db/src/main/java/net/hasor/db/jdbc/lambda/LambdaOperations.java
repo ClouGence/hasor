@@ -39,10 +39,6 @@ public interface LambdaOperations {
             BoundSql, QueryExecute<T> {
     }
 
-    /** 嵌套 */
-    public interface NestedQuery<T> extends Compare<T, NestedQuery<T>> {
-    }
-
     public interface BoundSql {
         public String getSqlString();
 

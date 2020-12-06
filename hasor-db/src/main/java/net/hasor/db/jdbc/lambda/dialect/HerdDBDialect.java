@@ -18,11 +18,11 @@ import net.hasor.db.jdbc.mapping.FieldInfo;
 import net.hasor.db.jdbc.mapping.TableInfo;
 
 /**
- * MySQL 的 SqlDialect 实现
+ * HerdDB 的 SqlDialect 实现
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MySqlDialect implements SqlDialect {
+public class HerdDBDialect implements SqlDialect {
     @Override
     public String buildSelect(TableInfo tableInfo, FieldInfo fieldInfo) {
         return "`" + fieldInfo.getColumnName() + "`";

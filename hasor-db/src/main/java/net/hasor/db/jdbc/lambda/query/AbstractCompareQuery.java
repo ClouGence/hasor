@@ -55,10 +55,6 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
         super(exampleType, jdbcOperations);
     }
 
-    AbstractCompareQuery(Class<T> exampleType, JdbcOperations jdbcOperations, String dbType, SqlDialect dialect) {
-        super(exampleType, jdbcOperations, dbType, dialect);
-    }
-
     protected FieldInfo columnName(SFunction<T> property) {
         Method targetMethod = MethodUtils.lambdaMethodName(property);
         String cacheKey = targetMethod.toGenericString();
@@ -117,10 +113,6 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
         this.nextSegmentPrefix = EMPTY;
         this.addCondition(RIGHT);
         return this.getSelf();
-    }
-
-    protected final Segment nextSegment() {
-        return this.nextSegmentPrefix;
     }
 
     public R eq(SFunction<T> property, Object value) {
@@ -288,7 +280,7 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
     }
 
     protected String conditionName(SFunction<T> property) {
-        TableInfo tableInfo = super.getRowMapper().findTableInfo();
+        TableInfo tableInfo = super.getRowMapper().getTableInfo();
         return this.dialect.buildConditionName(tableInfo, columnName(property));
     }
 }

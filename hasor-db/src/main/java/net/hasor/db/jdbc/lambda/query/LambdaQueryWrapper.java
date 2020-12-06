@@ -22,10 +22,12 @@ import net.hasor.db.jdbc.lambda.segment.OrderByKeyword;
 import net.hasor.db.jdbc.lambda.segment.Segment;
 import net.hasor.db.jdbc.mapping.FieldInfo;
 import net.hasor.db.jdbc.mapping.TableInfo;
-import net.hasor.utils.StringUtils;
 import net.hasor.utils.reflect.SFunction;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static net.hasor.db.jdbc.lambda.segment.OrderByKeyword.*;
 import static net.hasor.db.jdbc.lambda.segment.SqlKeyword.*;
@@ -36,38 +38,38 @@ import static net.hasor.db.jdbc.lambda.segment.SqlKeyword.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T>> implements LambdaQuery<T> {
-    private final Map<String, Segment> selectSegments  = new LinkedHashMap<>();
-    private final Map<String, Segment> groupBySegments = new LinkedHashMap<>();
-    private final Map<String, Segment> orderBySegments = new LinkedHashMap<>();
-    private       boolean              lockGroupBy     = false;
-    private       boolean              lockOrderBy     = false;
-    private       String               result          = null;
+    private final List<Segment> customSelect    = new ArrayList<>();
+    private final List<Segment> groupBySegments = new ArrayList<>();
+    private final List<Segment> orderBySegments = new ArrayList<>();
+    private       boolean       lockGroupBy     = false;
+    private       boolean       lockOrderBy     = false;
+    private       String        result          = null;
 
     public LambdaQueryWrapper(Class<T> exampleType, JdbcOperations jdbcOperations) {
         super(exampleType, jdbcOperations);
     }
 
     private Segment buildTabName(SqlDialect dialect) {
-        TableInfo tableInfo = super.getRowMapper().findTableInfo();
+        TableInfo tableInfo = super.getRowMapper().getTableInfo();
         if (tableInfo == null) {
             throw new IllegalArgumentException("tableInfo not found.");
         }
         return () -> dialect.buildTableName(tableInfo);
     }
 
-    private static Segment buildColumns(Map<String, Segment> columnSegments) {
+    private static Segment buildColumns(Collection<Segment> columnSegments) {
         if (columnSegments.isEmpty()) {
             return COLUMNS;
         }
         return buildBySeparator(columnSegments, ",");
     }
 
-    private static Segment buildBySeparator(Map<String, Segment> orderBySegments, String separator) {
+    private static Segment buildBySeparator(Collection<Segment> orderBySegments, String separator) {
         MergeSqlSegment sqlSegment = new MergeSqlSegment();
-        Iterator<Map.Entry<String, Segment>> columnIterator = orderBySegments.entrySet().iterator();
+        Iterator<Segment> columnIterator = orderBySegments.iterator();
         while (columnIterator.hasNext()) {
-            Map.Entry<String, Segment> entry = columnIterator.next();
-            sqlSegment.addSegment(entry.getValue());
+            Segment entry = columnIterator.next();
+            sqlSegment.addSegment(entry);
             if (columnIterator.hasNext()) {
                 sqlSegment.addSegment(() -> separator);
             }
@@ -92,39 +94,39 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
 
     @Override
     public LambdaQuery<T> selectAll() {
-        this.selectSegments.clear();
+        this.customSelect.clear();
         return this;
     }
 
     @Override
-    public LambdaQuery<T> select(String column, String... columns) {
-        List<String> matching = new ArrayList<>();
-        if (StringUtils.isNotBlank(column)) {
-            matching.add(column);
-        }
+    public LambdaQuery<T> select(String... columns) {
         if (columns != null && columns.length > 0) {
-            matching.addAll(Arrays.asList(columns));
+            this.customSelect.addAll(Arrays.stream(columns).map((Function<String, Segment>) s -> {
+                return () -> s;
+            }).collect(Collectors.toList()));
         }
-        matching.stream().map(c -> {
-            return super.getRowMapper().findFieldInfoByProperty(c);
-        }).filter(Objects::nonNull).forEach(this::addSelection);
         return this;
     }
 
     @Override
     public final LambdaQuery<T> select(List<SFunction<T>> columns) {
-        if (columns != null) {
-            columns.stream().filter(Objects::nonNull).forEach(property -> {
-                addSelection(columnName(property));
-            });
-        }
-        return this;
+        List<FieldInfo> selectColumn = columns.stream()//
+                .filter(Objects::nonNull).map(this::columnName).collect(Collectors.toList());
+        return this.select0(selectColumn, fieldInfo -> true);
     }
 
-    private LambdaQuery<T> addSelection(FieldInfo fieldInfo) {
-        TableInfo tableInfo = super.getRowMapper().findTableInfo();
-        String select = this.dialect.buildSelect(tableInfo, fieldInfo);
-        this.selectSegments.put(fieldInfo.getColumnName(), () -> select);
+    @Override
+    public final LambdaQuery<T> select(Predicate<FieldInfo> tester) {
+        Collection<FieldInfo> allFiled = super.getRowMapper().allFieldInfoByProperty();
+        return this.select0(allFiled, tester);
+    }
+
+    private LambdaQuery<T> select0(Collection<FieldInfo> allFiled, Predicate<FieldInfo> tester) {
+        TableInfo tableInfo = super.getRowMapper().getTableInfo();
+        allFiled.stream().filter(tester).forEach(fieldInfo -> {
+            String selectColumn = dialect.buildSelect(tableInfo, fieldInfo);
+            customSelect.add(() -> selectColumn);
+        });
         return this;
     }
 
@@ -137,11 +139,12 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
             if (this.groupBySegments.isEmpty()) {
                 this.queryTemplate.addSegment(GROUP_BY);
             }
+            List<Segment> groupBySeg = new ArrayList<>();
             for (SFunction<T> fun : columns) {
-                FieldInfo cm = columnName(fun);
-                this.groupBySegments.put(cm.getColumnName(), () -> conditionName(fun));
+                groupBySeg.add(() -> conditionName(fun));
             }
-            this.queryTemplate.addSegment(buildBySeparator(this.groupBySegments, ","));
+            this.groupBySegments.addAll(groupBySeg);
+            this.queryTemplate.addSegment(buildBySeparator(groupBySeg, ","));
         }
         return this.getSelf();
     }
@@ -158,20 +161,24 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
         return this.addOrderBy(DESC, columns);
     }
 
-    private LambdaQuery<T> addOrderBy(OrderByKeyword keyword, List<SFunction<T>> order) {
+    private LambdaQuery<T> addOrderBy(OrderByKeyword keyword, List<SFunction<T>> orderBy) {
         if (this.lockOrderBy) {
             throw new IllegalStateException("order by is locked.");
         }
         this.lockGroupBy();
-        if (order != null && !order.isEmpty()) {
+        if (orderBy != null && !orderBy.isEmpty()) {
             if (this.orderBySegments.isEmpty()) {
                 this.queryTemplate.addSegment(ORDER_BY);
+            } else {
+                this.queryTemplate.addSegment(() -> ",");
             }
-            for (SFunction<T> fun : order) {
-                FieldInfo cm = columnName(fun);
-                this.orderBySegments.put(cm.getColumnName(), new MergeSqlSegment(() -> conditionName(fun), keyword));
+            List<Segment> orderBySeg = new ArrayList<>();
+            for (SFunction<T> fun : orderBy) {
+                MergeSqlSegment orderByItem = new MergeSqlSegment(() -> conditionName(fun), keyword);
+                orderBySeg.add(orderByItem);
             }
-            this.queryTemplate.addSegment(buildBySeparator(this.orderBySegments, ","));
+            this.orderBySegments.addAll(orderBySeg);
+            this.queryTemplate.addSegment(buildBySeparator(orderBySeg, ","));
         }
         return this.getSelf();
     }
@@ -183,7 +190,7 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
         }
         MergeSqlSegment sqlSegment = new MergeSqlSegment();
         sqlSegment.addSegment(SELECT);
-        sqlSegment.addSegment(buildColumns((this.groupBySegments.isEmpty() ? this.selectSegments : this.groupBySegments)));
+        sqlSegment.addSegment(buildColumns((this.groupBySegments.isEmpty() ? this.customSelect : this.groupBySegments)));
         sqlSegment.addSegment(FROM);
         sqlSegment.addSegment(buildTabName(this.dialect));
         if (!this.queryTemplate.isEmpty()) {

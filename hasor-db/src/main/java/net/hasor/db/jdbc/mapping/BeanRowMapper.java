@@ -25,10 +25,7 @@ import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 用于 POJO 的 RowMapper，带有 ORM 能力
@@ -78,7 +75,11 @@ public class BeanRowMapper<T> implements RowMapper<T>, TableInfo {
         return this.columnFieldInfoMap.get(columnName);
     }
 
-    public TableInfo findTableInfo() {
+    public Collection<FieldInfo> allFieldInfoByProperty() {
+        return this.columnFieldInfoMap.values();
+    }
+
+    public TableInfo getTableInfo() {
         return this;
     }
 
