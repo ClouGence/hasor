@@ -247,11 +247,7 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
     }
 
     private Segment formatLikeValue(SqlLike like, Object param) {
-        if (this.dialect == null) {
-            return () -> SqlDialect.DEFAULT.buildLike(like, format(param), param);
-        } else {
-            return () -> this.dialect.buildLike(like, format(param), param);
-        }
+        return () -> this.dialect().buildLike(like, format(param), param);
     }
 
     private Segment formatValue(Object... params) {
@@ -281,6 +277,6 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
 
     protected String conditionName(SFunction<T> property) {
         TableInfo tableInfo = super.getRowMapper().getTableInfo();
-        return this.dialect.buildConditionName(tableInfo, columnName(property));
+        return this.dialect().buildConditionName(tableInfo, columnName(property));
     }
 }

@@ -29,33 +29,32 @@ public class SqlDialectRegister {
     private static final Map<String, SqlDialect> dialectCache    = new LinkedCaseInsensitiveMap<>();
 
     static {
-        //
         registerDialectAlias(JdbcUtils.POSTGRESQL, PostgreSqlDialect.class);
-        // registerDialectAlias(JdbcUtils.HSQL, PostgreSqlDialect.class);
-        // registerDialectAlias(JdbcUtils.PHOENIX, PostgreSqlDialect.class);
-        // registerDialectAlias(JdbcUtils.IMPALA, PostgreSqlDialect.class);
-        //
+        registerDialectAlias(JdbcUtils.HSQL, HSQLDialect.class);
+        registerDialectAlias(JdbcUtils.PHOENIX, PhoenixDialect.class);
+        registerDialectAlias(JdbcUtils.IMPALA, ImpalaDialect.class);
         registerDialectAlias(JdbcUtils.MYSQL, MySqlDialect.class);
-        registerDialectAlias(JdbcUtils.MARIADB, MySqlDialect.class);
-        registerDialectAlias(JdbcUtils.ALIYUN_ADS, MySqlDialect.class);
-        registerDialectAlias(JdbcUtils.ALIYUN_DRDS, MySqlDialect.class);
-        //
-        registerDialectAlias("sqlserver2012", SqlServer2012Dialect.class);
-        registerDialectAlias(JdbcUtils.DERBY, SqlServer2012Dialect.class);// Apache Derby
-        //
-        registerDialectAlias(JdbcUtils.ORACLE, OracleDialect.class);
-        //
+        registerDialectAlias(JdbcUtils.MARIADB, MariaDBDialect.class);
+        registerDialectAlias(JdbcUtils.ALIYUN_ADS, AliyunAdsDialect.class);
+        registerDialectAlias(JdbcUtils.ALIYUN_DRDS, AliyunDRDSDialect.class);
         registerDialectAlias(JdbcUtils.SQLITE, SqlLiteDialect.class);
         registerDialectAlias(JdbcUtils.HERDDB, HerdDBDialect.class);
+        registerDialectAlias("sqlserver2012", SqlServer2012Dialect.class);
+        registerDialectAlias(JdbcUtils.DERBY, SqlServer2012Dialect.class);// Apache Derby
+        registerDialectAlias(JdbcUtils.ORACLE, OracleDialect.class);
+        registerDialectAlias(JdbcUtils.ALI_ORACLE, OracleDialect.class);
         registerDialectAlias(JdbcUtils.H2, H2Dialect.class);
         registerDialectAlias(JdbcUtils.HIVE, HiveDialect.class);
-        // registerDialectAlias(JdbcUtils.DB2, Db2Dialect.class);
-        //
-        // registerDialectAlias(JdbcUtils.INFORMIX, InformixDialect.class);
+        registerDialectAlias(JdbcUtils.DB2, Db2Dialect.class);
+        registerDialectAlias(JdbcUtils.INFORMIX, InformixDialect.class);
     }
 
     public static void registerDialectAlias(String alias, Class<? extends SqlDialect> dialectClass) {
         dialectAliasMap.put(alias, dialectClass);
+    }
+
+    public static void registerDialect(String dbType, SqlDialect sqlDialect) {
+        dialectCache.put(dbType, sqlDialect);
     }
 
     public static SqlDialect findOrCreate(String dbType) {

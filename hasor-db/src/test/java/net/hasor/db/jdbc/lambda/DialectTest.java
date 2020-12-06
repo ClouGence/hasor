@@ -183,4 +183,140 @@ public class DialectTest extends AbstractDbTest {
         assert buildTableName.equals("[tb_user]");
         assert buildCondition.equals("[userUUID]");
     }
+
+    @Test
+    public void dialect_informix_1() {
+        MappingHandler handler = MappingHandler.DEFAULT;
+        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        TableInfo tableInfo = rowMapper.getTableInfo();
+        FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
+        //
+        SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.INFORMIX);
+        String buildSelect = dialect.buildSelect(tableInfo, property);
+        String buildTableName = dialect.buildTableName(tableInfo);
+        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        //
+        assert buildSelect.equals("\"userUUID\"");
+        assert buildTableName.equals("\"tb_user\"");
+        assert buildCondition.equals("\"userUUID\"");
+    }
+
+    @Test
+    public void dialect_db2_1() {
+        MappingHandler handler = MappingHandler.DEFAULT;
+        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        TableInfo tableInfo = rowMapper.getTableInfo();
+        FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
+        //
+        SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.DB2);
+        String buildSelect = dialect.buildSelect(tableInfo, property);
+        String buildTableName = dialect.buildTableName(tableInfo);
+        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        //
+        assert buildSelect.equals("\"userUUID\"");
+        assert buildTableName.equals("\"tb_user\"");
+        assert buildCondition.equals("\"userUUID\"");
+    }
+
+    @Test
+    public void dialect_hsql_1() {
+        MappingHandler handler = MappingHandler.DEFAULT;
+        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        TableInfo tableInfo = rowMapper.getTableInfo();
+        FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
+        //
+        SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.HSQL);
+        String buildSelect = dialect.buildSelect(tableInfo, property);
+        String buildTableName = dialect.buildTableName(tableInfo);
+        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        //
+        assert buildSelect.equals("\"userUUID\"");
+        assert buildTableName.equals("\"tb_user\"");
+        assert buildCondition.equals("\"userUUID\"");
+    }
+
+    @Test
+    public void dialect_phoenix_1() {
+        MappingHandler handler = MappingHandler.DEFAULT;
+        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        TableInfo tableInfo = rowMapper.getTableInfo();
+        FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
+        //
+        SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.PHOENIX);
+        String buildSelect = dialect.buildSelect(tableInfo, property);
+        String buildTableName = dialect.buildTableName(tableInfo);
+        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        //
+        assert buildSelect.equals("\"userUUID\"");
+        assert buildTableName.equals("\"tb_user\"");
+        assert buildCondition.equals("\"userUUID\"");
+    }
+
+    @Test
+    public void dialect_impala_1() {
+        MappingHandler handler = MappingHandler.DEFAULT;
+        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        TableInfo tableInfo = rowMapper.getTableInfo();
+        FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
+        //
+        SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.IMPALA);
+        String buildSelect = dialect.buildSelect(tableInfo, property);
+        String buildTableName = dialect.buildTableName(tableInfo);
+        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        //
+        assert buildSelect.equals("\"userUUID\"");
+        assert buildTableName.equals("\"tb_user\"");
+        assert buildCondition.equals("\"userUUID\"");
+    }
+
+    @Test
+    public void dialect_mariadb_1() {
+        MappingHandler handler = MappingHandler.DEFAULT;
+        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        TableInfo tableInfo = rowMapper.getTableInfo();
+        FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
+        //
+        SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.MARIADB);
+        String buildSelect = dialect.buildSelect(tableInfo, property);
+        String buildTableName = dialect.buildTableName(tableInfo);
+        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        //
+        assert buildSelect.equals("`userUUID`");
+        assert buildTableName.equals("`tb_user`");
+        assert buildCondition.equals("`userUUID`");
+    }
+
+    @Test
+    public void dialect_aliyun_ads_1() {
+        MappingHandler handler = MappingHandler.DEFAULT;
+        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        TableInfo tableInfo = rowMapper.getTableInfo();
+        FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
+        //
+        SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.ALIYUN_ADS);
+        String buildSelect = dialect.buildSelect(tableInfo, property);
+        String buildTableName = dialect.buildTableName(tableInfo);
+        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        //
+        assert buildSelect.equals("`userUUID`");
+        assert buildTableName.equals("`tb_user`");
+        assert buildCondition.equals("`userUUID`");
+    }
+
+    @Test
+    public void dialect_aliyun_drds_1() {
+        MappingHandler handler = MappingHandler.DEFAULT;
+        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        TableInfo tableInfo = rowMapper.getTableInfo();
+        FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
+        //
+        SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.ALIYUN_DRDS);
+        String buildSelect = dialect.buildSelect(tableInfo, property);
+        String buildTableName = dialect.buildTableName(tableInfo);
+        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        //
+        assert buildSelect.equals("`userUUID`");
+        assert buildTableName.equals("`tb_user`");
+        assert buildCondition.equals("`userUUID`");
+    }
 }

@@ -124,7 +124,7 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
     private LambdaQuery<T> select0(Collection<FieldInfo> allFiled, Predicate<FieldInfo> tester) {
         TableInfo tableInfo = super.getRowMapper().getTableInfo();
         allFiled.stream().filter(tester).forEach(fieldInfo -> {
-            String selectColumn = dialect.buildSelect(tableInfo, fieldInfo);
+            String selectColumn = dialect().buildSelect(tableInfo, fieldInfo);
             customSelect.add(() -> selectColumn);
         });
         return this;
@@ -192,7 +192,7 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
         sqlSegment.addSegment(SELECT);
         sqlSegment.addSegment(buildColumns((this.groupBySegments.isEmpty() ? this.customSelect : this.groupBySegments)));
         sqlSegment.addSegment(FROM);
-        sqlSegment.addSegment(buildTabName(this.dialect));
+        sqlSegment.addSegment(buildTabName(this.dialect()));
         if (!this.queryTemplate.isEmpty()) {
             sqlSegment.addSegment(WHERE);
             sqlSegment.addSegment(this.queryTemplate.sub(1));

@@ -35,10 +35,11 @@ import java.util.Map;
  */
 public abstract class AbstractQueryExecute<T> implements QueryExecute<T>, BoundSql {
     protected final String           dbType;
-    protected final SqlDialect       dialect;
+    private final   SqlDialect       dialect;
     private final   Class<T>         exampleType;
     private final   BeanRowMapper<T> exampleRowMapper;
     private final   JdbcOperations   jdbcOperations;
+    private         boolean          useDialect;
 
     public AbstractQueryExecute(Class<T> exampleType, JdbcOperations jdbcOperations) {
         this.exampleType = exampleType;
@@ -59,7 +60,7 @@ public abstract class AbstractQueryExecute<T> implements QueryExecute<T>, BoundS
         SqlDialect tempDialect = SqlDialectRegister.findOrCreate(tmpDbType);
         this.dbType = tmpDbType;
         this.dialect = (tempDialect == null) ? SqlDialect.DEFAULT : tempDialect;
-        //
+        this.useDialect = false;
     }
 
     AbstractQueryExecute(Class<T> exampleType, JdbcOperations jdbcOperations, String dbType, SqlDialect dialect) {
@@ -82,6 +83,10 @@ public abstract class AbstractQueryExecute<T> implements QueryExecute<T>, BoundS
 
     protected BeanRowMapper<T> getRowMapper() {
         return this.exampleRowMapper;
+    }
+
+    protected SqlDialect dialect() {
+        return (this.useDialect && this.dialect != null) ? this.dialect : SqlDialect.DEFAULT;
     }
 
     @Override
