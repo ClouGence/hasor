@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.test.core.aop.ignore.types;
-import net.hasor.core.AopIgnore;
+import net.hasor.core.IgnoreProxy;
 
 /**
  * 威廉 不接受Aop，并且影响后代
  * @version : 2015年1月12日
  * @author 赵永春 (zyc@hasor.net)
  */
-@AopIgnore()
+@IgnoreProxy()
 public class WilliamBean extends GrandFatherBean {
 }

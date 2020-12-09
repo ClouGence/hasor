@@ -36,6 +36,6 @@
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-@AopIgnore
+@IgnoreProxy
 package net.hasor.dataql.extend.jsr223;
-import net.hasor.core.AopIgnore;
+import net.hasor.core.IgnoreProxy;

@@ -22,10 +22,7 @@ import org.xml.sax.InputSource;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
@@ -36,7 +33,7 @@ import java.util.Properties;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class InputStreamSettings extends AbstractSettings implements IOSettings {
-    private LinkedList<ConfigSource> pendingConfigSource = new LinkedList<>();
+    private final LinkedList<ConfigSource> pendingConfigSource = new LinkedList<>();
 
     /**子类决定如何添加资源*/
     public InputStreamSettings() {
@@ -44,7 +41,19 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
 
     /** 将一个配置源添加到列表，后面会通过 load 方法加载这些数据。
      * 注意：待处理列表中的数据一旦装载完毕将会从待处理列表中清除出去。*/
-    public synchronized boolean addReader(ConfigSource configSource) {
+    public synchronized boolean addReader(String mainSettings, StreamType type) {
+        return this.addReader(new StringReader(mainSettings), type);
+    }
+
+    /** 将一个配置源添加到列表，后面会通过 load 方法加载这些数据。
+     * 注意：待处理列表中的数据一旦装载完毕将会从待处理列表中清除出去。*/
+    public synchronized boolean addReader(Reader mainSettings, StreamType type) {
+        return this.addReader(new ConfigSource(type, mainSettings));
+    }
+
+    /** 将一个配置源添加到列表，后面会通过 load 方法加载这些数据。
+     * 注意：待处理列表中的数据一旦装载完毕将会从待处理列表中清除出去。*/
+    protected synchronized boolean addReader(ConfigSource configSource) {
         if (configSource == null || configSource.getStreamType() == null) {
             return false;
         }

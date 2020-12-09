@@ -17,14 +17,16 @@ package net.hasor.core.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
+import net.hasor.core.TypeSupplier;
 import net.hasor.core.exts.aop.Aop;
 import net.hasor.core.scope.SingletonScope;
-import net.hasor.test.core.basic.pojo.PojoBean;
-import net.hasor.test.core.basic.pojo.PojoBeanRef;
-import net.hasor.test.core.basic.pojo.SingletonSampleBean;
+import net.hasor.test.core.basic.pojo.*;
 import net.hasor.test.core.scope.AnnoMyBean;
 import net.hasor.test.core.scope.My;
+import net.hasor.utils.ExceptionUtils;
 import org.junit.Test;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @version : 2016-12-16
@@ -167,6 +169,70 @@ public class BinderHasorApiTest {
         assert pojoBeanRef.getName().equals("providerTest3");
         assert pojoBeanRef.getPojoBean() != null;
         assert pojoBeanRef.getPojoBean().getUuid().equals("uuid");
+    }
+
+    @Test
+    public void typeSupplier1() {
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+        TypeSupplier typeSupplier = new TypeSupplier() {
+            @Override
+            public <T> T get(Class<? extends T> targetType) {
+                try {
+                    atomicBoolean.set(true);
+                    return targetType.newInstance();
+                } catch (Exception e) {
+                    throw ExceptionUtils.toRuntimeException(e);
+                }
+            }
+        };
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            apiBinder.bindType(PojoBean.class).toTypeSupplier(typeSupplier);
+        });
+        //
+        assert !atomicBoolean.get();
+        PojoBean pojoBeanRef = appContext.getInstance(PojoBean.class);
+        assert pojoBeanRef.getUuid() == null;
+        assert atomicBoolean.get();
+    }
+
+    @Test
+    public void typeSupplier2() {
+        AtomicBoolean testBoolean = new AtomicBoolean(false);
+        TypeSupplier typeSupplier = new TypeSupplier() {
+            public <T> T get(Class<? extends T> targetType) {
+                if (targetType == SampleFace.class) {
+                    testBoolean.set(true);
+                }
+                return null;
+            }
+        };
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            apiBinder.bindType(SampleFace.class).idWith("faceA").toTypeSupplier(typeSupplier);
+        });
+        //
+        assert !testBoolean.get();
+        appContext.getInstance("faceA");
+        assert testBoolean.get();
+    }
+
+    @Test
+    public void typeSupplier3() {
+        AtomicBoolean testBoolean = new AtomicBoolean(false);
+        TypeSupplier typeSupplier = new TypeSupplier() {
+            public <T> T get(Class<? extends T> targetType) {
+                if (targetType == SampleBean.class) {
+                    testBoolean.set(true);
+                }
+                return null;
+            }
+        };
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            apiBinder.bindType(SampleFace.class).to(SampleBean.class).toTypeSupplier(typeSupplier);
+        });
+        //
+        assert !testBoolean.get();
+        appContext.getInstance(SampleFace.class);
+        assert testBoolean.get();
     }
 }
 

@@ -11,6 +11,6 @@ public class ExampleApp {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(ExampleApp.class, args);
         AppContext appContext = context.getBean(AppContext.class);
-        appContext.joinSignal();
+        appContext.join();
     }
 }

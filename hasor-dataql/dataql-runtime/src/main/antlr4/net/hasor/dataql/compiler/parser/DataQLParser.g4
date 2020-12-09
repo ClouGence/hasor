@@ -86,15 +86,15 @@ primitiveValue  : STRING                                                    #str
 /* ----------------------------------------------------------------------------------- 表达式 */
 
 /* 表达式 */
-expr            : LBT expr RBT                                                  #privilegeExpr  // 优先级
-                |  (PLUS | MINUS | NOT) expr                                    #unaryExpr      // 一元运算
-                | expr (MUL | DIV | DIV2 | MOD) expr                            #dyadicExpr_A   // 二元运算优先级 1st
-                | expr (PLUS | MINUS) expr                                      #dyadicExpr_B   // 二元运算优先级 2st
-                | expr (AND | OR || XOR || LSHIFT || RSHIFT || RSHIFT2) expr    #dyadicExpr_C   // 二元运算优先级 3st
-                | expr (GT | GE || NE || EQ || LE || LT) expr                   #dyadicExpr_D   // 二元运算优先级 4st
-                | expr (SC_OR | SC_AND) expr                                    #dyadicExpr_E   // 二元运算优先级 5st
-                | expr QUE expr COLON expr                                      #ternaryExpr    // 三元运算
-                | (primitiveValue | funcCall | routeMapping)                    #atomExpr       // 可以作为表达式项的有：基本类型 or 发起函数调用 or 路由映射
+expr            : (primitiveValue | funcCall | routeMapping)                    #atomExpr       // 可以作为表达式项的有：基本类型 or 发起函数调用 or 路由映射
+                | LBT expr RBT                                                  #privilegeExpr  // 优先级
+                | prefix=(PLUS | MINUS | NOT) expr                              #unaryExpr      // 一元运算
+                | expr bop=(MUL | DIV | DIV2 | MOD) expr                        #dyadicExpr_A   // 二元运算优先级 1st
+                | expr bop=(PLUS | MINUS) expr                                  #dyadicExpr_B   // 二元运算优先级 2st
+                | expr bop=(AND | OR | XOR | LSHIFT | RSHIFT | RSHIFT2) expr    #dyadicExpr_C   // 二元运算优先级 3st
+                | expr bop=(GT | GE | NE | EQ | LE | LT) expr                   #dyadicExpr_D   // 二元运算优先级 4st
+                | expr bop=(SC_OR | SC_AND) expr                                #dyadicExpr_E   // 二元运算优先级 5st
+                | <assoc=right> expr QUE expr COLON expr                        #ternaryExpr    // 三元运算
                 ;
 
 /* 外部语句块块 */

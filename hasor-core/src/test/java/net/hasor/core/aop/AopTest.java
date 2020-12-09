@@ -341,4 +341,29 @@ public class AopTest {
         assert aopInterceptor.getCallInfo().get("fooCall3").contains("BEFORE");
         assert aopInterceptor.getCallInfo().get("fooCall3").contains("AFTER");
     }
+
+    @Test
+    public void aopTest7() throws Exception {
+        AopBeanInterceptor aopInterceptor = new AopBeanInterceptor();
+        AopClassConfig classConfig = new AopClassConfig(GenericsMethodAopBean.class);
+        classConfig.addAopInterceptors(method -> true, aopInterceptor);
+        //
+        Class<?> buildClass = classConfig.buildClass();
+        GenericsMethodAopBean instance = (GenericsMethodAopBean) buildClass.newInstance();
+        //
+        instance.fooCall1("abc1", "abc2", "abc3");
+        assert aopInterceptor.getCallInfo().get("fooCall1").size() == 2;
+        assert aopInterceptor.getCallInfo().get("fooCall1").contains("BEFORE");
+        assert aopInterceptor.getCallInfo().get("fooCall1").contains("AFTER");
+        //
+        instance.fooCall2(new Date(), new ArrayList());
+        assert aopInterceptor.getCallInfo().get("fooCall2").size() == 2;
+        assert aopInterceptor.getCallInfo().get("fooCall2").contains("BEFORE");
+        assert aopInterceptor.getCallInfo().get("fooCall2").contains("AFTER");
+        //
+        instance.fooCall3(Date.class, new ArrayList<>());
+        assert aopInterceptor.getCallInfo().get("fooCall3").size() == 2;
+        assert aopInterceptor.getCallInfo().get("fooCall3").contains("BEFORE");
+        assert aopInterceptor.getCallInfo().get("fooCall3").contains("AFTER");
+    }
 }

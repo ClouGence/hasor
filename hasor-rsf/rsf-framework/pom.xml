@@ -4,8 +4,8 @@
     <parent>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
-        <version>4.2.0</version>
-        <relativePath>../..</relativePath>
+        <version>4.2.2-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <!-- Maven Info -->

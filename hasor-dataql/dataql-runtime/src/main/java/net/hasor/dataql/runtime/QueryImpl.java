@@ -67,7 +67,7 @@ class QueryImpl extends HintsSet implements Query {
         }
         InsetProcessContext processContext = new InsetProcessContext(customize, this.finder);
         // .汇总Option
-        processContext.setHints(this);
+        processContext.currentHints().setHints(this);
         // .创建堆栈
         DataStack dataStack = new DataStack();  // 指令执行 - 栈
         DataHeap dataHeap = new DataHeap();     // 指令执行 - 堆

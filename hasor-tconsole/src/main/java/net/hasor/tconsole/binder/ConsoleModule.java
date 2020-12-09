@@ -16,6 +16,7 @@
 package net.hasor.tconsole.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.EventContext;
 import net.hasor.core.Module;
 import net.hasor.core.spi.ContextStartListener;
 import net.hasor.tconsole.ConsoleApiBinder;
@@ -49,7 +50,19 @@ public class ConsoleModule implements Module, ContextStartListener {
         if (!this.enable) {
             return;
         }
-        appContext.getInstance(InnerExecutorManager.class).doPreCommand(appContext);
+        EventContext eventContext = appContext.getEnvironment().getEventContext();
+        eventContext.asyncTask(() -> {
+            // doPreCommand 是通过 doStartCompleted 触发的，因此容器可能尚未完全 Start
+            // 通过异步任务来等待 Start 之后在开始执行 doPreCommand
+            if (!appContext.isStart()) {
+                while (!appContext.isStart()) {
+                    try {
+                        Thread.sleep(100); //等待结束
+                    } catch (Exception e) {/**/}
+                }
+            }
+            appContext.getInstance(InnerExecutorManager.class).doPreCommand(appContext);
+        });
     }
 
     @Override

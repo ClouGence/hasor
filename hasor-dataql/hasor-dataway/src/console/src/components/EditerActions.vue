@@ -254,6 +254,7 @@ export default {
             request(ApiUrl.perform + '?id=' + this.apiInfo.apiID, {
                 'method': 'POST',
                 'headers': {
+                    ...headerData(this.requestHeader),
                     'X-InterfaceUI-Info': 'true'
                 },
                 'data': {
@@ -263,7 +264,6 @@ export default {
                     'codeType': self.apiInfo.codeType,
                     'codeValue': self.apiInfo.codeValue,
                     'requestBody': fixGetRequestBody(self.apiInfo.select, self.requestBody),
-                    'requestHeader': headerData(this.requestHeader),
                     'optionInfo': self.optionInfo
                 }
             }, response => {

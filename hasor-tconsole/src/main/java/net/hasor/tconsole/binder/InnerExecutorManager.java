@@ -123,7 +123,9 @@ class InnerExecutorManager extends AbstractContainer implements AppContextAware,
                     }
                 }
                 logger.info("tConsole -> trigger TelHostPreFinishListener.onFinish");
-                service.getSpiTrigger().notifySpiWithoutResult(TelHostPreFinishListener.class, listener -> listener.onFinish(appContext));
+                service.getSpiTrigger().notifySpiWithoutResult(TelHostPreFinishListener.class, listener -> {
+                    listener.onFinish(appContext);
+                });
             }
         }
     }

@@ -43,8 +43,8 @@ class LDC_D implements InsetProcess {
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
         Number number = sequence.currentInst().getNumber(0);
-        String decimalWidth = (String) context.getHint(MIN_DECIMAL_WIDTH);
-        String integerWidth = (String) context.getHint(MIN_INTEGER_WIDTH);
+        String decimalWidth = (String) context.currentHints().getHint(MIN_DECIMAL_WIDTH);
+        String integerWidth = (String) context.currentHints().getHint(MIN_INTEGER_WIDTH);
         dataStack.push(OperatorUtils.fixNumberWidth(number, decimalWidth, integerWidth));
     }
 }

@@ -46,6 +46,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static net.hasor.core.context.TemplateAppContext.AppContextStatus.*;
+
 /**
  * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
  * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。<p>
@@ -55,9 +57,14 @@ import java.util.stream.Stream;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class TemplateAppContext extends MetaDataAdapter implements AppContext {
-    public static final String       DefaultSettings = StandardContextSettings.MainSettingName;
-    protected static    Logger       logger          = LoggerFactory.getLogger(TemplateAppContext.class);
-    private final       ShutdownHook shutdownHook    = new ShutdownHook(this);
+    public static final String                            DefaultSettings = StandardContextSettings.MainSettingName;
+    protected static    Logger                            logger          = LoggerFactory.getLogger(TemplateAppContext.class);
+    private final       ShutdownHook                      shutdownHook    = new ShutdownHook(this);
+    private final       AtomicReference<AppContextStatus> status          = new AtomicReference<>(AppContextStatus.Stopped);
+
+    protected static enum AppContextStatus {
+        Stopped, Processing, Started
+    }
 
     @Override
     public Class<?> getBeanType(String bindID) {
@@ -213,6 +220,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
                 if (!throwLoadError) {
                     logger.error("load module Type " + moduleType + " is failure. :" + e.getMessage(), e);
                 } else {
+                    logger.error("load module Type " + moduleType + " is failure. :" + e.getMessage());
                     throw ExceptionUtils.toRuntimeException(e);
                 }
             }
@@ -374,7 +382,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
      * @return 返回 true 表示已经完成初始化并且启动完成。false表示尚未完成启动过程。
      */
     public boolean isStart() {
-        return this.getContainer().isInit();
+        return this.status.get() == Started;
     }
 
     /**获取环境接口。*/
@@ -384,13 +392,17 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
 
     /**安装模块的工具方法。*/
     protected void installModule(ApiBinder apiBinder, Module module) throws Throwable {
-        logger.info("loadModule " + module.getClass());
-        /*加载*/
-        module.loadModule(apiBinder);
-        /*启动*/
-        HasorUtils.pushStartListener(this.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> module.onStart(eventData));
-        /*停止*/
-        HasorUtils.pushShutdownListener(this.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> module.onStop(eventData));
+        try {
+            logger.info("loadModule " + module.getClass());
+            /*加载*/
+            module.loadModule(apiBinder);
+            /*启动*/
+            HasorUtils.pushStartListener(this.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> module.onStart(eventData));
+            /*停止*/
+            HasorUtils.pushShutdownListener(this.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> module.onStop(eventData));
+        } catch (Module.IgnoreModuleException e) {
+            logger.warn("loadModule " + module.getClass() + " ignore start/stop");
+        }
     }
 
     /**
@@ -399,7 +411,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
      * @throws Throwable 启动过程中引发的异常。
      */
     public synchronized final void start(Module... modules) throws Throwable {
-        if (this.isStart()) {
+        if (!this.status.compareAndSet(Stopped, Processing)) {
             throw new IllegalStateException("the container is already started");
         }
         /*1.findModules*/
@@ -433,16 +445,16 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         /*6.发送启动事件*/
         logger.debug("appContext -> fireSyncEvent ,eventType = {}", ContextEvent_Started);
         getEnvironment().getEventContext().fireSyncEvent(ContextEvent_Started, this);
-        /*7.异步方式通知启动成功*/
-        getEnvironment().getEventContext().asyncTask(() -> {
-            logger.info("Hasor StartCompleted!");
-            doStartCompleted();/*用于扩展*/
-        });
+        /*7.通知启动成功*/
+        doStartCompleted();/*用于扩展*/
+        logger.info("Hasor StartCompleted!");
+        status.compareAndSet(Processing, Started);//从 进行中 更新到 已启动
     }
 
     /**发送停止通知*/
     public synchronized final void shutdown() {
         tryShutdown();
+        this.status.compareAndSet(Started, Processing);
         EventContext ec = getEnvironment().getEventContext();
         /*1.Init*/
         logger.debug("shutdown - doShutdown.");
@@ -457,7 +469,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         doShutdownCompleted();
         logger.debug("shutdown - doShutdownCompleted.");
         this.getContainer().close();
-        logger.info("Hasor StartCompleted.");
+        logger.info("Hasor ShutdownCompleted.");
         try {
             Runtime.getRuntime().removeShutdownHook(shutdownHook);
         } catch (IllegalStateException e) {
@@ -465,6 +477,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
                 logger.error(e.getMessage(), e);
             }
         }
+        this.status.compareAndSet(Processing, Stopped);
     }
 
     public void join(long timeout, TimeUnit unit) {
@@ -492,7 +505,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     }
 
     private void tryShutdown() {
-        if (!this.isStart()) {
+        if (this.status.get() != Started) {
             throw new IllegalStateException("the container is not started yet.");
         }
     }

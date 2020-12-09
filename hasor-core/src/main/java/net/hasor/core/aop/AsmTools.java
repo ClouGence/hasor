@@ -22,8 +22,7 @@ import net.hasor.utils.asm.Type;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 生成字节码时候使用的工具类。
@@ -31,8 +30,6 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AsmTools implements Opcodes {
-    //=======================================================================================================================
-
     /**根据类型获取其Return指令。*/
     public static int getReturn(final String asmType) {
         char t = asmType.charAt(0);
@@ -120,7 +117,6 @@ public class AsmTools implements Opcodes {
             throw new UnsupportedOperationException("不支持的类型装载请求");//
         }
     }*/
-    //=======================================================================================================================
 
     /**将某一个类型转为asm形式的表述， int 转为 I，String转为 Ljava/lang/String。*/
     public static String toAsmType(final Class<?> classType) {
@@ -374,7 +370,6 @@ public class AsmTools implements Opcodes {
             throw new RuntimeException("Invalid ASM type desc.");
         }
     }
-    //=======================================================================================================================
 
     /**将类名转换为asm类名。*/
     public static String replaceClassName(final Class<?> targetClass) {
@@ -433,9 +428,9 @@ public class AsmTools implements Opcodes {
         }
     }
 
-    //=======================================================================================================================
     //Code Builder “new Object[] { abc, abcc, abcc };”
     public static void codeBuilder_1(MethodVisitor mv, String[] asmParams, Map<String, Integer> paramIndexMap) {
+        Set<String> typeEnum = new HashSet<>(Arrays.asList("B", "S", "I", "J", "F", "D", "C", "Z"));
         int paramCount = asmParams.length;
         mv.visitIntInsn(Opcodes.BIPUSH, paramCount);
         mv.visitTypeInsn(Opcodes.ANEWARRAY, "java/lang/Object");
@@ -443,34 +438,34 @@ public class AsmTools implements Opcodes {
             String asmType = asmParams[i];
             mv.visitInsn(Opcodes.DUP);
             mv.visitIntInsn(Opcodes.BIPUSH, i);
-            if (asmParams[i].equals("B")) {
+            if (typeEnum.contains(asmParams[i])) {
                 mv.visitVarInsn(AsmTools.getLoad(asmType), paramIndexMap.get("args" + i));
-                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;", false);
-            } else if (asmParams[i].equals("S")) {
-                mv.visitVarInsn(AsmTools.getLoad(asmType), paramIndexMap.get("args" + i));
-                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;", false);
-            } else if (asmParams[i].equals("I")) {
-                mv.visitVarInsn(AsmTools.getLoad(asmType), paramIndexMap.get("args" + i));
-                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
-            } else if (asmParams[i].equals("J")) {
-                mv.visitVarInsn(AsmTools.getLoad(asmType), paramIndexMap.get("args" + i));
-                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;", false);
-            } else if (asmParams[i].equals("F")) {
-                mv.visitVarInsn(AsmTools.getLoad(asmType), paramIndexMap.get("args" + i));
-                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;", false);
-            } else if (asmParams[i].equals("D")) {
-                mv.visitVarInsn(AsmTools.getLoad(asmType), paramIndexMap.get("args" + i));
-                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;", false);
-            } else if (asmParams[i].equals("C")) {
-                mv.visitVarInsn(AsmTools.getLoad(asmType), paramIndexMap.get("args" + i));
-                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;", false);
-            } else if (asmParams[i].equals("Z")) {
-                mv.visitVarInsn(AsmTools.getLoad(asmType), paramIndexMap.get("args" + i));
-                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;", false);
+                codeBuilder_valueOf(mv, asmParams[i]);
             } else {
                 mv.visitVarInsn(Opcodes.ALOAD, paramIndexMap.get("args" + i));
             }
             mv.visitInsn(Opcodes.AASTORE);
+        }
+    }
+
+    //Code Builder “Double.valueOf(xxx);”
+    public static void codeBuilder_valueOf(MethodVisitor mv, String asmType) {
+        if (asmType.equals("B")) {
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;", false);
+        } else if (asmType.equals("S")) {
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;", false);
+        } else if (asmType.equals("I")) {
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
+        } else if (asmType.equals("J")) {
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;", false);
+        } else if (asmType.equals("F")) {
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;", false);
+        } else if (asmType.equals("D")) {
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;", false);
+        } else if (asmType.equals("C")) {
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;", false);
+        } else if (asmType.equals("Z")) {
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;", false);
         }
     }
 
@@ -507,55 +502,76 @@ public class AsmTools implements Opcodes {
     }
 
     //Code Builder “return ...”
+    public static void codeBuilder_3(MethodVisitor mv, String asmReturns) {
+        codeBuilder_3(mv, asmReturns, null);
+    }
+
+    //Code Builder “return ...”
     public static void codeBuilder_3(MethodVisitor mv, String asmReturns, Label tryEnd) {
+        codeBuilder_Cast(mv, asmReturns, tryEnd);
+        mv.visitInsn(AsmTools.getReturn(asmReturns));
+    }
+
+    //Code Builder “(Object) ...”
+    public static void codeBuilder_Cast(MethodVisitor mv, String asmReturns, Label tryEnd) {
         if (asmReturns.equals("B")) {
             mv.visitTypeInsn(CHECKCAST, "java/lang/Byte");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B", false);
-            mv.visitLabel(tryEnd);
-            mv.visitInsn(AsmTools.getReturn("B"));
+            if (tryEnd != null) {
+                mv.visitLabel(tryEnd);
+            }
         } else if (asmReturns.equals("S")) {
             mv.visitTypeInsn(CHECKCAST, "java/lang/Short");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Short", "shortValue", "()S", false);
-            mv.visitLabel(tryEnd);
-            mv.visitInsn(AsmTools.getReturn("S"));
+            if (tryEnd != null) {
+                mv.visitLabel(tryEnd);
+            }
         } else if (asmReturns.equals("I")) {
             mv.visitTypeInsn(CHECKCAST, "java/lang/Integer");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I", false);
-            mv.visitLabel(tryEnd);
-            mv.visitInsn(AsmTools.getReturn("I"));
+            if (tryEnd != null) {
+                mv.visitLabel(tryEnd);
+            }
         } else if (asmReturns.equals("J")) {
             mv.visitTypeInsn(CHECKCAST, "java/lang/Long");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J", false);
-            mv.visitLabel(tryEnd);
-            mv.visitInsn(AsmTools.getReturn("J"));
+            if (tryEnd != null) {
+                mv.visitLabel(tryEnd);
+            }
         } else if (asmReturns.equals("F")) {
             mv.visitTypeInsn(CHECKCAST, "java/lang/Float");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F", false);
-            mv.visitLabel(tryEnd);
-            mv.visitInsn(AsmTools.getReturn("F"));
+            if (tryEnd != null) {
+                mv.visitLabel(tryEnd);
+            }
         } else if (asmReturns.equals("D")) {
             mv.visitTypeInsn(CHECKCAST, "java/lang/Double");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D", false);
-            mv.visitLabel(tryEnd);
-            mv.visitInsn(AsmTools.getReturn("D"));
+            if (tryEnd != null) {
+                mv.visitLabel(tryEnd);
+            }
         } else if (asmReturns.equals("C")) {
             mv.visitTypeInsn(CHECKCAST, "java/lang/Character");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C", false);
-            mv.visitLabel(tryEnd);
-            mv.visitInsn(AsmTools.getReturn("C"));
+            if (tryEnd != null) {
+                mv.visitLabel(tryEnd);
+            }
         } else if (asmReturns.equals("Z")) {
             mv.visitTypeInsn(CHECKCAST, "java/lang/Boolean");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z", false);
-            mv.visitLabel(tryEnd);
-            mv.visitInsn(AsmTools.getReturn("Z"));
+            if (tryEnd != null) {
+                mv.visitLabel(tryEnd);
+            }
         } else if (asmReturns.equals("V")) {
             mv.visitInsn(Opcodes.POP);
-            mv.visitLabel(tryEnd);
-            mv.visitInsn(Opcodes.RETURN);
+            if (tryEnd != null) {
+                mv.visitLabel(tryEnd);
+            }
         } else {
             mv.visitTypeInsn(Opcodes.CHECKCAST, AsmTools.asmTypeToType(asmReturns));
-            mv.visitLabel(tryEnd);
-            mv.visitInsn(Opcodes.ARETURN);
+            if (tryEnd != null) {
+                mv.visitLabel(tryEnd);
+            }
         }
     }
 }

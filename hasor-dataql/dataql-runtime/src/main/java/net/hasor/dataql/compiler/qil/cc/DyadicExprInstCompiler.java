@@ -64,7 +64,7 @@ public class DyadicExprInstCompiler implements InstCompiler<DyadicExpression> {
         //      end
         //
         //      while last.empty = false
-        //          if self <= last.peek then   <- 根据优先级Tab，计算 slef 的运算符是否比 last 中最后一个放进去的优先级要低
+        //          if self <= last.peek then   <- 根据优先级Tab，计算 self 的运算符是否比 last 中最后一个放进去的优先级要低
         //              put last.pop
         //          else
         //              goto self

@@ -42,13 +42,13 @@ class HINT implements InsetProcess {
         String key = (String) dataStack.pop();
         //
         if (value == null) {
-            context.removeHint(key);
+            context.currentHints().removeHint(key);
         } else if (value instanceof Boolean) {
-            context.setHint(key, (Boolean) value);
+            context.currentHints().setHint(key, (Boolean) value);
         } else if (value instanceof Number) {
-            context.setHint(key, (Number) value);
+            context.currentHints().setHint(key, (Number) value);
         } else {
-            context.setHint(key, value.toString());
+            context.currentHints().setHint(key, value.toString());
         }
     }
 }

@@ -15,10 +15,13 @@
  */
 package net.hasor.dataql.compiler.qil.cc;
 import net.hasor.dataql.compiler.ast.Inst;
+import net.hasor.dataql.compiler.ast.inst.HintInst;
 import net.hasor.dataql.compiler.ast.inst.InstSet;
 import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
+
+import java.util.List;
 
 /**
  * 指令序列
@@ -28,8 +31,19 @@ import net.hasor.dataql.compiler.qil.InstQueue;
 public class InstSetInstCompiler implements InstCompiler<InstSet> {
     @Override
     public void doCompiler(InstSet astInst, InstQueue queue, CompilerContext compilerContext) {
+        boolean multipleInst = astInst.isMultipleInst();
+        if (multipleInst) {
+            queue.inst(HINT_S);
+            List<HintInst> optionSet = astInst.getOptionSet();
+            for (HintInst inst : optionSet) {
+                compilerContext.findInstCompilerByInst(inst).doCompiler(queue);
+            }
+        }
         for (Inst inst : astInst) {
             compilerContext.findInstCompilerByInst(inst).doCompiler(queue);
+        }
+        if (multipleInst) {
+            queue.inst(HINT_D);
         }
     }
 }

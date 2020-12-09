@@ -154,7 +154,7 @@ public class BasicContextTest {
         });
         //
         assert atomic1.get() == 1;
-        assert atomic2.get() == 1;  // 异步处理因此不会马上变成2
+        assert atomic2.get() == 2;  // 同步处理因此不会马上变成2
         assert atomic3.get() == 0;
         //
         Thread.sleep(200);

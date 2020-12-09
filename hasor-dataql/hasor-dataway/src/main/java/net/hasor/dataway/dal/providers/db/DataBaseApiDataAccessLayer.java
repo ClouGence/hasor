@@ -18,6 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
+import net.hasor.db.JdbcUtils;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.dal.ApiDataAccessLayer;
 import net.hasor.dataway.dal.EntityDef;
@@ -57,7 +58,7 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
             throw new IllegalStateException("jdbcTemplate is not init.");
         }
         //
-        String dbType = null;//this.appContext.getEnvironment().getVariable("HASOR_DATAQL_DATAWAY_FORCE_DBTYPE");
+        String dbType = this.appContext.getEnvironment().getVariable("HASOR_DATAQL_DATAWAY_DB_DBTYPE");
         if (StringUtils.isBlank(dbType)) {
             dbType = jdbcTemplate.execute((ConnectionCallback<String>) con -> {
                 String jdbcUrl = con.getMetaData().getURL();
@@ -66,7 +67,7 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
             });
         }
         if (dbType == null) {
-            throw new IllegalStateException("unknown dbType.");
+            logger.warn("dataway dbType unknown.");
         }
         //
         this.infoDal.dbType = dbType;

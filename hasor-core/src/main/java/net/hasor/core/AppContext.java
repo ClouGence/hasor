@@ -47,7 +47,7 @@ public interface AppContext extends MetaInfo {
     }
 
     /**
-     * 模块启动通知，如果在启动期间发生异常，将会抛出该异常。
+     * 启动，如果在启动期间发生异常，将会抛出该异常。该方式不会等待异步的 doStartCompleted 任务执行完。
      * @param modules 启动时使用的模块。
      * @throws Throwable 启动过程中引发的异常。
      */

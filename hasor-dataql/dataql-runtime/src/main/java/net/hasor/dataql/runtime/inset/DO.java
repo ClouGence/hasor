@@ -89,7 +89,7 @@ class DO implements InsetProcess {
             throw new InstructRuntimeException(sequence.programLocation(), "DO -> '" + fstType.getName() + "' and '" + secType.getName() + "' operation '" + dyadicSymbol + "' not support.");
         }
         //
-        Object result = process.doProcess(sequence.programLocation(), dyadicSymbol, new Object[] { fstExpData, secExpData }, context);
+        Object result = process.doProcess(sequence.programLocation(), dyadicSymbol, new Object[] { fstExpData, secExpData }, context.currentHints());
         dataStack.push(result);
     }
 }

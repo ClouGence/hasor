@@ -162,15 +162,14 @@ public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
         strBuilder.append(">");
         //
         for (XmlNode xmlEnt : this.children) {
-            String xmlText = xmlEnt.getXmlText();
-            xmlText = xmlText.replace("<", "&lt;");
-            xmlText = xmlText.replace(">", "&gt;");
-            xmlText = xmlText.replace("&", "&amp;");
-            strBuilder.append(xmlText);
+            strBuilder.append(xmlEnt.getXmlText());
         }
         //
         if (this.textString != null) {
-            strBuilder.append(this.getText());
+            String textBody = this.getText();
+            textBody = textBody.replace("<", "&lt;");
+            textBody = textBody.replace(">", "&gt;");
+            strBuilder.append(textBody);
         }
         //
         strBuilder.append("</").append(this.elementName).append(">");

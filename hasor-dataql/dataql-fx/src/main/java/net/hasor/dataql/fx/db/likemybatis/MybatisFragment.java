@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * 支持 Mybatis 的代码片段执行器。整合了分页、批处理能力。
- * 已支持的标签有：select/insert/delete/update/if/foreach
+ * 已支持的标签有：select/insert/delete/update/if/foreach/trim/set/where
  *
  * @author jmxd
  * @version : 2020-05-18
@@ -87,6 +87,12 @@ public class MybatisFragment extends SqlFragment {
                     childNode = parseForeachSqlNode(node);
                 } else if ("if".equalsIgnoreCase(nodeName)) {
                     childNode = new IfSqlNode(getNodeAttributeValue(node, "test"));
+                } else if ("trim".equalsIgnoreCase(nodeName)) {
+                    childNode = parseTrimSqlNode(node);
+                } else if ("set".equalsIgnoreCase(nodeName)) {
+                    childNode = parseSetSqlNode();
+                } else if ("where".equalsIgnoreCase(nodeName)) {
+                    childNode = parseWhereSqlNode();
                 } else {
                     throw new UnsupportedOperationException("Unsupported tags :" + nodeName);
                 }
@@ -107,6 +113,28 @@ public class MybatisFragment extends SqlFragment {
         foreachSqlNode.setOpen(getNodeAttributeValue(node, "open"));
         foreachSqlNode.setItem(getNodeAttributeValue(node, "item"));
         return foreachSqlNode;
+    }
+
+    /** 解析trim节点 */
+    private TrimSqlNode parseTrimSqlNode(Node node) {
+        TrimSqlNode trimSqlNode = new TrimSqlNode();
+        trimSqlNode.setPrefix(getNodeAttributeValue(node, "prefix"));
+        trimSqlNode.setPrefixOverrides(getNodeAttributeValue(node, "prefixOverrides"));
+        trimSqlNode.setSuffix(getNodeAttributeValue(node, "suffix"));
+        trimSqlNode.setSuffixOverrides(getNodeAttributeValue(node, "suffixOverrides"));
+        return trimSqlNode;
+    }
+
+    /** 解析set节点 */
+    private SetSqlNode parseSetSqlNode() {
+        SetSqlNode setSqlNode = new SetSqlNode();
+        return setSqlNode;
+    }
+
+    /** 解析where节点 */
+    private WhereSqlNode parseWhereSqlNode() {
+        WhereSqlNode whereSqlNode = new WhereSqlNode();
+        return whereSqlNode;
     }
 
     private String getNodeAttributeValue(Node node, String attributeKey) {

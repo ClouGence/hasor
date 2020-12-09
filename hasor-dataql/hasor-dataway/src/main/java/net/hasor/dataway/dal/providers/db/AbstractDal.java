@@ -15,6 +15,7 @@
  */
 package net.hasor.dataway.dal.providers.db;
 import net.hasor.core.Inject;
+import net.hasor.db.JdbcUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
 
@@ -51,12 +52,14 @@ public abstract class AbstractDal {
     protected              JdbcTemplate jdbcTemplate;
     protected              String       dbType;
 
-    protected String fixString(String val) {
-        if (JdbcUtils.ORACLE.equalsIgnoreCase(this.dbType) && StringUtils.isBlank(val)) {
-            // Oracle 下 NULL 和 '' 是一个意思 - see：https://www.cnblogs.com/memory4young/p/use-null-empty-space-in-oracle.html
-            return "there is no comment";
-        } else {
-            return val;
+    protected String fixString(String key, String val) {
+        if ("COMMENT".equalsIgnoreCase(key)) {
+            if (JdbcUtils.ORACLE.equalsIgnoreCase(this.dbType) && StringUtils.isBlank(val)) {
+                // Oracle 下 NULL 和 '' 是一个意思 - see：https://www.cnblogs.com/memory4young/p/use-null-empty-space-in-oracle.html
+                return "there is no comment";
+            }
         }
+        //
+        return val;
     }
 }

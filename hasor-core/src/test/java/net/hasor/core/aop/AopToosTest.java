@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.core.aop;
+import net.hasor.core.MethodInterceptor;
 import net.hasor.core.exts.aop.Aop;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.test.core.aop.custom.MyAop;
 import net.hasor.test.core.aop.ignore.types.GrandFatherBean;
 import net.hasor.test.core.aop.ignore.types.JamesBean;
 import org.junit.Test;
+import org.powermock.api.mockito.PowerMockito;
 
 import java.lang.reflect.Method;
 import java.util.function.Predicate;
@@ -74,5 +76,26 @@ public class AopToosTest {
         assert subClassesOf.equals(Matchers.subClassesOf(JamesBean.class));
         assert !subClassesOf.equals(Matchers.subClassesOf(GrandFatherBean.class));
         //
+    }
+
+    @Test
+    public void toosTest3() throws Exception {
+        AopClassConfig config = new AopClassConfig(Object.class);
+        assert config.getSimpleName().startsWith("Object$Auto$");
+        assert config.buildClass() == Object.class; // 没有Aop
+        assert !config.hasChange(); // 没有Aop
+    }
+
+    @Test
+    public void toosTest4() {
+        AopClassConfig config = new AopClassConfig(Object.class);
+        config.addAopInterceptor(PowerMockito.mock(MethodInterceptor.class));
+        assert config.getSimpleName().startsWith("Object$Auto$");
+        try {
+            config.buildClass();
+            assert false;
+        } catch (Exception e) {
+            assert e.getMessage().equals("class in package java or javax , does not support.");
+        }
     }
 }

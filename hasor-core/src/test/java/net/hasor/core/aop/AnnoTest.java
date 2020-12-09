@@ -16,7 +16,6 @@
 package net.hasor.core.aop;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.Module;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.test.core.aop.anno.AopBean;
 import net.hasor.test.core.aop.anno.ClassAnnoInterceptor;
@@ -37,7 +36,7 @@ public class AnnoTest {
     public void aopTest1() throws Exception {
         ClassAnnoInterceptor classInterceptor = new ClassAnnoInterceptor();
         MethodAnnoInterceptor methodInterceptor = new MethodAnnoInterceptor();
-        AppContext appContext = Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.bindType(ClassAnnoInterceptor.class, classInterceptor);
             apiBinder.bindType(MethodAnnoInterceptor.class, methodInterceptor);
         });
@@ -95,7 +94,7 @@ public class AnnoTest {
 
     @Test
     public void aopTest2() {
-        AppContext appContext = Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
             //1.任意类
             Predicate<Class<?>> atClass = Matchers.anyClass();
             //2.有MyAop注解的方法

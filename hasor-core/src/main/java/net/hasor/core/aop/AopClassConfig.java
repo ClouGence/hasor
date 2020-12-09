@@ -15,9 +15,13 @@
  */
 package net.hasor.core.aop;
 import net.hasor.core.MethodInterceptor;
+import net.hasor.core.PropertyDelegate;
+import net.hasor.core.aop.InnerDelegateInvocation.DelegateInfo;
+import net.hasor.core.provider.InstanceProvider;
+import net.hasor.utils.BeanUtils;
 import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.StringUtils;
 import net.hasor.utils.asm.*;
-import net.hasor.utils.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,6 +33,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static net.hasor.utils.asm.Opcodes.*;
 
@@ -38,65 +43,121 @@ import static net.hasor.utils.asm.Opcodes.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AopClassConfig {
-    /**默认超类java.lang.Object。*/
-    private          Class<?>                           superClass        = null;
-    private          String                             className         = null;
-    private          byte[]                             classBytes        = null;
-    private          Class<?>                           classType         = null;
-    private          AopClassLoader                     parentLoader      = null;
-    private          List<InnerMethodInterceptorDefine> interceptorList   = null;
-    private          Map<String, MethodInterceptor[]>   interceptorMap    = null;
-    private          Map<String, Method>                interceptorMethod = null;
-    private static   AtomicLong                         spinIndex         = new AtomicLong(0);
-    protected static String                             aopMethodSuffix   = "aop$";
-    protected static String                             aopClassSuffix    = "$Auto$";
-    private          File                               classWritePath;
+    /** 默认超类java.lang.Object */
+    private final          Class<?>                           superClass;
+    private final          AopClassLoader                     parentLoader;
+    private final          String                             className;
+    private                byte[]                             classBytes;
+    private                Class<?>                           classType;
+    //
+    private final          Map<String, DelegateInfo>          delegatePropertyMap = new HashMap<>();
+    private final          List<InnerMethodInterceptorDefine> interceptorList     = new ArrayList<>();
+    private final          Map<String, MethodInterceptor[]>   interceptorMap      = new HashMap<>();
+    private final          Map<String, Method>                interceptorMethod   = new HashMap<>();
+    private static final   AtomicLong                         spinIndex           = new AtomicLong(0);
+    protected static final String                             aopMethodSuffix     = "aop$";
+    protected static final String                             aopClassSuffix      = "$Auto$";
+    private                File                               classWritePath;
 
-    /**创建{@link AopClassConfig}类型对象。 */
+    /** 创建{@link AopClassConfig}类型对象 */
     public AopClassConfig() {
         this(BasicObject.class);
     }
 
-    /**创建{@link AopClassConfig}类型对象。 */
+    /** 创建{@link AopClassConfig}类型对象 */
     public AopClassConfig(Class<?> superClass) {
         this(superClass, superClass.getClassLoader());
     }
 
-    /**创建{@link AopClassConfig}类型对象。 */
+    /** 创建{@link AopClassConfig}类型对象 */
     public AopClassConfig(Class<?> superClass, ClassLoader parentLoader) {
         this.superClass = (superClass == null) ? BasicObject.class : superClass;
         this.className = this.superClass.getName() + aopClassSuffix + spinIndex.getAndIncrement();
         this.classBytes = null;
-        this.interceptorList = new ArrayList<>();
-        this.interceptorMap = new HashMap<>();
-        this.interceptorMethod = new HashMap<>();
         if (parentLoader instanceof AopClassLoader) {
             this.parentLoader = (AopClassLoader) parentLoader;
         } else {
             this.parentLoader = new AopClassLoader(parentLoader);
         }
     }
+    // --------------------------------------------------------------------------------------------
 
-    /**添加Aop拦截器。*/
+    /** 动态添加一个属性，并且生成可以属性的get/set方法 */
+    public <T> void addProperty(String propertyName, Class<? extends T> propertyType) {
+        this.addProperty(propertyName, propertyType, ReadWriteType.ReadWrite);
+    }
+
+    /**
+     * 动态添加一个属性，并且生成可以属性的get/set方法
+     * @param propertyName 属性名
+     * @param propertyType 属性类型
+     * @param rwType 读写权限
+     */
+    public <T> void addProperty(String propertyName, Class<? extends T> propertyType, ReadWriteType rwType) {
+        Object defaultValue = BeanUtils.getDefaultValue(propertyType);
+        SimplePropertyDelegate delegate = new SimplePropertyDelegate(defaultValue);
+        this.addProperty(propertyName, propertyType, InstanceProvider.of(delegate), rwType);
+    }
+
+    /**
+     * 动态添加一个属性，并且生成可以属性的get/set方法
+     * @param propertyName 属性名
+     * @param propertyType 属性类型
+     * @param delegate 属性默认值
+     */
+    public <T> void addProperty(String propertyName, Class<? extends T> propertyType, Supplier<? extends PropertyDelegate> delegate) {
+        this.addProperty(propertyName, propertyType, delegate, ReadWriteType.ReadWrite);
+    }
+
+    /**
+     * 动态添加一个属性，并且生成可以属性的get/set方法
+     * @param propertyName 属性名
+     * @param propertyType 属性类型
+     * @param delegate 属性默认值
+     * @param rwType 读写权限
+     */
+    public <T> void addProperty(String propertyName, Class<? extends T> propertyType, Supplier<? extends PropertyDelegate> delegate, ReadWriteType rwType) {
+        if (StringUtils.isBlank(propertyName)) {
+            throw new IllegalArgumentException("args propertyName is null.");
+        }
+        if (propertyType == null) {
+            throw new IllegalArgumentException("args propertyType is null.");
+        }
+        // 如果存在这个属性，则抛出异常
+        if (BeanUtils.hasPropertyOrField(propertyName, this.getSuperClass())) {
+            throw new IllegalStateException(propertyName + " already exists");
+        }
+        this.delegatePropertyMap.put(propertyName, new DelegateInfo(propertyType, delegate, rwType));
+    }
+
+    Supplier<? extends PropertyDelegate> findPropertyDelegate(String name) {
+        return this.delegatePropertyMap.get(name).delegateSupplier;
+    }
+    // --------------------------------------------------------------------------------------------
+
+    /** 添加Aop拦截器 */
     public void addAopInterceptors(Predicate<Method> aopMatcher, MethodInterceptor... aopInterceptor) {
         for (MethodInterceptor aop : aopInterceptor) {
             this.addAopInterceptor(aopMatcher, aop);
         }
     }
 
-    /**添加Aop拦截器。*/
+    /** 添加Aop拦截器 */
     public void addAopInterceptor(MethodInterceptor aopInterceptor) {
         this.addAopInterceptor(target -> true, aopInterceptor);
     }
 
-    /**添加Aop拦截器。*/
+    /** 添加Aop拦截器 */
     public void addAopInterceptor(Predicate<Method> aopMatcher, MethodInterceptor aopInterceptor) {
-        Objects.requireNonNull(aopMatcher, "aopMatcher is null.");
-        if (this.interceptorList == null) {
-            this.interceptorList = new ArrayList<>();
+        if (aopMatcher == null) {
+            throw new IllegalArgumentException("args aopMatcher is null.");
+        }
+        if (aopInterceptor == null) {
+            throw new IllegalArgumentException("args aopInterceptor is null.");
         }
         this.interceptorList.add(new InnerMethodInterceptorDefine(aopMatcher, aopInterceptor));
     }
+    // --------------------------------------------------------------------------------------------
 
     /** 根据方法查找这个方法的所有拦截器 */
     MethodInterceptor[] findInterceptor(String tmDesc) {
@@ -133,7 +194,7 @@ public class AopClassConfig {
 
     /**是否包含改变*/
     public boolean hasChange() {
-        return !this.interceptorList.isEmpty();
+        return !this.interceptorList.isEmpty() || !this.delegatePropertyMap.isEmpty();
     }
 
     protected void initBuild() {
@@ -178,7 +239,6 @@ public class AopClassConfig {
         String superClassName = AsmTools.replaceClassName(this.getSuperClass());
         String exceptionUtilsName = AsmTools.replaceClassName(ExceptionUtils.class);
         Map<String, Integer> indexMap = new HashMap<>();
-        //
         //
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         classWriter.visit(V1_6, ACC_PUBLIC + ACC_SUPER, thisClassName, null, superClassName, new String[] {//
@@ -442,21 +502,66 @@ public class AopClassConfig {
             mv.visitMaxs(-1, -1);
             mv.visitEnd();
         }
+        // .代理属性
+        for (Map.Entry<String, DelegateInfo> ent : this.delegatePropertyMap.entrySet()) {
+            String propertyName = ent.getKey();
+            DelegateInfo propertyInfo = ent.getValue();
+            String asmType = AsmTools.toAsmType(propertyInfo.propertyType);
+            {
+                Label sLabel = new Label();
+                Label eLabel = new Label();
+                String methodName = ((propertyInfo.propertyType == Boolean.TYPE) ? "is" : "get") + StringUtils.firstCharToUpperCase(propertyName);
+                String methodDescriptor = "()" + asmType;
+                Method propertyMethod = InnerDelegateInvocation.class.getMethod("getProperty", String.class, Object.class, String.class);
+                //
+                MethodVisitor mv = classWriter.visitMethod(Opcodes.ACC_PUBLIC, methodName, methodDescriptor, null, new String[] { "java/lang/Throwable" });
+                mv.visitLabel(sLabel);
+                mv.visitLdcInsn(getClassName() + "_get_" + propertyName);
+                mv.visitVarInsn(ALOAD, 0);// this
+                mv.visitLdcInsn(propertyName);
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, AsmTools.replaceClassName(InnerDelegateInvocation.class), propertyMethod.getName(), AsmTools.toAsmDesc(propertyMethod), false);
+                AsmTools.codeBuilder_Cast(mv, asmType, null);
+                mv.visitInsn(AsmTools.getReturn(asmType));
+                mv.visitLabel(eLabel);
+                mv.visitLocalVariable("this", AsmTools.toAsmType(InnerDelegateInvocation.class), null, sLabel, eLabel, 0);
+                mv.visitMaxs(3, 1);
+                mv.visitEnd();
+            }
+            if (propertyInfo.rwType == ReadWriteType.ReadWrite) {
+                Label sLabel = new Label();
+                Label eLabel = new Label();
+                String methodName = "set" + StringUtils.firstCharToUpperCase(propertyName);
+                String methodDescriptor = "(" + asmType + ")V";
+                Method propertyMethod = InnerDelegateInvocation.class.getMethod("setProperty", String.class, Object.class, String.class, Object.class);
+                //
+                MethodVisitor mv = classWriter.visitMethod(Opcodes.ACC_PUBLIC, methodName, methodDescriptor, null, new String[] { "java/lang/Throwable" });
+                mv.visitCode();
+                mv.visitLabel(sLabel);
+                mv.visitLdcInsn(getClassName() + "_set_" + propertyName);
+                mv.visitVarInsn(ALOAD, 0);// this
+                mv.visitLdcInsn(propertyName);
+                mv.visitVarInsn(AsmTools.getLoad(asmType), 1);
+                AsmTools.codeBuilder_valueOf(mv, AsmTools.toAsmType(propertyInfo.propertyType));
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, AsmTools.replaceClassName(InnerDelegateInvocation.class), propertyMethod.getName(), AsmTools.toAsmDesc(propertyMethod), false);
+                mv.visitInsn(Opcodes.RETURN);
+                mv.visitLabel(eLabel);
+                mv.visitLocalVariable("this", AsmTools.toAsmType(InnerDelegateInvocation.class), null, sLabel, eLabel, 0);
+                mv.visitLocalVariable(propertyName, AsmTools.toAsmType(Object.class), null, sLabel, eLabel, 1);
+                mv.visitMaxs(4, 2);
+                mv.visitEnd();
+            }
+        }
         //
         classWriter.visitEnd();
         this.classBytes = classWriter.toByteArray();
         if (this.classWritePath != null) {
-            FileOutputStream fos = null;
-            try {
-                File outFile = new File(this.classWritePath, thisClassName + ".class");
-                outFile.getParentFile().mkdirs();
-                fos = new FileOutputStream(outFile, false);
+            File outFile = new File(this.classWritePath, thisClassName + ".class");
+            outFile.getParentFile().mkdirs();
+            try (FileOutputStream fos = new FileOutputStream(outFile, false);) {
                 fos.write(this.classBytes);
                 fos.flush();
             } catch (Throwable e) {
                 e.printStackTrace();
-            } finally {
-                IOUtils.closeQuietly(fos);
             }
         }
         this.parentLoader.addClassConfig(this);

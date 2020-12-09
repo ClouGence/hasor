@@ -38,12 +38,17 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
 
     @Override
     public <R, T extends EventListener> R notifySpi(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult) {
-        return spiCommonCall(spiType, spiCaller, defaultResult, true);
+        return spiCommonCall(spiType, spiCaller, defaultResult, true, false);
+    }
+
+    @Override
+    public <R, T extends EventListener> R notifyWithoutJudge(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult) {
+        return spiCommonCall(spiType, spiCaller, defaultResult, true, true);
     }
 
     @Override
     public <R, T extends EventListener> R chainSpi(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult) {
-        return spiCommonCall(spiType, spiCaller, defaultResult, false);
+        return spiCommonCall(spiType, spiCaller, defaultResult, false, false);
     }
 
     @Override
@@ -52,11 +57,11 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
     }
 
     @Override
-    public boolean hasJudge(Class<? extends SpiJudge> spiJudge) {
+    public boolean hasJudge(Class<? extends EventListener> spiJudge) {
         return this.spiSpiJudge.containsKey(spiJudge);
     }
 
-    private <R, T extends EventListener> R spiCommonCall(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult, boolean isNotify) {
+    private <R, T extends EventListener> R spiCommonCall(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult, boolean isNotify, boolean ignoreJudge) {
         List<Supplier<EventListener>> listeners = this.spiListener.get(spiType);
         // .没有 SPI 监听器，那么返回默认值
         if (listeners == null || listeners.isEmpty()) {
@@ -74,13 +79,15 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
         //
         // .多个 SPI 监听器情况下，通过仲裁决定哪些监听器有效
         SpiJudge spiJudge = SpiJudge.DEFAULT;
-        if (this.spiSpiJudge.containsKey(spiType)) {
-            // 有仲裁，但是仲裁不能为空
-            spiJudge = this.spiSpiJudge.get(spiType).get();
-            Objects.requireNonNull(spiJudge, "spi '" + spiType.getName() + "' SpiJudge is null.");
-        } else if (isNotify) {
-            // 必须要设置仲裁
-            throw new UnsupportedOperationException("spi '" + spiType.getName() + "' encounters Multiple, require SpiJudge.");
+        if (!ignoreJudge) {
+            if (this.spiSpiJudge.containsKey(spiType)) {
+                // 有仲裁，但是仲裁不能为空
+                spiJudge = this.spiSpiJudge.get(spiType).get();
+                Objects.requireNonNull(spiJudge, "spi '" + spiType.getName() + "' SpiJudge is null.");
+            } else if (isNotify) {
+                // 必须要设置仲裁
+                throw new UnsupportedOperationException("spi '" + spiType.getName() + "' encounters Multiple, require SpiJudge.");
+            }
         }
         List<EventListener> collect = listeners.stream().map(Supplier::get).collect(Collectors.toList());
         collect = spiJudge.judgeSpi(collect);

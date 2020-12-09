@@ -18,6 +18,7 @@ import net.hasor.dataql.AbstractTestResource;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.CompilerArguments;
+import net.hasor.dataql.runtime.CompilerArguments.CodeLocationEnum;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.utils.StringUtils;
 import org.junit.Test;
@@ -31,12 +32,18 @@ import java.util.List;
  * @version : 2017-07-19
  */
 public class CompilerTest extends AbstractTestResource {
+    private static CompilerArguments arguments(CodeLocationEnum codeLocation) {
+        CompilerArguments arguments = CompilerArguments.DEFAULT.copyAsNew();
+        arguments.setCodeLocation(codeLocation);
+        return arguments;
+    }
+
     private void qilTest(String testCase) throws IOException {
         String query1 = getScript("/net_hasor_dataql_ast/" + testCase + "/ast.ql");
         QueryModel queryModel = QueryHelper.queryParser(query1);
-        QIL qilFast = QueryHelper.queryCompiler(queryModel, CompilerArguments.FAST, Finder.DEFAULT);
-        QIL qilDefault = QueryHelper.queryCompiler(queryModel, CompilerArguments.DEFAULT, Finder.DEFAULT);
-        QIL qilDebug = QueryHelper.queryCompiler(queryModel, CompilerArguments.DEBUG, Finder.DEFAULT);
+        QIL qilFast = QueryHelper.queryCompiler(queryModel, arguments(CodeLocationEnum.NONE), Finder.DEFAULT);
+        QIL qilDefault = QueryHelper.queryCompiler(queryModel, arguments(CodeLocationEnum.LINE), Finder.DEFAULT);
+        QIL qilDebug = QueryHelper.queryCompiler(queryModel, arguments(CodeLocationEnum.TERM), Finder.DEFAULT);
         //
         String qilStringFast1 = qilFast.toString();
         String qilStringDefault1 = qilDefault.toString();

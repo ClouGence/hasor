@@ -40,10 +40,12 @@ public class ApiBinderWrap implements ApiBinder {
         this.apiBinder = Objects.requireNonNull(apiBinder);
     }
 
+    @Override
     public Environment getEnvironment() {
         return this.apiBinder.getEnvironment();
     }
 
+    @Override
     public Set<Class<?>> findClass(final Class<?> featureType) {
         return this.apiBinder.findClass(featureType);
     }
@@ -58,6 +60,7 @@ public class ApiBinderWrap implements ApiBinder {
         return this.apiBinder.tryCast(castApiBinder);
     }
 
+    @Override
     public ApiBinder installModule(final Module... module) throws Throwable {
         return this.apiBinder.installModule(module);
     }
@@ -77,34 +80,52 @@ public class ApiBinderWrap implements ApiBinder {
         return this.apiBinder.loadModule(moduleType, typeSupplier);
     }
 
+    @Override
     public void bindInterceptor(String matcherExpression, MethodInterceptor interceptor) {
         this.apiBinder.bindInterceptor(matcherExpression, interceptor);
     }
 
+    @Override
     public void bindInterceptor(Predicate<Class<?>> matcherClass, Predicate<Method> matcherMethod, MethodInterceptor interceptor) {
         this.apiBinder.bindInterceptor(matcherClass, matcherMethod, interceptor);
     }
 
+    @Override
+    public LinkedBindingBuilder<PropertyDelegate> dynamicProperty(Predicate<Class<?>> matcherClass, String name, Class<?> propertyType) {
+        return this.apiBinder.dynamicProperty(matcherClass, name, propertyType);
+    }
+
+    @Override
+    public LinkedBindingBuilder<PropertyDelegate> dynamicReadOnlyProperty(Predicate<Class<?>> matcherClass, String name, Class<?> propertyType) {
+        return this.apiBinder.dynamicProperty(matcherClass, name, propertyType);
+    }
+
+    @Override
     public <T> BindInfo<T> getBindInfo(String bindID) {
         return this.apiBinder.getBindInfo(bindID);
     }
 
+    @Override
     public <T> BindInfo<T> getBindInfo(Class<T> bindType) {
         return this.apiBinder.getBindInfo(bindType);
     }
 
+    @Override
     public <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType) {
         return this.apiBinder.findBindingRegister(bindType);
     }
 
+    @Override
     public <T> BindInfo<T> findBindingRegister(String withName, Class<T> bindType) {
         return this.apiBinder.findBindingRegister(withName, bindType);
     }
 
+    @Override
     public <T> NamedBindingBuilder<T> bindType(Class<T> type) {
         return this.apiBinder.bindType(type);
     }
 
+    @Override
     public <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<T> listener) {
         this.apiBinder.bindSpiListener(spiType, listener);
     }
@@ -114,6 +135,7 @@ public class ApiBinderWrap implements ApiBinder {
         this.apiBinder.bindSpiJudge(spiType, spiJudgeSupplier);
     }
 
+    @Override
     public <T extends Scope> Supplier<T> bindScope(String scopeName, Supplier<T> scopeProvider) {
         return this.apiBinder.bindScope(scopeName, scopeProvider);
     }

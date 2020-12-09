@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /** 这个包默认接受 Aop */
-@AopIgnore(ignore = false)
+@IgnoreProxy(ignore = false)
 package net.hasor.test.core.aop.ignore.types;
-import net.hasor.core.AopIgnore;
+import net.hasor.core.IgnoreProxy;

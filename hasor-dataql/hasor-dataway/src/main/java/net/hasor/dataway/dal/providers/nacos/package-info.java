@@ -16,6 +16,6 @@
 /**
  * 基于 Nacos 的 ApiDataAccessLayer 接口实现。
  */
-@AopIgnore
+@IgnoreProxy
 package net.hasor.dataway.dal.providers.nacos;
-import net.hasor.core.AopIgnore;
+import net.hasor.core.IgnoreProxy;

@@ -28,7 +28,7 @@ public interface WebModule extends Module {
     public default void loadModule(final ApiBinder apiBinder) throws Throwable {
         WebApiBinder webApiBinder = apiBinder.tryCast(WebApiBinder.class);
         if (webApiBinder == null) {
-            return;
+            throw new Module.IgnoreModuleException();
         }
         this.loadModule(webApiBinder);
     }

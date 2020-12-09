@@ -17,5 +17,5 @@
  * Hasor的核心软件包，所有Hasor扩展模块都会依赖到它。它提供了：
  *      Settings、Environment、Event、IoC、Aop、Scope、Binder、AppContext。
  */
-@AopIgnore
+@IgnoreProxy
 package net.hasor.core;

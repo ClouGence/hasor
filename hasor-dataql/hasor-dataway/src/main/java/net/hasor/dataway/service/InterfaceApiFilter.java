@@ -21,6 +21,7 @@ import net.hasor.dataway.config.CorsUtils;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.LoggerUtils;
 import net.hasor.dataway.dal.ApiDataAccessLayer;
+import net.hasor.dataway.dal.ApiStatusEnum;
 import net.hasor.dataway.dal.EntityDef;
 import net.hasor.dataway.dal.FieldDef;
 import net.hasor.dataway.spi.ApiInfo;
@@ -88,8 +89,13 @@ public class InterfaceApiFilter implements InvokerFilter {
         try {
             Map<FieldDef, String> object = this.dataAccessLayer.getObjectBy(EntityDef.RELEASE, FieldDef.PATH, apiPath);
             if (object == null) {
-                throw new NullPointerException("API is not published.");
+                throw new IllegalStateException("API is not published.");
             }
+            ApiStatusEnum anEnum = ApiStatusEnum.typeOf(object.get(FieldDef.STATUS));
+            if (anEnum != ApiStatusEnum.Published) {
+                throw new IllegalStateException("API is not published.");
+            }
+            //
             apiInfo.setReleaseID(object.get(FieldDef.ID));
             apiInfo.setApiID(object.get(FieldDef.API_ID));
             apiInfo.setMethod(object.get(FieldDef.METHOD));

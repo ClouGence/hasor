@@ -15,7 +15,9 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.BindInfo;
+import net.hasor.core.PropertyDelegate;
 import net.hasor.core.Scope;
+import net.hasor.core.aop.ReadWriteType;
 
 import java.util.function.Supplier;
 
@@ -108,6 +110,14 @@ public interface BindInfoBuilder<T> {
      * @param valueInfo 属性值
      */
     public void addInject(String property, BindInfo<?> valueInfo);
+
+    /**
+     * 动态添加属性。
+     * @param name 属性名
+     * @param propertyType 属性类型
+     * @param delegate 属性值的委托
+     */
+    public void addDynamicProperty(String name, Class<?> propertyType, Supplier<? extends PropertyDelegate> delegate, ReadWriteType rwType);
 
     /**
      * 转化为{@link BindInfo}类型对象。

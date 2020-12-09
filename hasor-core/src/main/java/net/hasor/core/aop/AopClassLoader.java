@@ -25,8 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AopClassLoader extends ClassLoader {
-    private Map<String, InnerClassInfo> classMap   = new ConcurrentHashMap<>();
-    private ThreadLocal<BasicObject>    localLocal = ThreadLocal.withInitial(BasicObject::new);
+    private final Map<String, InnerClassInfo> classMap   = new ConcurrentHashMap<>();
+    private final ThreadLocal<BasicObject>    localLocal = ThreadLocal.withInitial(BasicObject::new);
 
     public AopClassLoader() {
         super(Thread.currentThread().getContextClassLoader());
@@ -76,8 +76,6 @@ public class AopClassLoader extends ClassLoader {
             ci.classConfig = config;
             ci.classInfo = null;
             this.classMap.put(cname, ci);
-        } else {
-            //
         }
     }
 

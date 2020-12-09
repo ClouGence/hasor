@@ -15,7 +15,9 @@
  */
 package net.hasor.core.spi;
 import net.hasor.core.*;
+import net.hasor.test.core.basic.pojo.SampleBean;
 import net.hasor.test.core.event.AppContextListener;
+import net.hasor.test.core.spi.SpiDemo;
 import net.hasor.test.core.spi.TestSpi;
 import org.junit.Test;
 
@@ -100,6 +102,8 @@ public class SpiTest {
         //
         try {
             SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
+            assert spiTrigger.hasSpi(TestSpi.class);
+            assert !spiTrigger.hasJudge(TestSpi.class);
             spiTrigger.notifySpi(TestSpi.class, TestSpi::doSpi, "ORI");
             assert false;
         } catch (UnsupportedOperationException e) {
@@ -137,6 +141,7 @@ public class SpiTest {
         SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
         Object resultSpi = spiTrigger.notifySpi(TestSpi.class, TestSpi::doSpi, defaultResult);
         //
+        assert spiTrigger.hasJudge(TestSpi.class);
         assert call.size() == 2;
         assert call.contains(spiResultA);
         assert call.contains(spiResultB);
@@ -176,11 +181,24 @@ public class SpiTest {
         });
         //
         SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
-        Object resultSpi = spiTrigger.notifySpi(TestSpi.class, TestSpi::doSpi, defaultResult);
+        Object resultSpi = spiTrigger.chainSpi(TestSpi.class, TestSpi::doSpi, defaultResult);
         //
         assert call.size() == 1;
         assert call.contains(spiResultA);
         assert !call.contains(spiResultB);
         assert resultSpi.equals(spiResultA);
+    }
+
+    @Test
+    public void spiAnnoTest() {
+        final SpiDemo spiDemo = new SpiDemo();
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            apiBinder.bindType(SpiDemo.class).toInstance(spiDemo);
+            apiBinder.loadSpiListener(SpiDemo.class);
+        });
+        //
+        SampleBean sampleBean = appContext.getInstance(SampleBean.class);
+        assert spiDemo.getBindInfo() == null;
+        assert spiDemo.getNewObject() == sampleBean;
     }
 }

@@ -16,7 +16,7 @@
 package net.hasor.core;
 /**
  * 根据类型创建对象。
- * @version : 2014年5月22日
+ * @version : 2020年2月27日
  * @author 赵永春 (zyc@byshell.org)
  */
 @FunctionalInterface

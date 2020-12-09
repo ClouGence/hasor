@@ -14,8 +14,8 @@ public class IdentifierTest extends AbstractTestResource {
     @Test
     public void uuid() throws IOException, InstructRuntimeException {
         String qlString = "";
-        qlString = qlString + "import 'net.hasor.dataql.fx.basic.IdentifierUdfSource' as ids;";
-        qlString = qlString + "return ids.uuid()";
+        qlString = qlString + "import 'net.hasor.dataql.fx.basic.StateUdfSource' as state;";
+        qlString = qlString + "return state.uuid()";
         //
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
         DataModel dataModel = dataQL.createQuery(qlString).execute().getData();
@@ -27,8 +27,8 @@ public class IdentifierTest extends AbstractTestResource {
     @Test
     public void uuid2() throws IOException, InstructRuntimeException {
         String qlString = "";
-        qlString = qlString + "import 'net.hasor.dataql.fx.basic.IdentifierUdfSource' as ids;";
-        qlString = qlString + "return ids.uuid2()";
+        qlString = qlString + "import 'net.hasor.dataql.fx.basic.StateUdfSource' as state;";
+        qlString = qlString + "return state.uuidToShort();";
         //
         DataQL dataQL = Hasor.create().build().getInstance(DataQL.class);
         DataModel dataModel = dataQL.createQuery(qlString).execute().getData();

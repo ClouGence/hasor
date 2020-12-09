@@ -21,10 +21,16 @@ package net.hasor.core;
  */
 @FunctionalInterface
 public interface Module {
+    /** 表示放弃后续 onStart/onStop 的执行 */
+    public static final class IgnoreModuleException extends RuntimeException {
+    }
+
     /**
      * 初始化过程，注意：apiBinder 参数只能在 loadModule 阶段中使用。
+     * 如果只要不抛错，后续 onStart/onStop 都会被调用
      * @param apiBinder
      * @throws Throwable init异常抛出
+     * @throws IgnoreModuleException 如果抛出该类型异常则表示放弃后续 onStart/onStop 的执行，module 的加载仍然继续
      */
     public void loadModule(ApiBinder apiBinder) throws Throwable;
 

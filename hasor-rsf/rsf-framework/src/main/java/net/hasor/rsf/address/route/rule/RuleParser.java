@@ -16,7 +16,6 @@
 package net.hasor.rsf.address.route.rule;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
-import net.hasor.core.setting.ConfigSource;
 import net.hasor.core.setting.InputStreamSettings;
 import net.hasor.core.setting.StreamType;
 import net.hasor.rsf.RsfEnvironment;
@@ -71,7 +70,7 @@ public class RuleParser {
         //
         try {
             InputStreamSettings ruleSettings = new InputStreamSettings();
-            ruleSettings.addReader(new ConfigSource(StreamType.Xml, new StringReader("<xml>" + rawRoute + "</xml>")));
+            ruleSettings.addReader(new StringReader("<xml>" + rawRoute + "</xml>"), StreamType.Xml);
             ruleSettings.loadSettings();
             return ruleSettings(ruleSettings);
         } catch (Exception e) {

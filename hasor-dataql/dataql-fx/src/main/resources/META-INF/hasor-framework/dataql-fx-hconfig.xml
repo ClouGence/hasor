@@ -6,11 +6,6 @@
         <!-- 入口 -->
         <modules.module>net.hasor.dataql.fx.FxModule</modules.module>
 
-        <environmentVar>
-            <!-- SQL 方言，默认为空。使用时必须设置 -->
-            <HASOR_DATAQL_FX_PAGE_DIALECT></HASOR_DATAQL_FX_PAGE_DIALECT>
-        </environmentVar>
-
         <!-- 内置 Fragment -->
         <dataqlFx>
             <bindFragmentSet>

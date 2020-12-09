@@ -34,7 +34,6 @@ public class ScanClassPath {
     private String[]                     scanPackages = null;
     private Map<Class<?>, Set<Class<?>>> cacheMap     = new WeakHashMap<>();
 
-    //
     private ScanClassPath(final String[] scanPackages) {
         this(scanPackages, null);
     }
@@ -44,7 +43,6 @@ public class ScanClassPath {
         this.classLoader = classLoader == null ? Thread.currentThread().getContextClassLoader() : classLoader;
     }
 
-    //
     public static ScanClassPath newInstance(final String[] scanPackages) {
         return new ScanClassPath(scanPackages) {
         };
@@ -138,8 +136,18 @@ public class ScanClassPath {
         return returnData;
     }
 
-    //
-    private Map<String, ClassInfo> classInfoMap = new ConcurrentHashMap<>();
+    private final Map<String, ClassInfo> classInfoMap = new ConcurrentHashMap<>();
+
+    /**分析类的字节码，分析过程中会递归解析父类和实现的接口*/
+    public ClassInfo loadClassInfo(String className, ClassLoader loader) throws IOException {
+        try (InputStream classStream = loader.getResourceAsStream(className.replace('.', '/') + ".class")) {
+            if (classStream == null) {
+                return null;
+            } else {
+                return loadClassInfo(className, classStream, loader);
+            }
+        }
+    }
 
     /**分析类的字节码，分析过程中会递归解析父类和实现的接口*/
     private ClassInfo loadClassInfo(String className, final InputStream inStream, final ClassLoader loader) throws IOException {
@@ -244,10 +252,9 @@ public class ScanClassPath {
             }
         }
     }
-    //
 
     /**类信息结构*/
-    private static class ClassInfo {
+    public static class ClassInfo {
         /*类名*/
         public String   className  = null;
         /*继承的父类*/

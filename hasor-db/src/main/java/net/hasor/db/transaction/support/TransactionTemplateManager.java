@@ -22,18 +22,10 @@ import net.hasor.db.transaction.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 class TransactionTemplateManager implements TransactionTemplate {
-    private TransactionManager transactionManager;
+    private final TransactionManager transactionManager;
 
     public TransactionTemplateManager(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
-    }
-
-    public <T> T execute(TransactionCallback<T> callBack) throws Throwable {
-        return this.execute(callBack, Propagation.REQUIRED, Isolation.DEFAULT);
-    }
-
-    public <T> T execute(TransactionCallback<T> callBack, Propagation behavior) throws Throwable {
-        return this.execute(callBack, behavior, Isolation.DEFAULT);
     }
 
     public <T> T execute(TransactionCallback<T> callBack, Propagation behavior, Isolation level) throws Throwable {

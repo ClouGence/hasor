@@ -15,8 +15,11 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.*;
+import net.hasor.core.aop.ReadWriteType;
+import net.hasor.core.aop.SimplePropertyDelegate;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.info.AopBindInfoAdapter;
+import net.hasor.core.info.DelegateBindInfoAdapter;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.SpiJudge;
 import net.hasor.utils.BeanUtils;
@@ -37,8 +40,8 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractBinder implements ApiBinder {
-    protected Logger      logger = LoggerFactory.getLogger(getClass());
-    private   Environment environment;
+    protected     Logger      logger = LoggerFactory.getLogger(getClass());
+    private final Environment environment;
 
     public AbstractBinder(Environment environment) {
         this.environment = Objects.requireNonNull(environment, "environment is null.");
@@ -159,6 +162,37 @@ public abstract class AbstractBinder implements ApiBinder {
     }
 
     @Override
+    public LinkedBindingBuilder<PropertyDelegate> dynamicProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType) {
+        return dynamicProperty(matcherClass, propertyName, propertyType, ReadWriteType.ReadWrite);
+    }
+
+    @Override
+    public LinkedBindingBuilder<PropertyDelegate> dynamicReadOnlyProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType) {
+        return dynamicProperty(matcherClass, propertyName, propertyType, ReadWriteType.ReadOnly);
+    }
+
+    private LinkedBindingBuilder<PropertyDelegate> dynamicProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType, ReadWriteType rwType) {
+        if (matcherClass == null) {
+            throw new IllegalArgumentException("args matcherClass is null.");
+        }
+        if (StringUtils.isBlank(propertyName)) {
+            throw new IllegalArgumentException("args propertyName is null.");
+        }
+        if (propertyType == null) {
+            throw new IllegalArgumentException("args propertyType is null.");
+        }
+        //
+        LinkedBindingBuilder<PropertyDelegate> bindingBuilder = bindType(PropertyDelegate.class).uniqueName();
+        BindInfo<PropertyDelegate> bindInfo = bindingBuilder.toInfo();
+        Object defaultValue = BeanUtils.getDefaultValue(propertyType);
+        bindingBuilder.toInstance(new SimplePropertyDelegate(defaultValue));
+        //
+        DelegateBindInfoAdapter adapter = new DelegateBindInfoAdapter(matcherClass, propertyName, propertyType, getProvider(bindInfo), rwType);
+        bindType(DelegateBindInfoAdapter.class).toInstance(adapter);
+        return bindingBuilder;
+    }
+
+    @Override
     public <T> List<BindInfo<T>> findBindingRegister(final Class<T> bindType) {
         Objects.requireNonNull(bindType, "bindType is null.");
         return this.containerFactory().getBindInfoContainer().findBindInfoList(bindType);
@@ -190,6 +224,7 @@ public abstract class AbstractBinder implements ApiBinder {
             InjectConstructorBindingBuilder<T>, InjectPropertyBindingBuilder<T>, //
             NamedBindingBuilder<T>, LinkedBindingBuilder<T>, LifeBindingBuilder<T>, ScopedBindingBuilder<T>, MetaDataBindingBuilder<T> {
         private BindInfoBuilder<T> typeBuilder = null;
+        private Class<? extends T> sourceType  = null;
         private Class<?>[]         initParams  = new Class<?>[0];
 
         public BindingBuilderImpl(final BindInfoBuilder<T> typeBuilder) {
@@ -245,15 +280,9 @@ public abstract class AbstractBinder implements ApiBinder {
         }
 
         @Override
-        public LinkedBindingBuilder<T> uniqueID() {
-            String newID = UUID.randomUUID().toString().replace("-", "");
-            this.typeBuilder.setBindID(newID);
-            return this;
-        }
-
-        @Override
-        public InjectPropertyBindingBuilder<T> to(final Class<? extends T> implementation) {
+        public TypeSupplierBindingBuilder<T> to(final Class<? extends T> implementation) {
             Objects.requireNonNull(implementation, "implementation is null.");
+            this.sourceType = implementation;
             this.typeBuilder.setSourceType(implementation);
             return this;
         }
@@ -301,7 +330,6 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
 
-        //
         @Override
         public InjectPropertyBindingBuilder<T> injectValue(final String property, final Object value) {
             return this.inject(property, new InstanceProvider<>(value));
@@ -360,6 +388,55 @@ public abstract class AbstractBinder implements ApiBinder {
         @Override
         public BindInfo<T> toInfo() {
             return this.typeBuilder.toInfo();
+        }
+
+        @Override
+        public LifeBindingBuilder<T> toTypeSupplier(TypeSupplier typeSupplier) {
+            final Class<? extends T> bindType = (this.sourceType == null) ?//
+                    this.typeBuilder.toInfo().getBindType() ://
+                    this.sourceType;
+            //
+            this.toProvider(() -> typeSupplier.get(bindType));
+            return this;
+        }
+
+        @Override
+        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType) {
+            Object defaultValue = BeanUtils.getDefaultValue(propertyType);
+            return this.dynamicProperty(name, propertyType, new SimplePropertyDelegate(defaultValue));
+        }
+
+        @Override
+        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, Class<? extends PropertyDelegate> delegate) {
+            return this.dynamicProperty(name, propertyType, getProvider(delegate));
+        }
+
+        @Override
+        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, BindInfo<? extends PropertyDelegate> delegate) {
+            return this.dynamicProperty(name, propertyType, getProvider(delegate));
+        }
+
+        @Override
+        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, Supplier<? extends PropertyDelegate> delegate) {
+            this.typeBuilder.addDynamicProperty(name, propertyType, delegate, ReadWriteType.ReadWrite);
+            return this;
+        }
+
+        @Override
+        public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, Class<? extends PropertyDelegate> delegate) {
+            Object defaultValue = BeanUtils.getDefaultValue(propertyType);
+            return this.dynamicReadOnlyProperty(name, propertyType, new SimplePropertyDelegate(defaultValue));
+        }
+
+        @Override
+        public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, BindInfo<? extends PropertyDelegate> delegate) {
+            return this.dynamicReadOnlyProperty(name, propertyType, getProvider(delegate));
+        }
+
+        @Override
+        public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, Supplier<? extends PropertyDelegate> delegate) {
+            this.typeBuilder.addDynamicProperty(name, propertyType, delegate, ReadWriteType.ReadOnly);
+            return this;
         }
     }
 

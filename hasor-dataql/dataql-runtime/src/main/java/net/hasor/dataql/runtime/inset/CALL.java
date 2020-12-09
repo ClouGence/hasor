@@ -54,7 +54,7 @@ class CALL implements InsetProcess {
         }
         //
         RefCall refCall = (RefCall) refCallObj;
-        Object result = refCall.invokeMethod(paramArrays, new HintsReadOnly(context), context.getFinder());
+        Object result = refCall.invokeMethod(paramArrays, new HintsReadOnly(context.currentHints()), context.getFinder());
         dataStack.push(result);
     }
 }

@@ -36,7 +36,7 @@ import java.util.function.Supplier;
 
 public class ScopeContainerTest {
     @Test
-    public void scopTest1() {
+    public void scopeTest1() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         spiCallerContainer.init();
@@ -61,7 +61,7 @@ public class ScopeContainerTest {
     }
 
     @Test
-    public void scopTest2() {
+    public void scopeTest2() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         spiCallerContainer.init();
@@ -76,7 +76,7 @@ public class ScopeContainerTest {
     }
 
     @Test
-    public void scopTest3() {
+    public void scopeTest3() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         spiCallerContainer.init();
@@ -102,7 +102,7 @@ public class ScopeContainerTest {
     }
 
     @Test
-    public void scopTest4() {
+    public void scopeTest4() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         spiCallerContainer.init();
@@ -118,7 +118,7 @@ public class ScopeContainerTest {
     }
 
     @Test
-    public void scopTest5() {
+    public void scopeTest5() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         spiCallerContainer.init();
@@ -135,7 +135,7 @@ public class ScopeContainerTest {
     }
 
     @Test
-    public void scopTest6() {
+    public void scopeTest6() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         spiCallerContainer.init();
@@ -149,7 +149,7 @@ public class ScopeContainerTest {
     }
 
     @Test
-    public void scopTest7() {
+    public void scopeTest7() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         //
@@ -157,7 +157,7 @@ public class ScopeContainerTest {
     }
 
     @Test
-    public void scopTest8() {
+    public void scopeTest8() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         scopeContainer.init();
@@ -175,7 +175,7 @@ public class ScopeContainerTest {
     }
 
     @Test
-    public void scopTest9() {
+    public void scopeTest9() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         scopeContainer.init();
@@ -191,7 +191,7 @@ public class ScopeContainerTest {
     }
 
     @Test
-    public void scopTest10_1() {
+    public void scopeTest10_1() {
         // 构造三个对象的 Supplier，每个对象按照要求返回指定的 hashCode
         Supplier<CustomHashBean> supplier1 = () -> new CustomHashBean(0);
         Supplier<CustomHashBean> supplier2 = () -> new CustomHashBean(1);
@@ -227,7 +227,7 @@ public class ScopeContainerTest {
     }
 
     @Test
-    public void scopTest10_2() {
+    public void scopeTest10_2() {
         // 构造三个对象的 Supplier，每个对象按照要求返回指定的 hashCode
         Supplier<CustomHashBean> supplier1 = () -> new CustomHashBean(0);
         Supplier<CustomHashBean> supplier2 = () -> new CustomHashBean(1);
@@ -263,7 +263,7 @@ public class ScopeContainerTest {
     }
 
     @Test
-    public void scopTest10_3() {
+    public void scopeTest10_3() {
         // 构造2个对象的 Supplier，每个对象按照要求返回指定的 hashCode
         Supplier<CustomHashBean> supplier1 = () -> new CustomHashBean(0);
         Supplier<CustomHashBean> supplier2 = () -> new CustomHashBean(1);
@@ -279,7 +279,7 @@ public class ScopeContainerTest {
     }
 
     @Test
-    public void scopTest11() {
+    public void scopeTest11() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopeContainer scopeContainer = new ScopeContainer(spiCallerContainer);
         spiCallerContainer.init();

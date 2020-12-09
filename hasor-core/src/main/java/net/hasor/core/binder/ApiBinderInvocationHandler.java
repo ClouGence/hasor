@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -28,14 +25,12 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ApiBinderInvocationHandler implements InvocationHandler {
-    private static Logger                logger = LoggerFactory.getLogger(ApiBinderInvocationHandler.class);
-    private        Map<Class<?>, Object> supportMap;
+    private final Map<Class<?>, Object> supportMap;
 
     protected Map<Class<?>, Object> supportMap() {
         return Collections.unmodifiableMap(supportMap);
     }
 
-    //
     public ApiBinderInvocationHandler(Map<Class<?>, Object> supportMap) {
         this.supportMap = supportMap;
         for (Map.Entry<Class<?>, Object> entry : supportMap.entrySet()) {

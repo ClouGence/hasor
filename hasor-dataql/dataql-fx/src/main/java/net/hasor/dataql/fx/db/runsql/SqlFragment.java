@@ -29,10 +29,8 @@ import net.hasor.dataql.fx.db.LookupDataSourceListener;
 import net.hasor.dataql.fx.db.fxquery.DefaultFxQuery;
 import net.hasor.dataql.fx.db.fxquery.FxQuery;
 import net.hasor.dataql.fx.db.runsql.dialect.SqlPageDialect;
-import net.hasor.db.jdbc.BatchPreparedStatementSetter;
-import net.hasor.db.jdbc.PreparedStatementCallback;
-import net.hasor.db.jdbc.PreparedStatementSetter;
-import net.hasor.db.jdbc.ResultSetExtractor;
+import net.hasor.db.JdbcUtils;
+import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.core.ArgPreparedStatementSetter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.RowMapperResultSetExtractor;
@@ -73,6 +71,7 @@ public class SqlFragment implements FragmentProcess {
     private   DataSource              defaultDataSource;
     private   Map<String, DataSource> dataSourceMap;
 
+    /** SqlMode 目前只会在 '批量' 和 '分页' 两个场景下才参与判断。 */
     public static enum SqlMode {
         /** DML：insert、update、delete、replace、exec */
         Insert, Update, Delete, Procedure,
@@ -211,19 +210,28 @@ public class SqlFragment implements FragmentProcess {
     }
 
     /** 分页模式 */
-    protected Object usePageFragment(FxQuery fxSql, Hints hint, Map<String, Object> paramMap) {
-        String sqlDialect = this.appContext.getEnvironment().getVariable("HASOR_DATAQL_FX_PAGE_DIALECT");
-        sqlDialect = hint.getOrDefault(FRAGMENT_SQL_PAGE_DIALECT.name(), sqlDialect).toString();
+    protected Object usePageFragment(FxQuery fxSql, Hints hints, Map<String, Object> paramMap) throws SQLException {
+        // .优先从 hint 中取方言，取不到在自动推断
+        String sqlDialect = hints.getOrDefault(FRAGMENT_SQL_PAGE_DIALECT.name(), "").toString();
         if (StringUtils.isBlank(sqlDialect)) {
-            throw new IllegalArgumentException("Query dialect missing.");
+            String useDataSource = hints.getOrDefault(FRAGMENT_SQL_DATA_SOURCE.name(), "").toString();
+            sqlDialect = getJdbcTemplate(useDataSource).execute((ConnectionCallback<String>) con -> {
+                String jdbcUrl = con.getMetaData().getURL();
+                String jdbcDriverName = con.getMetaData().getDriverName();
+                return JdbcUtils.getDbType(jdbcUrl, jdbcDriverName);
+            });
+            if (StringUtils.isBlank(sqlDialect)) {
+                throw new IllegalArgumentException("Query dialect missing.");
+            }
         }
+        //
         final SqlPageDialect pageDialect = SqlPageDialectRegister.findOrCreate(sqlDialect, this.appContext);
         //        Hints hints,                        // 查询包含的 Hint
         //        FxQuery fxQuery,                    // 查询语句
         //        Map<String, Object> queryParamMap,  // 查询参数
         //        SqlPageDialect pageDialect,         // 分页方言服务
         //        SqlPageQuery pageQuery              // 用于执行分页查询的服务
-        return new SqlPageObject(hint, fxSql, paramMap, pageDialect, this);
+        return new SqlPageObject(hints, fxSql, paramMap, pageDialect, this);
     }
 
     /** 非分页模式 */
@@ -246,7 +254,8 @@ public class SqlFragment implements FragmentProcess {
                 if (ps.execute()) {
                     // -- 第一个结果是个结果集
                     ResultSet resultSet = ps.getResultSet();
-                    resultDataSet.add(RESULT_EXTRACTOR.get().extractData(resultSet));
+                    // -- 结果
+                    resultDataSet.add(dataExtractor(hint, resultSet));
                 } else {
                     // -- 第一个结果是个影响行数
                     resultDataSet.add(ps.getUpdateCount());
@@ -259,11 +268,11 @@ public class SqlFragment implements FragmentProcess {
                         continue;
                     }
                     if (FRAGMENT_SQL_MULTIPLE_QUERIES_LAST.equalsIgnoreCase(keepType)) {
-                        resultDataSet.set(0, RESULT_EXTRACTOR.get().extractData(resultSet));
+                        resultDataSet.set(0, dataExtractor(hint, resultSet));
                         continue;
                     }
                     if (FRAGMENT_SQL_MULTIPLE_QUERIES_ALL.equalsIgnoreCase(keepType)) {
-                        resultDataSet.add(RESULT_EXTRACTOR.get().extractData(resultSet));
+                        resultDataSet.add(dataExtractor(hint, resultSet));
                         continue;
                     }
                 }
@@ -286,11 +295,7 @@ public class SqlFragment implements FragmentProcess {
     /** 执行 SQL */
     protected <T> T executeSQL(boolean batch, String sourceName, String sqlString, Object[] paramArrays, SqlQuery<T> sqlQuery) throws SQLException {
         if (this.spiTrigger.hasSpi(FxSqlCheckChainSpi.class)) {
-            final FxSqlInfo fxSqlInfo = new FxSqlInfo(batch, sourceName, sqlString, paramArrays) {
-                public JdbcTemplate getJdbcTemplate(String sourceName) {
-                    return SqlFragment.this.getJdbcTemplate(sourceName);
-                }
-            };
+            final FxSqlInfo fxSqlInfo = new FxSqlInfo(batch, sourceName, sqlString, paramArrays);
             final AtomicBoolean doExit = new AtomicBoolean(false);
             this.spiTrigger.chainSpi(FxSqlCheckChainSpi.class, (listener, lastResult) -> {
                 if (doExit.get()) {
@@ -320,7 +325,7 @@ public class SqlFragment implements FragmentProcess {
     }
 
     /** 结果转换 */
-    public Object convertResult(Hints hint, List<Map<String, Object>> mapList) {
+    protected Object convertResult(Hints hint, List<Map<String, Object>> mapList) {
         String openPackage = hint.getOrDefault(FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.name(), FxHintNames.FRAGMENT_SQL_OPEN_PACKAGE.getDefaultVal()).toString();
         String caseModule = hint.getOrDefault(FxHintNames.FRAGMENT_SQL_COLUMN_CASE.name(), FxHintNames.FRAGMENT_SQL_COLUMN_CASE.getDefaultVal()).toString();
         if (!FRAGMENT_SQL_COLUMN_CASE_DEFAULT.equalsIgnoreCase(caseModule)) {
@@ -443,5 +448,10 @@ public class SqlFragment implements FragmentProcess {
             break;
         }
         return sqlMode;
+    }
+
+    protected Object dataExtractor(Hints hint, ResultSet resultSet) throws SQLException {
+        List<Map<String, Object>> tempData = RESULT_EXTRACTOR.get().extractData(resultSet);
+        return convertResult(hint, tempData);
     }
 }

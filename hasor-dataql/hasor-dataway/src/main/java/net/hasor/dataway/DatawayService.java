@@ -24,7 +24,7 @@ import java.util.Map;
  * @version : 2020-04-19
  */
 public interface DatawayService {
-    public static final String VERSION = "4.2.0";
+    public static final String VERSION = "4.2.2";
 
     /** 执行配置的接口。*/
     @Deprecated
