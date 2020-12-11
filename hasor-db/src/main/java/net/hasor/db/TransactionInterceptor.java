@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor;
+package net.hasor.db;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
 import net.hasor.db.transaction.*;
@@ -28,7 +28,7 @@ import java.util.function.Supplier;
  * @version : 2015年11月10日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TransactionInterceptor implements MethodInterceptor {
+class TransactionInterceptor implements MethodInterceptor {
     private Supplier<DataSource> dataSource = null;
 
     public TransactionInterceptor(Supplier<DataSource> dataSource) {

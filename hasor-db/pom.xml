@@ -24,10 +24,21 @@
 
     <!-- 引用依赖 -->
     <dependencies>
-        <!-- Hasor -->
+        <!-- Log依赖 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <!-- Commons -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-commons</artifactId>
+        </dependency>
+        <!-- core -->
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- 测试 -->

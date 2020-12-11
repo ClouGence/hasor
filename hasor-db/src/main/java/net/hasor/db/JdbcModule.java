@@ -16,14 +16,11 @@
 package net.hasor.db;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import net.hasor.core.Provider;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.db.jdbc.JdbcOperations;
 import net.hasor.db.jdbc.core.*;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionTemplate;
-import net.hasor.db.transaction.interceptor.TransactionInterceptor;
-import net.hasor.db.transaction.interceptor.Transactional;
 import net.hasor.db.transaction.provider.TransactionManagerProvider;
 import net.hasor.db.transaction.provider.TransactionTemplateProvider;
 import net.hasor.utils.StringUtils;
@@ -49,7 +46,7 @@ public class JdbcModule implements Module {
 
     /** 添加数据源 */
     public JdbcModule(Level loadLevel, DataSource dataSource) {
-        this(new Level[] { loadLevel }, null, Provider.of(Objects.requireNonNull(dataSource)));
+        this(new Level[] { loadLevel }, null, of(Objects.requireNonNull(dataSource)));
     }
 
     /** 添加数据源 */
@@ -59,12 +56,12 @@ public class JdbcModule implements Module {
 
     /** 添加数据源 */
     public JdbcModule(Level loadLevel, String name, DataSource dataSource) {
-        this(new Level[] { loadLevel }, name, Provider.of(Objects.requireNonNull(dataSource)));
+        this(new Level[] { loadLevel }, name, of(Objects.requireNonNull(dataSource)));
     }
 
     /** 添加数据源 */
     public JdbcModule(Level[] loadLevel, DataSource dataSource) {
-        this(loadLevel, null, Provider.of(Objects.requireNonNull(dataSource)));
+        this(loadLevel, null, of(Objects.requireNonNull(dataSource)));
     }
 
     /** 添加数据源 */
@@ -79,6 +76,10 @@ public class JdbcModule implements Module {
         this.loadLevel = new HashSet<>(Arrays.asList(loadLevel));
         this.dataSourceID = name;
         this.dataSource = dataSource;
+    }
+
+    private static <T> Supplier<T> of(T instance) {
+        return () -> instance;
     }
 
     @Override

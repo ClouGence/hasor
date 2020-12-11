@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor;
+package net.hasor.db;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
 

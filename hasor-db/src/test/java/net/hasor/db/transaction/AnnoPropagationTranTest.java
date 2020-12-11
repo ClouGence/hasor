@@ -19,13 +19,12 @@ import net.hasor.core.Hasor;
 import net.hasor.core.IgnoreProxy;
 import net.hasor.core.Inject;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.transaction.interceptor.Transactional;
+import net.hasor.db.Transactional;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.SingleDsModule;
 import org.junit.Test;
 
 import java.sql.SQLException;
-import java.util.function.Consumer;
 
 import static net.hasor.test.db.utils.TestUtils.*;
 
