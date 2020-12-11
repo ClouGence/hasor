@@ -40,6 +40,7 @@ public final class FloatConverter extends NumberConverter {
     public FloatConverter() {
         super(true);
     }
+
     /**
      * Construct a <b>java.lang.Float</b> <i>Converter</i> that returns
      * a default value if an error occurs.
@@ -51,6 +52,7 @@ public final class FloatConverter extends NumberConverter {
     public FloatConverter(final Object defaultValue) {
         super(true, defaultValue);
     }
+
     /**
      * Return the default type this <code>Converter</code> handles.
      *

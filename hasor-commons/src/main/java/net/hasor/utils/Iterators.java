@@ -17,6 +17,7 @@ package net.hasor.utils;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+
 /**
  *
  * @version : 2013-4-12
@@ -27,6 +28,7 @@ public class Iterators {
     public static interface Converter<T, O> {
         public O converter(T target);
     }
+
     /**迭代器类型转换*/
     public static <T, O> Iterator<O> converIterator(final Iterator<T> oriIterator, final Converter<T, O> converter) {
         return new Iterator<O>() {
@@ -34,16 +36,19 @@ public class Iterators {
             public void remove() {
                 oriIterator.remove();
             }
+
             @Override
             public O next() {
                 return converter.converter(oriIterator.next());
             }
+
             @Override
             public boolean hasNext() {
                 return oriIterator.hasNext();
             }
         };
     }
+
     /**转换为 Enumeration*/
     public static <T> Enumeration<T> asEnumeration(final Iterator<T> iterator) {
         return new Enumeration<T>() {
@@ -51,22 +56,26 @@ public class Iterators {
             public boolean hasMoreElements() {
                 return iterator.hasNext();
             }
+
             @Override
             public T nextElement() {
                 return iterator.next();
             }
         };
     }
+
     /**合并两个迭代器*/
     public static <T> Enumeration<T> mergeEnumeration(final Enumeration<T> enum1, final Enumeration<T> enum2) {
         final Enumeration<T> i1 = enum1 != null ? enum1 : Iterators.asEnumeration(new ArrayList<T>(0).iterator());
         final Enumeration<T> i2 = enum2 != null ? enum2 : Iterators.asEnumeration(new ArrayList<T>(0).iterator());
         return new Enumeration<T>() {
             private Enumeration<T> it = i1;
+
             @Override
             public boolean hasMoreElements() {
                 return i1.hasMoreElements() || i2.hasMoreElements() ? true : false;
             }
+
             @Override
             public T nextElement() {
                 if (this.it.hasMoreElements() == false) {
@@ -76,16 +85,19 @@ public class Iterators {
             }
         };
     }
+
     /**合并两个迭代器*/
     public static <T> Iterator<T> mergeIterator(final Iterator<T> iterator1, final Iterator<T> iterator2) {
         final Iterator<T> i1 = iterator1 != null ? iterator1 : new ArrayList<T>(0).iterator();
         final Iterator<T> i2 = iterator2 != null ? iterator2 : new ArrayList<T>(0).iterator();
         return new Iterator<T>() {
             private Iterator<T> it = i1;
+
             @Override
             public boolean hasNext() {
                 return i1.hasNext() || i2.hasNext();
             }
+
             @Override
             public T next() {
                 if (!this.it.hasNext()) {
@@ -93,6 +105,7 @@ public class Iterators {
                 }
                 return this.it.next();
             }
+
             @Override
             public void remove() {
                 this.it.remove();

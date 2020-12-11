@@ -15,6 +15,7 @@
  */
 package net.hasor.utils;
 import java.util.concurrent.ThreadFactory;
+
 /**
  *
  * @version : 2015年3月28日
@@ -24,11 +25,13 @@ public class NameThreadFactory implements ThreadFactory {
     private String      nameSample = "Thread-%s";
     private ClassLoader loader     = null;
     private int         index      = 1;
+
     //
     public NameThreadFactory(String nameSample, ClassLoader loader) {
         this.nameSample = nameSample;
         this.loader = loader;
     }
+
     //
     public Thread newThread(Runnable run) {
         Thread t = new Thread(run);

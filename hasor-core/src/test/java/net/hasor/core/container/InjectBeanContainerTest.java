@@ -30,6 +30,7 @@ import net.hasor.test.core.basic.inject.property.PropertyBean;
 import net.hasor.test.core.basic.inject.property.PropertyBeanByByInjectSettingConfValue;
 import net.hasor.test.core.basic.pojo.PojoBean;
 import net.hasor.test.core.enums.SelectEnum;
+import net.hasor.core.Provider;
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;

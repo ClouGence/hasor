@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.logging.Logger;
+
 /**
  * Converts POJOs to JSON and vice versa.
  * The key difference:
@@ -31,20 +32,24 @@ public class JSONPojoConvertor implements JSON.Convertor {
     protected final static Logger   logger     = Logger.getLogger(JSONPojoConvertor.class.getName());
     public static final    Object[] GETTER_ARG = new Object[] {}, NULL_ARG = new Object[] { null };
     private static final Map<Class<?>, NumberType> __numberTypes = new HashMap<Class<?>, NumberType>();
+
     public static NumberType getNumberType(Class<?> clazz) {
         return __numberTypes.get(clazz);
     }
-    protected boolean  _fromJSON;
-    protected Class<?> _pojoClass;
+
+    protected boolean             _fromJSON;
+    protected Class<?>            _pojoClass;
     protected Map<String, Method> _getters = new HashMap<String, Method>();
     protected Map<String, Setter> _setters = new HashMap<String, Setter>();
-    protected Set<String> _excluded;
+    protected Set<String>         _excluded;
+
     /**
      * @param pojoClass The class to convert
      */
     public JSONPojoConvertor(Class<?> pojoClass) {
         this(pojoClass, (Set<String>) null, true);
     }
+
     /**
      * @param pojoClass The class to convert
      * @param excluded The fields to exclude
@@ -52,6 +57,7 @@ public class JSONPojoConvertor implements JSON.Convertor {
     public JSONPojoConvertor(Class<?> pojoClass, String[] excluded) {
         this(pojoClass, new HashSet<String>(Arrays.asList(excluded)), true);
     }
+
     /**
      * @param pojoClass The class to convert
      * @param excluded The fields to exclude
@@ -59,6 +65,7 @@ public class JSONPojoConvertor implements JSON.Convertor {
     public JSONPojoConvertor(Class<?> pojoClass, Set<String> excluded) {
         this(pojoClass, excluded, true);
     }
+
     /**
      * @param pojoClass The class to convert
      * @param excluded The fields to exclude
@@ -70,6 +77,7 @@ public class JSONPojoConvertor implements JSON.Convertor {
         _fromJSON = fromJSON;
         init();
     }
+
     /**
      * @param pojoClass The class to convert
      * @param fromJSON If true, add a class field to the JSON
@@ -77,6 +85,7 @@ public class JSONPojoConvertor implements JSON.Convertor {
     public JSONPojoConvertor(Class<?> pojoClass, boolean fromJSON) {
         this(pojoClass, (Set<String>) null, fromJSON);
     }
+
     /* ------------------------------------------------------------ */
     protected void init() {
         Method[] methods = _pojoClass.getMethods();
@@ -108,26 +117,32 @@ public class JSONPojoConvertor implements JSON.Convertor {
             }
         }
     }
+
     /* ------------------------------------------------------------ */
     protected void addGetter(String name, Method method) {
         _getters.put(name, method);
     }
+
     /* ------------------------------------------------------------ */
     protected void addSetter(String name, Method method) {
         _setters.put(name, new Setter(name, method));
     }
+
     /* ------------------------------------------------------------ */
     protected Setter getSetter(String name) {
         return _setters.get(name);
     }
+
     /* ------------------------------------------------------------ */
     protected boolean includeField(String name, Method m) {
         return _excluded == null || !_excluded.contains(name);
     }
+
     /* ------------------------------------------------------------ */
     protected int getExcludedCount() {
         return _excluded == null ? 0 : _excluded.size();
     }
+
     /* ------------------------------------------------------------ */
     public Object fromJSON(Map object) {
         Object obj = null;
@@ -139,6 +154,7 @@ public class JSONPojoConvertor implements JSON.Convertor {
         setProps(obj, object);
         return obj;
     }
+
     /* ------------------------------------------------------------ */
     public int setProps(Object obj, Map<?, ?> props) {
         int count = 0;
@@ -157,6 +173,7 @@ public class JSONPojoConvertor implements JSON.Convertor {
         }
         return count;
     }
+
     /* ------------------------------------------------------------ */
     public void toJSON(Object obj, Output out) {
         if (_fromJSON)
@@ -170,10 +187,12 @@ public class JSONPojoConvertor implements JSON.Convertor {
             }
         }
     }
+
     /* ------------------------------------------------------------ */
     protected void log(Throwable t) {
         logger.fine(t.getMessage());
     }
+
     /* ------------------------------------------------------------ */
     public static class Setter {
         protected String     _propertyName;
@@ -181,6 +200,7 @@ public class JSONPojoConvertor implements JSON.Convertor {
         protected NumberType _numberType;
         protected Class<?>   _type;
         protected Class<?>   _componentType;
+
         public Setter(String propertyName, Method method) {
             _propertyName = propertyName;
             _setter = method;
@@ -191,30 +211,38 @@ public class JSONPojoConvertor implements JSON.Convertor {
                 _numberType = __numberTypes.get(_componentType);
             }
         }
+
         public String getPropertyName() {
             return _propertyName;
         }
+
         public Method getMethod() {
             return _setter;
         }
+
         public NumberType getNumberType() {
             return _numberType;
         }
+
         public Class<?> getType() {
             return _type;
         }
+
         public Class<?> getComponentType() {
             return _componentType;
         }
+
         public boolean isPropertyNumber() {
             return _numberType != null;
         }
+
         public void invoke(Object obj, Object value) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
             if (value == null)
                 _setter.invoke(obj, NULL_ARG);
             else
                 invokeObject(obj, value);
         }
+
         protected void invokeObject(Object obj, Object value) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
             if (_type.isEnum()) {
                 if (value instanceof Enum)
@@ -256,9 +284,11 @@ public class JSONPojoConvertor implements JSON.Convertor {
                 _setter.invoke(obj, new Object[] { value });
         }
     }
+
     public interface NumberType {
         public Object getActualValue(Number number);
     }
+
     public static final NumberType SHORT   = new NumberType() {
         public Object getActualValue(Number number) {
             return new Short(number.shortValue());

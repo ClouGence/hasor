@@ -16,6 +16,7 @@
  */
 package net.hasor.utils.convert;
 import java.util.*;
+
 /**
  * <p>A customized implementation of <code>java.util.HashMap</code> designed
  * to operate in a multithreaded environment where the large majority of
@@ -64,11 +65,13 @@ class WeakFastHashMap extends HashMap {
     private boolean fast = false;
     // Constructors
     // ----------------------------------------------------------------------
+
     /** Construct an empty map. */
     public WeakFastHashMap() {
         super();
         this.map = this.createMap();
     }
+
     /**
      * Construct an empty map with the specified capacity.
      * @param capacity  the initial capacity of the empty map
@@ -77,6 +80,7 @@ class WeakFastHashMap extends HashMap {
         super();
         this.map = this.createMap(capacity);
     }
+
     /**
      * Construct an empty map with the specified capacity and load factor.
      * @param capacity  the initial capacity of the empty map
@@ -86,6 +90,7 @@ class WeakFastHashMap extends HashMap {
         super();
         this.map = this.createMap(capacity, factor);
     }
+
     /**
      * Construct a new map with the same mappings as the specified map.
      * @param map  the map whose mappings are to be copied
@@ -96,6 +101,7 @@ class WeakFastHashMap extends HashMap {
     }
     // Property access
     // ----------------------------------------------------------------------
+
     /**
      *  Returns true if this map is operating in fast mode.
      *  @return true if this map is operating in fast mode
@@ -103,6 +109,7 @@ class WeakFastHashMap extends HashMap {
     public boolean getFast() {
         return this.fast;
     }
+
     /**
      *  Sets whether this map is operating in fast mode.
      *  @param fast true if this map should operate in fast mode
@@ -114,6 +121,7 @@ class WeakFastHashMap extends HashMap {
     // ----------------------------------------------------------------------
     // These methods can forward straight to the wrapped Map in 'fast' mode.
     // (because they are query methods)
+
     /**
      * Return the value to which this map maps the specified key.  Returns
      * <code>null</code> if the map contains no mapping for this key, or if
@@ -133,6 +141,7 @@ class WeakFastHashMap extends HashMap {
             }
         }
     }
+
     /**
      * Return the number of key-value mappings in this map.
      *
@@ -148,6 +157,7 @@ class WeakFastHashMap extends HashMap {
             }
         }
     }
+
     /**
      * Return <code>true</code> if this map contains no mappings.
      *
@@ -163,6 +173,7 @@ class WeakFastHashMap extends HashMap {
             }
         }
     }
+
     /**
      * Return <code>true</code> if this map contains a mapping for the
      * specified key.
@@ -180,6 +191,7 @@ class WeakFastHashMap extends HashMap {
             }
         }
     }
+
     /**
      * Return <code>true</code> if this map contains one or more keys mapping
      * to the specified value.
@@ -202,6 +214,7 @@ class WeakFastHashMap extends HashMap {
     // These methods perform special behaviour in 'fast' mode.
     // The map is cloned, updated and then assigned back.
     // See the comments at the top as to why this won't always work.
+
     /**
      * Associate the specified value with the specified key in this map.
      * If the map previously contained a mapping for this key, the old
@@ -226,6 +239,7 @@ class WeakFastHashMap extends HashMap {
             }
         }
     }
+
     /**
      * Copy all of the mappings from the specified map to this one, replacing
      * any mappings with the same keys.
@@ -246,6 +260,7 @@ class WeakFastHashMap extends HashMap {
             }
         }
     }
+
     /**
      * Remove any mapping for this key, and return any previously
      * mapped value.
@@ -268,6 +283,7 @@ class WeakFastHashMap extends HashMap {
             }
         }
     }
+
     /**
      * Remove all mappings from this map.
      */
@@ -285,6 +301,7 @@ class WeakFastHashMap extends HashMap {
     }
     // Basic object methods
     // ----------------------------------------------------------------------
+
     /**
      * Compare the specified object with this list for equality.  This
      * implementation uses exactly the code that is used to define the
@@ -348,6 +365,7 @@ class WeakFastHashMap extends HashMap {
             }
         }
     }
+
     /**
      * Return the hash code value for this map.  This implementation uses
      * exactly the code that is used to define the list hash function in the
@@ -375,6 +393,7 @@ class WeakFastHashMap extends HashMap {
             }
         }
     }
+
     /**
      * Return a shallow copy of this <code>FastHashMap</code> instance.
      * The keys and values themselves are not copied.
@@ -396,6 +415,7 @@ class WeakFastHashMap extends HashMap {
     }
     // Map views
     // ----------------------------------------------------------------------
+
     /**
      * Return a collection view of the mappings contained in this map.  Each
      * element in the returned collection is a <code>Map.Entry</code>.
@@ -405,6 +425,7 @@ class WeakFastHashMap extends HashMap {
     public Set entrySet() {
         return new EntrySet();
     }
+
     /**
      * Return a set view of the keys contained in this map.
      * @return the set of the Map's keys
@@ -413,6 +434,7 @@ class WeakFastHashMap extends HashMap {
     public Set keySet() {
         return new KeySet();
     }
+
     /**
      * Return a collection view of the values contained in this map.
      * @return the set of the Map's values
@@ -421,34 +443,42 @@ class WeakFastHashMap extends HashMap {
     public Collection values() {
         return new Values();
     }
+
     // Abstractions on Map creations (for subclasses such as WeakFastHashMap)
     // ----------------------------------------------------------------------
     protected Map createMap() {
         return new WeakHashMap();
     }
+
     protected Map createMap(final int capacity) {
         return new WeakHashMap(capacity);
     }
+
     protected Map createMap(final int capacity, final float factor) {
         return new WeakHashMap(capacity, factor);
     }
+
     protected Map createMap(final Map map) {
         return new WeakHashMap(map);
     }
+
     protected Map cloneMap(final Map map) {
         return this.createMap(map);
     }
     // Map view inner classes
     // ----------------------------------------------------------------------
+
     /**
      * Abstract collection implementation shared by keySet(), values() and entrySet().
      */
     private abstract class CollectionView implements Collection {
         public CollectionView() {
         }
+
         protected abstract Collection get(Map map);
 
         protected abstract Object iteratorNext(Map.Entry entry);
+
         @Override
         public void clear() {
             if (WeakFastHashMap.this.fast) {
@@ -461,6 +491,7 @@ class WeakFastHashMap extends HashMap {
                 }
             }
         }
+
         @Override
         public boolean remove(final Object o) {
             if (WeakFastHashMap.this.fast) {
@@ -476,6 +507,7 @@ class WeakFastHashMap extends HashMap {
                 }
             }
         }
+
         @Override
         public boolean removeAll(final Collection o) {
             if (WeakFastHashMap.this.fast) {
@@ -491,6 +523,7 @@ class WeakFastHashMap extends HashMap {
                 }
             }
         }
+
         @Override
         public boolean retainAll(final Collection o) {
             if (WeakFastHashMap.this.fast) {
@@ -506,6 +539,7 @@ class WeakFastHashMap extends HashMap {
                 }
             }
         }
+
         @Override
         public int size() {
             if (WeakFastHashMap.this.fast) {
@@ -516,6 +550,7 @@ class WeakFastHashMap extends HashMap {
                 }
             }
         }
+
         @Override
         public boolean isEmpty() {
             if (WeakFastHashMap.this.fast) {
@@ -526,6 +561,7 @@ class WeakFastHashMap extends HashMap {
                 }
             }
         }
+
         @Override
         public boolean contains(final Object o) {
             if (WeakFastHashMap.this.fast) {
@@ -536,6 +572,7 @@ class WeakFastHashMap extends HashMap {
                 }
             }
         }
+
         @Override
         public boolean containsAll(final Collection o) {
             if (WeakFastHashMap.this.fast) {
@@ -546,6 +583,7 @@ class WeakFastHashMap extends HashMap {
                 }
             }
         }
+
         @Override
         public Object[] toArray(final Object[] o) {
             if (WeakFastHashMap.this.fast) {
@@ -556,6 +594,7 @@ class WeakFastHashMap extends HashMap {
                 }
             }
         }
+
         @Override
         public Object[] toArray() {
             if (WeakFastHashMap.this.fast) {
@@ -566,6 +605,7 @@ class WeakFastHashMap extends HashMap {
                 }
             }
         }
+
         @Override
         public boolean equals(final Object o) {
             if (o.equals(this)) {
@@ -579,6 +619,7 @@ class WeakFastHashMap extends HashMap {
                 }
             }
         }
+
         @Override
         public int hashCode() {
             if (WeakFastHashMap.this.fast) {
@@ -589,26 +630,32 @@ class WeakFastHashMap extends HashMap {
                 }
             }
         }
+
         @Override
         public boolean add(final Object o) {
             throw new UnsupportedOperationException();
         }
+
         @Override
         public boolean addAll(final Collection c) {
             throw new UnsupportedOperationException();
         }
+
         @Override
         public Iterator iterator() {
             return new CollectionViewIterator();
         }
+
         private class CollectionViewIterator implements Iterator {
-            private Map expected;
+            private Map       expected;
             private Map.Entry lastReturned = null;
-            private Iterator iterator;
+            private Iterator  iterator;
+
             public CollectionViewIterator() {
                 this.expected = WeakFastHashMap.this.map;
                 this.iterator = this.expected.entrySet().iterator();
             }
+
             @Override
             public boolean hasNext() {
                 if (this.expected != WeakFastHashMap.this.map) {
@@ -616,6 +663,7 @@ class WeakFastHashMap extends HashMap {
                 }
                 return this.iterator.hasNext();
             }
+
             @Override
             public Object next() {
                 if (this.expected != WeakFastHashMap.this.map) {
@@ -624,6 +672,7 @@ class WeakFastHashMap extends HashMap {
                 this.lastReturned = (Map.Entry) this.iterator.next();
                 return CollectionView.this.iteratorNext(this.lastReturned);
             }
+
             @Override
             public void remove() {
                 if (this.lastReturned == null) {
@@ -645,6 +694,7 @@ class WeakFastHashMap extends HashMap {
             }
         }
     }
+
     /**
      * Set implementation over the keys of the FastHashMap
      */
@@ -653,11 +703,13 @@ class WeakFastHashMap extends HashMap {
         protected Collection get(final Map map) {
             return map.keySet();
         }
+
         @Override
         protected Object iteratorNext(final Map.Entry entry) {
             return entry.getKey();
         }
     }
+
     /**
      * Collection implementation over the values of the FastHashMap
      */
@@ -666,11 +718,13 @@ class WeakFastHashMap extends HashMap {
         protected Collection get(final Map map) {
             return map.values();
         }
+
         @Override
         protected Object iteratorNext(final Map.Entry entry) {
             return entry.getValue();
         }
     }
+
     /**
      * Set implementation over the entries of the FastHashMap
      */
@@ -679,6 +733,7 @@ class WeakFastHashMap extends HashMap {
         protected Collection get(final Map map) {
             return map.entrySet();
         }
+
         @Override
         protected Object iteratorNext(final Map.Entry entry) {
             return entry;

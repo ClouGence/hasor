@@ -16,6 +16,7 @@
  */
 package net.hasor.utils.convert.convert;
 import java.sql.Date;
+
 /**
  * {@link DateTimeConverter} implementation that handles conversion to
  * and from <b>java.sql.Date</b> objects.
@@ -40,6 +41,7 @@ public final class SqlDateConverter extends DateTimeConverter {
     public SqlDateConverter() {
         super();
     }
+
     /**
      * Construct a <b>java.sql.Date</b> <i>Converter</i> that returns a default value if an error occurs.
      * @param defaultValue The default value to be returned if the value to be converted is missing or an error occurs converting the value.
@@ -47,6 +49,7 @@ public final class SqlDateConverter extends DateTimeConverter {
     public SqlDateConverter(final Object defaultValue) {
         super(defaultValue);
     }
+
     /**
      * Return the default type this <code>Converter</code> handles.
      * @return The default type this <code>Converter</code> handles.

@@ -24,6 +24,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+
 /**
  * <p>
  * Assists in implementing {@link Object#toString()} methods using reflection.
@@ -116,6 +117,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public static String toString(Object object) {
         return toString(object, null, false, false, null);
     }
+
     /**
      * <p>
      * Builds a <code>toString</code> value through reflection.
@@ -147,6 +149,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public static String toString(Object object, ToStringStyle style) {
         return toString(object, style, false, false, null);
     }
+
     /**
      * <p>
      * Builds a <code>toString</code> value through reflection.
@@ -184,6 +187,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public static String toString(Object object, ToStringStyle style, boolean outputTransients) {
         return toString(object, style, outputTransients, false, null);
     }
+
     /**
      * <p>
      * Builds a <code>toString</code> value through reflection.
@@ -229,6 +233,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public static String toString(Object object, ToStringStyle style, boolean outputTransients, boolean outputStatics) {
         return toString(object, style, outputTransients, outputStatics, null);
     }
+
     /**
      * <p>
      * Builds a <code>toString</code> value through reflection.
@@ -277,6 +282,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public static String toString(Object object, ToStringStyle style, boolean outputTransients, boolean outputStatics, Class<?> reflectUpToClass) {
         return new ReflectionToStringBuilder(object, style, null, reflectUpToClass, outputTransients, outputStatics).toString();
     }
+
     /**
      * Builds a String for a toString method excluding the given field name.
      *
@@ -289,6 +295,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public static String toStringExclude(Object object, final String excludeFieldName) {
         return toStringExclude(object, new String[] { excludeFieldName });
     }
+
     /**
      * Builds a String for a toString method excluding the given field names.
      *
@@ -301,6 +308,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public static String toStringExclude(Object object, Collection<?> /*String*/ excludeFieldNames) {
         return toStringExclude(object, toNoNullStringArray(excludeFieldNames));
     }
+
     /**
      * Converts the given Collection into an array of Strings. The returned array does not contain <code>null</code>
      * entries. Note that {@link Arrays#sort(Object[])} will throw an {@link NullPointerException} if an array element 
@@ -316,6 +324,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
         }
         return toNoNullStringArray(collection.toArray());
     }
+
     /**
      * Returns a new array of Strings without null elements. Internal method used to normalize exclude lists
      * (arrays and collections). Note that {@link Arrays#sort(Object[])} will throw an {@link NullPointerException}
@@ -335,6 +344,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
         }
         return (String[]) list.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
     }
+
     /**
      * Builds a String for a toString method excluding the given field names.
      *
@@ -347,6 +357,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public static String toStringExclude(Object object, String[] excludeFieldNames) {
         return new ReflectionToStringBuilder(object).setExcludeFieldNames(excludeFieldNames).toString();
     }
+
     /**
      * Whether or not to append static fields.
      */
@@ -363,6 +374,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * The last super class to stop appending fields for.
      */
     private Class<?> upToClass        = null;
+
     /**
      * <p>
      * Constructor.
@@ -380,6 +392,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public ReflectionToStringBuilder(Object object) {
         super(object);
     }
+
     /**
      * <p>
      * Constructor.
@@ -399,6 +412,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public ReflectionToStringBuilder(Object object, ToStringStyle style) {
         super(object, style);
     }
+
     /**
      * <p>
      * Constructor.
@@ -424,6 +438,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public ReflectionToStringBuilder(Object object, ToStringStyle style, StringBuffer buffer) {
         super(object, style, buffer);
     }
+
     /**
      * Constructor.
      *
@@ -447,6 +462,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
         this.setAppendTransients(outputTransients);
         this.setAppendStatics(outputStatics);
     }
+
     /**
      * Returns whether or not to append the given <code>Field</code>.
      * <ul>
@@ -477,6 +493,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
         }
         return true;
     }
+
     /**
      * <p>
      * Appends the fields and values defined by the given object of the given Class.
@@ -515,12 +532,14 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
             }
         }
     }
+
     /**
      * @return Returns the excludeFieldNames.
      */
     public String[] getExcludeFieldNames() {
         return this.excludeFieldNames;
     }
+
     /**
      * <p>
      * Gets the last super class to stop appending fields for.
@@ -531,6 +550,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public Class<?> getUpToClass() {
         return this.upToClass;
     }
+
     /**
      * <p>
      * Calls <code>java.lang.reflect.Field.get(Object)</code>.
@@ -546,6 +566,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     protected Object getValue(Field field) throws IllegalArgumentException, IllegalAccessException {
         return field.get(this.getObject());
     }
+
     /**
      * <p>
      * Gets whether or not to append static fields.
@@ -557,6 +578,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public boolean isAppendStatics() {
         return this.appendStatics;
     }
+
     /**
      * <p>
      * Gets whether or not to append transient fields.
@@ -567,6 +589,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public boolean isAppendTransients() {
         return this.appendTransients;
     }
+
     /**
      * <p>
      * Append to the <code>toString</code> an <code>Object</code> array.
@@ -580,6 +603,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
         this.getStyle().reflectionAppendArrayDetail(this.getStringBuffer(), null, array);
         return this;
     }
+
     /**
      * <p>
      * Sets whether or not to append static fields.
@@ -592,6 +616,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public void setAppendStatics(boolean appendStatics) {
         this.appendStatics = appendStatics;
     }
+
     /**
      * <p>
      * Sets whether or not to append transient fields.
@@ -602,6 +627,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     public void setAppendTransients(boolean appendTransients) {
         this.appendTransients = appendTransients;
     }
+
     /**
      * Sets the field names to exclude.
      *
@@ -618,6 +644,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
         }
         return this;
     }
+
     /**
      * <p>
      * Sets the last super class to stop appending fields for.
@@ -635,6 +662,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
         }
         this.upToClass = clazz;
     }
+
     /**
      * <p>
      * Gets the String built by this builder.

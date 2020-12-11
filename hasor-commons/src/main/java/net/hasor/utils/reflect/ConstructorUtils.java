@@ -21,6 +21,7 @@ import net.hasor.utils.ClassUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+
 /**
  * <p> Utility reflection methods focussed on constructors, modelled after
  * {@link MethodUtils}. </p>
@@ -62,6 +63,7 @@ public class ConstructorUtils {
     public ConstructorUtils() {
         super();
     }
+
     /**
      * <p>Returns new instance of <code>klazz</code> created using the actual
      * arguments <code>args</code>. The formal parameter types are inferred from
@@ -85,6 +87,7 @@ public class ConstructorUtils {
     public static Object invokeConstructor(final Class<?> cls, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         return ConstructorUtils.invokeConstructor(cls, new Object[] { arg });
     }
+
     /**
      * <p>Returns new instance of <code>klazz</code> created using the actual
      * arguments <code>args</code>. The formal parameter types are inferred from
@@ -116,6 +119,7 @@ public class ConstructorUtils {
         }
         return ConstructorUtils.invokeConstructor(cls, args, parameterTypes);
     }
+
     /**
      * <p>Returns new instance of <code>klazz</code> created using constructor
      * with signature <code>parameterTypes</code> and actual arguments
@@ -147,6 +151,7 @@ public class ConstructorUtils {
         }
         return ctor.newInstance(args);
     }
+
     /**
      * <p>Returns new instance of <code>klazz</code> created using the actual
      * arguments <code>args</code>. The formal parameter types are inferred from
@@ -170,6 +175,7 @@ public class ConstructorUtils {
     public static Object invokeExactConstructor(final Class<?> cls, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         return ConstructorUtils.invokeExactConstructor(cls, new Object[] { arg });
     }
+
     /**
      * <p>Returns new instance of <code>klazz</code> created using the actual
      * arguments <code>args</code>. The formal parameter types are inferred from
@@ -203,6 +209,7 @@ public class ConstructorUtils {
         }
         return ConstructorUtils.invokeExactConstructor(cls, args, parameterTypes);
     }
+
     /**
      * <p>Returns new instance of <code>klazz</code> created using constructor
      * with signature <code>parameterTypes</code> and actual arguments
@@ -234,6 +241,7 @@ public class ConstructorUtils {
         }
         return ctor.newInstance(args);
     }
+
     /**
      * Returns a constructor with single argument.
      * @param cls the class to be constructed
@@ -245,6 +253,7 @@ public class ConstructorUtils {
     public static Constructor<?> getAccessibleConstructor(final Class<?> cls, final Class<?> parameterType) {
         return ConstructorUtils.getAccessibleConstructor(cls, new Class[] { parameterType });
     }
+
     /**
      * Returns a constructor given a class and signature.
      * @param cls the class to be constructed
@@ -260,6 +269,7 @@ public class ConstructorUtils {
             return null;
         }
     }
+
     /**
      * Returns accessible version of the given constructor.
      * @param ctor prototype constructor object.
@@ -269,6 +279,7 @@ public class ConstructorUtils {
     public static Constructor<?> getAccessibleConstructor(final Constructor<?> ctor) {
         return MemberUtils.isAccessible(ctor) && Modifier.isPublic(ctor.getDeclaringClass().getModifiers()) ? ctor : null;
     }
+
     /**
      * <p>Find an accessible constructor with compatible parameters. Compatible
      * parameters mean that every method parameter is assignable from the given

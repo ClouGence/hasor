@@ -17,6 +17,7 @@
 package net.hasor.utils;
 import java.util.Map;
 import java.util.WeakHashMap;
+
 /**
  * An instance of this class represents a value that is provided per (thread)
  * context classloader.
@@ -100,11 +101,13 @@ import java.util.WeakHashMap;
 public class ContextClassLoaderLocal<T> {
     private Map<ClassLoader, T> valueByClassLoader     = new WeakHashMap<ClassLoader, T>();
     private boolean             globalValueInitialized = false;
-    private T globalValue;
+    private T                   globalValue;
+
     /** Construct a context classloader instance */
     public ContextClassLoaderLocal() {
         super();
     }
+
     /** Construct a context classloader instance */
     public ContextClassLoaderLocal(T globalValue) {
         super();
@@ -112,6 +115,7 @@ public class ContextClassLoaderLocal<T> {
             this.set(globalValue);
         }
     }
+
     /**
      * Returns the initial value for this ContextClassLoaderLocal
      * variable. This method will be called once per Context ClassLoader for
@@ -128,6 +132,7 @@ public class ContextClassLoaderLocal<T> {
     protected T initialValue() {
         return null;
     }
+
     /**
      * Gets the instance which provides the functionality for {@link BeanUtils}.
      * This is a pseudo-singleton - an single instance is provided per (thread) context classloader.
@@ -158,6 +163,7 @@ public class ContextClassLoaderLocal<T> {
         } //else already set
         return this.globalValue;
     }
+
     /**
      * Sets the value - a value is provided per (thread) context classloader.
      * This mechanism provides isolation for web apps deployed in the same container. 
@@ -180,6 +186,7 @@ public class ContextClassLoaderLocal<T> {
         this.globalValue = value;
         this.globalValueInitialized = true;
     }
+
     /**
      * Unsets the value associated with the current thread's context classloader
      */
@@ -189,6 +196,7 @@ public class ContextClassLoaderLocal<T> {
             this.unset(contextClassLoader);
         } catch (SecurityException e) { /* SWALLOW - should we log this? */}
     }
+
     /**
      * Unsets the value associated with the given classloader
      * @param classLoader The classloader to <i>unset</i> for

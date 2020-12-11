@@ -16,11 +16,11 @@
 package net.hasor.web.objects;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import net.hasor.core.Singleton;
 import net.hasor.web.Invoker;
 import net.hasor.web.render.RenderEngine;
 import net.hasor.web.render.RenderInvoker;
 
-import javax.inject.Singleton;
 import java.io.Writer;
 
 /**

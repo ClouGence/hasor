@@ -30,6 +30,7 @@ import net.hasor.test.core.basic.pojo.SampleBean;
 import net.hasor.test.core.binder.TestBinder;
 import net.hasor.test.core.scope.My;
 import net.hasor.test.core.scope.MyScope;
+import net.hasor.core.Provider;
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;

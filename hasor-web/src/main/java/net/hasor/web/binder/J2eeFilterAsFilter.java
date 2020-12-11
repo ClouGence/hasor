@@ -46,10 +46,8 @@ public class J2eeFilterAsFilter implements InvokerFilter, Filter {
         this.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse(), (request, response) -> {
             try {
                 chain.doNext(invoker);
-            } catch (IOException e) {
-                throw (IOException) e;
-            } catch (ServletException e) {
-                throw (ServletException) e;
+            } catch (IOException | ServletException e) {
+                throw e;
             } catch (Throwable e) {
                 throw ExceptionUtils.toRuntimeException(e);
             }

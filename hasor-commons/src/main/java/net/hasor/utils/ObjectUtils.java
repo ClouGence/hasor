@@ -16,6 +16,7 @@
  */
 package net.hasor.utils;
 import java.io.Serializable;
+
 /**
  * <p>Operations on <code>Object</code>.</p>
  *
@@ -52,6 +53,7 @@ public class ObjectUtils {
      * <p>This instance is Serializable.</p>
      */
     public static final Null NULL = new Null();
+
     /**
      * <p><code>ObjectUtils</code> instances should NOT be constructed in
      * standard programming. Instead, the class should be used as
@@ -65,6 +67,7 @@ public class ObjectUtils {
     }
     // Defaulting
     //-----------------------------------------------------------------------
+
     /**
      * <p>Returns a default value if the object passed is
      * <code>null</code>.</p>
@@ -84,6 +87,7 @@ public class ObjectUtils {
     public static Object defaultIfNull(Object object, Object defaultValue) {
         return object != null ? object : defaultValue;
     }
+
     /**
      * <p>Compares two objects for equality, where either one or both
      * objects may be <code>null</code>.</p>
@@ -112,6 +116,7 @@ public class ObjectUtils {
         }
         return object1.equals(object2);
     }
+
     /**
      * <p>Compares two objects for inequality, where either one or both
      * objects may be <code>null</code>.</p>
@@ -135,6 +140,7 @@ public class ObjectUtils {
     public static boolean notEqual(Object object1, Object object2) {
         return ObjectUtils.equals(object1, object2) == false;
     }
+
     /**
      * <p>Gets the hash code of an object returning zero when the
      * object is <code>null</code>.</p>
@@ -153,6 +159,7 @@ public class ObjectUtils {
     }
     // Identity ToString
     //-----------------------------------------------------------------------
+
     /**
      * <p>Gets the toString that would be produced by <code>Object</code>
      * if a class did not override toString itself. <code>null</code>
@@ -177,6 +184,7 @@ public class ObjectUtils {
         identityToString(buffer, object);
         return buffer.toString();
     }
+
     /**
      * <p>Appends the toString that would be produced by <code>Object</code>
      * if a class did not override toString itself. <code>null</code>
@@ -200,6 +208,7 @@ public class ObjectUtils {
     }
     // ToString
     //-----------------------------------------------------------------------
+
     /**
      * <p>Gets the <code>toString</code> of an <code>Object</code> returning
      * an empty string ("") if <code>null</code> input.</p>
@@ -220,6 +229,7 @@ public class ObjectUtils {
     public static String toString(Object obj) {
         return obj == null ? "" : obj.toString();
     }
+
     /**
      * <p>Gets the <code>toString</code> of an <code>Object</code> returning
      * a specified text if <code>null</code> input.</p>
@@ -244,6 +254,7 @@ public class ObjectUtils {
     }
     // Min/Max
     //-----------------------------------------------------------------------
+
     /**
      * Null safe comparison of Comparables.
      *
@@ -260,6 +271,7 @@ public class ObjectUtils {
     public static Object min(Comparable c1, Comparable c2) {
         return (compare(c1, c2, true) <= 0 ? c1 : c2);
     }
+
     /**
      * Null safe comparison of Comparables.
      *
@@ -276,6 +288,7 @@ public class ObjectUtils {
     public static Object max(Comparable c1, Comparable c2) {
         return (compare(c1, c2, false) >= 0 ? c1 : c2);
     }
+
     /**
      * Null safe comparison of Comparables.
      * {@code null} is assumed to be less than a non-{@code null} value.
@@ -289,6 +302,7 @@ public class ObjectUtils {
     public static int compare(Comparable c1, Comparable c2) {
         return compare(c1, c2, false);
     }
+
     /**
      * Null safe comparison of Comparables.
      *
@@ -314,6 +328,7 @@ public class ObjectUtils {
     }
     // Null
     //-----------------------------------------------------------------------
+
     /**
      * <p>Class used as a null placeholder where <code>null</code>
      * has another meaning.</p>
@@ -335,12 +350,14 @@ public class ObjectUtils {
          * @see Serializable
          */
         private static final long serialVersionUID = 7092611880189329093L;
+
         /**
          * Restricted constructor - singleton.
          */
         Null() {
             super();
         }
+
         /**
          * <p>Ensure singleton.</p>
          *

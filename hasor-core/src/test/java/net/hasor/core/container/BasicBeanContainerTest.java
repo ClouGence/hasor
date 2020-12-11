@@ -26,6 +26,7 @@ import net.hasor.test.core.basic.inject.constructor.*;
 import net.hasor.test.core.basic.pojo.PojoBean;
 import net.hasor.test.core.basic.pojo.SingletonSampleBean;
 import net.hasor.test.core.enums.SelectEnum;
+import net.hasor.core.Provider;
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;

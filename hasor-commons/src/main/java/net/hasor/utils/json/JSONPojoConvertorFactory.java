@@ -15,12 +15,14 @@ import net.hasor.utils.json.JSON.Convertor;
 import net.hasor.utils.json.JSON.Output;
 
 import java.util.Map;
+
 /**
  *
  */
 public class JSONPojoConvertorFactory implements Convertor {
     private final JSON    _json;
     private final boolean _fromJson;
+
     public JSONPojoConvertorFactory(JSON json) {
         if (json == null) {
             throw new IllegalArgumentException();
@@ -29,6 +31,7 @@ public class JSONPojoConvertorFactory implements Convertor {
         _fromJson = true;
     }
     /* ------------------------------------------------------------ */
+
     /**
      * @param json The JSON instance to use
      * @param fromJSON If true, the class name of the objects is included
@@ -42,6 +45,7 @@ public class JSONPojoConvertorFactory implements Convertor {
         _json = json;
         _fromJson = fromJSON;
     }
+
     /* ------------------------------------------------------------ */
     public void toJSON(Object obj, Output out) {
         String clsName = obj.getClass().getName();
@@ -59,6 +63,7 @@ public class JSONPojoConvertorFactory implements Convertor {
             convertor.toJSON(obj, out);
         }
     }
+
     public Object fromJSON(Map object) {
         Map map = object;
         String clsName = (String) map.get("class");

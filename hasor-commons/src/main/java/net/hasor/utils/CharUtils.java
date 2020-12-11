@@ -83,6 +83,7 @@ public class CharUtils {
         super();
     }
     //-----------------------------------------------------------------------
+
     /**
      * <p>Converts the character to a Character.</p>
      *
@@ -103,6 +104,7 @@ public class CharUtils {
         }
         return new Character(ch);
     }
+
     /**
      * <p>Converts the String to a Character using the first character, returning
      * null for empty Strings.</p>
@@ -127,6 +129,7 @@ public class CharUtils {
         return CharUtils.toCharacterObject(str.charAt(0));
     }
     //-----------------------------------------------------------------------
+
     /**
      * <p>Converts the Character to a char throwing an exception for <code>null</code>.</p>
      *
@@ -146,6 +149,7 @@ public class CharUtils {
         }
         return ch.charValue();
     }
+
     /**
      * <p>Converts the Character to a char handling <code>null</code>.</p>
      *
@@ -166,6 +170,7 @@ public class CharUtils {
         return ch.charValue();
     }
     //-----------------------------------------------------------------------
+
     /**
      * <p>Converts the String to a char using the first character, throwing
      * an exception on empty Strings.</p>
@@ -187,6 +192,7 @@ public class CharUtils {
         }
         return str.charAt(0);
     }
+
     /**
      * <p>Converts the String to a char using the first character, defaulting
      * the value on empty Strings.</p>
@@ -209,6 +215,7 @@ public class CharUtils {
         return str.charAt(0);
     }
     //-----------------------------------------------------------------------
+
     /**
      * <p>Converts the character to the Integer it represents, throwing an
      * exception if the character is not numeric.</p>
@@ -230,6 +237,7 @@ public class CharUtils {
         }
         return ch - 48;
     }
+
     /**
      * <p>Converts the character to the Integer it represents, throwing an
      * exception if the character is not numeric.</p>
@@ -251,6 +259,7 @@ public class CharUtils {
         }
         return ch - 48;
     }
+
     /**
      * <p>Converts the character to the Integer it represents, throwing an
      * exception if the character is not numeric.</p>
@@ -273,6 +282,7 @@ public class CharUtils {
         }
         return CharUtils.toIntValue(ch.charValue());
     }
+
     /**
      * <p>Converts the character to the Integer it represents, throwing an
      * exception if the character is not numeric.</p>
@@ -296,6 +306,7 @@ public class CharUtils {
         return CharUtils.toIntValue(ch.charValue(), defaultValue);
     }
     //-----------------------------------------------------------------------
+
     /**
      * <p>Converts the character to a String that contains the one character.</p>
      *
@@ -316,6 +327,7 @@ public class CharUtils {
         }
         return new String(new char[] { ch });
     }
+
     /**
      * <p>Converts the character to a String that contains the one character.</p>
      *
@@ -340,6 +352,7 @@ public class CharUtils {
         return CharUtils.toString(ch.charValue());
     }
     //--------------------------------------------------------------------------
+
     /**
      * <p>Converts the string to the unicode format '\u0020'.</p>
      *
@@ -363,6 +376,7 @@ public class CharUtils {
         }
         return "\\u" + Integer.toHexString(ch);
     }
+
     /**
      * <p>Converts the string to the unicode format '\u0020'.</p>
      *
@@ -386,6 +400,7 @@ public class CharUtils {
         return CharUtils.unicodeEscaped(ch.charValue());
     }
     //--------------------------------------------------------------------------
+
     /**
      * <p>Checks whether the character is ASCII 7 bit.</p>
      *
@@ -404,6 +419,7 @@ public class CharUtils {
     public static boolean isAscii(final char ch) {
         return ch < 128;
     }
+
     /**
      * <p>Checks whether the character is ASCII 7 bit printable.</p>
      *
@@ -422,6 +438,7 @@ public class CharUtils {
     public static boolean isAsciiPrintable(final char ch) {
         return ch >= 32 && ch < 127;
     }
+
     /**
      * <p>Checks whether the character is ASCII 7 bit control.</p>
      *
@@ -440,6 +457,7 @@ public class CharUtils {
     public static boolean isAsciiControl(final char ch) {
         return ch < 32 || ch == 127;
     }
+
     /**
      * <p>Checks whether the character is ASCII 7 bit alphabetic.</p>
      *
@@ -458,6 +476,7 @@ public class CharUtils {
     public static boolean isAsciiAlpha(final char ch) {
         return ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z';
     }
+
     /**
      * <p>Checks whether the character is ASCII 7 bit alphabetic upper case.</p>
      *
@@ -476,6 +495,7 @@ public class CharUtils {
     public static boolean isAsciiAlphaUpper(final char ch) {
         return ch >= 'A' && ch <= 'Z';
     }
+
     /**
      * <p>Checks whether the character is ASCII 7 bit alphabetic lower case.</p>
      *
@@ -494,6 +514,7 @@ public class CharUtils {
     public static boolean isAsciiAlphaLower(final char ch) {
         return ch >= 'a' && ch <= 'z';
     }
+
     /**
      * <p>Checks whether the character is ASCII 7 bit numeric.</p>
      *
@@ -512,6 +533,7 @@ public class CharUtils {
     public static boolean isAsciiNumeric(final char ch) {
         return ch >= '0' && ch <= '9';
     }
+
     /**
      * <p>Checks whether the character is ASCII 7 bit numeric.</p>
      *
@@ -531,6 +553,7 @@ public class CharUtils {
         return ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z' || ch >= '0' && ch <= '9';
     }
     // ----------------- Following code copied from Apache Harmony (Character class)
+
     /**
      * Indicates whether {@code ch} is a high- (or leading-) surrogate code unit
      * that is used for representing supplementary characters in UTF-16
@@ -544,6 +567,7 @@ public class CharUtils {
     static boolean isHighSurrogate(final char ch) {
         return '\uD800' <= ch && '\uDBFF' >= ch;
     }
+
     //
     public static boolean isCharType(Class targetType) {
         return targetType.equals(Character.class) || targetType.equals(Character.TYPE);

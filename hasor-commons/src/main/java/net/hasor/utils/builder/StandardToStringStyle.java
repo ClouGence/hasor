@@ -37,6 +37,7 @@ public class StandardToStringStyle extends ToStringStyle {
      * @see java.io.Serializable
      */
     private static final long serialVersionUID = 1L;
+
     /**
      * <p>Constructor.</p>
      */
@@ -44,6 +45,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super();
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets whether to use the class name.</p>
      *
@@ -52,6 +54,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public boolean isUseClassName() {
         return super.isUseClassName();
     }
+
     /**
      * <p>Sets whether to use the class name.</p>
      *
@@ -61,6 +64,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setUseClassName(useClassName);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets whether to output short or long class names.</p>
      *
@@ -70,6 +74,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public boolean isUseShortClassName() {
         return super.isUseShortClassName();
     }
+
     /**
      * <p>Gets whether to output short or long class names.</p>
      *
@@ -80,6 +85,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public boolean isShortClassName() {
         return super.isUseShortClassName();
     }
+
     /**
      * <p>Sets whether to output short or long class names.</p>
      *
@@ -89,6 +95,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public void setUseShortClassName(boolean useShortClassName) {
         super.setUseShortClassName(useShortClassName);
     }
+
     /**
      * <p>Sets whether to output short or long class names.</p>
      *
@@ -100,6 +107,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setUseShortClassName(shortClassName);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets whether to use the identity hash code.</p>
      * @return the current useIdentityHashCode flag
@@ -107,6 +115,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public boolean isUseIdentityHashCode() {
         return super.isUseIdentityHashCode();
     }
+
     /**
      * <p>Sets whether to use the identity hash code.</p>
      *
@@ -116,6 +125,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setUseIdentityHashCode(useIdentityHashCode);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets whether to use the field names passed in.</p>
      *
@@ -124,6 +134,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public boolean isUseFieldNames() {
         return super.isUseFieldNames();
     }
+
     /**
      * <p>Sets whether to use the field names passed in.</p>
      *
@@ -133,6 +144,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setUseFieldNames(useFieldNames);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets whether to use full detail when the caller doesn't
      * specify.</p>
@@ -142,6 +154,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public boolean isDefaultFullDetail() {
         return super.isDefaultFullDetail();
     }
+
     /**
      * <p>Sets whether to use full detail when the caller doesn't
      * specify.</p>
@@ -152,6 +165,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setDefaultFullDetail(defaultFullDetail);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets whether to output array content detail.</p>
      *
@@ -160,6 +174,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public boolean isArrayContentDetail() {
         return super.isArrayContentDetail();
     }
+
     /**
      * <p>Sets whether to output array content detail.</p>
      *
@@ -169,6 +184,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setArrayContentDetail(arrayContentDetail);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets the array start text.</p>
      *
@@ -177,6 +193,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public String getArrayStart() {
         return super.getArrayStart();
     }
+
     /**
      * <p>Sets the array start text.</p>
      *
@@ -189,6 +206,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setArrayStart(arrayStart);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets the array end text.</p>
      *
@@ -197,6 +215,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public String getArrayEnd() {
         return super.getArrayEnd();
     }
+
     /**
      * <p>Sets the array end text.</p>
      *
@@ -209,6 +228,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setArrayEnd(arrayEnd);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets the array separator text.</p>
      *
@@ -217,6 +237,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public String getArraySeparator() {
         return super.getArraySeparator();
     }
+
     /**
      * <p>Sets the array separator text.</p>
      *
@@ -229,6 +250,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setArraySeparator(arraySeparator);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets the content start text.</p>
      *
@@ -237,6 +259,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public String getContentStart() {
         return super.getContentStart();
     }
+
     /**
      * <p>Sets the content start text.</p>
      *
@@ -249,6 +272,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setContentStart(contentStart);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets the content end text.</p>
      *
@@ -257,6 +281,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public String getContentEnd() {
         return super.getContentEnd();
     }
+
     /**
      * <p>Sets the content end text.</p>
      *
@@ -269,6 +294,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setContentEnd(contentEnd);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets the field name value separator text.</p>
      *
@@ -277,6 +303,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public String getFieldNameValueSeparator() {
         return super.getFieldNameValueSeparator();
     }
+
     /**
      * <p>Sets the field name value separator text.</p>
      *
@@ -289,6 +316,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setFieldNameValueSeparator(fieldNameValueSeparator);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets the field separator text.</p>
      *
@@ -297,6 +325,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public String getFieldSeparator() {
         return super.getFieldSeparator();
     }
+
     /**
      * <p>Sets the field separator text.</p>
      *
@@ -309,6 +338,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setFieldSeparator(fieldSeparator);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets whether the field separator should be added at the start 
      * of each buffer.</p>
@@ -319,6 +349,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public boolean isFieldSeparatorAtStart() {
         return super.isFieldSeparatorAtStart();
     }
+
     /**
      * <p>Sets whether the field separator should be added at the start 
      * of each buffer.</p>
@@ -330,6 +361,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setFieldSeparatorAtStart(fieldSeparatorAtStart);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets whether the field separator should be added at the end 
      * of each buffer.</p>
@@ -340,6 +372,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public boolean isFieldSeparatorAtEnd() {
         return super.isFieldSeparatorAtEnd();
     }
+
     /**
      * <p>Sets whether the field separator should be added at the end 
      * of each buffer.</p>
@@ -351,6 +384,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setFieldSeparatorAtEnd(fieldSeparatorAtEnd);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets the text to output when <code>null</code> found.</p>
      *
@@ -359,6 +393,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public String getNullText() {
         return super.getNullText();
     }
+
     /**
      * <p>Sets the text to output when <code>null</code> found.</p>
      *
@@ -371,6 +406,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setNullText(nullText);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets the text to output when a <code>Collection</code>,
      * <code>Map</code> or <code>Array</code> size is output.</p>
@@ -382,6 +418,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public String getSizeStartText() {
         return super.getSizeStartText();
     }
+
     /**
      * <p>Sets the start text to output when a <code>Collection</code>,
      * <code>Map</code> or <code>Array</code> size is output.</p>
@@ -397,6 +434,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setSizeStartText(sizeStartText);
     }
     //---------------------------------------------------------------------
+
     /**
      * Gets the end text to output when a <code>Collection</code>,
      * <code>Map</code> or <code>Array</code> size is output.</p>
@@ -408,6 +446,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public String getSizeEndText() {
         return super.getSizeEndText();
     }
+
     /**
      * <p>Sets the end text to output when a <code>Collection</code>,
      * <code>Map</code> or <code>Array</code> size is output.</p>
@@ -423,6 +462,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setSizeEndText(sizeEndText);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets the start text to output when an <code>Object</code> is
      * output in summary mode.</p>
@@ -434,6 +474,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public String getSummaryObjectStartText() {
         return super.getSummaryObjectStartText();
     }
+
     /**
      * <p>Sets the start text to output when an <code>Object</code> is
      * output in summary mode.</p>
@@ -449,6 +490,7 @@ public class StandardToStringStyle extends ToStringStyle {
         super.setSummaryObjectStartText(summaryObjectStartText);
     }
     //---------------------------------------------------------------------
+
     /**
      * <p>Gets the end text to output when an <code>Object</code> is
      * output in summary mode.</p>
@@ -460,6 +502,7 @@ public class StandardToStringStyle extends ToStringStyle {
     public String getSummaryObjectEndText() {
         return super.getSummaryObjectEndText();
     }
+
     /**
      * <p>Sets the end text to output when an <code>Object</code> is
      * output in summary mode.</p>

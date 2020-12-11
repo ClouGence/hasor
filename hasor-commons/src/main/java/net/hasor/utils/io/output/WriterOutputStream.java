@@ -17,6 +17,7 @@ package net.hasor.utils.io.output;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+
 /**
  * 使用OutputStream输出Writer的工具类
  * @version 2009-5-13
@@ -27,6 +28,7 @@ public class WriterOutputStream extends OutputStream {
     private String encoding = null;
     private byte[] buf      = new byte[1];
     //========================================================================================
+
     /**
      * 带Writer和字符编码格式参数的构造函数
      * @param writer   - OutputStream使用的Reader
@@ -36,6 +38,7 @@ public class WriterOutputStream extends OutputStream {
         this.writer = writer;
         this.encoding = encoding;
     }
+
     /**
      * 带Writer参数构造函数
      * @param writer - OutputStream使用的Writer
@@ -44,6 +47,7 @@ public class WriterOutputStream extends OutputStream {
         this.writer = writer;
     }
     //========================================================================================
+
     /** @see OutputStream#close() */
     @Override
     public void close() throws IOException {
@@ -51,11 +55,13 @@ public class WriterOutputStream extends OutputStream {
         this.writer = null;
         this.encoding = null;
     }
+
     /** @see OutputStream#flush() */
     @Override
     public void flush() throws IOException {
         this.writer.flush();
     }
+
     /** @see OutputStream#write(byte[]) */
     @Override
     public void write(final byte[] b) throws IOException {
@@ -65,6 +71,7 @@ public class WriterOutputStream extends OutputStream {
             this.writer.write(new String(b, this.encoding));
         }
     }
+
     /** @see OutputStream#write(byte[], int, int) */
     @Override
     public void write(final byte[] b, final int off, final int len) throws IOException {
@@ -74,6 +81,7 @@ public class WriterOutputStream extends OutputStream {
             this.writer.write(new String(b, off, len, this.encoding));
         }
     }
+
     /** @see OutputStream#write(int) */
     @Override
     public synchronized void write(final int b) throws IOException {

@@ -19,6 +19,7 @@ import net.hasor.utils.io.IOUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.*;
+
 /**
  * An output stream which will retain data in memory until a specified
  * threshold is reached, and only then commit it to disk. If the stream is
@@ -66,6 +67,7 @@ public class DeferredFileOutputStream extends ThresholdingOutputStream {
      */
     private       boolean                       closed = false;
     // ----------------------------------------------------------- Constructors
+
     /**
      * Constructs an instance of this class which will trigger an event at the
      * specified threshold, and save data to a file beyond that point.
@@ -76,6 +78,7 @@ public class DeferredFileOutputStream extends ThresholdingOutputStream {
     public DeferredFileOutputStream(int threshold, File outputFile) {
         this(threshold, outputFile, null, null, null);
     }
+
     /**
      * Constructs an instance of this class which will trigger an event at the
      * specified threshold, and save data to a temporary file beyond that point.
@@ -93,6 +96,7 @@ public class DeferredFileOutputStream extends ThresholdingOutputStream {
             throw new IllegalArgumentException("Temporary file prefix is missing");
         }
     }
+
     /**
      * Constructs an instance of this class which will trigger an event at the
      * specified threshold, and save data either to a file beyond that point.
@@ -113,6 +117,7 @@ public class DeferredFileOutputStream extends ThresholdingOutputStream {
         this.directory = directory;
     }
     // --------------------------------------- ThresholdingOutputStream methods
+
     /**
      * Returns the current output stream. This may be memory based or disk
      * based, depending on the current state with respect to the threshold.
@@ -125,6 +130,7 @@ public class DeferredFileOutputStream extends ThresholdingOutputStream {
     protected OutputStream getStream() throws IOException {
         return currentOutputStream;
     }
+
     /**
      * Switches the underlying output stream from a memory based stream to one
      * that is backed by disk. This is the point at which we realise that too
@@ -144,6 +150,7 @@ public class DeferredFileOutputStream extends ThresholdingOutputStream {
         memoryOutputStream = null;
     }
     // --------------------------------------------------------- Public methods
+
     /**
      * Determines whether or not the data for this output stream has been
      * retained in memory.
@@ -154,6 +161,7 @@ public class DeferredFileOutputStream extends ThresholdingOutputStream {
     public boolean isInMemory() {
         return !isThresholdExceeded();
     }
+
     /**
      * Returns the data for this output stream as an array of bytes, assuming
      * that the data has been retained in memory. If the data was written to
@@ -168,6 +176,7 @@ public class DeferredFileOutputStream extends ThresholdingOutputStream {
         }
         return null;
     }
+
     /**
      * Returns either the output file specified in the constructor or
      * the temporary file created or null.
@@ -185,6 +194,7 @@ public class DeferredFileOutputStream extends ThresholdingOutputStream {
     public File getFile() {
         return outputFile;
     }
+
     /**
      * Closes underlying output stream, and mark this as closed
      *
@@ -195,6 +205,7 @@ public class DeferredFileOutputStream extends ThresholdingOutputStream {
         super.close();
         closed = true;
     }
+
     /**
      * Writes the data from this output stream to the specified output stream,
      * after it has been closed.

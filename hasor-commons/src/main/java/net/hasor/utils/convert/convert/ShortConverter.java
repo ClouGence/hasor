@@ -40,6 +40,7 @@ public final class ShortConverter extends NumberConverter {
     public ShortConverter() {
         super(false);
     }
+
     /**
      * Construct a <b>java.lang.Short</b> <i>Converter</i> that returns
      * a default value if an error occurs.
@@ -50,6 +51,7 @@ public final class ShortConverter extends NumberConverter {
     public ShortConverter(final Object defaultValue) {
         super(false, defaultValue);
     }
+
     /**
      * Return the default type this <code>Converter</code> handles.
      * @return The default type this <code>Converter</code> handles.

@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 /* ------------------------------------------------------------ */
+
 /**
  * Convert an Object to JSON using reflection on getters methods.
  *
@@ -28,14 +29,17 @@ import java.util.Set;
  */
 public class JSONObjectConvertor implements JSON.Convertor {
     private boolean _fromJSON;
-    private Set _excluded = null;
+    private Set     _excluded = null;
+
     public JSONObjectConvertor() {
         _fromJSON = false;
     }
+
     public JSONObjectConvertor(boolean fromJSON) {
         _fromJSON = fromJSON;
     }
     /* ------------------------------------------------------------ */
+
     /**
      * @param fromJSON
      * @param excluded An array of field names to exclude from the conversion
@@ -45,11 +49,13 @@ public class JSONObjectConvertor implements JSON.Convertor {
         if (excluded != null)
             _excluded = new HashSet(Arrays.asList(excluded));
     }
+
     public Object fromJSON(Map map) {
         if (_fromJSON)
             throw new UnsupportedOperationException();
         return map;
     }
+
     public void toJSON(Object obj, Output out) {
         try {
             Class c = obj.getClass();
@@ -74,6 +80,7 @@ public class JSONObjectConvertor implements JSON.Convertor {
             throw new IllegalArgumentException(e);
         }
     }
+
     protected boolean includeField(String name, Object o, Method m) {
         return _excluded == null || !_excluded.contains(name);
     }

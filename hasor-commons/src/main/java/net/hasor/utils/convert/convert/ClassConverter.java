@@ -16,6 +16,7 @@
  */
 package net.hasor.utils.convert.convert;
 import net.hasor.utils.convert.Converter;
+
 /**
  * {@link  Converter} implementaion that handles conversion
  * to and from <b>java.lang.Class</b> objects.
@@ -40,6 +41,7 @@ public final class ClassConverter extends AbstractConverter {
     public ClassConverter() {
         super();
     }
+
     /**
      * Construct a <b>java.lang.Class</b> <i>Converter</i> that returns
      * a default value if an error occurs.
@@ -51,6 +53,7 @@ public final class ClassConverter extends AbstractConverter {
     public ClassConverter(final Object defaultValue) {
         super(defaultValue);
     }
+
     /**
      * Return the default type this <code>Converter</code> handles.
      *
@@ -61,6 +64,7 @@ public final class ClassConverter extends AbstractConverter {
     protected Class getDefaultType() {
         return Class.class;
     }
+
     /**
      * <p>Convert a java.lang.Class or object into a String.</p>
      *
@@ -72,6 +76,7 @@ public final class ClassConverter extends AbstractConverter {
     protected String convertToString(final Object value) {
         return value instanceof Class ? ((Class) value).getName() : value.toString();
     }
+
     /**
      * <p>Convert the input object into a java.lang.Class.</p>
      *

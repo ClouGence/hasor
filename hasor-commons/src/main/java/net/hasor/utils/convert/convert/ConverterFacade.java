@@ -16,6 +16,7 @@
  */
 package net.hasor.utils.convert.convert;
 import net.hasor.utils.convert.Converter;
+
 /**
  * Provides a facade for {@link Converter} implementations
  * preventing access to any public API in the implementation,
@@ -31,6 +32,7 @@ import net.hasor.utils.convert.Converter;
 @SuppressWarnings({ "rawtypes" })
 public final class ConverterFacade implements Converter {
     private final Converter converter;
+
     /**
      * Construct a converter which delegates to the specified
      * {@link Converter} implementation.
@@ -43,6 +45,7 @@ public final class ConverterFacade implements Converter {
         }
         this.converter = converter;
     }
+
     /**
      * Convert the input object into an output object of the
      * specified type by delegating to the underlying {@link Converter}
@@ -56,6 +59,7 @@ public final class ConverterFacade implements Converter {
     public Object convert(final Class type, final Object value) {
         return this.converter.convert(type, value);
     }
+
     /**
      * Provide a String representation of this facade implementation
      * sand the underlying {@link Converter} it delegates to.

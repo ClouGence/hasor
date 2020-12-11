@@ -17,6 +17,7 @@
 package net.hasor.utils.convert.convert;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.convert.Converter;
+
 /**
  * {@link Converter} implementaion that handles conversion
  * to and from <b>java.lang.Character</b> objects.
@@ -37,6 +38,7 @@ public final class CharacterConverter extends AbstractConverter {
     public CharacterConverter() {
         super();
     }
+
     /**
      * Construct a <b>java.lang.Character</b> <i>Converter</i> that returns
      * a default value if an error occurs.
@@ -48,6 +50,7 @@ public final class CharacterConverter extends AbstractConverter {
     public CharacterConverter(final Object defaultValue) {
         super(defaultValue);
     }
+
     /**
      * Return the default type this <code>Converter</code> handles.
      *
@@ -58,6 +61,7 @@ public final class CharacterConverter extends AbstractConverter {
     protected Class getDefaultType() {
         return Character.class;
     }
+
     /**
      * <p>Convert a java.lang.Class or object into a String.</p>
      *
@@ -70,6 +74,7 @@ public final class CharacterConverter extends AbstractConverter {
         String strValue = value.toString();
         return strValue.length() == 0 ? "" : strValue.substring(0, 1);
     }
+
     /**
      * <p>Convert the input object into a java.lang.Character.</p>
      *

@@ -23,6 +23,7 @@ import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.lang.reflect.Array;
 import java.util.*;
+
 /**
  * Generic {@link Converter} implementaion that handles conversion
  * to and from <b>array</b> objects.
@@ -124,10 +125,11 @@ public class ArrayConverter extends AbstractConverter {
     private Object    defaultTypeInstance;
     private Converter elementConverter;
     private int       defaultSize;
-    private char    delimiter         = ',';
-    private char[]  allowedChars      = new char[] { '.', '-' };
-    private boolean onlyFirstToString = true;
+    private char      delimiter         = ',';
+    private char[]    allowedChars      = new char[] { '.', '-' };
+    private boolean   onlyFirstToString = true;
     // ----------------------------------------------------------- Constructors
+
     /**
      * Construct an <b>array</b> <code>Converter</code> with the specified
      * <b>component</b> <code>Converter</code> that throws a
@@ -152,6 +154,7 @@ public class ArrayConverter extends AbstractConverter {
         this.defaultTypeInstance = Array.newInstance(defaultType.getComponentType(), 0);
         this.elementConverter = elementConverter;
     }
+
     /**
      * Construct an <b>array</b> <code>Converter</code> with the specified
      * <b>component</b> <code>Converter</code> that returns a default
@@ -173,6 +176,7 @@ public class ArrayConverter extends AbstractConverter {
         }
         this.setDefaultValue(defaultValue);
     }
+
     /**
      * Set the delimiter to be used for parsing a delimited String.
      *
@@ -181,6 +185,7 @@ public class ArrayConverter extends AbstractConverter {
     public void setDelimiter(final char delimiter) {
         this.delimiter = delimiter;
     }
+
     /**
      * Set the allowed characters to be used for parsing a delimited String.
      *
@@ -190,6 +195,7 @@ public class ArrayConverter extends AbstractConverter {
     public void setAllowedChars(final char[] allowedChars) {
         this.allowedChars = allowedChars;
     }
+
     /**
      * Indicates whether converting to a String should create
      * a delimited list or just convert the first value.
@@ -202,6 +208,7 @@ public class ArrayConverter extends AbstractConverter {
     public void setOnlyFirstToString(final boolean onlyFirstToString) {
         this.onlyFirstToString = onlyFirstToString;
     }
+
     /**
      * Return the default type this <code>Converter</code> handles.
      *
@@ -211,6 +218,7 @@ public class ArrayConverter extends AbstractConverter {
     protected Class getDefaultType() {
         return this.defaultTypeInstance.getClass();
     }
+
     /**
      * Handles conversion to a String.
      *
@@ -250,6 +258,7 @@ public class ArrayConverter extends AbstractConverter {
         }
         return buffer.toString();
     }
+
     /**
      * Handles conversion to an array of the specified type.
      *
@@ -286,6 +295,7 @@ public class ArrayConverter extends AbstractConverter {
         }
         return newArray;
     }
+
     /**
      * Returns the value unchanged.
      *
@@ -296,6 +306,7 @@ public class ArrayConverter extends AbstractConverter {
     protected Object convertArray(final Object value) {
         return value;
     }
+
     /**
      * Converts non-array values to a Collection prior
      * to being converted either to an array or a String.
@@ -328,6 +339,7 @@ public class ArrayConverter extends AbstractConverter {
         }
         return this.parseElements(type, value.toString());
     }
+
     /**
      * Return the default value for conversions to the specified
      * type.
@@ -349,6 +361,7 @@ public class ArrayConverter extends AbstractConverter {
             return Array.newInstance(type.getComponentType(), this.defaultSize);
         }
     }
+
     /**
      * Provide a String representation of this array converter.
      *
@@ -365,6 +378,7 @@ public class ArrayConverter extends AbstractConverter {
         buffer.append(']');
         return buffer.toString();
     }
+
     /**
      * <p>Parse an incoming String of the form similar to an array initializer
      * in the Java language into a <code>List</code> individual Strings

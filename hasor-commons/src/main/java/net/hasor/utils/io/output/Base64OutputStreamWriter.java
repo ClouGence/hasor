@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -10,7 +10,7 @@
  * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  * Sun designates this particular file as subject to the "Classpath" exception
@@ -19,9 +19,9 @@
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- * 
+ *
  * Contributor(s):
- * 
+ *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -41,6 +41,7 @@ package net.hasor.utils.io.output;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+
 /**
  * <p>Provides a mechanism to accept and Base64 encode bytes into
  * chars which will be flushed to the provided writer as the
@@ -50,30 +51,31 @@ public class Base64OutputStreamWriter extends OutputStream {
     /**
      * The buffer where data is stored. 
      */
-    private byte[] buf;
+    private              byte[] buf;
     /**
      * <p>The Base64 encoded bytes as chars; essentially the output
      * buffer</p>
      */
-    private char[] chars;
+    private              char[] chars;
     /**
      * The number of valid bytes in the buffer. 
      */
-    private int    count;
+    private              int    count;
     /**
      * <p>The current position within <code>chars</code>
      */
-    private int    encCount;
+    private              int    encCount;
     /**
      * <p>Tracks the total number of characters written.</p>
      */
-    private int    totalCharsWritten;
+    private              int    totalCharsWritten;
     /**
      * The writer we'll flush the bytes to instead of growing
      * the array.
      */
-    private Writer writer;
+    private              Writer writer;
     private static final char[] CA = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray();
+
     /**
      * Creates a new byte array output stream, with a buffer capacity of
      * the specified size, in bytes.
@@ -93,6 +95,7 @@ public class Base64OutputStreamWriter extends OutputStream {
         this.totalCharsWritten = 0;
         this.writer = writer;
     }
+
     /**
      * Writes the specified byte to this byte array output stream.
      *
@@ -102,6 +105,7 @@ public class Base64OutputStreamWriter extends OutputStream {
     public void write(final int b) throws IOException {
         throw new UnsupportedOperationException();
     }
+
     /**
      * Writes <code>len</code> bytes from the specified byte array
      * starting at offset <code>off</code> to this byte array output stream.
@@ -123,6 +127,7 @@ public class Base64OutputStreamWriter extends OutputStream {
         System.arraycopy(b, off, this.buf, this.count, len);
         this.count += len;
     }
+
     /**
      * <p>Calls through to {@link #write(byte[], int, int)}/</p> 
      * @param b the bytes to write
@@ -132,10 +137,12 @@ public class Base64OutputStreamWriter extends OutputStream {
     public void write(final byte b[]) throws IOException {
         this.write(b, 0, b.length);
     }
+
     /** Closing <tt>Base64OutputStreamWriter</tt> does nothing. */
     @Override
     public void close() throws IOException {
     }
+
     /**
      * <p>Encodes the remaining bytes and flushes the <code>char[]</code>
      * to the wrapped <code>Writer</code>.</p>
@@ -145,12 +152,14 @@ public class Base64OutputStreamWriter extends OutputStream {
     public void finish() throws IOException {
         this.encodePendingBytes(true);
     }
+
     /**
      * @return the total number of characters written
      */
     public int getTotalCharsWritten() {
         return this.totalCharsWritten;
     }
+
     /**
      * <p>Base64 encode any bytes found in <code>buf</code> and 
      * store the result as characters in <code>chars</code>.  This method
@@ -195,6 +204,7 @@ public class Base64OutputStreamWriter extends OutputStream {
             }
         }
     }
+
     /**
      * <p>Write the contents of <code>chars</code> to the
      * wrapped <code>Writer</code> and reset <code>encCount</code>

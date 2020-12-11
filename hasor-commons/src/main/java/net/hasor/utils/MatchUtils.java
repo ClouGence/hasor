@@ -22,9 +22,11 @@ package net.hasor.utils;
 public class MatchUtils {
     public static enum MatchTypeEnum {
         /**通配符：通过：? 和 * 进行匹配。*/
-        Wild, /**正则表达式匹配。*/
+        Wild,
+        /**正则表达式匹配。*/
         Regex
     }
+
     /**将通配符转换成正则表达式。*/
     public static String wildToRegex(final String wild) {
         if (wild == null) {
@@ -50,6 +52,7 @@ public class MatchUtils {
         result.append("$");
         return result.toString();
     }
+
     /**使用通配符匹配字符串。*/
     public static boolean matchWild(final String pattern, final String str) {
         if (str == null) {
@@ -58,6 +61,7 @@ public class MatchUtils {
         return str.matches(MatchUtils.wildToRegex(pattern));
     }
     //
+
     /**将通配符转换成正则表达式。*/
     public static boolean wildToRegex(final String pattern, final String str, MatchTypeEnum matchType) {
         if (MatchTypeEnum.Regex == matchType) {
