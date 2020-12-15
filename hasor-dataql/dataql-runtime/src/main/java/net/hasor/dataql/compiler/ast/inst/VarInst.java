@@ -57,7 +57,7 @@ public class VarInst extends CodeLocationInfo implements Inst {
 
     @Override
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
-        String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
+        String fixedString = StringUtils.repeat(' ', depth * fixedLength);
         //
         writer.write(fixedString + String.format("var %s = ", this.varName.getValue()));
         this.value.doFormat(depth, formatOption, writer);
