@@ -15,12 +15,13 @@
  */
 package net.hasor.db;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.MethodInterceptor;
+import net.hasor.core.MethodInvocation;
 import net.hasor.core.Module;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.db.jdbc.JdbcOperations;
 import net.hasor.db.jdbc.core.*;
-import net.hasor.db.transaction.TransactionManager;
-import net.hasor.db.transaction.TransactionTemplate;
+import net.hasor.db.transaction.*;
 import net.hasor.db.transaction.provider.TransactionManagerProvider;
 import net.hasor.db.transaction.provider.TransactionTemplateProvider;
 import net.hasor.utils.StringUtils;
@@ -122,10 +123,80 @@ public class JdbcModule implements Module {
                 apiBinder.bindType(TransactionManager.class).nameWith(this.dataSourceID).toProvider(managerProvider);
                 apiBinder.bindType(TransactionTemplate.class).nameWith(this.dataSourceID).toProvider(templateProvider);
             }
-            TransactionInterceptor tranInter = new TransactionInterceptor(this.dataSource);
+            TranInterceptor tranInter = new TranInterceptor(this.dataSource);
             Predicate<Class<?>> matcherClass = Matchers.annotatedWithClass(Transactional.class);
             Predicate<Method> matcherMethod = Matchers.annotatedWithMethod(Transactional.class);
             apiBinder.bindInterceptor(matcherClass, matcherMethod, tranInter);
+        }
+    }
+
+    private static class TranInterceptor implements MethodInterceptor {
+        private Supplier<DataSource> dataSource = null;
+
+        public TranInterceptor(Supplier<DataSource> dataSource) {
+            this.dataSource = Objects.requireNonNull(dataSource, "dataSource Provider is null.");
+        }
+
+        /*是否不需要回滚:true表示不要回滚*/
+        private boolean testNoRollBackFor(Transactional tranAnno, Throwable e) {
+            //1.test Class
+            Class<? extends Throwable>[] noRollBackType = tranAnno.noRollbackFor();
+            for (Class<? extends Throwable> cls : noRollBackType) {
+                if (cls.isInstance(e)) {
+                    return true;
+                }
+            }
+            //2.test Name
+            String[] noRollBackName = tranAnno.noRollbackForClassName();
+            String errorType = e.getClass().getName();
+            for (String name : noRollBackName) {
+                if (errorType.equals(name)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public final Object invoke(final MethodInvocation invocation) throws Throwable {
+            Method targetMethod = invocation.getMethod();
+            Transactional tranInfo = tranAnnotation(targetMethod);
+            if (tranInfo == null) {
+                return invocation.proceed();
+            }
+            //0.准备事务环境
+            DataSource dataSource = this.dataSource.get();
+            TransactionManager manager = TranManager.getManager(dataSource);
+            Propagation behavior = tranInfo.propagation();
+            Isolation level = tranInfo.isolation();
+            TransactionStatus tranStatus = manager.getTransaction(behavior, level);
+            //1.只读事务
+            if (tranInfo.readOnly()) {
+                tranStatus.setReadOnly();
+            }
+            //2.事务行为控制
+            try {
+                return invocation.proceed();
+            } catch (Throwable e) {
+                if (!this.testNoRollBackFor(tranInfo, e)) {
+                    tranStatus.setRollbackOnly();
+                }
+                throw e;
+            } finally {
+                if (!tranStatus.isCompleted()) {
+                    manager.commit(tranStatus);
+                }
+            }
+        }
+
+        /** 在方法上找 Transactional ，如果找不到在到 类上找 Transactional ，如果依然没有，那么在所处的包(包括父包)上找 Transactional。*/
+        private Transactional tranAnnotation(Method targetMethod) {
+            Transactional tran = targetMethod.getAnnotation(Transactional.class);
+            if (tran == null) {
+                Class<?> declaringClass = targetMethod.getDeclaringClass();
+                tran = declaringClass.getAnnotation(Transactional.class);
+            }
+            return tran;
         }
     }
 }

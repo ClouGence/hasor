@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.types.handler;
-import net.hasor.db.jdbc.TypeHandler;
+import net.hasor.db.types.TypeHandler;
 
 import java.io.Reader;
 import java.sql.*;

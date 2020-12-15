@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.types;
-import net.hasor.db.jdbc.TypeHandler;
 import net.hasor.db.types.handler.*;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.reflect.TypeReference;
@@ -37,13 +36,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 赵永春 (zyc@hasor.net)
  */
 public final class TypeHandlerRegistry {
-    private final        Map<Type, TypeHandler<?>>                javaTypeHandlerMap   = new ConcurrentHashMap<>();
-    private final        Map<JDBCType, TypeHandler<?>>            jdbcTypeHandlerMap   = new ConcurrentHashMap<>();
-    private final        Map<Type, Map<JDBCType, TypeHandler<?>>> typeHandlerMap       = new ConcurrentHashMap<>();
-    private final        UnknownTypeHandler                       defaultTypeHandler   = new UnknownTypeHandler(this);
-    private static final Map<Type, TypeHandler<?>>                cachedSingleHandlers = new ConcurrentHashMap<>();
-    public static final  TypeHandlerRegistry                      DEFAULT              = new TypeHandlerRegistry();
-    private static final Map<Class<?>, JDBCType>                  javaTypeToSqlTypeMap = new ConcurrentHashMap<>();
+    private final        Map<Type, TypeHandler<?>>                javaTypeHandlerMap    = new ConcurrentHashMap<>();
+    private final        Map<JDBCType, TypeHandler<?>>            jdbcTypeHandlerMap    = new ConcurrentHashMap<>();
+    private final        Map<Type, Map<JDBCType, TypeHandler<?>>> typeHandlerMap        = new ConcurrentHashMap<>();
+    private final        UnknownTypeHandler                       defaultTypeHandler    = new UnknownTypeHandler(this);
+    private static final Map<Type, TypeHandler<?>>                cachedSingleHandlers  = new ConcurrentHashMap<>();
+    public static final  TypeHandlerRegistry                      DEFAULT               = new TypeHandlerRegistry();
+    private static final Map<Class<?>, JDBCType>                  javaTypeToSqlTypeMap  = new ConcurrentHashMap<>();
+    private static final Map<JDBCType, Class<?>>                  jdbcTypeToJavaTypeMap = new ConcurrentHashMap<>();
 
     static {
         // primitive and wrapper
@@ -311,12 +311,17 @@ public final class TypeHandlerRegistry {
     }
 
     /** 根据 Java 类型Derive a default SQL type from the given Java type.*/
-    public JDBCType toSqlType(final Class<?> javaType) {
+    public static JDBCType toSqlType(final Class<?> javaType) {
         JDBCType jdbcType = javaTypeToSqlTypeMap.get(javaType);
         if (jdbcType != null) {
             return jdbcType;
         }
         return JDBCType.OTHER;
+    }
+
+    /** 根据 jdbcType 获取默认的 Java Type.*/
+    public static Class<?> toJavaType(JDBCType jdbcType) {
+        return jdbcTypeToJavaTypeMap.get(jdbcType);
     }
 
     public boolean hasTypeHandler(Class<?> typeClass) {
@@ -387,5 +392,9 @@ public final class TypeHandlerRegistry {
         } else {
             return this.defaultTypeHandler;
         }
+    }
+
+    public UnknownTypeHandler getDefaultTypeHandler() {
+        return this.defaultTypeHandler;
     }
 }
