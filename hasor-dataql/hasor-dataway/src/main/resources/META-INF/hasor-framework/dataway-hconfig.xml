@@ -42,5 +42,13 @@
                 <provider name="nacos">net.hasor.dataway.dal.providers.nacos.NacosApiDataAccessLayerCreator</provider>
             </dataAccessLayer>
         </dataway>
+
+        <autoLoadSpi>
+            <spi>net.hasor.dataway.spi.AuthorizationChainSpi</spi>
+            <spi>net.hasor.dataway.spi.CompilerSpiListener</spi>
+            <spi>net.hasor.dataway.spi.PreExecuteChainSpi</spi>
+            <spi>net.hasor.dataway.spi.ResultProcessChainSpi</spi>
+            <spi>net.hasor.dataway.spi.SerializationChainSpi</spi>
+        </autoLoadSpi>
     </hasor>
 </config>

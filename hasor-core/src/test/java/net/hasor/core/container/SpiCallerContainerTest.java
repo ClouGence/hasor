@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.spi.BindInfoProvisionListener;
+import net.hasor.core.spi.ContextInitializeListener;
 import net.hasor.core.spi.ScopeProvisionListener;
+import net.hasor.test.core.spi.JdkSpiImpl;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -84,7 +87,7 @@ public class SpiCallerContainerTest {
 
     @Test
     public void spiTest3() {
-        SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
+        SpiCallerContainer spiCallerContainer = new SpiCallerContainer(Hasor.create().buildEnvironment());
         spiCallerContainer.init();
         //
         ScopeProvisionListener listener = PowerMockito.mock(ScopeProvisionListener.class);
@@ -98,5 +101,21 @@ public class SpiCallerContainerTest {
                 assert e.getMessage().equals("this entry no support.");
             }
         });
+    }
+
+    @Test
+    public void spiTest4() {
+        SpiCallerContainer spiCallerContainer = new SpiCallerContainer(Hasor.create().buildEnvironment());
+        spiCallerContainer.init();
+        //
+        JdkSpiImpl.resetInit();
+        assert !JdkSpiImpl.isInit();
+        //
+        spiCallerContainer.notifySpi(ContextInitializeListener.class, (listener, lastResult) -> {
+            listener.doInitializeCompleted(null);
+            return null;
+        }, null);
+        assert JdkSpiImpl.isInit();
+        //
     }
 }

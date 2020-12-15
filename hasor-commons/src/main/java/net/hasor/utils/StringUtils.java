@@ -4118,6 +4118,27 @@ public class StringUtils {
      * StringUtils.repeat("a", -2) = ""
      * </pre>
      *
+     * @param character  the Character to to repeat, may be null
+     * @param repeat  number of times to repeat str, negative treated as zero
+     * @return a new String consisting of the original String repeated,
+     *  <code>null</code> if null String input
+     */
+    public static String repeat(final char character, final int repeat) {
+        return repeat(character + "",repeat);
+    }
+    /**
+     * <p>Repeat a String <code>repeat</code> times to form a
+     * new String.</p>
+     *
+     * <pre>
+     * StringUtils.repeat(null, 2) = null
+     * StringUtils.repeat("", 0)   = ""
+     * StringUtils.repeat("", 2)   = ""
+     * StringUtils.repeat("a", 3)  = "aaa"
+     * StringUtils.repeat("ab", 2) = "abab"
+     * StringUtils.repeat("a", -2) = ""
+     * </pre>
+     *
      * @param str  the String to repeat, may be null
      * @param repeat  number of times to repeat str, negative treated as zero
      * @return a new String consisting of the original String repeated,
@@ -6056,29 +6077,6 @@ public class StringUtils {
      */
     public static boolean equalsBlankIgnoreCase(final String str1, final String str2) {
         return StringUtils.equalsIgnoreCase(StringUtils.trimToEmpty(str1), StringUtils.trimToEmpty(str2));
-    }
-
-    /**
-     * 按照某个字符组装固定长度的的字符串。
-     * <pre>
-     * StringUtils.fixedString(' ',4)  = "    "
-     * StringUtils.fixedString(' ',2)  = "  "
-     * StringUtils.fixedString('A',2)  = "AA"
-     * StringUtils.fixedString('A',0)  = ""
-     * StringUtils.fixedString('A',-1) = null
-     * </pre>
-     */
-    public static String fixedString(final char c, final int length) {
-        if (length < 0) {
-            return "";
-        }
-        if (length == 0) {
-            return "";
-        }
-        //
-        char[] chars = new char[length];
-        Arrays.fill(chars, c);
-        return new String(chars);
     }
 
     /* ------------------------------------------------------------ */

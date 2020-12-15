@@ -54,7 +54,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
 
     public BeanContainer(Environment environment) {
         this.environment = Objects.requireNonNull(environment, "need Environment.");
-        this.spiCallerContainer = new SpiCallerContainer();
+        this.spiCallerContainer = new SpiCallerContainer(environment);
         this.bindInfoContainer = new BindInfoContainer(spiCallerContainer);
         this.scopeContainer = new ScopeContainer(spiCallerContainer);
         this.classEngineMap = new ConcurrentHashMap<>();
@@ -342,9 +342,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         }
     }
 
-    /**
-     * 生成动态代理类型
-     */
+    /** 生成动态代理类型 */
     private <T> Class<T> proxyType(Class<T> targetType, AppContext appContext, DefaultBindInfoProviderAdapter<?> defBinder) {
         // .@AopIgnore排除在外
         ClassLoader rootLoader = Objects.requireNonNull(appContext.getClassLoader());
@@ -411,17 +409,13 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
 
     /*-------------------------------------------------------------------------------------------*/
 
-    /**
-     * 仅执行依赖注入
-     */
+    /** 仅执行依赖注入 */
     public <T> T justInject(T object, Class<?> referType, AppContext appContext) {
         this.justInject(object, referType, null, appContext);
         return object;
     }
 
-    /**
-     * 仅执行依赖注入
-     */
+    /** 仅执行依赖注入 */
     public <T> T justInject(T object, BindInfo<?> bindInfo, AppContext appContext) {
         DefaultBindInfoProviderAdapter<?> adapter = (DefaultBindInfoProviderAdapter) bindInfo;
         Class<?> referType = adapter.getSourceType() != null ? adapter.getSourceType() : adapter.getBindType();

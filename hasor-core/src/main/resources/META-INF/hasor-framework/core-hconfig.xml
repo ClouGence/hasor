@@ -52,5 +52,15 @@
         <innerApiBinderSet>
             <!--<binder type="net.hasor.plugins.data.DataApiBinder">net.hasor.plugins.data.DataApiBinderCreater</binder>-->
         </innerApiBinderSet>
+
+        <autoLoadSpi>
+            <spi>net.hasor.core.spi.BindInfoProvisionListener</spi>
+            <spi>net.hasor.core.spi.CollectScopeChainSpi</spi>
+            <spi>net.hasor.core.spi.ContextInitializeListener</spi>
+            <spi>net.hasor.core.spi.ContextShutdownListener</spi>
+            <spi>net.hasor.core.spi.ContextStartListener</spi>
+            <spi>net.hasor.core.spi.CreatorProvisionListener</spi>
+            <spi>net.hasor.core.spi.ScopeProvisionListener</spi>
+        </autoLoadSpi>
     </hasor>
 </config>

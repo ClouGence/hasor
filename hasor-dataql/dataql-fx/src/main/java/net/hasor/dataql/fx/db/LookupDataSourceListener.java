@@ -15,7 +15,6 @@
  */
 package net.hasor.dataql.fx.db;
 import javax.sql.DataSource;
-import java.util.EventListener;
 
 /**
  * 当 DataQL 执行过程中用来获取对应的动态数据源，指定数据源的名字需要通过 HINT：FRAGMENT_SQL_DATA_SOURCE
@@ -25,7 +24,7 @@ import java.util.EventListener;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-06-03
  */
-public interface LookupDataSourceListener extends EventListener {
+public interface LookupDataSourceListener extends java.util.EventListener {
     /**
      * 当 DataQL 执行过程中用来获取对应的动态数据源。
      * @param lookupName 要查找的数据源

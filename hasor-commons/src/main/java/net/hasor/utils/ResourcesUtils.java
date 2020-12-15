@@ -311,9 +311,9 @@ public abstract class ResourcesUtils {
         //确定位置
         int index1 = wild.indexOf('?');
         int index2 = wild.indexOf('*');
-        index1 = index1 == -1 ? (index1 = wild.length()) : index1;
-        index2 = index2 == -1 ? (index2 = wild.length()) : index2;
-        int index = index1 > index2 ? index2 : index1;
+        index1 = index1 == -1 ? wild.length() : index1;
+        index2 = index2 == -1 ? wild.length() : index2;
+        int index = Math.min(index1, index2);
         //
         String _wild = wild.substring(0, index);
         if (_wild.charAt(_wild.length() - 1) == '/') {
