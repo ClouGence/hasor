@@ -60,6 +60,16 @@ public class ParsedSql {
         return this.parameterIndexes;
     }
 
+    /**生成SQL*/
+    public String buildSql(final SqlParameterSource paramSource) {
+        return buildSql(this, paramSource);
+    }
+
+    /**生成Values*/
+    public Object[] buildValues(final SqlParameterSource paramSource) throws SQLException {
+        return buildSqlValues(this, paramSource);
+    }
+
     /**Set of characters that qualify as parameter separators, indicating that a parameter name in a SQL String has ended. */
     private static final char[]   PARAMETER_SEPARATORS = new char[] { '"', '\'', ':', '&', ',', ';', '(', ')', '|', '=', '+', '-', '*', '%', '/', '\\', '<', '>', '^' };
     /** Set of characters that qualify as comment or quotes starting characters.*/

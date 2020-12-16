@@ -15,8 +15,6 @@
  */
 package net.hasor.db.jdbc;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
-import org.springframework.lang.Nullable;
 
 /**
  * Interface that defines common functionality for objects that can

@@ -1,5 +1,5 @@
 package net.hasor.db.jdbc.core;
-import net.hasor.db.jdbc.TypeHandler;
+import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
 
 import java.sql.PreparedStatement;

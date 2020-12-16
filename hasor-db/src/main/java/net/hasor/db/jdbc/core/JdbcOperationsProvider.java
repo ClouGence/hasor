@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import net.hasor.core.Provider;
 import net.hasor.db.jdbc.JdbcOperations;
 
 import javax.sql.DataSource;
@@ -29,7 +28,7 @@ public class JdbcOperationsProvider implements Supplier<JdbcOperations> {
     private Supplier<DataSource> dataSource;
 
     public JdbcOperationsProvider(DataSource dataSource) {
-        this(Provider.of(dataSource));
+        this(() -> dataSource);
     }
 
     public JdbcOperationsProvider(Supplier<DataSource> dataSource) {

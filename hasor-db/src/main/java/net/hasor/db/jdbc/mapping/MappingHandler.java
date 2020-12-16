@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.mapping;
-import net.hasor.db.jdbc.TypeHandler;
+import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
 import net.hasor.db.types.UnknownTypeHandler;
 import net.hasor.utils.BeanUtils;
@@ -42,6 +42,10 @@ public class MappingHandler {
     public MappingHandler(TypeHandlerRegistry typeRegistry) {
         this.typeRegistry = typeRegistry;
         this.resultMapperMap = new ConcurrentHashMap<>();
+    }
+
+    public TypeHandlerRegistry getTypeRegistry() {
+        return this.typeRegistry;
     }
 
     public <T> BeanRowMapper<T> resolveMapper(Class<T> dtoClass) {

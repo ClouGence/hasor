@@ -1,5 +1,5 @@
 package net.hasor.db.jdbc.mapping;
-import net.hasor.db.jdbc.TypeHandler;
+import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.UnknownTypeHandler;
 
 import java.lang.annotation.Annotation;

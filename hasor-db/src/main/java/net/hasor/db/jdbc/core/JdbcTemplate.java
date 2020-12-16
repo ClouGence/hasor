@@ -15,6 +15,10 @@
  */
 package net.hasor.db.jdbc.core;
 import net.hasor.db.jdbc.*;
+import net.hasor.db.jdbc.SqlParameter.InSqlParameter;
+import net.hasor.db.jdbc.SqlParameter.OutSqlParameter;
+import net.hasor.db.jdbc.SqlParameter.ReturnSqlParameter;
+import net.hasor.db.jdbc.extractor.MultipleResultExtractor;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.lambda.LambdaOperations;
 import net.hasor.db.jdbc.lambda.query.LambdaQueryWrapper;
@@ -23,6 +27,7 @@ import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
 import net.hasor.db.jdbc.mapping.BeanRowMapper;
 import net.hasor.db.jdbc.mapping.MappingHandler;
 import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
+import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
@@ -31,7 +36,6 @@ import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 import net.hasor.utils.reflect.SFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 import javax.sql.DataSource;
 import java.io.*;
@@ -41,9 +45,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 数据库操作模板方法。
+ * Spring-jdbc based and reimplements
  * @version : 2013-10-12
+ * @author Rod Johnson
+ * @author Juergen Hoeller
+ * @author Thomas Risberg
  * @author 赵永春 (zyc@byshell.org)
+ * @see PreparedStatementCreator
+ * @see PreparedStatementSetter
+ * @see CallableStatementCreator
+ * @see PreparedStatementCallback
+ * @see CallableStatementCallback
+ * @see ResultSetExtractor
+ * @see RowCallbackHandler
+ * @see RowMapper
  */
 public class JdbcTemplate extends JdbcConnection implements JdbcOperations, LambdaOperations {
     private static final Logger         logger                 = LoggerFactory.getLogger(JdbcTemplate.class);
@@ -197,6 +212,38 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
             }
         }
         return this.execute(new ExecuteStatementCallback());
+    }
+
+    @Override
+    public List<Object> executeForMultiple(final String sql) throws SQLException {
+        return this.execute(sql, new MultipleResultExtractor());
+    }
+
+    @Override
+    public List<Object> executeForMultiple(final String sql, final Object... args) throws SQLException {
+        PreparedStatementSetter pss = newArgPreparedStatementSetter(args);
+        return this.execute(new SimplePreparedStatementCreator(sql), ps -> {
+            try {
+                if (pss != null) {
+                    pss.setValues(ps);
+                }
+                return new MultipleResultExtractor().doInPreparedStatement(ps);
+            } finally {
+                if (pss instanceof ParameterDisposer) {
+                    ((ParameterDisposer) pss).cleanupParameters();
+                }
+            }
+        });
+    }
+
+    @Override
+    public List<Object> executeForMultiple(final String sql, final Map<String, ?> paramMap) throws SQLException {
+        return this.executeForMultiple(sql, new MapSqlParameterSource(paramMap));
+    }
+
+    @Override
+    public List<Object> executeForMultiple(final String sql, final SqlParameterSource parameterSource) throws SQLException {
+        return this.execute(this.getPreparedStatementCreator(sql, parameterSource), new MultipleResultExtractor());
     }
 
     /***/
@@ -704,7 +751,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
                 JdbcTemplate.this.handleWarnings(cs);
                 return result;
             } catch (SQLException ex) {
-                String sqlString = JdbcTemplate.getSql(action);
+                String sqlString = JdbcTemplate.getSql(csc);
                 throw new SQLException("CallableStatementCallback SQL :" + sqlString, ex);
             } finally {
                 if (csc instanceof ParameterDisposer) {
@@ -714,283 +761,127 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         });
     }
 
-    public <T> T call(String callString, CallableStatementSetter declaredParameters, CallableStatementCallback<T> action) throws SQLException {
-        //
-    }
-
     @Override
     public <T> T call(String callString, CallableStatementCallback<T> action) throws SQLException {
         return this.call(new SimpleCallableStatementCreator(callString), action);
     }
 
     @Override
-    public <T> T call(String callString, List<SqlParameter> declaredParameters, CallableStatementCallback<T> action) throws SQLException {
-        return this.call(callString, this.newArgCallableStatementSetter(declaredParameters), action);
-    }
-
-    @Override
-    public <T> T call(String callString, Map<String, SqlParameter> declaredParameters, CallableStatementCallback<T> action) throws SQLException {
-        return this.call(callString, new MapSqlParameterSource(declaredParameters), action);
-    }
-
-    @Override
-    public <T> T call(String callString, SqlParameterSource declaredParameters, CallableStatementCallback<T> action) throws SQLException {
-        String   sqlToUse   = ParsedSql.buildSql(ParsedSql.buildSql(callString), declaredParameters);
-        Object[] paramArray = ParsedSql.buildSqlValues(callString, declaredParameters);
-        return this.call(this.getCallableStatementCreator(callString, declaredParameters), action);
-    }
-
-    @Override
     public Map<String, Object> call(String callString, List<SqlParameter> declaredParameters) throws SQLException {
-        final List<SqlParameter> outputParameters = new ArrayList<>();
-        for (SqlParameter parameter : declaredParameters) {
-            if (parameter.isOutputParameter()) {
-                outputParameters.add(parameter);
+        return this.call(callString, cs -> {
+            // process params
+            int sqlColIndex = 1;
+            final List<OutSqlParameter> outputParameters = new ArrayList<>();
+            final List<ReturnSqlParameter> resultParameters = new ArrayList<>();
+            for (SqlParameter declaredParam : declaredParameters) {
+                // input parameters
+                if (declaredParam instanceof InSqlParameter) {
+                    JDBCType paramJdbcType = Objects.requireNonNull(((InSqlParameter) declaredParam).getJdbcType(), "jdbcType must not be null");
+                    Object paramValue = ((InSqlParameter) declaredParam).getValue();
+                    TypeHandler paramTypeHandler = ((InSqlParameter) declaredParam).getTypeHandler();
+                    //
+                    paramTypeHandler = (paramTypeHandler != null) ? paramTypeHandler : TypeHandlerRegistry.DEFAULT.getTypeHandler(paramJdbcType);
+                    paramTypeHandler.setParameter(cs, sqlColIndex, paramValue, paramJdbcType);
+                }
+                // output parameters
+                if (declaredParam instanceof OutSqlParameter) {
+                    JDBCType paramJdbcType = Objects.requireNonNull(((OutSqlParameter) declaredParam).getJdbcType(), "jdbcType must not be null");
+                    String paramTypeName = ((OutSqlParameter) declaredParam).getTypeName();
+                    Integer paramScale = ((OutSqlParameter) declaredParam).getScale();
+                    outputParameters.add((OutSqlParameter) declaredParam);
+                    //
+                    if (paramTypeName != null) {
+                        cs.registerOutParameter(sqlColIndex, paramJdbcType, paramTypeName);
+                    } else if (paramScale != null) {
+                        cs.registerOutParameter(sqlColIndex, paramJdbcType, paramScale);
+                    } else {
+                        cs.registerOutParameter(sqlColIndex, paramJdbcType);
+                    }
+                }
+                // return parameters
+                if (declaredParam instanceof ReturnSqlParameter) {
+                    resultParameters.add((ReturnSqlParameter) declaredParam);
+                }
+                sqlColIndex++;
+            }
+            //
+            // execute call
+            Map<String, Object> resultsMap = createResultsMap();
+            boolean retVal = cs.execute();
+            if (logger.isTraceEnabled()) {
+                logger.trace("CallableStatement.execute() returned '" + retVal + "'");
+            }
+            //
+            // fetch output
+            for (int i = 1; i <= outputParameters.size(); i++) {
+                OutSqlParameter declaredParam = outputParameters.get(i - 1);
+                String paramName = declaredParam.getName();
+                JDBCType paramJdbcType = Objects.requireNonNull(declaredParam.getJdbcType(), "jdbcType must not be null");
+                TypeHandler paramTypeHandler = declaredParam.getTypeHandler();
+                //
+                paramName = StringUtils.isNotBlank(paramName) ? paramName : "#out-" + i ;
+                paramTypeHandler = (paramTypeHandler != null) ? paramTypeHandler : TypeHandlerRegistry.DEFAULT.getTypeHandler(paramJdbcType);
+                Object resultValue = paramTypeHandler.getResult(cs, i);
+                resultsMap.put(paramName, resultValue);
+            }
+            // fetch results
+            int resultIndex = 1;
+            ReturnSqlParameter sqlParameter = resultParameters.size() > 0 ? resultParameters.get(0) : null;
+            if (retVal) {
+                try (ResultSet resultSet = cs.getResultSet()) {
+                    String name = resultParameterName(sqlParameter, "#result-set-" + resultIndex);
+                    resultsMap.put(name, processResultSet(resultSet, sqlParameter));
+                }
+            } else {
+                String name = resultParameterName(sqlParameter, "#update-count-" + resultIndex);
+                resultsMap.put(name, cs.getUpdateCount());
+            }
+            while (cs.getMoreResults()) {
+                resultIndex++;
+                sqlParameter = resultParameters.size() > resultIndex ? resultParameters.get(resultIndex - 1) : null;
+                int updateCount = cs.getUpdateCount();
+                //
+                if (updateCount != -1) {
+                    try (ResultSet resultSet = cs.getResultSet()) {
+                        String name = resultParameterName(sqlParameter, "#result-set-" + resultIndex);
+                        resultsMap.put(name, processResultSet(resultSet, sqlParameter));
+                    }
+                } else {
+                    String name = resultParameterName(sqlParameter, "#update-count-" + resultIndex);
+                    resultsMap.put(name, updateCount);
+                }
+            }
+            return resultsMap;
+        });
+    }
+
+    private static String resultParameterName(ReturnSqlParameter sqlParameter, String defaultName) {
+        return (sqlParameter == null || StringUtils.isBlank(sqlParameter.getName())) ? defaultName : sqlParameter.getName();
+    }
+
+    /**
+     * Process the given ResultSet from a stored procedure.
+     * @param rs the ResultSet to process
+     * @param param the corresponding stored procedure parameter
+     * @return a Map that contains returned results
+     */
+    protected Map<String, Object> processResultSet(ResultSet rs, ReturnSqlParameter param) throws SQLException {
+        if (rs != null) {
+            if (param.getRowMapper() != null) {
+                RowMapper<?> rowMapper = param.getRowMapper();
+                Object data = (new RowMapperResultSetExtractor<>(rowMapper)).extractData(rs);
+                return Collections.singletonMap(param.getName(), data);
+            } else if (param.getRowCallbackHandler() != null) {
+                RowCallbackHandler rch = param.getRowCallbackHandler();
+                (new JdbcTemplate.RowCallbackHandlerResultSetExtractor(rch)).extractData(rs);
+                return Collections.singletonMap(param.getName(), "ResultSet returned from stored procedure was processed");
+            } else if (param.getResultSetExtractor() != null) {
+                Object data = param.getResultSetExtractor().extractData(rs);
+                return Collections.singletonMap(param.getName(), data);
             }
         }
-        return this.call(callString, this.newArgCallableStatementSetter(declaredParameters), new CallableStatementExtractor(outputParameters));
+        return Collections.emptyMap();
     }
-
-    @Override
-    public Map<String, Object> call(String callString, Map<String, SqlParameter> declaredParameters) throws SQLException {
-        return this.call(callString, new MapSqlParameterSource(declaredParameters), action);
-    }
-
-    @Override
-    public Map<String, Object> call(String callString, SqlParameterSource declaredParameters) throws SQLException {
-        declaredParameters.getParameterNames();
-        return this.call(this.getCallableStatementCreator(callString, declaredParameters), action);
-    }
-
-    private static class CallableStatementExtractor implements CallableStatementCallback<Map<String, Object>> {
-        public CallableStatementExtractor(List<SqlParameter> outputParameters) {
-        }
-
-        @Override
-        public Map<String, Object> doInCallableStatement(CallableStatement cs) throws SQLException {
-            return null;
-        }
-    }
-    //
-    //    @Override
-    //    public Map<String, Object> call(CallableStatementCreator csc, List<SqlParameter> declaredParameters) throws SQLException {
-    //        return this.call(csc, cs -> {
-    //            final List<SqlParameter> updateCountParameters = new ArrayList<>();
-    //            final List<SqlParameter> resultSetParameters = new ArrayList<>();
-    //            for (SqlParameter parameter : declaredParameters) {
-    //                if (!parameter.isOutputParameter()) {
-    //                    continue;
-    //                }
-    //                if (parameter instanceof ResultSetSqlParameter) {
-    //                    resultSetParameters.add(parameter);
-    //                } else {
-    //                    updateCountParameters.add(parameter);
-    //                }
-    //            }
-    //            //
-    //            boolean retVal = cs.execute();
-    //            if (logger.isTraceEnabled()) {
-    //                logger.trace("CallableStatement.execute() returned '" + retVal + "'");
-    //            }
-    //            Map<String, Object> resultsMap = createResultsMap();
-    //            if (retVal) {
-    //                // ResultSet
-    //                resultsMap.putAll(extractReturnedResults(cs, updateCountParameters, resultSetParameters));
-    //            } else {
-    //                // updateCount
-    //                resultsMap.putAll(extractUpdateCounts(cs, updateCountParameters, resultSetParameters));
-    //            }
-    //            return resultsMap;
-    //        });
-    //    }
-    //
-    //
-    //    @Override
-    //    public Map<String, Object> call(String callString, List<SqlParameter> declaredParameters) throws SQLException {
-    //        final List<SqlParameter> inputParameters = new ArrayList<>();
-    //        for (SqlParameter parameter : declaredParameters) {
-    //            if (parameter.isInputParameter()) {
-    //                inputParameters.add(parameter);
-    //            }
-    //        }
-    //        return this.call(callString, inputParameters, cs -> {
-    //            final List<SqlParameter> updateCountParameters = new ArrayList<>();
-    //            final List<SqlParameter> resultSetParameters = new ArrayList<>();
-    //            for (SqlParameter parameter : declaredParameters) {
-    //                if (!parameter.isOutputParameter()) {
-    //                    continue;
-    //                }
-    //                if (parameter instanceof ResultSetSqlParameter) {
-    //                    resultSetParameters.add(parameter);
-    //                } else {
-    //                    updateCountParameters.add(parameter);
-    //                }
-    //            }
-    //            //
-    //            boolean retVal = cs.execute();
-    //            if (logger.isTraceEnabled()) {
-    //                logger.trace("CallableStatement.execute() returned '" + retVal + "'");
-    //            }
-    //            Map<String, Object> resultsMap = createResultsMap();
-    //            if (retVal) {
-    //                // ResultSet
-    //                resultsMap.putAll(extractReturnedResults(cs, updateCountParameters, resultSetParameters));
-    //            } else {
-    //                // updateCount
-    //                resultsMap.putAll(extractUpdateCounts(cs, updateCountParameters, resultSetParameters));
-    //            }
-    //            return resultsMap;
-    //        });
-    //    }
-    //
-    //    @Override
-    //    public <T> T call(String callString, List<SqlParameter> declaredParameters, CallableStatementCallback<T> action) throws SQLException {
-    //        final List<SqlParameter> inputParameters = new ArrayList<>();
-    //        for (SqlParameter parameter : declaredParameters) {
-    //            if (parameter.isInputParameter()) {
-    //                inputParameters.add(parameter);
-    //            }
-    //        }
-    //        return this.call(this.getCallableStatementCreator(callString, inputParameters), action);
-    //    }
-    //
-    //    @Override
-    //    public <T> T call(String callString, Map<String, SqlParameter> declaredParameters, CallableStatementCallback<T> action) throws SQLException {
-    //        return null;//new MapSqlParameterSource(paramMap)
-    //    }
-    //
-    //    @Override
-    //    public Map<String, Object> call(String callString, Map<String, SqlParameter> declaredParameters) throws SQLException {
-    //        return null;
-    //    }
-    //
-    //    @Override
-    //    public <T> T call(String callString, SqlParameterSource paramSource, CallableStatementCallback<T> action) throws SQLException {
-    //        return null;//new MapSqlParameterSource(paramMap)
-    //    }
-    //getCallableStatementCreator
-    //    /**
-    //     * Extract returned ResultSets from the completed stored procedure.
-    //     * @param cs a JDBC wrapper for the stored procedure
-    //     * @param parameters the parameter list of declared resultSet parameters for the stored procedure
-    //     * @return a Map that contains returned results
-    //     */
-    //    protected Map<String, Object> extractReturnedResults(CallableStatement cs, List<SqlParameter> parameters) throws SQLException {
-    //        Map<String, Object> results = new LinkedHashMap<>(4);
-    //        int rsIndex = 0;
-    //        int updateIndex = 0;
-    //        boolean moreResults;
-    //        do {
-    //            if (updateCount == -1) {
-    //                if (resultSetParameters != null && resultSetParameters.size() > rsIndex) {
-    //                    SqlReturnResultSet declaredRsParam = (SqlReturnResultSet) resultSetParameters.get(rsIndex);
-    //                    results.putAll(processResultSet(cs.getResultSet(), declaredRsParam));
-    //                    rsIndex++;
-    //                } else {
-    //                    if (!this.skipUndeclaredResults) {
-    //                        String rsName = RETURN_RESULT_SET_PREFIX + (rsIndex + 1);
-    //                        SqlReturnResultSet undeclaredRsParam = new SqlReturnResultSet(rsName, getColumnMapRowMapper());
-    //                        if (logger.isTraceEnabled()) {
-    //                            logger.trace("Added default SqlReturnResultSet parameter named '" + rsName + "'");
-    //                        }
-    //                        results.putAll(processResultSet(cs.getResultSet(), undeclaredRsParam));
-    //                        rsIndex++;
-    //                    }
-    //                }
-    //            } else {
-    //                if (updateCountParameters != null && updateCountParameters.size() > updateIndex) {
-    //                    SqlReturnUpdateCount ucParam = (SqlReturnUpdateCount) updateCountParameters.get(updateIndex);
-    //                    String declaredUcName = ucParam.getName();
-    //                    results.put(declaredUcName, updateCount);
-    //                    updateIndex++;
-    //                } else {
-    //                    if (!this.skipUndeclaredResults) {
-    //                        String undeclaredName = RETURN_UPDATE_COUNT_PREFIX + (updateIndex + 1);
-    //                        if (logger.isTraceEnabled()) {
-    //                            logger.trace("Added default SqlReturnUpdateCount parameter named '" + undeclaredName + "'");
-    //                        }
-    //                        results.put(undeclaredName, updateCount);
-    //                        updateIndex++;
-    //                    }
-    //                }
-    //            }
-    //            moreResults = cs.getMoreResults();
-    //            updateCount = cs.getUpdateCount();
-    //            if (logger.isTraceEnabled()) {
-    //                logger.trace("CallableStatement.getUpdateCount() returned " + updateCount);
-    //            }
-    //        } while (moreResults || updateCount != -1);
-    //        return results;
-    //    }
-    //
-    //    /**
-    //     * Extract output parameters from the completed stored procedure.
-    //     * @param cs the JDBC wrapper for the stored procedure
-    //     * @param parameters the parameter list of declared update count parameters for the stored procedure
-    //     * @return a Map that contains returned results
-    //     */
-    //    protected Map<String, Object> extractUpdateCounts(CallableStatement cs, List<SqlParameter> parameters) throws SQLException {
-    //        Map<String, Object> results = new LinkedHashMap<>(parameters.size());
-    //        int sqlColIndex = 1;
-    //        for (SqlParameter param : parameters) {
-    //            if (param instanceof SqlOutParameter) {
-    //                SqlOutParameter outParam = (SqlOutParameter) param;
-    //                Assert.state(outParam.getName() != null, "Anonymous parameters not allowed");
-    //                SqlReturnType returnType = outParam.getSqlReturnType();
-    //                if (returnType != null) {
-    //                    Object out = returnType.getTypeValue(cs, sqlColIndex, outParam.getSqlType(), outParam.getTypeName());
-    //                    results.put(outParam.getName(), out);
-    //                } else {
-    //                    Object out = cs.getObject(sqlColIndex);
-    //                    if (out instanceof ResultSet) {
-    //                        if (outParam.isResultSetSupported()) {
-    //                            results.putAll(processResultSet((ResultSet) out, outParam));
-    //                        } else {
-    //                            String rsName = outParam.getName();
-    //                            SqlReturnResultSet rsParam = new SqlReturnResultSet(rsName, getColumnMapRowMapper());
-    //                            results.putAll(processResultSet((ResultSet) out, rsParam));
-    //                            if (logger.isTraceEnabled()) {
-    //                                logger.trace("Added default SqlReturnResultSet parameter named '" + rsName + "'");
-    //                            }
-    //                        }
-    //                    } else {
-    //                        results.put(outParam.getName(), out);
-    //                    }
-    //                }
-    //            }
-    //            if (!(param.isResultsParameter())) {
-    //                sqlColIndex++;
-    //            }
-    //        }
-    //        return results;
-    //    }
-    //    /**
-    //     * Process the given ResultSet from a stored procedure.
-    //     * @param rs the ResultSet to process
-    //     * @param param the corresponding stored procedure parameter
-    //     * @return a Map that contains returned results
-    //     */
-    //    protected Map<String, Object> processResultSet(ResultSet rs, ResultSetSqlParameter param) throws SQLException {
-    //        if (rs != null) {
-    //            try {
-    //                if (param.getRowMapper() != null) {
-    //                    RowMapper<?> rowMapper = param.getRowMapper();
-    //                    Object data = (new RowMapperResultSetExtractor<>(rowMapper)).extractData(rs);
-    //                    return Collections.singletonMap(param.getName(), data);
-    //                } else if (param.getRowCallbackHandler() != null) {
-    //                    RowCallbackHandler rch = param.getRowCallbackHandler();
-    //                    (new JdbcTemplate.RowCallbackHandlerResultSetExtractor(rch)).extractData(rs);
-    //                    return Collections.singletonMap(param.getName(), "ResultSet returned from stored procedure was processed");
-    //                } else if (param.getResultSetExtractor() != null) {
-    //                    Object data = param.getResultSetExtractor().extractData(rs);
-    //                    return Collections.singletonMap(param.getName(), data);
-    //                }
-    //            } finally {
-    //                JdbcUtils.closeResultSet(rs);
-    //            }
-    //        }
-    //        return Collections.emptyMap();
-    //    }
 
     public <T> LambdaQuery<T> lambda(Class<T> exampleType, List<SFunction<T>> columns) {
         return new LambdaQueryWrapper<>(exampleType, this).select(columns);
@@ -1039,11 +930,6 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     /** Create a new PreparedStatementSetter.*/
     protected PreparedStatementSetter newArgPreparedStatementSetter(final Object[] args) {
         return new ArgPreparedStatementSetter(args);
-    }
-
-    /** Create a new CallableStatementSetter.*/
-    protected CallableStatementSetter newArgCallableStatementSetter(final List<SqlParameter> args) {
-        return new ArgCallableStatementSetter(args);
     }
 
     /** Build a PreparedStatementCreator based on the given SQL and named parameters. */
@@ -1097,8 +983,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         private final String sql;
 
         public SimplePreparedStatementCreator(final String sql) {
-            Objects.requireNonNull(sql, "SQL must not be null");
-            this.sql = sql;
+            this.sql = Objects.requireNonNull(sql, "SQL must not be null");
         }
 
         @Override
@@ -1117,12 +1002,14 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         private final String callString;
 
         public SimpleCallableStatementCreator(String callString) {
-            Assert.notNull(callString, "Call string must not be null");
-            this.callString = callString;
+            this.callString = Objects.requireNonNull(callString, "Call string must not be null");
         }
 
         @Override
         public CallableStatement createCallableStatement(Connection con) throws SQLException {
+            if (!con.getMetaData().supportsStoredProcedures()) {
+                throw new UnsupportedOperationException("target DataSource Unsupported.");
+            }
             return con.prepareCall(this.callString);
         }
 
@@ -1191,8 +1078,8 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
 
     /**接口 {@link BatchPreparedStatementSetter} 的简单实现，目的是设置批量操作*/
     private class SqlParameterSourceBatchPreparedStatementSetter implements BatchPreparedStatementSetter, ParameterDisposer {
-        private ParsedSql            parsedSql = null;
-        private SqlParameterSource[] batchArgs = null;
+        private final ParsedSql            parsedSql;
+        private final SqlParameterSource[] batchArgs;
 
         public SqlParameterSourceBatchPreparedStatementSetter(final String sql, final SqlParameterSource[] batchArgs) {
             this.parsedSql = getParsedSql(sql);

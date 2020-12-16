@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2007 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,97 +14,52 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc;
-import java.util.Objects;
+import net.hasor.db.types.TypeHandler;
+
+import java.sql.JDBCType;
 
 /**
  * Object to represent an SQL parameter definition.
  *
  * <p>Parameters may be anonymous, in which case "name" is {@code null}.
- * However, all parameters must define an SQL type according to {@link java.sql.Types}.
+ * However, all parameters must define an SQL type according to {@link java.sql.JDBCType}.
  *
- * @author Rod Johnson
- * @author Thomas Risberg
- * @author Juergen Hoeller
- * @see java.sql.Types
+ * @author 赵永春 (zyc@hasor.net)
+ * @see java.sql.JDBCType
  */
-public class SqlParameter {
-    // SQL type constant from {@code java.sql.Types}
-    private final int     sqlType;
-    // Used for types that are user-named like: STRUCT, DISTINCT, JAVA_OBJECT, named array types
-    private       String  typeName;
-    // The scale to apply in case of a NUMERIC or DECIMAL type, if any
-    private       Integer scale;
+public interface SqlParameter {
+    /** Return the name of the parameter, or {@code null} if anonymous. */
+    public String getName();
 
-    /**
-     * Create a new anonymous SqlParameter, supplying the SQL type.
-     * @param sqlType the SQL type of the parameter according to {@code java.sql.Types}
-     */
-    public SqlParameter(int sqlType) {
-        this.sqlType = sqlType;
+    public static interface ValueSqlParameter extends SqlParameter {
+        /** Return the SQL type of the parameter. */
+        public JDBCType getJdbcType();
+
+        /** Return the type name of the parameter, if any. */
+        public String getTypeName();
+
+        /** Return the scale of the parameter, if any. */
+        public Integer getScale();
     }
 
-    /**
-     * Create a new anonymous SqlParameter, supplying the SQL type.
-     * @param sqlType the SQL type of the parameter according to {@code java.sql.Types}
-     * @param typeName the type name of the parameter (optional)
-     */
-    public SqlParameter(int sqlType, String typeName) {
-        this.sqlType = sqlType;
-        this.typeName = typeName;
+    public static interface OutSqlParameter extends ValueSqlParameter {
+        public TypeHandler<?> getTypeHandler();
     }
 
-    /**
-     * Create a new anonymous SqlParameter, supplying the SQL type.
-     * @param sqlType the SQL type of the parameter according to {@code java.sql.Types}
-     * @param scale the number of digits after the decimal point
-     * (for DECIMAL and NUMERIC types)
-     */
-    public SqlParameter(int sqlType, int scale) {
-        this.sqlType = sqlType;
-        this.scale = scale;
+    public static interface InSqlParameter extends ValueSqlParameter {
+        public TypeHandler<?> getTypeHandler();
+
+        public Object getValue();
     }
 
-    /**
-     * Copy constructor.
-     * @param otherParam the SqlParameter object to copy from
-     */
-    public SqlParameter(SqlParameter otherParam) {
-        Objects.requireNonNull(otherParam, "SqlParameter object must not be null");
-        this.sqlType = otherParam.sqlType;
-        this.typeName = otherParam.typeName;
-        this.scale = otherParam.scale;
-    }
+    public static interface ReturnSqlParameter extends SqlParameter {
+        /** Return the ResultSetExtractor held by this parameter, if any. */
+        public ResultSetExtractor<?> getResultSetExtractor();
 
-    /** Return the SQL type of the parameter. */
-    public int getSqlType() {
-        return this.sqlType;
-    }
+        /** Return the RowCallbackHandler held by this parameter, if any. */
+        public RowCallbackHandler getRowCallbackHandler();
 
-    /** Return the type name of the parameter, if any. */
-    public String getTypeName() {
-        return this.typeName;
-    }
-
-    /** Return the scale of the parameter, if any. */
-    public Integer getScale() {
-        return this.scale;
-    }
-
-    /**
-     * Return whether this parameter holds input values that should be set
-     * before execution even if they are {@code null}.
-     * <p>This implementation always returns {@code true}.
-     */
-    public boolean isInputParameter() {
-        return true;
-    }
-
-    /**
-     * Return whether this parameter is an implicit return parameter used during the
-     * results processing of {@code CallableStatement.getMoreResults/getUpdateCount}.
-     * <p>This implementation always returns {@code false}.
-     */
-    public boolean isOutputParameter() {
-        return false;
+        /** Return the RowMapper held by this parameter, if any. */
+        public RowMapper<?> getRowMapper();
     }
 }
