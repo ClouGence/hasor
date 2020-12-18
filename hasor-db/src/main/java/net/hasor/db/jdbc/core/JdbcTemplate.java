@@ -769,9 +769,9 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     @Override
     public Map<String, Object> call(String callString, List<SqlParameter> declaredParameters) throws SQLException {
         return this.call(callString, cs -> {
+            //
             // process params
             int sqlColIndex = 1;
-            final List<OutSqlParameter> outputParameters = new ArrayList<>();
             final List<ReturnSqlParameter> resultParameters = new ArrayList<>();
             for (SqlParameter declaredParam : declaredParameters) {
                 // input parameters
@@ -788,7 +788,6 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
                     JDBCType paramJdbcType = Objects.requireNonNull(((OutSqlParameter) declaredParam).getJdbcType(), "jdbcType must not be null");
                     String paramTypeName = ((OutSqlParameter) declaredParam).getTypeName();
                     Integer paramScale = ((OutSqlParameter) declaredParam).getScale();
-                    outputParameters.add((OutSqlParameter) declaredParam);
                     //
                     if (paramTypeName != null) {
                         cs.registerOutParameter(sqlColIndex, paramJdbcType, paramTypeName);
@@ -812,18 +811,6 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
                 logger.trace("CallableStatement.execute() returned '" + retVal + "'");
             }
             //
-            // fetch output
-            for (int i = 1; i <= outputParameters.size(); i++) {
-                OutSqlParameter declaredParam = outputParameters.get(i - 1);
-                String paramName = declaredParam.getName();
-                JDBCType paramJdbcType = Objects.requireNonNull(declaredParam.getJdbcType(), "jdbcType must not be null");
-                TypeHandler paramTypeHandler = declaredParam.getTypeHandler();
-                //
-                paramName = StringUtils.isNotBlank(paramName) ? paramName : "#out-" + i ;
-                paramTypeHandler = (paramTypeHandler != null) ? paramTypeHandler : TypeHandlerRegistry.DEFAULT.getTypeHandler(paramJdbcType);
-                Object resultValue = paramTypeHandler.getResult(cs, i);
-                resultsMap.put(paramName, resultValue);
-            }
             // fetch results
             int resultIndex = 1;
             ReturnSqlParameter sqlParameter = resultParameters.size() > 0 ? resultParameters.get(0) : null;
@@ -850,6 +837,24 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
                     String name = resultParameterName(sqlParameter, "#update-count-" + resultIndex);
                     resultsMap.put(name, updateCount);
                 }
+            }
+            //
+            // fetch output
+            for (int i = 1; i <= declaredParameters.size(); i++) {
+                SqlParameter declaredParam = declaredParameters.get(i - 1);
+                OutSqlParameter outParameter = null;
+                if (!(declaredParam instanceof OutSqlParameter)) {
+                    continue;
+                }
+                outParameter = (OutSqlParameter) declaredParam;
+                String paramName = declaredParam.getName();
+                JDBCType paramJdbcType = Objects.requireNonNull(outParameter.getJdbcType(), "jdbcType must not be null");
+                TypeHandler paramTypeHandler = outParameter.getTypeHandler();
+                //
+                paramName = StringUtils.isNotBlank(paramName) ? paramName : "#out-" + i;
+                paramTypeHandler = (paramTypeHandler != null) ? paramTypeHandler : TypeHandlerRegistry.DEFAULT.getTypeHandler(paramJdbcType);
+                Object resultValue = paramTypeHandler.getResult(cs, i);
+                resultsMap.put(paramName, resultValue);
             }
             return resultsMap;
         });

@@ -31,6 +31,8 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DsUtils {
+    public static String JDBC_URL = "jdbc:mysql://127.0.0.1:3306/local_test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&user=root&password=123258";
+
     public static DruidDataSource createDs(String dbID) throws Throwable {
         DruidDataSource druid = new DruidDataSource();
         druid.setUrl("jdbc:h2:mem:test_" + dbID);

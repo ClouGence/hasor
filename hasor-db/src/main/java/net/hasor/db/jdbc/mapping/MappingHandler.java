@@ -23,6 +23,7 @@ import net.hasor.utils.ExceptionUtils;
 import java.sql.JDBCType;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -40,7 +41,7 @@ public class MappingHandler {
     }
 
     public MappingHandler(TypeHandlerRegistry typeRegistry) {
-        this.typeRegistry = typeRegistry;
+        this.typeRegistry = Objects.requireNonNull(typeRegistry, "typeRegistry not null.");
         this.resultMapperMap = new ConcurrentHashMap<>();
     }
 
@@ -99,7 +100,7 @@ public class MappingHandler {
             return dtoField.getAnnotation(Field.class);
         } else if (autoConfigField) {
             Class<?> fieldType = dtoField.getType();
-            JDBCType jdbcType = typeRegistry.toSqlType(fieldType);
+            JDBCType jdbcType = this.typeRegistry.toSqlType(fieldType);
             return new FieldImpl(dtoField.getName(), jdbcType);
         } else {
             return null;
