@@ -78,9 +78,7 @@ public class BigDecimalTypeTest {
             jdbcTemplate.execute("create procedure proc_decimal(out p_out decimal(10,2)) begin set p_out=123.123; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_decimal(?)}",//
-                    Collections.singletonList(//
-                            CallableSqlParameter.withOutput("out", JDBCType.NUMERIC, new BigDecimalTypeHandler())//
-                    ));
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.NUMERIC, new BigDecimalTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof BigDecimal;

@@ -74,9 +74,7 @@ public class BooleanTypeTest {
             jdbcTemplate.execute("create procedure proc_boolean(out p_out boolean) begin set p_out=true; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_boolean(?)}",//
-                    Collections.singletonList(//
-                            CallableSqlParameter.withOutput("out", JDBCType.BOOLEAN, new BooleanTypeHandler())//
-                    ));
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.BOOLEAN, new BooleanTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Boolean;

@@ -70,9 +70,7 @@ public class DoubleTypeTest {
             jdbcTemplate.execute("create procedure proc_double(out p_out double) begin set p_out=123.123; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_double(?)}",//
-                    Collections.singletonList(//
-                            CallableSqlParameter.withOutput("out", JDBCType.DOUBLE, new DoubleTypeHandler())//
-                    ));
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.DOUBLE, new DoubleTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Double;

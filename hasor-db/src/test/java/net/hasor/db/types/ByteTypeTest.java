@@ -70,9 +70,7 @@ public class ByteTypeTest {
             jdbcTemplate.execute("create procedure proc_smallint(out p_out smallint) begin set p_out=123; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_smallint(?)}",//
-                    Collections.singletonList(//
-                            CallableSqlParameter.withOutput("out", JDBCType.SMALLINT, new ByteTypeHandler())//
-                    ));
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.SMALLINT, new ByteTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Byte;

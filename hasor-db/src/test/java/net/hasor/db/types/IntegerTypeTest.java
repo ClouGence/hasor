@@ -70,9 +70,7 @@ public class IntegerTypeTest {
             jdbcTemplate.execute("create procedure proc_integer(out p_out integer) begin set p_out=123123; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_integer(?)}",//
-                    Collections.singletonList(//
-                            CallableSqlParameter.withOutput("out", JDBCType.INTEGER, new IntegerTypeHandler())//
-                    ));
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.INTEGER, new IntegerTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Integer;

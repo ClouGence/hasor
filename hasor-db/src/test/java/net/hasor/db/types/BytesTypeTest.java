@@ -100,9 +100,7 @@ public class BytesTypeTest {
             jdbcTemplate.execute("create procedure proc_bytes(out p_out varbinary(10)) begin set p_out= b'0111111100001111'; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_bytes(?)}",//
-                    Collections.singletonList(//
-                            CallableSqlParameter.withOutput("out", JDBCType.VARBINARY, new BytesForWrapTypeHandler())//
-                    ));
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.VARBINARY, new BytesForWrapTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert !(objectMap.get("out") instanceof byte[]);
@@ -174,9 +172,7 @@ public class BytesTypeTest {
             jdbcTemplate.execute("create procedure proc_bytes(out p_out varbinary(10)) begin set p_out= b'0111111100001111'; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_bytes(?)}",//
-                    Collections.singletonList(//
-                            CallableSqlParameter.withOutput("out", JDBCType.VARBINARY, new BytesTypeHandler())//
-                    ));
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.VARBINARY, new BytesTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof byte[];
@@ -248,9 +244,7 @@ public class BytesTypeTest {
             jdbcTemplate.execute("create procedure proc_bytes(out p_out varbinary(10)) begin set p_out= b'0111111100001111'; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_bytes(?)}",//
-                    Collections.singletonList(//
-                            CallableSqlParameter.withOutput("out", JDBCType.VARBINARY, new BytesInputStreamTypeHandler())//
-                    ));
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.VARBINARY, new BytesInputStreamTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof InputStream;

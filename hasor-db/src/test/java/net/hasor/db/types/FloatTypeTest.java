@@ -70,9 +70,7 @@ public class FloatTypeTest {
             jdbcTemplate.execute("create procedure proc_float(out p_out float) begin set p_out=123.123; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_float(?)}",//
-                    Collections.singletonList(//
-                            CallableSqlParameter.withOutput("out", JDBCType.FLOAT, new FloatTypeHandler())//
-                    ));
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.FLOAT, new FloatTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Float;

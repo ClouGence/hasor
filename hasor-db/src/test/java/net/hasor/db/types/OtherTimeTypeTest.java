@@ -1,20 +1,27 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.db.jdbc.core.CallableSqlParameter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.InstantTypeHandler;
 import net.hasor.db.types.handler.JapaneseDateTypeHandler;
 import net.hasor.test.db.SingleDsModule;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.chrono.JapaneseDate;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class OtherTimeTypeTest {
     @Test
@@ -64,17 +71,21 @@ public class OtherTimeTypeTest {
     }
 
     @Test
-    public void testInstantTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+    public void testInstantTypeHandler_4() throws Exception {
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_timestamp;");
+            jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new InstantTypeHandler())));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof Instant;
+            Date dateString = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2008-08-09 10:11:12");
+            Instant instant = (Instant) objectMap.get("out");
+            assert dateString.toInstant().toEpochMilli() == instant.toEpochMilli();
+        }
     }
 
     @Test
@@ -126,16 +137,20 @@ public class OtherTimeTypeTest {
     }
 
     @Test
-    public void testJapaneseDateTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+    public void testJapaneseDateTypeHandler_4() throws Exception {
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_timestamp;");
+            jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new JapaneseDateTypeHandler())));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof JapaneseDate;
+            Date testDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2008-08-09 10:11:12");
+            JapaneseDate instant = (JapaneseDate) objectMap.get("out");
+            assert JapaneseDateTypeHandler.toJapaneseDate(testDate).equals(instant);
+        }
     }
 }

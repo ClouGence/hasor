@@ -174,9 +174,7 @@ public class BlobBytesTypeTest {
             jdbcTemplate.execute("create procedure proc_blob(out p_out blob) begin set p_out= b'0111111100001111'; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_blob(?)}",//
-                    Collections.singletonList(//
-                            CallableSqlParameter.withOutput("out", JDBCType.BLOB, new BlobBytesTypeHandler())//
-                    ));
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.BLOB, new BlobBytesTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof byte[];
@@ -248,9 +246,7 @@ public class BlobBytesTypeTest {
             jdbcTemplate.execute("create procedure proc_blob(out p_out blob) begin set p_out= b'0111111100001111'; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_blob(?)}",//
-                    Collections.singletonList(//
-                            CallableSqlParameter.withOutput("out", JDBCType.BLOB, new BlobInputStreamTypeHandler())//
-                    ));
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.BLOB, new BlobInputStreamTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof InputStream;
