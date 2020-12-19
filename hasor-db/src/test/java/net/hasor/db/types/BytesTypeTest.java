@@ -1,11 +1,13 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.db.jdbc.core.CallableSqlParameter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.BytesForWrapTypeHandler;
 import net.hasor.db.types.handler.BytesInputStreamTypeHandler;
 import net.hasor.db.types.handler.BytesTypeHandler;
 import net.hasor.test.db.SingleDsModule;
+import net.hasor.test.db.utils.DsUtils;
 import net.hasor.utils.CommonCodeUtils;
 import net.hasor.utils.io.IOUtils;
 import org.junit.Test;
@@ -13,9 +15,13 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class BytesTypeTest {
     private byte[] toPrimitive(Byte[] bytes) {
@@ -88,16 +94,24 @@ public class BytesTypeTest {
 
     @Test
     public void testBytesForWrapTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigDecimal bigDecimal = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigDecimal>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert bigDecimal.intValue() == 123;
-        //        }
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_bytes;");
+            jdbcTemplate.execute("create procedure proc_bytes(out p_out varbinary(10)) begin set p_out= b'0111111100001111'; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_bytes(?)}",//
+                    Collections.singletonList(//
+                            CallableSqlParameter.withOutput("out", JDBCType.VARBINARY, new BytesForWrapTypeHandler())//
+                    ));
+            //
+            assert objectMap.size() == 2;
+            assert !(objectMap.get("out") instanceof byte[]);
+            assert objectMap.get("out") instanceof Byte[];
+            Byte[] bytes = (Byte[]) objectMap.get("out");
+            assert bytes[0] == 0b01111111;
+            assert bytes[1] == 0b00001111;
+            assert objectMap.get("#update-count-1").equals(0);
+        }
     }
 
     @Test
@@ -154,16 +168,24 @@ public class BytesTypeTest {
 
     @Test
     public void testBytesTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigDecimal bigDecimal = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigDecimal>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert bigDecimal.intValue() == 123;
-        //        }
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_bytes;");
+            jdbcTemplate.execute("create procedure proc_bytes(out p_out varbinary(10)) begin set p_out= b'0111111100001111'; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_bytes(?)}",//
+                    Collections.singletonList(//
+                            CallableSqlParameter.withOutput("out", JDBCType.VARBINARY, new BytesTypeHandler())//
+                    ));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof byte[];
+            assert !(objectMap.get("out") instanceof Byte[]);
+            byte[] bytes = (byte[]) objectMap.get("out");
+            assert bytes[0] == 0b01111111;
+            assert bytes[1] == 0b00001111;
+            assert objectMap.get("#update-count-1").equals(0);
+        }
     }
 
     @Test
@@ -219,17 +241,28 @@ public class BytesTypeTest {
     }
 
     @Test
-    public void testBytesInputStreamTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigDecimal bigDecimal = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigDecimal>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert bigDecimal.intValue() == 123;
-        //        }
+    public void testBytesInputStreamTypeHandler_4() throws Exception {
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_bytes;");
+            jdbcTemplate.execute("create procedure proc_bytes(out p_out varbinary(10)) begin set p_out= b'0111111100001111'; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_bytes(?)}",//
+                    Collections.singletonList(//
+                            CallableSqlParameter.withOutput("out", JDBCType.VARBINARY, new BytesInputStreamTypeHandler())//
+                    ));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof InputStream;
+            assert objectMap.get("#update-count-1").equals(0);
+            //
+            byte[] bytes = new byte[2];
+            bytes[0] = 0b01111111;
+            bytes[1] = 0b00001111;
+            //
+            String s1 = CommonCodeUtils.MD5.encodeMD5(bytes);
+            String s2 = CommonCodeUtils.MD5.encodeMD5(IOUtils.toByteArray((InputStream) objectMap.get("out")));
+            assert s1.equals(s2);
+        }
     }
-    //
 }
