@@ -1,6 +1,7 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.db.jdbc.core.CallableSqlParameter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.types.handler.EnumTypeHandler;
@@ -8,10 +9,16 @@ import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.CharacterSensitiveEnum;
 import net.hasor.test.db.dto.LicenseOfCodeEnum;
 import net.hasor.test.db.dto.LicenseOfValueEnum;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.JDBCType;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class EnumTypeTest {
     @Test
@@ -75,6 +82,21 @@ public class EnumTypeTest {
 
     @Test
     public void testEnumTypeHandler_4() throws SQLException {
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_varchar;");
+            jdbcTemplate.execute("create procedure proc_varchar(out p_out varchar(50)) begin set p_out='READ_UNCOMMITTED'; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_varchar(?)}",//
+                    Collections.singletonList(//
+                            CallableSqlParameter.withOutput("out", JDBCType.VARCHAR, new EnumTypeHandler<>(Isolation.class))//
+                    ));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof Isolation;
+            assert objectMap.get("out").equals(Isolation.READ_UNCOMMITTED);
+            assert objectMap.get("#update-count-1").equals(0);
+        }
     }
 
     @Test
@@ -122,6 +144,21 @@ public class EnumTypeTest {
 
     @Test
     public void testEnumTypeHandler_ofCode_4() throws SQLException {
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_varchar;");
+            jdbcTemplate.execute("create procedure proc_varchar(out p_out varchar(50)) begin set p_out='Apache 2.0'; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_varchar(?)}",//
+                    Collections.singletonList(//
+                            CallableSqlParameter.withOutput("out", JDBCType.VARCHAR, new EnumTypeHandler<>(LicenseOfCodeEnum.class))//
+                    ));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof LicenseOfCodeEnum;
+            assert objectMap.get("out").equals(LicenseOfCodeEnum.Apache2);
+            assert objectMap.get("#update-count-1").equals(0);
+        }
     }
 
     @Test
@@ -169,5 +206,20 @@ public class EnumTypeTest {
 
     @Test
     public void testEnumTypeHandler_ofValue_4() throws SQLException {
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_integer;");
+            jdbcTemplate.execute("create procedure proc_integer(out p_out int) begin set p_out=4; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_integer(?)}",//
+                    Collections.singletonList(//
+                            CallableSqlParameter.withOutput("out", JDBCType.INTEGER, new EnumTypeHandler<>(LicenseOfValueEnum.class))//
+                    ));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof LicenseOfValueEnum;
+            assert objectMap.get("out").equals(LicenseOfValueEnum.Apache2);
+            assert objectMap.get("#update-count-1").equals(0);
+        }
     }
 }

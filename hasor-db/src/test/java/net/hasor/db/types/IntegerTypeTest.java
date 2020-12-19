@@ -1,14 +1,20 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.db.jdbc.core.CallableSqlParameter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.IntegerTypeHandler;
 import net.hasor.test.db.SingleDsModule;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class IntegerTypeTest {
     @Test
@@ -58,15 +64,20 @@ public class IntegerTypeTest {
 
     @Test
     public void testIntegerTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_integer;");
+            jdbcTemplate.execute("create procedure proc_integer(out p_out integer) begin set p_out=123123; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_integer(?)}",//
+                    Collections.singletonList(//
+                            CallableSqlParameter.withOutput("out", JDBCType.INTEGER, new IntegerTypeHandler())//
+                    ));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof Integer;
+            assert objectMap.get("out").equals(123123);
+            assert objectMap.get("#update-count-1").equals(0);
+        }
     }
 }
