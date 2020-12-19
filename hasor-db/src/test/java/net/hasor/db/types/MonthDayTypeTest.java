@@ -1,20 +1,26 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.db.jdbc.core.CallableSqlParameter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.MonthDayOfNumberTypeHandler;
 import net.hasor.db.types.handler.MonthDayOfStringTypeHandler;
 import net.hasor.db.types.handler.MonthDayOfTimeTypeHandler;
 import net.hasor.test.db.SingleDsModule;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.time.Month;
 import java.time.MonthDay;
 import java.time.YearMonth;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class MonthDayTypeTest {
     @Test
@@ -66,16 +72,23 @@ public class MonthDayTypeTest {
 
     @Test
     public void testMonthDayOfNumberTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_integer;");
+            jdbcTemplate.execute("create procedure proc_integer(out p_out integer) begin set p_out=1112; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_integer(?)}",//
+                    Collections.singletonList(//
+                            CallableSqlParameter.withOutput("out", JDBCType.INTEGER, new MonthDayOfNumberTypeHandler())//
+                    ));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof MonthDay;
+            MonthDay yearMonth = (MonthDay) objectMap.get("out");
+            assert yearMonth.getMonth() == Month.NOVEMBER;
+            assert yearMonth.getDayOfMonth() == 12;
+            assert objectMap.get("#update-count-1").equals(0);
+        }
     }
 
     @Test
@@ -136,16 +149,23 @@ public class MonthDayTypeTest {
 
     @Test
     public void testMonthDayOfStringTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_varchar;");
+            jdbcTemplate.execute("create procedure proc_varchar(out p_out varchar(10)) begin set p_out='11-12'; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_varchar(?)}",//
+                    Collections.singletonList(//
+                            CallableSqlParameter.withOutput("out", JDBCType.VARCHAR, new MonthDayOfStringTypeHandler())//
+                    ));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof MonthDay;
+            MonthDay yearMonth = (MonthDay) objectMap.get("out");
+            assert yearMonth.getMonth() == Month.NOVEMBER;
+            assert yearMonth.getDayOfMonth() == 12;
+            assert objectMap.get("#update-count-1").equals(0);
+        }
     }
 
     @Test
@@ -210,15 +230,22 @@ public class MonthDayTypeTest {
 
     @Test
     public void testMonthDayOfTimeTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_timestamp;");
+            jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
+                    Collections.singletonList(//
+                            CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new MonthDayOfTimeTypeHandler())//
+                    ));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof MonthDay;
+            MonthDay yearMonth = (MonthDay) objectMap.get("out");
+            assert yearMonth.getMonth() == Month.AUGUST;
+            assert yearMonth.getDayOfMonth() == 9;
+            assert objectMap.get("#update-count-1").equals(0);
+        }
     }
 }

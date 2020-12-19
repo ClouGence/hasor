@@ -1,20 +1,26 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.db.jdbc.core.CallableSqlParameter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.LocalDateTimeTypeHandler;
 import net.hasor.db.types.handler.LocalDateTypeHandler;
 import net.hasor.db.types.handler.LocalTimeTypeHandler;
 import net.hasor.test.db.SingleDsModule;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class LocalTimeTypeTest {
     @Test
@@ -83,16 +89,29 @@ public class LocalTimeTypeTest {
 
     @Test
     public void testLocalDateTimeTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_timestamp;");
+            jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
+                    Collections.singletonList(//
+                            CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new LocalDateTimeTypeHandler())//
+                    ));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof LocalDateTime;
+            assert objectMap.get("#update-count-1").equals(0);
+            //
+            LocalDateTime dateTime = (LocalDateTime) objectMap.get("out");
+            assert dateTime.getYear() == 2008;
+            assert dateTime.getMonth() == Month.AUGUST;
+            assert dateTime.getDayOfMonth() == 9;
+            assert dateTime.getHour() == 10;
+            assert dateTime.getMinute() == 11;
+            assert dateTime.getSecond() == 12;
+            assert dateTime.getNano() == 0;
+        }
     }
 
     @Test
@@ -152,16 +171,25 @@ public class LocalTimeTypeTest {
 
     @Test
     public void testLocalDateTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_timestamp;");
+            jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
+                    Collections.singletonList(//
+                            CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new LocalDateTypeHandler())//
+                    ));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof LocalDate;
+            assert objectMap.get("#update-count-1").equals(0);
+            //
+            LocalDate dateTime = (LocalDate) objectMap.get("out");
+            assert dateTime.getYear() == 2008;
+            assert dateTime.getMonth() == Month.AUGUST;
+            assert dateTime.getDayOfMonth() == 9;
+        }
     }
 
     @Test
@@ -224,15 +252,25 @@ public class LocalTimeTypeTest {
 
     @Test
     public void testLocalTimeTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_timestamp;");
+            jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
+                    Collections.singletonList(//
+                            CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new LocalTimeTypeHandler())//
+                    ));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof LocalTime;
+            assert objectMap.get("#update-count-1").equals(0);
+            //
+            LocalTime dateTime = (LocalTime) objectMap.get("out");
+            assert dateTime.getHour() == 10;
+            assert dateTime.getMinute() == 11;
+            assert dateTime.getSecond() == 12;
+            assert dateTime.getNano() == 0;
+        }
     }
 }
