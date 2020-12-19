@@ -1,19 +1,25 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.db.jdbc.core.CallableSqlParameter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.YearMonthOfNumberTypeHandler;
 import net.hasor.db.types.handler.YearMonthOfStringTypeHandler;
 import net.hasor.db.types.handler.YearMonthOfTimeTypeHandler;
 import net.hasor.test.db.SingleDsModule;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.time.Month;
 import java.time.YearMonth;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class YearMonthTypeTest {
     @Test
@@ -65,16 +71,20 @@ public class YearMonthTypeTest {
 
     @Test
     public void testYearMonthOfNumberTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_integer;");
+            jdbcTemplate.execute("create procedure proc_integer(out p_out integer) begin set p_out=202001; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_integer(?)}",//
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.INTEGER, new YearMonthOfNumberTypeHandler())));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof YearMonth;
+            YearMonth instant = (YearMonth) objectMap.get("out");
+            assert instant.getYear() == 2020;
+            assert instant.getMonth() == Month.JANUARY;
+        }
     }
 
     @Test
@@ -124,7 +134,7 @@ public class YearMonthTypeTest {
             assert dat2.getMonth() == Month.JANUARY;
             //
             List<YearMonth> dat3 = jdbcTemplate.query("select ?", ps -> {
-                new YearMonthOfStringTypeHandler().setParameter(ps, 1, YearMonth.of(1998, 2), JDBCType.SMALLINT);
+                new YearMonthOfStringTypeHandler().setParameter(ps, 1, YearMonth.of(1998, 2), JDBCType.VARCHAR);
             }, (rs, rowNum) -> {
                 return new YearMonthOfStringTypeHandler().getNullableResult(rs, 1);
             });
@@ -135,16 +145,20 @@ public class YearMonthTypeTest {
 
     @Test
     public void testYearMonthOfStringTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_varchar;");
+            jdbcTemplate.execute("create procedure proc_varchar(out p_out varchar(10)) begin set p_out='2020-01'; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_varchar(?)}",//
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.VARCHAR, new YearMonthOfStringTypeHandler())));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof YearMonth;
+            YearMonth instant = (YearMonth) objectMap.get("out");
+            assert instant.getYear() == 2020;
+            assert instant.getMonth() == Month.JANUARY;
+        }
     }
 
     @Test
@@ -208,16 +222,20 @@ public class YearMonthTypeTest {
     }
 
     @Test
-    public void testYearMonthOfTimeTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+    public void testYearMonthOfTimeTypeHandler_4() throws Exception {
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_timestamp;");
+            jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new YearMonthOfTimeTypeHandler())));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof YearMonth;
+            YearMonth instant = (YearMonth) objectMap.get("out");
+            assert instant.getYear() == 2008;
+            assert instant.getMonth() == Month.AUGUST;
+        }
     }
 }
