@@ -1,21 +1,27 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.db.jdbc.core.CallableSqlParameter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.ClobReaderTypeHandler;
 import net.hasor.db.types.handler.NClobReaderTypeHandler;
 import net.hasor.db.types.handler.NStringReaderTypeHandler;
 import net.hasor.db.types.handler.StringReaderTypeHandler;
 import net.hasor.test.db.SingleDsModule;
+import net.hasor.test.db.utils.DsUtils;
 import net.hasor.utils.io.IOUtils;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class StringReaderTypeTest {
     @Test
@@ -181,17 +187,20 @@ public class StringReaderTypeTest {
     }
 
     @Test
-    public void testStringTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+    public void testStringTypeHandler_4() throws Exception {
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_varchar;");
+            jdbcTemplate.execute("create procedure proc_varchar(out p_out varchar(10)) begin set p_out='abcdefg'; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_varchar(?)}",//
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.VARCHAR, new StringReaderTypeHandler())));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof Reader;
+            String body = IOUtils.readToString((Reader) objectMap.get("out"));
+            assert "abcdefg".equals(body);
+        }
     }
 
     @Test
@@ -243,16 +252,19 @@ public class StringReaderTypeTest {
     }
 
     @Test
-    public void testNStringTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+    public void testNStringTypeHandler_4() throws Exception {
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_nvarchar;");
+            jdbcTemplate.execute("create procedure proc_nvarchar(out p_out nvarchar(10)) begin set p_out='abcdefg'; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_nvarchar(?)}",//
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.NVARCHAR, new NStringReaderTypeHandler())));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof Reader;
+            String body = IOUtils.readToString((Reader) objectMap.get("out"));
+            assert "abcdefg".equals(body);
+        }
     }
 }

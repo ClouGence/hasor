@@ -1,17 +1,23 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.db.jdbc.core.CallableSqlParameter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.ClobTypeHandler;
 import net.hasor.db.types.handler.NClobTypeHandler;
 import net.hasor.db.types.handler.NStringTypeHandler;
 import net.hasor.db.types.handler.StringTypeHandler;
 import net.hasor.test.db.SingleDsModule;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class StringTypeTest {
     @Test
@@ -159,7 +165,7 @@ public class StringTypeTest {
             assert dat2 == null;
             //
             List<String> dat = jdbcTemplate.query("select ?", ps -> {
-                new StringTypeHandler().setParameter(ps, 1, "abcdefg", JDBCType.SMALLINT);
+                new StringTypeHandler().setParameter(ps, 1, "abcdefg", JDBCType.VARCHAR);
             }, (rs, rowNum) -> {
                 return new StringTypeHandler().getNullableResult(rs, 1);
             });
@@ -169,16 +175,18 @@ public class StringTypeTest {
 
     @Test
     public void testStringTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_varchar;");
+            jdbcTemplate.execute("create procedure proc_varchar(out p_out varchar(10)) begin set p_out='abcdefg'; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_varchar(?)}",//
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.VARCHAR, new StringTypeHandler())));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof String;
+            assert objectMap.get("out").equals("abcdefg");
+        }
     }
 
     @Test
@@ -228,15 +236,17 @@ public class StringTypeTest {
 
     @Test
     public void testNStringTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_nvarchar;");
+            jdbcTemplate.execute("create procedure proc_nvarchar(out p_out nvarchar(10)) begin set p_out='abcdefg'; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_nvarchar(?)}",//
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.NVARCHAR, new NStringTypeHandler())));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof String;
+            assert objectMap.get("out").equals("abcdefg");
+        }
     }
 }
