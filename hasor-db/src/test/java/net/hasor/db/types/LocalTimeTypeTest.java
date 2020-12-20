@@ -11,7 +11,6 @@ import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -89,7 +88,7 @@ public class LocalTimeTypeTest {
 
     @Test
     public void testLocalDateTimeTypeHandler_4() throws SQLException {
-        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+        try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             jdbcTemplate.execute("drop procedure if exists proc_timestamp;");
             jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");
@@ -169,7 +168,7 @@ public class LocalTimeTypeTest {
 
     @Test
     public void testLocalDateTypeHandler_4() throws SQLException {
-        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+        try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             jdbcTemplate.execute("drop procedure if exists proc_timestamp;");
             jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");
@@ -248,7 +247,7 @@ public class LocalTimeTypeTest {
 
     @Test
     public void testLocalTimeTypeHandler_4() throws SQLException {
-        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+        try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             jdbcTemplate.execute("drop procedure if exists proc_timestamp;");
             jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");

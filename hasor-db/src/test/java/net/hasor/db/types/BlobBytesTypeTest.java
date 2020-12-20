@@ -16,7 +16,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -94,7 +93,7 @@ public class BlobBytesTypeTest {
 
     @Test
     public void testBlobBytesForWrapTypeHandler_4() throws SQLException {
-        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+        try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             jdbcTemplate.execute("drop procedure if exists proc_blob;");
             jdbcTemplate.execute("create procedure proc_blob(out p_out blob) begin set p_out= b'0111111100001111'; end;");
@@ -168,7 +167,7 @@ public class BlobBytesTypeTest {
 
     @Test
     public void testBlobBytesTypeHandler_4() throws SQLException {
-        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+        try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             jdbcTemplate.execute("drop procedure if exists proc_blob;");
             jdbcTemplate.execute("create procedure proc_blob(out p_out blob) begin set p_out= b'0111111100001111'; end;");
@@ -240,7 +239,7 @@ public class BlobBytesTypeTest {
 
     @Test
     public void testBlobInputStreamTypeHandler_4() throws Exception {
-        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+        try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             jdbcTemplate.execute("drop procedure if exists proc_blob;");
             jdbcTemplate.execute("create procedure proc_blob(out p_out blob) begin set p_out= b'0111111100001111'; end;");

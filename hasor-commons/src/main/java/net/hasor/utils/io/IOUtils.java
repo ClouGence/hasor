@@ -950,6 +950,15 @@ public class IOUtils {
         }
         return builder.toString();
     }
+
+    public static String readToString(Reader input) throws IOException {
+        List<String> stringList = readLines(input);
+        StringBuilder builder = new StringBuilder();
+        for (String str : stringList) {
+            builder = builder.append(str);
+        }
+        return builder.toString();
+    }
     // lineIterator
     //-----------------------------------------------------------------------
 

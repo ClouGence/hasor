@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -72,7 +71,7 @@ public class BigDecimalTypeTest {
 
     @Test
     public void testBigDecimalTypeHandler_4() throws SQLException {
-        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+        try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             jdbcTemplate.execute("drop procedure if exists proc_decimal;");
             jdbcTemplate.execute("create procedure proc_decimal(out p_out decimal(10,2)) begin set p_out=123.123; end;");

@@ -1,15 +1,20 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.db.jdbc.core.CallableSqlParameter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.*;
 import net.hasor.test.db.SingleDsModule;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
+import java.sql.Connection;
 import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.time.*;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class OffsetTimeTypeTest {
     @Test
@@ -27,6 +32,7 @@ public class OffsetTimeTypeTest {
                     .atOffset(ZoneOffset.ofHours(8));
             //
             assert dateTime.getOffset().getId().equals(testData.getOffset().getId());
+            assert dateTime.getYear() == testData.getYear();
             assert dateTime.getMonth() == testData.getMonth();
             assert dateTime.getDayOfMonth() == testData.getDayOfMonth();
             assert dateTime.getHour() == testData.getHour();
@@ -51,6 +57,7 @@ public class OffsetTimeTypeTest {
                     .atOffset(ZoneOffset.ofHours(8));
             //
             assert dateTime.getOffset().getId().equals(testData.getOffset().getId());
+            assert dateTime.getYear() == testData.getYear();
             assert dateTime.getMonth() == testData.getMonth();
             assert dateTime.getDayOfMonth() == testData.getDayOfMonth();
             assert dateTime.getHour() == testData.getHour();
@@ -76,6 +83,7 @@ public class OffsetTimeTypeTest {
             OffsetDateTime dateTime = dat.get(0);
             //
             assert dateTime.getOffset().getId().equals(testData.getOffset().getId());
+            assert dateTime.getYear() == testData.getYear();
             assert dateTime.getMonth() == testData.getMonth();
             assert dateTime.getDayOfMonth() == testData.getDayOfMonth();
             assert dateTime.getHour() == testData.getHour();
@@ -86,17 +94,23 @@ public class OffsetTimeTypeTest {
     }
 
     @Test
-    public void testOffsetDateTimeForSqlTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+    public void testOffsetDateTimeForSqlTypeHandler_4() throws Exception {
+        try (Connection conn = DsUtils.localOracle()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute(""//
+                    + "create or replace procedure proc_timestamptz(p_out out timestamp with time zone)\n" //
+                    + "AS\n" //
+                    + "BEGIN\n"//
+                    + "  p_out := to_timestamp_tz('2013-10-15T17:18:28-06:00','YYYY-MM-DD\"T\"HH24:MI:SSTZH:TZM');\n" //
+                    + "END;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamptz(?)}",//
+                    Collections.singletonList(CallableSqlParameter.withInOut("out", null, JDBCType.TIMESTAMP_WITH_TIMEZONE, new OffsetDateTimeForSqlTypeHandler())));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof OffsetDateTime;
+            assert objectMap.get("out").toString().equals("2013-10-15T17:18:28-06:00");
+        }
     }
 
     @Test
@@ -114,6 +128,7 @@ public class OffsetTimeTypeTest {
                     .atZoneSameInstant(ZoneOffset.UTC);
             //
             assert dateTime.getOffset().getId().equals(utcTime.getOffset().getId());
+            assert dateTime.getYear() == utcTime.getYear();
             assert dateTime.getMonth() == utcTime.getMonth();
             assert dateTime.getDayOfMonth() == utcTime.getDayOfMonth();
             assert dateTime.getHour() == utcTime.getHour();
@@ -138,6 +153,7 @@ public class OffsetTimeTypeTest {
                     .atZoneSameInstant(ZoneOffset.UTC);
             //
             assert dateTime.getOffset().getId().equals(utcTime.getOffset().getId());
+            assert dateTime.getYear() == utcTime.getYear();
             assert dateTime.getMonth() == utcTime.getMonth();
             assert dateTime.getDayOfMonth() == utcTime.getDayOfMonth();
             assert dateTime.getHour() == utcTime.getHour();
@@ -164,6 +180,7 @@ public class OffsetTimeTypeTest {
             ZonedDateTime testTime = argOffsetTime.atZoneSameInstant(ZoneOffset.UTC);
             //
             assert dateTime.getOffset().getId().equals(testTime.getOffset().getId());
+            assert dateTime.getYear() == testTime.getYear();
             assert dateTime.getMonth() == testTime.getMonth();
             assert dateTime.getDayOfMonth() == testTime.getDayOfMonth();
             assert dateTime.getHour() == testTime.getHour();
@@ -175,16 +192,29 @@ public class OffsetTimeTypeTest {
 
     @Test
     public void testOffsetDateTimeForUTCTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+        try (Connection conn = DsUtils.localMySQL()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_timestamp;");
+            jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 08:09:30', '%Y-%m-%d %h:%i:%s'); end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new OffsetDateTimeForUTCTypeHandler())));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof OffsetDateTime;
+            ZonedDateTime testTime = LocalDateTime.of(2008, Month.AUGUST, 9, 8, 9, 30)//
+                    .atOffset(ZoneOffset.ofHours(8))//
+                    .atZoneSameInstant(ZoneOffset.UTC);
+            OffsetDateTime dateTime = (OffsetDateTime) objectMap.get("out");
+            assert dateTime.getOffset().getId().equals(testTime.getOffset().getId());
+            assert dateTime.getYear() == testTime.getYear();
+            assert dateTime.getMonth() == testTime.getMonth();
+            assert dateTime.getDayOfMonth() == testTime.getDayOfMonth();
+            assert dateTime.getHour() == testTime.getHour();
+            assert dateTime.getMinute() == testTime.getMinute();
+            assert dateTime.getSecond() == testTime.getSecond();
+            assert dateTime.getNano() == testTime.getNano();
+        }
     }
 
     @Test
@@ -251,16 +281,22 @@ public class OffsetTimeTypeTest {
 
     @Test
     public void testOffsetTimeForSqlTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+        try (Connection conn = DsUtils.localOracle()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute(""//
+                    + "create or replace procedure proc_timestamptz(p_out out timestamp with time zone)\n" //
+                    + "AS\n" //
+                    + "BEGIN\n"//
+                    + "  p_out := to_timestamp_tz('2013-10-15T17:18:28-06:00','YYYY-MM-DD\"T\"HH24:MI:SSTZH:TZM');\n" //
+                    + "END;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamptz(?)}",//
+                    Collections.singletonList(CallableSqlParameter.withInOut("out", null, JDBCType.TIMESTAMP_WITH_TIMEZONE, new OffsetTimeForSqlTypeHandler())));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof OffsetTime;
+            assert objectMap.get("out").toString().equals("17:18:28-06:00");
+        }
     }
 
     @Test
@@ -274,8 +310,11 @@ public class OffsetTimeTypeTest {
             });
             OffsetTime dateTime = dat.get(0);
             OffsetTime localTime = LocalTime.of(18, 33, 20, 123)//
-                    .atOffset(ZoneOffset.ofHours(8))//
-                    .withOffsetSameLocal(ZoneOffset.UTC);
+                    .atOffset(ZoneOffset.ofHours(8))    //
+                    .atDate(LocalDate.ofEpochDay(0))    //
+                    .atZoneSameInstant(ZoneOffset.UTC)  //
+                    .toOffsetDateTime()                 //
+                    .toOffsetTime();
             //
             assert dateTime.getOffset().getId().equals(localTime.getOffset().getId());
             assert dateTime.getHour() == localTime.getHour();
@@ -296,8 +335,11 @@ public class OffsetTimeTypeTest {
             });
             OffsetTime dateTime = dat.get(0);
             OffsetTime localTime = LocalTime.of(18, 33, 20, 123)//
-                    .atOffset(ZoneOffset.ofHours(8))//
-                    .withOffsetSameLocal(ZoneOffset.UTC);
+                    .atOffset(ZoneOffset.ofHours(8))    //
+                    .atDate(LocalDate.ofEpochDay(0))    //
+                    .atZoneSameInstant(ZoneOffset.UTC)  //
+                    .toOffsetDateTime()                 //
+                    .toOffsetTime();
             //
             assert dateTime.getOffset().getId().equals(localTime.getOffset().getId());
             assert dateTime.getHour() == localTime.getHour();
@@ -321,7 +363,11 @@ public class OffsetTimeTypeTest {
             });
             //
             OffsetTime dateTime = dat.get(0);
-            OffsetTime testTime = localTime.withOffsetSameLocal(ZoneOffset.UTC);
+            OffsetTime testTime = localTime             //
+                    .atDate(LocalDate.ofEpochDay(0))    //
+                    .atZoneSameInstant(ZoneOffset.UTC)  //
+                    .toOffsetDateTime()                 //
+                    .toOffsetTime();
             //
             assert dateTime.getOffset().getId().equals(testTime.getOffset().getId());
             assert dateTime.getHour() == testTime.getHour();
@@ -333,16 +379,26 @@ public class OffsetTimeTypeTest {
 
     @Test
     public void testOffsetTimeForUTCTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+        try (Connection conn = DsUtils.localMySQL()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop procedure if exists proc_timestamp;");
+            jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 08:09:30', '%Y-%m-%d %h:%i:%s'); end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
+                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new OffsetTimeForUTCTypeHandler())));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof OffsetTime;
+            ZonedDateTime testTime = LocalDateTime.of(2008, Month.AUGUST, 9, 8, 9, 30)//
+                    .atOffset(ZoneOffset.ofHours(8))//
+                    .atZoneSameInstant(ZoneOffset.UTC);
+            OffsetTime dateTime = (OffsetTime) objectMap.get("out");
+            assert dateTime.getOffset().getId().equals(testTime.getOffset().getId());
+            assert dateTime.getHour() == testTime.getHour();
+            assert dateTime.getMinute() == testTime.getMinute();
+            assert dateTime.getSecond() == testTime.getSecond();
+            assert dateTime.getNano() == testTime.getNano();
+        }
     }
 
     @Test
@@ -415,15 +471,21 @@ public class OffsetTimeTypeTest {
 
     @Test
     public void testZonedDateTimeTypeHandler_4() throws SQLException {
-        //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-        //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        //            //
-        //            jdbcTemplate.executeUpdate("CREATE ALIAS AS_BIGINTEGER FOR \"net.hasor.test.db.CallableFunction.asBigInteger\";");
-        //            BigInteger BigInteger = jdbcTemplate.execute("call AS_BIGINTEGER(?)", (CallableStatementCallback<BigInteger>) cs -> {
-        //                cs.ge
-        //                return null;
-        //            });
-        //            assert BigInteger.intValue() == 123;
-        //        }
+        try (Connection conn = DsUtils.localOracle()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute(""//
+                    + "create or replace procedure proc_timestamptz(p_out out timestamp with time zone)\n" //
+                    + "AS\n" //
+                    + "BEGIN\n"//
+                    + "  p_out := to_timestamp_tz('2013-10-15T17:18:28-06:00','YYYY-MM-DD\"T\"HH24:MI:SSTZH:TZM');\n" //
+                    + "END;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamptz(?)}",//
+                    Collections.singletonList(CallableSqlParameter.withInOut("out", null, JDBCType.TIMESTAMP_WITH_TIMEZONE, new ZonedDateTimeTypeHandler())));
+            //
+            assert objectMap.size() == 2;
+            assert objectMap.get("out") instanceof ZonedDateTime;
+            assert objectMap.get("out").toString().equals("2013-10-15T17:18:28-06:00");
+        }
     }
 }

@@ -10,7 +10,6 @@ import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -72,7 +71,7 @@ public class CharacterTypeTest {
 
     @Test
     public void testCharacterTypeHandler_4() throws SQLException {
-        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+        try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             jdbcTemplate.execute("drop procedure if exists proc_char;");
             jdbcTemplate.execute("create procedure proc_char(out p_out char) begin set p_out='A'; end;");
@@ -141,7 +140,7 @@ public class CharacterTypeTest {
 
     @Test
     public void testNCharacterTypeHandler_4() throws SQLException {
-        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+        try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             jdbcTemplate.execute("drop procedure if exists proc_char;");
             jdbcTemplate.execute("create procedure proc_char(out p_out char) begin set p_out='A'; end;");

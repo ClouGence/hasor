@@ -11,7 +11,6 @@ import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.time.Month;
@@ -72,7 +71,7 @@ public class MonthDayTypeTest {
 
     @Test
     public void testMonthDayOfNumberTypeHandler_4() throws SQLException {
-        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+        try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             jdbcTemplate.execute("drop procedure if exists proc_integer;");
             jdbcTemplate.execute("create procedure proc_integer(out p_out integer) begin set p_out=1112; end;");
@@ -147,7 +146,7 @@ public class MonthDayTypeTest {
 
     @Test
     public void testMonthDayOfStringTypeHandler_4() throws SQLException {
-        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+        try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             jdbcTemplate.execute("drop procedure if exists proc_varchar;");
             jdbcTemplate.execute("create procedure proc_varchar(out p_out varchar(10)) begin set p_out='11-12'; end;");
@@ -226,7 +225,7 @@ public class MonthDayTypeTest {
 
     @Test
     public void testMonthDayOfTimeTypeHandler_4() throws SQLException {
-        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+        try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             jdbcTemplate.execute("drop procedure if exists proc_timestamp;");
             jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");

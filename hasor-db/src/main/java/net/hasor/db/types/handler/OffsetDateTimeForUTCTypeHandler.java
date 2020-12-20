@@ -17,15 +17,19 @@ package net.hasor.db.types.handler;
 import java.sql.*;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 /**
+ * 以 UTC 时区来存储 带有时区的数据。
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
 public class OffsetDateTimeForUTCTypeHandler extends AbstractTypeHandler<OffsetDateTime> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, OffsetDateTime parameter, JDBCType jdbcType) throws SQLException {
-        ps.setTimestamp(i, Timestamp.valueOf(parameter.toLocalDateTime()));
+        ZonedDateTime zonedDateTime = parameter.atZoneSameInstant(ZoneOffset.UTC);
+        Timestamp timestamp = Timestamp.from(zonedDateTime.toInstant());
+        ps.setTimestamp(i, timestamp);
     }
 
     @Override

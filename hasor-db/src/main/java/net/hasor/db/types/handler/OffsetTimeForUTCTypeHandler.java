@@ -15,7 +15,10 @@
  */
 package net.hasor.db.types.handler;
 import java.sql.*;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 /**
  * @version : 2020-10-31
@@ -24,26 +27,26 @@ import java.time.*;
 public class OffsetTimeForUTCTypeHandler extends AbstractTypeHandler<OffsetTime> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, OffsetTime parameter, JDBCType jdbcType) throws SQLException {
-        LocalTime localTime = parameter.withOffsetSameLocal(ZoneOffset.UTC).toLocalTime();
-        Timestamp timestamp = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), localTime));
+        ZonedDateTime zonedDateTime = parameter.atDate(LocalDate.ofEpochDay(0)).atZoneSameInstant(ZoneOffset.UTC);
+        Timestamp timestamp = Timestamp.from(zonedDateTime.toInstant());
         ps.setTimestamp(i, timestamp);
     }
 
     @Override
     public OffsetTime getNullableResult(ResultSet rs, String columnName) throws SQLException {
         Timestamp timestamp = rs.getTimestamp(columnName);
-        return (timestamp == null) ? null : timestamp.toLocalDateTime().toLocalTime().atOffset(ZoneOffset.UTC);
+        return (timestamp == null) ? null : timestamp.toInstant().atOffset(ZoneOffset.UTC).toOffsetTime();
     }
 
     @Override
     public OffsetTime getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         Timestamp timestamp = rs.getTimestamp(columnIndex);
-        return (timestamp == null) ? null : timestamp.toLocalDateTime().toLocalTime().atOffset(ZoneOffset.UTC);
+        return (timestamp == null) ? null : timestamp.toInstant().atOffset(ZoneOffset.UTC).toOffsetTime();
     }
 
     @Override
     public OffsetTime getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         Timestamp timestamp = cs.getTimestamp(columnIndex);
-        return (timestamp == null) ? null : timestamp.toLocalDateTime().toLocalTime().atOffset(ZoneOffset.UTC);
+        return (timestamp == null) ? null : timestamp.toInstant().atOffset(ZoneOffset.UTC).toOffsetTime();
     }
 }

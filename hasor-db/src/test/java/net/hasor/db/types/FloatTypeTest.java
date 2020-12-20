@@ -9,7 +9,6 @@ import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -64,7 +63,7 @@ public class FloatTypeTest {
 
     @Test
     public void testFloatTypeHandler_4() throws SQLException {
-        try (Connection conn = DriverManager.getConnection(DsUtils.JDBC_URL)) {
+        try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             jdbcTemplate.execute("drop procedure if exists proc_float;");
             jdbcTemplate.execute("create procedure proc_float(out p_out float) begin set p_out=123.123; end;");

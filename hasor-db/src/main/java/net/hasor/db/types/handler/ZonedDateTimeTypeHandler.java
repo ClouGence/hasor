@@ -15,7 +15,7 @@
  */
 package net.hasor.db.types.handler;
 import java.sql.*;
-import java.time.ZoneId;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 
 /**
@@ -25,25 +25,24 @@ import java.time.ZonedDateTime;
 public class ZonedDateTimeTypeHandler extends AbstractTypeHandler<ZonedDateTime> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, ZonedDateTime parameter, JDBCType jdbcType) throws SQLException {
-        Timestamp timestamp = Timestamp.valueOf(parameter.toLocalDateTime());
-        ps.setTimestamp(i, timestamp);
+        ps.setObject(i, parameter.toOffsetDateTime());
     }
 
     @Override
     public ZonedDateTime getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        Timestamp timestamp = rs.getTimestamp(columnName);
-        return (timestamp == null) ? null : timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
+        OffsetDateTime offsetDateTime = rs.getObject(columnName, OffsetDateTime.class);
+        return (offsetDateTime == null) ? null : offsetDateTime.toZonedDateTime();
     }
 
     @Override
     public ZonedDateTime getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        Timestamp timestamp = rs.getTimestamp(columnIndex);
-        return (timestamp == null) ? null : timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
+        OffsetDateTime offsetDateTime = rs.getObject(columnIndex, OffsetDateTime.class);
+        return (offsetDateTime == null) ? null : offsetDateTime.toZonedDateTime();
     }
 
     @Override
     public ZonedDateTime getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        Timestamp timestamp = cs.getTimestamp(columnIndex);
-        return (timestamp == null) ? null : timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
+        OffsetDateTime offsetDateTime = cs.getObject(columnIndex, OffsetDateTime.class);
+        return (offsetDateTime == null) ? null : offsetDateTime.toZonedDateTime();
     }
 }

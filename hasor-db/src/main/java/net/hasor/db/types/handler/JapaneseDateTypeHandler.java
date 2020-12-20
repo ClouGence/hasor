@@ -24,9 +24,16 @@ import java.time.chrono.JapaneseDate;
  * @author Kazuki Shimizu
  */
 public class JapaneseDateTypeHandler extends AbstractTypeHandler<JapaneseDate> {
-    private static JapaneseDate getJapaneseDate(Date date) {
+    public static JapaneseDate toJapaneseDate(Date date) {
         if (date != null) {
             return JapaneseDate.from(date.toLocalDate());
+        }
+        return null;
+    }
+
+    public static JapaneseDate toJapaneseDate(java.util.Date date) {
+        if (date != null) {
+            return toJapaneseDate(new Date(date.getTime()));
         }
         return null;
     }
@@ -39,18 +46,18 @@ public class JapaneseDateTypeHandler extends AbstractTypeHandler<JapaneseDate> {
     @Override
     public JapaneseDate getNullableResult(ResultSet rs, String columnName) throws SQLException {
         Date date = rs.getDate(columnName);
-        return getJapaneseDate(date);
+        return toJapaneseDate(date);
     }
 
     @Override
     public JapaneseDate getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         Date date = rs.getDate(columnIndex);
-        return getJapaneseDate(date);
+        return toJapaneseDate(date);
     }
 
     @Override
     public JapaneseDate getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         Date date = cs.getDate(columnIndex);
-        return getJapaneseDate(date);
+        return toJapaneseDate(date);
     }
 }
