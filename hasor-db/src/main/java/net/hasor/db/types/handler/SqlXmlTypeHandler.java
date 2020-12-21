@@ -35,20 +35,20 @@ public class SqlXmlTypeHandler extends AbstractTypeHandler<String> {
 
     @Override
     public String getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        return sqlxmlToString(rs.getSQLXML(columnName));
+        return sqlXmlToStream(rs.getSQLXML(columnName));
     }
 
     @Override
     public String getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        return sqlxmlToString(rs.getSQLXML(columnIndex));
+        return sqlXmlToStream(rs.getSQLXML(columnIndex));
     }
 
     @Override
     public String getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        return sqlxmlToString(cs.getSQLXML(columnIndex));
+        return sqlXmlToStream(cs.getSQLXML(columnIndex));
     }
 
-    protected String sqlxmlToString(SQLXML sqlxml) throws SQLException {
+    protected String sqlXmlToStream(SQLXML sqlxml) throws SQLException {
         if (sqlxml == null) {
             return null;
         }

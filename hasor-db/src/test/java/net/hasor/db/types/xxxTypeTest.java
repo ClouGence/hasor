@@ -4,8 +4,5 @@ public class xxxTypeTest {
     //ArrayTypeHandler
     //ObjectTypeHandler
     //URLTypeHandler
-    //
-    //SqlXmlTypeHandler
-    //SqlXmlForInputStreamTypeHandler
-    //SqlXmlForReaderTypeHandler
+    //ObjectTypeHandler
 }

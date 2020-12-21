@@ -16,9 +16,7 @@
 package net.hasor.db.types.handler;
 import net.hasor.utils.io.IOUtils;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.sql.*;
 
 /**
@@ -42,27 +40,31 @@ public class SqlXmlForReaderTypeHandler extends AbstractTypeHandler<Reader> {
 
     @Override
     public Reader getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        return sqlxmlToString(rs.getSQLXML(columnName));
+        return sqlXmlToStream(rs.getSQLXML(columnName));
     }
 
     @Override
     public Reader getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        return sqlxmlToString(rs.getSQLXML(columnIndex));
+        return sqlXmlToStream(rs.getSQLXML(columnIndex));
     }
 
     @Override
     public Reader getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        return sqlxmlToString(cs.getSQLXML(columnIndex));
+        return sqlXmlToStream(cs.getSQLXML(columnIndex));
     }
 
-    protected Reader sqlxmlToString(SQLXML sqlxml) throws SQLException {
+    protected Reader sqlXmlToStream(SQLXML sqlxml) throws SQLException {
         if (sqlxml == null) {
             return null;
         }
-        try {
-            return sqlxml.getCharacterStream();
+        StringWriter sw = new StringWriter();
+        try (Reader reader = sqlxml.getCharacterStream()) {
+            IOUtils.copy(reader, sw);
+        } catch (IOException e) {
+            throw new SQLException("read chars Xml Data failed : " + e.getMessage(), e);
         } finally {
             sqlxml.free();
         }
+        return new StringReader(sw.toString());
     }
 }

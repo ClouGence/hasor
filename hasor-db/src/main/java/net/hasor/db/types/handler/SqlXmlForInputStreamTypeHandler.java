@@ -16,9 +16,7 @@
 package net.hasor.db.types.handler;
 import net.hasor.utils.io.IOUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.sql.*;
 
 /**
@@ -59,10 +57,14 @@ public class SqlXmlForInputStreamTypeHandler extends AbstractTypeHandler<InputSt
         if (sqlxml == null) {
             return null;
         }
-        try {
-            return sqlxml.getBinaryStream();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (InputStream binaryStream = sqlxml.getBinaryStream()) {
+            IOUtils.copy(binaryStream, baos);
+        } catch (IOException e) {
+            throw new SQLException("read binary Xml Data failed : " + e.getMessage(), e);
         } finally {
             sqlxml.free();
         }
+        return new ByteArrayInputStream(baos.toByteArray());
     }
 }
