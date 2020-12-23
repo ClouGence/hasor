@@ -573,7 +573,7 @@ public class BeanUtils {
         if (!(dest instanceof Map)) {
             BeanUtils.writePropertyOrField(dest, propertyName, val);
         } else {
-            ((Map) orig).put(propertyName, val);
+            ((Map) dest).put(propertyName, val);
         }
     }
 }
