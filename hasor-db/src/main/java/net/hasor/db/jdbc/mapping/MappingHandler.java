@@ -33,20 +33,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MappingHandler {
     public final static MappingHandler                  DEFAULT = new MappingHandler(TypeHandlerRegistry.DEFAULT);
-    private final       TypeHandlerRegistry             typeRegistry;
-    private final       Map<Class<?>, BeanRowMapper<?>> resultMapperMap;
-
-    public MappingHandler() {
-        this(TypeHandlerRegistry.DEFAULT);
-    }
+    protected final     TypeHandlerRegistry             typeRegistry;
+    protected final     Map<Class<?>, BeanRowMapper<?>> resultMapperMap;
 
     public MappingHandler(TypeHandlerRegistry typeRegistry) {
         this.typeRegistry = Objects.requireNonNull(typeRegistry, "typeRegistry not null.");
         this.resultMapperMap = new ConcurrentHashMap<>();
-    }
-
-    public TypeHandlerRegistry getTypeRegistry() {
-        return this.typeRegistry;
     }
 
     public <T> BeanRowMapper<T> resolveMapper(Class<T> dtoClass) {
@@ -58,52 +50,11 @@ public class MappingHandler {
                     return resultMapper;
                 }
                 resultMapper = new BeanRowMapper<>(dtoClass);
-                Table defTable = defTable(dtoClass);
-                resultMapper.setupTable(defTable);
-                boolean autoConfigField = defTable.autoFiled();
-                List<java.lang.reflect.Field> allFields = BeanUtils.findALLFields(dtoClass);
-                for (java.lang.reflect.Field field : allFields) {
-                    Field defField = defField(field, autoConfigField);
-                    if (defField == null) {
-                        continue;
-                    }
-                    //
-                    TypeHandler<?> typeHandler = null;
-                    if (defField.typeHandler() == UnknownTypeHandler.class) {
-                        typeHandler = this.typeRegistry.getTypeHandler(field.getType(), defField.jdbcType());
-                    } else {
-                        try {
-                            typeHandler = defField.typeHandler().newInstance();
-                        } catch (Exception e) {
-                            throw ExceptionUtils.toRuntimeException(e);
-                        }
-                    }
-                    resultMapper.setupField(field, defField, typeHandler);
-                }
+
                 //
                 this.resultMapperMap.put(dtoClass, resultMapper);
             }
         }
         return resultMapper;
-    }
-
-    private Table defTable(Class<?> dtoClass) {
-        if (dtoClass.isAnnotationPresent(Table.class)) {
-            return dtoClass.getAnnotation(Table.class);
-        } else {
-            return new TableImpl(dtoClass.getSimpleName());
-        }
-    }
-
-    private Field defField(java.lang.reflect.Field dtoField, boolean autoConfigField) {
-        if (dtoField.isAnnotationPresent(Field.class)) {
-            return dtoField.getAnnotation(Field.class);
-        } else if (autoConfigField) {
-            Class<?> fieldType = dtoField.getType();
-            JDBCType jdbcType = this.typeRegistry.toSqlType(fieldType);
-            return new FieldImpl(dtoField.getName(), jdbcType);
-        } else {
-            return null;
-        }
     }
 }

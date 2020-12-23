@@ -47,18 +47,18 @@ public interface JdbcOperations {
     /**执行一个 SQL语句，通常是一个 DDL 语句.*/
     public boolean execute(String sql) throws SQLException;
 
-    /** 执行一个 SQL语句块，语句块可能返回多个结果. */
-    public List<Object> executeForMultiple(String sql) throws SQLException;
+    /** 执行一个 SQL语句块，语句块可能返回多个结果.（需要数据库驱动支持，例如mysql 要设置 allowMultiQueries=true 参数） */
+    public List<Object> multipleExecute(String sql) throws SQLException;
 
-    /** 执行一个 SQL语句块，语句块可能返回多个结果. */
-    public List<Object> executeForMultiple(String sql, Object... args) throws SQLException;
+    /** 执行一个 SQL语句块，语句块可能返回多个结果.（需要数据库驱动支持，例如mysql 要设置 allowMultiQueries=true 参数） */
+    public List<Object> multipleExecute(String sql, Object... args) throws SQLException;
 
-    /** 执行一个 SQL语句块，语句块可能返回多个结果. */
-    public List<Object> executeForMultiple(String sql, Map<String, ?> paramMap) throws SQLException;
+    /** 执行一个 SQL语句块，语句块可能返回多个结果.（需要数据库驱动支持，例如mysql 要设置 allowMultiQueries=true 参数） */
+    public List<Object> multipleExecute(String sql, Map<String, ?> paramMap) throws SQLException;
 
-    /** 执行一个 SQL语句块，语句块可能返回多个结果. */
-    public List<Object> executeForMultiple(String sql, SqlParameterSource parameterSource) throws SQLException;
-
+    /** 执行一个 SQL语句块，语句块可能返回多个结果.（需要数据库驱动支持，例如mysql 要设置 allowMultiQueries=true 参数） */
+    public List<Object> multipleExecute(String sql, SqlParameterSource parameterSource) throws SQLException;
+ 
     /**执行一个动态查询 SQL 语句。SQL 语句会被编译成 PreparedStatement 类型通过回调接口 PreparedStatementCallback 执行。
      * 返回的结果集使用 ResultSetExtractor 转换。*/
     public <T> T query(PreparedStatementCreator psc, ResultSetExtractor<T> rse) throws SQLException;

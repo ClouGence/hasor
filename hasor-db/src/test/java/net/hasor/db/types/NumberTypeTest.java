@@ -24,8 +24,8 @@ public class NumberTypeTest {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
             Date testData = new Date();
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp) values (?);", testData);
-            List<Number> dat = jdbcTemplate.query("select c_timestamp from tb_h2types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
+            List<Number> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
                 return new NumberTypeHandler().getResult(rs, 1);
             });
             //
@@ -39,8 +39,8 @@ public class NumberTypeTest {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
             Date testData = new Date();
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp) values (?);", testData);
-            List<Number> dat = jdbcTemplate.query("select c_timestamp from tb_h2types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
+            List<Number> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
                 return new NumberTypeHandler().getResult(rs, "c_timestamp");
             });
             //
@@ -53,8 +53,8 @@ public class NumberTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_char) values ('123');");
-            List<Number> dat = jdbcTemplate.query("select c_char from tb_h2types where c_char is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_char) values ('123');");
+            List<Number> dat = jdbcTemplate.query("select c_char from tb_h2_types where c_char is not null limit 1;", (rs, rowNum) -> {
                 return new NumberTypeHandler().getResult(rs, "c_char");
             });
             //
@@ -67,8 +67,8 @@ public class NumberTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_clob) values ('123');");
-            List<Number> dat = jdbcTemplate.query("select c_clob from tb_h2types where c_clob is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('123');");
+            List<Number> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
                 return new NumberTypeHandler().getResult(rs, "c_clob");
             });
             //

@@ -17,7 +17,9 @@ package net.hasor.db.jdbc.mapping;
 import net.hasor.db.jdbc.RowMapper;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
+import net.hasor.db.types.UnknownTypeHandler;
 import net.hasor.utils.BeanUtils;
+import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
 
@@ -39,19 +41,93 @@ public class BeanRowMapper<T> implements RowMapper<T>, TableInfo {
     //
     private final Map<String, String>         propertyColumnMapping;
     private final Map<String, String>         columnPropertyMapping;
-    //
     private final List<String>                columnNames;
     private final Map<String, FieldInfo>      columnFieldInfoMap;
     private final Map<String, TypeHandler<?>> columnTypeHandlerMap;
 
     /** Create a new ResultMapper.*/
     public BeanRowMapper(Class<T> mapperClass) {
+        this(mapperClass, TypeHandlerRegistry.DEFAULT);
+    }
+
+    /** Create a new ResultMapper.*/
+    public BeanRowMapper(Class<T> mapperClass, TypeHandlerRegistry handlerRegistry) {
         this.mapperClass = mapperClass;
         this.columnNames = new ArrayList<>();
         this.columnFieldInfoMap = new HashMap<>();
         this.columnTypeHandlerMap = new HashMap<>();
         this.propertyColumnMapping = new HashMap<>();
         this.columnPropertyMapping = new HashMap<>();
+        this.initialize(mapperClass, Objects.requireNonNull(handlerRegistry, "handlerRegistry is null."));
+    }
+
+    private void initialize(Class<T> mapperClass, TypeHandlerRegistry registry) {
+        Table defTable = null;
+        if (mapperClass.isAnnotationPresent(Table.class)) {
+            defTable = mapperClass.getAnnotation(Table.class);
+        } else {
+            defTable = new TableImpl(mapperClass.getSimpleName());
+        }
+        this.tableName = StringUtils.isNotBlank(defTable.name()) ? defTable.name() : defTable.value();
+        this.caseInsensitive = defTable.caseInsensitive();
+        boolean autoConfigField = defTable.autoFiled();
+        List<java.lang.reflect.Field> allFields = BeanUtils.findALLFields(mapperClass);
+        for (java.lang.reflect.Field field : allFields) {
+            Field defField = defField(field, autoConfigField);
+            if (defField == null) {
+                continue;
+            }
+            //
+            TypeHandler<?> typeHandler = null;
+            if (defField.typeHandler() == UnknownTypeHandler.class) {
+                typeHandler = registry.getTypeHandler(field.getType(), defField.jdbcType());
+            } else {
+                try {
+                    typeHandler = defField.typeHandler().newInstance();
+                } catch (Exception e) {
+                    throw ExceptionUtils.toRuntimeException(e);
+                }
+            }
+            this.setupField(field, defField, typeHandler);
+        }
+    }
+
+    private Field defField(java.lang.reflect.Field dtoField, boolean autoConfigField) {
+        if (dtoField.isAnnotationPresent(Field.class)) {
+            return dtoField.getAnnotation(Field.class);
+        } else if (autoConfigField) {
+            Class<?> fieldType = dtoField.getType();
+            JDBCType jdbcType = TypeHandlerRegistry.toSqlType(fieldType);
+            return new FieldImpl(dtoField.getName(), jdbcType);
+        } else {
+            return null;
+        }
+    }
+
+    private void setupField(java.lang.reflect.Field property, net.hasor.db.jdbc.mapping.Field defField, TypeHandler<?> toTypeHandler) {
+        String columnName = null;
+        JDBCType jdbcType = defField.jdbcType();
+        if (StringUtils.isNotBlank(defField.name())) {
+            columnName = defField.name();
+        } else {
+            columnName = defField.value();
+        }
+        if (StringUtils.isBlank(columnName)) {
+            columnName = property.getName();
+        }
+        if (jdbcType == JDBCType.OTHER) {
+            jdbcType = TypeHandlerRegistry.toSqlType(property.getType());
+        }
+        //
+        String useColumnName = columnName;
+        if (this.caseInsensitive) {
+            useColumnName = useColumnName.toUpperCase();
+        }
+        this.columnNames.add(useColumnName);
+        this.columnFieldInfoMap.put(useColumnName, new FieldInfoImpl(columnName, jdbcType, property.getType()));
+        this.columnTypeHandlerMap.put(useColumnName, toTypeHandler);
+        this.columnPropertyMapping.put(useColumnName, property.getName());
+        this.propertyColumnMapping.put(property.getName(), useColumnName);
     }
 
     public Class<T> getMapperClass() {
@@ -81,41 +157,6 @@ public class BeanRowMapper<T> implements RowMapper<T>, TableInfo {
 
     public TableInfo getTableInfo() {
         return this;
-    }
-
-    void setupTable(Table defTable) {
-        if (StringUtils.isNotBlank(defTable.name())) {
-            this.tableName = defTable.name();
-        } else {
-            this.tableName = defTable.value();
-        }
-        this.caseInsensitive = defTable.caseInsensitive();
-    }
-
-    void setupField(java.lang.reflect.Field property, net.hasor.db.jdbc.mapping.Field defField, TypeHandler<?> toTypeHandler) {
-        String columnName = null;
-        JDBCType jdbcType = defField.jdbcType();
-        if (StringUtils.isNotBlank(defField.name())) {
-            columnName = defField.name();
-        } else {
-            columnName = defField.value();
-        }
-        if (StringUtils.isBlank(columnName)) {
-            columnName = property.getName();
-        }
-        if (jdbcType == JDBCType.OTHER) {
-            jdbcType = TypeHandlerRegistry.DEFAULT.toSqlType(property.getType());
-        }
-        //
-        String useColumnName = columnName;
-        if (this.caseInsensitive) {
-            useColumnName = useColumnName.toUpperCase();
-        }
-        this.columnNames.add(useColumnName);
-        this.columnFieldInfoMap.put(useColumnName, new FieldInfoImpl(columnName, jdbcType, property.getType()));
-        this.columnTypeHandlerMap.put(useColumnName, toTypeHandler);
-        this.columnPropertyMapping.put(useColumnName, property.getName());
-        this.propertyColumnMapping.put(property.getName(), useColumnName);
     }
 
     @Override
@@ -163,7 +204,7 @@ public class BeanRowMapper<T> implements RowMapper<T>, TableInfo {
      * @param mappedClass the class that each row should be mapped to
      */
     public static <T> BeanRowMapper<T> newInstance(final Class<T> mappedClass) {
-        return newInstance(mappedClass, TypeHandlerRegistry.DEFAULT);
+        return MappingHandler.DEFAULT.resolveMapper(mappedClass);
     }
 
     /**
@@ -171,7 +212,6 @@ public class BeanRowMapper<T> implements RowMapper<T>, TableInfo {
      * @param mappedClass the class that each row should be mapped to
      */
     public static <T> BeanRowMapper<T> newInstance(final Class<T> mappedClass, final TypeHandlerRegistry registry) {
-        MappingHandler handler = new MappingHandler(registry);
-        return handler.resolveMapper(mappedClass);
+        return new MappingHandler(registry).resolveMapper(mappedClass);
     }
 }

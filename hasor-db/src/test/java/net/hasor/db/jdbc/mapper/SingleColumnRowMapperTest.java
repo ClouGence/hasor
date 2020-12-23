@@ -18,20 +18,20 @@ public class SingleColumnRowMapperTest {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             String resultData = null;
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_varchar) values ('abc');");
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('abc');");
             resultData = jdbcTemplate.queryForObject(//
-                    "select c_varchar from tb_h2types where c_varchar = 'abc';", String.class);
+                    "select c_varchar from tb_h2_types where c_varchar = 'abc';", String.class);
             assert "abc".equals(resultData);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_int) values (123);");
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_int) values (123);");
             resultData = jdbcTemplate.queryForObject(//
-                    "select c_int from tb_h2types where c_int = 123;", String.class);
+                    "select c_int from tb_h2_types where c_int = 123;", String.class);
             assert "123".equals(resultData);
             //
             SingleColumnRowMapper<String> rowMapper = new SingleColumnRowMapper<>(String.class);
             rowMapper.setRequiredType(String.class);
             resultData = jdbcTemplate.queryForObject(//
-                    "select c_int from tb_h2types where c_int = 123;", rowMapper);
+                    "select c_int from tb_h2_types where c_int = 123;", rowMapper);
             assert "123".equals(resultData);
         }
     }
@@ -41,16 +41,16 @@ public class SingleColumnRowMapperTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_int) values (123);");
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_double) values (123.123);");
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_float) values (123.123);");
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_time) values (?)", new Date());
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_int) values (123);");
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_double) values (123.123);");
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_float) values (123.123);");
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_time) values (?)", new Date());
             //
-            int num1 = jdbcTemplate.queryForObject("select c_int from tb_h2types where c_int = 123;", Integer.class);
-            Number num2 = jdbcTemplate.queryForObject("select c_int from tb_h2types where c_int = 123;", Number.class);
-            double num3 = jdbcTemplate.queryForObject("select c_int from tb_h2types where c_int = 123;", double.class);
-            BigDecimal num4 = jdbcTemplate.queryForObject("select c_int from tb_h2types where c_int = 123;", BigDecimal.class);
-            Number num5 = jdbcTemplate.queryForObject("select c_time from tb_h2types where c_time is not null limit 1;", Number.class);
+            int num1 = jdbcTemplate.queryForObject("select c_int from tb_h2_types where c_int = 123;", Integer.class);
+            Number num2 = jdbcTemplate.queryForObject("select c_int from tb_h2_types where c_int = 123;", Number.class);
+            double num3 = jdbcTemplate.queryForObject("select c_int from tb_h2_types where c_int = 123;", double.class);
+            BigDecimal num4 = jdbcTemplate.queryForObject("select c_int from tb_h2_types where c_int = 123;", BigDecimal.class);
+            Number num5 = jdbcTemplate.queryForObject("select c_time from tb_h2_types where c_time is not null limit 1;", Number.class);
             //
             assert num1 == 123;
             assert num2.intValue() == 123;

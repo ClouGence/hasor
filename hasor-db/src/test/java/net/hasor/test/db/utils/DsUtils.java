@@ -20,6 +20,8 @@ import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.extractor.ColumnMapResultSetExtractor;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -31,7 +33,10 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DsUtils {
-    public static String JDBC_URL = "jdbc:mysql://127.0.0.1:3306/local_test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&user=root&password=123258";
+    public static String MYSQL_JDBC_URL  = "jdbc:mysql://localhost:13306/devtester?allowMultiQueries=true";
+    public static String PG_JDBC_URL     = "jdbc:postgresql://localhost:15432/postgres";
+    public static String ORACLE_JDBC_URL = "jdbc:oracle:thin:@localhost:11521:xe";
+    public static String DERBY_JDBC_URL  = "jdbc:derby:./tester;create=true";
 
     public static DruidDataSource createDs(String dbID) throws Throwable {
         DruidDataSource druid = new DruidDataSource();
@@ -70,7 +75,24 @@ public class DsUtils {
             return null;
         });
         //
-        jdbcTemplate.loadSQL("net_hasor_db/tb_user.sql");
-        jdbcTemplate.loadSQL("net_hasor_db/tb_h2types.sql");
+        jdbcTemplate.loadSQL("net_hasor_db/tb_user_for_h2.sql");
+        jdbcTemplate.loadSQL("net_hasor_db/tb_h2_types.sql");
+    }
+
+    public static Connection localMySQL() throws SQLException {
+        return DriverManager.getConnection(MYSQL_JDBC_URL, "root", "123456");
+    }
+
+    public static Connection localPg() throws SQLException {
+        return DriverManager.getConnection(PG_JDBC_URL, "postgres", "123456");
+    }
+
+    public static Connection localDerby() throws SQLException {
+        DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+        return DriverManager.getConnection(DERBY_JDBC_URL, "derby", "123456");
+    }
+
+    public static Connection localOracle() throws SQLException {
+        return DriverManager.getConnection(ORACLE_JDBC_URL, "sys as sysdba", "oracle");
     }
 }

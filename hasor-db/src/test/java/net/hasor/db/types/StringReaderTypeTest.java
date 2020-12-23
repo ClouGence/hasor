@@ -28,8 +28,8 @@ public class StringReaderTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_clob) values ('abcdefg');");
-            List<Reader> dat = jdbcTemplate.query("select c_clob from tb_h2types where c_clob is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
+            List<Reader> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
                 return new ClobReaderTypeHandler().getResult(rs, 1);
             });
             String readerDat = IOUtils.toString(dat.get(0));
@@ -42,8 +42,8 @@ public class StringReaderTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_clob) values ('abcdefg');");
-            List<Reader> dat = jdbcTemplate.query("select c_clob from tb_h2types where c_clob is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
+            List<Reader> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
                 return new ClobReaderTypeHandler().getResult(rs, "c_clob");
             });
             String readerDat = IOUtils.toString(dat.get(0));
@@ -88,8 +88,8 @@ public class StringReaderTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_clob) values ('abcdefg');");
-            List<Reader> dat = jdbcTemplate.query("select c_clob from tb_h2types where c_clob is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
+            List<Reader> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
                 return new NClobReaderTypeHandler().getResult(rs, 1);
             });
             String readerDat = IOUtils.toString(dat.get(0));
@@ -102,8 +102,8 @@ public class StringReaderTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_clob) values ('abcdefg');");
-            List<Reader> dat = jdbcTemplate.query("select c_clob from tb_h2types where c_clob is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
+            List<Reader> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
                 return new NClobReaderTypeHandler().getResult(rs, "c_clob");
             });
             String readerDat = IOUtils.toString(dat.get(0));
@@ -148,8 +148,8 @@ public class StringReaderTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_text) values ('abcdefg');");
-            List<Reader> dat = jdbcTemplate.query("select c_text from tb_h2types where c_text is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
+            List<Reader> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
                 return new StringReaderTypeHandler().getResult(rs, 1);
             });
             String readerDat = IOUtils.toString(dat.get(0));
@@ -162,8 +162,8 @@ public class StringReaderTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_text) values ('abcdefg');");
-            List<Reader> dat = jdbcTemplate.query("select c_text from tb_h2types where c_text is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
+            List<Reader> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
                 return new StringReaderTypeHandler().getResult(rs, "c_text");
             });
             String readerDat = IOUtils.toString(dat.get(0));
@@ -213,8 +213,8 @@ public class StringReaderTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_text) values ('abcdefg');");
-            List<Reader> dat = jdbcTemplate.query("select c_text from tb_h2types where c_text is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
+            List<Reader> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
                 return new NStringReaderTypeHandler().getResult(rs, 1);
             });
             String readerDat = IOUtils.toString(dat.get(0));
@@ -227,8 +227,8 @@ public class StringReaderTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_text) values ('abcdefg');");
-            List<Reader> dat = jdbcTemplate.query("select c_text from tb_h2types where c_text is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
+            List<Reader> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
                 return new NStringReaderTypeHandler().getResult(rs, "c_text");
             });
             String readerDat = IOUtils.toString(dat.get(0));

@@ -28,8 +28,8 @@ public class SqlDateTypeTest {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
             Date testData = new Date();
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp) values (?);", testData);
-            List<Date> dat = jdbcTemplate.query("select c_timestamp from tb_h2types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
+            List<Date> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
                 return new SqlTimestampTypeHandler().getResult(rs, 1);
             });
             //
@@ -43,8 +43,8 @@ public class SqlDateTypeTest {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
             Date testData = new Date();
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp) values (?);", testData);
-            List<Date> dat = jdbcTemplate.query("select c_timestamp from tb_h2types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
+            List<Date> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
                 return new SqlTimestampTypeHandler().getResult(rs, "c_timestamp");
             });
             //
@@ -92,8 +92,8 @@ public class SqlDateTypeTest {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
             Date testData = new Date();
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp) values (?);", testData);
-            List<Time> dat = jdbcTemplate.query("select c_timestamp from tb_h2types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
+            List<Time> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
                 return new SqlTimeTypeHandler().getResult(rs, 1);
             });
             //
@@ -111,8 +111,8 @@ public class SqlDateTypeTest {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
             Date testData = new Date();
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp) values (?);", testData);
-            List<Time> dat = jdbcTemplate.query("select c_timestamp from tb_h2types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
+            List<Time> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
                 return new SqlTimeTypeHandler().getResult(rs, "c_timestamp");
             });
             //
@@ -166,8 +166,8 @@ public class SqlDateTypeTest {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
             Date testData = new Date();
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp) values (?);", testData);
-            List<java.sql.Date> dat = jdbcTemplate.query("select c_timestamp from tb_h2types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
+            List<java.sql.Date> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
                 return new SqlDateTypeHandler().getResult(rs, 1);
             });
             //
@@ -184,8 +184,8 @@ public class SqlDateTypeTest {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
             Date testData = new Date();
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp) values (?);", testData);
-            List<java.sql.Date> dat = jdbcTemplate.query("select c_timestamp from tb_h2types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
+            List<java.sql.Date> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
                 return new SqlDateTypeHandler().getResult(rs, "c_timestamp");
             });
             //

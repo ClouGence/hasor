@@ -21,8 +21,8 @@ public class ShortTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_smallint) values (123);");
-            List<Short> dat = jdbcTemplate.query("select c_smallint from tb_h2types where c_smallint is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_smallint) values (123);");
+            List<Short> dat = jdbcTemplate.query("select c_smallint from tb_h2_types where c_smallint is not null limit 1;", (rs, rowNum) -> {
                 return new ShortTypeHandler().getResult(rs, 1);
             });
             assert dat.get(0) == 123;
@@ -34,8 +34,8 @@ public class ShortTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_smallint) values (123);");
-            List<Short> dat = jdbcTemplate.query("select c_smallint from tb_h2types where c_smallint is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_smallint) values (123);");
+            List<Short> dat = jdbcTemplate.query("select c_smallint from tb_h2_types where c_smallint is not null limit 1;", (rs, rowNum) -> {
                 return new ShortTypeHandler().getResult(rs, "c_smallint");
             });
             assert dat.get(0) == 123;

@@ -26,8 +26,8 @@ public class YearMonthTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_integer) values (202001);");
-            List<YearMonth> dat = jdbcTemplate.query("select c_integer from tb_h2types where c_integer is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_integer) values (202001);");
+            List<YearMonth> dat = jdbcTemplate.query("select c_integer from tb_h2_types where c_integer is not null limit 1;", (rs, rowNum) -> {
                 return new YearMonthOfNumberTypeHandler().getResult(rs, 1);
             });
             assert dat.get(0).getYear() == 2020;
@@ -40,8 +40,8 @@ public class YearMonthTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_integer) values (202001);");
-            List<YearMonth> dat = jdbcTemplate.query("select c_integer from tb_h2types where c_integer is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_integer) values (202001);");
+            List<YearMonth> dat = jdbcTemplate.query("select c_integer from tb_h2_types where c_integer is not null limit 1;", (rs, rowNum) -> {
                 return new YearMonthOfNumberTypeHandler().getResult(rs, "c_integer");
             });
             assert dat.get(0).getYear() == 2020;
@@ -91,9 +91,9 @@ public class YearMonthTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_varchar) values ('2008-01');");
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_varchar) values ('2022-03');");
-            List<YearMonth> dat = jdbcTemplate.query("select c_varchar from tb_h2types where c_varchar is not null limit 2;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('2008-01');");
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('2022-03');");
+            List<YearMonth> dat = jdbcTemplate.query("select c_varchar from tb_h2_types where c_varchar is not null limit 2;", (rs, rowNum) -> {
                 return new YearMonthOfStringTypeHandler().getResult(rs, 1);
             });
             assert dat.get(0).getYear() == 2008;
@@ -108,9 +108,9 @@ public class YearMonthTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_varchar) values ('1986-01');");
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_varchar) values ('1998-03');");
-            List<YearMonth> dat = jdbcTemplate.query("select c_varchar from tb_h2types where c_varchar is not null limit 2;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('1986-01');");
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('1998-03');");
+            List<YearMonth> dat = jdbcTemplate.query("select c_varchar from tb_h2_types where c_varchar is not null limit 2;", (rs, rowNum) -> {
                 return new YearMonthOfStringTypeHandler().getResult(rs, "c_varchar");
             });
             assert dat.get(0).getYear() == 1986;
@@ -165,8 +165,8 @@ public class YearMonthTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp) values (CURRENT_TIMESTAMP(9));");
-            List<YearMonth> dat = jdbcTemplate.query("select c_timestamp from tb_h2types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (CURRENT_TIMESTAMP(9));");
+            List<YearMonth> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
                 return new YearMonthOfTimeTypeHandler().getResult(rs, 1);
             });
             YearMonth yearMonth = YearMonth.now();
@@ -180,8 +180,8 @@ public class YearMonthTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp) values (CURRENT_TIMESTAMP(9));");
-            List<YearMonth> dat = jdbcTemplate.query("select c_timestamp from tb_h2types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (CURRENT_TIMESTAMP(9));");
+            List<YearMonth> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
                 return new YearMonthOfTimeTypeHandler().getResult(rs, "c_timestamp");
             });
             YearMonth yearMonth = YearMonth.now();
@@ -211,10 +211,10 @@ public class YearMonthTypeTest {
             assert dat2.get(0).getMonth() == Month.APRIL;
             //
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp) values (?);", ps -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", ps -> {
                 new YearMonthOfTimeTypeHandler().setParameter(ps, 1, YearMonth.of(2018, 4), JDBCType.TIMESTAMP);
             });
-            YearMonth dat3 = jdbcTemplate.queryForObject("select c_timestamp from tb_h2types where c_timestamp is not null limit 1;", YearMonth.class);
+            YearMonth dat3 = jdbcTemplate.queryForObject("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", YearMonth.class);
             assert dat3.getYear() == 2018;
             assert dat3.getMonth() == Month.APRIL;
         }

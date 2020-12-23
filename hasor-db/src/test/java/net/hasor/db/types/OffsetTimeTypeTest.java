@@ -22,8 +22,8 @@ public class OffsetTimeTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
-            List<OffsetDateTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
+            List<OffsetDateTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2_types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
                 return new OffsetDateTimeForSqlTypeHandler().getResult(rs, 1);
             });
             //
@@ -47,8 +47,8 @@ public class OffsetTimeTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
-            List<OffsetDateTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
+            List<OffsetDateTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2_types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
                 return new OffsetDateTimeForSqlTypeHandler().getResult(rs, "c_timestamp_z");
             });
             //
@@ -118,8 +118,8 @@ public class OffsetTimeTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
-            List<OffsetDateTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
+            List<OffsetDateTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2_types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
                 return new OffsetDateTimeForUTCTypeHandler().getResult(rs, 1);
             });
             OffsetDateTime dateTime = dat.get(0);
@@ -143,8 +143,8 @@ public class OffsetTimeTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
-            List<OffsetDateTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
+            List<OffsetDateTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2_types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
                 return new OffsetDateTimeForUTCTypeHandler().getResult(rs, "c_timestamp_z");
             });
             OffsetDateTime dateTime = dat.get(0);
@@ -222,8 +222,8 @@ public class OffsetTimeTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
-            List<OffsetTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
+            List<OffsetTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2_types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
                 return new OffsetTimeForSqlTypeHandler().getResult(rs, 1);
             });
             OffsetTime dateTime = dat.get(0);
@@ -242,8 +242,8 @@ public class OffsetTimeTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
-            List<OffsetTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
+            List<OffsetTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2_types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
                 return new OffsetTimeForSqlTypeHandler().getResult(rs, "c_timestamp_z");
             });
             OffsetTime dateTime = dat.get(0);
@@ -304,8 +304,8 @@ public class OffsetTimeTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
-            List<OffsetTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
+            List<OffsetTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2_types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
                 return new OffsetTimeForUTCTypeHandler().getResult(rs, 1);
             });
             OffsetTime dateTime = dat.get(0);
@@ -329,8 +329,8 @@ public class OffsetTimeTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
-            List<OffsetTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
+            List<OffsetTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2_types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
                 return new OffsetTimeForUTCTypeHandler().getResult(rs, "c_timestamp_z");
             });
             OffsetTime dateTime = dat.get(0);
@@ -406,8 +406,8 @@ public class OffsetTimeTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
-            List<ZonedDateTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
+            List<ZonedDateTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2_types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
                 return new ZonedDateTimeTypeHandler().getResult(rs, 1);
             });
             ZonedDateTime dateTime = dat.get(0);
@@ -427,8 +427,8 @@ public class OffsetTimeTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
-            List<ZonedDateTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp_z) values ('1998-04-12T18:33:20.000000123+08:00');");
+            List<ZonedDateTime> dat = jdbcTemplate.query("select c_timestamp_z from tb_h2_types where c_timestamp_z is not null limit 1;", (rs, rowNum) -> {
                 return new ZonedDateTimeTypeHandler().getResult(rs, "c_timestamp_z");
             });
             ZonedDateTime dateTime = dat.get(0);

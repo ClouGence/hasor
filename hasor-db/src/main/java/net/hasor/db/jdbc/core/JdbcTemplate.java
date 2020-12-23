@@ -18,7 +18,6 @@ import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.SqlParameter.InSqlParameter;
 import net.hasor.db.jdbc.SqlParameter.OutSqlParameter;
 import net.hasor.db.jdbc.SqlParameter.ReturnSqlParameter;
-import net.hasor.db.jdbc.extractor.MultipleResultExtractor;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.lambda.LambdaOperations;
 import net.hasor.db.jdbc.lambda.query.LambdaQueryWrapper;
@@ -215,12 +214,12 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     }
 
     @Override
-    public List<Object> executeForMultiple(final String sql) throws SQLException {
+    public List<Object> multipleExecute(final String sql) throws SQLException {
         return this.execute(sql, new MultipleResultExtractor());
     }
 
     @Override
-    public List<Object> executeForMultiple(final String sql, final Object... args) throws SQLException {
+    public List<Object> multipleExecute(final String sql, final Object... args) throws SQLException {
         PreparedStatementSetter pss = newArgPreparedStatementSetter(args);
         return this.execute(new SimplePreparedStatementCreator(sql), ps -> {
             try {
@@ -237,14 +236,15 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     }
 
     @Override
-    public List<Object> executeForMultiple(final String sql, final Map<String, ?> paramMap) throws SQLException {
-        return this.executeForMultiple(sql, new MapSqlParameterSource(paramMap));
+    public List<Object> multipleExecute(final String sql, final Map<String, ?> paramMap) throws SQLException {
+        return this.multipleExecute(sql, new MapSqlParameterSource(paramMap));
     }
 
     @Override
-    public List<Object> executeForMultiple(final String sql, final SqlParameterSource parameterSource) throws SQLException {
+    public List<Object> multipleExecute(final String sql, final SqlParameterSource parameterSource) throws SQLException {
         return this.execute(this.getPreparedStatementCreator(sql, parameterSource), new MultipleResultExtractor());
     }
+
 
     /***/
     public <T> T query(final PreparedStatementCreator psc, final PreparedStatementSetter pss, final ResultSetExtractor<T> rse) throws SQLException {
@@ -870,7 +870,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
      * @param param the corresponding stored procedure parameter
      * @return a Map that contains returned results
      */
-    protected Map<String, Object> processResultSet(ResultSet rs, ReturnSqlParameter param) throws SQLException {
+    protected static Map<String, Object> processResultSet(ResultSet rs, ReturnSqlParameter param) throws SQLException {
         if (rs != null) {
             if (param.getRowMapper() != null) {
                 RowMapper<?> rowMapper = param.getRowMapper();
@@ -1040,6 +1040,39 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
             }
             return null;
         }
+    }
+
+    private static class MultipleResultExtractor implements PreparedStatementCallback<List<Object>> {
+        @Override
+        public List<Object> doInPreparedStatement(PreparedStatement ps) throws SQLException {
+            ReturnSqlParameter result = CallableSqlParameter.withReturnResult("TMP", new RowMapperResultSetExtractor<>(new ColumnMapRowMapper()));
+            boolean retVal = ps.execute();
+            if (logger.isTraceEnabled()) {
+                logger.trace("statement.execute() returned '" + retVal + "'");
+            }
+            //
+            List<Object> resultList = new ArrayList<>();
+            if (retVal) {
+                try (ResultSet resultSet = ps.getResultSet()) {
+                     resultList.add(processResultSet(resultSet, result).get("TMP"));
+                }
+            } else {
+                resultList.add(ps.getUpdateCount());
+            }
+            while (ps.getMoreResults()) {
+                int updateCount = ps.getUpdateCount();
+                //
+                if (updateCount == -1) {
+                    try (ResultSet resultSet = ps.getResultSet()) {
+                        resultList.add(processResultSet(resultSet, result).get("TMP"));
+                    }
+                } else {
+                    resultList.add(ps.getUpdateCount());
+                }
+            }
+            return resultList;
+        }
+
     }
 
     /**接口 {@link PreparedStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link PreparedStatement}对象。*/

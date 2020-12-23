@@ -21,8 +21,8 @@ public class BooleanTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_boolean) values (true);");
-            List<Boolean> dat = jdbcTemplate.query("select c_boolean from tb_h2types where c_boolean is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_boolean) values (true);");
+            List<Boolean> dat = jdbcTemplate.query("select c_boolean from tb_h2_types where c_boolean is not null limit 1;", (rs, rowNum) -> {
                 return new BooleanTypeHandler().getResult(rs, 1);
             });
             assert dat.get(0);
@@ -34,8 +34,8 @@ public class BooleanTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_boolean) values (true);");
-            List<Boolean> dat = jdbcTemplate.query("select c_boolean from tb_h2types where c_boolean is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_boolean) values (true);");
+            List<Boolean> dat = jdbcTemplate.query("select c_boolean from tb_h2_types where c_boolean is not null limit 1;", (rs, rowNum) -> {
                 return new BooleanTypeHandler().getResult(rs, "c_boolean");
             });
             assert dat.get(0);

@@ -21,8 +21,8 @@ public class FloatTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_float) values (123.123);");
-            List<Float> dat = jdbcTemplate.query("select c_float from tb_h2types where c_float is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_float) values (123.123);");
+            List<Float> dat = jdbcTemplate.query("select c_float from tb_h2_types where c_float is not null limit 1;", (rs, rowNum) -> {
                 return new FloatTypeHandler().getResult(rs, 1);
             });
             assert dat.get(0) == 123.123f;
@@ -34,8 +34,8 @@ public class FloatTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_float) values (123.123);");
-            List<Float> dat = jdbcTemplate.query("select c_float from tb_h2types where c_float is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_float) values (123.123);");
+            List<Float> dat = jdbcTemplate.query("select c_float from tb_h2_types where c_float is not null limit 1;", (rs, rowNum) -> {
                 return new FloatTypeHandler().getResult(rs, "c_float");
             });
             assert dat.get(0) == 123.123f;

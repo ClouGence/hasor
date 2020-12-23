@@ -22,8 +22,8 @@ public class CharacterTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_char) values ('1234567890');");
-            List<Character> bigInteger = jdbcTemplate.query("select c_char from tb_h2types where c_char is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_char) values ('1234567890');");
+            List<Character> bigInteger = jdbcTemplate.query("select c_char from tb_h2_types where c_char is not null limit 1;", (rs, rowNum) -> {
                 return new CharacterTypeHandler().getResult(rs, 1);
             });
             assert bigInteger.get(0).toString().equals("1");
@@ -35,8 +35,8 @@ public class CharacterTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_char) values ('1234567890');");
-            List<Character> bigInteger = jdbcTemplate.query("select c_char from tb_h2types where c_char is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_char) values ('1234567890');");
+            List<Character> bigInteger = jdbcTemplate.query("select c_char from tb_h2_types where c_char is not null limit 1;", (rs, rowNum) -> {
                 return new CharacterTypeHandler().getResult(rs, "c_char");
             });
             assert bigInteger.get(0).toString().equals("1");
@@ -91,8 +91,8 @@ public class CharacterTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_char) values ('1234567890');");
-            List<Character> bigInteger = jdbcTemplate.query("select c_char from tb_h2types where c_char is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_char) values ('1234567890');");
+            List<Character> bigInteger = jdbcTemplate.query("select c_char from tb_h2_types where c_char is not null limit 1;", (rs, rowNum) -> {
                 return new NCharacterTypeHandler().getResult(rs, 1);
             });
             assert bigInteger.get(0).toString().equals("1");
@@ -104,8 +104,8 @@ public class CharacterTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_char) values ('1234567890');");
-            List<Character> bigInteger = jdbcTemplate.query("select c_char from tb_h2types where c_char is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_char) values ('1234567890');");
+            List<Character> bigInteger = jdbcTemplate.query("select c_char from tb_h2_types where c_char is not null limit 1;", (rs, rowNum) -> {
                 return new NCharacterTypeHandler().getResult(rs, "c_char");
             });
             assert bigInteger.get(0).toString().equals("1");

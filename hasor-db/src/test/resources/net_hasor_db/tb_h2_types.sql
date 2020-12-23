@@ -1,5 +1,6 @@
 /* see http://www.h2database.com/html/datatypes.html */
-create table tb_h2types (
+create table tb_h2_types
+(
     id              identity,
     --
     c_int           int,
@@ -21,15 +22,24 @@ create table tb_h2types (
     c_bigint        bigint,
     c_int8          int8,
     --
-    c_decimal       decimal(20,10),
-    c_decimal_2     decimal(20,2),
-    c_number        number(10),
+    c_decimal_1     decimal(20, 10),
+    c_decimal_2     decimal(20, 2),
+    c_decimal_3     decimal(10),
+    c_number_1      number(20, 10),
+    c_number_2      number(20, 2),
+    c_number_3      number(10),
+    c_dec_1         dec(20, 10),
+    c_dec_2         dec(20, 2),
+    c_dec_3         dec(10),
+    c_numeric_1     numeric(20, 10),
+    c_numeric_2     numeric(20, 2),
+    c_numeric_3     numeric(10),
     --
     c_double        double,
     c_double_pre    double precision,
     c_float         float,
-    c_float8        float8,
     c_float25       float(25),
+    c_float8        float8,
     --
     c_real          real,
     c_float4        float4,
@@ -58,20 +68,21 @@ create table tb_h2types (
     c_char          char(10),
     c_nchar         nchar(10),
     --
-    c_blob          blob(10k),
-    c_tinyblob      tinyblob(10k),
-    c_mediumblob    mediumblob(10k),
-    c_longblob      longblob(10k),
+    c_blob          blob(10 k),
+    c_tinyblob      tinyblob(10 k),
+    c_mediumblob    mediumblob(10 k),
+    c_longblob      longblob(10 k),
     --
-    c_clob          clob(10k),
-    c_tinytext      tinytext(10k),
-    c_text          text(10k),
-    c_mediumtext    mediumtext(10k),
-    c_longtext      longtext(10k),
-    c_ntext         ntext(10k),
-    c_nclob         nclob(10k),
+    c_clob          clob(10 k),
+    c_tinytext      tinytext(10 k),
+    c_text          text(10 k),
+    c_mediumtext    mediumtext(10 k),
+    c_longtext      longtext(10 k),
+    c_ntext         ntext(10 k),
+    c_nclob         nclob(10 k),
     --
-    c_uuid          UUID,
+    c_uuid          uuid,
+    c_other         other,
     --
-    c_array         ARRAY
+    c_array         array
 );

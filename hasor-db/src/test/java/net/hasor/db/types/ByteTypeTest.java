@@ -21,8 +21,8 @@ public class ByteTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_tinyint) values (123);");
-            List<Byte> dat = jdbcTemplate.query("select c_tinyint from tb_h2types where c_tinyint is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_tinyint) values (123);");
+            List<Byte> dat = jdbcTemplate.query("select c_tinyint from tb_h2_types where c_tinyint is not null limit 1;", (rs, rowNum) -> {
                 return new ByteTypeHandler().getResult(rs, 1);
             });
             assert dat.get(0) == 123;
@@ -34,8 +34,8 @@ public class ByteTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_tinyint) values (123);");
-            List<Byte> dat = jdbcTemplate.query("select c_tinyint from tb_h2types where c_tinyint is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_tinyint) values (123);");
+            List<Byte> dat = jdbcTemplate.query("select c_tinyint from tb_h2_types where c_tinyint is not null limit 1;", (rs, rowNum) -> {
                 return new ByteTypeHandler().getResult(rs, "c_tinyint");
             });
             assert dat.get(0) == 123;

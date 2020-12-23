@@ -24,8 +24,8 @@ public class StringTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_clob) values ('abcdefg');");
-            List<String> dat = jdbcTemplate.query("select c_clob from tb_h2types where c_clob is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
+            List<String> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
                 return new ClobTypeHandler().getResult(rs, 1);
             });
             assert dat.get(0).equals("abcdefg");
@@ -37,8 +37,8 @@ public class StringTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_clob) values ('abcdefg');");
-            List<String> dat = jdbcTemplate.query("select c_clob from tb_h2types where c_clob is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
+            List<String> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
                 return new ClobTypeHandler().getResult(rs, "c_clob");
             });
             assert dat.get(0).equals("abcdefg");
@@ -80,8 +80,8 @@ public class StringTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_clob) values ('abcdefg');");
-            List<String> dat = jdbcTemplate.query("select c_clob from tb_h2types where c_clob is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
+            List<String> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
                 return new NClobTypeHandler().getResult(rs, 1);
             });
             assert dat.get(0).equals("abcdefg");
@@ -93,8 +93,8 @@ public class StringTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_clob) values ('abcdefg');");
-            List<String> dat = jdbcTemplate.query("select c_clob from tb_h2types where c_clob is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
+            List<String> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
                 return new NClobTypeHandler().getResult(rs, "c_clob");
             });
             assert dat.get(0).equals("abcdefg");
@@ -136,8 +136,8 @@ public class StringTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_text) values ('abcdefg');");
-            List<String> dat = jdbcTemplate.query("select c_text from tb_h2types where c_text is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
+            List<String> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
                 return new StringTypeHandler().getResult(rs, 1);
             });
             assert dat.get(0).equals("abcdefg");
@@ -149,8 +149,8 @@ public class StringTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_text) values ('abcdefg');");
-            List<String> dat = jdbcTemplate.query("select c_text from tb_h2types where c_text is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
+            List<String> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
                 return new StringTypeHandler().getResult(rs, "c_text");
             });
             assert dat.get(0).equals("abcdefg");
@@ -197,8 +197,8 @@ public class StringTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_text) values ('abcdefg');");
-            List<String> dat = jdbcTemplate.query("select c_text from tb_h2types where c_text is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
+            List<String> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
                 return new NStringTypeHandler().getResult(rs, 1);
             });
             assert dat.get(0).equals("abcdefg");
@@ -210,8 +210,8 @@ public class StringTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_text) values ('abcdefg');");
-            List<String> dat = jdbcTemplate.query("select c_text from tb_h2types where c_text is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
+            List<String> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
                 return new NStringTypeHandler().getResult(rs, "c_text");
             });
             assert dat.get(0).equals("abcdefg");

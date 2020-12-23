@@ -21,8 +21,8 @@ public class DoubleTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_double) values (123.123);");
-            List<Double> dat = jdbcTemplate.query("select c_double from tb_h2types where c_double is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_double) values (123.123);");
+            List<Double> dat = jdbcTemplate.query("select c_double from tb_h2_types where c_double is not null limit 1;", (rs, rowNum) -> {
                 return new DoubleTypeHandler().getResult(rs, 1);
             });
             assert dat.get(0) == 123.123d;
@@ -34,8 +34,8 @@ public class DoubleTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_double) values (123.123);");
-            List<Double> dat = jdbcTemplate.query("select c_double from tb_h2types where c_double is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_double) values (123.123);");
+            List<Double> dat = jdbcTemplate.query("select c_double from tb_h2_types where c_double is not null limit 1;", (rs, rowNum) -> {
                 return new DoubleTypeHandler().getResult(rs, "c_double");
             });
             assert dat.get(0) == 123.123d;

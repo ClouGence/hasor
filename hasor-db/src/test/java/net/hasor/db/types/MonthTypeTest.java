@@ -23,8 +23,8 @@ public class MonthTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_tinyint) values (05);");
-            List<Month> dat = jdbcTemplate.query("select c_tinyint from tb_h2types where c_tinyint is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_tinyint) values (05);");
+            List<Month> dat = jdbcTemplate.query("select c_tinyint from tb_h2_types where c_tinyint is not null limit 1;", (rs, rowNum) -> {
                 return new MonthOfNumberTypeHandler().getResult(rs, 1);
             });
             assert dat.get(0) == Month.MAY;
@@ -36,8 +36,8 @@ public class MonthTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_tinyint) values (05);");
-            List<Month> dat = jdbcTemplate.query("select c_tinyint from tb_h2types where c_tinyint is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_tinyint) values (05);");
+            List<Month> dat = jdbcTemplate.query("select c_tinyint from tb_h2_types where c_tinyint is not null limit 1;", (rs, rowNum) -> {
                 return new MonthOfNumberTypeHandler().getResult(rs, "c_tinyint");
             });
             assert dat.get(0) == Month.MAY;
@@ -83,9 +83,9 @@ public class MonthTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_varchar) values ('05');");
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_varchar) values ('may');");
-            List<Month> dat = jdbcTemplate.query("select c_varchar from tb_h2types where c_varchar is not null limit 2;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('05');");
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('may');");
+            List<Month> dat = jdbcTemplate.query("select c_varchar from tb_h2_types where c_varchar is not null limit 2;", (rs, rowNum) -> {
                 return new MonthOfStringTypeHandler().getResult(rs, 1);
             });
             assert dat.get(0) == Month.MAY;
@@ -98,9 +98,9 @@ public class MonthTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_varchar) values ('05');");
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_varchar) values ('may');");
-            List<Month> dat = jdbcTemplate.query("select c_varchar from tb_h2types where c_varchar is not null limit 2;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('05');");
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('may');");
+            List<Month> dat = jdbcTemplate.query("select c_varchar from tb_h2_types where c_varchar is not null limit 2;", (rs, rowNum) -> {
                 return new MonthOfStringTypeHandler().getResult(rs, "c_varchar");
             });
             assert dat.get(0) == Month.MAY;
@@ -149,8 +149,8 @@ public class MonthTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp) values (CURRENT_TIMESTAMP(9));");
-            List<Month> dat = jdbcTemplate.query("select c_timestamp from tb_h2types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (CURRENT_TIMESTAMP(9));");
+            List<Month> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
                 return new MonthOfTimeTypeHandler().getResult(rs, 1);
             });
             assert dat.get(0) == YearMonth.now().getMonth();
@@ -162,8 +162,8 @@ public class MonthTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp) values (CURRENT_TIMESTAMP(9));");
-            List<Month> dat = jdbcTemplate.query("select c_timestamp from tb_h2types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (CURRENT_TIMESTAMP(9));");
+            List<Month> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
                 return new MonthOfTimeTypeHandler().getResult(rs, "c_timestamp");
             });
             assert dat.get(0) == YearMonth.now().getMonth();
@@ -188,10 +188,10 @@ public class MonthTypeTest {
             assert dat2.get(0) == Month.MAY;
             //
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_timestamp) values (?);", ps -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", ps -> {
                 new MonthOfTimeTypeHandler().setParameter(ps, 1, Month.MAY, JDBCType.TIMESTAMP);
             });
-            Date dat = jdbcTemplate.queryForObject("select c_timestamp from tb_h2types where c_timestamp is not null limit 1;", Date.class);
+            Date dat = jdbcTemplate.queryForObject("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", Date.class);
             Calendar instance = Calendar.getInstance();
             instance.setTime(dat);
             int month = instance.get(Calendar.MONTH);

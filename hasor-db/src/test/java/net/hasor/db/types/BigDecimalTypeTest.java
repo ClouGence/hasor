@@ -22,14 +22,14 @@ public class BigDecimalTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_decimal) values (1234567890.1234567890);");
-            List<BigDecimal> dat1 = jdbcTemplate.query("select c_decimal from tb_h2types where c_decimal is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_decimal_1) values (1234567890.1234567890);");
+            List<BigDecimal> dat1 = jdbcTemplate.query("select c_decimal_1 from tb_h2_types where c_decimal_1 is not null limit 1;", (rs, rowNum) -> {
                 return new BigDecimalTypeHandler().getResult(rs, 1);
             });
             assert dat1.get(0).toString().equals("1234567890.1234567890");
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_decimal_2) values (1234567890.1234567890);");
-            List<BigDecimal> dat2 = jdbcTemplate.query("select c_decimal_2 from tb_h2types where c_decimal_2 is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_decimal_2) values (1234567890.1234567890);");
+            List<BigDecimal> dat2 = jdbcTemplate.query("select c_decimal_2 from tb_h2_types where c_decimal_2 is not null limit 1;", (rs, rowNum) -> {
                 return new BigDecimalTypeHandler().getResult(rs, 1);
             });
             assert dat2.get(0).toString().equals("1234567890.12");
@@ -41,14 +41,14 @@ public class BigDecimalTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_decimal) values (1234567890.1234567890);");
-            List<BigDecimal> dat1 = jdbcTemplate.query("select c_decimal from tb_h2types where c_decimal is not null limit 1;", (rs, rowNum) -> {
-                return new BigDecimalTypeHandler().getResult(rs, "c_decimal");
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_decimal_1) values (1234567890.1234567890);");
+            List<BigDecimal> dat1 = jdbcTemplate.query("select c_decimal_1 from tb_h2_types where c_decimal_1 is not null limit 1;", (rs, rowNum) -> {
+                return new BigDecimalTypeHandler().getResult(rs, "c_decimal_1");
             });
             assert dat1.get(0).toString().equals("1234567890.1234567890");
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_decimal_2) values (1234567890.1234567890);");
-            List<BigDecimal> dat2 = jdbcTemplate.query("select c_decimal_2 from tb_h2types where c_decimal_2 is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_decimal_2) values (1234567890.1234567890);");
+            List<BigDecimal> dat2 = jdbcTemplate.query("select c_decimal_2 from tb_h2_types where c_decimal_2 is not null limit 1;", (rs, rowNum) -> {
                 return new BigDecimalTypeHandler().getResult(rs, "c_decimal_2");
             });
             assert dat2.get(0).toString().equals("1234567890.12");

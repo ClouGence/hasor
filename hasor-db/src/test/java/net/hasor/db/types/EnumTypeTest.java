@@ -25,8 +25,8 @@ public class EnumTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_varchar) values ('READ_UNCOMMITTED');");
-            Isolation dat1 = jdbcTemplate.queryForObject("select c_varchar from tb_h2types where c_varchar is not null limit 1;", Isolation.class);
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('READ_UNCOMMITTED');");
+            Isolation dat1 = jdbcTemplate.queryForObject("select c_varchar from tb_h2_types where c_varchar is not null limit 1;", Isolation.class);
             assert dat1 == Isolation.READ_UNCOMMITTED;
             //
             CharacterSensitiveEnum dat2 = jdbcTemplate.queryForObject("select 'a';", CharacterSensitiveEnum.class);
@@ -41,8 +41,8 @@ public class EnumTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_varchar) values ('READ_UNCOMMITTED');");
-            List<Isolation> dat = jdbcTemplate.query("select c_varchar from tb_h2types where c_varchar is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('READ_UNCOMMITTED');");
+            List<Isolation> dat = jdbcTemplate.query("select c_varchar from tb_h2_types where c_varchar is not null limit 1;", (rs, rowNum) -> {
                 return new EnumTypeHandler<>(Isolation.class).getResult(rs, 1);
             });
             //
@@ -55,8 +55,8 @@ public class EnumTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_varchar) values ('READ_UNCOMMITTED');");
-            List<Isolation> dat = jdbcTemplate.query("select c_varchar from tb_h2types where c_varchar is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('READ_UNCOMMITTED');");
+            List<Isolation> dat = jdbcTemplate.query("select c_varchar from tb_h2_types where c_varchar is not null limit 1;", (rs, rowNum) -> {
                 return new EnumTypeHandler<>(Isolation.class).getResult(rs, "c_varchar");
             });
             //
@@ -101,8 +101,8 @@ public class EnumTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_varchar) values ('Apache 2.0');");
-            List<LicenseOfCodeEnum> dat = jdbcTemplate.query("select c_varchar from tb_h2types where c_varchar is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('Apache 2.0');");
+            List<LicenseOfCodeEnum> dat = jdbcTemplate.query("select c_varchar from tb_h2_types where c_varchar is not null limit 1;", (rs, rowNum) -> {
                 return new EnumTypeHandler<>(LicenseOfCodeEnum.class).getResult(rs, 1);
             });
             //
@@ -115,8 +115,8 @@ public class EnumTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_varchar) values ('Apache 2.0');");
-            List<LicenseOfCodeEnum> dat = jdbcTemplate.query("select c_varchar from tb_h2types where c_varchar is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('Apache 2.0');");
+            List<LicenseOfCodeEnum> dat = jdbcTemplate.query("select c_varchar from tb_h2_types where c_varchar is not null limit 1;", (rs, rowNum) -> {
                 return new EnumTypeHandler<>(LicenseOfCodeEnum.class).getResult(rs, "c_varchar");
             });
             //
@@ -161,8 +161,8 @@ public class EnumTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_integer) values (4);");
-            List<LicenseOfValueEnum> dat = jdbcTemplate.query("select c_integer from tb_h2types where c_integer is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_integer) values (4);");
+            List<LicenseOfValueEnum> dat = jdbcTemplate.query("select c_integer from tb_h2_types where c_integer is not null limit 1;", (rs, rowNum) -> {
                 return new EnumTypeHandler<>(LicenseOfValueEnum.class).getResult(rs, 1);
             });
             //
@@ -175,8 +175,8 @@ public class EnumTypeTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            jdbcTemplate.executeUpdate("insert into tb_h2types (c_integer) values (4);");
-            List<LicenseOfValueEnum> dat = jdbcTemplate.query("select c_integer from tb_h2types where c_integer is not null limit 1;", (rs, rowNum) -> {
+            jdbcTemplate.executeUpdate("insert into tb_h2_types (c_integer) values (4);");
+            List<LicenseOfValueEnum> dat = jdbcTemplate.query("select c_integer from tb_h2_types where c_integer is not null limit 1;", (rs, rowNum) -> {
                 return new EnumTypeHandler<>(LicenseOfValueEnum.class).getResult(rs, "c_integer");
             });
             //
