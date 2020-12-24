@@ -20,7 +20,10 @@ import net.hasor.core.MethodInvocation;
 import net.hasor.core.Module;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.db.jdbc.JdbcOperations;
-import net.hasor.db.jdbc.core.*;
+import net.hasor.db.jdbc.core.JdbcAccessor;
+import net.hasor.db.jdbc.core.JdbcConnection;
+import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.jdbc.core.JdbcTemplateProvider;
 import net.hasor.db.transaction.*;
 import net.hasor.db.transaction.provider.TransactionManagerProvider;
 import net.hasor.db.transaction.provider.TransactionTemplateProvider;
@@ -99,17 +102,16 @@ public class JdbcModule implements Module {
         //
         if (loadJdbc) {
             JdbcTemplateProvider tempProvider = new JdbcTemplateProvider(this.dataSource);
-            JdbcOperationsProvider operProvider = new JdbcOperationsProvider(this.dataSource);
             if (StringUtils.isBlank(this.dataSourceID)) {
                 apiBinder.bindType(JdbcAccessor.class).toProvider(tempProvider);
                 apiBinder.bindType(JdbcConnection.class).toProvider(tempProvider);
                 apiBinder.bindType(JdbcTemplate.class).toProvider(tempProvider);
-                apiBinder.bindType(JdbcOperations.class).toProvider(operProvider);
+                apiBinder.bindType(JdbcOperations.class).toProvider(tempProvider);
             } else {
                 apiBinder.bindType(JdbcAccessor.class).nameWith(this.dataSourceID).toProvider(tempProvider);
                 apiBinder.bindType(JdbcConnection.class).nameWith(this.dataSourceID).toProvider(tempProvider);
                 apiBinder.bindType(JdbcTemplate.class).nameWith(this.dataSourceID).toProvider(tempProvider);
-                apiBinder.bindType(JdbcOperations.class).nameWith(this.dataSourceID).toProvider(operProvider);
+                apiBinder.bindType(JdbcOperations.class).nameWith(this.dataSourceID).toProvider(tempProvider);
             }
         }
         //

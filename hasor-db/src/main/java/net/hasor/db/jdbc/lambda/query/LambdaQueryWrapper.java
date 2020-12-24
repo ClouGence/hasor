@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda.query;
-import net.hasor.db.jdbc.JdbcOperations;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.lambda.LambdaOperations.LambdaQuery;
 import net.hasor.db.jdbc.lambda.dialect.SqlDialect;
 import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
@@ -45,8 +45,8 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
     private       boolean       lockOrderBy     = false;
     private       String        result          = null;
 
-    public LambdaQueryWrapper(Class<T> exampleType, JdbcOperations jdbcOperations) {
-        super(exampleType, jdbcOperations);
+    public LambdaQueryWrapper(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
+        super(exampleType, jdbcTemplate);
     }
 
     private Segment buildTabName(SqlDialect dialect) {

@@ -41,11 +41,11 @@ public abstract class AbstractQueryExecute<T> implements QueryExecute<T>, BoundS
     private final   JdbcOperations   jdbcOperations;
     private         boolean          useDialect;
 
-    public AbstractQueryExecute(Class<T> exampleType, JdbcOperations jdbcOperations) {
+    public AbstractQueryExecute(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
         this.exampleType = exampleType;
-        this.jdbcOperations = jdbcOperations;
-        this.exampleRowMapper = (jdbcOperations instanceof JdbcTemplate) ?//
-                ((JdbcTemplate) jdbcOperations).getMappingHandler().resolveMapper(exampleType) ://
+        this.jdbcOperations = jdbcTemplate;
+        this.exampleRowMapper = (jdbcTemplate != null) ?//
+                jdbcTemplate.getMappingHandler().resolveMapper(exampleType) ://
                 BeanRowMapper.newInstance(exampleType);
         String tmpDbType;
         try {

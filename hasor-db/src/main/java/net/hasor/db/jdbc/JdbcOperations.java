@@ -58,7 +58,7 @@ public interface JdbcOperations {
 
     /** 执行一个 SQL语句块，语句块可能返回多个结果.（需要数据库驱动支持，例如mysql 要设置 allowMultiQueries=true 参数） */
     public List<Object> multipleExecute(String sql, SqlParameterSource parameterSource) throws SQLException;
- 
+
     /**执行一个动态查询 SQL 语句。SQL 语句会被编译成 PreparedStatement 类型通过回调接口 PreparedStatementCallback 执行。
      * 返回的结果集使用 ResultSetExtractor 转换。*/
     public <T> T query(PreparedStatementCreator psc, ResultSetExtractor<T> rse) throws SQLException;
@@ -353,6 +353,9 @@ public interface JdbcOperations {
 
     /**批量执行 insert 或 update、delete 语句，这一批次中的SQL 参数使用 BatchPreparedStatementSetter 接口设置。*/
     public int[] executeBatch(String sql, Map<String, ?>[] batchValues) throws SQLException;
+
+    /**批量执行 insert 或 update、delete 语句，这一批次中的SQL 参数使用 BatchPreparedStatementSetter 接口设置。*/
+    public int[] executeBatch(String sql, Object[][] batchValues) throws SQLException;
 
     /**批量执行 insert 或 update、delete 语句，这一批次中的SQL 参数使用 BatchPreparedStatementSetter 接口设置。*/
     public int[] executeBatch(String sql, SqlParameterSource[] batchArgs) throws SQLException;

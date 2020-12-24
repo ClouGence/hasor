@@ -36,7 +36,6 @@ public class DsUtils {
     public static String MYSQL_JDBC_URL  = "jdbc:mysql://localhost:13306/devtester?allowMultiQueries=true";
     public static String PG_JDBC_URL     = "jdbc:postgresql://localhost:15432/postgres";
     public static String ORACLE_JDBC_URL = "jdbc:oracle:thin:@localhost:11521:xe";
-    public static String DERBY_JDBC_URL  = "jdbc:derby:./tester;create=true";
 
     public static DruidDataSource createDs(String dbID) throws Throwable {
         DruidDataSource druid = new DruidDataSource();
@@ -85,11 +84,6 @@ public class DsUtils {
 
     public static Connection localPg() throws SQLException {
         return DriverManager.getConnection(PG_JDBC_URL, "postgres", "123456");
-    }
-
-    public static Connection localDerby() throws SQLException {
-        DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-        return DriverManager.getConnection(DERBY_JDBC_URL, "derby", "123456");
     }
 
     public static Connection localOracle() throws SQLException {

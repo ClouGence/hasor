@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda.query;
-import net.hasor.db.jdbc.JdbcOperations;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.lambda.Compare;
-import net.hasor.db.jdbc.lambda.dialect.SqlDialect;
 import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
 import net.hasor.db.jdbc.lambda.segment.Segment;
 import net.hasor.db.jdbc.lambda.segment.SqlLike;
@@ -51,8 +50,8 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
     private              Segment                nextSegmentPrefix = null;
     private              boolean                lookCondition     = false;
 
-    public AbstractCompareQuery(Class<T> exampleType, JdbcOperations jdbcOperations) {
-        super(exampleType, jdbcOperations);
+    public AbstractCompareQuery(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
+        super(exampleType, jdbcTemplate);
     }
 
     protected FieldInfo columnName(SFunction<T> property) {

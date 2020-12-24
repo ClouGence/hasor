@@ -30,7 +30,6 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  *
@@ -77,7 +76,6 @@ public class JdbcConnection extends JdbcAccessor {
         this.setConnection(conn);
     }
 
-    //
     public int getFetchSize() {
         return this.fetchSize;
     }
@@ -126,11 +124,7 @@ public class JdbcConnection extends JdbcAccessor {
         ConnectionProxy useConn = null;
         try {
             if (usingDS) {
-                Function<DataSource, Connection> dsApply = this.getDsApply();
-                if (dsApply == null) {
-                    throw new IllegalArgumentException("dsApply is null.");
-                }
-                localConn = dsApply.apply(localDS);
+                localConn = applyConnection(localDS);
                 useConn = this.newProxyConnection(localConn, localDS);//代理连接
             } else {
                 useConn = this.newProxyConnection(localConn, null);//代理连接
@@ -217,19 +211,20 @@ public class JdbcConnection extends JdbcAccessor {
         @Override
         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
             // Invocation on ConnectionProxy interface coming in...
-            if (method.getName().equals("getTargetConnection")) {
+            switch (method.getName()) {
+            case "getTargetConnection":
                 // Handle getTargetConnection method: return underlying Connection.
                 return this.target;
-            } else if (method.getName().equals("getTargetSource")) {
+            case "getTargetSource":
                 // Handle getTargetConnection method: return underlying DataSource.
                 return this.targetSource;
-            } else if (method.getName().equals("equals")) {
+            case "equals":
                 // Only consider equal when proxies are identical.
                 return proxy == args[0];
-            } else if (method.getName().equals("hashCode")) {
+            case "hashCode":
                 // Use hashCode of PersistenceManager proxy.
                 return System.identityHashCode(proxy);
-            } else if (method.getName().equals("close")) {
+            case "close":
                 return null;
             }
             // Invoke method on target Connection.

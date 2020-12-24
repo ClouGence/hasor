@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.mapping;
-import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
-import net.hasor.db.types.UnknownTypeHandler;
-import net.hasor.utils.BeanUtils;
-import net.hasor.utils.ExceptionUtils;
 
-import java.sql.JDBCType;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,6 +35,10 @@ public class MappingHandler {
         this.resultMapperMap = new ConcurrentHashMap<>();
     }
 
+    public TypeHandlerRegistry getTypeRegistry() {
+        return this.typeRegistry;
+    }
+
     public <T> BeanRowMapper<T> resolveMapper(Class<T> dtoClass) {
         BeanRowMapper<T> resultMapper = (BeanRowMapper<T>) this.resultMapperMap.get(dtoClass);
         if (resultMapper == null) {
@@ -50,7 +48,6 @@ public class MappingHandler {
                     return resultMapper;
                 }
                 resultMapper = new BeanRowMapper<>(dtoClass);
-
                 //
                 this.resultMapperMap.put(dtoClass, resultMapper);
             }

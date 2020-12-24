@@ -20,9 +20,12 @@ import java.sql.SQLException;
 import java.util.*;
 
 /**
- * 编译的SQL
- * @version : 2013-10-16
+ * Holds information about a parsed SQL statement.
+ *
+ * @author Thomas Risberg
+ * @author Juergen Hoeller
  * @author 赵永春 (zyc@hasor.net)
+ * @since 2.0
  */
 public class ParsedSql {
     private final String       originalSql;
@@ -32,7 +35,7 @@ public class ParsedSql {
     private       List<String> parameterNames;
     private       List<int[]>  parameterIndexes;
 
-    private ParsedSql(final String originalSql) {
+    private ParsedSql(String originalSql) {
         this.originalSql = originalSql;
     }
 

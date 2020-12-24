@@ -28,7 +28,7 @@ import java.util.function.Function;
 public class JdbcAccessor {
     private DataSource                       dataSource;
     private Connection                       connection;
-    private Function<DataSource, Connection> dsApply = TranManager::currentConnection;
+    private Function<DataSource, Connection> accessorApply = TranManager::currentConnection;
 
     /**Return the DataSource used by this template.*/
     public DataSource getDataSource() {
@@ -50,15 +50,18 @@ public class JdbcAccessor {
         this.connection = connection;
     }
 
-    public Function<DataSource, Connection> getDsApply() {
-        return this.dsApply;
+    protected Function<DataSource, Connection> getAccessorApply() {
+        return this.accessorApply;
     }
 
-    public void setDsApply(Function<DataSource, Connection> dsApply) {
-        this.dsApply = dsApply;
+    public void setAccessorApply(Function<DataSource, Connection> accessorApply) {
+        this.accessorApply = accessorApply;
     }
 
     protected Connection applyConnection(DataSource dataSource) {
-        return this.dsApply.apply(dataSource);
+        if (this.accessorApply == null) {
+            throw new IllegalArgumentException("accessorApply is null.");
+        }
+        return this.accessorApply.apply(dataSource);
     }
 }

@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -85,12 +86,34 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     }
 
     /**
+     * Construct a new JdbcTemplate, given a DataSource to obtain connections from.
+     * <p>Note: This will not trigger initialization of the exception translator.
+     * @param dataSource the JDBC DataSource to obtain connections from
+     * @param mappingHandler the Types
+     */
+    public JdbcTemplate(final DataSource dataSource, MappingHandler mappingHandler) {
+        super(dataSource);
+        this.mappingHandler = mappingHandler;
+    }
+
+    /**
      * Construct a new JdbcTemplate, given a Connection to obtain connections from.
      * <p>Note: This will not trigger initialization of the exception translator.
      * @param conn the JDBC Connection
      */
     public JdbcTemplate(final Connection conn) {
         super(conn);
+    }
+
+    /**
+     * Construct a new JdbcTemplate, given a Connection to obtain connections from.
+     * <p>Note: This will not trigger initialization of the exception translator.
+     * @param conn the JDBC Connection
+     * @param mappingHandler the Types
+     */
+    public JdbcTemplate(final Connection conn, MappingHandler mappingHandler) {
+        super(conn);
+        this.mappingHandler = mappingHandler;
     }
 
     public boolean isResultsCaseInsensitive() {
@@ -105,16 +128,12 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         return this.mappingHandler;
     }
 
-    public void setMappingHandler(MappingHandler mappingHandler) {
-        this.mappingHandler = mappingHandler;
-    }
-
     public void loadSQL(final String sqlResource) throws IOException, SQLException {
         this.loadSplitSQL(null, sqlResource);
     }
 
-    public void loadSQL(final String charsetName, final String sqlResource) throws IOException, SQLException {
-        this.loadSplitSQL(null, charsetName, sqlResource);
+    public void loadSQL(final Charset charset, final String sqlResource) throws IOException, SQLException {
+        this.loadSplitSQL(null, charset, sqlResource);
     }
 
     public void loadSQL(final Reader sqlReader) throws IOException, SQLException {
@@ -122,15 +141,15 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     }
 
     public void loadSplitSQL(final String splitString, final String sqlResource) throws IOException, SQLException {
-        this.loadSplitSQL(splitString, "UTF-8", sqlResource);
+        this.loadSplitSQL(splitString, StandardCharsets.UTF_8, sqlResource);
     }
 
-    public void loadSplitSQL(final String splitString, final String charsetName, final String sqlResource) throws IOException, SQLException {
+    public void loadSplitSQL(final String splitString, final Charset charset, final String sqlResource) throws IOException, SQLException {
         InputStream inStream = ResourcesUtils.getResourceAsStream(sqlResource);
         if (inStream == null) {
             throw new IOException("can't find :" + sqlResource);
         }
-        InputStreamReader reader = new InputStreamReader(inStream, Charset.forName(charsetName));
+        InputStreamReader reader = new InputStreamReader(inStream, charset);
         this.loadSplitSQL(splitString, reader);
     }
 
@@ -244,7 +263,6 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     public List<Object> multipleExecute(final String sql, final SqlParameterSource parameterSource) throws SQLException {
         return this.execute(this.getPreparedStatementCreator(sql, parameterSource), new MultipleResultExtractor());
     }
-
 
     /***/
     public <T> T query(final PreparedStatementCreator psc, final PreparedStatementSetter pss, final ResultSetExtractor<T> rse) throws SQLException {
@@ -685,8 +703,34 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     }
 
     @Override
+    public int[] executeBatch(String sql, Object[][] batchValues) throws SQLException {
+        final TypeHandlerRegistry typeRegistry = getMappingHandler().getTypeRegistry();
+        return this.executeBatch(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                int idx = 1;
+                for (Object value : batchValues[i]) {
+                    if (value == null) {
+                        ps.setObject(idx, null);
+                    } else {
+                        JDBCType jdbcType = TypeHandlerRegistry.toSqlType(value.getClass());
+                        TypeHandler typeHandler = typeRegistry.getTypeHandler(value.getClass());
+                        typeHandler.setParameter(ps, idx, value, jdbcType);
+                    }
+                    idx++;
+                }
+            }
+
+            @Override
+            public int getBatchSize() {
+                return batchValues.length;
+            }
+        });
+    }
+
+    @Override
     public int[] executeBatch(final String sql, final SqlParameterSource[] batchArgs) throws SQLException {
-        if (batchArgs.length <= 0) {
+        if (batchArgs == null || batchArgs.length == 0) {
             return new int[] { 0 };
         }
         return this.executeBatch(sql, new SqlParameterSourceBatchPreparedStatementSetter(sql, batchArgs));
@@ -1054,7 +1098,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
             List<Object> resultList = new ArrayList<>();
             if (retVal) {
                 try (ResultSet resultSet = ps.getResultSet()) {
-                     resultList.add(processResultSet(resultSet, result).get("TMP"));
+                    resultList.add(processResultSet(resultSet, result).get("TMP"));
                 }
             } else {
                 resultList.add(ps.getUpdateCount());
@@ -1072,7 +1116,6 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
             }
             return resultList;
         }
-
     }
 
     /**接口 {@link PreparedStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link PreparedStatement}对象。*/
