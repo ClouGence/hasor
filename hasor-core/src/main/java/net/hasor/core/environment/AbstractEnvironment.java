@@ -40,7 +40,7 @@ public abstract class AbstractEnvironment implements Environment {
     private          ScanClassPath       scanUtils    = null;
     private          AbstractSettings    settings     = null;
     private          Object              context      = null;
-    private          ClassLoader         rootLosder   = null;
+    private          ClassLoader         rootLoader   = null;
     private          EventContext        eventManager = null;
     private          Map<String, String> envMap       = null;
 
@@ -48,7 +48,7 @@ public abstract class AbstractEnvironment implements Environment {
     public AbstractEnvironment(Object context, AbstractSettings settings) {
         this.settings = settings;
         this.context = context;
-        this.rootLosder = new AopClassLoader();
+        this.rootLoader = new AopClassLoader();
         this.envMap = new ConcurrentHashMap<>();
     }
 
@@ -64,13 +64,13 @@ public abstract class AbstractEnvironment implements Environment {
 
     /**获取当创建Bean时使用的{@link ClassLoader}*/
     public ClassLoader getClassLoader() {
-        return this.rootLosder;
+        return this.rootLoader;
     }
 
     /**设置类加载器*/
-    public void setRootLosder(ClassLoader classLoader) {
+    public void setRootLoader(ClassLoader classLoader) {
         if (classLoader != null) {
-            this.rootLosder = classLoader;
+            this.rootLoader = classLoader;
         }
     }
 
