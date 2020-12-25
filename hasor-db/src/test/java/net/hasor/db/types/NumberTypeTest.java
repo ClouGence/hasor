@@ -1,7 +1,7 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.core.CallableSqlParameter;
+import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.NumberTypeHandler;
 import net.hasor.test.db.SingleDsModule;
@@ -92,15 +92,15 @@ public class NumberTypeTest {
             jdbcTemplate.execute("create procedure proc_data(out p_out date) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");
             //
             Map<String, Object> objectMap1 = jdbcTemplate.call("{call proc_varchar(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.VARCHAR, new NumberTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.VARCHAR, new NumberTypeHandler())));
             Map<String, Object> objectMap2 = jdbcTemplate.call("{call proc_bigint(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.BIGINT, new NumberTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.BIGINT, new NumberTypeHandler())));
             Map<String, Object> objectMap4 = jdbcTemplate.call("{call proc_float(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.FLOAT, new NumberTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.FLOAT, new NumberTypeHandler())));
             Map<String, Object> objectMap5 = jdbcTemplate.call("{call proc_timestamp(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new NumberTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.TIMESTAMP, new NumberTypeHandler())));
             Map<String, Object> objectMap6 = jdbcTemplate.call("{call proc_data(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.DATE, new NumberTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.DATE, new NumberTypeHandler())));
             //
             assert objectMap1.size() == 2;
             assert objectMap2.size() == 2;

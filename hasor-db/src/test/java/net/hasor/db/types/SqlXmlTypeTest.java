@@ -1,5 +1,5 @@
 package net.hasor.db.types;
-import net.hasor.db.jdbc.core.CallableSqlParameter;
+import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.SqlXmlForInputStreamTypeHandler;
 import net.hasor.db.types.handler.SqlXmlForReaderTypeHandler;
@@ -91,7 +91,7 @@ public class SqlXmlTypeTest {
             preProc(jdbcTemplate);
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_xmltype(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.SQLXML, new SqlXmlTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.SQLXML, new SqlXmlTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof String;
@@ -152,7 +152,7 @@ public class SqlXmlTypeTest {
             preProc(jdbcTemplate);
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_xmltype(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.SQLXML, new SqlXmlForInputStreamTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.SQLXML, new SqlXmlForInputStreamTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof InputStream;
@@ -214,7 +214,7 @@ public class SqlXmlTypeTest {
             preProc(jdbcTemplate);
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_xmltype(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.SQLXML, new SqlXmlForReaderTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.SQLXML, new SqlXmlForReaderTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Reader;

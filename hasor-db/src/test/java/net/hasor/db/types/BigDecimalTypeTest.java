@@ -1,7 +1,7 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.core.CallableSqlParameter;
+import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.BigDecimalTypeHandler;
 import net.hasor.test.db.SingleDsModule;
@@ -77,7 +77,7 @@ public class BigDecimalTypeTest {
             jdbcTemplate.execute("create procedure proc_decimal(out p_out decimal(10,2)) begin set p_out=123.123; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_decimal(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.NUMERIC, new BigDecimalTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.NUMERIC, new BigDecimalTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof BigDecimal;

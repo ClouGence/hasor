@@ -64,13 +64,42 @@ public class ParsedSql {
     }
 
     /**生成SQL*/
-    public String buildSql(final SqlParameterSource paramSource) {
-        return buildSql(this, paramSource);
+    public String buildSql() {
+        String originalSql = this.getOriginalSql();
+        List<String> parameterNames = this.getParameterNames();
+        List<int[]> parameterIndexes = this.getParameterIndexes();
+        //
+        StringBuilder sqlToUse = new StringBuilder();
+        int lastIndex = 0;
+        for (int i = 0; i < parameterNames.size(); i++) {
+            int[] indexes = parameterIndexes.get(i);
+            int startIndex = indexes[0];
+            int endIndex = indexes[1];
+            sqlToUse.append(originalSql, lastIndex, startIndex);
+            sqlToUse.append("?");
+            lastIndex = endIndex;
+        }
+        sqlToUse.append(originalSql.substring(lastIndex));
+        return sqlToUse.toString();
     }
 
     /**生成Values*/
     public Object[] buildValues(final SqlParameterSource paramSource) throws SQLException {
-        return buildSqlValues(this, paramSource);
+        String originalSql = this.getOriginalSql();
+        List<String> parameterNames = this.getParameterNames();
+        int namedParameterCount = this.getNamedParameterCount();//带有名字参数的总数
+        int unnamedParameterCount = this.getUnnamedParameterCount();//无名字参数总数
+        int totalParameterCount = this.getTotalParameterCount();//参数总数
+        //
+        Object[] paramArray = new Object[totalParameterCount];
+        if (namedParameterCount > 0 && unnamedParameterCount > 0) {
+            throw new SQLException("You can't mix named and traditional ? placeholders. You have " + namedParameterCount + " named parameter(s) and " + unnamedParameterCount + " traditonal placeholder(s) in [" + originalSql + "]");
+        }
+        for (int i = 0; i < parameterNames.size(); i++) {
+            String paramName = parameterNames.get(i);
+            paramArray[i] = paramSource.getValue(paramName);
+        }
+        return paramArray;
     }
 
     /**Set of characters that qualify as parameter separators, indicating that a parameter name in a SQL String has ended. */
@@ -191,78 +220,5 @@ public class ParsedSql {
             }
         }
         return false;
-    }
-    //-------------------------------------------------------------------------
-    // Core methods used by NamedParameterJdbcTemplate and SqlQuery/SqlUpdate
-    //-------------------------------------------------------------------------
-
-    /**生成SQL*/
-    public static String buildSql(final ParsedSql parsedSql, final SqlParameterSource paramSource) {
-        String originalSql = parsedSql.getOriginalSql();
-        List<String> parameterNames = parsedSql.getParameterNames();
-        List<int[]> parameterIndexes = parsedSql.getParameterIndexes();
-        //
-        StringBuilder sqlToUse = new StringBuilder();
-        int lastIndex = 0;
-        for (int i = 0; i < parameterNames.size(); i++) {
-            String paramName = parameterNames.get(i);
-            int[] indexes = parameterIndexes.get(i);
-            int startIndex = indexes[0];
-            int endIndex = indexes[1];
-            sqlToUse.append(originalSql, lastIndex, startIndex);
-            if (paramSource != null && paramSource.hasValue(paramName)) {
-                Object value = paramSource.getValue(paramName);
-                if (value instanceof Collection) {
-                    Iterator<?> entryIter = ((Collection<?>) value).iterator();
-                    int k = 0;
-                    while (entryIter.hasNext()) {
-                        if (k > 0) {
-                            sqlToUse.append(", ");
-                        }
-                        k++;
-                        Object entryItem = entryIter.next();
-                        if (entryItem instanceof Object[]) {
-                            Object[] expressionList = (Object[]) entryItem;
-                            sqlToUse.append("(");
-                            for (int m = 0; m < expressionList.length; m++) {
-                                if (m > 0) {
-                                    sqlToUse.append(", ");
-                                }
-                                sqlToUse.append("?");
-                            }
-                            sqlToUse.append(")");
-                        } else {
-                            sqlToUse.append("?");
-                        }
-                    }
-                } else {
-                    sqlToUse.append("?");
-                }
-            } else {
-                sqlToUse.append("?");
-            }
-            lastIndex = endIndex;
-        }
-        sqlToUse.append(originalSql.substring(lastIndex));
-        return sqlToUse.toString();
-    }
-
-    /**生成Values*/
-    public static Object[] buildSqlValues(final ParsedSql parsedSql, final SqlParameterSource paramSource) throws SQLException {
-        String originalSql = parsedSql.getOriginalSql();
-        List<String> parameterNames = parsedSql.getParameterNames();
-        int namedParameterCount = parsedSql.getNamedParameterCount();//带有名字参数的总数
-        int unnamedParameterCount = parsedSql.getUnnamedParameterCount();//无名字参数总数
-        int totalParameterCount = parsedSql.getTotalParameterCount();//参数总数
-        //
-        Object[] paramArray = new Object[totalParameterCount];
-        if (namedParameterCount > 0 && unnamedParameterCount > 0) {
-            throw new SQLException("You can't mix named and traditional ? placeholders. You have " + namedParameterCount + " named parameter(s) and " + unnamedParameterCount + " traditonal placeholder(s) in [" + originalSql + "]");
-        }
-        for (int i = 0; i < parameterNames.size(); i++) {
-            String paramName = parameterNames.get(i);
-            paramArray[i] = paramSource.getValue(paramName);
-        }
-        return paramArray;
     }
 }

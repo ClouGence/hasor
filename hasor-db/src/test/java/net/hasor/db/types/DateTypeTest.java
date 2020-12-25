@@ -1,7 +1,7 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.core.CallableSqlParameter;
+import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.DateOnlyTypeHandler;
 import net.hasor.db.types.handler.DateTypeHandler;
@@ -79,7 +79,7 @@ public class DateTypeTest {
             jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 08:09:30', '%Y-%m-%d %h:%i:%s'); end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new DateTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.TIMESTAMP, new DateTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Date;
@@ -164,7 +164,7 @@ public class DateTypeTest {
             jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 08:09:30', '%Y-%m-%d %h:%i:%s'); end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new TimeOnlyTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.TIMESTAMP, new TimeOnlyTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Date;
@@ -249,7 +249,7 @@ public class DateTypeTest {
             jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 08:09:30', '%Y-%m-%d %h:%i:%s'); end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new DateOnlyTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.TIMESTAMP, new DateOnlyTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Date;

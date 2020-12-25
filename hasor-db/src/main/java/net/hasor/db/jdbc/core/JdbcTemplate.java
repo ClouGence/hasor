@@ -18,6 +18,7 @@ import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.SqlParameter.InSqlParameter;
 import net.hasor.db.jdbc.SqlParameter.OutSqlParameter;
 import net.hasor.db.jdbc.SqlParameter.ReturnSqlParameter;
+import net.hasor.db.jdbc.extractor.ColumnMapResultSetExtractor;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.lambda.LambdaOperations;
 import net.hasor.db.jdbc.lambda.query.LambdaQueryWrapper;
@@ -741,7 +742,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         if (logger.isDebugEnabled()) {
             logger.debug("Executing SQL batch update [{}].", sql);
         }
-        String buildSql = ParsedSql.buildSql(getParsedSql(sql), null);
+        String buildSql = getParsedSql(sql).buildSql();
         //
         return this.execute(buildSql, ps -> {
             try {
@@ -867,19 +868,19 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
                 String name = resultParameterName(sqlParameter, "#update-count-" + resultIndex);
                 resultsMap.put(name, cs.getUpdateCount());
             }
-            while (cs.getMoreResults()) {
+            while ((cs.getMoreResults()) || (cs.getUpdateCount() != -1)) {
                 resultIndex++;
                 sqlParameter = resultParameters.size() > resultIndex ? resultParameters.get(resultIndex - 1) : null;
                 int updateCount = cs.getUpdateCount();
                 //
-                if (updateCount != -1) {
-                    try (ResultSet resultSet = cs.getResultSet()) {
+                try (ResultSet resultSet = cs.getResultSet()) {
+                    if (resultSet != null) {
                         String name = resultParameterName(sqlParameter, "#result-set-" + resultIndex);
                         resultsMap.put(name, processResultSet(resultSet, sqlParameter));
+                    } else {
+                        String name = resultParameterName(sqlParameter, "#update-count-" + resultIndex);
+                        resultsMap.put(name, updateCount);
                     }
-                } else {
-                    String name = resultParameterName(sqlParameter, "#update-count-" + resultIndex);
-                    resultsMap.put(name, updateCount);
                 }
             }
             //
@@ -914,22 +915,24 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
      * @param param the corresponding stored procedure parameter
      * @return a Map that contains returned results
      */
-    protected static Map<String, Object> processResultSet(ResultSet rs, ReturnSqlParameter param) throws SQLException {
+    protected static Object processResultSet(ResultSet rs, ReturnSqlParameter param) throws SQLException {
         if (rs != null) {
-            if (param.getRowMapper() != null) {
-                RowMapper<?> rowMapper = param.getRowMapper();
-                Object data = (new RowMapperResultSetExtractor<>(rowMapper)).extractData(rs);
-                return Collections.singletonMap(param.getName(), data);
-            } else if (param.getRowCallbackHandler() != null) {
-                RowCallbackHandler rch = param.getRowCallbackHandler();
-                (new JdbcTemplate.RowCallbackHandlerResultSetExtractor(rch)).extractData(rs);
-                return Collections.singletonMap(param.getName(), "ResultSet returned from stored procedure was processed");
-            } else if (param.getResultSetExtractor() != null) {
-                Object data = param.getResultSetExtractor().extractData(rs);
-                return Collections.singletonMap(param.getName(), data);
+            if (param != null) {
+                if (param.getRowMapper() != null) {
+                    RowMapper<?> rowMapper = param.getRowMapper();
+                    return (new RowMapperResultSetExtractor<>(rowMapper)).extractData(rs);
+                } else if (param.getRowCallbackHandler() != null) {
+                    RowCallbackHandler rch = param.getRowCallbackHandler();
+                    (new JdbcTemplate.RowCallbackHandlerResultSetExtractor(rch)).extractData(rs);
+                    return "ResultSet returned from stored procedure was processed";
+                } else if (param.getResultSetExtractor() != null) {
+                    return param.getResultSetExtractor().extractData(rs);
+                }
+            } else {
+                return new ColumnMapResultSetExtractor().extractData(rs);
             }
         }
-        return Collections.emptyMap();
+        return null;
     }
 
     public <T> LambdaQuery<T> lambda(Class<T> exampleType, List<SFunction<T>> columns) {
@@ -1089,7 +1092,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     private static class MultipleResultExtractor implements PreparedStatementCallback<List<Object>> {
         @Override
         public List<Object> doInPreparedStatement(PreparedStatement ps) throws SQLException {
-            ReturnSqlParameter result = CallableSqlParameter.withReturnResult("TMP", new RowMapperResultSetExtractor<>(new ColumnMapRowMapper()));
+            ReturnSqlParameter result = SqlParameterUtils.withReturnResult("TMP", new RowMapperResultSetExtractor<>(new ColumnMapRowMapper()));
             boolean retVal = ps.execute();
             if (logger.isTraceEnabled()) {
                 logger.trace("statement.execute() returned '" + retVal + "'");
@@ -1098,20 +1101,19 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
             List<Object> resultList = new ArrayList<>();
             if (retVal) {
                 try (ResultSet resultSet = ps.getResultSet()) {
-                    resultList.add(processResultSet(resultSet, result).get("TMP"));
+                    resultList.add(processResultSet(resultSet, result));
                 }
             } else {
                 resultList.add(ps.getUpdateCount());
             }
-            while (ps.getMoreResults()) {
+            while ((ps.getMoreResults()) || (ps.getUpdateCount() != -1)) {
                 int updateCount = ps.getUpdateCount();
-                //
-                if (updateCount == -1) {
-                    try (ResultSet resultSet = ps.getResultSet()) {
-                        resultList.add(processResultSet(resultSet, result).get("TMP"));
+                try (ResultSet resultSet = ps.getResultSet()) {
+                    if (resultSet != null) {
+                        resultList.add(processResultSet(resultSet, null));
+                    } else {
+                        resultList.add(updateCount);
                     }
-                } else {
-                    resultList.add(ps.getUpdateCount());
                 }
             }
             return resultList;
@@ -1132,9 +1134,9 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         @Override
         public PreparedStatement createPreparedStatement(final Connection con) throws SQLException {
             //1.根据参数信息生成最终会执行的SQL语句.
-            String sqlToUse = ParsedSql.buildSql(this.parsedSql, this.paramSource);
+            String sqlToUse = this.parsedSql.buildSql();
             //2.确定参数对象
-            Object[] paramArray = ParsedSql.buildSqlValues(this.parsedSql, this.paramSource);
+            Object[] paramArray = this.parsedSql.buildValues(this.paramSource);
             //3.创建PreparedStatement对象，并设置参数
             PreparedStatement statement = con.prepareStatement(sqlToUse);
             for (int i = 0; i < paramArray.length; i++) {
@@ -1171,7 +1173,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         public void setValues(final PreparedStatement ps, final int index) throws SQLException {
             SqlParameterSource paramSource = this.batchArgs[index];
             //1.确定参数对象
-            Object[] sqlValue = ParsedSql.buildSqlValues(this.parsedSql, paramSource);
+            Object[] sqlValue = this.parsedSql.buildValues(paramSource);
             //2.设置参数
             int sqlColIndx = 1;
             for (Object element : sqlValue) {

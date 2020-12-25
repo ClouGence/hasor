@@ -1,7 +1,7 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.core.CallableSqlParameter;
+import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.DoubleTypeHandler;
 import net.hasor.test.db.SingleDsModule;
@@ -69,7 +69,7 @@ public class DoubleTypeTest {
             jdbcTemplate.execute("create procedure proc_double(out p_out double) begin set p_out=123.123; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_double(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.DOUBLE, new DoubleTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.DOUBLE, new DoubleTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Double;

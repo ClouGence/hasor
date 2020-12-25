@@ -54,12 +54,9 @@ public class UtilsTest extends AbstractDbTest {
 
     @Test
     public void buildSql_1() {
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("abc", "abcabc");
-        SqlParameterSource source = new MapSqlParameterSource(hashMap);
         ParsedSql parsedSql = ParsedSql.getParsedSql("select :abc");
         //
-        String buildSql = parsedSql.buildSql(source);
+        String buildSql = parsedSql.buildSql();
         List<String> parameterNames = parsedSql.getParameterNames();
         //
         assert buildSql.equals("select ?");
@@ -72,16 +69,16 @@ public class UtilsTest extends AbstractDbTest {
         hashMap.put("abc", "abcabc");
         SqlParameterSource source = new MapSqlParameterSource(hashMap);
         //
-        String buildSql1 = ParsedSql.getParsedSql("select :abc /* :abc */").buildSql(source);
+        String buildSql1 = ParsedSql.getParsedSql("select :abc /* :abc */").buildSql();
         assert buildSql1.equals("select ? /* :abc */");
         //
-        String buildSql2 = ParsedSql.getParsedSql("-- select :abc /* :abc */").buildSql(source);
+        String buildSql2 = ParsedSql.getParsedSql("-- select :abc /* :abc */").buildSql();
         assert buildSql2.equals("-- select :abc /* :abc */");
         //
-        String buildSql3 = ParsedSql.getParsedSql("select :abc /* :abc */ from :abc").buildSql(source);
+        String buildSql3 = ParsedSql.getParsedSql("select :abc /* :abc */ from :abc").buildSql();
         assert buildSql3.equals("select ? /* :abc */ from ?");
         //
-        String buildSql4 = ParsedSql.getParsedSql("select :abc /* :abc from :abc").buildSql(source);
+        String buildSql4 = ParsedSql.getParsedSql("select :abc /* :abc from :abc").buildSql();
         assert buildSql4.equals("select ? /* :abc from :abc");
     }
 
@@ -91,16 +88,16 @@ public class UtilsTest extends AbstractDbTest {
         hashMap.put("abc", "abcabc");
         SqlParameterSource source = new MapSqlParameterSource(hashMap);
         //
-        String buildSql1 = ParsedSql.getParsedSql("select &abc /* :abc */").buildSql(source);
+        String buildSql1 = ParsedSql.getParsedSql("select &abc /* :abc */").buildSql();
         assert buildSql1.equals("select ? /* :abc */");
         //
-        String buildSql2 = ParsedSql.getParsedSql("-- select :abc /* :abc */").buildSql(source);
+        String buildSql2 = ParsedSql.getParsedSql("-- select :abc /* :abc */").buildSql();
         assert buildSql2.equals("-- select :abc /* :abc */");
         //
-        String buildSql3 = ParsedSql.getParsedSql("select &abc /* :abc */ from &abc").buildSql(source);
+        String buildSql3 = ParsedSql.getParsedSql("select &abc /* :abc */ from &abc").buildSql();
         assert buildSql3.equals("select ? /* :abc */ from ?");
         //
-        String buildSql4 = ParsedSql.getParsedSql("select &abc /* :abc from &abc").buildSql(source);
+        String buildSql4 = ParsedSql.getParsedSql("select &abc /* :abc from &abc").buildSql();
         assert buildSql4.equals("select ? /* :abc from &abc");
     }
 
@@ -115,13 +112,11 @@ public class UtilsTest extends AbstractDbTest {
         hashMap.put("abc", arrays);
         SqlParameterSource source = new MapSqlParameterSource(hashMap);
         //
-        String buildSql = ParsedSql.getParsedSql("select &abc").buildSql(source);
+        String buildSql = ParsedSql.getParsedSql("select ?").buildSql();
         Object[] buildValues = ParsedSql.getParsedSql("select &abc").buildValues(source);
         //
-        assert buildSql.equals("select ?, ?, ?");
-        assert buildValues.length == 3;
-        assert buildValues[0].equals("a");
-        assert buildValues[1].equals("b");
-        assert buildValues[2].equals("c");
+        assert buildSql.equals("select ?");
+        assert buildValues.length == 1;
+        assert buildValues[0] == arrays;
     }
 }

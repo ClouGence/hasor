@@ -1,7 +1,7 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.core.CallableSqlParameter;
+import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.*;
 import net.hasor.test.db.SingleDsModule;
@@ -105,7 +105,7 @@ public class OffsetTimeTypeTest {
                     + "END;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamptz(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withInOut("out", null, JDBCType.TIMESTAMP_WITH_TIMEZONE, new OffsetDateTimeForSqlTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withInOut("out", null, JDBCType.TIMESTAMP_WITH_TIMEZONE, new OffsetDateTimeForSqlTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof OffsetDateTime;
@@ -198,7 +198,7 @@ public class OffsetTimeTypeTest {
             jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 08:09:30', '%Y-%m-%d %h:%i:%s'); end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new OffsetDateTimeForUTCTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.TIMESTAMP, new OffsetDateTimeForUTCTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof OffsetDateTime;
@@ -291,7 +291,7 @@ public class OffsetTimeTypeTest {
                     + "END;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamptz(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withInOut("out", null, JDBCType.TIMESTAMP_WITH_TIMEZONE, new OffsetTimeForSqlTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withInOut("out", null, JDBCType.TIMESTAMP_WITH_TIMEZONE, new OffsetTimeForSqlTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof OffsetTime;
@@ -385,7 +385,7 @@ public class OffsetTimeTypeTest {
             jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 08:09:30', '%Y-%m-%d %h:%i:%s'); end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new OffsetTimeForUTCTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.TIMESTAMP, new OffsetTimeForUTCTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof OffsetTime;
@@ -481,7 +481,7 @@ public class OffsetTimeTypeTest {
                     + "END;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamptz(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withInOut("out", null, JDBCType.TIMESTAMP_WITH_TIMEZONE, new ZonedDateTimeTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withInOut("out", null, JDBCType.TIMESTAMP_WITH_TIMEZONE, new ZonedDateTimeTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof ZonedDateTime;

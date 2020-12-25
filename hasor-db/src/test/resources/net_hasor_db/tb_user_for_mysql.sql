@@ -1,6 +1,6 @@
 create table tb_user
 (
-    userUUID      varchar(50)  not null PRIMARY KEY,
+    userUUID      varchar(50)  not null primary key,
     name          varchar(100) null,
     loginName     varchar(100) null,
     loginPassword varchar(100) null,

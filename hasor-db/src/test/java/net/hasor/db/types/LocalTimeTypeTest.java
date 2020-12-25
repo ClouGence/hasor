@@ -1,7 +1,7 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.core.CallableSqlParameter;
+import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.LocalDateTimeTypeHandler;
 import net.hasor.db.types.handler.LocalDateTypeHandler;
@@ -94,7 +94,7 @@ public class LocalTimeTypeTest {
             jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new LocalDateTimeTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.TIMESTAMP, new LocalDateTimeTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof LocalDateTime;
@@ -174,7 +174,7 @@ public class LocalTimeTypeTest {
             jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new LocalDateTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.TIMESTAMP, new LocalDateTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof LocalDate;
@@ -253,7 +253,7 @@ public class LocalTimeTypeTest {
             jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new LocalTimeTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.TIMESTAMP, new LocalTimeTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof LocalTime;

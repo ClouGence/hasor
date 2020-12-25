@@ -1,7 +1,7 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.core.CallableSqlParameter;
+import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.BooleanTypeHandler;
 import net.hasor.test.db.SingleDsModule;
@@ -73,7 +73,7 @@ public class BooleanTypeTest {
             jdbcTemplate.execute("create procedure proc_boolean(out p_out boolean) begin set p_out=true; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_boolean(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.BOOLEAN, new BooleanTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.BOOLEAN, new BooleanTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Boolean;

@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.core;
-import net.hasor.db.jdbc.ResultSetExtractor;
-import net.hasor.db.jdbc.RowCallbackHandler;
-import net.hasor.db.jdbc.RowMapper;
-import net.hasor.db.jdbc.SqlParameter;
+package net.hasor.db.jdbc;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
 import net.hasor.utils.StringUtils;
@@ -34,11 +30,11 @@ import java.util.Objects;
  * @author 赵永春 (zyc@hasor.net)
  * @see JDBCType
  */
-public class CallableSqlParameter implements SqlParameter {
+public class SqlParameterUtils implements SqlParameter {
     // The name of the parameter, if any
     private final String name;
 
-    protected CallableSqlParameter(String name) {
+    protected SqlParameterUtils(String name) {
         this.name = name;
     }
 
@@ -47,7 +43,7 @@ public class CallableSqlParameter implements SqlParameter {
         return this.name;
     }
 
-    private static abstract class ValueSqlParameterImpl extends CallableSqlParameter implements ValueSqlParameter {
+    private static abstract class ValueSqlParameterUtilsImpl extends SqlParameterUtils implements ValueSqlParameter {
         // SQL type constant from {@code java.sql.JDBCType}
         private final JDBCType jdbcType;
         // Used for types that are user-named like: STRUCT, DISTINCT, JAVA_OBJECT, named array types
@@ -55,7 +51,7 @@ public class CallableSqlParameter implements SqlParameter {
         // The scale to apply in case of a NUMERIC or DECIMAL type, if any
         private final Integer  scale;
 
-        public ValueSqlParameterImpl(String name, JDBCType jdbcType, String typeName, Integer scale) {
+        public ValueSqlParameterUtilsImpl(String name, JDBCType jdbcType, String typeName, Integer scale) {
             super(name);
             this.jdbcType = Objects.requireNonNull(jdbcType, "jdbcType can not be null.");
             this.typeName = typeName;
@@ -78,11 +74,11 @@ public class CallableSqlParameter implements SqlParameter {
         }
     }
 
-    private static final class InSqlParameterImpl extends ValueSqlParameterImpl implements InSqlParameter {
+    private static final class InSqlParameterUtilsImpl extends ValueSqlParameterUtilsImpl implements InSqlParameter {
         private final Object         value;
         private final TypeHandler<?> typeHandler;
 
-        public InSqlParameterImpl(String name, JDBCType jdbcType, String typeName, Integer scale, TypeHandler<?> typeHandler, Object value) {
+        public InSqlParameterUtilsImpl(String name, JDBCType jdbcType, String typeName, Integer scale, TypeHandler<?> typeHandler, Object value) {
             super(name, jdbcType, typeName, scale);
             this.typeHandler = typeHandler;
             this.value = value;
@@ -97,10 +93,10 @@ public class CallableSqlParameter implements SqlParameter {
         }
     }
 
-    private static final class OutSqlParameterImpl extends ValueSqlParameterImpl implements OutSqlParameter {
+    private static final class OutSqlParameterUtilsImpl extends ValueSqlParameterUtilsImpl implements OutSqlParameter {
         private final TypeHandler<?> typeHandler;
 
-        public OutSqlParameterImpl(String name, JDBCType jdbcType, String typeName, Integer scale, TypeHandler<?> typeHandler) {
+        public OutSqlParameterUtilsImpl(String name, JDBCType jdbcType, String typeName, Integer scale, TypeHandler<?> typeHandler) {
             super(name, jdbcType, typeName, scale);
             this.typeHandler = typeHandler;
         }
@@ -110,11 +106,11 @@ public class CallableSqlParameter implements SqlParameter {
         }
     }
 
-    private static final class InOutSqlParameterImpl extends ValueSqlParameterImpl implements InSqlParameter, OutSqlParameter {
+    private static final class InOutSqlParameterUtilsImpl extends ValueSqlParameterUtilsImpl implements InSqlParameter, OutSqlParameter {
         private final Object         value;
         private final TypeHandler<?> typeHandler;
 
-        public InOutSqlParameterImpl(String name, JDBCType jdbcType, String typeName, Integer scale, TypeHandler<?> typeHandler, Object value) {
+        public InOutSqlParameterUtilsImpl(String name, JDBCType jdbcType, String typeName, Integer scale, TypeHandler<?> typeHandler, Object value) {
             super(name, jdbcType, typeName, scale);
             this.typeHandler = typeHandler;
             this.value = value;
@@ -130,12 +126,12 @@ public class CallableSqlParameter implements SqlParameter {
         }
     }
 
-    private static final class ReturnSqlParameterImpl extends CallableSqlParameter implements ReturnSqlParameter {
+    private static final class ReturnSqlParameterUtilsImpl extends SqlParameterUtils implements ReturnSqlParameter {
         private final ResultSetExtractor<?> resultSetExtractor;
         private final RowCallbackHandler    rowCallbackHandler;
         private final RowMapper<?>          rowMapper;
 
-        public ReturnSqlParameterImpl(String name, ResultSetExtractor<?> resultSetExtractor, RowCallbackHandler rowCallbackHandler, RowMapper<?> rowMapper) {
+        public ReturnSqlParameterUtilsImpl(String name, ResultSetExtractor<?> resultSetExtractor, RowCallbackHandler rowCallbackHandler, RowMapper<?> rowMapper) {
             super(name);
             this.resultSetExtractor = resultSetExtractor;
             this.rowCallbackHandler = rowCallbackHandler;
@@ -159,180 +155,180 @@ public class CallableSqlParameter implements SqlParameter {
     }
 
     public static OutSqlParameter withOutput(JDBCType jdbcType) {
-        return new OutSqlParameterImpl(null, jdbcType, null, null, null);
+        return new OutSqlParameterUtilsImpl(null, jdbcType, null, null, null);
     }
 
     public static OutSqlParameter withOutput(JDBCType jdbcType, Integer scale) {
-        return new OutSqlParameterImpl(null, jdbcType, null, scale, null);
+        return new OutSqlParameterUtilsImpl(null, jdbcType, null, scale, null);
     }
 
     public static OutSqlParameter withOutput(JDBCType jdbcType, String typeName) {
-        return new OutSqlParameterImpl(null, jdbcType, typeName, null, null);
+        return new OutSqlParameterUtilsImpl(null, jdbcType, typeName, null, null);
     }
 
     public static OutSqlParameter withOutput(JDBCType jdbcType, TypeHandler<?> typeHandler) {
-        return new OutSqlParameterImpl(null, jdbcType, null, null, typeHandler);
+        return new OutSqlParameterUtilsImpl(null, jdbcType, null, null, typeHandler);
     }
 
     public static OutSqlParameter withOutput(JDBCType jdbcType, Integer scale, TypeHandler<?> typeHandler) {
-        return new OutSqlParameterImpl(null, jdbcType, null, scale, typeHandler);
+        return new OutSqlParameterUtilsImpl(null, jdbcType, null, scale, typeHandler);
     }
 
     public static OutSqlParameter withOutput(JDBCType jdbcType, String typeName, TypeHandler<?> typeHandler) {
-        return new OutSqlParameterImpl(null, jdbcType, typeName, null, typeHandler);
+        return new OutSqlParameterUtilsImpl(null, jdbcType, typeName, null, typeHandler);
     }
 
     public static OutSqlParameter withOutput(String paramName, JDBCType jdbcType) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new OutSqlParameterImpl(paramName, jdbcType, null, null, null);
+        return new OutSqlParameterUtilsImpl(paramName, jdbcType, null, null, null);
     }
 
     public static OutSqlParameter withOutput(String paramName, JDBCType jdbcType, Integer scale) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new OutSqlParameterImpl(paramName, jdbcType, null, scale, null);
+        return new OutSqlParameterUtilsImpl(paramName, jdbcType, null, scale, null);
     }
 
     public static OutSqlParameter withOutput(String paramName, JDBCType jdbcType, String typeName) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new OutSqlParameterImpl(paramName, jdbcType, typeName, null, null);
+        return new OutSqlParameterUtilsImpl(paramName, jdbcType, typeName, null, null);
     }
 
     public static OutSqlParameter withOutput(String paramName, JDBCType jdbcType, TypeHandler<?> typeHandler) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new OutSqlParameterImpl(paramName, jdbcType, null, null, typeHandler);
+        return new OutSqlParameterUtilsImpl(paramName, jdbcType, null, null, typeHandler);
     }
 
     public static OutSqlParameter withOutput(String paramName, JDBCType jdbcType, Integer scale, TypeHandler<?> typeHandler) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new OutSqlParameterImpl(paramName, jdbcType, null, scale, typeHandler);
+        return new OutSqlParameterUtilsImpl(paramName, jdbcType, null, scale, typeHandler);
     }
 
     public static OutSqlParameter withOutput(String paramName, JDBCType jdbcType, String typeName, TypeHandler<?> typeHandler) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new OutSqlParameterImpl(paramName, jdbcType, typeName, null, typeHandler);
+        return new OutSqlParameterUtilsImpl(paramName, jdbcType, typeName, null, typeHandler);
     }
 
     public static InSqlParameter withInput(Object value) {
         JDBCType jdbcType = TypeHandlerRegistry.toSqlType(Objects.requireNonNull(value, "only value, can not be null.").getClass());
-        return new InSqlParameterImpl(null, jdbcType, null, null, null, value);
+        return new InSqlParameterUtilsImpl(null, jdbcType, null, null, null, value);
     }
 
     public static InSqlParameter withInput(Object value, JDBCType jdbcType) {
-        return new InSqlParameterImpl(null, jdbcType, null, null, null, value);
+        return new InSqlParameterUtilsImpl(null, jdbcType, null, null, null, value);
     }
 
     public static InSqlParameter withInput(Object value, TypeHandler<?> typeHandler) {
         JDBCType jdbcType = TypeHandlerRegistry.toSqlType(Objects.requireNonNull(value, "only value, can not be null.").getClass());
-        return new InSqlParameterImpl(null, jdbcType, null, null, typeHandler, value);
+        return new InSqlParameterUtilsImpl(null, jdbcType, null, null, typeHandler, value);
     }
 
     public static InSqlParameter withInput(Object value, JDBCType jdbcType, TypeHandler<?> typeHandler) {
-        return new InSqlParameterImpl(null, jdbcType, null, null, typeHandler, value);
+        return new InSqlParameterUtilsImpl(null, jdbcType, null, null, typeHandler, value);
     }
 
     public static SqlParameter withInOut(Object value, JDBCType jdbcType) {
-        return new InOutSqlParameterImpl(null, jdbcType, null, null, null, value);
+        return new InOutSqlParameterUtilsImpl(null, jdbcType, null, null, null, value);
     }
 
     public static SqlParameter withInOut(Object value, JDBCType jdbcType, Integer scale) {
-        return new InOutSqlParameterImpl(null, jdbcType, null, scale, null, value);
+        return new InOutSqlParameterUtilsImpl(null, jdbcType, null, scale, null, value);
     }
 
     public static SqlParameter withInOut(Object value, JDBCType jdbcType, String typeName) {
-        return new InOutSqlParameterImpl(null, jdbcType, typeName, null, null, value);
+        return new InOutSqlParameterUtilsImpl(null, jdbcType, typeName, null, null, value);
     }
 
     public static SqlParameter withInOut(Object value, JDBCType jdbcType, TypeHandler<?> typeHandler) {
-        return new InOutSqlParameterImpl(null, jdbcType, null, null, typeHandler, value);
+        return new InOutSqlParameterUtilsImpl(null, jdbcType, null, null, typeHandler, value);
     }
 
     public static SqlParameter withInOut(Object value, JDBCType jdbcType, Integer scale, TypeHandler<?> typeHandler) {
-        return new InOutSqlParameterImpl(null, jdbcType, null, scale, typeHandler, value);
+        return new InOutSqlParameterUtilsImpl(null, jdbcType, null, scale, typeHandler, value);
     }
 
     public static SqlParameter withInOut(Object value, JDBCType jdbcType, String typeName, TypeHandler<?> typeHandler) {
-        return new InOutSqlParameterImpl(null, jdbcType, typeName, null, typeHandler, value);
+        return new InOutSqlParameterUtilsImpl(null, jdbcType, typeName, null, typeHandler, value);
     }
 
     public static SqlParameter withInOut(String paramName, Object value, JDBCType jdbcType) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new InOutSqlParameterImpl(paramName, jdbcType, null, null, null, value);
+        return new InOutSqlParameterUtilsImpl(paramName, jdbcType, null, null, null, value);
     }
 
     public static SqlParameter withInOut(String paramName, Object value, JDBCType jdbcType, Integer scale) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new InOutSqlParameterImpl(paramName, jdbcType, null, scale, null, value);
+        return new InOutSqlParameterUtilsImpl(paramName, jdbcType, null, scale, null, value);
     }
 
     public static SqlParameter withInOut(String paramName, Object value, JDBCType jdbcType, String typeName) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new InOutSqlParameterImpl(paramName, jdbcType, typeName, null, null, value);
+        return new InOutSqlParameterUtilsImpl(paramName, jdbcType, typeName, null, null, value);
     }
 
     public static SqlParameter withInOut(String paramName, Object value, JDBCType jdbcType, TypeHandler<?> typeHandler) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new InOutSqlParameterImpl(paramName, jdbcType, null, null, typeHandler, value);
+        return new InOutSqlParameterUtilsImpl(paramName, jdbcType, null, null, typeHandler, value);
     }
 
     public static SqlParameter withInOut(String paramName, Object value, JDBCType jdbcType, Integer scale, TypeHandler<?> typeHandler) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new InOutSqlParameterImpl(paramName, jdbcType, null, scale, typeHandler, value);
+        return new InOutSqlParameterUtilsImpl(paramName, jdbcType, null, scale, typeHandler, value);
     }
 
     public static SqlParameter withInOut(String paramName, Object value, JDBCType jdbcType, String typeName, TypeHandler<?> typeHandler) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new InOutSqlParameterImpl(paramName, jdbcType, typeName, null, typeHandler, value);
+        return new InOutSqlParameterUtilsImpl(paramName, jdbcType, typeName, null, typeHandler, value);
     }
 
     public static ReturnSqlParameter withReturnValue(String paramName) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new ReturnSqlParameterImpl(paramName, null, null, null);
+        return new ReturnSqlParameterUtilsImpl(paramName, null, null, null);
     }
 
     public static ReturnSqlParameter withReturnResult(String paramName, ResultSetExtractor<?> resultSetExtractor) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new ReturnSqlParameterImpl(paramName, resultSetExtractor, null, null);
+        return new ReturnSqlParameterUtilsImpl(paramName, resultSetExtractor, null, null);
     }
 
     public static ReturnSqlParameter withReturnResult(String paramName, RowCallbackHandler rowCallbackHandler) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new ReturnSqlParameterImpl(paramName, null, rowCallbackHandler, null);
+        return new ReturnSqlParameterUtilsImpl(paramName, null, rowCallbackHandler, null);
     }
 
     public static ReturnSqlParameter withReturnResult(String paramName, RowMapper<?> rowMapper) {
         if (StringUtils.isBlank(paramName)) {
             throw new IllegalStateException("paramName can not be empty or null.");
         }
-        return new ReturnSqlParameterImpl(paramName, null, null, rowMapper);
+        return new ReturnSqlParameterUtilsImpl(paramName, null, null, rowMapper);
     }
 }

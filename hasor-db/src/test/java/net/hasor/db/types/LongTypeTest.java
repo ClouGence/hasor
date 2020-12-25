@@ -1,7 +1,7 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.core.CallableSqlParameter;
+import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.LongTypeHandler;
 import net.hasor.test.db.SingleDsModule;
@@ -69,7 +69,7 @@ public class LongTypeTest {
             jdbcTemplate.execute("create procedure proc_bigint(out p_out bigint) begin set p_out=123123; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_bigint(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.BIGINT, new LongTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.BIGINT, new LongTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Long;

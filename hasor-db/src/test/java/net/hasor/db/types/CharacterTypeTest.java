@@ -1,7 +1,7 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.core.CallableSqlParameter;
+import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.CharacterTypeHandler;
 import net.hasor.db.types.handler.NCharacterTypeHandler;
@@ -77,7 +77,7 @@ public class CharacterTypeTest {
             jdbcTemplate.execute("create procedure proc_char(out p_out char) begin set p_out='A'; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_char(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.CHAR, new CharacterTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.CHAR, new CharacterTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Character;
@@ -146,7 +146,7 @@ public class CharacterTypeTest {
             jdbcTemplate.execute("create procedure proc_char(out p_out char) begin set p_out='A'; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_char(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.NCHAR, new NCharacterTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.NCHAR, new NCharacterTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Character;

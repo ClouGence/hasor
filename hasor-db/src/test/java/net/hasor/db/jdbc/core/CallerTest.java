@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
+import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.test.db.AbstractDbTest;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 /***
@@ -31,17 +33,61 @@ import java.util.Map;
  */
 public class CallerTest extends AbstractDbTest {
     @Test
-    public void insert_test_1() throws SQLException {
-        String jdbcUrl = "jdbc:mysql://127.0.0.1:3306/local_test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&user=root&password=123258";
-        try (Connection conn = DriverManager.getConnection(jdbcUrl)) {
+    public void callResultSet_1() throws SQLException {
+        try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop table if exists proc_table;");
+            jdbcTemplate.execute("create table proc_table( c_id int primary key, c_name varchar(200));");
+            jdbcTemplate.execute("insert into proc_table (c_id,c_name) values (1, 'aaa');");
+            jdbcTemplate.execute("insert into proc_table (c_id,c_name) values (2, 'bbb');");
+            jdbcTemplate.execute("insert into proc_table (c_id,c_name) values (3, 'ccc');");
             //
-            Map<String, Object> objectMap = jdbcTemplate.call("{call out_param_int_1(?)}",//
-                    Arrays.asList(CallableSqlParameter.withOutput(JDBCType.INTEGER)));
+            jdbcTemplate.execute("drop procedure if exists proc_select_table;");
+            jdbcTemplate.execute("create procedure proc_select_table(in p_name varchar(200)) begin select * from proc_table where c_name = p_name ; end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_select_table(?)}",//
+                    Collections.singletonList(SqlParameterUtils.withInput("aaa", JDBCType.VARCHAR)));
             //
             assert objectMap.size() == 2;
-            assert objectMap.get("#out-1").equals(2);
-            assert objectMap.get("#update-count-1").equals(0);
+            assert objectMap.get("#result-set-1") instanceof ArrayList;
+            assert objectMap.get("#update-count-2").equals(0);
+            assert ((ArrayList<?>) objectMap.get("#result-set-1")).size() == 1;
+            assert ((Map) ((ArrayList<?>) objectMap.get("#result-set-1")).get(0)).get("c_name").equals("aaa");
+            assert ((Map) ((ArrayList<?>) objectMap.get("#result-set-1")).get(0)).get("c_id").equals(1);
+        }
+    }
+
+    @Test
+    public void callResultSet_2() throws SQLException {
+        try (Connection conn = DsUtils.localMySQL()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop table if exists proc_table;");
+            jdbcTemplate.execute("create table proc_table( c_id int primary key, c_name varchar(200));");
+            jdbcTemplate.execute("insert into proc_table (c_id,c_name) values (1, 'aaa');");
+            jdbcTemplate.execute("insert into proc_table (c_id,c_name) values (2, 'bbb');");
+            jdbcTemplate.execute("insert into proc_table (c_id,c_name) values (3, 'ccc');");
+            //
+            jdbcTemplate.execute("drop procedure if exists proc_select_multiple_table;");
+            jdbcTemplate.execute(""//
+                    + "create procedure proc_select_multiple_table(in p_name varchar(200))" //
+                    + " begin " //
+                    + "   select * from proc_table where c_name = p_name ;" //
+                    + "   select * from proc_table where c_name = p_name ;" //
+                    + " end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_select_multiple_table(?)}",//
+                    Collections.singletonList(SqlParameterUtils.withInput("aaa", JDBCType.VARCHAR)));
+            //
+            assert objectMap.size() == 3;
+            assert objectMap.get("#result-set-1") instanceof ArrayList;
+            assert objectMap.get("#result-set-2") instanceof ArrayList;
+            assert objectMap.get("#update-count-3").equals(0);
+            assert ((ArrayList<?>) objectMap.get("#result-set-1")).size() == 1;
+            assert ((ArrayList<?>) objectMap.get("#result-set-2")).size() == 1;
+            assert ((Map) ((ArrayList<?>) objectMap.get("#result-set-1")).get(0)).get("c_name").equals("aaa");
+            assert ((Map) ((ArrayList<?>) objectMap.get("#result-set-1")).get(0)).get("c_id").equals(1);
+            assert ((Map) ((ArrayList<?>) objectMap.get("#result-set-2")).get(0)).get("c_name").equals("aaa");
+            assert ((Map) ((ArrayList<?>) objectMap.get("#result-set-2")).get(0)).get("c_id").equals(1);
         }
     }
 }

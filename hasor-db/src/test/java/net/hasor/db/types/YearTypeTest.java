@@ -1,7 +1,7 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.core.CallableSqlParameter;
+import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.YearOfNumberTypeHandler;
 import net.hasor.db.types.handler.YearOfStringTypeHandler;
@@ -69,7 +69,7 @@ public class YearTypeTest {
             jdbcTemplate.execute("create procedure proc_integer(out p_out integer) begin set p_out=2020; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_integer(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.INTEGER, new YearOfNumberTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.INTEGER, new YearOfNumberTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Year;
@@ -135,7 +135,7 @@ public class YearTypeTest {
             jdbcTemplate.execute("create procedure proc_varchar(out p_out varchar(10)) begin set p_out='2020'; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_varchar(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.VARCHAR, new YearOfStringTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.VARCHAR, new YearOfStringTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Year;
@@ -207,7 +207,7 @@ public class YearTypeTest {
             jdbcTemplate.execute("create procedure proc_timestamp(out p_out timestamp) begin set p_out= str_to_date('2008-08-09 10:11:12', '%Y-%m-%d %h:%i:%s'); end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_timestamp(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.TIMESTAMP, new YearOfTimeTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.TIMESTAMP, new YearOfTimeTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Year;

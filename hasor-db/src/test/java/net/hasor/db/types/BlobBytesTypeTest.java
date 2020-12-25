@@ -1,7 +1,7 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.core.CallableSqlParameter;
+import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.BlobBytesForWrapTypeHandler;
 import net.hasor.db.types.handler.BlobBytesTypeHandler;
@@ -100,7 +100,7 @@ public class BlobBytesTypeTest {
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_blob(?)}",//
                     Collections.singletonList(//
-                            CallableSqlParameter.withOutput("out", JDBCType.BLOB, new BlobBytesForWrapTypeHandler())//
+                            SqlParameterUtils.withOutput("out", JDBCType.BLOB, new BlobBytesForWrapTypeHandler())//
                     ));
             //
             assert objectMap.size() == 2;
@@ -173,7 +173,7 @@ public class BlobBytesTypeTest {
             jdbcTemplate.execute("create procedure proc_blob(out p_out blob) begin set p_out= b'0111111100001111'; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_blob(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.BLOB, new BlobBytesTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.BLOB, new BlobBytesTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof byte[];
@@ -245,7 +245,7 @@ public class BlobBytesTypeTest {
             jdbcTemplate.execute("create procedure proc_blob(out p_out blob) begin set p_out= b'0111111100001111'; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_blob(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.BLOB, new BlobInputStreamTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.BLOB, new BlobInputStreamTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof InputStream;

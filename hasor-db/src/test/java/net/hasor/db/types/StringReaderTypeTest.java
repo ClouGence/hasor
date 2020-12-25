@@ -1,7 +1,7 @@
 package net.hasor.db.types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.core.CallableSqlParameter;
+import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.ClobReaderTypeHandler;
 import net.hasor.db.types.handler.NClobReaderTypeHandler;
@@ -74,7 +74,7 @@ public class StringReaderTypeTest {
             jdbcTemplate.execute("create procedure proc_text(out p_out text) begin set p_out='abcdefg'; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_text(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.CLOB, new ClobReaderTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.CLOB, new ClobReaderTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Reader;
@@ -134,7 +134,7 @@ public class StringReaderTypeTest {
             jdbcTemplate.execute("create procedure proc_text(out p_out text) begin set p_out='abcdefg'; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_text(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.NCLOB, new NClobReaderTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.NCLOB, new NClobReaderTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Reader;
@@ -199,7 +199,7 @@ public class StringReaderTypeTest {
             jdbcTemplate.execute("create procedure proc_varchar(out p_out varchar(10)) begin set p_out='abcdefg'; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_varchar(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.VARCHAR, new StringReaderTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.VARCHAR, new StringReaderTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Reader;
@@ -264,7 +264,7 @@ public class StringReaderTypeTest {
             jdbcTemplate.execute("create procedure proc_nvarchar(out p_out nvarchar(10)) begin set p_out='abcdefg'; end;");
             //
             Map<String, Object> objectMap = jdbcTemplate.call("{call proc_nvarchar(?)}",//
-                    Collections.singletonList(CallableSqlParameter.withOutput("out", JDBCType.NVARCHAR, new NStringReaderTypeHandler())));
+                    Collections.singletonList(SqlParameterUtils.withOutput("out", JDBCType.NVARCHAR, new NStringReaderTypeHandler())));
             //
             assert objectMap.size() == 2;
             assert objectMap.get("out") instanceof Reader;
