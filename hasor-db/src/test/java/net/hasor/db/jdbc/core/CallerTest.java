@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ import java.util.Map;
  */
 public class CallerTest extends AbstractDbTest {
     @Test
-    public void callResultSet_1() throws SQLException {
+    public void mysqlCallResultSet_1() throws SQLException {
         try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             jdbcTemplate.execute("drop table if exists proc_table;");
@@ -58,7 +59,7 @@ public class CallerTest extends AbstractDbTest {
     }
 
     @Test
-    public void callResultSet_2() throws SQLException {
+    public void mysqlCallResultSet_2() throws SQLException {
         try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             jdbcTemplate.execute("drop table if exists proc_table;");
@@ -79,6 +80,44 @@ public class CallerTest extends AbstractDbTest {
                     Collections.singletonList(SqlParameterUtils.withInput("aaa", JDBCType.VARCHAR)));
             //
             assert objectMap.size() == 3;
+            assert objectMap.get("#result-set-1") instanceof ArrayList;
+            assert objectMap.get("#result-set-2") instanceof ArrayList;
+            assert objectMap.get("#update-count-3").equals(0);
+            assert ((ArrayList<?>) objectMap.get("#result-set-1")).size() == 1;
+            assert ((ArrayList<?>) objectMap.get("#result-set-2")).size() == 1;
+            assert ((Map) ((ArrayList<?>) objectMap.get("#result-set-1")).get(0)).get("c_name").equals("aaa");
+            assert ((Map) ((ArrayList<?>) objectMap.get("#result-set-1")).get(0)).get("c_id").equals(1);
+            assert ((Map) ((ArrayList<?>) objectMap.get("#result-set-2")).get(0)).get("c_name").equals("aaa");
+            assert ((Map) ((ArrayList<?>) objectMap.get("#result-set-2")).get(0)).get("c_id").equals(1);
+        }
+    }
+
+    @Test
+    public void mysqlCallCross_1() throws SQLException {
+        try (Connection conn = DsUtils.localMySQL()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
+            jdbcTemplate.execute("drop table if exists proc_table;");
+            jdbcTemplate.execute("create table proc_table( c_id int primary key, c_name varchar(200));");
+            jdbcTemplate.execute("insert into proc_table (c_id,c_name) values (1, 'aaa');");
+            jdbcTemplate.execute("insert into proc_table (c_id,c_name) values (2, 'bbb');");
+            jdbcTemplate.execute("insert into proc_table (c_id,c_name) values (3, 'ccc');");
+            //
+            jdbcTemplate.execute("drop procedure if exists proc_select_cross_table;");
+            jdbcTemplate.execute(""//
+                    + "create procedure proc_select_cross_table(in p_name varchar(200), out p_out varchar(200))" //
+                    + " begin " //
+                    + "   select * from proc_table where c_name = p_name ;" //
+                    + "   select * from proc_table where c_name = p_name ;" //
+                    + "   set p_out = p_name;"//
+                    + " end;");
+            //
+            Map<String, Object> objectMap = jdbcTemplate.call("{call proc_select_cross_table(?,?)}",//
+                    Arrays.asList(//
+                            SqlParameterUtils.withInput("aaa", JDBCType.VARCHAR),//
+                            SqlParameterUtils.withOutput("bbb", JDBCType.VARCHAR)));
+            //
+            assert objectMap.size() == 4;
+            assert objectMap.get("bbb").equals("aaa");
             assert objectMap.get("#result-set-1") instanceof ArrayList;
             assert objectMap.get("#result-set-2") instanceof ArrayList;
             assert objectMap.get("#update-count-3").equals(0);
