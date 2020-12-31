@@ -23,8 +23,8 @@ import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.dal.*;
 import net.hasor.dataway.service.CheckService;
-import net.hasor.db.transaction.Propagation;
 import net.hasor.db.Transactional;
+import net.hasor.db.transaction.Propagation;
 import net.hasor.utils.convert.ConverterUtils;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
@@ -78,6 +78,7 @@ public class SaveApiController extends BasicController implements Constant {
         // 基础信息
         ApiTypeEnum codeType = Objects.requireNonNull(ApiTypeEnum.typeOf(requestBody.get("codeType")), "Undefined code type");
         apiInfo.put(FieldDef.API_ID, apiInfo.get(FieldDef.ID));
+        apiInfo.put(FieldDef.METHOD, (String) requestBody.get("select"));
         apiInfo.put(FieldDef.TYPE, codeType.typeString());
         apiInfo.put(FieldDef.COMMENT, (String) requestBody.get("comment"));
         Map<String, Object> optionInfo = (Map) requestBody.get("optionInfo");

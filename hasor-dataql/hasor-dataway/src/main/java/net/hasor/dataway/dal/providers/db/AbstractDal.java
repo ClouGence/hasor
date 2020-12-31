@@ -30,13 +30,11 @@ public abstract class AbstractDal {
     /** 不参与更新的列 */
     protected static final Set<String>  wontUpdateColumn = new HashSet<String>() {{
         add("api_id");
-        add("api_method");
         add("api_path");
         add("api_create_time");
         //
         add("pub_id");
         add("pub_api_id");
-        add("pub_method");
         add("pub_path");
         add("pub_type");
         add("pub_comment");
