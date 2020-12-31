@@ -27,7 +27,6 @@
         <HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP>HASOR_DATAWAY</HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP>
         <!-- Nacos 作为存储时，最大存储API条数，默认：4000 -->
         <HASOR_DATAQL_DATAWAY_NACOSDAL_API_MAX_SIZE>4000</HASOR_DATAQL_DATAWAY_NACOSDAL_API_MAX_SIZE>
-
     </hasor.environmentVar>
 
     <hasor>
@@ -69,6 +68,22 @@
                 <!-- Nacos 作为存储的话，最大存储API条数，默认：4000 -->
                 <dal_nacos_api_max_size>${HASOR_DATAQL_DATAWAY_NACOSDAL_API_MAX_SIZE}</dal_nacos_api_max_size>
             </settings>
+
+            <globalConfig>
+                <resultStructure>true</resultStructure>
+                <responseFormat><![CDATA[
+                     {
+                        "successsssss"      : "@resultStatus",
+                        "message"      : "@resultMessage",
+                        "code"         : "@resultCode",
+                        "lifeCycleTime": "@timeLifeCycle",
+                        "executionTime": "@timeExecution",
+                        "value"        : "@resultData"
+                     }
+                ]]></responseFormat>
+                <wrapAllParameters>false</wrapAllParameters>
+                <wrapParameterName>root</wrapParameterName>
+            </globalConfig>
         </dataway>
 
         <autoLoadSpi>

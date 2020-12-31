@@ -16,6 +16,7 @@
 package net.hasor.dataway.web;
 import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.authorization.RefAuthorization;
+import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.dal.ApiStatusEnum;
@@ -44,7 +45,7 @@ public class ApiHistoryListController extends BasicController {
     public Result<List<Map<String, Object>>> apiHistory(@QueryParameter("id") String apiId) {
         List<Map<FieldDef, String>> releaseList = this.dataAccessLayer.listObjectBy(//
                 EntityDef.RELEASE,      //
-                conditionByApiId(apiId) //
+                DatawayUtils.conditionByApiId(apiId) //
         );
         releaseList = (releaseList == null) ? Collections.emptyList() : releaseList;
         //

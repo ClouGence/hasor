@@ -13,31 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.web;
-import net.hasor.core.Inject;
-import net.hasor.core.spi.SpiTrigger;
-import net.hasor.dataway.DatawayService;
-import net.hasor.dataway.dal.ApiDataAccessLayer;
-import net.hasor.dataway.dal.QueryCondition;
-import net.hasor.web.WebController;
-
+package net.hasor.dataway.config;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
- * 基础
+ * 全局配置
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2020-03-24
+ * @version : 2020-12-31
  */
-public abstract class BasicController extends WebController {
-    public static Map<QueryCondition, Object> emptyCondition() {
-        return new HashMap<>();
-    }
-
-    @Inject
-    protected SpiTrigger         spiTrigger;
-    @Inject
-    protected ApiDataAccessLayer dataAccessLayer;
-    @Inject
-    protected DatawayService     datawayService;
+public class GlobalConfig extends HashMap<String, String> {
 }

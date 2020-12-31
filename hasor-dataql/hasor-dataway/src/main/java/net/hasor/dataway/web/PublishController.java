@@ -16,6 +16,7 @@
 package net.hasor.dataway.web;
 import net.hasor.dataway.authorization.AuthorizationType;
 import net.hasor.dataway.authorization.RefAuthorization;
+import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
 import net.hasor.dataway.dal.ApiStatusEnum;
@@ -53,7 +54,7 @@ public class PublishController extends BasicController {
         }
         // 接口状态更新
         Map<FieldDef, String> object = this.dataAccessLayer.getObjectBy(EntityDef.INFO, FieldDef.ID, apiId);
-        object.putAll(STATUS_UPDATE_TO_PUBLISHED.get());// 把状态更新为发布
+        object.putAll(DatawayUtils.STATUS_UPDATE_TO_PUBLISHED.get());// 把状态更新为发布
         boolean updateResult = this.dataAccessLayer.updateObject(//
                 EntityDef.INFO, // 更新接口数据
                 apiId,          // 接口ID
@@ -89,7 +90,7 @@ public class PublishController extends BasicController {
             // 更新状态为 Disable
             String releaseId = apiRelease.get(FieldDef.ID);
             apiRelease = this.dataAccessLayer.getObjectBy(EntityDef.RELEASE, FieldDef.ID, releaseId);
-            apiRelease.putAll(STATUS_UPDATE_TO_DISABLE.get());
+            apiRelease.putAll(DatawayUtils.STATUS_UPDATE_TO_DISABLE.get());
             this.dataAccessLayer.updateObject(    //
                     EntityDef.RELEASE,  //
                     releaseId,          //

@@ -31,7 +31,7 @@ import java.util.Map;
  */
 @Singleton
 public class CheckService {
-    @InjectSettings("${HASOR_DATAQL_DATAWAY_API_URL}")
+    @InjectSettings("hasor.dataway.baseApiUrl")
     private String             apiUrl;
     @Inject
     private ApiDataAccessLayer dataAccessLayer;

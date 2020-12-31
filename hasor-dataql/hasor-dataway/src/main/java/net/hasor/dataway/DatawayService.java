@@ -50,5 +50,12 @@ public interface DatawayService {
         }
     }
 
+    /** 查询 API 信息 */
     public DatawayApi getApiById(String apiId) throws Throwable;
+
+    /** 禁用 API，相当于页面上点击禁用（无需权限校验） */
+    public boolean disableApi(String apiId);
+
+    /** 删除 API，相当于页面上点击删除（无需权限校验） */
+    public boolean deleteApi(String apiId);
 }

@@ -21,6 +21,9 @@ import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
+import net.hasor.dataway.dal.ApiStatusEnum;
+import net.hasor.dataway.dal.FieldDef;
+import net.hasor.dataway.dal.QueryCondition;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.SerializationChainSpi;
 import net.hasor.dataway.spi.SerializationChainSpi.SerializationInfo;
@@ -35,9 +38,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Supplier;
 
 /**
  * 工具。
@@ -271,5 +276,42 @@ public class DatawayUtils {
         }
         //
         return Long.toString(timeMillis, 24) + s;
+    }
+
+    public static final Supplier<Map<FieldDef, String>> STATUS_UPDATE_TO_EDITOR    = () -> {
+        return new HashMap<FieldDef, String>() {{
+            put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Editor.typeNum()));
+            put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
+        }};
+    };
+    public static final Supplier<Map<FieldDef, String>> STATUS_UPDATE_TO_PUBLISHED = () -> {
+        return new HashMap<FieldDef, String>() {{
+            put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Published.typeNum()));
+            put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
+        }};
+    };
+    public static final Supplier<Map<FieldDef, String>> STATUS_UPDATE_TO_CHANGES   = () -> {
+        return new HashMap<FieldDef, String>() {{
+            put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Changes.typeNum()));
+            put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
+        }};
+    };
+    public static final Supplier<Map<FieldDef, String>> STATUS_UPDATE_TO_DISABLE   = () -> {
+        return new HashMap<FieldDef, String>() {{
+            put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Disable.typeNum()));
+            put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
+        }};
+    };
+    public static final Supplier<Map<FieldDef, String>> STATUS_UPDATE_TO_DELETE    = () -> {
+        return new HashMap<FieldDef, String>() {{
+            put(FieldDef.STATUS, String.valueOf(ApiStatusEnum.Delete.typeNum()));
+            put(FieldDef.GMT_TIME, String.valueOf(System.currentTimeMillis()));
+        }};
+    };
+
+    public static Map<QueryCondition, Object> conditionByApiId(String apiId) {
+        return new HashMap<QueryCondition, Object>() {{
+            put(QueryCondition.ApiId, apiId);
+        }};
     }
 }

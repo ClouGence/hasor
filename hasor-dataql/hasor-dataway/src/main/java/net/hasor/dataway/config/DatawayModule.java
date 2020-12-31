@@ -84,14 +84,17 @@ public class DatawayModule implements WebModule {
     /** 配置 Dataway 服务拦截器 */
     protected void loadApiService(WebApiBinder apiBinder, String apiBaseUri, String adminBaseUri) {
         logger.info("dataway api workAt " + apiBaseUri);
+        apiBinder.getEnvironment().getSettings().setSetting("hasor.dataway.baseApiUrl", apiBaseUri);//必须要设置回去，否则后面依赖注入会不准确
         apiBinder.filter(fixUrl(apiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceApiFilter(apiBaseUri, adminBaseUri));
     }
 
     /** 配置 Dataway 管理界面 */
     protected void loadAdminService(WebApiBinder apiBinder, String apiBaseUri, String adminBaseUri) {
         logger.info("dataway admin workAt " + adminBaseUri);
+        apiBinder.getEnvironment().getSettings().setSetting("hasor.dataway.baseAdminUrl", apiBaseUri);//必须要设置回去，否则后面依赖注入会不准确
         // 使用 findClass 虽然可以降低代码复杂度，但是会因为引入代码扫描而增加初始化时间
         Class<?>[] controllerSet = new Class<?>[] { //
+                GlobalConfigController.class,       //
                 ApiDetailController.class,          //
                 ApiHistoryListController.class,     //
                 ApiInfoController.class,            //
