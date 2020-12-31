@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,17 +85,14 @@ public class InterfaceApiFilter implements InvokerFilter {
         //
         DatawayUtils.resetLocalTime();
         String mimeType = invoker.getMimeType("json");
-        httpRequest.setCharacterEncoding("UTF-8");
-        httpResponse.setCharacterEncoding("UTF-8");
         CorsUtils.setup(invoker);
         //
         // .查询接口数据
         ApiInfo apiInfo = new ApiInfo();
         apiInfo.setCallSource(CallSource.External);
-        String apiPath = URLDecoder.decode(requestURI, "UTF-8");
         String script = null;
         try {
-            Map<FieldDef, String> object = this.dataAccessLayer.getObjectBy(EntityDef.RELEASE, FieldDef.PATH, apiPath);
+            Map<FieldDef, String> object = this.dataAccessLayer.getObjectBy(EntityDef.RELEASE, FieldDef.PATH, requestURI);
             if (object == null) {
                 throw new IllegalStateException("API is not published.");
             }
@@ -115,7 +111,7 @@ public class InterfaceApiFilter implements InvokerFilter {
             Object result = DatawayUtils.exceptionToResult(e).getResult();
             LoggerUtils loggerUtils = LoggerUtils.create()  //
                     .addLog("httpMethod", httpMethod)       //
-                    .addLog("apiPath", apiPath)             //
+                    .addLog("apiPath", requestURI)          //
                     .addLog("result", result)               //
                     .logException(e);
             logger.error("requestFailed - " + loggerUtils.toJson(), e);

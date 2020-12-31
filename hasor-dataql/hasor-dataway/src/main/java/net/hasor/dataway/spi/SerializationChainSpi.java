@@ -26,11 +26,21 @@ import java.util.EventListener;
  */
 public interface SerializationChainSpi extends EventListener {
     public static class SerializationInfo {
-        private String mimeType;
-        private Object data;
+        private String contentType        = null;
+        private String contentDisposition = null;
+        private long   contentLength      = -1;
+        private Object data               = null;
 
-        public String getMimeType() {
-            return this.mimeType;
+        public String getContentType() {
+            return this.contentType;
+        }
+
+        public String getContentDisposition() {
+            return this.contentDisposition;
+        }
+
+        public long getContentLength() {
+            return this.contentLength;
         }
 
         public Object getData() {
@@ -38,28 +48,52 @@ public interface SerializationChainSpi extends EventListener {
         }
 
         /** 字符串数据 */
-        public static SerializationInfo ofString(String mimeType, String data) {
-            return of(mimeType, data);
+        public static SerializationInfo ofString(String contentType, String data) {
+            return of(contentType, data);
         }
 
         /** 字节数据 */
-        public static SerializationInfo ofBytes(String mimeType, byte[] data) {
-            return of(mimeType, data);
+        public static SerializationInfo ofBytes(String contentType, byte[] data) {
+            return of(contentType, data, null, data.length);
         }
 
-        /** 对象 */
-        public static SerializationInfo ofObject(String mimeType, Object data) {
-            return of(mimeType, data);
+        /** 字节数据 */
+        public static SerializationInfo ofBytes(String contentType, byte[] data, String disposition) {
+            return of(contentType, data, disposition, data.length);
+        }
+
+        /** 对象,会被 json 序列化 */
+        public static SerializationInfo ofObject(String contentType, Object data) {
+            return of(contentType, data);
         }
 
         /** 输出流 */
-        public static SerializationInfo ofStream(String mimeType, InputStream data) {
-            return of(mimeType, data);
+        public static SerializationInfo ofStream(String contentType, InputStream data) {
+            return of(contentType, data);
         }
 
-        private static SerializationInfo of(String mimeType, Object data) {
+        /** 输出流 */
+        public static SerializationInfo ofStream(String contentType, InputStream data, long contentLength) {
+            return of(contentType, data, null, contentLength);
+        }
+
+        /** 输出流 */
+        public static SerializationInfo ofStream(String contentType, InputStream data, long contentLength, String disposition) {
+            return of(contentType, data, disposition, contentLength);
+        }
+
+        private static SerializationInfo of(String contentType, Object data) {
             SerializationInfo info = new SerializationInfo();
-            info.mimeType = mimeType;
+            info.contentType = contentType;
+            info.data = data;
+            return info;
+        }
+
+        private static SerializationInfo of(String contentType, Object data, String disposition, long contentLength) {
+            SerializationInfo info = new SerializationInfo();
+            info.contentType = contentType;
+            info.contentDisposition = disposition;
+            info.contentLength = contentLength;
             info.data = data;
             return info;
         }

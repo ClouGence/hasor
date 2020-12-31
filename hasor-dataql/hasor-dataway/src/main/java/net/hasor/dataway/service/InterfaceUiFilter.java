@@ -82,8 +82,6 @@ public class InterfaceUiFilter implements InvokerFilter {
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         HttpServletResponse httpResponse = invoker.getHttpResponse();
-        httpRequest.setCharacterEncoding("UTF-8");
-        httpResponse.setCharacterEncoding("UTF-8");
         String requestURI = invoker.getRequestPath();
         setupInner(invoker);
         if (requestURI.startsWith(this.uiAdminBaseUri)) {

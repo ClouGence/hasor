@@ -16,17 +16,13 @@ const showMessage = (res) => {
     errorBox(`${response.status}: ${errorText} (${url})`);
 };
 
-function decodeUtf8(bytes) {
+function decodeUtf8(bytes, encode) {
     const bufferTypes = new Uint8Array(bytes);
-    let tempString = '';
-    for (let i = 0; i < bufferTypes.length; ++i) {
-        let hexDat = bufferTypes[i].toString(16);
-        if (hexDat.length === 1) {
-            hexDat = '0' + hexDat;
-        }
-        tempString += '%' + hexDat;
+    if (encode !== '') {
+        return new TextDecoder(encode).decode(bufferTypes);
+    } else {
+        return new TextDecoder().decode(bufferTypes);
     }
-    return decodeURIComponent(tempString);
 }
 
 function arrayBufferFromBlob(bytesBlob) {
@@ -73,7 +69,7 @@ export default function request(
     if (newOptions.method === 'POST' || newOptions.method === 'PUT') {
         if (!(newOptions.data instanceof FormData)) {
             newOptions.headers = {
-                'Content-Type': 'application/json; charset=utf-8',
+                'Content-Type': 'application/json;',
                 ...newOptions.headers,
             };
             newOptions.data = JSON.stringify(newOptions.data);
@@ -112,11 +108,23 @@ export default function request(
         responseType: 'blob',
     }).then(async (response) => {
         let contentType = '';
+        let contentEncode = '';
         for (const key in response.headers) {
-            if (key.toLowerCase() === 'x-interfaceui-contexttype') {
+            const keyLC = key.toLowerCase();
+            if (keyLC === 'x-interfaceui-contexttype') {
                 contentType = response.headers[key];
                 contentType = contentType.toLowerCase();
                 break;
+            } else if (keyLC === 'content-type') {
+                // "application/json;charset=UTF-8"
+                contentEncode = response.headers[key];
+                const splitContent = contentEncode.split(';');
+                for (const splitItem in splitContent) {
+                    const splitItemContent = splitContent[splitItem];
+                    if (splitItemContent.toLowerCase().startsWith('charset=')) {
+                        contentEncode = splitItemContent.substring('charset='.length, splitItemContent.length);
+                    }
+                }
             }
         }
         if (contentType === undefined || contentType == null || contentType === '') {
@@ -129,14 +137,14 @@ export default function request(
             // json
             arrayBufferFromBlob(response.data).then((arrayBuffer) => {
                 response.dataTypeMode = 'json';
-                response.data = JSON.parse(decodeUtf8(arrayBuffer));
+                response.data = JSON.parse(decodeUtf8(arrayBuffer, contentEncode));
                 successCallback(response);
             });
         } else if (contentType === 'text') {
             // text
             arrayBufferFromBlob(response.data).then((arrayBuffer) => {
                 response.dataTypeMode = 'text';
-                response.data = decodeUtf8(arrayBuffer);
+                response.data = decodeUtf8(arrayBuffer, contentEncode);
                 successCallback(response);
             });
         } else {
@@ -163,5 +171,6 @@ export default function request(
                 successCallback(response);
             });
         }
-    }).catch(errorCallback).finally(finallyCallback);
+    }
+    ).catch(errorCallback).finally(finallyCallback);
 }

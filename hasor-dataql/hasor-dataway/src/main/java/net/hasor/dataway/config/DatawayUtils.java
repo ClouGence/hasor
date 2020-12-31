@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -203,15 +204,15 @@ public class DatawayUtils {
         return finalResult;
     }
 
-    public static byte[] toBytes(ApiInfo apiInfo, String body) {
+    public static byte[] toBytes(ApiInfo apiInfo, String body, String characterEncoding) throws UnsupportedEncodingException {
         if (apiInfo.isPerform()) {
-            return body.getBytes(StandardCharsets.UTF_8);
+            return body.getBytes(characterEncoding);
         } else {
-            return body.getBytes();
+            return body.getBytes(StandardCharsets.ISO_8859_1);
         }
     }
 
-    public static Object responseData(SpiTrigger spiTrigger, ApiInfo apiInfo, String mimeType, Invoker invoker, Object objectMap) throws IOException {
+    public static Object responseData(SpiTrigger spiTrigger, ApiInfo apiInfo, String contentType, Invoker invoker, Object objectMap) throws IOException {
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         HttpServletResponse httpResponse = invoker.getHttpResponse();
         if (!httpResponse.isCommitted()) {
@@ -219,43 +220,55 @@ public class DatawayUtils {
                 return listener.doSerialization(apiInfo, invoker, lastResult);
             }, objectMap);
             //
+            String contentDisposition = null;//仅在 Bytes 下有效
+            long contentLength = -1;
             if (resultData instanceof SerializationInfo) {
-                mimeType = ((SerializationInfo) resultData).getMimeType();
+                contentType = ((SerializationInfo) resultData).getContentType();
+                contentDisposition = ((SerializationInfo) resultData).getContentDisposition();
+                contentLength = ((SerializationInfo) resultData).getContentLength();
                 resultData = ((SerializationInfo) resultData).getData();
             }
             //
             String responseContextType = null;
-            int dataLength = -1;
             InputStream bodyInputStream = null;
             if (resultData instanceof String) {
                 responseContextType = "text";
-                byte[] bodyByte = toBytes(apiInfo, ((String) resultData));// 前端会通过 UTF-8 进行解码（仅限UI）
-                dataLength = bodyByte.length;
+                String characterEncoding = httpResponse.getCharacterEncoding();
+                byte[] bodyByte = toBytes(apiInfo, (String) resultData, characterEncoding);
+                contentLength = bodyByte.length;
                 bodyInputStream = new ByteArrayInputStream(bodyByte);
             } else if (resultData instanceof byte[]) {
                 responseContextType = "bytes";
                 byte[] bodyByte = (byte[]) resultData;
-                dataLength = bodyByte.length;
+                contentLength = bodyByte.length;
                 bodyInputStream = new ByteArrayInputStream(bodyByte);
             } else if (resultData instanceof InputStream) {
                 responseContextType = "bytes";
-                dataLength = -1;
+                //contentLength = -1;
                 bodyInputStream = (InputStream) resultData;
             } else {
                 responseContextType = "json";
                 String body = JSON.toJSONString(resultData, SerializerFeature.WriteMapNullValue);
-                byte[] bodyByte = toBytes(apiInfo, body);// 前端会通过 UTF-8 进行解码（仅限UI）
-                dataLength = bodyByte.length;
+                String characterEncoding = httpResponse.getCharacterEncoding();
+                byte[] bodyByte = toBytes(apiInfo, body, characterEncoding);
+                contentLength = bodyByte.length;
                 bodyInputStream = new ByteArrayInputStream(bodyByte);
             }
             //
-            if (dataLength > 0) {
-                httpResponse.setContentLength(dataLength);
+            if (contentLength > 0) {
+                if (contentLength > Integer.MAX_VALUE) {
+                    httpResponse.setContentLengthLong(contentLength);
+                } else {
+                    httpResponse.setContentLength((int) contentLength);
+                }
             }
             if ("true".equalsIgnoreCase(httpRequest.getHeader("X-InterfaceUI-Info"))) {
                 httpResponse.setHeader("X-InterfaceUI-ContextType", responseContextType);
             }
-            httpResponse.setContentType(mimeType);
+            httpResponse.setContentType(contentType);
+            if (StringUtils.isNotBlank(contentDisposition)) {
+                httpResponse.setHeader("Content-Disposition", contentDisposition);
+            }
             //
             try (ServletOutputStream output = httpResponse.getOutputStream()) {
                 IOUtils.copy(bodyInputStream, output);
