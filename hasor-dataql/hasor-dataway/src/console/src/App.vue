@@ -19,7 +19,7 @@
       <div v-if="newVersionIcon" class="newStyle" @click="newVersionDialog=true">
         <span class="iconfont iconnew" style="font-size: 39px" />
       </div>
-      <div class="gitStyle">
+      <div v-if="this.defaultOption.showGitButton" class="gitStyle">
         <!-- Github -->
         <span><a target="_blank" href="https://github.com/zycgit/hasor/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/zycgit/hasor?style=social"></a></span>
         <span><a target="_blank" href="https://github.com/zycgit/hasor/network"><img alt="GitHub forks" src="https://img.shields.io/github/forks/zycgit/hasor?style=social"></a></span>
@@ -109,6 +109,9 @@ export default {
             localStorage.setItem('lastCheckVersion', this.newVersionInfo.lastVersion);
         },
         checkVersion(versionInfo) {
+            if (!this.defaultOption.checkDatawayVersion) {
+                return;
+            }
             if (Object.prototype.toString.call(versionInfo).toUpperCase() !== '[OBJECT OBJECT]') {
                 versionInfo = {lastVersion: versionInfo, changelog: 'unknown'};
             }
@@ -128,32 +131,32 @@ export default {
 };
 </script>
 <style scoped>
-    .el-header, .el-main {
-        padding: 0;
-    }
+.el-header, .el-main {
+  padding: 0;
+}
 
-    .gitStyle {
-        float: right;
-        top: -55px;
-        position: relative;
-    }
+.gitStyle {
+  float: right;
+  top: -55px;
+  position: relative;
+}
 
-    .gitStyle span {
-        display: inline-block;
-        width: 100px;
-    }
+.gitStyle span {
+  display: inline-block;
+  width: 100px;
+}
 
-    .newStyle, .newStyle:hover {
-        color: #F3A732;
-        float: right;
-        width: 40px;
-        position: relative;
-        height: 40px;
-        top: -52px;
-        padding-right: 15px;
-    }
+.newStyle, .newStyle:hover {
+  color: #F3A732;
+  float: right;
+  width: 40px;
+  position: relative;
+  height: 40px;
+  top: -52px;
+  padding-right: 15px;
+}
 
-    .newStyle:hover {
-        cursor: pointer
-    }
+.newStyle:hover {
+  cursor: pointer
+}
 </style>

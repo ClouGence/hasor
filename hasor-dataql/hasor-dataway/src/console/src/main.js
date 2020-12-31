@@ -19,7 +19,7 @@ if (lastCheckVersionDialogRemember === undefined || lastCheckVersionDialogRememb
     localStorage.setItem('lastCheckVersionDialogRemember', 'false');
 }
 
-const configIsBool = ['resultStructure', 'wrapAllParameters'];
+const configIsBool = ['resultStructure', 'wrapAllParameters', 'showGitButton', 'checkDatawayVersion'];
 const toBoolean = (val) => {
     return val != null && val.toLowerCase() === 'true';
 };
@@ -44,6 +44,8 @@ axios({
             '}',
         wrapAllParameters: false,
         wrapParameterName: 'root',
+        showGitButton: true,
+        checkDatawayVersion: true
     };
     if (response.data.success) {
         const configs = response.data.result;
