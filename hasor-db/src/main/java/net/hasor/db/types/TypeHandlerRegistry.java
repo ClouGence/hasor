@@ -24,7 +24,10 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
+import java.sql.Blob;
+import java.sql.Clob;
 import java.sql.JDBCType;
+import java.sql.NClob;
 import java.time.*;
 import java.time.chrono.JapaneseDate;
 import java.util.*;
@@ -139,6 +142,9 @@ public final class TypeHandlerRegistry {
         this.register(Object[].class, createSingleTypeHandler(ArrayTypeHandler.class));
         this.register(Object.class, createSingleTypeHandler(UnknownTypeHandler.class));
         this.register(Number.class, createSingleTypeHandler(NumberTypeHandler.class));
+        this.register(Clob.class, createSingleTypeHandler(ClobTypeHandler.class));
+        this.register(NClob.class, createSingleTypeHandler(NClobTypeHandler.class));
+        this.register(Blob.class, createSingleTypeHandler(BlobBytesTypeHandler.class));
         //
         this.register(JDBCType.BIT, createSingleTypeHandler(BooleanTypeHandler.class));
         this.register(JDBCType.BOOLEAN, createSingleTypeHandler(BooleanTypeHandler.class));
