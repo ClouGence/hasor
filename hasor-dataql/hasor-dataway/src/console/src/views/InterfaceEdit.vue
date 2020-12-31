@@ -77,9 +77,9 @@ import EditerActions from '../components/EditerActions';
 import RequestPanel from '../components/RequestPanel';
 import ResponsePanel from '../components/ResponsePanel';
 import request from '../utils/request';
-import {apiBaseUrl, ApiUrl, defaultOptionData} from '../utils/api-const';
-import {errorBox, statusTagInfo} from '../utils/utils';
-import {defineMonacoEditorFoo, loadMonacoEditorSelfTheme} from '../utils/editorUtils';
+import {apiBaseUrl, ApiUrl, defaultOptionData} from '@/utils/api-const';
+import {errorBox, statusTagInfo} from '@/utils/utils';
+import {defineMonacoEditorFoo, loadMonacoEditorSelfTheme} from '@/utils/editorUtils';
 
 export default {
     components: {

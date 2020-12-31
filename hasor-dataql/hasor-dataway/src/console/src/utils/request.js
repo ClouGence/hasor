@@ -106,66 +106,62 @@ export default function request(
             loading.close();
         };
     }
-    return axios
-        .request({
-            ...newOptions,
-            withCredentials: true,
-            responseType: 'blob',
-        })
-        .then(async (response) => {
-            let contentType = '';
-            for (const key in response.headers) {
-                if (key.toLowerCase() === 'x-interfaceui-contexttype') {
-                    contentType = response.headers[key];
-                    contentType = contentType.toLowerCase();
-                    break;
-                }
+    return axios.request({
+        ...newOptions,
+        withCredentials: true,
+        responseType: 'blob',
+    }).then(async (response) => {
+        let contentType = '';
+        for (const key in response.headers) {
+            if (key.toLowerCase() === 'x-interfaceui-contexttype') {
+                contentType = response.headers[key];
+                contentType = contentType.toLowerCase();
+                break;
             }
-            if (contentType === undefined || contentType == null || contentType === '') {
-                if (response.data.type === 'application/json') {
-                    contentType = 'json';
-                }
+        }
+        if (contentType === undefined || contentType == null || contentType === '') {
+            if (response.data.type === 'application/json') {
+                contentType = 'json';
             }
-            //
-            if (contentType === 'json') {
-                // json
-                arrayBufferFromBlob(response.data).then((arrayBuffer) => {
-                    response.dataTypeMode = 'json';
-                    response.data = JSON.parse(decodeUtf8(arrayBuffer));
-                    successCallback(response);
-                });
-            } else if (contentType === 'text') {
-                // text
-                arrayBufferFromBlob(response.data).then((arrayBuffer) => {
-                    response.dataTypeMode = 'text';
-                    response.data = decodeUtf8(arrayBuffer);
-                    successCallback(response);
-                });
-            } else {
-                // bytes
-                arrayBufferFromBlob(response.data).then((arrayBuffer) => {
-                    const bufferTypes = new Uint8Array(arrayBuffer);
-                    let tempString = '';
-                    let n = 0;
-                    for (let i = 0; i < bufferTypes.length; ++i) {
-                        let hexDat = bufferTypes[i].toString(16).toUpperCase();
-                        if (hexDat.length === 1) {
-                            hexDat = '0' + hexDat;
-                        }
-                        if (n < 15) {
-                            n++;
-                            tempString = tempString + hexDat + ' ';
-                        } else {
-                            n = 0;
-                            tempString = tempString + hexDat + '\n';
-                        }
+        }
+        //
+        if (contentType === 'json') {
+            // json
+            arrayBufferFromBlob(response.data).then((arrayBuffer) => {
+                response.dataTypeMode = 'json';
+                response.data = JSON.parse(decodeUtf8(arrayBuffer));
+                successCallback(response);
+            });
+        } else if (contentType === 'text') {
+            // text
+            arrayBufferFromBlob(response.data).then((arrayBuffer) => {
+                response.dataTypeMode = 'text';
+                response.data = decodeUtf8(arrayBuffer);
+                successCallback(response);
+            });
+        } else {
+            // bytes
+            arrayBufferFromBlob(response.data).then((arrayBuffer) => {
+                const bufferTypes = new Uint8Array(arrayBuffer);
+                let tempString = '';
+                let n = 0;
+                for (let i = 0; i < bufferTypes.length; ++i) {
+                    let hexDat = bufferTypes[i].toString(16).toUpperCase();
+                    if (hexDat.length === 1) {
+                        hexDat = '0' + hexDat;
                     }
-                    response.dataTypeMode = 'bytes';
-                    response.data = tempString.trim();
-                    successCallback(response);
-                });
-            }
-        })
-        .catch(errorCallback)
-        .finally(finallyCallback);
+                    if (n < 15) {
+                        n++;
+                        tempString = tempString + hexDat + ' ';
+                    } else {
+                        n = 0;
+                        tempString = tempString + hexDat + '\n';
+                    }
+                }
+                response.dataTypeMode = 'bytes';
+                response.data = tempString.trim();
+                successCallback(response);
+            });
+        }
+    }).catch(errorCallback).finally(finallyCallback);
 }

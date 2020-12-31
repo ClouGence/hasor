@@ -3,7 +3,7 @@
   "version": "4.1.9",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "eslint --ext .js,.vue src",
     "lint-fix": "eslint --ext .js,.vue src --fix"

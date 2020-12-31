@@ -114,8 +114,8 @@
 </template>
 <script>
 import request from '../utils/request';
-import {ApiUrl, defaultOptionData} from '../utils/api-const';
-import {checkRequestBody, errorBox, fixGetRequestBody, headerData, statusTagInfo} from '../utils/utils';
+import {ApiUrl, defaultOptionData} from '@/utils/api-const';
+import {checkRequestBody, errorBox, fixGetRequestBody, headerData, statusTagInfo} from '@/utils/utils';
 
 export default {
     props: {

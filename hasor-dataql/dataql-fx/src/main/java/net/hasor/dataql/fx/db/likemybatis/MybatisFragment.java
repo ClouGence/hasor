@@ -31,8 +31,8 @@ import java.util.Map;
 /**
  * 支持 Mybatis 的代码片段执行器。整合了分页、批处理能力。
  * 已支持的标签有：select/insert/delete/update/if/foreach/trim/set/where
- *
  * @author jmxd
+ * @author zhangxu (增加 @@mybatis 对 trim、set、where 的支持)
  * @version : 2020-05-18
  */
 @Singleton
@@ -51,7 +51,6 @@ public class MybatisFragment extends SqlFragment {
     /**
      * 枷锁防止多线程事件
      * @param fragmentString
-     * @return
      * @throws Exception
      */
     private synchronized SqlNode parseSqlNode(String fragmentString) throws Exception {

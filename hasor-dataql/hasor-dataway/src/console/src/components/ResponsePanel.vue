@@ -54,9 +54,9 @@
   </div>
 </template>
 <script>
-import {defineMonacoEditorFoo} from '../utils/editorUtils';
-import {formatDate} from '../utils/utils';
-import {defaultOptionData} from '../utils/api-const';
+import {defineMonacoEditorFoo} from '@/utils/editorUtils';
+import {formatDate} from '@/utils/utils';
+import {defaultOptionData} from '@/utils/api-const';
 
 export default {
     props: {
@@ -185,7 +185,7 @@ export default {
             this.onEditPage && this.monacoForamtEditor.layout({height: (height - 47), width: width});
         },
         doUpdate() {
-            this.optionInfoCopy = { ...defaultOptionData, ...this.optionInfo};
+            this.optionInfoCopy = {...defaultOptionData, ...this.optionInfo};
             this.responseBodyCopy = this.responseBody;
             this.monacoDataEditor.setValue(this.responseBodyCopy);
             this.onEditPage && this.monacoForamtEditor.setValue(this.optionInfoCopy['responseFormat']);
@@ -196,22 +196,22 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-    .responsePanel {
-    }
+.responsePanel {
+}
 
-    .response-tabs {
-        top: -33px;
-        position: relative;
-    }
+.response-tabs {
+  top: -33px;
+  position: relative;
+}
 
-    .response-btns {
-        padding: 2px 5px;
-        display: flex;
-        justify-content: flex-end;
+.response-btns {
+  padding: 2px 5px;
+  display: flex;
+  justify-content: flex-end;
 
-    }
+}
 
-    .z-index-top {
-        z-index: 1000;
-    }
+.z-index-top {
+  z-index: 1000;
+}
 </style>

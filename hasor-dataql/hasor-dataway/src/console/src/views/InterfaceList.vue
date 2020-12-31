@@ -72,8 +72,8 @@
 import RequestPanel from '../components/RequestPanel';
 import ResponsePanel from '../components/ResponsePanel';
 import request from '../utils/request';
-import {ApiUrl, contextPath} from '../utils/api-const';
-import {checkRequestBody, errorBox, headerData, methodTagInfo, statusTagInfo} from '../utils/utils';
+import {ApiUrl, contextPath} from '@/utils/api-const';
+import {checkRequestBody, errorBox, headerData, methodTagInfo, statusTagInfo} from '@/utils/utils';
 
 export default {
     components: {

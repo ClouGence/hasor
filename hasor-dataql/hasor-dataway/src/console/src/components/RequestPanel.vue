@@ -91,10 +91,10 @@
   </div>
 </template>
 <script>
-import {defineMonacoEditorFoo} from '../utils/editorUtils';
+import {defineMonacoEditorFoo} from '@/utils/editorUtils';
 import request from '../utils/request';
-import {ApiUrl, defaultOptionData} from '../utils/api-const';
-import {errorBox} from '../utils/utils';
+import {ApiUrl, defaultOptionData} from '@/utils/api-const';
+import {errorBox} from '@/utils/utils';
 
 export default {
     props: {
