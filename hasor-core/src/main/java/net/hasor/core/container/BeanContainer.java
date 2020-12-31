@@ -476,6 +476,9 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         List<Field> fieldList = BeanUtils.findALLFields(targetType);
         fieldList = fieldList == null ? new ArrayList<>(0) : fieldList;
         for (Field field : fieldList) {
+            if (Modifier.isFinal(field.getModifiers())) {
+                continue;
+            }
             Annotation injectInfo = findInject(false, field.getAnnotations());
             if (injectInfo == null) {
                 continue;

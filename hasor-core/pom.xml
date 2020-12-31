@@ -40,61 +40,61 @@
             <artifactId>javax.inject</artifactId>
             <version>1</version>
         </dependency>
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.27</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.yaml</groupId>-->
+        <!--            <artifactId>snakeyaml</artifactId>-->
+        <!--            <version>1.27</version>-->
+        <!--            <scope>compile</scope>-->
+        <!--            <optional>true</optional>-->
+        <!--        </dependency>-->
     </dependencies>
 
-    <build>
-        <plugins>
-            <!-- 把 inject、yaml 的源码和 class 集成到 hasor-core 项目中 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createSourcesJar>true</createSourcesJar>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <minimizeJar>true</minimizeJar>
-                            <artifactSet>
-                                <includes>
-                                    <include>javax.inject:javax.inject</include>
-                                    <include>org.yaml:snakeyaml</include>
-                                    <include>net.hasor:hasor-core</include>
-                                </includes>
-                            </artifactSet>
-                            <relocations>
-                                <relocation>
-                                    <pattern>javax.inject</pattern>
-                                    <shadedPattern>javax.inject</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.yaml.snakeyaml</pattern>
-                                    <shadedPattern>net.hasor.core.setting.yaml</shadedPattern>
-                                </relocation>
-                            </relocations>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/MANIFEST.MF</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <!--    <build>-->
+    <!--        <plugins>-->
+    <!--            &lt;!&ndash; 把 inject、yaml 的源码和 class 集成到 hasor-core 项目中 &ndash;&gt;-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                <artifactId>maven-shade-plugin</artifactId>-->
+    <!--                <version>3.2.1</version>-->
+    <!--                <executions>-->
+    <!--                    <execution>-->
+    <!--                        <phase>package</phase>-->
+    <!--                        <goals>-->
+    <!--                            <goal>shade</goal>-->
+    <!--                        </goals>-->
+    <!--                        <configuration>-->
+    <!--                            <createSourcesJar>true</createSourcesJar>-->
+    <!--                            <createDependencyReducedPom>false</createDependencyReducedPom>-->
+    <!--                            <minimizeJar>true</minimizeJar>-->
+    <!--                            <artifactSet>-->
+    <!--                                <includes>-->
+    <!--                                    <include>javax.inject:javax.inject</include>-->
+    <!--                                    <include>org.yaml:snakeyaml</include>-->
+    <!--                                    <include>net.hasor:hasor-core</include>-->
+    <!--                                </includes>-->
+    <!--                            </artifactSet>-->
+    <!--                            <relocations>-->
+    <!--                                <relocation>-->
+    <!--                                    <pattern>javax.inject</pattern>-->
+    <!--                                    <shadedPattern>javax.inject</shadedPattern>-->
+    <!--                                </relocation>-->
+    <!--                                <relocation>-->
+    <!--                                    <pattern>org.yaml.snakeyaml</pattern>-->
+    <!--                                    <shadedPattern>net.hasor.core.setting.yaml</shadedPattern>-->
+    <!--                                </relocation>-->
+    <!--                            </relocations>-->
+    <!--                            <filters>-->
+    <!--                                <filter>-->
+    <!--                                    <artifact>*:*</artifact>-->
+    <!--                                    <excludes>-->
+    <!--                                        <exclude>META-INF/MANIFEST.MF</exclude>-->
+    <!--                                    </excludes>-->
+    <!--                                </filter>-->
+    <!--                            </filters>-->
+    <!--                        </configuration>-->
+    <!--                    </execution>-->
+    <!--                </executions>-->
+    <!--            </plugin>-->
+    <!--        </plugins>-->
+    <!--    </build>-->
 </project>

@@ -116,9 +116,9 @@ public interface ApiBinder {
     }
 
     /** 加载带有 @DimModule 注解的类。 */
-    public default ApiBinder loadModule(Set<Class<?>> mabeModuleTypes, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
-        if (mabeModuleTypes != null && !mabeModuleTypes.isEmpty()) {
-            mabeModuleTypes.stream()//
+    public default ApiBinder loadModule(Set<Class<?>> maybeModuleTypes, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
+        if (maybeModuleTypes != null && !maybeModuleTypes.isEmpty()) {
+            maybeModuleTypes.stream()//
                     .filter(matcher)//
                     .filter(Matchers.annotatedWithClass(DimModule.class))//
                     .forEach(aClass -> loadModule(aClass, typeSupplier));
