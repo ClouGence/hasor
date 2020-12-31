@@ -114,7 +114,7 @@
 </template>
 <script>
 import request from '../utils/request';
-import {ApiUrl, defaultOptionData} from '@/utils/api-const';
+import {ApiUrl} from '@/utils/api-const';
 import {checkRequestBody, errorBox, fixGetRequestBody, headerData, statusTagInfo} from '@/utils/utils';
 
 export default {
@@ -348,7 +348,7 @@ export default {
         },
         //
         doUpdate() {
-            this.optionInfoCopy = { ...defaultOptionData, ...this.optionInfo};
+            this.optionInfoCopy = { ...this.defaultOption, ...this.optionInfo};
         }
     }
 };

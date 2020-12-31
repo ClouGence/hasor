@@ -69,17 +69,18 @@
                 <dal_nacos_api_max_size>${HASOR_DATAQL_DATAWAY_NACOSDAL_API_MAX_SIZE}</dal_nacos_api_max_size>
             </settings>
 
+            <!-- globalConfig 会通过 global-config 接口送给前端页面 -->
             <globalConfig>
                 <resultStructure>true</resultStructure>
                 <responseFormat><![CDATA[
-                     {
-                        "successsssss"      : "@resultStatus",
-                        "message"      : "@resultMessage",
-                        "code"         : "@resultCode",
-                        "lifeCycleTime": "@timeLifeCycle",
-                        "executionTime": "@timeExecution",
-                        "value"        : "@resultData"
-                     }
+{
+    "success"      : "@resultStatus",
+    "message"      : "@resultMessage",
+    "code"         : "@resultCode",
+    "lifeCycleTime": "@timeLifeCycle",
+    "executionTime": "@timeExecution",
+    "value"        : "@resultData"
+}
                 ]]></responseFormat>
                 <wrapAllParameters>false</wrapAllParameters>
                 <wrapParameterName>root</wrapParameterName>

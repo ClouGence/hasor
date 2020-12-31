@@ -56,7 +56,6 @@
 <script>
 import {defineMonacoEditorFoo} from '@/utils/editorUtils';
 import {formatDate} from '@/utils/utils';
-import {defaultOptionData} from '@/utils/api-const';
 
 export default {
     props: {
@@ -185,7 +184,7 @@ export default {
             this.onEditPage && this.monacoForamtEditor.layout({height: (height - 47), width: width});
         },
         doUpdate() {
-            this.optionInfoCopy = {...defaultOptionData, ...this.optionInfo};
+            this.optionInfoCopy = {...this.defaultOption, ...this.optionInfo};
             this.responseBodyCopy = this.responseBody;
             this.monacoDataEditor.setValue(this.responseBodyCopy);
             this.onEditPage && this.monacoForamtEditor.setValue(this.optionInfoCopy['responseFormat']);

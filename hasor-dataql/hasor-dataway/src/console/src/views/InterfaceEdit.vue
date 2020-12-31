@@ -77,7 +77,7 @@ import EditerActions from '../components/EditerActions';
 import RequestPanel from '../components/RequestPanel';
 import ResponsePanel from '../components/ResponsePanel';
 import request from '../utils/request';
-import {apiBaseUrl, ApiUrl, defaultOptionData} from '@/utils/api-const';
+import {apiBaseUrl, ApiUrl} from '@/utils/api-const';
 import {errorBox, statusTagInfo} from '@/utils/utils';
 import {defineMonacoEditorFoo, loadMonacoEditorSelfTheme} from '@/utils/editorUtils';
 
@@ -111,7 +111,7 @@ export default {
             //
             //
             headerData: [],
-            optionData: { ...defaultOptionData },
+            optionData: { ...this.defaultOption },
             requestBody: '{"message":"Hello DataQL."}',
             responseBody: '"empty."',
             responseType: 'json',
@@ -251,7 +251,7 @@ export default {
                 self.requestBody = data.codeInfo.requestBody || '{}';
                 self.headerData = data.codeInfo.headerData || [];
                 self.optionData = {
-                    ...defaultOptionData,
+                    ...this.defaultOption,
                     ...data.optionData
                 };
                 //
@@ -320,7 +320,7 @@ export default {
                 self.requestBody = data.codeInfo.requestBody || '{}';
                 self.headerData = data.codeInfo.headerData || [];
                 self.optionData = {
-                    ...defaultOptionData,
+                    ...this.defaultOption,
                     ...data.optionData
                 };
                 //

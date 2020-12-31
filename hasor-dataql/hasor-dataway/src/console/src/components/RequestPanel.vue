@@ -93,7 +93,7 @@
 <script>
 import {defineMonacoEditorFoo} from '@/utils/editorUtils';
 import request from '../utils/request';
-import {ApiUrl, defaultOptionData} from '@/utils/api-const';
+import {ApiUrl} from '@/utils/api-const';
 import {errorBox} from '@/utils/utils';
 
 export default {
@@ -291,7 +291,7 @@ export default {
             this.monacoEditor.layout({height: (height - 31), width: width});
         },
         doUpdate() {
-            this.optionInfoCopy = { ...defaultOptionData, ...this.optionInfo};
+            this.optionInfoCopy = { ...this.defaultOption, ...this.optionInfo};
             this.requestBodyCopy = this.requestBody;
             this.headerDataCopy = this.headerData;
             this.monacoEditor.setValue(this.requestBodyCopy);
