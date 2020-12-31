@@ -54,6 +54,7 @@ public abstract class AbstractTelService extends AbstractContainer implements Te
     private final       SpiTrigger                                   spiTrigger;
     private final       Map<String, Supplier<? extends TelExecutor>> telExecutorMap = new ConcurrentHashMap<>();
     private             ScheduledExecutorService                     executor       = null;
+    private             AppContext                                   appContext;
 
     /** 创建 tConsole 服务 */
     public AbstractTelService(AppContext appContext) {
@@ -65,6 +66,7 @@ public abstract class AbstractTelService extends AbstractContainer implements Te
             this.classLoader = Thread.currentThread().getContextClassLoader();
             this.spiTrigger = new SpiCallerContainer();
         }
+        this.appContext = appContext;
     }
 
     /** 注册一个 SPI 监听器 */
@@ -173,4 +175,9 @@ public abstract class AbstractTelService extends AbstractContainer implements Te
     }
 
     public abstract ByteBufAllocator getByteBufAllocator();
+
+    @Override
+    public AppContext getAppContext() {
+        return this.appContext;
+    }
 }
