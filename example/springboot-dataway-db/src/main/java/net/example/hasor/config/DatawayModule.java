@@ -3,6 +3,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.DimModule;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.QueryApiBinder;
+import net.hasor.dataway.dal.providers.db.InformationStorage;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
 import net.hasor.spring.SpringModule;
@@ -30,7 +31,9 @@ public class DatawayModule implements SpringModule {
         Objects.requireNonNull(this.dataDs1, "dataDs1 is null");
         Objects.requireNonNull(this.dataDs2, "dataDs2 is null");
         // .DataSource form Spring boot into Hasor
-        queryBinder.installModule(new JdbcModule(Level.Full, this.metadataDs));
+        apiBinder.bindType(InformationStorage.class).toInstance(() -> {
+            return this.metadataDs;
+        });
         queryBinder.installModule(new JdbcModule(Level.Full, "ds1", this.dataDs1));
         queryBinder.installModule(new JdbcModule(Level.Full, "ds2", this.dataDs2));
         // udf/udfSource/import 指令 的类型创建委托给 spring

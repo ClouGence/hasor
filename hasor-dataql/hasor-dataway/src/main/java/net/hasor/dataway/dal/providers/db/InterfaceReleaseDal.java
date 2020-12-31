@@ -20,6 +20,7 @@ import net.hasor.core.Singleton;
 import net.hasor.dataway.dal.ApiStatusEnum;
 import net.hasor.dataway.dal.FieldDef;
 import net.hasor.dataway.dal.QueryCondition;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
 
 import java.sql.SQLException;
@@ -38,13 +39,23 @@ import static net.hasor.dataway.dal.FieldDef.*;
  */
 @Singleton
 public class InterfaceReleaseDal extends AbstractDal {
-    protected              String                releaseTableName;
+    private final          String                releaseTableName;
     /** INFO 表中的唯一索引列 */
     protected static final Map<FieldDef, String> pubIndexColumn = new HashMap<FieldDef, String>() {{
         put(ID, "pub_id");
         put(API_ID, "pub_api_id");
         put(PATH, "pub_path");
     }};
+
+    public InterfaceReleaseDal(JdbcTemplate jdbcTemplate, String dbType, String tableName) {
+        super(jdbcTemplate, dbType);
+        this.releaseTableName = tableName;
+    }
+
+    @Override
+    public String getTableName() {
+        return this.releaseTableName;
+    }
 
     private static Map<FieldDef, String> mapToDef(Map<String, Object> entMap) {
         Map<FieldDef, String> dataMap = new HashMap<>();

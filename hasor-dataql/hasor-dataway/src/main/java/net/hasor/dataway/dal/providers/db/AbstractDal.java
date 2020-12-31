@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataway.dal.providers.db;
-import net.hasor.core.Inject;
 import net.hasor.db.JdbcUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
@@ -48,9 +47,15 @@ public abstract class AbstractDal {
         add("pub_option");
         add("pub_release_time");
     }};
-    @Inject
-    protected              JdbcTemplate jdbcTemplate;
-    protected              String       dbType;
+    protected final        JdbcTemplate jdbcTemplate;
+    private final          String       dbType;
+
+    public AbstractDal(JdbcTemplate jdbcTemplate, String dbType) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.dbType = dbType;
+    }
+
+    public abstract String getTableName();
 
     protected String fixString(String key, String val) {
         if ("COMMENT".equalsIgnoreCase(key)) {

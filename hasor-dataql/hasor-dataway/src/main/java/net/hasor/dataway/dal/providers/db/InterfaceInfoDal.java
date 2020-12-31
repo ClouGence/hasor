@@ -20,6 +20,7 @@ import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.dal.ApiTypeEnum;
 import net.hasor.dataway.dal.FieldDef;
 import net.hasor.dataway.dal.QueryCondition;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
 
 import java.sql.SQLException;
@@ -34,12 +35,22 @@ import static net.hasor.dataway.dal.FieldDef.*;
  * @version : 2020-09-11
  */
 public class InterfaceInfoDal extends AbstractDal {
-    protected            String                infoTableName;
+    private final        String                infoTableName;
     /** INFO 表中的唯一索引列 */
     private static final Map<FieldDef, String> infoIndexColumn = new HashMap<FieldDef, String>() {{
         put(ID, "api_id");
         put(PATH, "api_path");
     }};
+
+    public InterfaceInfoDal(JdbcTemplate jdbcTemplate, String dbType, String tableName) {
+        super(jdbcTemplate, dbType);
+        this.infoTableName = tableName;
+    }
+
+    @Override
+    public String getTableName() {
+        return this.infoTableName;
+    }
 
     private static Map<FieldDef, String> mapToDef(Map<String, Object> entMap) {
         Map<FieldDef, String> dataMap = new HashMap<>();
