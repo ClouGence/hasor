@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 数据库存储层访问 ApiDataAccessLayer 接口实现。
@@ -42,15 +43,21 @@ import java.util.Map;
 public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
     protected static Logger              logger = LoggerFactory.getLogger(DataBaseApiDataAccessLayer.class);
     @Inject
-    private          InterfaceInfoDal    infoDal;
-    @Inject
-    private          InterfaceReleaseDal releaseDal;
-    @Inject
     private          AppContext          appContext;
+    private          InterfaceInfoDal    infoDal;
+    private          InterfaceReleaseDal releaseDal;
 
     @Init
     public void init() throws SQLException {
-        JdbcTemplate jdbcTemplate = this.appContext.getInstance(JdbcTemplate.class);
+        //
+        InformationStorage informationStorage = this.appContext.getInstance(InformationStorage.class);
+        JdbcTemplate jdbcTemplate = null;
+        if (informationStorage != null) {
+            jdbcTemplate = new JdbcTemplate(Objects.requireNonNull(informationStorage.getDataSource(), "informationStorage dataSource is null."));
+        } else {
+            jdbcTemplate = this.appContext.getInstance(JdbcTemplate.class);
+        }
+        //
         if (jdbcTemplate == null) {
             throw new IllegalStateException("jdbcTemplate is not init.");
         }
@@ -70,12 +77,10 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
         //
         String tablePrefix = settings.getString("hasor.dataway.settings.dal_db_table_prefix");
         tablePrefix = StringUtils.isBlank(tablePrefix) ? "" : tablePrefix;
-        this.infoDal.dbType = dbType;
-        this.infoDal.infoTableName = tablePrefix + "interface_info";
-        this.releaseDal.dbType = dbType;
-        this.releaseDal.releaseTableName = tablePrefix + "interface_release";
+        this.infoDal = new InterfaceInfoDal(jdbcTemplate, dbType, tablePrefix + "interface_info");
+        this.releaseDal = new InterfaceReleaseDal(jdbcTemplate, dbType, tablePrefix + "interface_release");
         //
-        logger.info("dataway dbType is {} ,table names = {}, {}", dbType, this.infoDal.infoTableName, this.releaseDal.releaseTableName);
+        logger.info("dataway dbType is {} ,table names = {}, {}", dbType, this.infoDal.getTableName(), this.releaseDal.getTableName());
     }
 
     @Override
