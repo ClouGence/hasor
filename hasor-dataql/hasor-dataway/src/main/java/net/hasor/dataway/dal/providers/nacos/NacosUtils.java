@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.dataway.dal.providers.nacos;
+import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.exception.NacosException;
 import net.hasor.dataway.dal.FieldDef;
+import net.hasor.utils.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Nacos 存储层工具类。
@@ -24,6 +30,8 @@ import java.util.*;
  * @version : 2020-09-21
  */
 class NacosUtils {
+    private static Logger logger = LoggerFactory.getLogger(NacosUtils.class);
+
     public static Map<FieldDef, String> mapToDef(Map<String, Object> entMap) {
         if (entMap == null) {
             return null;
@@ -54,28 +62,59 @@ class NacosUtils {
         return dataMap;
     }
 
-    public static String evalDirectoryKey(String dat) {
-        return "DIRECTORY_" + dat;
-    }
-
-    /** 留下最新的 ApiJson */
-    public static Map<String, ApiJson> removeDuplicate(List<ApiJson> indexDirectory) {
-        if (indexDirectory == null || indexDirectory.isEmpty()) {
-            return Collections.emptyMap();
-        }
-        Map<String, ApiJson> pretreatment = new LinkedHashMap<>();
-        for (ApiJson apiJson : indexDirectory) {
-            String jsonId = apiJson.getId();
-            // 预处理中如果存在，那么比对一下留下最新的
-            if (pretreatment.containsKey(jsonId)) {
-                ApiJson dataEnt = pretreatment.get(jsonId);
-                if (apiJson.getTime() >= dataEnt.getTime()) {
-                    pretreatment.put(jsonId, apiJson);
+    /** 加载数据 */
+    public static String doLoad(ConfigService configService, String groupName, String configId) throws NacosException {
+        int tryTimes = 0;
+        while (true) {
+            try {
+                return configService.getConfig(configId, groupName, 3000);
+            } catch (NacosException e) {
+                if (tryTimes > 0) {
+                    logger.error(String.format("nacos loadData '%s' failed. tryTimes %s ,errorMessage=" + e.getMessage(), configId, tryTimes));
+                } else {
+                    logger.error(String.format("nacos loadData '%s' failed, errorMessage=" + e.getMessage(), configId));
                 }
-            } else {
-                pretreatment.put(jsonId, apiJson);
+                if (tryTimes >= 3) {
+                    throw e;
+                }
+            } finally {
+                tryTimes++;
             }
         }
-        return pretreatment;
+    }
+
+    /** 保存或更新数据 */
+    public static boolean doSave(ConfigService configService, String groupName, String configId, String configData) {
+        // save data
+        try {
+            return configService.publishConfig(configId, groupName, configData);
+        } catch (Exception e1) {
+            try {
+                return configService.publishConfig(configId, groupName, configData);
+            } catch (NacosException e2) {
+                try {
+                    return configService.publishConfig(configId, groupName, configData);
+                } catch (NacosException e3) {
+                    throw ExceptionUtils.toRuntimeException(e3);
+                }
+            }
+        }
+    }
+
+    /** 删除数据 */
+    public static boolean doRemove(ConfigService configService, String groupName, String configId) {
+        try {
+            return configService.removeConfig(configId, groupName);
+        } catch (Exception e1) {
+            try {
+                return configService.removeConfig(configId, groupName);
+            } catch (NacosException e2) {
+                try {
+                    return configService.removeConfig(configId, groupName);
+                } catch (NacosException e3) {
+                    throw ExceptionUtils.toRuntimeException(e3);
+                }
+            }
+        }
     }
 }

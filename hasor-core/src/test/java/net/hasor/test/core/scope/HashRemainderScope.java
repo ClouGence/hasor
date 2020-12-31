@@ -1,6 +1,6 @@
 package net.hasor.test.core.scope;
+import net.hasor.core.Provider;
 import net.hasor.core.Scope;
-import net.hasor.core.provider.SingleProvider;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
@@ -29,7 +29,7 @@ public class HashRemainderScope implements Scope {
             }
             //
             if (t.hashCode() % modulus == remainder) {
-                Supplier<T> newSingleProvider = new SingleProvider<>(provider);
+                Supplier<T> newSingleProvider = Provider.of(provider).asSingle();
                 returnData = this.scopeMap.putIfAbsent(key, newSingleProvider);
                 if (returnData == null) {
                     returnData = newSingleProvider;

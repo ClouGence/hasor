@@ -25,6 +25,7 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 /**
  * General IO stream manipulation utilities.
  * <p>
@@ -118,6 +119,7 @@ public class IOUtils {
      */
     private static       char[] SKIP_CHAR_BUFFER;
     private static       byte[] SKIP_BYTE_BUFFER;
+
     /**
      * Instances should NOT be constructed in standard programming.
      */
@@ -125,6 +127,7 @@ public class IOUtils {
         super();
     }
     //-----------------------------------------------------------------------
+
     /**
      * Closes a URLConnection.
      *
@@ -136,6 +139,7 @@ public class IOUtils {
             ((HttpURLConnection) conn).disconnect();
         }
     }
+
     /**
      * Unconditionally close an <code>Reader</code>.
      * <p>
@@ -162,6 +166,7 @@ public class IOUtils {
     public static void closeQuietly(final Reader input) {
         IOUtils.closeQuietly((Closeable) input);
     }
+
     /**
      * Unconditionally close a <code>Writer</code>.
      * <p>
@@ -187,6 +192,7 @@ public class IOUtils {
     public static void closeQuietly(final Writer output) {
         IOUtils.closeQuietly((Closeable) output);
     }
+
     /**
      * Unconditionally close an <code>InputStream</code>.
      * <p>
@@ -213,6 +219,7 @@ public class IOUtils {
     public static void closeQuietly(final InputStream input) {
         IOUtils.closeQuietly((Closeable) input);
     }
+
     /**
      * Unconditionally close an <code>OutputStream</code>.
      * <p>
@@ -240,6 +247,7 @@ public class IOUtils {
     public static void closeQuietly(final OutputStream output) {
         IOUtils.closeQuietly((Closeable) output);
     }
+
     /**
      * Unconditionally close a <code>Closeable</code>.
      * <p>
@@ -272,6 +280,7 @@ public class IOUtils {
             // ignore
         }
     }
+
     /**
      * Unconditionally close a <code>Socket</code>.
      * <p>
@@ -304,6 +313,7 @@ public class IOUtils {
             }
         }
     }
+
     /**
      * Unconditionally close a <code>Selector</code>.
      * <p>
@@ -336,6 +346,7 @@ public class IOUtils {
             }
         }
     }
+
     /**
      * Unconditionally close a <code>ServerSocket</code>.
      * <p>
@@ -368,6 +379,7 @@ public class IOUtils {
             }
         }
     }
+
     /**
      * Returns the given reader if it is a {@link BufferedReader}, otherwise creates a toBufferedReader for the given
      * reader.
@@ -382,6 +394,7 @@ public class IOUtils {
     }
     // read toByteArray
     //-----------------------------------------------------------------------
+
     /**
      * Get the contents of an <code>InputStream</code> as a <code>byte[]</code>.
      * <p>
@@ -398,6 +411,7 @@ public class IOUtils {
         IOUtils.copy(input, output);
         return output.toByteArray();
     }
+
     /**
      * Get contents of an <code>InputStream</code> as a <code>byte[]</code>.
      * Use this method instead of <code>toByteArray(InputStream)</code>
@@ -420,6 +434,7 @@ public class IOUtils {
         }
         return IOUtils.toByteArray(input, (int) size);
     }
+
     /**
      * Get the contents of an <code>InputStream</code> as a <code>byte[]</code>.
      * Use this method instead of <code>toByteArray(InputStream)</code>
@@ -449,6 +464,7 @@ public class IOUtils {
         }
         return data;
     }
+
     /**
      * Get the contents of a <code>Reader</code> as a <code>byte[]</code>
      * using the default character encoding of the platform.
@@ -464,6 +480,7 @@ public class IOUtils {
     public static byte[] toByteArray(final Reader input) throws IOException {
         return IOUtils.toByteArray(input, Charset.defaultCharset());
     }
+
     /**
      * Get the contents of a <code>Reader</code> as a <code>byte[]</code>
      * using the specified character encoding.
@@ -483,6 +500,7 @@ public class IOUtils {
         IOUtils.copy(input, output, encoding);
         return output.toByteArray();
     }
+
     /**
      * Get the contents of a <code>Reader</code> as a <code>byte[]</code>
      * using the specified character encoding.
@@ -506,6 +524,7 @@ public class IOUtils {
     public static byte[] toByteArray(final Reader input, final String encoding) throws IOException {
         return IOUtils.toByteArray(input, Charsets.toCharset(encoding));
     }
+
     /**
      * Get the contents of a <code>URI</code> as a <code>byte[]</code>.
      *
@@ -521,6 +540,7 @@ public class IOUtils {
     public static byte[] toByteArray(final URI uri) throws IOException {
         return IOUtils.toByteArray(uri.toURL());
     }
+
     /**
      * Get the contents of a <code>URL</code> as a <code>byte[]</code>.
      *
@@ -541,6 +561,7 @@ public class IOUtils {
             IOUtils.close(conn);
         }
     }
+
     /**
      * Get the contents of a <code>URLConnection</code> as a <code>byte[]</code>.
      *
@@ -563,6 +584,7 @@ public class IOUtils {
     }
     // read char[]
     //-----------------------------------------------------------------------
+
     /**
      * Get the contents of an <code>InputStream</code> as a character array
      * using the default character encoding of the platform.
@@ -579,6 +601,7 @@ public class IOUtils {
     public static char[] toCharArray(final InputStream is) throws IOException {
         return IOUtils.toCharArray(is, Charset.defaultCharset());
     }
+
     /**
      * Get the contents of an <code>InputStream</code> as a character array
      * using the specified character encoding.
@@ -598,6 +621,7 @@ public class IOUtils {
         IOUtils.copy(is, output, encoding);
         return output.toCharArray();
     }
+
     /**
      * Get the contents of an <code>InputStream</code> as a character array
      * using the specified character encoding.
@@ -621,6 +645,7 @@ public class IOUtils {
     public static char[] toCharArray(final InputStream is, final String encoding) throws IOException {
         return IOUtils.toCharArray(is, Charsets.toCharset(encoding));
     }
+
     /**
      * Get the contents of a <code>Reader</code> as a character array.
      * <p>
@@ -640,6 +665,7 @@ public class IOUtils {
     }
     // read toString
     //-----------------------------------------------------------------------
+
     /**
      * Get the contents of an <code>InputStream</code> as a String
      * using the default character encoding of the platform.
@@ -655,6 +681,7 @@ public class IOUtils {
     public static String toString(final InputStream input) throws IOException {
         return IOUtils.toString(input, Charset.defaultCharset());
     }
+
     /**
      * Get the contents of an <code>InputStream</code> as a String
      * using the specified character encoding.
@@ -674,6 +701,7 @@ public class IOUtils {
         IOUtils.copy(input, sw, encoding);
         return sw.toString();
     }
+
     /**
      * Get the contents of an <code>InputStream</code> as a String
      * using the specified character encoding.
@@ -696,6 +724,7 @@ public class IOUtils {
     public static String toString(final InputStream input, final String encoding) throws IOException {
         return IOUtils.toString(input, Charsets.toCharset(encoding));
     }
+
     /**
      * Get the contents of a <code>Reader</code> as a String.
      * <p>
@@ -712,6 +741,7 @@ public class IOUtils {
         IOUtils.copy(input, sw);
         return sw.toString();
     }
+
     /**
      * Gets the contents at the given URI.
      *
@@ -724,6 +754,7 @@ public class IOUtils {
     public static String toString(final URI uri) throws IOException {
         return IOUtils.toString(uri, Charset.defaultCharset());
     }
+
     /**
      * Gets the contents at the given URI.
      *
@@ -738,6 +769,7 @@ public class IOUtils {
     public static String toString(final URI uri, final Charset encoding) throws IOException {
         return IOUtils.toString(uri.toURL(), Charsets.toCharset(encoding));
     }
+
     /**
      * Gets the contents at the given URI.
      *
@@ -755,6 +787,7 @@ public class IOUtils {
     public static String toString(final URI uri, final String encoding) throws IOException {
         return IOUtils.toString(uri, Charsets.toCharset(encoding));
     }
+
     /**
      * Gets the contents at the given URL.
      *
@@ -767,6 +800,7 @@ public class IOUtils {
     public static String toString(final URL url) throws IOException {
         return IOUtils.toString(url, Charset.defaultCharset());
     }
+
     /**
      * Gets the contents at the given URL.
      *
@@ -786,6 +820,7 @@ public class IOUtils {
             inputStream.close();
         }
     }
+
     /**
      * Gets the contents at the given URL.
      *
@@ -803,6 +838,7 @@ public class IOUtils {
     public static String toString(final URL url, final String encoding) throws IOException {
         return IOUtils.toString(url, Charsets.toCharset(encoding));
     }
+
     /**
      * Get the contents of a <code>byte[]</code> as a String
      * using the specified character encoding.
@@ -821,6 +857,7 @@ public class IOUtils {
     }
     // readLines
     //-----------------------------------------------------------------------
+
     /**
      * Get the contents of an <code>InputStream</code> as a list of Strings,
      * one entry per line, using the default character encoding of the platform.
@@ -837,6 +874,7 @@ public class IOUtils {
     public static List<String> readLines(final InputStream input) throws IOException {
         return IOUtils.readLines(input, Charset.defaultCharset());
     }
+
     /**
      * Get the contents of an <code>InputStream</code> as a list of Strings,
      * one entry per line, using the specified character encoding.
@@ -855,6 +893,7 @@ public class IOUtils {
         InputStreamReader reader = new InputStreamReader(input, Charsets.toCharset(encoding));
         return IOUtils.readLines(reader);
     }
+
     /**
      * Get the contents of an <code>InputStream</code> as a list of Strings,
      * one entry per line, using the specified character encoding.
@@ -878,6 +917,7 @@ public class IOUtils {
     public static List<String> readLines(final InputStream input, final String encoding) throws IOException {
         return IOUtils.readLines(input, Charsets.toCharset(encoding));
     }
+
     /**
      * Get the contents of a <code>Reader</code> as a list of Strings,
      * one entry per line.
@@ -901,6 +941,7 @@ public class IOUtils {
         }
         return list;
     }
+
     public static String readToString(InputStream input, String charset) throws IOException {
         List<String> stringList = readLines(input, charset);
         StringBuilder builder = new StringBuilder();
@@ -909,8 +950,18 @@ public class IOUtils {
         }
         return builder.toString();
     }
+
+    public static String readToString(Reader input) throws IOException {
+        List<String> stringList = readLines(input);
+        StringBuilder builder = new StringBuilder();
+        for (String str : stringList) {
+            builder = builder.append(str);
+        }
+        return builder.toString();
+    }
     // lineIterator
     //-----------------------------------------------------------------------
+
     /**
      * Return an Iterator for the lines in a <code>Reader</code>.
      * <p>
@@ -941,6 +992,7 @@ public class IOUtils {
     public static LineIterator lineIterator(final Reader reader) {
         return new LineIterator(reader);
     }
+
     /**
      * Return an Iterator for the lines in an <code>InputStream</code>, using
      * the character encoding specified (or default encoding if null).
@@ -974,6 +1026,7 @@ public class IOUtils {
     public static LineIterator lineIterator(final InputStream input, final Charset encoding) throws IOException {
         return new LineIterator(new InputStreamReader(input, Charsets.toCharset(encoding)));
     }
+
     /**
      * Return an Iterator for the lines in an <code>InputStream</code>, using
      * the character encoding specified (or default encoding if null).
@@ -1011,6 +1064,7 @@ public class IOUtils {
         return IOUtils.lineIterator(input, Charsets.toCharset(encoding));
     }
     //-----------------------------------------------------------------------
+
     /**
      * Convert the specified CharSequence to an input stream, encoded as bytes
      * using the default character encoding of the platform.
@@ -1022,6 +1076,7 @@ public class IOUtils {
     public static InputStream toInputStream(final CharSequence input) {
         return IOUtils.toInputStream(input, Charset.defaultCharset());
     }
+
     /**
      * Convert the specified CharSequence to an input stream, encoded as bytes
      * using the specified character encoding.
@@ -1034,6 +1089,7 @@ public class IOUtils {
     public static InputStream toInputStream(final CharSequence input, final Charset encoding) {
         return IOUtils.toInputStream(input.toString(), encoding);
     }
+
     /**
      * Convert the specified CharSequence to an input stream, encoded as bytes
      * using the specified character encoding.
@@ -1054,6 +1110,7 @@ public class IOUtils {
         return IOUtils.toInputStream(input, Charsets.toCharset(encoding));
     }
     //-----------------------------------------------------------------------
+
     /**
      * Convert the specified string to an input stream, encoded as bytes
      * using the default character encoding of the platform.
@@ -1065,6 +1122,7 @@ public class IOUtils {
     public static InputStream toInputStream(final String input) {
         return IOUtils.toInputStream(input, Charset.defaultCharset());
     }
+
     /**
      * Convert the specified string to an input stream, encoded as bytes
      * using the specified character encoding.
@@ -1077,6 +1135,7 @@ public class IOUtils {
     public static InputStream toInputStream(final String input, final Charset encoding) {
         return new ByteArrayInputStream(input.getBytes(Charsets.toCharset(encoding)));
     }
+
     /**
      * Convert the specified string to an input stream, encoded as bytes
      * using the specified character encoding.
@@ -1099,6 +1158,7 @@ public class IOUtils {
     }
     // write byte[]
     //-----------------------------------------------------------------------
+
     /**
      * Writes bytes from a <code>byte[]</code> to an <code>OutputStream</code>.
      *
@@ -1114,6 +1174,7 @@ public class IOUtils {
             output.write(data);
         }
     }
+
     /**
      * Writes bytes from a <code>byte[]</code> to chars on a <code>Writer</code>
      * using the default character encoding of the platform.
@@ -1130,6 +1191,7 @@ public class IOUtils {
     public static void write(final byte[] data, final Writer output) throws IOException {
         IOUtils.write(data, output, Charset.defaultCharset());
     }
+
     /**
      * Writes bytes from a <code>byte[]</code> to chars on a <code>Writer</code>
      * using the specified character encoding.
@@ -1149,6 +1211,7 @@ public class IOUtils {
             output.write(new String(data, Charsets.toCharset(encoding)));
         }
     }
+
     /**
      * Writes bytes from a <code>byte[]</code> to chars on a <code>Writer</code>
      * using the specified character encoding.
@@ -1174,6 +1237,7 @@ public class IOUtils {
     }
     // write char[]
     //-----------------------------------------------------------------------
+
     /**
      * Writes chars from a <code>char[]</code> to a <code>Writer</code>
      * using the default character encoding of the platform.
@@ -1190,6 +1254,7 @@ public class IOUtils {
             output.write(data);
         }
     }
+
     /**
      * Writes chars from a <code>char[]</code> to bytes on an
      * <code>OutputStream</code>.
@@ -1207,6 +1272,7 @@ public class IOUtils {
     public static void write(final char[] data, final OutputStream output) throws IOException {
         IOUtils.write(data, output, Charset.defaultCharset());
     }
+
     /**
      * Writes chars from a <code>char[]</code> to bytes on an
      * <code>OutputStream</code> using the specified character encoding.
@@ -1227,6 +1293,7 @@ public class IOUtils {
             output.write(new String(data).getBytes(Charsets.toCharset(encoding)));
         }
     }
+
     /**
      * Writes chars from a <code>char[]</code> to bytes on an
      * <code>OutputStream</code> using the specified character encoding.
@@ -1253,6 +1320,7 @@ public class IOUtils {
     }
     // write CharSequence
     //-----------------------------------------------------------------------
+
     /**
      * Writes chars from a <code>CharSequence</code> to a <code>Writer</code>.
      *
@@ -1267,6 +1335,7 @@ public class IOUtils {
             IOUtils.write(data.toString(), output);
         }
     }
+
     /**
      * Writes chars from a <code>CharSequence</code> to bytes on an
      * <code>OutputStream</code> using the default character encoding of the
@@ -1283,6 +1352,7 @@ public class IOUtils {
     public static void write(final CharSequence data, final OutputStream output) throws IOException {
         IOUtils.write(data, output, Charset.defaultCharset());
     }
+
     /**
      * Writes chars from a <code>CharSequence</code> to bytes on an
      * <code>OutputStream</code> using the specified character encoding.
@@ -1301,6 +1371,7 @@ public class IOUtils {
             IOUtils.write(data.toString(), output, encoding);
         }
     }
+
     /**
      * Writes chars from a <code>CharSequence</code> to bytes on an
      * <code>OutputStream</code> using the specified character encoding.
@@ -1325,6 +1396,7 @@ public class IOUtils {
     }
     // write String
     //-----------------------------------------------------------------------
+
     /**
      * Writes chars from a <code>String</code> to a <code>Writer</code>.
      *
@@ -1339,6 +1411,7 @@ public class IOUtils {
             output.write(data);
         }
     }
+
     /**
      * Writes chars from a <code>String</code> to bytes on an
      * <code>OutputStream</code> using the default character encoding of the
@@ -1355,6 +1428,7 @@ public class IOUtils {
     public static void write(final String data, final OutputStream output) throws IOException {
         IOUtils.write(data, output, Charset.defaultCharset());
     }
+
     /**
      * Writes chars from a <code>String</code> to bytes on an
      * <code>OutputStream</code> using the specified character encoding.
@@ -1373,6 +1447,7 @@ public class IOUtils {
             output.write(data.getBytes(Charsets.toCharset(encoding)));
         }
     }
+
     /**
      * Writes chars from a <code>String</code> to bytes on an
      * <code>OutputStream</code> using the specified character encoding.
@@ -1397,6 +1472,7 @@ public class IOUtils {
     }
     // writeLines
     //-----------------------------------------------------------------------
+
     /**
      * Writes the <code>toString()</code> value of each item in a collection to
      * an <code>OutputStream</code> line by line, using the default character
@@ -1412,6 +1488,7 @@ public class IOUtils {
     public static void writeLines(final Collection<?> lines, final String lineEnding, final OutputStream output) throws IOException {
         IOUtils.writeLines(lines, lineEnding, output, Charset.defaultCharset());
     }
+
     /**
      * Writes the <code>toString()</code> value of each item in a collection to
      * an <code>OutputStream</code> line by line, using the specified character
@@ -1440,6 +1517,7 @@ public class IOUtils {
             output.write(lineEnding.getBytes(cs));
         }
     }
+
     /**
      * Writes the <code>toString()</code> value of each item in a collection to
      * an <code>OutputStream</code> line by line, using the specified character
@@ -1462,6 +1540,7 @@ public class IOUtils {
     public static void writeLines(final Collection<?> lines, final String lineEnding, final OutputStream output, final String encoding) throws IOException {
         IOUtils.writeLines(lines, lineEnding, output, Charsets.toCharset(encoding));
     }
+
     /**
      * Writes the <code>toString()</code> value of each item in a collection to
      * a <code>Writer</code> line by line, using the specified line ending.
@@ -1489,6 +1568,7 @@ public class IOUtils {
     }
     // copy from InputStream
     //-----------------------------------------------------------------------
+
     /**
      * Copy bytes from an <code>InputStream</code> to an
      * <code>OutputStream</code>.
@@ -1515,6 +1595,7 @@ public class IOUtils {
         }
         return (int) count;
     }
+
     /**
      * Copy bytes from a large (over 2GB) <code>InputStream</code> to an
      * <code>OutputStream</code>.
@@ -1534,6 +1615,7 @@ public class IOUtils {
     public static long copyLarge(final InputStream input, final OutputStream output) throws IOException {
         return IOUtils.copyLarge(input, output, new byte[IOUtils.DEFAULT_BUFFER_SIZE]);
     }
+
     /**
      * Copy bytes from a large (over 2GB) <code>InputStream</code> to an
      * <code>OutputStream</code>.
@@ -1559,6 +1641,7 @@ public class IOUtils {
         }
         return count;
     }
+
     /**
      * Copy some or all bytes from a large (over 2GB) <code>InputStream</code> to an
      * <code>OutputStream</code>, optionally skipping input bytes.
@@ -1581,6 +1664,7 @@ public class IOUtils {
     public static long copyLarge(final InputStream input, final OutputStream output, final long inputOffset, final long length) throws IOException {
         return IOUtils.copyLarge(input, output, inputOffset, length, new byte[IOUtils.DEFAULT_BUFFER_SIZE]);
     }
+
     /**
      * Copy some or all bytes from a large (over 2GB) <code>InputStream</code> to an
      * <code>OutputStream</code>, optionally skipping input bytes.
@@ -1625,6 +1709,7 @@ public class IOUtils {
         }
         return totalRead;
     }
+
     /**
      * Copy bytes from an <code>InputStream</code> to chars on a
      * <code>Writer</code> using the default character encoding of the platform.
@@ -1643,6 +1728,7 @@ public class IOUtils {
     public static void copy(final InputStream input, final Writer output) throws IOException {
         IOUtils.copy(input, output, Charset.defaultCharset());
     }
+
     /**
      * Copy bytes from an <code>InputStream</code> to chars on a
      * <code>Writer</code> using the specified character encoding.
@@ -1663,6 +1749,7 @@ public class IOUtils {
         InputStreamReader in = new InputStreamReader(input, Charsets.toCharset(encoding));
         IOUtils.copy(in, output);
     }
+
     /**
      * Copy bytes from an <code>InputStream</code> to chars on a
      * <code>Writer</code> using the specified character encoding.
@@ -1690,6 +1777,7 @@ public class IOUtils {
     }
     // copy from Reader
     //-----------------------------------------------------------------------
+
     /**
      * Copy chars from a <code>Reader</code> to a <code>Writer</code>.
      * <p>
@@ -1715,6 +1803,7 @@ public class IOUtils {
         }
         return (int) count;
     }
+
     /**
      * Copy chars from a large (over 2GB) <code>Reader</code> to a <code>Writer</code>.
      * <p>
@@ -1733,6 +1822,7 @@ public class IOUtils {
     public static long copyLarge(final Reader input, final Writer output) throws IOException {
         return IOUtils.copyLarge(input, output, new char[IOUtils.DEFAULT_BUFFER_SIZE]);
     }
+
     /**
      * Copy chars from a large (over 2GB) <code>Reader</code> to a <code>Writer</code>.
      * <p>
@@ -1757,6 +1847,7 @@ public class IOUtils {
         }
         return count;
     }
+
     /**
      * Copy some or all chars from a large (over 2GB) <code>InputStream</code> to an
      * <code>OutputStream</code>, optionally skipping input chars.
@@ -1779,6 +1870,7 @@ public class IOUtils {
     public static long copyLarge(final Reader input, final Writer output, final long inputOffset, final long length) throws IOException {
         return IOUtils.copyLarge(input, output, inputOffset, length, new char[IOUtils.DEFAULT_BUFFER_SIZE]);
     }
+
     /**
      * Copy some or all chars from a large (over 2GB) <code>InputStream</code> to an
      * <code>OutputStream</code>, optionally skipping input chars.
@@ -1821,6 +1913,7 @@ public class IOUtils {
         }
         return totalRead;
     }
+
     /**
      * Copy chars from a <code>Reader</code> to bytes on an
      * <code>OutputStream</code> using the default character encoding of the
@@ -1843,6 +1936,7 @@ public class IOUtils {
     public static void copy(final Reader input, final OutputStream output) throws IOException {
         IOUtils.copy(input, output, Charset.defaultCharset());
     }
+
     /**
      * Copy chars from a <code>Reader</code> to bytes on an
      * <code>OutputStream</code> using the specified character encoding, and
@@ -1873,6 +1967,7 @@ public class IOUtils {
         // we have to flush here.
         out.flush();
     }
+
     /**
      * Copy chars from a <code>Reader</code> to bytes on an
      * <code>OutputStream</code> using the specified character encoding, and
@@ -1904,6 +1999,7 @@ public class IOUtils {
     }
     // content equals
     //-----------------------------------------------------------------------
+
     /**
      * Compare the contents of two Streams to determine if they are equal or
      * not.
@@ -1936,6 +2032,7 @@ public class IOUtils {
         int ch2 = input2.read();
         return ch2 == IOUtils.EOF;
     }
+
     /**
      * Compare the contents of two Readers to determine if they are equal or
      * not.
@@ -1965,6 +2062,7 @@ public class IOUtils {
         int ch2 = input2.read();
         return ch2 == IOUtils.EOF;
     }
+
     /**
      * Compare the contents of two Readers to determine if they are equal or
      * not, ignoring EOL characters.
@@ -1990,6 +2088,7 @@ public class IOUtils {
         }
         return line1 == null ? line2 == null ? true : false : line1.equals(line2);
     }
+
     /**
      * Skip bytes from an input byte stream.
      * This implementation guarantees that it will read as many bytes
@@ -2028,6 +2127,7 @@ public class IOUtils {
         }
         return toSkip - remain;
     }
+
     /**
      * Skip characters from an input character stream.
      * This implementation guarantees that it will read as many characters
@@ -2066,6 +2166,7 @@ public class IOUtils {
         }
         return toSkip - remain;
     }
+
     /**
      * Skip the requested number of bytes or fail if there are not enough left.
      * <p>
@@ -2090,6 +2191,7 @@ public class IOUtils {
             throw new EOFException("Bytes to skip: " + toSkip + " actual: " + skipped);
         }
     }
+
     /**
      * Skip the requested number of characters or fail if there are not enough left.
      * <p>
@@ -2111,6 +2213,7 @@ public class IOUtils {
             throw new EOFException("Chars to skip: " + toSkip + " actual: " + skipped);
         }
     }
+
     /**
      * Read characters from an input character stream.
      * This implementation guarantees that it will read as many characters
@@ -2140,6 +2243,7 @@ public class IOUtils {
         }
         return length - remaining;
     }
+
     /**
      * Read characters from an input character stream.
      * This implementation guarantees that it will read as many characters
@@ -2155,6 +2259,7 @@ public class IOUtils {
     public static int read(final Reader input, final char[] buffer) throws IOException {
         return IOUtils.read(input, buffer, 0, buffer.length);
     }
+
     /**
      * Read bytes from an input stream.
      * This implementation guarantees that it will read as many bytes
@@ -2184,6 +2289,7 @@ public class IOUtils {
         }
         return length - remaining;
     }
+
     /**
      * Read bytes from an input stream.
      * This implementation guarantees that it will read as many bytes
@@ -2199,6 +2305,7 @@ public class IOUtils {
     public static int read(final InputStream input, final byte[] buffer) throws IOException {
         return IOUtils.read(input, buffer, 0, buffer.length);
     }
+
     /**
      * Read the requested number of characters or fail if there are not enough left.
      * <p>
@@ -2221,6 +2328,7 @@ public class IOUtils {
             throw new EOFException("Length to read: " + length + " actual: " + actual);
         }
     }
+
     /**
      * Read the requested number of characters or fail if there are not enough left.
      * <p>
@@ -2238,6 +2346,7 @@ public class IOUtils {
     public static void readFully(final Reader input, final char[] buffer) throws IOException {
         IOUtils.readFully(input, buffer, 0, buffer.length);
     }
+
     /**
      * Read the requested number of bytes or fail if there are not enough left.
      * <p>
@@ -2260,6 +2369,7 @@ public class IOUtils {
             throw new EOFException("Length to read: " + length + " actual: " + actual);
         }
     }
+
     /**
      * Read the requested number of bytes or fail if there are not enough left.
      * <p>

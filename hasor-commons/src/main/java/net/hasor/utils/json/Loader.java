@@ -13,6 +13,7 @@
 package net.hasor.utils.json;
 import java.net.URL;
 /* ------------------------------------------------------------ */
+
 /** ClassLoader Helper.
  * This helper class allows classes to be loaded either from the
  * Thread's ContextClassLoader, the classloader of the derived class
@@ -47,12 +48,14 @@ class Loader {
         }
         return url;
     }
+
     /* ------------------------------------------------------------ */
     @SuppressWarnings("rawtypes")
     public static Class loadClass(Class loadClass, String name) throws ClassNotFoundException {
         return loadClass(loadClass, name, false);
     }
     /* ------------------------------------------------------------ */
+
     /** Load a class.
      *
      * @param loadClass

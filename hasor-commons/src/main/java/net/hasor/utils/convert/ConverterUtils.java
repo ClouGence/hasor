@@ -31,6 +31,7 @@ package net.hasor.utils.convert;
 @SuppressWarnings("rawtypes")
 public class ConverterUtils {
     // --------------------------------------------------------- Public Classes
+
     /**
      * <p>Convert the specified value into a String.</p>
      *
@@ -43,6 +44,7 @@ public class ConverterUtils {
     public static String convert(final Object value) {
         return ConverterBean.getInstance().convert(value);
     }
+
     /**
      * <p>Convert the specified value to an object of the specified class (if
      * possible).  Otherwise, return a String representation of the value.</p>
@@ -57,6 +59,7 @@ public class ConverterUtils {
     public static Object convert(final String value, final Class clazz) {
         return ConverterBean.getInstance().convert(value, clazz);
     }
+
     /**
      * <p>Convert an array of specified values to an array of objects of the
      * specified class (if possible).</p>
@@ -71,6 +74,7 @@ public class ConverterUtils {
     public static Object convert(final String[] values, final Class clazz) {
         return ConverterBean.getInstance().convert(values, clazz);
     }
+
     /**
      * <p>Convert the value to an object of the specified class (if
      * possible).</p>
@@ -86,6 +90,7 @@ public class ConverterUtils {
         }
         return ConverterBean.getInstance().convert(value, targetType);
     }
+
     /**
      * <p>Remove all registered {@link Converter}s, and re-establish the
      * standard Converters.</p>
@@ -97,6 +102,7 @@ public class ConverterUtils {
     public static void deregister() {
         ConverterBean.getInstance().deregister();
     }
+
     /**
      * <p>Remove any registered {@link Converter} for the specified destination
      * <code>Class</code>.</p>
@@ -109,6 +115,7 @@ public class ConverterUtils {
     public static void deregister(final Class clazz) {
         ConverterBean.getInstance().deregister(clazz);
     }
+
     /**
      * <p>Look up and return any registered {@link Converter} for the specified
      * destination class; if there is no registered Converter, return
@@ -123,6 +130,7 @@ public class ConverterUtils {
     public static Converter lookup(final Class clazz) {
         return ConverterBean.getInstance().lookup(clazz);
     }
+
     /**
      * Look up and return any registered {@link Converter} for the specified
      * source and destination class; if there is no registered Converter,
@@ -135,6 +143,7 @@ public class ConverterUtils {
     public static Converter lookup(final Class sourceType, final Class targetType) {
         return ConverterBean.getInstance().lookup(sourceType, targetType);
     }
+
     /**
      * <p>Register a custom {@link Converter} for the specified destination
      * <code>Class</code>, replacing any previously registered Converter.</p>

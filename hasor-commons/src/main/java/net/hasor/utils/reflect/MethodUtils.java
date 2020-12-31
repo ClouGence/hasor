@@ -16,11 +16,20 @@
  */
 package net.hasor.utils.reflect;
 import net.hasor.utils.ArrayUtils;
+import net.hasor.utils.BeanUtils;
 import net.hasor.utils.ClassUtils;
+import net.hasor.utils.ExceptionUtils;
 
+import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 /**
  * <p> Utility reflection methods focused on methods, originally from Commons BeanUtils.
  * Differences from the BeanUtils version may be noted, especially where similar functionality
@@ -63,6 +72,7 @@ public class MethodUtils {
     public MethodUtils() {
         super();
     }
+
     /**
      * <p>Invoke a named method whose parameter type matches the object type.</p>
      *
@@ -88,6 +98,7 @@ public class MethodUtils {
     public static Object invokeMethod(final Object object, final String methodName, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         return MethodUtils.invokeMethod(object, methodName, new Object[] { arg });
     }
+
     /**
      * <p>Invoke a named method whose parameter type matches the object type.</p>
      *
@@ -121,6 +132,7 @@ public class MethodUtils {
         }
         return MethodUtils.invokeMethod(object, methodName, args, parameterTypes);
     }
+
     /**
      * <p>Invoke a named method whose parameter type matches the object type.</p>
      *
@@ -153,6 +165,7 @@ public class MethodUtils {
         }
         return method.invoke(object, args);
     }
+
     /**
      * <p>Invoke a method whose parameter type matches exactly the object
      * type.</p>
@@ -175,6 +188,7 @@ public class MethodUtils {
     public static Object invokeExactMethod(final Object object, final String methodName, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         return MethodUtils.invokeExactMethod(object, methodName, new Object[] { arg });
     }
+
     /**
      * <p>Invoke a method whose parameter types match exactly the object
      * types.</p>
@@ -204,6 +218,7 @@ public class MethodUtils {
         }
         return MethodUtils.invokeExactMethod(object, methodName, args, parameterTypes);
     }
+
     /**
      * <p>Invoke a method whose parameter types match exactly the parameter
      * types given.</p>
@@ -236,6 +251,7 @@ public class MethodUtils {
         }
         return method.invoke(object, args);
     }
+
     /**
      * <p>Invoke a static method whose parameter types match exactly the parameter
      * types given.</p>
@@ -268,6 +284,7 @@ public class MethodUtils {
         }
         return method.invoke(null, args);
     }
+
     /**
      * <p>Invoke a named static method whose parameter type matches the object type.</p>
      *
@@ -295,6 +312,7 @@ public class MethodUtils {
     public static Object invokeStaticMethod(final Class<?> cls, final String methodName, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         return MethodUtils.invokeStaticMethod(cls, methodName, new Object[] { arg });
     }
+
     /**
      * <p>Invoke a named static method whose parameter type matches the object type.</p>
      *
@@ -326,6 +344,7 @@ public class MethodUtils {
         }
         return MethodUtils.invokeStaticMethod(objectClass, methodName, args, parameterTypes);
     }
+
     /**
      * <p>Invoke a named static method whose parameter type matches the object type.</p>
      *
@@ -361,6 +380,7 @@ public class MethodUtils {
         }
         return method.invoke(null, args);
     }
+
     /**
      * <p>Invoke a static method whose parameter type matches exactly the object
      * type.</p>
@@ -383,6 +403,7 @@ public class MethodUtils {
     public static Object invokeExactStaticMethod(final Class<?> cls, final String methodName, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         return MethodUtils.invokeExactStaticMethod(cls, methodName, new Object[] { arg });
     }
+
     /**
      * <p>Invoke a static method whose parameter types match exactly the object
      * types.</p>
@@ -412,6 +433,7 @@ public class MethodUtils {
         }
         return MethodUtils.invokeExactStaticMethod(cls, methodName, args, parameterTypes);
     }
+
     /**
      * <p>Return an accessible method (that is, one that can be invoked via
      * reflection) with given name and a single parameter.  If no such method
@@ -427,6 +449,7 @@ public class MethodUtils {
     public static Method getAccessibleMethod(final Class<?> cls, final String methodName, final Class<?> parameterType) {
         return MethodUtils.getAccessibleMethod(cls, methodName, new Class[] { parameterType });
     }
+
     /**
      * <p>Return an accessible method (that is, one that can be invoked via
      * reflection) with given name and parameters.  If no such method
@@ -446,6 +469,7 @@ public class MethodUtils {
             return null;
         }
     }
+
     /**
      * <p>Return an accessible method (that is, one that can be invoked via
      * reflection) that implements the specified Method.  If no such method
@@ -473,6 +497,7 @@ public class MethodUtils {
         }
         return method;
     }
+
     /**
      * <p>Return an accessible method (that is, one that can be invoked via
      * reflection) by scanning through the superclasses. If no such method
@@ -497,6 +522,7 @@ public class MethodUtils {
         }
         return null;
     }
+
     /**
      * <p>Return an accessible method (that is, one that can be invoked via
      * reflection) that implements the specified method, by scanning through
@@ -544,6 +570,7 @@ public class MethodUtils {
         }
         return method;
     }
+
     /**
      * <p>Find an accessible method that matches the given name and has compatible parameters.
      * Compatible parameters mean that every method parameter is assignable from 
@@ -592,5 +619,56 @@ public class MethodUtils {
             MemberUtils.setAccessibleWorkaround(bestMatch);
         }
         return bestMatch;
+    }
+
+    private static final Map<String, Method> LAMBDA_METHODS      = new WeakHashMap<>();
+    private static final ReadWriteLock       LAMBDA_METHODS_LOCK = new ReentrantReadWriteLock();
+
+    public static <T> Method lambdaMethodName(SFunction<T> property) {
+        try {
+            Method declaredMethod = property.getClass().getDeclaredMethod("writeReplace");
+            declaredMethod.setAccessible(Boolean.TRUE);
+            SerializedLambda lambdaMethod = (SerializedLambda) declaredMethod.invoke(property);
+            String method = lambdaMethod.getImplMethodName();
+            String implClass = asmTypeToType(lambdaMethod.getImplClass()).replace("/", ".");
+            String cacheKey = implClass + "." + method;
+            //
+            Lock readLock = LAMBDA_METHODS_LOCK.readLock();
+            try {
+                readLock.lock();
+                Method targetMethod = LAMBDA_METHODS.get(cacheKey);
+                if (targetMethod != null) {
+                    return targetMethod;
+                }
+            } finally {
+                readLock.unlock();
+            }
+            //
+            Lock writeLock = LAMBDA_METHODS_LOCK.writeLock();
+            try {
+                writeLock.lock();
+                Method targetMethod = LAMBDA_METHODS.get(cacheKey);
+                if (targetMethod != null) {
+                    return targetMethod;
+                }
+                Class<?> declaringClass = declaredMethod.getDeclaringClass().getClassLoader().loadClass(implClass);
+                targetMethod = BeanUtils.getMethod(declaringClass, method, new Class<?>[0]);
+                LAMBDA_METHODS.put(cacheKey, targetMethod);
+                return targetMethod;
+            } finally {
+                writeLock.unlock();
+            }
+        } catch (ReflectiveOperationException e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+    }
+
+    /**将一个Ljava/lang/Object;形式的字符串转化为java/lang/Object形式。*/
+    private static String asmTypeToType(final String asmType) {
+        if (asmType.charAt(0) == 'L') {
+            return asmType.substring(1, asmType.length() - 1);
+        } else {
+            return asmType;
+        }
     }
 }

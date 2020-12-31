@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.logging.Logger;
 /* ------------------------------------------------------------ */
+
 /**
  * Convert a {@link Date} to JSON.
  * If fromJSON is true in the constructor, the JSON generated will
@@ -26,16 +27,19 @@ import java.util.logging.Logger;
  * If fromJSON is false, then only the string value of the date is generated.
  */
 public class JSONDateConvertor implements JSON.Convertor {
-    protected final static Logger logger = Logger.getLogger(JSONDateConvertor.class.getName());
-    private boolean _fromJSON;
+    protected final static Logger  logger = Logger.getLogger(JSONDateConvertor.class.getName());
+    private                boolean _fromJSON;
     DateCache        _dateCache;
     SimpleDateFormat _format;
+
     public JSONDateConvertor() {
         this(false);
     }
+
     public JSONDateConvertor(boolean fromJSON) {
         this(DateCache.DEFAULT_FORMAT, TimeZone.getTimeZone("GMT"), fromJSON);
     }
+
     public JSONDateConvertor(String format, TimeZone zone, boolean fromJSON) {
         _dateCache = new DateCache(format);
         _dateCache.setTimeZone(zone);
@@ -43,6 +47,7 @@ public class JSONDateConvertor implements JSON.Convertor {
         _format = new SimpleDateFormat(format);
         _format.setTimeZone(zone);
     }
+
     public JSONDateConvertor(String format, TimeZone zone, boolean fromJSON, Locale locale) {
         _dateCache = new DateCache(format, locale);
         _dateCache.setTimeZone(zone);
@@ -50,6 +55,7 @@ public class JSONDateConvertor implements JSON.Convertor {
         _format = new SimpleDateFormat(format, new DateFormatSymbols(locale));
         _format.setTimeZone(zone);
     }
+
     public Object fromJSON(Map map) {
         if (!_fromJSON)
             throw new UnsupportedOperationException();
@@ -62,6 +68,7 @@ public class JSONDateConvertor implements JSON.Convertor {
         }
         return null;
     }
+
     public void toJSON(Object obj, JSON.Output out) {
         String date = _dateCache.format((Date) obj);
         if (_fromJSON) {

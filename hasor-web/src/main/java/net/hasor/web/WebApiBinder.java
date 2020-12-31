@@ -16,10 +16,10 @@
 package net.hasor.web;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Provider;
 import net.hasor.core.TypeSupplier;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.web.annotation.MappingTo;
@@ -88,9 +88,9 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     }
 
     /** 加载带有 @MappingTo 注解的类。 */
-    public default WebApiBinder loadMappingTo(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
-        if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
-            mabeUdfTypeSet.stream()//
+    public default WebApiBinder loadMappingTo(Set<Class<?>> maybeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
+        if (maybeUdfTypeSet != null && !maybeUdfTypeSet.isEmpty()) {
+            maybeUdfTypeSet.stream()//
                     .filter(matcher)//
                     .filter(Matchers.annotatedWithClass(MappingTo.class))//
                     .forEach(aClass -> loadMappingTo(aClass, typeSupplier));
@@ -346,9 +346,9 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     }
 
     /** 加载带有 @Render注解配置的渲染器。 */
-    public default WebApiBinder loadRender(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
-        if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
-            mabeUdfTypeSet.stream()//
+    public default WebApiBinder loadRender(Set<Class<?>> maybeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
+        if (maybeUdfTypeSet != null && !maybeUdfTypeSet.isEmpty()) {
+            maybeUdfTypeSet.stream()//
                     .filter(matcher)//
                     .filter(Matchers.annotatedWithClass(Render.class))//
                     .forEach(aClass -> loadRender(aClass, typeSupplier));
@@ -404,7 +404,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
         /**绑定实现。*/
         public default void toInstance(RenderEngine renderEngine) {
-            this.toProvider(new InstanceProvider<>(renderEngine));
+            this.toProvider(Provider.of(renderEngine));
         }
 
         /**绑定实现。*/

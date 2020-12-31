@@ -57,7 +57,7 @@ public class ReturnInst extends CodeLocationInfo implements Inst {
 
     @Override
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
-        String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
+        String fixedString = StringUtils.repeat(' ', depth * fixedLength);
         //
         if (this.returnCode.getValue() != 0) {
             writer.write(fixedString + String.format("return %s, ", this.returnCode.getValue()));

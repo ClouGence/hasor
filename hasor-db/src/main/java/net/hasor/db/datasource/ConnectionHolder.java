@@ -79,7 +79,7 @@ public class ConnectionHolder implements SavepointManager, ConnectionManager {
         return !conn.getAutoCommit();
     }
 
-    /**设置事务状态*/
+    /** 设置事务状态 */
     public void setTransaction() throws SQLException {
         Connection conn = this.getConnection();
         if (conn != null && conn.getAutoCommit()) {
@@ -87,7 +87,7 @@ public class ConnectionHolder implements SavepointManager, ConnectionManager {
         }
     }
 
-    /**取消事务状态*/
+    /** 取消事务状态,设置为自动递交 */
     public void cancelTransaction() throws SQLException {
         Connection conn = this.getConnection();
         if (conn != null && !conn.getAutoCommit()) {

@@ -1,0 +1,42 @@
+version: '3.1'
+
+services:
+  mysql:
+    image: mysql:8.0.22
+    environment:
+      - MYSQL_DATABASE=devtester
+      - MYSQL_ROOT_PASSWORD=123456
+      - TZ=Asia/Shanghai
+    ports:
+      - 13306:3306
+    restart: always
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-time_zone='+8:00'
+
+  postgres:
+    image: postgres:12.4
+    environment:
+      - POSTGRES_PASSWORD=123456
+    ports:
+      - 15432:5432
+    restart: always
+
+  oracle_12c:
+    image: truevoly/oracle-12c
+    ports:
+      - 11521:1521
+      - 11522:8080
+    restart: always
+    # User/Password：system/oracle
+    # WebConsole：http://192.168.0.164:50102/em/login（sys/oracle）
+
+  mssql_2017:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    environment:
+      - SA_PASSWORD=Share123456!
+      - ACCEPT_EULA=Y
+    ports:
+      - 11433:1433
+    restart: always
+    # User/Password：sa/oracle
+    # https://hub.docker.com/_/microsoft-mssql-server?tab=description
+    # https://mcr.microsoft.com/v2/mssql/server/tags/list

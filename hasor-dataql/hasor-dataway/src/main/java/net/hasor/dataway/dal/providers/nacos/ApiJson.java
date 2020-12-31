@@ -22,7 +22,6 @@ package net.hasor.dataway.dal.providers.nacos;
 public class ApiJson {
     private String id;
     private String path;
-    private String status;
     private long   time;
 
     public String getId() {
@@ -39,14 +38,6 @@ public class ApiJson {
 
     public void setPath(String path) {
         this.path = path;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public long getTime() {

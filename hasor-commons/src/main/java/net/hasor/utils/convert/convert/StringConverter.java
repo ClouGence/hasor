@@ -16,6 +16,7 @@
  */
 package net.hasor.utils.convert.convert;
 import net.hasor.utils.convert.Converter;
+
 /**
  * {@link Converter} implementation that converts an incoming
  * object into a <code>java.lang.String</code> object.
@@ -49,6 +50,7 @@ public final class StringConverter extends AbstractConverter {
     public StringConverter() {
         super();
     }
+
     /**
      * Construct a <b>java.lang.String</b> <i>Converter</i> that returns a default value if an error occurs.
      * @param defaultValue The default value to be returned if the value to be converted is missing or an error occurs converting the value.
@@ -56,6 +58,7 @@ public final class StringConverter extends AbstractConverter {
     public StringConverter(final Object defaultValue) {
         super(defaultValue);
     }
+
     /**
      * Return the default type this <code>Converter</code> handles.
      * @return The default type this <code>Converter</code> handles.
@@ -65,6 +68,7 @@ public final class StringConverter extends AbstractConverter {
     protected Class getDefaultType() {
         return String.class;
     }
+
     /**
      * Convert the specified input object into an output object of the specified type.
      * @param type Data type to which this value should be converted.

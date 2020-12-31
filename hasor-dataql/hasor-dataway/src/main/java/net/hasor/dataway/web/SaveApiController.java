@@ -24,7 +24,7 @@ import net.hasor.dataway.config.Result;
 import net.hasor.dataway.dal.*;
 import net.hasor.dataway.service.CheckService;
 import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.interceptor.Transactional;
+import net.hasor.db.Transactional;
 import net.hasor.utils.convert.ConverterUtils;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;

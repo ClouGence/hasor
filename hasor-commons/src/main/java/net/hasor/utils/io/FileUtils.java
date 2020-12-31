@@ -17,6 +17,7 @@ package net.hasor.utils.io;
 import java.io.*;
 import java.util.Collection;
 import java.util.List;
+
 /**
  * 文件工具
  * @version : 2011-6-3
@@ -42,6 +43,7 @@ public abstract class FileUtils {
             IOUtils.closeQuietly(in);
         }
     }
+
     /**
      * Reads the contents of a file into a String using the default encoding for the VM. 
      * The file is always closed.
@@ -54,6 +56,7 @@ public abstract class FileUtils {
     public static String readFileToString(File file) throws IOException {
         return readFileToString(file, null);
     }
+
     /**
      * Reads the contents of a file into a byte array.
      * The file is always closed.
@@ -72,6 +75,7 @@ public abstract class FileUtils {
             IOUtils.closeQuietly(in);
         }
     }
+
     /**
      * Reads the contents of a file line by line to a List of Strings.
      * The file is always closed.
@@ -92,6 +96,7 @@ public abstract class FileUtils {
             IOUtils.closeQuietly(in);
         }
     }
+
     /**
      * Reads the contents of a file line by line to a List of Strings using the default encoding for the VM.
      * The file is always closed.
@@ -104,6 +109,7 @@ public abstract class FileUtils {
     public static List<String> readLines(File file) throws IOException {
         return readLines(file, null);
     }
+
     /**
      * Returns an Iterator for the lines in a <code>File</code>.
      * <p>
@@ -148,6 +154,7 @@ public abstract class FileUtils {
             throw ex;
         }
     }
+
     /**
      * Returns an Iterator for the lines in a <code>File</code> using the default encoding for the VM.
      *
@@ -161,6 +168,7 @@ public abstract class FileUtils {
         return lineIterator(file, null);
     }
     //-----------------------------------------------------------------------
+
     /**
      * Writes a String to a file creating the file if it does not exist.
      *
@@ -176,6 +184,7 @@ public abstract class FileUtils {
     public static void writeStringToFile(File file, String data, String encoding) throws IOException {
         writeStringToFile(file, data, encoding, false);
     }
+
     /**
      * Writes a String to a file creating the file if it does not exist.
      *
@@ -197,6 +206,7 @@ public abstract class FileUtils {
             IOUtils.closeQuietly(out);
         }
     }
+
     /**
      * Writes a String to a file creating the file if it does not exist using the default encoding for the VM.
      *
@@ -207,6 +217,7 @@ public abstract class FileUtils {
     public static void writeStringToFile(File file, String data) throws IOException {
         writeStringToFile(file, data, null, false);
     }
+
     /**
      * Writes a String to a file creating the file if it does not exist using the default encoding for the VM.
      *
@@ -220,6 +231,7 @@ public abstract class FileUtils {
     public static void writeStringToFile(File file, String data, boolean append) throws IOException {
         writeStringToFile(file, data, null, append);
     }
+
     /**
      * Writes a CharSequence to a file creating the file if it does not exist using the default encoding for the VM.
      *
@@ -231,6 +243,7 @@ public abstract class FileUtils {
     public static void write(File file, CharSequence data) throws IOException {
         write(file, data, null, false);
     }
+
     /**
      * Writes a CharSequence to a file creating the file if it does not exist using the default encoding for the VM.
      *
@@ -244,6 +257,7 @@ public abstract class FileUtils {
     public static void write(File file, CharSequence data, boolean append) throws IOException {
         write(file, data, null, append);
     }
+
     /**
      * Writes a CharSequence to a file creating the file if it does not exist.
      *
@@ -257,6 +271,7 @@ public abstract class FileUtils {
     public static void write(File file, CharSequence data, String encoding) throws IOException {
         write(file, data, encoding, false);
     }
+
     /**
      * Writes a CharSequence to a file creating the file if it does not exist.
      *
@@ -273,6 +288,7 @@ public abstract class FileUtils {
         String str = data == null ? null : data.toString();
         writeStringToFile(file, str, encoding, append);
     }
+
     /**
      * Writes a byte array to a file creating the file if it does not exist.
      * <p>
@@ -287,6 +303,7 @@ public abstract class FileUtils {
     public static void writeByteArrayToFile(File file, byte[] data) throws IOException {
         writeByteArrayToFile(file, data, false);
     }
+
     /**
      * Writes a byte array to a file creating the file if it does not exist.
      *
@@ -306,6 +323,7 @@ public abstract class FileUtils {
             IOUtils.closeQuietly(out);
         }
     }
+
     /**
      * Writes the <code>toString()</code> value of each item in a collection to
      * the specified <code>File</code> line by line.
@@ -324,6 +342,7 @@ public abstract class FileUtils {
     public static void writeLines(File file, String encoding, Collection<?> lines) throws IOException {
         writeLines(file, encoding, lines, null, false);
     }
+
     /**
      * Writes the <code>toString()</code> value of each item in a collection to
      * the specified <code>File</code> line by line, optionally appending.
@@ -341,6 +360,7 @@ public abstract class FileUtils {
     public static void writeLines(File file, String encoding, Collection<?> lines, boolean append) throws IOException {
         writeLines(file, encoding, lines, null, append);
     }
+
     /**
      * Writes the <code>toString()</code> value of each item in a collection to
      * the specified <code>File</code> line by line.
@@ -354,6 +374,7 @@ public abstract class FileUtils {
     public static void writeLines(File file, Collection<?> lines) throws IOException {
         writeLines(file, null, lines, null, false);
     }
+
     /**
      * Writes the <code>toString()</code> value of each item in a collection to
      * the specified <code>File</code> line by line.
@@ -369,6 +390,7 @@ public abstract class FileUtils {
     public static void writeLines(File file, Collection<?> lines, boolean append) throws IOException {
         writeLines(file, null, lines, null, append);
     }
+
     /**
      * Writes the <code>toString()</code> value of each item in a collection to
      * the specified <code>File</code> line by line.
@@ -388,6 +410,7 @@ public abstract class FileUtils {
     public static void writeLines(File file, String encoding, Collection<?> lines, String lineEnding) throws IOException {
         writeLines(file, encoding, lines, lineEnding, false);
     }
+
     /**
      * Writes the <code>toString()</code> value of each item in a collection to
      * the specified <code>File</code> line by line.
@@ -412,6 +435,7 @@ public abstract class FileUtils {
             IOUtils.closeQuietly(out);
         }
     }
+
     /**
      * Writes the <code>toString()</code> value of each item in a collection to
      * the specified <code>File</code> line by line.
@@ -426,6 +450,7 @@ public abstract class FileUtils {
     public static void writeLines(File file, Collection<?> lines, String lineEnding) throws IOException {
         writeLines(file, null, lines, lineEnding, false);
     }
+
     /**
      * Writes the <code>toString()</code> value of each item in a collection to
      * the specified <code>File</code> line by line.
@@ -443,6 +468,7 @@ public abstract class FileUtils {
         writeLines(file, null, lines, lineEnding, append);
     }
     //-----------------------------------------------------------------------
+
     /**
      * Opens a {@link FileInputStream} for the specified file, providing better
      * error messages than simply calling <code>new FileInputStream(file)</code>.
@@ -475,6 +501,7 @@ public abstract class FileUtils {
         return new FileInputStream(file);
     }
     //-----------------------------------------------------------------------
+
     /**
      * Opens a {@link FileOutputStream} for the specified file, checking and
      * creating the parent directory if it does not exist.
@@ -498,6 +525,7 @@ public abstract class FileUtils {
     public static FileOutputStream openOutputStream(File file) throws IOException {
         return openOutputStream(file, false);
     }
+
     /**
      * Opens a {@link FileOutputStream} for the specified file, checking and
      * creating the parent directory if it does not exist.
@@ -539,6 +567,7 @@ public abstract class FileUtils {
         return new FileOutputStream(file, append);
     }
     //-----------------------------------------------------------------------
+
     /**
      * Deletes a directory recursively. 
      *
@@ -557,6 +586,7 @@ public abstract class FileUtils {
             throw new IOException(message);
         }
     }
+
     /**
      * Cleans a directory without deleting it.
      *
@@ -588,6 +618,7 @@ public abstract class FileUtils {
             throw exception;
         }
     }
+
     /**
      * Deletes a file, never throwing an exception. If file is a directory, delete it and all sub-directories.
      * <p>
@@ -619,6 +650,7 @@ public abstract class FileUtils {
             return false;
         }
     }
+
     /**
      * Schedules a directory recursively for deletion on JVM exit.
      *
@@ -635,6 +667,7 @@ public abstract class FileUtils {
             cleanDirectoryOnExit(directory);
         }
     }
+
     /**
      * Cleans a directory without deleting it.
      *
@@ -667,6 +700,7 @@ public abstract class FileUtils {
             throw exception;
         }
     }
+
     /**
      * Determines whether the specified file is a Symbolic Link rather than an actual file.
      * <p>
@@ -701,6 +735,7 @@ public abstract class FileUtils {
             return true;
         }
     }
+
     /**
      * Deletes a file. If file is a directory, delete it and all sub-directories.
      * <p>
@@ -730,6 +765,7 @@ public abstract class FileUtils {
             }
         }
     }
+
     /**
      * Schedules a file to be deleted when JVM exits.
      * If file is directory delete it and all sub-directories.

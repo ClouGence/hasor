@@ -20,6 +20,7 @@ import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Collection;
+
 /**
  * 弱引用列表，WeakArrayList是修改自org.arakhne.util.ref下的WeakArrayList
  * @version : 2013-11-8
@@ -31,12 +32,15 @@ public class WeakArrayList<T> extends AbstractList<T> {
     private                 Object[]          data;
     private                 int               size;
     private                 boolean           enquedElement;
+
     private static <T> T maskNull(final T value) {
         return (T) (value == null ? WeakArrayList.NULL_VALUE : value);
     }
+
     private static <T> T unmaskNull(final T value) {
         return value == WeakArrayList.NULL_VALUE ? null : value;
     }
+
     public WeakArrayList(final int initialCapacity) {
         this.queue = new ReferenceQueue<T>();
         this.enquedElement = false;
@@ -46,9 +50,11 @@ public class WeakArrayList<T> extends AbstractList<T> {
         this.data = new Object[initialCapacity];
         this.size = 0;
     }
+
     public WeakArrayList() {
         this(10);
     }
+
     public WeakArrayList(final Collection<? extends T> c) {
         this.queue = new ReferenceQueue<T>();
         this.enquedElement = false;
@@ -60,6 +66,7 @@ public class WeakArrayList<T> extends AbstractList<T> {
             ++i;
         }
     }
+
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();
@@ -77,9 +84,11 @@ public class WeakArrayList<T> extends AbstractList<T> {
         }
         return buffer.toString();
     }
+
     private Reference<T> createRef(final T obj) {
         return new WeakReference<T>(WeakArrayList.maskNull(obj), this.queue);
     }
+
     public void ensureCapacity(final int minCapacity) {
         this.modCount += 1;
         int oldCapacity = this.data.length;
@@ -92,6 +101,7 @@ public class WeakArrayList<T> extends AbstractList<T> {
             this.data = Arrays.copyOf(oldData, newCapacity);
         }
     }
+
     public void trimToSize() {
         this.modCount += 1;
         int oldCapacity = this.data.length;
@@ -99,6 +109,7 @@ public class WeakArrayList<T> extends AbstractList<T> {
             this.data = Arrays.copyOf(this.data, this.size);
         }
     }
+
     @SuppressWarnings("unchecked")
     public int expurge() {
         int j;
@@ -132,6 +143,7 @@ public class WeakArrayList<T> extends AbstractList<T> {
         this.size = j;
         return this.size;
     }
+
     protected void assertRange(final int index, final boolean allowLast) {
         int csize = this.expurge();
         if (index < 0) {
@@ -144,10 +156,12 @@ public class WeakArrayList<T> extends AbstractList<T> {
             throw new IndexOutOfBoundsException("index>=" + csize + ": " + Integer.toString(index));
         }
     }
+
     @Override
     public int size() {
         return this.expurge();
     }
+
     @Override
     @SuppressWarnings("unchecked")
     public T get(final int index) {
@@ -158,6 +172,7 @@ public class WeakArrayList<T> extends AbstractList<T> {
         } while (value == null);
         return (T) WeakArrayList.unmaskNull(value);
     }
+
     @Override
     @SuppressWarnings("unchecked")
     public T set(final int index, final T element) {
@@ -173,6 +188,7 @@ public class WeakArrayList<T> extends AbstractList<T> {
         this.modCount += 1;
         return (T) WeakArrayList.unmaskNull(oldValue);
     }
+
     @Override
     public void add(final int index, final T element) {
         this.assertRange(index, true);
@@ -182,6 +198,7 @@ public class WeakArrayList<T> extends AbstractList<T> {
         this.size += 1;
         this.modCount += 1;
     }
+
     @Override
     @SuppressWarnings("unchecked")
     public T remove(final int index) {

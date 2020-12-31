@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.container;
 import net.hasor.core.BindInfo;
-import net.hasor.core.provider.InstanceProvider;
+import net.hasor.core.Provider;
 import net.hasor.rsf.*;
 import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.domain.RsfServiceType;
@@ -43,7 +43,7 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
     protected abstract void addShareFilter(FilterDefine filterDefine);
 
     public RsfPublisher bindFilter(String filterID, RsfFilter instance) {
-        return this.bindFilter(filterID, InstanceProvider.of(instance));
+        return this.bindFilter(filterID, Provider.of(instance));
     }
 
     public RsfPublisher bindFilter(String filterID, BindInfo<RsfFilter> filterBindInfo) {
@@ -168,7 +168,7 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         }
 
         public ConfigurationBuilder<T> bindFilter(String filterID, RsfFilter instance) {
-            Supplier<RsfFilter> provider = new InstanceProvider<>(Objects.requireNonNull(instance));
+            Supplier<RsfFilter> provider = Provider.of(Objects.requireNonNull(instance));
             this.serviceDefine.addRsfFilter(new FilterDefine(filterID, provider));
             return this;
         }
@@ -204,7 +204,7 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
 
         @Override
         public ConfigurationBuilder<T> toInstance(T instance) {
-            return this.toProvider(new InstanceProvider<>(instance));
+            return this.toProvider(Provider.of(instance));
         }
 
         @Override

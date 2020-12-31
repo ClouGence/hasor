@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-import net.hasor.core.provider.InstanceProvider;
-import net.hasor.core.provider.SingleProvider;
+import net.hasor.core.Provider;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.utils.BeanUtils;
-import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
 
@@ -28,6 +26,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -69,7 +68,7 @@ public interface UdfSourceAssembly extends UdfSource {
         Class<?> targetType = getClass();
         Supplier<?> supplier = getSupplier(targetType, finder);
         Predicate<Method> predicate = getPredicate(targetType);
-        return InstanceProvider.of(new TypeUdfMap(targetType, supplier, predicate));
+        return Provider.of(new TypeUdfMap(targetType, supplier, predicate));
     }
 
     public static class TypeUdfMap extends HashMap<String, Udf> {
@@ -78,13 +77,7 @@ public interface UdfSourceAssembly extends UdfSource {
         }
 
         public TypeUdfMap(Class<?> utilType, Predicate<Method> methodTypeMatcher) {
-            this(utilType, new SingleProvider<>(() -> {
-                try {
-                    return utilType.newInstance();
-                } catch (Exception e) {
-                    throw ExceptionUtils.toRuntimeException(e);
-                }
-            }), methodTypeMatcher);
+            this(utilType, Provider.of((Callable<Object>) utilType::newInstance).asSingle(), methodTypeMatcher);
         }
 
         public TypeUdfMap(Class<?> utilType, Supplier<?> provider, Predicate<Method> methodTypeMatcher) {
@@ -166,7 +159,7 @@ public interface UdfSourceAssembly extends UdfSource {
         }
 
         private static class StaticUdf implements Udf {
-            private Method target;
+            private final Method target;
 
             public StaticUdf(Method target) {
                 this.target = target;
@@ -180,8 +173,8 @@ public interface UdfSourceAssembly extends UdfSource {
         }
 
         private static class ObjectUdf implements Udf {
-            private Method      target;
-            private Supplier<?> provider;
+            private final Method      target;
+            private final Supplier<?> provider;
 
             public ObjectUdf(Method target, Supplier<?> provider) {
                 this.target = target;

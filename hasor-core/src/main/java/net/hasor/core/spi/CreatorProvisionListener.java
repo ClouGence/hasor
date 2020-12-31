@@ -16,14 +16,12 @@
 package net.hasor.core.spi;
 import net.hasor.core.BindInfo;
 
-import java.util.EventListener;
-
 /**
  * 当 AppContext 创建这个Bean时调用。
  * @version : 2013-11-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface CreatorProvisionListener extends EventListener {
+public interface CreatorProvisionListener extends java.util.EventListener {
     /**
      * 注入AppContext。
      * @param newObject 新对象。

@@ -16,8 +16,8 @@
 package net.hasor.core.aop;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.PropertyDelegate;
+import net.hasor.core.Provider;
 import net.hasor.core.aop.InnerDelegateInvocation.DelegateInfo;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
@@ -96,7 +96,7 @@ public class AopClassConfig {
     public <T> void addProperty(String propertyName, Class<? extends T> propertyType, ReadWriteType rwType) {
         Object defaultValue = BeanUtils.getDefaultValue(propertyType);
         SimplePropertyDelegate delegate = new SimplePropertyDelegate(defaultValue);
-        this.addProperty(propertyName, propertyType, InstanceProvider.of(delegate), rwType);
+        this.addProperty(propertyName, propertyType, Provider.of(delegate), rwType);
     }
 
     /**

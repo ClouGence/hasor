@@ -17,6 +17,7 @@
 package net.hasor.utils.builder;
 import net.hasor.utils.BooleanUtils;
 import net.hasor.utils.ObjectUtils;
+
 /**
  * <p>Assists in implementing {@link Object#toString()} methods.</p>
  *
@@ -94,6 +95,7 @@ public class ToStringBuilder {
      */
     private static volatile ToStringStyle defaultStyle = ToStringStyle.DEFAULT_STYLE;
     //----------------------------------------------------------------------------
+
     /**
      * <p>Gets the default <code>ToStringStyle</code> to use.</p>
      *
@@ -115,6 +117,7 @@ public class ToStringBuilder {
     public static ToStringStyle getDefaultStyle() {
         return defaultStyle;
     }
+
     /**
      * <p>Sets the default <code>ToStringStyle</code> to use.</p>
      *
@@ -137,6 +140,7 @@ public class ToStringBuilder {
         defaultStyle = style;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Uses <code>ReflectionToStringBuilder</code> to generate a
      * <code>toString</code> for the specified object.</p>
@@ -148,6 +152,7 @@ public class ToStringBuilder {
     public static String reflectionToString(Object object) {
         return ReflectionToStringBuilder.toString(object);
     }
+
     /**
      * <p>Uses <code>ReflectionToStringBuilder</code> to generate a
      * <code>toString</code> for the specified object.</p>
@@ -160,6 +165,7 @@ public class ToStringBuilder {
     public static String reflectionToString(Object object, ToStringStyle style) {
         return ReflectionToStringBuilder.toString(object, style);
     }
+
     /**
      * <p>Uses <code>ReflectionToStringBuilder</code> to generate a
      * <code>toString</code> for the specified object.</p>
@@ -173,6 +179,7 @@ public class ToStringBuilder {
     public static String reflectionToString(Object object, ToStringStyle style, boolean outputTransients) {
         return ReflectionToStringBuilder.toString(object, style, outputTransients, false, null);
     }
+
     /**
      * <p>Uses <code>ReflectionToStringBuilder</code> to generate a
      * <code>toString</code> for the specified object.</p>
@@ -201,6 +208,7 @@ public class ToStringBuilder {
      * The style of output to use, not null.
      */
     private final ToStringStyle style;
+
     /**
      * <p>Constructs a builder for the specified object using the default output style.</p>
      *
@@ -211,6 +219,7 @@ public class ToStringBuilder {
     public ToStringBuilder(Object object) {
         this(object, null, null);
     }
+
     /**
      * <p>Constructs a builder for the specified object using the a defined output style.</p>
      *
@@ -222,6 +231,7 @@ public class ToStringBuilder {
     public ToStringBuilder(Object object, ToStringStyle style) {
         this(object, style, null);
     }
+
     /**
      * <p>Constructs a builder for the specified object.</p>
      *
@@ -246,6 +256,7 @@ public class ToStringBuilder {
         style.appendStart(buffer, object);
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> a <code>boolean</code>
      * value.</p>
@@ -258,6 +269,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> a <code>boolean</code>
      * array.</p>
@@ -270,6 +282,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> a <code>byte</code>
      * value.</p>
@@ -282,6 +295,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> a <code>byte</code>
      * array.</p>
@@ -294,6 +308,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> a <code>char</code>
      * value.</p>
@@ -306,6 +321,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> a <code>char</code>
      * array.</p>
@@ -318,6 +334,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> a <code>double</code>
      * value.</p>
@@ -330,6 +347,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> a <code>double</code>
      * array.</p>
@@ -342,6 +360,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> a <code>float</code>
      * value.</p>
@@ -354,6 +373,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> a <code>float</code>
      * array.</p>
@@ -366,6 +386,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> an <code>int</code>
      * value.</p>
@@ -378,6 +399,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> an <code>int</code>
      * array.</p>
@@ -390,6 +412,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> a <code>long</code>
      * value.</p>
@@ -402,6 +425,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> a <code>long</code>
      * array.</p>
@@ -414,6 +438,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> an <code>Object</code>
      * value.</p>
@@ -426,6 +451,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> an <code>Object</code>
      * array.</p>
@@ -438,6 +464,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> a <code>short</code>
      * value.</p>
@@ -450,6 +477,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append to the <code>toString</code> a <code>short</code>
      * array.</p>
@@ -461,6 +489,7 @@ public class ToStringBuilder {
         style.append(buffer, null, array, null);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>boolean</code>
      * value.</p>
@@ -473,6 +502,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, value);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>boolean</code>
      * array.</p>
@@ -485,6 +515,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, null);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>boolean</code>
      * array.</p>
@@ -504,6 +535,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, BooleanUtils.toBooleanObject(fullDetail));
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> an <code>byte</code>
      * value.</p>
@@ -516,6 +548,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, value);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>byte</code> array.</p>
      *
@@ -527,6 +560,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, null);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>byte</code>
      * array.</p>
@@ -546,6 +580,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, BooleanUtils.toBooleanObject(fullDetail));
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>char</code>
      * value.</p>
@@ -558,6 +593,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, value);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>char</code>
      * array.</p>
@@ -570,6 +606,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, null);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>char</code>
      * array.</p>
@@ -589,6 +626,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, BooleanUtils.toBooleanObject(fullDetail));
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>double</code>
      * value.</p>
@@ -601,6 +639,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, value);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>double</code>
      * array.</p>
@@ -613,6 +652,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, null);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>double</code>
      * array.</p>
@@ -632,6 +672,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, BooleanUtils.toBooleanObject(fullDetail));
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> an <code>float</code>
      * value.</p>
@@ -644,6 +685,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, value);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>float</code>
      * array.</p>
@@ -656,6 +698,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, null);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>float</code>
      * array.</p>
@@ -675,6 +718,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, BooleanUtils.toBooleanObject(fullDetail));
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> an <code>int</code>
      * value.</p>
@@ -687,6 +731,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, value);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> an <code>int</code>
      * array.</p>
@@ -699,6 +744,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, null);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> an <code>int</code>
      * array.</p>
@@ -718,6 +764,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, BooleanUtils.toBooleanObject(fullDetail));
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>long</code>
      * value.</p>
@@ -730,6 +777,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, value);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>long</code>
      * array.</p>
@@ -742,6 +790,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, null);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>long</code>
      * array.</p>
@@ -761,6 +810,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, BooleanUtils.toBooleanObject(fullDetail));
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> an <code>Object</code>
      * value.</p>
@@ -773,6 +823,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, obj, null);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> an <code>Object</code>
      * value.</p>
@@ -787,6 +838,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, obj, BooleanUtils.toBooleanObject(fullDetail));
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> an <code>Object</code>
      * array.</p>
@@ -799,6 +851,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, null);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> an <code>Object</code>
      * array.</p>
@@ -818,6 +871,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, BooleanUtils.toBooleanObject(fullDetail));
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> an <code>short</code>
      * value.</p>
@@ -830,6 +884,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, value);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>short</code>
      * array.</p>
@@ -842,6 +897,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, null);
         return this;
     }
+
     /**
      * <p>Append to the <code>toString</code> a <code>short</code>
      * array.</p>
@@ -861,6 +917,7 @@ public class ToStringBuilder {
         style.append(buffer, fieldName, array, BooleanUtils.toBooleanObject(fullDetail));
         return this;
     }
+
     /**
      * <p>Appends with the same format as the default <code>Object toString()
      * </code> method. Appends the class name followed by 
@@ -875,6 +932,7 @@ public class ToStringBuilder {
         return this;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Append the <code>toString</code> from the superclass.</p>
      *
@@ -893,6 +951,7 @@ public class ToStringBuilder {
         }
         return this;
     }
+
     /**
      * <p>Append the <code>toString</code> from another object.</p>
      *
@@ -926,6 +985,7 @@ public class ToStringBuilder {
         }
         return this;
     }
+
     /**
      * <p>Returns the <code>Object</code> being output.</p>
      *
@@ -935,6 +995,7 @@ public class ToStringBuilder {
     public Object getObject() {
         return object;
     }
+
     /**
      * <p>Gets the <code>StringBuffer</code> being populated.</p>
      *
@@ -944,6 +1005,7 @@ public class ToStringBuilder {
         return buffer;
     }
     //----------------------------------------------------------------------------
+
     /**
      * <p>Gets the <code>ToStringStyle</code> being used.</p>
      *
@@ -953,6 +1015,7 @@ public class ToStringBuilder {
     public ToStringStyle getStyle() {
         return style;
     }
+
     /**
      * <p>Returns the built <code>toString</code>.</p>
      *

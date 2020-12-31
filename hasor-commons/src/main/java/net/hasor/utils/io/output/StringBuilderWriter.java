@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@
 package net.hasor.utils.io.output;
 import java.io.Serializable;
 import java.io.Writer;
+
 /**
  * {@link Writer} implementation that outputs to a {@link StringBuilder}.
  * <p>
@@ -30,14 +31,16 @@ import java.io.Writer;
  * @since 2.0
  */
 public class StringBuilderWriter extends Writer implements Serializable {
-    private static final long serialVersionUID = 421860127610078572L;
-    private final StringBuilder builder;
+    private static final long          serialVersionUID = 421860127610078572L;
+    private final        StringBuilder builder;
+
     /**
      * Construct a new {@link StringBuilder} instance with default capacity.
      */
     public StringBuilderWriter() {
         this.builder = new StringBuilder();
     }
+
     /**
      * Construct a new {@link StringBuilder} instance with the specified capacity.
      *
@@ -46,6 +49,7 @@ public class StringBuilderWriter extends Writer implements Serializable {
     public StringBuilderWriter(final int capacity) {
         this.builder = new StringBuilder(capacity);
     }
+
     /**
      * Construct a new instance with the specified {@link StringBuilder}.
      *
@@ -54,6 +58,7 @@ public class StringBuilderWriter extends Writer implements Serializable {
     public StringBuilderWriter(final StringBuilder builder) {
         this.builder = builder != null ? builder : new StringBuilder();
     }
+
     /**
      * Append a single character to this Writer.
      *
@@ -65,6 +70,7 @@ public class StringBuilderWriter extends Writer implements Serializable {
         this.builder.append(value);
         return this;
     }
+
     /**
      * Append a character sequence to this Writer.
      *
@@ -76,6 +82,7 @@ public class StringBuilderWriter extends Writer implements Serializable {
         this.builder.append(value);
         return this;
     }
+
     /**
      * Append a portion of a character sequence to the {@link StringBuilder}.
      *
@@ -89,18 +96,21 @@ public class StringBuilderWriter extends Writer implements Serializable {
         this.builder.append(value, start, end);
         return this;
     }
+
     /**
      * Closing this writer has no effect. 
      */
     @Override
     public void close() {
     }
+
     /**
      * Flushing this writer has no effect. 
      */
     @Override
     public void flush() {
     }
+
     /**
      * Write a String to the {@link StringBuilder}.
      *
@@ -112,6 +122,7 @@ public class StringBuilderWriter extends Writer implements Serializable {
             this.builder.append(value);
         }
     }
+
     /**
      * Write a portion of a character array to the {@link StringBuilder}.
      *
@@ -125,6 +136,7 @@ public class StringBuilderWriter extends Writer implements Serializable {
             this.builder.append(value, offset, length);
         }
     }
+
     /**
      * Return the underlying builder.
      *
@@ -133,6 +145,7 @@ public class StringBuilderWriter extends Writer implements Serializable {
     public StringBuilder getBuilder() {
         return this.builder;
     }
+
     /**
      * Returns {@link StringBuilder#toString()}.
      *

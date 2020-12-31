@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@
 package net.hasor.utils.io;
 import java.io.File;
 import java.util.Collection;
+
 /**
  * General filename and filepath manipulation utilities.
  * <p>
@@ -101,7 +102,7 @@ public class FilenameUtils {
     /**
      * The separator character that is the opposite of the system separator.
      */
-    private static final char OTHER_SEPARATOR;
+    private static final char   OTHER_SEPARATOR;
 
     static {
         if (isSystemWindows()) {
@@ -118,6 +119,7 @@ public class FilenameUtils {
         super();
     }
     //-----------------------------------------------------------------------
+
     /**
      * Determines if Windows file system is in use.
      *
@@ -127,6 +129,7 @@ public class FilenameUtils {
         return SYSTEM_SEPARATOR == WINDOWS_SEPARATOR;
     }
     //-----------------------------------------------------------------------
+
     /**
      * Checks if the character is a separator.
      *
@@ -137,6 +140,7 @@ public class FilenameUtils {
         return ch == UNIX_SEPARATOR || ch == WINDOWS_SEPARATOR;
     }
     //-----------------------------------------------------------------------
+
     /**
      * Normalizes a path, removing double and single dot path steps.
      * <p>
@@ -180,6 +184,7 @@ public class FilenameUtils {
     public static String normalize(String filename) {
         return doNormalize(filename, SYSTEM_SEPARATOR, true);
     }
+
     /**
      * Normalizes a path, removing double and single dot path steps.
      * <p>
@@ -229,6 +234,7 @@ public class FilenameUtils {
         return doNormalize(filename, separator, true);
     }
     //-----------------------------------------------------------------------
+
     /**
      * Normalizes a path, removing double and single dot path steps,
      * and removing any final directory separator.
@@ -273,6 +279,7 @@ public class FilenameUtils {
     public static String normalizeNoEndSeparator(String filename) {
         return doNormalize(filename, SYSTEM_SEPARATOR, false);
     }
+
     /**
      * Normalizes a path, removing double and single dot path steps,
      * and removing any final directory separator.
@@ -320,6 +327,7 @@ public class FilenameUtils {
         char separator = unixSeparator ? UNIX_SEPARATOR : WINDOWS_SEPARATOR;
         return doNormalize(filename, separator, false);
     }
+
     /**
      * Internal method to perform the normalization.
      *
@@ -412,6 +420,7 @@ public class FilenameUtils {
         return new String(array, 0, size - 1);  // lose trailing separator
     }
     //-----------------------------------------------------------------------
+
     /**
      * Concatenates a filename to a base path using normal command line style rules.
      * <p>
@@ -475,6 +484,7 @@ public class FilenameUtils {
         }
     }
     //-----------------------------------------------------------------------
+
     /**
      * Converts all separators to the Unix separator of forward slash.
      *
@@ -487,6 +497,7 @@ public class FilenameUtils {
         }
         return path.replace(WINDOWS_SEPARATOR, UNIX_SEPARATOR);
     }
+
     /**
      * Converts all separators to the Windows separator of backslash.
      *
@@ -499,6 +510,7 @@ public class FilenameUtils {
         }
         return path.replace(UNIX_SEPARATOR, WINDOWS_SEPARATOR);
     }
+
     /**
      * Converts all separators to the system separator.
      *
@@ -516,6 +528,7 @@ public class FilenameUtils {
         }
     }
     //-----------------------------------------------------------------------
+
     /**
      * Returns the length of the filename prefix, such as <code>C:/</code> or <code>~/</code>.
      * <p>
@@ -599,6 +612,7 @@ public class FilenameUtils {
             }
         }
     }
+
     /**
      * Returns the index of the last directory separator character.
      * <p>
@@ -619,6 +633,7 @@ public class FilenameUtils {
         int lastWindowsPos = filename.lastIndexOf(WINDOWS_SEPARATOR);
         return Math.max(lastUnixPos, lastWindowsPos);
     }
+
     /**
      * Returns the index of the last extension separator character, which is a dot.
      * <p>
@@ -641,6 +656,7 @@ public class FilenameUtils {
         return lastSeparator > extensionPos ? -1 : extensionPos;
     }
     //-----------------------------------------------------------------------
+
     /**
      * Gets the prefix from a full filename, such as <code>C:/</code>
      * or <code>~/</code>.
@@ -683,6 +699,7 @@ public class FilenameUtils {
         }
         return filename.substring(0, len);
     }
+
     /**
      * Gets the path from a full filename, which excludes the prefix.
      * <p>
@@ -708,6 +725,7 @@ public class FilenameUtils {
     public static String getPath(String filename) {
         return doGetPath(filename, 1);
     }
+
     /**
      * Gets the path from a full filename, which excludes the prefix, and
      * also excluding the final directory separator.
@@ -734,6 +752,7 @@ public class FilenameUtils {
     public static String getPathNoEndSeparator(String filename) {
         return doGetPath(filename, 0);
     }
+
     /**
      * Does the work of getting the path.
      *
@@ -756,6 +775,7 @@ public class FilenameUtils {
         }
         return filename.substring(prefix, endIndex);
     }
+
     /**
      * Gets the full path from a full filename, which is the prefix + path.
      * <p>
@@ -784,6 +804,7 @@ public class FilenameUtils {
     public static String getFullPath(String filename) {
         return doGetFullPath(filename, true);
     }
+
     /**
      * Gets the full path from a full filename, which is the prefix + path,
      * and also excluding the final directory separator.
@@ -813,6 +834,7 @@ public class FilenameUtils {
     public static String getFullPathNoEndSeparator(String filename) {
         return doGetFullPath(filename, false);
     }
+
     /**
      * Does the work of getting the path.
      *
@@ -845,6 +867,7 @@ public class FilenameUtils {
         }
         return filename.substring(0, end);
     }
+
     /**
      * Gets the name minus the path from a full filename.
      * <p>
@@ -869,6 +892,7 @@ public class FilenameUtils {
         int index = indexOfLastSeparator(filename);
         return filename.substring(index + 1);
     }
+
     /**
      * Gets the base name, minus the full path and extension, from a full filename.
      * <p>
@@ -889,6 +913,7 @@ public class FilenameUtils {
     public static String getBaseName(String filename) {
         return removeExtension(getName(filename));
     }
+
     /**
      * Gets the extension of a filename.
      * <p>
@@ -919,6 +944,7 @@ public class FilenameUtils {
         }
     }
     //-----------------------------------------------------------------------
+
     /**
      * Removes the extension from a filename.
      * <p>
@@ -948,6 +974,7 @@ public class FilenameUtils {
         }
     }
     //-----------------------------------------------------------------------
+
     /**
      * Checks whether the extension of the filename is that specified.
      * <p>
@@ -969,6 +996,7 @@ public class FilenameUtils {
         String fileExt = getExtension(filename);
         return fileExt.equals(extension);
     }
+
     /**
      * Checks whether the extension of the filename is one of those specified.
      * <p>
@@ -995,6 +1023,7 @@ public class FilenameUtils {
         }
         return false;
     }
+
     /**
      * Checks whether the extension of the filename is one of those specified.
      * <p>

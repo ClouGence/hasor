@@ -5,7 +5,7 @@
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
         <version>4.2.2-SNAPSHOT</version>
-        <relativePath>../..</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <!-- Maven Info -->
@@ -44,6 +44,7 @@
                         <configuration>
                             <createSourcesJar>true</createSourcesJar>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <minimizeJar>true</minimizeJar>
                             <artifactSet>
                                 <includes>
                                     <include>ognl:ognl</include>

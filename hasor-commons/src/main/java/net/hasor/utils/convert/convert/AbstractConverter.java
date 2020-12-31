@@ -21,6 +21,7 @@ import net.hasor.utils.convert.Converter;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
+
 /**
  * Base {@link Converter} implementation that provides the structure
  * for handling conversion <b>to</b> and <b>from</b> a specified type.
@@ -51,14 +52,17 @@ public abstract class AbstractConverter implements Converter {
     /**默认值*/
     private Object  defaultValue = null;
     // ----------------------------------------------------------- Constructors
+
     /**创建创造<i>Converter</i>转换器，可能会引发<code>ConversionException</code>异常。*/
     public AbstractConverter() {
     }
+
     /**创建创造<i>Converter</i>转换器，可能会引发<code>ConversionException</code>异常。*/
     public AbstractConverter(final Object defaultValue) {
         this.setDefaultValue(defaultValue);
     }
     // --------------------------------------------------------- Public Methods
+
     /**
      * 当转换期间发生异常时是否使用默认值。
      * @return 如果<code>true</code>则表示当遇到错误时设置的默认值会被返回。如果<code>false</code>会引发{@link ConversionException}异常。
@@ -66,6 +70,7 @@ public abstract class AbstractConverter implements Converter {
     public boolean isUseDefault() {
         return this.useDefault;
     }
+
     /**
      * Convert the input object into an output object of the
      * specified type.
@@ -100,6 +105,7 @@ public abstract class AbstractConverter implements Converter {
             return this.handleError(type, value, t);
         }
     }
+
     /**
      * 处理转换错误。<p>
      * 如果设置了default属性则当遇到错误时返回默认值。否则引发{@link ConversionException}异常。
@@ -115,6 +121,7 @@ public abstract class AbstractConverter implements Converter {
             throw new ConversionException(msg, cause);
         }
     }
+
     /**
      * 转换对象成为String格式。<p>
      * <b>注意：</b>这个方法简单使用<code>toString()</code>实现该功能，子类应当重写该方法以完成特殊的转换过程。
@@ -122,8 +129,10 @@ public abstract class AbstractConverter implements Converter {
     protected String convertToString(final Object value) throws Throwable {
         return value.toString();
     }
+
     /**执行类型转换代码。*/
     protected abstract Object convertToType(Class type, Object value) throws Throwable;
+
     /**
      * Return the first element from an Array (or Collection)
      * or the value unchanged if not an Array (or Collection).
@@ -155,6 +164,7 @@ public abstract class AbstractConverter implements Converter {
         }
         return value;
     }
+
     /**设置默认值 */
     protected void setDefaultValue(final Object defaultValue) {
         this.useDefault = false;
@@ -165,8 +175,10 @@ public abstract class AbstractConverter implements Converter {
         }
         this.useDefault = true;
     }
+
     /**获取默认值*/
     protected abstract Class getDefaultType();
+
     /**返回指定类型的默认值.*/
     protected Object getDefault(final Class type) {
         if (type.equals(String.class)) {
@@ -175,6 +187,7 @@ public abstract class AbstractConverter implements Converter {
             return this.defaultValue;
         }
     }
+
     /**
      * Provide a String representation of this converter.
      * @return A String representation of this converter
@@ -183,6 +196,7 @@ public abstract class AbstractConverter implements Converter {
     public String toString() {
         return this.toString(this.getClass()) + "[UseDefault=" + this.useDefault + "]";
     }
+
     /**当遇到空值传入或者返回值为空的时候*/
     protected Object handleMissing(final Class type) {
         if (this.useDefault || type.equals(String.class)) {
@@ -199,6 +213,7 @@ public abstract class AbstractConverter implements Converter {
         return BeanUtils.getDefaultValue(type);
     }
     // ----------------------------------------------------------- Package Methods
+
     /**
      * Provide a String representation of a <code>java.lang.Class</code>.
      * @param type The <code>java.lang.Class</code>.

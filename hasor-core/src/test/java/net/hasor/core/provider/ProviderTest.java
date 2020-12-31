@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.core.provider;
+import net.hasor.utils.supplier.ClassLoaderSingleProvider;
+import net.hasor.utils.supplier.InstanceProvider;
+import net.hasor.utils.supplier.SingleProvider;
+import net.hasor.utils.supplier.ThreadSingleProvider;
 import org.junit.Test;
 
 import java.util.ArrayList;

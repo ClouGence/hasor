@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
  * JSON Parser and Generator.
  *
@@ -77,19 +78,23 @@ public class JSON {
     public final static    JSON                   DEFAULT           = new JSON();
     private                Map<String, Convertor> _convertors       = new ConcurrentHashMap<String, Convertor>();
     private                int                    _stringBufferSize = 1024;
+
     public JSON() {
     }
     /* ------------------------------------------------------------ */
+
     /** @return the initial stringBuffer size to use when creating JSON strings (default 1024) */
     public int getStringBufferSize() {
         return _stringBufferSize;
     }
     /* ------------------------------------------------------------ */
+
     /** @param stringBufferSize the initial stringBuffer size to use when creating JSON strings (default 1024) */
     public void setStringBufferSize(int stringBufferSize) {
         _stringBufferSize = stringBufferSize;
     }
     /* ------------------------------------------------------------ */
+
     /**
      * Register a {@link Convertor} for a class or interface.
      * @param forClass The class or interface that the convertor applies to
@@ -98,22 +103,26 @@ public class JSON {
     public static void registerConvertor(Class forClass, Convertor convertor) {
         DEFAULT.addConvertor(forClass, convertor);
     }
+
     /* ------------------------------------------------------------ */
     public static JSON getDefault() {
         return DEFAULT;
     }
+
     /* ------------------------------------------------------------ */
     public static String toString(Object object) {
         StringBuilder buffer = new StringBuilder(DEFAULT.getStringBufferSize());
         DEFAULT.append(buffer, object);
         return buffer.toString();
     }
+
     /* ------------------------------------------------------------ */
     public static String toString(Map object) {
         StringBuilder buffer = new StringBuilder(DEFAULT.getStringBufferSize());
         DEFAULT.appendMap(buffer, object);
         return buffer.toString();
     }
+
     /* ------------------------------------------------------------ */
     public static String toString(Object[] array) {
         StringBuilder buffer = new StringBuilder(DEFAULT.getStringBufferSize());
@@ -121,6 +130,7 @@ public class JSON {
         return buffer.toString();
     }
     /* ------------------------------------------------------------ */
+
     /**
      * @param s String containing JSON object or array.
      * @return A Map, Object array or primitive array parsed from the JSON.
@@ -129,6 +139,7 @@ public class JSON {
         return DEFAULT.parse(new StringSource(s), false);
     }
     /* ------------------------------------------------------------ */
+
     /**
      * @param s String containing JSON object or array.
      * @param stripOuterComment If true, an outer comment around the JSON is ignored.
@@ -138,6 +149,7 @@ public class JSON {
         return DEFAULT.parse(new StringSource(s), stripOuterComment);
     }
     /* ------------------------------------------------------------ */
+
     /**
      * @param in Reader containing JSON object or array.
      * @return A Map, Object array or primitive array parsed from the JSON.
@@ -146,6 +158,7 @@ public class JSON {
         return DEFAULT.parse(new ReaderSource(in), false);
     }
     /* ------------------------------------------------------------ */
+
     /**
      * @param in Reader containing JSON object or array.
      * @param stripOuterComment If true, an outer comment around the JSON is ignored.
@@ -155,6 +168,7 @@ public class JSON {
         return DEFAULT.parse(new ReaderSource(in), stripOuterComment);
     }
     /* ------------------------------------------------------------ */
+
     /**
      * Convert Object to JSON
      * @param object The object to convert
@@ -166,6 +180,7 @@ public class JSON {
         return buffer.toString();
     }
     /* ------------------------------------------------------------ */
+
     /**
      * Convert JSON to Object
      * @param json The json to convert
@@ -176,6 +191,7 @@ public class JSON {
         return parse(source);
     }
     /* ------------------------------------------------------------ */
+
     /**
      * Append object as JSON to string buffer.
      * @param buffer the buffer to append to
@@ -214,6 +230,7 @@ public class JSON {
             throw new RuntimeException(e);
         }
     }
+
     /* ------------------------------------------------------------ */
     public void appendNull(Appendable buffer) {
         try {
@@ -222,26 +239,31 @@ public class JSON {
             throw new RuntimeException(e);
         }
     }
+
     /* ------------------------------------------------------------ */
     public void appendJSON(final Appendable buffer, final Convertor convertor, final Object object) {
         appendJSON(buffer, new Convertible() {
             public void fromJSON(Map object) {
             }
+
             public void toJSON(Output out) {
                 convertor.toJSON(object, out);
             }
         });
     }
+
     /* ------------------------------------------------------------ */
     public void appendJSON(final Appendable buffer, Convertible converter) {
         ConvertableOutput out = new ConvertableOutput(buffer);
         converter.toJSON(out);
         out.complete();
     }
+
     /* ------------------------------------------------------------ */
     public void appendJSON(Appendable buffer, Generator generator) {
         generator.addJSON(buffer);
     }
+
     /* ------------------------------------------------------------ */
     public void appendMap(Appendable buffer, Map<?, ?> map) {
         try {
@@ -264,6 +286,7 @@ public class JSON {
             throw new RuntimeException(e);
         }
     }
+
     /* ------------------------------------------------------------ */
     public void appendArray(Appendable buffer, Collection collection) {
         try {
@@ -285,6 +308,7 @@ public class JSON {
             throw new RuntimeException(e);
         }
     }
+
     /* ------------------------------------------------------------ */
     public void appendArray(Appendable buffer, Object array) {
         try {
@@ -304,6 +328,7 @@ public class JSON {
             throw new RuntimeException(e);
         }
     }
+
     /* ------------------------------------------------------------ */
     public void appendBoolean(Appendable buffer, Boolean b) {
         try {
@@ -316,6 +341,7 @@ public class JSON {
             throw new RuntimeException(e);
         }
     }
+
     /* ------------------------------------------------------------ */
     public void appendNumber(Appendable buffer, Number number) {
         try {
@@ -328,6 +354,7 @@ public class JSON {
             throw new RuntimeException(e);
         }
     }
+
     /* ------------------------------------------------------------ */
     public void appendString(Appendable buffer, String string) {
         if (string == null) {
@@ -336,27 +363,33 @@ public class JSON {
         }
         StringUtils.quote(buffer, string);
     }
+
     // Parsing utilities
     /* ------------------------------------------------------------ */
     protected String toString(char[] buffer, int offset, int length) {
         return new String(buffer, offset, length);
     }
+
     /* ------------------------------------------------------------ */
     protected Map<String, Object> newMap() {
         return new HashMap<String, Object>();
     }
+
     /* ------------------------------------------------------------ */
     protected Object[] newArray(int size) {
         return new Object[size];
     }
+
     /* ------------------------------------------------------------ */
     protected JSON contextForArray() {
         return this;
     }
+
     /* ------------------------------------------------------------ */
     protected JSON contextFor(String field) {
         return this;
     }
+
     /* ------------------------------------------------------------ */
     protected Object convertTo(Class type, Map map) {
         if (type == null) {
@@ -378,6 +411,7 @@ public class JSON {
         return map;
     }
     /* ------------------------------------------------------------ */
+
     /**
      * Register a {@link Convertor} for a class or interface.
      *
@@ -388,6 +422,7 @@ public class JSON {
         _convertors.put(forClass.getName(), convertor);
     }
     /* ------------------------------------------------------------ */
+
     /**
      * Lookup a convertor for a class.
      * <p>
@@ -421,6 +456,7 @@ public class JSON {
         return convertor;
     }
     /* ------------------------------------------------------------ */
+
     /**
      * Register a {@link net.hasor.utils.json.JSON.Convertor} for a named class or interface.
      *
@@ -431,6 +467,7 @@ public class JSON {
         _convertors.put(name, convertor);
     }
     /* ------------------------------------------------------------ */
+
     /**
      * Lookup a convertor for a named class.
      *
@@ -445,6 +482,7 @@ public class JSON {
             convertor = DEFAULT.getConvertorFor(clsName);
         return convertor;
     }
+
     /* ------------------------------------------------------------ */
     public Object parse(Source source, boolean stripOuterComment) {
         int comment_state = 0; // 0=no comment, 1="/", 2="/*", 3="/* *" -1="//"
@@ -513,6 +551,7 @@ public class JSON {
         }
         return o;
     }
+
     /* ------------------------------------------------------------ */
     public Object parse(Source source) {
         int comment_state = 0; // 0=no comment, 1="/", 2="/*", 3="/* *" -1="//"
@@ -596,10 +635,12 @@ public class JSON {
         }
         return null;
     }
+
     /* ------------------------------------------------------------ */
     protected Object handleUnknown(Source source, char c) {
         throw new IllegalStateException("unknown char '" + c + "'(" + (int) c + ") in " + source);
     }
+
     /* ------------------------------------------------------------ */
     protected Object parseObject(Source source) {
         if (source.next() != '{')
@@ -634,6 +675,7 @@ public class JSON {
         }
         return map;
     }
+
     /* ------------------------------------------------------------ */
     protected Object parseArray(Source source) {
         if (source.next() != '[')
@@ -686,6 +728,7 @@ public class JSON {
         }
         throw new IllegalStateException("unexpected end of array");
     }
+
     /* ------------------------------------------------------------ */
     protected String parseString(Source source) {
         if (source.next() != '"')
@@ -800,6 +843,7 @@ public class JSON {
         }
         return builder.toString();
     }
+
     /* ------------------------------------------------------------ */
     public Number parseNumber(Source source) {
         boolean minus = false;
@@ -873,6 +917,7 @@ public class JSON {
         }
         return new Double(buffer.toString());
     }
+
     /* ------------------------------------------------------------ */
     protected void seekTo(char seek, Source source) {
         while (source.hasNext()) {
@@ -885,6 +930,7 @@ public class JSON {
         }
         throw new IllegalStateException("Expected '" + seek + "'");
     }
+
     /* ------------------------------------------------------------ */
     protected char seekTo(String seek, Source source) {
         while (source.hasNext()) {
@@ -898,6 +944,7 @@ public class JSON {
         }
         throw new IllegalStateException("Expected one of '" + seek + "'");
     }
+
     /* ------------------------------------------------------------ */
     protected static void complete(String seek, Source source) {
         int i = 0;
@@ -909,12 +956,15 @@ public class JSON {
         if (i < seek.length())
             throw new IllegalStateException("Expected \"" + seek + "\"");
     }
+
     private final class ConvertableOutput implements Output {
         private final Appendable _buffer;
         char c = '{';
+
         private ConvertableOutput(Appendable buffer) {
             _buffer = buffer;
         }
+
         public void complete() {
             try {
                 if (c == '{')
@@ -925,12 +975,14 @@ public class JSON {
                 throw new RuntimeException(e);
             }
         }
+
         public void add(Object obj) {
             if (c == 0)
                 throw new IllegalStateException();
             append(_buffer, obj);
             c = 0;
         }
+
         public void addClass(Class type) {
             try {
                 if (c == 0)
@@ -943,6 +995,7 @@ public class JSON {
                 throw new RuntimeException(e);
             }
         }
+
         public void add(String name, Object value) {
             try {
                 if (c == 0)
@@ -956,6 +1009,7 @@ public class JSON {
                 throw new RuntimeException(e);
             }
         }
+
         public void add(String name, double value) {
             try {
                 if (c == 0)
@@ -969,6 +1023,7 @@ public class JSON {
                 throw new RuntimeException(e);
             }
         }
+
         public void add(String name, long value) {
             try {
                 if (c == 0)
@@ -982,6 +1037,7 @@ public class JSON {
                 throw new RuntimeException(e);
             }
         }
+
         public void add(String name, boolean value) {
             try {
                 if (c == 0)
@@ -996,6 +1052,7 @@ public class JSON {
             }
         }
     }
+
     /* ------------------------------------------------------------ */
     public interface Source {
         boolean hasNext();
@@ -1006,47 +1063,58 @@ public class JSON {
 
         char[] scratchBuffer();
     }
+
     /* ------------------------------------------------------------ */
     public static class StringSource implements Source {
         private final String string;
         private       int    index;
         private       char[] scratch;
+
         public StringSource(String s) {
             string = s;
         }
+
         public boolean hasNext() {
             if (index < string.length())
                 return true;
             scratch = null;
             return false;
         }
+
         public char next() {
             return string.charAt(index++);
         }
+
         public char peek() {
             return string.charAt(index);
         }
+
         public String toString() {
             return string.substring(0, index) + "|||" + string.substring(index);
         }
+
         public char[] scratchBuffer() {
             if (scratch == null)
                 scratch = new char[string.length()];
             return scratch;
         }
     }
+
     /* ------------------------------------------------------------ */
     public static class ReaderSource implements Source {
         private Reader _reader;
         private int    _next = -1;
         private char[] scratch;
+
         public ReaderSource(Reader r) {
             _reader = r;
         }
+
         public void setReader(Reader reader) {
             _reader = reader;
             _next = -1;
         }
+
         public boolean hasNext() {
             getNext();
             if (_next < 0) {
@@ -1055,16 +1123,19 @@ public class JSON {
             }
             return true;
         }
+
         public char next() {
             getNext();
             char c = (char) _next;
             _next = -1;
             return c;
         }
+
         public char peek() {
             getNext();
             return (char) _next;
         }
+
         private void getNext() {
             if (_next < 0) {
                 try {
@@ -1074,6 +1145,7 @@ public class JSON {
                 }
             }
         }
+
         public char[] scratchBuffer() {
             if (scratch == null)
                 scratch = new char[1024];
@@ -1081,6 +1153,7 @@ public class JSON {
         }
     }
     /* ------------------------------------------------------------ */
+
     /**
      * JSON Output class for use by {@link Convertible}.
      */
@@ -1099,6 +1172,7 @@ public class JSON {
     }
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
+
     /**
      * JSON Convertible object. Object can implement this interface in a similar
      * way to the {@link Externalizable} interface is used to allow classes to
@@ -1117,6 +1191,7 @@ public class JSON {
         public void fromJSON(Map object);
     }
     /* ------------------------------------------------------------ */
+
     /**
      * Static JSON Convertor.
      * <p>
@@ -1134,6 +1209,7 @@ public class JSON {
         public Object fromJSON(Map object);
     }
     /* ------------------------------------------------------------ */
+
     /**
      * JSON Generator. A class that can add it's JSON representation directly to
      * a StringBuffer. This is useful for object instances that are frequently
@@ -1143,6 +1219,7 @@ public class JSON {
         public void addJSON(Appendable buffer);
     }
     /* ------------------------------------------------------------ */
+
     /**
      * A Literal JSON generator A utility instance of {@link net.hasor.utils.json.JSON.Generator}
      * that holds a pre-generated string on JSON text.
@@ -1150,6 +1227,7 @@ public class JSON {
     public static class Literal implements Generator {
         private String _json;
         /* ------------------------------------------------------------ */
+
         /**
          * Construct a literal JSON instance for use by {@link JSON#toString(Object)}.
          * @param json A literal JSON string.
@@ -1159,9 +1237,11 @@ public class JSON {
                 parse(json);
             _json = json;
         }
+
         public String toString() {
             return _json;
         }
+
         public void addJSON(Appendable buffer) {
             try {
                 buffer.append(_json);

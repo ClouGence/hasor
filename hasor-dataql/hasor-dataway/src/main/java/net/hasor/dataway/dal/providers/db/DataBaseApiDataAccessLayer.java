@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataway.dal.providers.db;
-import net.hasor.core.AppContext;
-import net.hasor.core.Init;
-import net.hasor.core.Inject;
-import net.hasor.core.Singleton;
-import net.hasor.db.JdbcUtils;
+import net.hasor.core.*;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.dal.ApiDataAccessLayer;
 import net.hasor.dataway.dal.EntityDef;
 import net.hasor.dataway.dal.FieldDef;
 import net.hasor.dataway.dal.QueryCondition;
+import net.hasor.db.JdbcUtils;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.ExceptionUtils;
@@ -58,7 +55,8 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
             throw new IllegalStateException("jdbcTemplate is not init.");
         }
         //
-        String dbType = this.appContext.getEnvironment().getVariable("HASOR_DATAQL_DATAWAY_DB_DBTYPE");
+        Settings settings = this.appContext.getInstance(Settings.class);
+        String dbType = settings.getString("hasor.dataway.settings.dal_db_type");
         if (StringUtils.isBlank(dbType)) {
             dbType = jdbcTemplate.execute((ConnectionCallback<String>) con -> {
                 String jdbcUrl = con.getMetaData().getURL();
@@ -70,9 +68,14 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
             logger.warn("dataway dbType unknown.");
         }
         //
+        String tablePrefix = settings.getString("hasor.dataway.settings.dal_db_table_prefix");
+        tablePrefix = StringUtils.isBlank(tablePrefix) ? "" : tablePrefix;
         this.infoDal.dbType = dbType;
+        this.infoDal.infoTableName = tablePrefix + "interface_info";
         this.releaseDal.dbType = dbType;
-        logger.info("dataway dbType is {}", dbType);
+        this.releaseDal.releaseTableName = tablePrefix + "interface_release";
+        //
+        logger.info("dataway dbType is {} ,table names = {}, {}", dbType, this.infoDal.infoTableName, this.releaseDal.releaseTableName);
     }
 
     @Override

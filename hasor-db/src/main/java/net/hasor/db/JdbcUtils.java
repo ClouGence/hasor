@@ -156,7 +156,7 @@ public class JdbcUtils {
             return ELASTIC_SEARCH;
         } else if (rawUrl.startsWith("jdbc:clickhouse:")) {
             return CLICKHOUSE;
-        } else if (rawUrl.startsWith("jdbc:presto:")) {
+        } else if (rawUrl.startsWith("jdbc:presto:") || rawUrl.startsWith("presto:")) {
             return PRESTO;
         } else if (rawUrl.startsWith("jdbc:inspur:")) {
             return KDB;

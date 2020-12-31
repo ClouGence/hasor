@@ -208,6 +208,11 @@ public class BeanUtils {
                 return f;
             }
         }
+        for (Field f : type.getDeclaredFields()) {
+            if (f.getName().equals(fieldName)) {
+                return f;
+            }
+        }
         return null;
     }
 
@@ -411,6 +416,7 @@ public class BeanUtils {
         Object attValueObject = ConverterUtils.convert(toType, value);
         //3.执行属性注入
         try {
+            writeField.setAccessible(true);
             writeField.set(object, attValueObject);
             return true;
         } catch (Exception e) {
@@ -462,6 +468,7 @@ public class BeanUtils {
         }
         //2.执行字段读取
         try {
+            readField.setAccessible(true);
             return readField.get(object);
         } catch (Exception e) {
             return null;
@@ -566,7 +573,7 @@ public class BeanUtils {
         if (!(dest instanceof Map)) {
             BeanUtils.writePropertyOrField(dest, propertyName, val);
         } else {
-            ((Map) orig).put(propertyName, val);
+            ((Map) dest).put(propertyName, val);
         }
     }
 }

@@ -25,13 +25,16 @@ public final class EnumConverter extends AbstractConverter {
     public EnumConverter() {
         super();
     }
+
     public EnumConverter(final Object defaultValue) {
         super(defaultValue);
     }
+
     @Override
     protected Class getDefaultType() {
         return Enum.class;
     }
+
     @Override
     protected Object convertToType(final Class type, final Object value) throws Throwable {
         Class<Enum> forEnum = type;

@@ -76,7 +76,7 @@ public class AbstractTestResource {
         queryModel.accept(new AstVisitor() {
             @Override
             public void visitInst(InstVisitorContext inst) {
-                String fixedString = StringUtils.fixedString(' ', atomicInteger.get() * 4);
+                String fixedString = StringUtils.repeat(' ', atomicInteger.get() * 4);
                 String dataIn = "IN - " + inst.getInst().getClass().getSimpleName();
                 String dataOut = "OUT - " + inst.getInst().getClass().getSimpleName();
                 //

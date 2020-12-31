@@ -34,6 +34,7 @@ import static net.hasor.dataway.dal.FieldDef.*;
  * @version : 2020-09-11
  */
 public class InterfaceInfoDal extends AbstractDal {
+    protected            String                infoTableName;
     /** INFO 表中的唯一索引列 */
     private static final Map<FieldDef, String> infoIndexColumn = new HashMap<FieldDef, String>() {{
         put(ID, "api_id");
@@ -170,10 +171,10 @@ public class InterfaceInfoDal extends AbstractDal {
     public Map<FieldDef, String> getObjectBy(FieldDef indexKey, String indexValue) throws SQLException {
         String indexField = infoIndexColumn.get(indexKey);
         if (StringUtils.isBlank(indexField)) {
-            throw new SQLException("table interface_info not index " + indexKey.name());
+            throw new SQLException("table " + infoTableName + " not index " + indexKey.name());
         }
         //
-        String sqlQuery = "select * from interface_info where " + indexField + " = ?";
+        String sqlQuery = "select * from " + infoTableName + " where " + indexField + " = ?";
         Map<String, Object> data = this.jdbcTemplate.queryForMap(sqlQuery, indexValue);
         return (data != null) ? mapToDef(data) : null;
     }
@@ -181,7 +182,7 @@ public class InterfaceInfoDal extends AbstractDal {
     public List<Map<FieldDef, String>> listObjectBy(Map<QueryCondition, Object> conditions) throws SQLException {
         String sqlQuery = "" +//
                 "select api_id,api_method,api_path,api_status,api_comment,api_type,api_create_time,api_gmt_time " +//
-                "from interface_info " + //
+                "from " + this.infoTableName + " " + //
                 "order by api_create_time asc";
         //
         List<Map<String, Object>> mapList = this.jdbcTemplate.queryForList(sqlQuery);
@@ -189,7 +190,7 @@ public class InterfaceInfoDal extends AbstractDal {
     }
 
     public boolean deleteObject(String id) throws SQLException {
-        String sqlQuery = "delete from interface_info where api_id = ?";// TODO 需要在加上一个 乐观锁，用以处理并发导致数据丢失的风险
+        String sqlQuery = "delete from " + this.infoTableName + " where api_id = ?";// TODO 需要在加上一个 乐观锁，用以处理并发导致数据丢失的风险
         return this.jdbcTemplate.executeUpdate(sqlQuery, id) > 0;
     }
 
@@ -207,7 +208,7 @@ public class InterfaceInfoDal extends AbstractDal {
         //
         updateData.add(id);
         String sqlQuery = "" + //
-                "update interface_info set " + //
+                "update " + this.infoTableName + " set " + //
                 sqlBuffer.toString() + //
                 "where api_id = ?";// TODO 需要在加上一个 乐观锁，用以处理并发导致数据丢失的风险
         return this.jdbcTemplate.executeUpdate(sqlQuery, updateData.toArray()) > 0;
@@ -226,7 +227,7 @@ public class InterfaceInfoDal extends AbstractDal {
         insertParamsBuffer.deleteCharAt(0);
         //
         String sqlQuery = "" + //
-                "insert into interface_info (" + //
+                "insert into " + this.infoTableName + " (" + //
                 insertColumnBuffer.toString() + //
                 ") values (" +//
                 insertParamsBuffer.toString() + //

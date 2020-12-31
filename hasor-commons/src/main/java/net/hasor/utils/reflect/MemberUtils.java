@@ -23,6 +23,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
 /**
  * Contains common code for working with Methods/Constructors, extracted and
  * refactored from <code>MethodUtils</code> when it was imported from Commons
@@ -38,6 +39,7 @@ abstract class MemberUtils {
     // TODO extract an interface to implement compareParameterSets(...)?
     private static final int    ACCESS_TEST = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
     private static final Method IS_SYNTHETIC;
+
     //
     public static float toVersionFloat() {
         int limit = 3;
@@ -90,6 +92,7 @@ abstract class MemberUtils {
             return 0f;
         }
     }
+
     static {
         Method isSynthetic = null;
         if (toVersionFloat() >= 1.5f) {
@@ -104,6 +107,7 @@ abstract class MemberUtils {
 
     /** Array of primitive number types ordered by "promotability" */
     private static final Class<?>[] ORDERED_PRIMITIVE_TYPES = { Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE, Long.TYPE, Float.TYPE, Double.TYPE };
+
     /**
      * XXX Default access superclass workaround
      *
@@ -129,6 +133,7 @@ abstract class MemberUtils {
             }
         }
     }
+
     /**
      * Learn whether a given set of modifiers implies package access.
      * @param modifiers to test
@@ -137,6 +142,7 @@ abstract class MemberUtils {
     static boolean isPackageAccess(final int modifiers) {
         return (modifiers & MemberUtils.ACCESS_TEST) == 0;
     }
+
     /**
      * Check a Member for basic accessibility.
      * @param m Member to check
@@ -145,6 +151,7 @@ abstract class MemberUtils {
     static boolean isAccessible(final Member m) {
         return m != null && Modifier.isPublic(m.getModifiers()) && !MemberUtils.isSynthetic(m);
     }
+
     /**
      * Try to learn whether a given member, on JDK >= 1.5, is synthetic.
      * @param m Member to check
@@ -159,6 +166,7 @@ abstract class MemberUtils {
         }
         return false;
     }
+
     /**
      * Compare the relative fitness of two sets of parameter types in terms of
      * matching a third set of runtime parameter types, such that a list ordered
@@ -176,6 +184,7 @@ abstract class MemberUtils {
         float rightCost = MemberUtils.getTotalTransformationCost(actual, right);
         return leftCost < rightCost ? -1 : rightCost < leftCost ? 1 : 0;
     }
+
     /**
      * Returns the sum of the object transformation cost for each class in the
      * source argument list.
@@ -193,6 +202,7 @@ abstract class MemberUtils {
         }
         return totalCost;
     }
+
     /**
      * Gets the number of steps required needed to turn the source class into
      * the destination class. This represents the number of steps in the object
@@ -228,6 +238,7 @@ abstract class MemberUtils {
         }
         return cost;
     }
+
     /**
      * Get the number of steps required to promote a primitive number to another
      * type.

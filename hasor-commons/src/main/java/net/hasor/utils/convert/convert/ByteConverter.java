@@ -40,6 +40,7 @@ public final class ByteConverter extends NumberConverter {
     public ByteConverter() {
         super(false);
     }
+
     /**
      * Construct a <b>java.lang.Byte</b> <i>Converter</i> that returns
      * a default value if an error occurs.
@@ -51,6 +52,7 @@ public final class ByteConverter extends NumberConverter {
     public ByteConverter(final Object defaultValue) {
         super(false, defaultValue);
     }
+
     /**
      * Return the default type this <code>Converter</code> handles.
      *

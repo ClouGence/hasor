@@ -48,4 +48,10 @@ public interface SqlParameterSource {
      * @throws IllegalArgumentException if there is no value for the requested parameter
      */
     public Object getValue(String paramName) throws IllegalArgumentException;
+
+    /**
+     * Enumerate all available parameter names if possible.
+     * @return the array of parameter names, or {@code null} if not determinable
+     */
+    public String[] getParameterNames();
 }

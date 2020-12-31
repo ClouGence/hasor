@@ -16,6 +16,7 @@
 package net.hasor.utils.io;
 import java.io.IOException;
 import java.io.InputStream;
+
 /**
  * 具有自动关闭的输入流
  * @version 2009-5-13
@@ -27,6 +28,7 @@ public class AutoCloseInputStream extends InputStream {
     /** 目标读取的流 */
     private boolean     close = false;
     //========================================================================================
+
     /**
      * 创建自动关闭的输入流
      * @param in 读取的目标流
@@ -35,6 +37,7 @@ public class AutoCloseInputStream extends InputStream {
         this.in = in;
     }
     //========================================================================================
+
     /**
      * 如果读取的目标流已经读取到末尾则自动关闭该流，并且对于已经关闭的流调用该方法将始终返回-1。
      * @return 如果读取的目标流已经读取到末尾则自动关闭该流，并且对于已经关闭的流调用该方法将始终返回-1。
@@ -50,35 +53,43 @@ public class AutoCloseInputStream extends InputStream {
         }
         return read;
     }
+
     @Override
     public int available() throws IOException {
         return this.in.available();
     }
+
     @Override
     public void close() throws IOException {
         this.in.close();
         this.close = true;
     }
+
     @Override
     public synchronized void mark(final int readlimit) {
         this.in.mark(readlimit);
     }
+
     @Override
     public boolean markSupported() {
         return this.in.markSupported();
     }
+
     @Override
     public int read(final byte[] b, final int off, final int len) throws IOException {
         return this.in.read(b, off, len);
     }
+
     @Override
     public int read(final byte[] b) throws IOException {
         return this.in.read(b);
     }
+
     @Override
     public synchronized void reset() throws IOException {
         this.in.reset();
     }
+
     @Override
     public long skip(final long n) throws IOException {
         return this.in.skip(n);

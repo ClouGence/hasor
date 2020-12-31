@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+
 /**
  * {@link Converter} implementaion
  * that handles conversion to and from <b>date/time</b> objects.
@@ -85,6 +86,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
     private TimeZone timeZone;
     private boolean  useLocaleFormat;
     // ----------------------------------------------------------- Constructors
+
     /**
      * Construct a Date/Time <i>Converter</i> that throws a
      * <code>ConversionException</code> if an error occurs.
@@ -92,6 +94,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
     public DateTimeConverter() {
         super();
     }
+
     /**
      * Construct a Date/Time <i>Converter</i> that returns a default
      * value if an error occurs.
@@ -104,6 +107,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
         super(defaultValue);
     }
     // --------------------------------------------------------- Public Methods
+
     /**
      * Indicate whether conversion should use a format/pattern or not.
      *
@@ -113,6 +117,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
     public void setUseLocaleFormat(final boolean useLocaleFormat) {
         this.useLocaleFormat = useLocaleFormat;
     }
+
     /**
      * Return the Time Zone to use when converting dates
      * (or <code>null</code> if none specified.
@@ -122,6 +127,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
     public TimeZone getTimeZone() {
         return this.timeZone;
     }
+
     /**
      * Set the Time Zone to use when converting dates.
      *
@@ -130,6 +136,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
     public void setTimeZone(final TimeZone timeZone) {
         this.timeZone = timeZone;
     }
+
     /**
      * Return the Locale for the <i>Converter</i>
      * (or <code>null</code> if none specified).
@@ -139,6 +146,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
     public Locale getLocale() {
         return this.locale;
     }
+
     /**
      * Set the Locale for the <i>Converter</i>.
      *
@@ -148,6 +156,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
         this.locale = locale;
         this.setUseLocaleFormat(true);
     }
+
     /**
      * Set a date format pattern to use to convert
      * dates to/from a <code>java.lang.String</code>.
@@ -158,6 +167,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
     public void setPattern(final String pattern) {
         this.setPatterns(new String[] { pattern });
     }
+
     /**
      * Return the date format patterns used to convert
      * dates to/from a <code>java.lang.String</code>
@@ -169,6 +179,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
     public String[] getPatterns() {
         return this.patterns;
     }
+
     /**
      * Set the date format patterns to use to convert
      * dates to/from a <code>java.lang.String</code>.
@@ -190,6 +201,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
         }
         this.setUseLocaleFormat(true);
     }
+
     @Override
     public Object convert(final Class type, final Object value) {
         if (value == null) {
@@ -198,6 +210,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
         return super.convert(type, value);
     }
     // ------------------------------------------------------ Protected Methods
+
     /**
      * Convert an input Date/Calendar object into a String.
      * <p>
@@ -235,6 +248,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
         }
         return result;
     }
+
     /**
      * Convert the input object into a Date object of the
      * specified type.
@@ -323,6 +337,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
         // Default String conversion
         return this.toDate(targetType, stringValue);
     }
+
     /**
      * Convert a long value to the specified Date type for this
      * <i>Converter</i>.
@@ -377,6 +392,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
         String msg = this.toString(this.getClass()) + " cannot handle conversion to '" + this.toString(type) + "'";
         throw new ConversionException(msg);
     }
+
     /**
      * Default String to Date conversion.
      * <p>
@@ -423,6 +439,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
         String msg = this.toString(this.getClass()) + " does not support default String to '" + this.toString(type) + "' conversion.";
         throw new ConversionException(msg);
     }
+
     /**
      * Return a <code>DateFormat<code> for the Locale.
      * @param locale The Locale to create the Format with (may be null)
@@ -442,6 +459,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
         }
         return format;
     }
+
     /**
      * Create a date format for the specified pattern.
      *
@@ -455,6 +473,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
         }
         return format;
     }
+
     /**
      * Parse a String date value using the set of patterns.
      *
@@ -484,6 +503,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
             throw firstEx;
         }
     }
+
     /**
      * Parse a String into a <code>Calendar</code> object
      * using the specified <code>DateFormat</code>.
@@ -510,6 +530,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
         Calendar calendar = format.getCalendar();
         return calendar;
     }
+
     /**
      * Provide a String representation of this date/time converter.
      *

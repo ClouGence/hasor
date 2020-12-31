@@ -18,6 +18,7 @@ package net.hasor.utils.convert.convert;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.convert.ConversionException;
 import net.hasor.utils.convert.Converter;
+
 /**
  * {@link Converter} implementaion that handles conversion
  * to and from <b>Boolean</b> objects.
@@ -55,6 +56,7 @@ import net.hasor.utils.convert.Converter;
 @SuppressWarnings("rawtypes")
 public final class BooleanConverter extends AbstractConverter {
     // ----------------------------------------------------------- Constructors
+
     /**
      * Create a {@link Converter} that will throw a {@link ConversionException}
      * if a conversion error occurs, ie the string value being converted is
@@ -63,6 +65,7 @@ public final class BooleanConverter extends AbstractConverter {
     public BooleanConverter() {
         super();
     }
+
     /**
      * Create a {@link Converter} that will return the specified default value
      * if a conversion error occurs, ie the string value being converted is
@@ -79,6 +82,7 @@ public final class BooleanConverter extends AbstractConverter {
         super();
         this.setDefaultValue(defaultValue);
     }
+
     /**
      * Create a {@link Converter} that will throw a {@link ConversionException}
      * if a conversion error occurs, ie the string value being converted is
@@ -101,6 +105,7 @@ public final class BooleanConverter extends AbstractConverter {
         this.trueStrings = BooleanConverter.copyStrings(trueStrings);
         this.falseStrings = BooleanConverter.copyStrings(falseStrings);
     }
+
     /**
      * Create a {@link Converter} that will return
      * the specified default value if a conversion error occurs.
@@ -140,6 +145,7 @@ public final class BooleanConverter extends AbstractConverter {
      */
     private String[] falseStrings = { "false", "no", "n", "off", "0" };
     // --------------------------------------------------------- Protected Methods
+
     /**
      * Return the default type this <code>Converter</code> handles.
      *
@@ -150,6 +156,7 @@ public final class BooleanConverter extends AbstractConverter {
     protected Class getDefaultType() {
         return Boolean.class;
     }
+
     /**
      * Convert the specified input object into an output object of the
      * specified type.
@@ -191,6 +198,7 @@ public final class BooleanConverter extends AbstractConverter {
         }
         throw new ConversionException("Can't convert value '" + value + "' to a Boolean");
     }
+
     /**
      * This method creates a copy of the provided array, and ensures that
      * all the strings in the newly created array contain only lower-case

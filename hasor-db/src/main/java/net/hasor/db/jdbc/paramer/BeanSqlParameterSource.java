@@ -27,8 +27,8 @@ import java.util.Objects;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class BeanSqlParameterSource implements SqlParameterSource, ParameterDisposer {
-    private Object       dataBean;
-    private List<String> dataNames;
+    private final Object       dataBean;
+    private final List<String> dataNames;
 
     public BeanSqlParameterSource(Object dataBean) {
         this.dataBean = Objects.requireNonNull(dataBean);
@@ -43,6 +43,11 @@ public class BeanSqlParameterSource implements SqlParameterSource, ParameterDisp
     @Override
     public Object getValue(final String paramName) throws IllegalArgumentException {
         return BeanUtils.readPropertyOrField(this.dataBean, paramName);
+    }
+
+    @Override
+    public String[] getParameterNames() {
+        return this.dataNames.toArray(new String[0]);
     }
 
     @Override

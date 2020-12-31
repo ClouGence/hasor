@@ -21,6 +21,7 @@ import org.springframework.core.env.StandardEnvironment;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.BiConsumer;
 
 /**
  * 负责处理 Environment 的数据发现
@@ -44,7 +45,12 @@ public abstract class AbstractEnvironmentAware {
             }
             Object source = propertySource.getSource();
             if (source instanceof Map) {
-                envProperties.putAll(((Map) source));
+                ((Map<?, ?>) source).forEach((BiConsumer<Object, Object>) (key, value) -> {
+                    if (key == null || value == null) {
+                        return;
+                    }
+                    envProperties.put(key, value);
+                });
             }
         }
         return envProperties;

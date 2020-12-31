@@ -54,17 +54,12 @@ public class InterfaceApiFilter implements InvokerFilter {
     private          SpiTrigger         spiTrigger;
     @Inject
     private          ApiDataAccessLayer dataAccessLayer;
-    private          String             apiBaseUri;
-    private          String             uiBaseUri;
+    private final    String             apiBaseUri;
+    private final    String             adminBaseUri;
 
-
-    public InterfaceApiFilter(String apiBaseUri) {
+    public InterfaceApiFilter(String apiBaseUri, String adminBaseUri) {
         this.apiBaseUri = apiBaseUri;
-    }
-
-    public InterfaceApiFilter(String apiBaseUri,String uiBaseUri) {
-        this.apiBaseUri = apiBaseUri;
-        this.uiBaseUri = uiBaseUri;
+        this.adminBaseUri = adminBaseUri;
     }
 
     @Override
@@ -83,8 +78,8 @@ public class InterfaceApiFilter implements InvokerFilter {
         }
         //
         // .Skip ui url
-        if(StringUtils.isNotBlank(uiBaseUri)) {
-            if (requestURI.startsWith(uiBaseUri)) {
+        if (StringUtils.isNotBlank(this.adminBaseUri)) {
+            if (requestURI.startsWith(this.adminBaseUri)) {
                 return chain.doNext(invoker);
             }
         }

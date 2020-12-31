@@ -16,6 +16,7 @@
 package net.hasor.core;
 import net.hasor.utils.StringUtils;
 
+import java.io.Closeable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
  * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface AppContext extends MetaInfo {
+public interface AppContext extends MetaInfo, Closeable {
     /** 容器事件，在所有模块 start 阶段之后引发。
      * @see net.hasor.core.context.TemplateAppContext*/
     public static final String ContextEvent_Started  = "ContextEvent_Started";
@@ -61,6 +62,10 @@ public interface AppContext extends MetaInfo {
 
     /** 发送停止通知（非线程安全） */
     public void shutdown();
+
+    public default void close() {
+        this.shutdown();
+    }
 
     /** 阻塞当前线程的继续执行，直到 {@link AppContext#shutdown()} 被调用 */
     public default void join() {

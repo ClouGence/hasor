@@ -23,8 +23,6 @@ import net.hasor.core.binder.BindInfoBuilderFactory;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.info.DelegateBindInfoAdapter;
-import net.hasor.core.provider.InstanceProvider;
-import net.hasor.core.provider.SingleProvider;
 import net.hasor.core.scope.PrototypeScope;
 import net.hasor.core.spi.*;
 import net.hasor.utils.*;
@@ -34,6 +32,7 @@ import javax.inject.Named;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -55,7 +54,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
 
     public BeanContainer(Environment environment) {
         this.environment = Objects.requireNonNull(environment, "need Environment.");
-        this.spiCallerContainer = new SpiCallerContainer();
+        this.spiCallerContainer = new SpiCallerContainer(environment);
         this.bindInfoContainer = new BindInfoContainer(spiCallerContainer);
         this.scopeContainer = new ScopeContainer(spiCallerContainer);
         this.classEngineMap = new ConcurrentHashMap<>();
@@ -95,7 +94,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         Class<T> implClass = findImplClass(targetType);
         //
         // .（构造方法）确定创建 implClass 类型对象时使用的构造方法，使用 Supplier 封装。
-        Supplier<Executable> constructorSupplier = new SingleProvider<>(() -> {
+        Supplier<Executable> constructorSupplier = Provider.of((Callable<Executable>) () -> {
             Constructor<?>[] constructors = Arrays.stream(implClass.getConstructors()).filter(constructor -> {
                 return constructor.getParameterCount() == 0 || isInjectConstructor(constructor);
             }).sorted(Comparator.comparingInt(Constructor::getParameterCount)).toArray(Constructor[]::new);
@@ -108,7 +107,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
                 throw new IllegalArgumentException("No default constructor found.");
             }
             return constructor;
-        });
+        }).asSingle();
         //
         // .（构造参数）构造方法用到的参数
         Supplier<Object[]> parameterSupplier = parameterSupplier(constructorSupplier, appContext, params, true);
@@ -125,7 +124,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
             return null;
         }
         // .（构造方法）
-        Supplier<Executable> constructorSupplier = InstanceProvider.of(targetConstructor);
+        Supplier<Executable> constructorSupplier = Provider.of(targetConstructor);
         //
         // .（构造参数）构造方法用到的参数
         Supplier<Object[]> parameterSupplier = parameterSupplier(constructorSupplier, appContext, params, true);
@@ -148,14 +147,14 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         Class<T> targetType = (adapter.getSourceType() != null ? (Class<T>) adapter.getSourceType() : adapter.getBindType());
         //
         // .（构造方法）确定创建 BindInfo 使用的构造方法，使用 Supplier 封装。
-        Supplier<Executable> constructorSupplier = new SingleProvider<>(() -> {
+        Supplier<Executable> constructorSupplier = Provider.of((Callable<Executable>) () -> {
             //
             // .targetType也许只是一个被标记了 ImplBy 注解的类型。因此需要找到真正需要创建的那个类型。
             Class<T> implClass = findImplClass(targetType);
             //
             Constructor<?> constructor = adapter.getConstructor(implClass, appContext);
             return Objects.requireNonNull(constructor, "constructor is not found.");
-        });
+        }).asSingle();
         //
         // .（构造参数）构造方法用到的参数
         Supplier<Object[]> parameterSupplier = () -> {
@@ -211,7 +210,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
 
     /** 创建一个构造方法对应的参数Supplier */
     private Supplier<Object[]> parameterSupplier(Supplier<Executable> executableSupplier, AppContext appContext, Object[] params, boolean alwaysInject) {
-        return new SingleProvider<>(() -> {
+        return Provider.ofc(() -> {
             // .基础数据
             Executable constructor = executableSupplier.get();                      // 方法
             Class<?>[] parameterTypes = constructor.getParameterTypes();            // 方法参数
@@ -242,7 +241,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
                 }
             }
             return paramObjects;
-        });
+        }).asSingle();
     }
 
     /**
@@ -343,9 +342,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         }
     }
 
-    /**
-     * 生成动态代理类型
-     */
+    /** 生成动态代理类型 */
     private <T> Class<T> proxyType(Class<T> targetType, AppContext appContext, DefaultBindInfoProviderAdapter<?> defBinder) {
         // .@AopIgnore排除在外
         ClassLoader rootLoader = Objects.requireNonNull(appContext.getClassLoader());
@@ -412,17 +409,13 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
 
     /*-------------------------------------------------------------------------------------------*/
 
-    /**
-     * 仅执行依赖注入
-     */
+    /** 仅执行依赖注入 */
     public <T> T justInject(T object, Class<?> referType, AppContext appContext) {
         this.justInject(object, referType, null, appContext);
         return object;
     }
 
-    /**
-     * 仅执行依赖注入
-     */
+    /** 仅执行依赖注入 */
     public <T> T justInject(T object, BindInfo<?> bindInfo, AppContext appContext) {
         DefaultBindInfoProviderAdapter<?> adapter = (DefaultBindInfoProviderAdapter) bindInfo;
         Class<?> referType = adapter.getSourceType() != null ? adapter.getSourceType() : adapter.getBindType();
@@ -483,6 +476,9 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         List<Field> fieldList = BeanUtils.findALLFields(targetType);
         fieldList = fieldList == null ? new ArrayList<>(0) : fieldList;
         for (Field field : fieldList) {
+            if (Modifier.isFinal(field.getModifiers())) {
+                continue;
+            }
             Annotation injectInfo = findInject(false, field.getAnnotations());
             if (injectInfo == null) {
                 continue;
@@ -516,7 +512,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
                 method.setAccessible(true);
             }
             //
-            Supplier<Object[]> parameterSupplier = parameterSupplier(InstanceProvider.of(method), appContext, ArrayUtils.EMPTY_OBJECT_ARRAY, true);
+            Supplier<Object[]> parameterSupplier = parameterSupplier(Provider.of(method), appContext, ArrayUtils.EMPTY_OBJECT_ARRAY, true);
             try {
                 method.invoke(targetBean, parameterSupplier.get());
             } catch (InvocationTargetException e2) {

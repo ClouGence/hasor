@@ -15,6 +15,7 @@
  */
 package net.hasor.utils.io.input;
 import java.io.*;
+
 /**
  * 使用InputStream读取Reader的工具类
  * @version 2009-5-13
@@ -28,6 +29,7 @@ public class ReaderInputStream extends InputStream {
     private byte[]                buffer        = null;
     private int                   index, length = 0;
     //========================================================================================
+
     /**
      * 带Reader参数构造函数
      * @param readerString - 要阅读的字符串。
@@ -38,6 +40,7 @@ public class ReaderInputStream extends InputStream {
         this.writer = new OutputStreamWriter(this.byteArrayOut);
         this.chars = new char[1024];
     }
+
     /**
      * 带Reader参数构造函数
      * @param reader - InputStream使用的Reader
@@ -48,6 +51,7 @@ public class ReaderInputStream extends InputStream {
         this.writer = new OutputStreamWriter(this.byteArrayOut);
         this.chars = new char[1024];
     }
+
     /**
      * 带Reader和字符编码格式参数的构造函数
      * @param reader   - InputStream使用的Reader
@@ -61,6 +65,7 @@ public class ReaderInputStream extends InputStream {
         this.chars = new char[1024];
     }
     //========================================================================================
+
     /** @see InputStream#read() */
     @Override
     public int read() throws IOException {
@@ -72,6 +77,7 @@ public class ReaderInputStream extends InputStream {
         }
         return 0xff & this.buffer[this.index++];
     }
+
     private void fillBuffer() throws IOException {
         if (this.length < 0) {
             return;
@@ -88,6 +94,7 @@ public class ReaderInputStream extends InputStream {
             this.index = 0;
         }
     }
+
     /** @see InputStream#read(byte[], int, int) */
     @Override
     public int read(final byte[] data, final int off, final int len) throws IOException {
@@ -102,11 +109,13 @@ public class ReaderInputStream extends InputStream {
         this.index += amount;
         return amount;
     }
+
     /** @see InputStream#available() */
     @Override
     public int available() throws IOException {
         return this.index < this.length ? this.length - this.index : this.length >= 0 && this.reader.ready() ? 1 : 0;
     }
+
     /** @see InputStream#close() */
     @Override
     public void close() throws IOException {

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.spring.beans;
+import net.hasor.core.Provider;
 import net.hasor.core.TypeSupplier;
-import net.hasor.core.provider.InstanceProvider;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Objects;
@@ -27,10 +27,10 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SpringTypeSupplier implements TypeSupplier {
-    private Supplier<ApplicationContext> applicationContext;
+    private final Supplier<ApplicationContext> applicationContext;
 
     public SpringTypeSupplier(ApplicationContext applicationContext) {
-        this(InstanceProvider.of(Objects.requireNonNull(applicationContext)));
+        this(Provider.of(Objects.requireNonNull(applicationContext)));
     }
 
     public SpringTypeSupplier(Supplier<ApplicationContext> applicationContext) {

@@ -32,7 +32,6 @@ public interface Matcher<T> extends Predicate<T> {
         return this.matches(target);
     }
 
-    //
     default Predicate<T> toPredicate(Matcher<T> provider) {
         return provider;
     }
