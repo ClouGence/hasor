@@ -16,6 +16,7 @@
 package net.hasor.dataway.config;
 import net.hasor.core.Environment;
 import net.hasor.core.HasorUtils;
+import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.authorization.InterfaceAuthorizationFilter;
@@ -42,28 +43,25 @@ public class DatawayModule implements WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         // .是否启用 Dataway
         Environment environment = apiBinder.getEnvironment();
-        boolean datawayApi = Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY"));
-        boolean datawayAdmin = Boolean.parseBoolean(environment.getVariable("HASOR_DATAQL_DATAWAY_ADMIN"));
+        Settings settings = environment.getSettings();
+        boolean datawayApi = settings.getBoolean("hasor.dataway.enable", false);
+        boolean datawayAdmin = settings.getBoolean("hasor.dataway.enableAdmin", false);
         if (!datawayApi) {
-            logger.info("dataway is disable.");
+            logger.info("dataway is disable. (enable: settings 'hasor.dataway.enable = true' or env 'HASOR_DATAQL_DATAWAY = true')");
             return;
         }
         //
         // .Api接口
-        String apiBaseUri = environment.getVariable("HASOR_DATAQL_DATAWAY_API_URL");
-        if (StringUtils.isBlank(apiBaseUri)) {
-            apiBaseUri = "/api/";
-        }
+        String apiBaseUri = settings.getString("hasor.dataway.baseApiUrl", "/api/");
         logger.info("dataway api workAt " + apiBaseUri);
-        environment.addVariable("HASOR_DATAQL_DATAWAY_API_URL", apiBaseUri);
         apiBinder.filter(fixUrl(apiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceApiFilter(apiBaseUri));
         //
-        String dalType = environment.getVariable("HASOR_DATAQL_DATAWAY_DAL_TYPE");
+        String dalType = settings.getString("hasor.dataway.dataAccessLayer.dalType", "db");
         if (StringUtils.isBlank(dalType)) {
-            throw new NullPointerException("dataway HASOR_DATAQL_DATAWAY_DAL_TYPE is missing.");
+            throw new IllegalArgumentException("dataway dalType is missing.");
         }
         boolean setupProvider = false;
-        XmlNode[] nodeArray = environment.getSettings().getXmlNodeArray("hasor.dataway.dataAccessLayer.provider");
+        XmlNode[] nodeArray = settings.getXmlNodeArray("hasor.dataway.dataAccessLayer.provider");
         if (nodeArray != null) {
             for (XmlNode xmlNode : nodeArray) {
                 if (!"provider".equalsIgnoreCase(xmlNode.getName())) {
@@ -95,10 +93,7 @@ public class DatawayModule implements WebModule {
             logger.info("dataway admin is disable.");
             return;
         }
-        String uiBaseUri = environment.getVariable("HASOR_DATAQL_DATAWAY_UI_URL");
-        if (StringUtils.isBlank(uiBaseUri)) {
-            uiBaseUri = "/interface-ui/";
-        }
+        String uiBaseUri = settings.getString("hasor.dataway.baseAdminUrl", "/interface-ui/");
         if (!uiBaseUri.endsWith("/")) {
             uiBaseUri = uiBaseUri + "/";
         }
