@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataway.config;
+
 import net.hasor.core.Environment;
 import net.hasor.core.HasorUtils;
 import net.hasor.core.Settings;
@@ -33,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Dataway 启动入口
+ *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-20
  */
@@ -53,7 +55,24 @@ public class DatawayModule implements WebModule {
         //
         // .Api接口
         String apiBaseUri = settings.getString("hasor.dataway.baseApiUrl", "/api/");
+        if (StringUtils.isBlank(apiBaseUri)) {
+            apiBaseUri = "/api/";
+        }
+        if (!apiBaseUri.endsWith("/")) {
+            apiBaseUri = apiBaseUri + "/";
+        }
+        String adminBaseUri = settings.getString("hasor.dataway.baseAdminUrl", "/interface-ui/");
+        if (StringUtils.isBlank(adminBaseUri)) {
+            adminBaseUri = "/interface-ui/";
+        }
+        if (!adminBaseUri.endsWith("/")) {
+            adminBaseUri = adminBaseUri + "/";
+        }
+        //
         logger.info("dataway api workAt " + apiBaseUri);
+
+
+
         apiBinder.filter(fixUrl(apiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceApiFilter(apiBaseUri));
         //
         String dalType = settings.getString("hasor.dataway.dataAccessLayer.dalType", "db");
@@ -100,7 +119,7 @@ public class DatawayModule implements WebModule {
         logger.info("dataway admin workAt " + uiBaseUri);
         //
         // 使用 findClass 虽然可以降低代码复杂度，但是会因为引入代码扫描而增加初始化时间
-        Class<?>[] controllerSet = new Class<?>[] { //
+        Class<?>[] controllerSet = new Class<?>[]{ //
                 ApiDetailController.class,          //
                 ApiHistoryListController.class,     //
                 ApiInfoController.class,            //
