@@ -27,6 +27,7 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Collection;
+
 /**
  * <p>Utility methods for converting String scalar values to objects of the
  * specified Class, String arrays to arrays of the specified Class.  The
@@ -106,6 +107,7 @@ public class ConverterBean {
     private static final Character                            SPACE                = new Character(' ');
     /** Contains <code>ConverterBean</code> instances indexed by context classloader. */
     private static final ConverterBeanContextClassLoaderLocal BEANS_BY_CLASSLOADER = new ConverterBeanContextClassLoaderLocal();
+
     private static class ConverterBeanContextClassLoaderLocal extends ContextClassLoaderLocal<ConverterBean> {
         @Override
         protected ConverterBean initialValue() {
@@ -113,6 +115,7 @@ public class ConverterBean {
         }
     }
     // ------------------------------------------------------- Class Methods
+
     /**
      * Get singleton instance
      * @return The singleton instance
@@ -127,6 +130,7 @@ public class ConverterBean {
      */
     private WeakFastHashMap converters = new WeakFastHashMap();
     // ------------------------------------------------------- Constructors
+
     /** Construct a bean with standard converters registered */
     public ConverterBean() {
         this.converters.setFast(false);
@@ -134,6 +138,7 @@ public class ConverterBean {
         this.converters.setFast(true);
     }
     // --------------------------------------------------------- Public Methods
+
     /**
      * Convert the specified value into a String.  If the specified value
      * is an array, the first element (converted to a String) will be
@@ -164,6 +169,7 @@ public class ConverterBean {
             return (String) converter.convert(String.class, value);
         }
     }
+
     /**
      * Convert the specified value to an object of the specified class (if
      * possible).  Otherwise, return a String representation of the value.
@@ -181,6 +187,7 @@ public class ConverterBean {
         }
         return converter.convert(clazz, value);
     }
+
     /**
      * Convert an array of specified values to an array of objects of the
      * specified class (if possible).  If the specified Java class is itself
@@ -209,6 +216,7 @@ public class ConverterBean {
         }
         return array;
     }
+
     /**
      * <p>Convert the value to an object of the specified class (if
      * possible).</p>
@@ -241,6 +249,7 @@ public class ConverterBean {
         }
         return converted;
     }
+
     /**
      * Remove all registered {@link Converter}s, and re-establish the
      * standard Converters.
@@ -252,6 +261,7 @@ public class ConverterBean {
         this.registerOther(true);
         this.registerArrays(false, 0);
     }
+
     /**
      * Register the provided converters with the specified defaults.
      *
@@ -273,6 +283,7 @@ public class ConverterBean {
         this.registerOther(throwException);
         this.registerArrays(throwException, defaultArraySize);
     }
+
     /**
      * Register the converters for primitive types.
      * </p>
@@ -301,6 +312,7 @@ public class ConverterBean {
         this.register(Long.TYPE, throwException ? new LongConverter() : new LongConverter(ConverterBean.ZERO));
         this.register(Short.TYPE, throwException ? new ShortConverter() : new ShortConverter(ConverterBean.ZERO));
     }
+
     /**
      * Register the converters for standard types.
      * </p>
@@ -346,6 +358,7 @@ public class ConverterBean {
         this.register(Short.class, throwException ? new ShortConverter() : new ShortConverter(defaultNumber));
         this.register(String.class, throwException ? new StringConverter() : new StringConverter(stringDefault));
     }
+
     /**
      * Register the converters for other types.
      * </p>
@@ -376,6 +389,7 @@ public class ConverterBean {
         this.register(URI.class, throwException ? new URIConverter() : new URIConverter(null));
         this.register(Enum.class, throwException ? new EnumConverter() : new EnumConverter(null));
     }
+
     /**
      * Register array converters.
      *
@@ -419,6 +433,7 @@ public class ConverterBean {
         this.registerArrayConverter(Timestamp.class, new SqlTimestampConverter(), throwException, defaultArraySize);
         this.registerArrayConverter(URL.class, new URLConverter(), throwException, defaultArraySize);
     }
+
     /**
      * Register a new ArrayConverter with the specified element delegate converter
      * that returns a default array of the specified size in the event of conversion errors.
@@ -439,10 +454,12 @@ public class ConverterBean {
         }
         this.register(arrayType, arrayConverter);
     }
+
     /** strictly for convenience since it has same parameter order as Map.put */
     private void register(final Class<?> clazz, final Converter converter) {
         this.register(new ConverterFacade(converter), clazz);
     }
+
     /**
      * Remove any registered {@link Converter} for the specified destination
      * <code>Class</code>.
@@ -452,6 +469,7 @@ public class ConverterBean {
     public void deregister(final Class<?> clazz) {
         this.converters.remove(clazz);
     }
+
     /**
      * Look up and return any registered {@link Converter} for the specified
      * destination class; if there is no registered Converter, return
@@ -472,6 +490,7 @@ public class ConverterBean {
         }
         return null;
     }
+
     /**
      * Look up and return any registered {@link Converter} for the specified
      * source and destination class; if there is no registered Converter,
@@ -512,6 +531,7 @@ public class ConverterBean {
         }
         return this.lookup(targetType);
     }
+
     /**
      * Register a custom {@link Converter} for the specified destination
      * <code>Class</code>, replacing any previously registered Converter.

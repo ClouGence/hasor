@@ -65,10 +65,6 @@ public enum Isolation {
         this.value = value;
     }
 
-    protected int value() {
-        return this.value;
-    }
-
     public static Isolation valueOf(final int value) {
         switch (value) {
         case -1:
@@ -83,5 +79,9 @@ public enum Isolation {
             return Isolation.SERIALIZABLE;
         }
         throw new IllegalStateException(String.format("Connection ISOLATION error level %s.", value));
+    }
+
+    protected int value() {
+        return this.value;
     }
 }

@@ -16,6 +16,7 @@
  */
 package net.hasor.utils.convert.convert;
 import java.math.BigDecimal;
+
 /**
  * {@link NumberConverter} implementation that handles conversion to
  * and from <b>java.math.BigDecimal</b> objects.
@@ -41,6 +42,7 @@ public final class BigDecimalConverter extends NumberConverter {
     public BigDecimalConverter() {
         super(true);
     }
+
     /**
      * Construct a <b>java.math.BigDecimal</b> <i>Converter</i> that returns
      * a default value if an error occurs.
@@ -52,6 +54,7 @@ public final class BigDecimalConverter extends NumberConverter {
     public BigDecimalConverter(final Object defaultValue) {
         super(true, defaultValue);
     }
+
     /**
      * Return the default type this <code>Converter</code> handles.
      *

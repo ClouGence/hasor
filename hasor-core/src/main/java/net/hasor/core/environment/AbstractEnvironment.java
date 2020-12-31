@@ -24,7 +24,6 @@ import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -41,7 +40,7 @@ public abstract class AbstractEnvironment implements Environment {
     private          ScanClassPath       scanUtils    = null;
     private          AbstractSettings    settings     = null;
     private          Object              context      = null;
-    private          ClassLoader         rootLosder   = null;
+    private          ClassLoader         rootLoader   = null;
     private          EventContext        eventManager = null;
     private          Map<String, String> envMap       = null;
 
@@ -49,7 +48,7 @@ public abstract class AbstractEnvironment implements Environment {
     public AbstractEnvironment(Object context, AbstractSettings settings) {
         this.settings = settings;
         this.context = context;
-        this.rootLosder = new AopClassLoader();
+        this.rootLoader = new AopClassLoader();
         this.envMap = new ConcurrentHashMap<>();
     }
 
@@ -65,13 +64,13 @@ public abstract class AbstractEnvironment implements Environment {
 
     /**获取当创建Bean时使用的{@link ClassLoader}*/
     public ClassLoader getClassLoader() {
-        return this.rootLosder;
+        return this.rootLoader;
     }
 
     /**设置类加载器*/
-    public void setRootLosder(ClassLoader classLoader) {
+    public void setRootLoader(ClassLoader classLoader) {
         if (classLoader != null) {
-            this.rootLosder = classLoader;
+            this.rootLoader = classLoader;
         }
     }
 
@@ -203,7 +202,7 @@ public abstract class AbstractEnvironment implements Environment {
     /* ------------------------------------------------------------------------------------ init */
 
     /**初始化方法*/
-    protected final void initEnvironment(Map<String, String> frameworkEnvConfig) throws IOException {
+    protected final void initEnvironment(Map<String, String> frameworkEnvConfig) {
         // .load & init
         this.envMap = new ConcurrentHashMap<>();
         logger.debug("load envVars...");
@@ -250,7 +249,7 @@ public abstract class AbstractEnvironment implements Environment {
      * 3st，配置文件"hasor.environmentVar"
      * 4st，传入的配置
      */
-    private void initEnvConfig(Map<String, String> frameworkEnvConfig) throws IOException {
+    private void initEnvConfig(Map<String, String> frameworkEnvConfig) {
         //
         // .1st，System.getProperties()
         Properties prop = System.getProperties();

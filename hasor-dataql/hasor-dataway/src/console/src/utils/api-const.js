@@ -27,7 +27,7 @@ const defaultOptionData = {
 
 // 通用查 配置
 const ApiUrl = {
-    checkVersion: 'http://apis.hasor.net/projects/hasor-dataway/checkVersion',
+    checkVersion: '//apis.hasor.net/projects/hasor-dataway/checkVersion',
     //
     apiInfo: contextPath() + adminBaseUrl(`/api/api-info`),
     apiList: contextPath() + adminBaseUrl(`/api/api-list`),

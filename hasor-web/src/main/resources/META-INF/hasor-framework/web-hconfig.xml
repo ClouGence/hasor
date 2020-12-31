@@ -57,5 +57,13 @@
             <templatePath>${HASOR_RESTFUL_LAYOUT_TEMPLATES}</templatePath>
         </layout>
 
+        <autoLoadSpi>
+            <spi>net.hasor.web.spi.AfterResponseListener</spi>
+            <spi>net.hasor.web.spi.BeforeRequestListener</spi>
+            <spi>net.hasor.web.spi.MappingDiscoverer</spi>
+            <spi>javax.servlet.ServletContextListener</spi>
+            <spi>javax.servlet.http.HttpSessionListener</spi>
+            <spi>javax.servlet.ServletRequestListener</spi>
+        </autoLoadSpi>
     </hasor>
 </config>

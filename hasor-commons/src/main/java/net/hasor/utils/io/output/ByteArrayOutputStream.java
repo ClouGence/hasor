@@ -21,6 +21,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 /**
  * This class implements an output stream in which the data is 
  * written into a byte array. The buffer automatically grows as data 
@@ -57,6 +58,7 @@ public class ByteArrayOutputStream extends OutputStream {
     private              byte[]       currentBuffer;
     /** The total count of bytes written. */
     private              int          count;
+
     /**
      * Creates a new byte array output stream. The buffer capacity is 
      * initially 1024 bytes, though its size increases if necessary. 
@@ -64,6 +66,7 @@ public class ByteArrayOutputStream extends OutputStream {
     public ByteArrayOutputStream() {
         this(1024);
     }
+
     /**
      * Creates a new byte array output stream, with a buffer capacity of 
      * the specified size, in bytes. 
@@ -79,6 +82,7 @@ public class ByteArrayOutputStream extends OutputStream {
             this.needNewBuffer(size);
         }
     }
+
     /**
      * Makes a new buffer available either by allocating
      * a new one or re-cycling an existing one.
@@ -106,6 +110,7 @@ public class ByteArrayOutputStream extends OutputStream {
             this.buffers.add(this.currentBuffer);
         }
     }
+
     /**
      * Write the bytes to byte array.
      * @param b the bytes to write
@@ -135,6 +140,7 @@ public class ByteArrayOutputStream extends OutputStream {
             this.count = newcount;
         }
     }
+
     /**
      * Write a byte to byte array.
      * @param b the byte to write
@@ -149,6 +155,7 @@ public class ByteArrayOutputStream extends OutputStream {
         this.currentBuffer[inBufferPos] = (byte) b;
         this.count++;
     }
+
     /**
      * Writes the entire contents of the specified input stream to this
      * byte stream. Bytes from the input stream are read directly into the
@@ -176,6 +183,7 @@ public class ByteArrayOutputStream extends OutputStream {
         }
         return readCount;
     }
+
     /**
      * Return the current size of the byte array.
      * @return the current size of the byte array
@@ -183,6 +191,7 @@ public class ByteArrayOutputStream extends OutputStream {
     public synchronized int size() {
         return this.count;
     }
+
     /**
      * Closing a <tt>ByteArrayOutputStream</tt> has no effect. The methods in
      * this class can be called after the stream has been closed without
@@ -195,6 +204,7 @@ public class ByteArrayOutputStream extends OutputStream {
     public void close() throws IOException {
         //nop
     }
+
     /**
      * @see java.io.ByteArrayOutputStream#reset()
      */
@@ -204,6 +214,7 @@ public class ByteArrayOutputStream extends OutputStream {
         this.currentBufferIndex = 0;
         this.currentBuffer = this.buffers.get(this.currentBufferIndex);
     }
+
     /**
      * Writes the entire contents of this byte stream to the
      * specified output stream.
@@ -223,6 +234,7 @@ public class ByteArrayOutputStream extends OutputStream {
             }
         }
     }
+
     /**
      * Fetches entire contents of an <code>InputStream</code> and represent
      * same data as result InputStream.
@@ -249,6 +261,7 @@ public class ByteArrayOutputStream extends OutputStream {
         output.write(input);
         return output.toBufferedInputStream();
     }
+
     /**
      * Gets the current contents of this byte stream as a Input Stream. The
      * returned stream is backed by buffers of <code>this</code> stream,
@@ -275,6 +288,7 @@ public class ByteArrayOutputStream extends OutputStream {
         }
         return new SequenceInputStream(Collections.enumeration(list));
     }
+
     /**
      * Gets the curent contents of this byte stream as a byte array.
      * The result is independent of this stream.
@@ -300,6 +314,7 @@ public class ByteArrayOutputStream extends OutputStream {
         }
         return newbuf;
     }
+
     /**
      * Gets the curent contents of this byte stream as a string.
      * @return the contents of the byte array as a String
@@ -309,6 +324,7 @@ public class ByteArrayOutputStream extends OutputStream {
     public String toString() {
         return new String(this.toByteArray());
     }
+
     /**
      * Gets the curent contents of this byte stream as a string
      * using the specified encoding.

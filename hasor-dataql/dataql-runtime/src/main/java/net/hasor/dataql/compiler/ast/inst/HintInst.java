@@ -60,7 +60,7 @@ public class HintInst extends CodeLocationInfo implements Inst {
 
     @Override
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
-        String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
+        String fixedString = StringUtils.repeat(' ', depth * fixedLength);
         String opt = fixedString + "hint " + this.hint.getValue() + " = ";
         writer.write(opt);
         this.value.doFormat(depth + 1, formatOption, writer);

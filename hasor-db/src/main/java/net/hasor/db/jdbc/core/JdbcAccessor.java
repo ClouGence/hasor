@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
+import net.hasor.db.transaction.TranManager;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.function.Function;
 
 /**
  *
@@ -23,17 +26,18 @@ import java.sql.Connection;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcAccessor {
-    private DataSource dataSource;
-    private Connection connection;
-
-    /**Set the JDBC DataSource to obtain connections from.*/
-    public void setDataSource(final DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    private DataSource                       dataSource;
+    private Connection                       connection;
+    private Function<DataSource, Connection> accessorApply = TranManager::currentConnection;
 
     /**Return the DataSource used by this template.*/
     public DataSource getDataSource() {
         return this.dataSource;
+    }
+
+    /**Set the JDBC DataSource to obtain connections from.*/
+    public void setDataSource(final DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     /**Return the Connection used by this template.*/
@@ -44,5 +48,20 @@ public class JdbcAccessor {
     /**Set the JDBC Connection to obtain connection from.*/
     public void setConnection(final Connection connection) {
         this.connection = connection;
+    }
+
+    protected Function<DataSource, Connection> getAccessorApply() {
+        return this.accessorApply;
+    }
+
+    public void setAccessorApply(Function<DataSource, Connection> accessorApply) {
+        this.accessorApply = accessorApply;
+    }
+
+    protected Connection applyConnection(DataSource dataSource) {
+        if (this.accessorApply == null) {
+            throw new IllegalArgumentException("accessorApply is null.");
+        }
+        return this.accessorApply.apply(dataSource);
     }
 }

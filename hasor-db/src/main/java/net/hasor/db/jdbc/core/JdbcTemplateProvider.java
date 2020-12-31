@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import net.hasor.core.provider.InstanceProvider;
-
 import javax.sql.DataSource;
 import java.util.function.Supplier;
 
@@ -25,10 +23,10 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcTemplateProvider implements Supplier<JdbcTemplate> {
-    private Supplier<DataSource> dataSource;
+    private final Supplier<DataSource> dataSource;
 
     public JdbcTemplateProvider(DataSource dataSource) {
-        this(new InstanceProvider<>(dataSource));
+        this(() -> dataSource);
     }
 
     public JdbcTemplateProvider(Supplier<DataSource> dataSource) {

@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -10,7 +10,7 @@
  * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  * Sun designates this particular file as subject to the "Classpath" exception
@@ -19,9 +19,9 @@
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- * 
+ *
  * Contributor(s):
- * 
+ *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -41,6 +41,7 @@ package net.hasor.utils.io.input;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+
 /**
  * <p>A slight spin on the standard ByteArrayInputStream.  This
  * one accepts only a Base64 encoded String in the constructor argument</p>
@@ -89,7 +90,7 @@ public class Base64InputStream extends InputStream {
      *
      * @since JDK1.1
      */
-    protected int mark = 0;
+    protected int  mark = 0;
     /**
      * The index one greater than the last valid character in the input
      * stream buffer.
@@ -99,7 +100,8 @@ public class Base64InputStream extends InputStream {
      * the last byte within <code>buf</code> that
      * can ever be read  from the input stream buffer.
      */
-    protected int count;
+    protected int  count;
+
     /**
      * Creates a <code>Base64InputStream</code>.
      *
@@ -110,6 +112,7 @@ public class Base64InputStream extends InputStream {
         this.pos = 0;
         this.count = this.buf.length;
     }
+
     /**
      * Reads the next byte of data from this input stream. The value
      * byte is returned as an <code>int</code> in the range
@@ -127,6 +130,7 @@ public class Base64InputStream extends InputStream {
     public int read() {
         return this.pos < this.count ? this.buf[this.pos++] & 0xff : -1;
     }
+
     /**
      * Reads up to <code>len</code> bytes of data into an array of bytes
      * from this input stream.
@@ -173,6 +177,7 @@ public class Base64InputStream extends InputStream {
         this.pos += len;
         return len;
     }
+
     /**
      * Skips <code>n</code> bytes of input from this input stream. Fewer
      * bytes might be skipped if the end of the input stream is reached.
@@ -197,6 +202,7 @@ public class Base64InputStream extends InputStream {
         this.pos += n;
         return n;
     }
+
     /**
      * Returns the number of bytes that can be read from this input
      * stream without blocking.
@@ -211,6 +217,7 @@ public class Base64InputStream extends InputStream {
     public int available() {
         return this.count - this.pos;
     }
+
     /**
      * Tests if this <code>InputStream</code> supports mark/reset. The
      * <code>markSupported</code> method of <code>ByteArrayInputStream</code>
@@ -222,6 +229,7 @@ public class Base64InputStream extends InputStream {
     public boolean markSupported() {
         return true;
     }
+
     /**
      * Set the current marked position in the stream.
      * ByteArrayInputStream objects are marked at position zero by
@@ -241,6 +249,7 @@ public class Base64InputStream extends InputStream {
     public void mark(final int readAheadLimit) {
         this.mark = this.pos;
     }
+
     /**
      * Resets the buffer to the marked position.  The marked position
      * is 0 unless another position was marked or an offset was specified
@@ -250,6 +259,7 @@ public class Base64InputStream extends InputStream {
     public void reset() {
         this.pos = this.mark;
     }
+
     /**
      * Closing a <tt>ByteArrayInputStream</tt> has no effect. The methods in
      * this class can be called after the stream has been closed without
@@ -259,6 +269,7 @@ public class Base64InputStream extends InputStream {
     @Override
     public void close() throws IOException {
     }
+
     /**
      * <p>Base64 decodes the source string.  NOTE:  This method doesn't
      *  consider line breaks</p>

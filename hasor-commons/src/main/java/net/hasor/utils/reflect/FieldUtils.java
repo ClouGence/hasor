@@ -20,6 +20,7 @@ import net.hasor.utils.ClassUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
+
 /**
  * Utilities for working with fields by reflection. Adapted and refactored
  * from the dormant [reflect] Commons sandbox component.
@@ -43,6 +44,7 @@ public class FieldUtils {
     public FieldUtils() {
         super();
     }
+
     /**
      * Gets an accessible <code>Field</code> by name respecting scope.
      * Superclasses/interfaces will be considered.
@@ -57,6 +59,7 @@ public class FieldUtils {
         MemberUtils.setAccessibleWorkaround(field);
         return field;
     }
+
     /**
      * Gets an accessible <code>Field</code> by name breaking scope
      * if requested. Superclasses/interfaces will be considered.
@@ -122,6 +125,7 @@ public class FieldUtils {
         }
         return match;
     }
+
     /**
      * Gets an accessible <code>Field</code> by name respecting scope.
      * Only the specified class will be considered.
@@ -134,6 +138,7 @@ public class FieldUtils {
     public static Field getDeclaredField(final Class<?> cls, final String fieldName) {
         return FieldUtils.getDeclaredField(cls, fieldName, false);
     }
+
     /**
      * Gets an accessible <code>Field</code> by name breaking scope
      * if requested. Only the specified class will be considered.
@@ -167,6 +172,7 @@ public class FieldUtils {
         }
         return null;
     }
+
     /**
      * Read an accessible static Field.
      * @param field to read
@@ -177,6 +183,7 @@ public class FieldUtils {
     public static Object readStaticField(final Field field) throws IllegalAccessException {
         return FieldUtils.readStaticField(field, false);
     }
+
     /**
      * Read a static Field.
      * @param field to read
@@ -195,6 +202,7 @@ public class FieldUtils {
         }
         return FieldUtils.readField(field, (Object) null, forceAccess);
     }
+
     /**
      * Read the named public static field. Superclasses will be considered.
      * @param cls  the class to reflect, must not be null
@@ -206,6 +214,7 @@ public class FieldUtils {
     public static Object readStaticField(final Class<?> cls, final String fieldName) throws IllegalAccessException {
         return FieldUtils.readStaticField(cls, fieldName, false);
     }
+
     /**
      * Read the named static field. Superclasses will be considered.
      * @param cls  the class to reflect, must not be null
@@ -225,6 +234,7 @@ public class FieldUtils {
         //already forced access above, don't repeat it here:
         return FieldUtils.readStaticField(field, false);
     }
+
     /**
      * Gets a static Field value by name. The field must be public.
      * Only the specified class will be considered.
@@ -238,6 +248,7 @@ public class FieldUtils {
     public static Object readDeclaredStaticField(final Class<?> cls, final String fieldName) throws IllegalAccessException {
         return FieldUtils.readDeclaredStaticField(cls, fieldName, false);
     }
+
     /**
      * Gets a static Field value by name. Only the specified class will
      * be considered.
@@ -259,6 +270,7 @@ public class FieldUtils {
         //already forced access above, don't repeat it here:
         return FieldUtils.readStaticField(field, false);
     }
+
     /**
      * Read an accessible Field.
      * @param field  the field to use
@@ -270,6 +282,7 @@ public class FieldUtils {
     public static Object readField(final Field field, final Object target) throws IllegalAccessException {
         return FieldUtils.readField(field, target, false);
     }
+
     /**
      * Read a Field.
      * @param field  the field to use
@@ -291,6 +304,7 @@ public class FieldUtils {
         }
         return field.get(target);
     }
+
     /**
      * Read the named public field. Superclasses will be considered.
      * @param target  the object to reflect, must not be null
@@ -302,6 +316,7 @@ public class FieldUtils {
     public static Object readField(final Object target, final String fieldName) throws IllegalAccessException {
         return FieldUtils.readField(target, fieldName, false);
     }
+
     /**
      * Read the named field. Superclasses will be considered.
      * @param target  the object to reflect, must not be null
@@ -325,6 +340,7 @@ public class FieldUtils {
         //already forced access above, don't repeat it here:
         return FieldUtils.readField(field, target);
     }
+
     /**
      * Read the named public field. Only the class of the specified object will be considered.
      * @param target  the object to reflect, must not be null
@@ -336,6 +352,7 @@ public class FieldUtils {
     public static Object readDeclaredField(final Object target, final String fieldName) throws IllegalAccessException {
         return FieldUtils.readDeclaredField(target, fieldName, false);
     }
+
     /**
      * <p<>Gets a Field value by name. Only the class of the specified
      * object will be considered.
@@ -361,6 +378,7 @@ public class FieldUtils {
         //already forced access above, don't repeat it here:
         return FieldUtils.readField(field, target);
     }
+
     /**
      * Write a public static Field.
      * @param field to write
@@ -371,6 +389,7 @@ public class FieldUtils {
     public static void writeStaticField(final Field field, final Object value) throws IllegalAccessException {
         FieldUtils.writeStaticField(field, value, false);
     }
+
     /**
      * Write a static Field.
      * @param field to write
@@ -390,6 +409,7 @@ public class FieldUtils {
         }
         FieldUtils.writeField(field, (Object) null, value, forceAccess);
     }
+
     /**
      * Write a named public static Field. Superclasses will be considered.
      * @param cls Class on which the Field is to be found
@@ -401,6 +421,7 @@ public class FieldUtils {
     public static void writeStaticField(final Class<?> cls, final String fieldName, final Object value) throws IllegalAccessException {
         FieldUtils.writeStaticField(cls, fieldName, value, false);
     }
+
     /**
      * Write a named static Field. Superclasses will be considered.
      * @param cls Class on which the Field is to be found
@@ -420,6 +441,7 @@ public class FieldUtils {
         //already forced access above, don't repeat it here:
         FieldUtils.writeStaticField(field, value);
     }
+
     /**
      * Write a named public static Field. Only the specified class will be considered.
      * @param cls Class on which the Field is to be found
@@ -431,6 +453,7 @@ public class FieldUtils {
     public static void writeDeclaredStaticField(final Class<?> cls, final String fieldName, final Object value) throws IllegalAccessException {
         FieldUtils.writeDeclaredStaticField(cls, fieldName, value, false);
     }
+
     /**
      * Write a named static Field. Only the specified class will be considered.
      * @param cls Class on which the Field is to be found
@@ -450,6 +473,7 @@ public class FieldUtils {
         //already forced access above, don't repeat it here:
         FieldUtils.writeField(field, (Object) null, value);
     }
+
     /**
      * Write an accessible field.
      * @param field to write
@@ -461,6 +485,7 @@ public class FieldUtils {
     public static void writeField(final Field field, final Object target, final Object value) throws IllegalAccessException {
         FieldUtils.writeField(field, target, value, false);
     }
+
     /**
      * Write a field.
      * @param field to write
@@ -483,6 +508,7 @@ public class FieldUtils {
         }
         field.set(target, value);
     }
+
     /**
      * Write a public field. Superclasses will be considered.
      * @param target  the object to reflect, must not be null
@@ -494,6 +520,7 @@ public class FieldUtils {
     public static void writeField(final Object target, final String fieldName, final Object value) throws IllegalAccessException {
         FieldUtils.writeField(target, fieldName, value, false);
     }
+
     /**
      * Write a field. Superclasses will be considered.
      * @param target  the object to reflect, must not be null
@@ -517,6 +544,7 @@ public class FieldUtils {
         //already forced access above, don't repeat it here:
         FieldUtils.writeField(field, target, value);
     }
+
     /**
      * Write a public field. Only the specified class will be considered.
      * @param target  the object to reflect, must not be null
@@ -528,6 +556,7 @@ public class FieldUtils {
     public static void writeDeclaredField(final Object target, final String fieldName, final Object value) throws IllegalAccessException {
         FieldUtils.writeDeclaredField(target, fieldName, value, false);
     }
+
     /**
      * Write a public field. Only the specified class will be considered.
      * @param target  the object to reflect, must not be null

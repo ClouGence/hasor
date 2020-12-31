@@ -40,6 +40,7 @@ public final class DoubleConverter extends NumberConverter {
     public DoubleConverter() {
         super(true);
     }
+
     /**
      * Construct a <b>java.lang.Double</b> <i>Converter</i> that returns
      * a default value if an error occurs.
@@ -51,6 +52,7 @@ public final class DoubleConverter extends NumberConverter {
     public DoubleConverter(final Object defaultValue) {
         super(true, defaultValue);
     }
+
     /**
      * Return the default type this <code>Converter</code> handles.
      *

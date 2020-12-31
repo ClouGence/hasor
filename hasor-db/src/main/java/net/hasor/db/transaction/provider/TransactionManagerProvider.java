@@ -26,7 +26,7 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class TransactionManagerProvider implements Supplier<TransactionManager> {
-    private Supplier<DataSource> dataSource;
+    private final Supplier<DataSource> dataSource;
 
     public TransactionManagerProvider(Supplier<DataSource> dataSource) {
         this.dataSource = dataSource;

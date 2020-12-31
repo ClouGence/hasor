@@ -1,0 +1,48 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package net.hasor.db.types.handler;
+import java.sql.*;
+import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
+
+/**
+ * @version : 2020-10-31
+ * @author 赵永春 (zyc@hasor.net)
+ */
+public class ZonedDateTimeTypeHandler extends AbstractTypeHandler<ZonedDateTime> {
+    @Override
+    public void setNonNullParameter(PreparedStatement ps, int i, ZonedDateTime parameter, JDBCType jdbcType) throws SQLException {
+        ps.setObject(i, parameter.toOffsetDateTime());
+    }
+
+    @Override
+    public ZonedDateTime getNullableResult(ResultSet rs, String columnName) throws SQLException {
+        OffsetDateTime offsetDateTime = rs.getObject(columnName, OffsetDateTime.class);
+        return (offsetDateTime == null) ? null : offsetDateTime.toZonedDateTime();
+    }
+
+    @Override
+    public ZonedDateTime getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+        OffsetDateTime offsetDateTime = rs.getObject(columnIndex, OffsetDateTime.class);
+        return (offsetDateTime == null) ? null : offsetDateTime.toZonedDateTime();
+    }
+
+    @Override
+    public ZonedDateTime getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+        OffsetDateTime offsetDateTime = cs.getObject(columnIndex, OffsetDateTime.class);
+        return (offsetDateTime == null) ? null : offsetDateTime.toZonedDateTime();
+    }
+}

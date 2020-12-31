@@ -19,9 +19,9 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.exts.aop.Matchers;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.utils.CheckUtils;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.supplier.InstanceProvider;
 import net.hasor.web.InvokerFilter;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
@@ -46,8 +46,8 @@ import java.util.function.Supplier;
 public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     private final InstanceProvider<String> requestEncoding  = new InstanceProvider<>("");
     private final InstanceProvider<String> responseEncoding = new InstanceProvider<>("");
-    private       ServletVersion           curVersion;
-    private       MimeTypeSupplier         mimeType;
+    private final ServletVersion           curVersion;
+    private final MimeTypeSupplier         mimeType;
     // ------------------------------------------------------------------------------------------------------
 
     protected InvokerWebApiBinder(ServletVersion curVersion, MimeTypeSupplier mimeType, ApiBinder apiBinder) {

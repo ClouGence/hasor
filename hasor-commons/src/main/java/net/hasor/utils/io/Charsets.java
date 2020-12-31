@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@
 package net.hasor.utils.io;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+
 /**
  * Charsets required of every implementation of the Java platform.
  *
@@ -53,6 +54,7 @@ public class Charsets {
     // This class should only contain Charset instances for required encodings. This guarantees that it will load
     // correctly and without delay on all Java platforms.
     //
+
     /**
      * Returns the given Charset or the default Charset if the given Charset is null.
      *
@@ -63,6 +65,7 @@ public class Charsets {
     public static Charset toCharset(final Charset charset) {
         return charset == null ? Charset.defaultCharset() : charset;
     }
+
     /**
      * Returns a Charset for the named charset. If the name is null, return the default Charset.
      *
@@ -75,6 +78,7 @@ public class Charsets {
     public static Charset toCharset(final String charset) {
         return charset == null ? Charset.defaultCharset() : Charset.forName(charset);
     }
+
     /**
      * CharEncodingISO Latin Alphabet No. 1, a.k.a. ISO-LATIN-1. </p>
      * <p>

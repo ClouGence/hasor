@@ -16,6 +16,7 @@
  */
 package net.hasor.utils.convert.convert;
 import java.util.Date;
+
 /**
  * {@link DateTimeConverter} implementation that handles conversion to
  * and from <b>java.util.Date</b> objects.
@@ -40,6 +41,7 @@ public final class DateConverter extends DateTimeConverter {
     public DateConverter() {
         super();
     }
+
     /**
      * Construct a <b>java.util.Date</b> <i>Converter</i> that returns
      * a default value if an error occurs.
@@ -51,6 +53,7 @@ public final class DateConverter extends DateTimeConverter {
     public DateConverter(final Object defaultValue) {
         super(defaultValue);
     }
+
     /**
      * Return the default type this <code>Converter</code> handles.
      * @return The default type this <code>Converter</code> handles.

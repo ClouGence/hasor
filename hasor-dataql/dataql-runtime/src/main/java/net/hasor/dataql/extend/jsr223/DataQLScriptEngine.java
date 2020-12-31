@@ -34,9 +34,9 @@ import java.util.Objects;
  * @version : 2017-10-19
  */
 public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEngine, Compilable, Hints {
-    private HintsSet                  optionSet = new HintsSet();
-    private DataQLScriptEngineFactory engineFactory;
-    private Finder                    finder    = Finder.DEFAULT;
+    private final HintsSet                  optionSet = new HintsSet();
+    private final DataQLScriptEngineFactory engineFactory;
+    private       Finder                    finder    = Finder.DEFAULT;
 
     DataQLScriptEngine(DataQLScriptEngineFactory engineFactory) {
         this.engineFactory = engineFactory;

@@ -88,7 +88,7 @@ public class ObjectVariable extends CodeLocationInfo implements Inst, Variable {
             return;
         }
         depth = (depth == 0) ? 1 : depth;
-        String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
+        String fixedString = StringUtils.repeat(' ', depth * fixedLength);
         //
         writer.write("{\n");
         for (int i = 0; i < this.fieldSort.size(); i++) {
@@ -131,6 +131,6 @@ public class ObjectVariable extends CodeLocationInfo implements Inst, Variable {
             }
         }
         //
-        writer.write("\n" + StringUtils.fixedString(' ', (depth - 1) * fixedLength) + "}");
+        writer.write("\n" + StringUtils.repeat(' ', (depth - 1) * fixedLength) + "}");
     }
 }

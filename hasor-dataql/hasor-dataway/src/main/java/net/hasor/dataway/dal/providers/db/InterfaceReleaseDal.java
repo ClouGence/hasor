@@ -38,6 +38,7 @@ import static net.hasor.dataway.dal.FieldDef.*;
  */
 @Singleton
 public class InterfaceReleaseDal extends AbstractDal {
+    protected              String                releaseTableName;
     /** INFO 表中的唯一索引列 */
     protected static final Map<FieldDef, String> pubIndexColumn = new HashMap<FieldDef, String>() {{
         put(ID, "pub_id");
@@ -154,7 +155,7 @@ public class InterfaceReleaseDal extends AbstractDal {
         // .如果是 Path 那么要先查询最近一次发布ID
         if (indexKey == PATH) {
             String sqlQuery = "" + //
-                    "select pub_id,pub_api_id from interface_release " +//
+                    "select pub_id,pub_api_id from " + this.releaseTableName + " " +//
                     "where pub_status != ? and pub_path = ? " + //
                     "order by pub_release_time desc";//
             List<Object> data = new ArrayList<>();
@@ -170,7 +171,7 @@ public class InterfaceReleaseDal extends AbstractDal {
         }
         // 根据发布 ID 查询
         String sqlQuery = "" +//
-                "select * from interface_release " +//
+                "select * from " + this.releaseTableName + " " +//
                 "where pub_status != ? and pub_id = ?";
         List<Object> data = new ArrayList<>();
         data.add(String.valueOf(ApiStatusEnum.Delete.typeNum()));
@@ -183,7 +184,7 @@ public class InterfaceReleaseDal extends AbstractDal {
     public List<Map<FieldDef, String>> listObjectBy(Map<QueryCondition, Object> conditions) throws SQLException {
         String releaseList = "" +//
                 "select pub_id,pub_api_id,pub_method,pub_path,pub_status,pub_type,pub_comment,pub_schema,pub_release_time " +//
-                "from interface_release ";
+                "from " + this.releaseTableName + " ";
         //
         List<Object> data = new ArrayList<>();
         if (conditions.containsKey(QueryCondition.ApiId)) {
@@ -202,7 +203,7 @@ public class InterfaceReleaseDal extends AbstractDal {
     }
 
     public boolean deleteObject(String id) throws SQLException {
-        throw new SQLException("table interface_release cannot be modified.");
+        throw new SQLException("table " + this.releaseTableName + " cannot be modified.");
     }
 
     public boolean updateObject(String id, Map<FieldDef, String> newData) throws SQLException {
@@ -219,7 +220,7 @@ public class InterfaceReleaseDal extends AbstractDal {
         //
         updateData.add(id);
         String sqlQuery = "" + //
-                "update interface_release set " + //
+                "update " + this.releaseTableName + " set " + //
                 sqlBuffer.toString() + //
                 "where pub_id = ?";// TODO 需要在加上一个 乐观锁，用以处理并发导致数据丢失的风险
         return this.jdbcTemplate.executeUpdate(sqlQuery, updateData.toArray()) > 0;
@@ -238,7 +239,7 @@ public class InterfaceReleaseDal extends AbstractDal {
         insertParamsBuffer.deleteCharAt(0);
         //
         String sqlQuery = "" + //
-                "insert into interface_release (" + //
+                "insert into " + this.releaseTableName + " (" + //
                 insertColumnBuffer.toString() + //
                 ") values (" +//
                 insertParamsBuffer.toString() + //

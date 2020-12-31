@@ -16,6 +16,7 @@
  */
 package net.hasor.utils.convert.convert;
 import java.math.BigInteger;
+
 /**
  * {@link NumberConverter} implementation that handles conversion to
  * and from <b>java.math.BigInteger</b> objects.
@@ -41,6 +42,7 @@ public final class BigIntegerConverter extends NumberConverter {
     public BigIntegerConverter() {
         super(false);
     }
+
     /**
      * Construct a <b>java.math.BigInteger</b> <i>Converter</i> that returns
      * a default value if an error occurs.
@@ -52,6 +54,7 @@ public final class BigIntegerConverter extends NumberConverter {
     public BigIntegerConverter(final Object defaultValue) {
         super(false, defaultValue);
     }
+
     /**
      * Return the default type this <code>Converter</code> handles.
      *

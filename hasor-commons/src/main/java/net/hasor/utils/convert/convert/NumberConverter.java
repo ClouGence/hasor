@@ -29,6 +29,7 @@ import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
 /**
  * {@link Converter} implementaion that handles conversion
  * to and from <b>java.lang.Number</b> objects.
@@ -92,6 +93,7 @@ public abstract class NumberConverter extends AbstractConverter {
     private              boolean useLocaleFormat;
     private              Locale  locale;
     // ----------------------------------------------------------- Constructors
+
     /**
      * Construct a <b>java.lang.Number</b> <i>Converter</i>
      * that throws a <code>ConversionException</code> if a error occurs.
@@ -102,6 +104,7 @@ public abstract class NumberConverter extends AbstractConverter {
         super();
         this.allowDecimals = allowDecimals;
     }
+
     /**
      * Construct a <code>java.lang.Number</code> <i>Converter</i> that returns
      * a default value if an error occurs.
@@ -115,6 +118,7 @@ public abstract class NumberConverter extends AbstractConverter {
         this.setDefaultValue(defaultValue);
     }
     // --------------------------------------------------------- Public Methods
+
     /**
      * Return whether decimals are allowed in the number.
      *
@@ -123,6 +127,7 @@ public abstract class NumberConverter extends AbstractConverter {
     public boolean isAllowDecimals() {
         return this.allowDecimals;
     }
+
     /**
      * Set whether a format should be used to convert
      * the Number.
@@ -133,6 +138,7 @@ public abstract class NumberConverter extends AbstractConverter {
     public void setUseLocaleFormat(final boolean useLocaleFormat) {
         this.useLocaleFormat = useLocaleFormat;
     }
+
     /**
      * Return the number format pattern used to convert
      * Numbers to/from a <code>java.lang.String</code>
@@ -146,6 +152,7 @@ public abstract class NumberConverter extends AbstractConverter {
     public String getPattern() {
         return this.pattern;
     }
+
     /**
      * Set a number format pattern to use to convert
      * Numbers to/from a <code>java.lang.String</code>.
@@ -159,6 +166,7 @@ public abstract class NumberConverter extends AbstractConverter {
         this.pattern = pattern;
         this.setUseLocaleFormat(true);
     }
+
     /**
      * Return the Locale for the <i>Converter</i>
      * (or <code>null</code> if none specified).
@@ -168,6 +176,7 @@ public abstract class NumberConverter extends AbstractConverter {
     public Locale getLocale() {
         return this.locale;
     }
+
     /**
      * Set the Locale for the <i>Converter</i>.
      *
@@ -178,6 +187,7 @@ public abstract class NumberConverter extends AbstractConverter {
         this.setUseLocaleFormat(true);
     }
     // ------------------------------------------------------ Protected Methods
+
     /**
      * Convert an input Number object into a String.
      *
@@ -195,6 +205,7 @@ public abstract class NumberConverter extends AbstractConverter {
             return value.toString();
         }
     }
+
     /**
      * Convert the input object into a Number object of the
      * specified type.
@@ -239,6 +250,7 @@ public abstract class NumberConverter extends AbstractConverter {
         // Ensure the correct number type is returned
         return this.toNumber(sourceType, targetType, number);
     }
+
     /**
      * Convert any Number object to the specified type for this
      * <i>Converter</i>.
@@ -334,6 +346,7 @@ public abstract class NumberConverter extends AbstractConverter {
         String msg = this.toString(this.getClass()) + " cannot handle conversion to '" + this.toString(targetType) + "'";
         throw new ConversionException(msg);
     }
+
     /**
      * Default String to Number conversion.
      * <p>
@@ -390,6 +403,7 @@ public abstract class NumberConverter extends AbstractConverter {
         String msg = this.toString(this.getClass()) + " cannot handle conversion from '" + this.toString(sourceType) + "' to '" + this.toString(targetType) + "'";
         throw new ConversionException(msg);
     }
+
     /**
      * Provide a String representation of this number converter.
      *
@@ -414,6 +428,7 @@ public abstract class NumberConverter extends AbstractConverter {
         buffer.append(']');
         return buffer.toString();
     }
+
     /**
      * Return a NumberFormat to use for Conversion.
      *
@@ -440,6 +455,7 @@ public abstract class NumberConverter extends AbstractConverter {
         }
         return format;
     }
+
     /**
      * Convert a String into a <code>Number</code> object.
      * @param sourceType

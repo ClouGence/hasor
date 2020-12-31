@@ -19,6 +19,7 @@ import java.sql.Time;
 import java.text.DateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
+
 /**
  * {@link DateTimeConverter} implementation that handles conversion to
  * and from <b>java.sql.Time</b> objects.
@@ -43,6 +44,7 @@ public final class SqlTimeConverter extends DateTimeConverter {
     public SqlTimeConverter() {
         super();
     }
+
     /**
      * Construct a <b>java.sql.Time</b> <i>Converter</i> that returns a default value if an error occurs.
      *
@@ -51,6 +53,7 @@ public final class SqlTimeConverter extends DateTimeConverter {
     public SqlTimeConverter(final Object defaultValue) {
         super(defaultValue);
     }
+
     /**
      * Return the default type this <code>Converter</code> handles.
      * @return The default type this <code>Converter</code> handles.
@@ -60,6 +63,7 @@ public final class SqlTimeConverter extends DateTimeConverter {
     protected Class getDefaultType() {
         return Time.class;
     }
+
     /**
      * Return a <code>DateFormat<code> for the Locale.
      * @param locale local

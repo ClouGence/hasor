@@ -50,7 +50,7 @@ public class RunInst extends CodeLocationInfo implements Inst {
 
     @Override
     public void doFormat(int depth, Hints formatOption, FormatWriter writer) throws IOException {
-        String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
+        String fixedString = StringUtils.repeat(' ', depth * fixedLength);
         //
         writer.write(fixedString + "run ");
         this.value.doFormat(depth, formatOption, writer);

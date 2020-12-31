@@ -16,7 +16,7 @@
 package net.hasor.web.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.provider.InstanceProvider;
+import net.hasor.core.Provider;
 import net.hasor.test.web.actions.basic.AnnoGetAction;
 import net.hasor.test.web.actions.basic.BasicAction;
 import net.hasor.test.web.actions.mapping.MappingServlet;
@@ -65,7 +65,7 @@ public class MappingBinderTest extends AbstractTest {
     public void mappingTest_1() {
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final AnnoGetAction testCallerAction = new AnnoGetAction();
-        final Supplier<AnnoGetAction> testCallerActionProvider = InstanceProvider.of(testCallerAction);
+        final Supplier<AnnoGetAction> testCallerActionProvider = Provider.of(testCallerAction);
         //
         AppContext appContext = buildWebAppContext(apiBinder -> {
             BindInfo<AnnoGetAction> filterBindInfo1 = apiBinder.bindType(AnnoGetAction.class).uniqueName().asEagerSingleton().toInfo();
@@ -118,7 +118,7 @@ public class MappingBinderTest extends AbstractTest {
     public void mappingTest_2() {
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final AnnoGetAction testCallerAction = new AnnoGetAction();
-        final Supplier<AnnoGetAction> testCallerActionProvider = InstanceProvider.of(testCallerAction);
+        final Supplier<AnnoGetAction> testCallerActionProvider = Provider.of(testCallerAction);
         //
         AppContext appContext = buildWebAppContext(apiBinder -> {
             BindInfo<AnnoGetAction> filterBindInfo1 = apiBinder.bindType(AnnoGetAction.class).uniqueName().asEagerSingleton().toInfo();
@@ -249,7 +249,7 @@ public class MappingBinderTest extends AbstractTest {
     public void filterTest_1() throws Throwable {
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final SimpleInvokerFilter testCallerFilter = new SimpleInvokerFilter();
-        final Supplier<SimpleInvokerFilter> testCallerFilterProvider = InstanceProvider.of(testCallerFilter);
+        final Supplier<SimpleInvokerFilter> testCallerFilterProvider = Provider.of(testCallerFilter);
         //
         AppContext appContext = buildWebAppContext(apiBinder -> {
             BindInfo<SimpleInvokerFilter> filterBindInfo1 = apiBinder.bindType(SimpleInvokerFilter.class).uniqueName().asEagerSingleton().toInfo();
@@ -433,7 +433,7 @@ public class MappingBinderTest extends AbstractTest {
     public void servletTest_1() {
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final SimpleServlet testCallerServlet = new SimpleServlet();
-        final Supplier<SimpleServlet> testCallerServletProvider = InstanceProvider.of(testCallerServlet);
+        final Supplier<SimpleServlet> testCallerServletProvider = Provider.of(testCallerServlet);
         //
         AppContext appContext = buildWebAppContext(apiBinder -> {
             BindInfo<SimpleServlet> filterBindInfo1 = apiBinder.bindType(SimpleServlet.class).uniqueName().asEagerSingleton().toInfo();

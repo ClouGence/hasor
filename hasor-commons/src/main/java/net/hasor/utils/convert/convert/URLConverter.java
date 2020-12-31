@@ -18,6 +18,7 @@ package net.hasor.utils.convert.convert;
 import net.hasor.utils.convert.Converter;
 
 import java.net.URL;
+
 /**
  * {@link Converter} implementaion that handles conversion
  * to and from <b>java.net.URL</b> objects.
@@ -36,6 +37,7 @@ public final class URLConverter extends AbstractConverter {
     public URLConverter() {
         super();
     }
+
     /**
      * Construct a <b>java.net.URL</b> <i>Converter</i> that returns a default value if an error occurs.
      * @param defaultValue The default value to be returned if the value to be converted is missing or an error occurs converting the value.
@@ -43,6 +45,7 @@ public final class URLConverter extends AbstractConverter {
     public URLConverter(final Object defaultValue) {
         super(defaultValue);
     }
+
     /**
      * Return the default type this <code>Converter</code> handles.
      * @return The default type this <code>Converter</code> handles.
@@ -52,6 +55,7 @@ public final class URLConverter extends AbstractConverter {
     protected Class getDefaultType() {
         return URL.class;
     }
+
     /**
      * <p>Convert a java.net.URL or object into a String.</p>
      *

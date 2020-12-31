@@ -1238,7 +1238,7 @@ public class StringUtils {
         if (str == null || searchStr == null) {
             return false;
         }
-        return str.indexOf(searchStr) >= 0;
+        return str.contains(searchStr);
     }
 
     /**
@@ -2292,6 +2292,71 @@ public class StringUtils {
     //-----------------------------------------------------------------------
 
     /**
+     * <p>Splits the provided text into an array, using whitespace as the separator. but keep separator.</p>
+     *
+     * <pre>
+     * StringUtils.splitKeep(null)          = null
+     * StringUtils.splitKeep("")            = []
+     * StringUtils.splitKeep("a b c", " ")  = ["a", " ", "b", " ", "c"]
+     * StringUtils.splitKeep("abc def", " ")= ["abc", " ", "def"]
+     * StringUtils.splitKeep(" abc ", " ")  = [" ", "abc", " "]
+     * </pre>
+     *
+     * @param str  the String to parse, may be null
+     * @return an array of parsed Strings, <code>null</code> if null String input
+     */
+    public static String[] splitKeep(String str, char separatorChar) {
+        return splitKeep(str, String.valueOf(separatorChar));
+    }
+
+    /**
+     * <p>Splits the provided text into an array, using whitespace as the separator. but keep separator.</p>
+     *
+     * <pre>
+     * StringUtils.splitKeep(null)          = null
+     * StringUtils.splitKeep("")            = []
+     * StringUtils.splitKeep("a b c", " ")  = ["a", " ", "b", " ", "c"]
+     * StringUtils.splitKeep("abc def", " ")= ["abc", " ", "def"]
+     * StringUtils.splitKeep(" abc ", " ")  = [" ", "abc", " "]
+     * </pre>
+     *
+     * @param str  the String to parse, may be null
+     * @return an array of parsed Strings, <code>null</code> if null String input
+     */
+    public static String[] splitKeep(String str, String separatorStr) {
+        if (str == null) {
+            return null;
+        }
+        if (str.length() == 0) {
+            return ArrayUtils.EMPTY_STRING_ARRAY;
+        }
+        int CHARS = separatorStr.length();
+        if (CHARS == 0) {
+            throw new IllegalArgumentException("chars must be > 0");
+        }
+        int lastIndex = 0;
+        ArrayList<String> dat = new ArrayList<>();
+        while (true) {
+            int lookIndex = str.indexOf(separatorStr, lastIndex);
+            if (lookIndex == -1) {
+                String substring = str.substring(lastIndex);
+                if (substring.length() > 0) {
+                    dat.add(substring);
+                }
+                break;
+            } else {
+                if (lastIndex != lookIndex) {
+                    String term = str.substring(lastIndex, lookIndex);
+                    dat.add(term);
+                }
+                dat.add(separatorStr);
+                lastIndex = lookIndex + CHARS;
+            }
+        }
+        return dat.toArray(new String[0]);
+    }
+
+    /**
      * <p>Splits the provided text into an array, using whitespace as the
      * separator.
      * Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
@@ -2555,7 +2620,7 @@ public class StringUtils {
             return StringUtils.splitWorker(str, null, max, preserveAllTokens);
         }
         int separatorLength = separator.length();
-        ArrayList<String> substrings = new ArrayList<String>();
+        ArrayList<String> substrings = new ArrayList<>();
         int numberOfSubstrings = 0;
         int beg = 0;
         int end = 0;
@@ -2595,7 +2660,7 @@ public class StringUtils {
                 end = len;
             }
         }
-        return substrings.toArray(new String[substrings.size()]);
+        return substrings.toArray(new String[0]);
     }
     // -----------------------------------------------------------------------
 
@@ -2684,7 +2749,7 @@ public class StringUtils {
         if (len == 0) {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         int i = 0, start = 0;
         boolean match = false;
         boolean lastMatch = false;
@@ -2705,7 +2770,7 @@ public class StringUtils {
         if (match || preserveAllTokens && lastMatch) {
             list.add(str.substring(start, i));
         }
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
 
     /**
@@ -2810,7 +2875,7 @@ public class StringUtils {
         if (len == 0) {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         int sizePlus1 = 1;
         int i = 0, start = 0;
         boolean match = false;
@@ -2880,7 +2945,7 @@ public class StringUtils {
         if (match || preserveAllTokens && lastMatch) {
             list.add(str.substring(start, i));
         }
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
 
     /**
@@ -2977,7 +3042,7 @@ public class StringUtils {
             currentType = type;
         }
         list.add(new String(c, tokenStart, c.length - tokenStart));
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
     // Joining
     //-----------------------------------------------------------------------
@@ -3498,8 +3563,8 @@ public class StringUtils {
         }
         int replLength = searchString.length();
         int increase = replacement.length() - replLength;
-        increase = increase < 0 ? 0 : increase;
-        increase *= max < 0 ? 16 : max > 64 ? 64 : max;
+        increase = Math.max(increase, 0);
+        increase *= max < 0 ? 16 : Math.min(max, 64);
         StringBuilder buf = new StringBuilder(text.length() + increase);
         while (end != StringUtils.INDEX_NOT_FOUND) {
             buf.append(text.substring(start, end)).append(replacement);
@@ -3905,7 +3970,7 @@ public class StringUtils {
             start = end;
             end = temp;
         }
-        return new StringBuilder(len + start - end + overlay.length() + 1).append(str.substring(0, start)).append(overlay).append(str.substring(end)).toString();
+        return str.substring(0, start) + overlay + str.substring(end);
     }
     // Chomping
     //-----------------------------------------------------------------------
@@ -4053,6 +4118,27 @@ public class StringUtils {
      * StringUtils.repeat("a", -2) = ""
      * </pre>
      *
+     * @param character  the Character to to repeat, may be null
+     * @param repeat  number of times to repeat str, negative treated as zero
+     * @return a new String consisting of the original String repeated,
+     *  <code>null</code> if null String input
+     */
+    public static String repeat(final char character, final int repeat) {
+        return repeat(character + "",repeat);
+    }
+    /**
+     * <p>Repeat a String <code>repeat</code> times to form a
+     * new String.</p>
+     *
+     * <pre>
+     * StringUtils.repeat(null, 2) = null
+     * StringUtils.repeat("", 0)   = ""
+     * StringUtils.repeat("", 2)   = ""
+     * StringUtils.repeat("a", 3)  = "aaa"
+     * StringUtils.repeat("ab", 2) = "abab"
+     * StringUtils.repeat("a", -2) = ""
+     * </pre>
+     *
      * @param str  the String to repeat, may be null
      * @param repeat  number of times to repeat str, negative treated as zero
      * @return a new String consisting of the original String repeated,
@@ -4158,9 +4244,7 @@ public class StringUtils {
             throw new IndexOutOfBoundsException("Cannot pad a negative amount: " + repeat);
         }
         final char[] buf = new char[repeat];
-        for (int i = 0; i < buf.length; i++) {
-            buf[i] = padChar;
-        }
+        Arrays.fill(buf, padChar);
         return new String(buf);
     }
 
@@ -4631,7 +4715,7 @@ public class StringUtils {
         if (str == null || (strLen = str.length()) == 0) {
             return str;
         }
-        return new StringBuilder(strLen).append(Character.toTitleCase(str.charAt(0))).append(str.substring(1)).toString();
+        return Character.toTitleCase(str.charAt(0)) + str.substring(1);
     }
 
     /**
@@ -4657,7 +4741,7 @@ public class StringUtils {
         if (str == null || (strLen = str.length()) == 0) {
             return str;
         }
-        return new StringBuilder(strLen).append(Character.toLowerCase(str.charAt(0))).append(str.substring(1)).toString();
+        return Character.toLowerCase(str.charAt(0)) + str.substring(1);
     }
 
     /**
@@ -4767,7 +4851,7 @@ public class StringUtils {
         }
         int sz = str.length();
         for (int i = 0; i < sz; i++) {
-            if (Character.isLetter(str.charAt(i)) == false) {
+            if (!Character.isLetter(str.charAt(i))) {
                 return false;
             }
         }
@@ -4801,7 +4885,7 @@ public class StringUtils {
         }
         int sz = str.length();
         for (int i = 0; i < sz; i++) {
-            if (Character.isLetter(str.charAt(i)) == false && str.charAt(i) != ' ') {
+            if (!Character.isLetter(str.charAt(i)) && str.charAt(i) != ' ') {
                 return false;
             }
         }
@@ -4834,7 +4918,7 @@ public class StringUtils {
         }
         int sz = str.length();
         for (int i = 0; i < sz; i++) {
-            if (Character.isLetterOrDigit(str.charAt(i)) == false) {
+            if (!Character.isLetterOrDigit(str.charAt(i))) {
                 return false;
             }
         }
@@ -4868,7 +4952,7 @@ public class StringUtils {
         }
         int sz = str.length();
         for (int i = 0; i < sz; i++) {
-            if (Character.isLetterOrDigit(str.charAt(i)) == false && str.charAt(i) != ' ') {
+            if (!Character.isLetterOrDigit(str.charAt(i)) && str.charAt(i) != ' ') {
                 return false;
             }
         }
@@ -4906,7 +4990,7 @@ public class StringUtils {
         }
         int sz = str.length();
         for (int i = 0; i < sz; i++) {
-            if (CharUtils.isAsciiPrintable(str.charAt(i)) == false) {
+            if (!CharUtils.isAsciiPrintable(str.charAt(i))) {
                 return false;
             }
         }
@@ -4940,7 +5024,7 @@ public class StringUtils {
         }
         int sz = str.length();
         for (int i = 0; i < sz; i++) {
-            if (Character.isDigit(str.charAt(i)) == false) {
+            if (!Character.isDigit(str.charAt(i))) {
                 return false;
             }
         }
@@ -4976,7 +5060,7 @@ public class StringUtils {
         }
         int sz = str.length();
         for (int i = 0; i < sz; i++) {
-            if (Character.isDigit(str.charAt(i)) == false && str.charAt(i) != ' ') {
+            if (!Character.isDigit(str.charAt(i)) && str.charAt(i) != ' ') {
                 return false;
             }
         }
@@ -5008,7 +5092,7 @@ public class StringUtils {
         }
         int sz = str.length();
         for (int i = 0; i < sz; i++) {
-            if (Character.isWhitespace(str.charAt(i)) == false) {
+            if (!Character.isWhitespace(str.charAt(i))) {
                 return false;
             }
         }
@@ -5039,7 +5123,7 @@ public class StringUtils {
         }
         int sz = str.length();
         for (int i = 0; i < sz; i++) {
-            if (Character.isLowerCase(str.charAt(i)) == false) {
+            if (!Character.isLowerCase(str.charAt(i))) {
                 return false;
             }
         }
@@ -5070,7 +5154,7 @@ public class StringUtils {
         }
         int sz = str.length();
         for (int i = 0; i < sz; i++) {
-            if (Character.isUpperCase(str.charAt(i)) == false) {
+            if (!Character.isUpperCase(str.charAt(i))) {
                 return false;
             }
         }
@@ -5356,11 +5440,7 @@ public class StringUtils {
         int targetSting = length - middle.length();
         int startOffset = targetSting / 2 + targetSting % 2;
         int endOffset = str.length() - targetSting / 2;
-        StringBuilder builder = new StringBuilder(length);
-        builder.append(str.substring(0, startOffset));
-        builder.append(middle);
-        builder.append(str.substring(endOffset));
-        return builder.toString();
+        return str.substring(0, startOffset) + middle + str.substring(endOffset);
     }
     // Difference
     //-----------------------------------------------------------------------
@@ -5654,9 +5734,9 @@ public class StringUtils {
             n = m;
             m = t.length();
         }
-        int p[] = new int[n + 1]; //'previous' cost array, horizontally
-        int d[] = new int[n + 1]; // cost array, horizontally
-        int _d[]; //placeholder to assist in swapping p and d
+        int[] p = new int[n + 1]; //'previous' cost array, horizontally
+        int[] d = new int[n + 1]; // cost array, horizontally
+        int[] _d; //placeholder to assist in swapping p and d
         // indexes into strings s and t
         int i; // iterates through s
         int j; // iterates through t
@@ -5977,7 +6057,7 @@ public class StringUtils {
         if (StringUtils.isBlank(value)) {
             return value;
         }
-        StringBuffer sb = new StringBuffer(value);
+        StringBuilder sb = new StringBuilder(value);
         char firstChar = sb.charAt(0);
         sb.delete(0, 1);
         sb.insert(0, (char) (firstChar <= 90 ? firstChar + 32 : firstChar));
@@ -5997,29 +6077,6 @@ public class StringUtils {
      */
     public static boolean equalsBlankIgnoreCase(final String str1, final String str2) {
         return StringUtils.equalsIgnoreCase(StringUtils.trimToEmpty(str1), StringUtils.trimToEmpty(str2));
-    }
-
-    /**
-     * 按照某个字符组装固定长度的的字符串。
-     * <pre>
-     * StringUtils.fixedString(' ',4)  = "    "
-     * StringUtils.fixedString(' ',2)  = "  "
-     * StringUtils.fixedString('A',2)  = "AA"
-     * StringUtils.fixedString('A',0)  = ""
-     * StringUtils.fixedString('A',-1) = null
-     * </pre>
-     */
-    public static String fixedString(final char c, final int length) {
-        if (length < 0) {
-            return "";
-        }
-        if (length == 0) {
-            return "";
-        }
-        //
-        char[] chars = new char[length];
-        Arrays.fill(chars, c);
-        return new String(chars);
     }
 
     /* ------------------------------------------------------------ */
@@ -6070,5 +6127,10 @@ public class StringUtils {
         } catch (IOException x) {
             throw new RuntimeException(x);
         }
+    }
+
+    /** Object to String ,when null object then null else return toString(); */
+    public static String toString(Object object) {
+        return (object == null) ? null : object.toString();
     }
 }

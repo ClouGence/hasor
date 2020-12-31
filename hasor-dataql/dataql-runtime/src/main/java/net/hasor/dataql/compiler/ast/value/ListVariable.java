@@ -63,7 +63,7 @@ public class ListVariable extends CodeLocationInfo implements Variable {
             writer.write("[]");
             return;
         }
-        String fixedString = StringUtils.fixedString(' ', depth * fixedLength);
+        String fixedString = StringUtils.repeat(' ', depth * fixedLength);
         boolean innerLine = this.expressionList.stream().allMatch(variable -> variable instanceof PrimitiveVariable);
         if (innerLine) {
             fixedString = "";
@@ -87,7 +87,7 @@ public class ListVariable extends CodeLocationInfo implements Variable {
         if (innerLine) {
             writer.write("]");
         } else {
-            writer.write("\n" + StringUtils.fixedString(' ', (depth - 1) * fixedLength) + "]");
+            writer.write("\n" + StringUtils.repeat(' ', (depth - 1) * fixedLength) + "]");
         }
     }
 }

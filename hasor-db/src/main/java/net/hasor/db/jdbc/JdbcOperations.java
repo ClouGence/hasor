@@ -32,13 +32,6 @@ public interface JdbcOperations {
     /**通过回调函数执行一个JDBC数据访问操作。 */
     public <T> T execute(StatementCallback<T> action) throws SQLException;
 
-    /**执行 JDBC（存储过程、函数）数据访问操作。
-     * <p>CallableStatementCreator 接口或者 CallableStatementCallback 接口 对象需要对存储过程的传入参数进行设置。*/
-    public <T> T execute(CallableStatementCreator csc, CallableStatementCallback<T> action) throws SQLException;
-
-    /**执行 JDBC（存储过程、函数）数据访问操作。SQL 语句会被编译成 PreparedStatement 类型通过回调接口 CallableStatementCallback 执行。*/
-    public <T> T execute(String callString, CallableStatementCallback<T> action) throws SQLException;
-
     /**执行一个 JDBC 操作。这个 JDBC 调用操作将会使用 PreparedStatement 接口执行。*/
     public <T> T execute(PreparedStatementCreator psc, PreparedStatementCallback<T> action) throws SQLException;
 
@@ -53,6 +46,18 @@ public interface JdbcOperations {
 
     /**执行一个 SQL语句，通常是一个 DDL 语句.*/
     public boolean execute(String sql) throws SQLException;
+
+    /** 执行一个 SQL语句块，语句块可能返回多个结果.（需要数据库驱动支持，例如mysql 要设置 allowMultiQueries=true 参数） */
+    public List<Object> multipleExecute(String sql) throws SQLException;
+
+    /** 执行一个 SQL语句块，语句块可能返回多个结果.（需要数据库驱动支持，例如mysql 要设置 allowMultiQueries=true 参数） */
+    public List<Object> multipleExecute(String sql, Object... args) throws SQLException;
+
+    /** 执行一个 SQL语句块，语句块可能返回多个结果.（需要数据库驱动支持，例如mysql 要设置 allowMultiQueries=true 参数） */
+    public List<Object> multipleExecute(String sql, Map<String, ?> paramMap) throws SQLException;
+
+    /** 执行一个 SQL语句块，语句块可能返回多个结果.（需要数据库驱动支持，例如mysql 要设置 allowMultiQueries=true 参数） */
+    public List<Object> multipleExecute(String sql, SqlParameterSource parameterSource) throws SQLException;
 
     /**执行一个动态查询 SQL 语句。SQL 语句会被编译成 PreparedStatement 类型通过回调接口 PreparedStatementCallback 执行。
      * 返回的结果集使用 ResultSetExtractor 转换。*/
@@ -321,20 +326,6 @@ public interface JdbcOperations {
 
     /**查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询记录将会使用 Map 保存，并封装到 List 中。*/
     public List<Map<String, Object>> queryForList(String sql, Map<String, ?> paramMap) throws SQLException;
-    //    /**执行一个静态 SQL 语句，查询结果使用 SqlRowSet 接口封装。*/
-    //    public SqlRowSet queryForRowSet(String sql) throws SQLException;
-    //    /**查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果使用 SqlRowSet 接口封装。
-    //     * @see java.sql.Types*/
-    //    public SqlRowSet queryForRowSet(String sql, Object... args) throws SQLException;
-    //    /**查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果使用 SqlRowSet 接口封装。
-    //     * @see java.sql.Types*/
-    //    public SqlRowSet queryForRowSet(String sql, Object[] args, int[] argTypes) throws SQLException;
-    //    /**查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果使用 SqlRowSet 接口封装。
-    //     * @see java.sql.Types*/
-    //    public SqlRowSet queryForRowSet(String sql, SqlParameterSource paramSource) throws SQLException;
-    //    /**查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果使用 SqlRowSet 接口封装。
-    //     * @see java.sql.Types*/
-    //    public SqlRowSet queryForRowSet(String sql, Map<String, ?> paramMap) throws SQLException;
 
     /**执行一个更新语句（insert、update、delete），这个查询将会使用 PreparedStatement 接口操作。*/
     public int executeUpdate(PreparedStatementCreator psc) throws SQLException;
@@ -364,5 +355,14 @@ public interface JdbcOperations {
     public int[] executeBatch(String sql, Map<String, ?>[] batchValues) throws SQLException;
 
     /**批量执行 insert 或 update、delete 语句，这一批次中的SQL 参数使用 BatchPreparedStatementSetter 接口设置。*/
+    public int[] executeBatch(String sql, Object[][] batchValues) throws SQLException;
+
+    /**批量执行 insert 或 update、delete 语句，这一批次中的SQL 参数使用 BatchPreparedStatementSetter 接口设置。*/
     public int[] executeBatch(String sql, SqlParameterSource[] batchArgs) throws SQLException;
+
+    public <T> T call(CallableStatementCreator csc, CallableStatementCallback<T> action) throws SQLException;
+
+    public <T> T call(String callString, CallableStatementCallback<T> action) throws SQLException;
+
+    public Map<String, Object> call(String callString, List<SqlParameter> declaredParameters) throws SQLException;
 }

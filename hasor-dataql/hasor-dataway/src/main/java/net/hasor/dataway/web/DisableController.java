@@ -23,7 +23,7 @@ import net.hasor.dataway.dal.EntityDef;
 import net.hasor.dataway.dal.FieldDef;
 import net.hasor.dataway.dal.QueryCondition;
 import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.interceptor.Transactional;
+import net.hasor.db.Transactional;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;

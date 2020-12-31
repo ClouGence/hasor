@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
 /**
  * An Iterator over the lines in a <code>Reader</code>.
  * <p>
@@ -52,7 +53,8 @@ public class LineIterator implements Iterator<String> {
     /** The current line. */
     private       String         cachedLine;
     /** A flag indicating if the iterator has been fully read. */
-    private boolean finished = false;
+    private       boolean        finished = false;
+
     /**
      * Constructs an iterator of the lines for a <code>Reader</code>.
      *
@@ -70,6 +72,7 @@ public class LineIterator implements Iterator<String> {
         }
     }
     //-----------------------------------------------------------------------
+
     /**
      * Indicates whether the <code>Reader</code> has more lines.
      * If there is an <code>IOException</code> then {@link #close()} will
@@ -102,6 +105,7 @@ public class LineIterator implements Iterator<String> {
             }
         }
     }
+
     /**
      * Overridable method to validate each line that is returned.
      * This implementation always returns true.
@@ -111,6 +115,7 @@ public class LineIterator implements Iterator<String> {
     protected boolean isValidLine(final String line) {
         return true;
     }
+
     /**
      * Returns the next line in the wrapped <code>Reader</code>.
      *
@@ -121,6 +126,7 @@ public class LineIterator implements Iterator<String> {
     public String next() {
         return this.nextLine();
     }
+
     /**
      * Returns the next line in the wrapped <code>Reader</code>.
      *
@@ -135,6 +141,7 @@ public class LineIterator implements Iterator<String> {
         this.cachedLine = null;
         return currentLine;
     }
+
     /**
      * Closes the underlying <code>Reader</code> quietly.
      * This method is useful if you only want to process the first few
@@ -147,6 +154,7 @@ public class LineIterator implements Iterator<String> {
         IOUtils.closeQuietly(this.bufferedReader);
         this.cachedLine = null;
     }
+
     /**
      * Unsupported.
      *
@@ -157,6 +165,7 @@ public class LineIterator implements Iterator<String> {
         throw new UnsupportedOperationException("Remove unsupported on LineIterator");
     }
     //-----------------------------------------------------------------------
+
     /**
      * Closes the iterator, handling null and ignoring exceptions.
      *

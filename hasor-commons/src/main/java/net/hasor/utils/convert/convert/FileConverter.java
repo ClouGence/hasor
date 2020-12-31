@@ -18,6 +18,7 @@ package net.hasor.utils.convert.convert;
 import net.hasor.utils.convert.Converter;
 
 import java.io.File;
+
 /**
  * {@link Converter} implementaion that handles conversion
  * to and from <b>java.io.File</b> objects.
@@ -38,6 +39,7 @@ public final class FileConverter extends AbstractConverter {
     public FileConverter() {
         super();
     }
+
     /**
      * Construct a <b>java.io.File</b> <i>Converter</i> that returns
      * a default value if an error occurs.
@@ -49,6 +51,7 @@ public final class FileConverter extends AbstractConverter {
     public FileConverter(final Object defaultValue) {
         super(defaultValue);
     }
+
     /**
      * Return the default type this <code>Converter</code> handles.
      *
@@ -59,6 +62,7 @@ public final class FileConverter extends AbstractConverter {
     protected Class getDefaultType() {
         return File.class;
     }
+
     /**
      * <p>Convert the input object into a java.io.File.</p>
      *

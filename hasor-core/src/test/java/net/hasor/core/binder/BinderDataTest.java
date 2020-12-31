@@ -20,7 +20,6 @@ import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.BindInfoProvisionListener;
 import net.hasor.test.core.basic.init.SingletonPublicCallInitBean;
 import net.hasor.test.core.basic.init.WithoutAnnoCallInitBean;
@@ -31,6 +30,7 @@ import net.hasor.test.core.basic.pojo.SampleBean;
 import net.hasor.test.core.binder.TestBinder;
 import net.hasor.test.core.scope.My;
 import net.hasor.test.core.scope.MyScope;
+import net.hasor.core.Provider;
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
@@ -96,7 +96,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
     @Test
     public void bindTest3() {
         Date self = new Date();
-        Supplier<Date> selfProvider = new InstanceProvider<>(self);
+        Supplier<Date> selfProvider = Provider.of(self);
         binder.bindType(Date.class, selfProvider);
         assert reference.get().getBindType() == Date.class;
         assert reference.get().getSourceType() == null;
@@ -132,7 +132,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
     @Test
     public void bindTest7() {
         Date self = new Date();
-        Supplier<Date> selfProvider = new InstanceProvider<>(self);
+        Supplier<Date> selfProvider = Provider.of(self);
         binder.bindType("myDate", Date.class, selfProvider);
         assert reference.get().getBindType() == Date.class;
         assert reference.get().getSourceType() == null;
@@ -185,7 +185,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
             };
             //
             BindInfo<?> valueInfo = PowerMockito.mock(BindInfo.class);
-            InstanceProvider<Object> valProvider = new InstanceProvider<>("val");
+            Provider<Object> valProvider = Provider.of("val");
             //
             //
             Field innerField = DefaultBindInfoProviderAdapter.class.getDeclaredField("injectProperty");
@@ -246,7 +246,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
             };
             //
             BindInfo<?> valueInfo = PowerMockito.mock(BindInfo.class);
-            InstanceProvider<Object> valProvider = new InstanceProvider<>("val");
+            Provider<Object> valProvider = Provider.of("val");
             //
             //
             Field innerField = DefaultBindInfoProviderAdapter.class.getDeclaredField("constructorParams");

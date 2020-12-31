@@ -5,7 +5,7 @@
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
         <version>4.2.2-SNAPSHOT</version>
-        <relativePath>../..</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <!-- Maven Info -->
@@ -113,22 +113,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- DataQL introspection -->
-            <plugin>
-                <groupId>net.hasor</groupId>
-                <artifactId>dataql-maven-plugin</artifactId>
-                <version>${project.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>dataql</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <ignoreError>false</ignoreError>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
@@ -160,7 +144,11 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
-        
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
         <!-- nacos -->
         <dependency>
             <groupId>com.alibaba.nacos</groupId>

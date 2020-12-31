@@ -17,16 +17,17 @@ package net.hasor.core.container;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.MethodInterceptor;
+import net.hasor.core.Provider;
 import net.hasor.core.aop.DynamicClass;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.test.core.aop.custom.MyAopInterceptor;
 import net.hasor.test.core.aop.ignore.level.LevelFooFunction;
 import net.hasor.test.core.aop.ignore.level.l2.L2FooFunction;
 import net.hasor.test.core.aop.ignore.thread.ThreadFooFunction;
 import net.hasor.test.core.aop.ignore.types.*;
 import net.hasor.test.core.basic.pojo.PojoBean;
+import net.hasor.utils.supplier.InstanceProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
@@ -56,7 +57,7 @@ public class AopBeanContainerTest {
         Predicate<Method> mb = aMethod -> true;
         MyAopInterceptor.resetInit();
         MethodInterceptor interceptor = new MyAopInterceptor();
-        adapter.setCustomerProvider(InstanceProvider.of(new AopBindInfoAdapter(ma, mb, interceptor)));
+        adapter.setCustomerProvider(Provider.of(new AopBindInfoAdapter(ma, mb, interceptor)));
         //
         PojoBean bean = container.providerOnlyType(PojoBean.class, appContext, null).get();
         //

@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 /* ------------------------------------------------------------ */
+
 /**
  * TYPE Utilities.
  * Provides various static utiltiy methods for manipulating types and their
@@ -129,6 +130,7 @@ class TypeUtil {
         }
     }
     /* ------------------------------------------------------------ */
+
     /** Array to List.
      * <p>
      * Works like {@link Arrays#asList(Object...)}, but handles null arrays.
@@ -140,6 +142,7 @@ class TypeUtil {
         return Arrays.asList(a);
     }
     /* ------------------------------------------------------------ */
+
     /** Class from a canonical name for a type.
      * @param name A class or type name.
      * @return A class , which may be a primitive TYPE field..
@@ -148,6 +151,7 @@ class TypeUtil {
         return name2Class.get(name);
     }
     /* ------------------------------------------------------------ */
+
     /** Canonical name for a type.
      * @param type A class , which may be a primitive TYPE field.
      * @return Canonical name.
@@ -156,6 +160,7 @@ class TypeUtil {
         return class2Name.get(type);
     }
     /* ------------------------------------------------------------ */
+
     /** Convert String value to instance.
      * @param type The class of the instance, which may be a primitive TYPE field.
      * @param value The value as a string.
@@ -186,6 +191,7 @@ class TypeUtil {
         return null;
     }
     /* ------------------------------------------------------------ */
+
     /** Convert String value to instance.
      * @param type classname or type (eg int)
      * @param value The value as a string.
@@ -195,6 +201,7 @@ class TypeUtil {
         return valueOf(fromName(type), value);
     }
     /* ------------------------------------------------------------ */
+
     /** Parse an int from a substring.
      * Negative numbers are not handled.
      * @param s String
@@ -223,6 +230,7 @@ class TypeUtil {
         return value;
     }
     /* ------------------------------------------------------------ */
+
     /** Parse an int from a byte array of ascii characters.
      * Negative numbers are not handled.
      * @param b byte array
@@ -250,6 +258,7 @@ class TypeUtil {
         }
         return value;
     }
+
     /* ------------------------------------------------------------ */
     public static byte[] parseBytes(String s, int base) {
         byte[] bytes = new byte[s.length() / 2];
@@ -257,6 +266,7 @@ class TypeUtil {
             bytes[i / 2] = (byte) TypeUtil.parseInt(s, i, 2, base);
         return bytes;
     }
+
     /* ------------------------------------------------------------ */
     public static String toString(byte[] bytes, int base) {
         StringBuilder buf = new StringBuilder();
@@ -274,6 +284,7 @@ class TypeUtil {
         return buf.toString();
     }
     /* ------------------------------------------------------------ */
+
     /**
      * @param b An ASCII encoded character 0-9 a-f A-F
      * @return The byte value of the character 0-16.
@@ -287,6 +298,7 @@ class TypeUtil {
             return (byte) (b - 'A' + 10);
         throw new IllegalArgumentException("!hex:" + Integer.toHexString(0xff & b));
     }
+
     /* ------------------------------------------------------------ */
     public static void toHex(byte b, Appendable buf) {
         try {
@@ -303,14 +315,17 @@ class TypeUtil {
             throw new RuntimeException(e);
         }
     }
+
     /* ------------------------------------------------------------ */
     public static String toHexString(byte b) {
         return toHexString(new byte[] { b }, 0, 1);
     }
+
     /* ------------------------------------------------------------ */
     public static String toHexString(byte[] b) {
         return toHexString(b, 0, b.length);
     }
+
     /* ------------------------------------------------------------ */
     public static String toHexString(byte[] b, int offset, int length) {
         StringBuilder buf = new StringBuilder();
@@ -327,6 +342,7 @@ class TypeUtil {
         }
         return buf.toString();
     }
+
     /* ------------------------------------------------------------ */
     public static byte[] fromHexString(String s) {
         if (s.length() % 2 != 0)
@@ -338,10 +354,12 @@ class TypeUtil {
         }
         return array;
     }
+
     public static void dump(Class<?> c) {
         System.err.println("Dump: " + c);
         dump(c.getClassLoader());
     }
+
     public static void dump(ClassLoader cl) {
         System.err.println("Dump Loaders:");
         while (cl != null) {
@@ -349,6 +367,7 @@ class TypeUtil {
             cl = cl.getParent();
         }
     }
+
     /* ------------------------------------------------------------ */
     public static byte[] readLine(InputStream in) throws IOException {
         byte[] buf = new byte[256];
@@ -386,6 +405,7 @@ class TypeUtil {
         System.arraycopy(old_buf, 0, buf, 0, i);
         return buf;
     }
+
     public static URL jarFor(String className) {
         try {
             className = className.replace('.', '/') + ".class";
@@ -399,6 +419,7 @@ class TypeUtil {
         }
         return null;
     }
+
     public static Object call(Class<?> oClass, String method, Object obj, Object[] arg) throws InvocationTargetException, NoSuchMethodException {
         // Lets just try all methods for now
         Method[] methods = oClass.getMethods();

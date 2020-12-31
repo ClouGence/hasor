@@ -29,6 +29,7 @@ public class ByteUtils {
         }
         return bLocalArr;
     }
+
     //
     public static boolean isByteType(Class targetType) {
         return targetType.equals(Byte.class) || targetType.equals(Byte.TYPE);

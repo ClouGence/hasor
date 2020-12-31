@@ -1,8 +1,7 @@
 package net.example.hasor.config;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.DimModule;
-import net.hasor.dataql.DimUdf;
-import net.hasor.dataql.DimUdfSource;
+import net.hasor.dataql.Finder;
 import net.hasor.dataql.QueryApiBinder;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
@@ -23,15 +22,14 @@ public class DatawayModule implements SpringModule {
 
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
+        QueryApiBinder queryBinder = apiBinder.tryCast(QueryApiBinder.class);
         // .check
         Objects.requireNonNull(this.dataDs1, "dataDs1 is null");
         Objects.requireNonNull(this.dataDs2, "dataDs2 is null");
         // .DataSource form Spring boot into Hasor
-        apiBinder.installModule(new JdbcModule(Level.Full, "ds1", this.dataDs1));
-        apiBinder.installModule(new JdbcModule(Level.Full, "ds2", this.dataDs2));
-        // .custom DataQL
-        QueryApiBinder queryBinder = apiBinder.tryCast(QueryApiBinder.class);
-        queryBinder.loadUdf(apiBinder.findClass(DimUdf.class), aClass -> true, springTypeSupplier(apiBinder));
-        queryBinder.loadUdfSource(apiBinder.findClass(DimUdfSource.class), aClass -> true, springTypeSupplier(apiBinder));
+        queryBinder.installModule(new JdbcModule(Level.Full, "ds1", this.dataDs1));
+        queryBinder.installModule(new JdbcModule(Level.Full, "ds2", this.dataDs2));
+        // udf/udfSource/import 指令 的类型创建委托给 spring
+        queryBinder.bindFinder(Finder.TYPE_SUPPLIER.apply(springTypeSupplier(apiBinder)));
     }
 }

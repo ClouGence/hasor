@@ -16,7 +16,6 @@
 package net.hasor.core.spi;
 import net.hasor.core.Scope;
 
-import java.util.EventListener;
 import java.util.function.Supplier;
 
 /**
@@ -24,7 +23,7 @@ import java.util.function.Supplier;
  * @version : 2013-11-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface ScopeProvisionListener extends EventListener {
+public interface ScopeProvisionListener extends java.util.EventListener {
     /**
      * 发现新的作用域。
      * @param scopeName 新作用域名。

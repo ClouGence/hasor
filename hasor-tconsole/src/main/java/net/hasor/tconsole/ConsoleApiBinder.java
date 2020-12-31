@@ -103,9 +103,9 @@ public interface ConsoleApiBinder extends ApiBinder {
         }
 
         /** 加载带有 @Tel 注解的类。 */
-        public default TelnetBuilder loadExecutor(Set<Class<?>> mabeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
-            if (mabeUdfTypeSet != null && !mabeUdfTypeSet.isEmpty()) {
-                mabeUdfTypeSet.stream()//
+        public default TelnetBuilder loadExecutor(Set<Class<?>> maybeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
+            if (maybeUdfTypeSet != null && !maybeUdfTypeSet.isEmpty()) {
+                maybeUdfTypeSet.stream()//
                         .filter(matcher)//
                         .filter(Matchers.annotatedWithClass(Tel.class))//
                         .forEach(aClass -> loadExecutor(aClass, typeSupplier));

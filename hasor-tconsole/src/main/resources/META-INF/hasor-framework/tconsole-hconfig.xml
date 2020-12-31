@@ -13,5 +13,15 @@
         <apiBinderSet>
             <binder type="net.hasor.tconsole.ConsoleApiBinder">net.hasor.tconsole.binder.ConsoleApiBinderCreator</binder>
         </apiBinderSet>
+
+        <autoLoadSpi>
+            <spi>net.hasor.tconsole.spi.TelAfterExecutorListener</spi>
+            <spi>net.hasor.tconsole.spi.TelBeforeExecutorListener</spi>
+            <spi>net.hasor.tconsole.spi.TelHostPreFinishListener</spi>
+            <spi>net.hasor.tconsole.spi.TelSessionCreateListener</spi>
+            <spi>net.hasor.tconsole.spi.TelSessionDestroyListener</spi>
+            <spi>net.hasor.tconsole.spi.TelStartContextListener</spi>
+            <spi>net.hasor.tconsole.spi.TelStopContextListener</spi>
+        </autoLoadSpi>
     </hasor>
 </config>

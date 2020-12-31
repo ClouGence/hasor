@@ -16,7 +16,6 @@
 package net.hasor.core.container;
 import net.hasor.core.*;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.test.core.basic.implby.endsingleton.EsImplSampleBean;
 import net.hasor.test.core.basic.implby.endsingleton.EsSampleBeanFaceByFace;
 import net.hasor.test.core.basic.implby.firstsingleton.FsImplSampleBean;
@@ -27,6 +26,7 @@ import net.hasor.test.core.basic.inject.constructor.*;
 import net.hasor.test.core.basic.pojo.PojoBean;
 import net.hasor.test.core.basic.pojo.SingletonSampleBean;
 import net.hasor.test.core.enums.SelectEnum;
+import net.hasor.core.Provider;
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
@@ -228,8 +228,8 @@ public class BasicBeanContainerTest {
         PojoBean outside1 = new PojoBean();
         PojoBean outside2 = new PojoBean();
         DefaultBindInfoProviderAdapter<NativeConstructorPojoBeanRef2> adapter2 = container.getBindInfoContainer().createInfoAdapter(NativeConstructorPojoBeanRef2.class, null);
-        adapter2.setConstructor(0, PojoBean.class, InstanceProvider.of(outside1));
-        adapter2.setConstructor(1, PojoBean.class, InstanceProvider.of(outside2));
+        adapter2.setConstructor(0, PojoBean.class, Provider.of(outside1));
+        adapter2.setConstructor(1, PojoBean.class, Provider.of(outside2));
         NativeConstructorPojoBeanRef2 refBean1 = container.providerOnlyBindInfo(adapter2, appContext).get();
         NativeConstructorPojoBeanRef2 refBean2 = container.providerOnlyBindInfo(adapter2, appContext).get();
         assert refBean1.getPojoBean() == outside1;
@@ -278,11 +278,11 @@ public class BasicBeanContainerTest {
         DefaultBindInfoProviderAdapter<PojoBean> adapter1 = container.getBindInfoContainer().createInfoAdapter(PojoBean.class, null);
         adapter1.setBindID("id_a");
         adapter1.setBindName("aaa");
-        adapter1.addInject("uuid", InstanceProvider.of("id_a_uuid"));
+        adapter1.addInject("uuid", Provider.of("id_a_uuid"));
         DefaultBindInfoProviderAdapter<PojoBean> adapter2 = container.getBindInfoContainer().createInfoAdapter(PojoBean.class, null);
         adapter2.setBindID("id_b");
         adapter2.setBindName("bbb");
-        adapter2.addInject("uuid", InstanceProvider.of("id_b_uuid"));
+        adapter2.addInject("uuid", Provider.of("id_b_uuid"));
         container.init();
         //
         {

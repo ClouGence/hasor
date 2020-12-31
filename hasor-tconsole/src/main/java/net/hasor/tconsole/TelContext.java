@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.tconsole;
+import net.hasor.core.AppContext;
+
 import java.util.List;
 
 /**
@@ -30,4 +32,6 @@ public interface TelContext {
 
     /** 是否是 Host 模式 */
     public boolean isHost();
+
+    public AppContext getAppContext();
 }

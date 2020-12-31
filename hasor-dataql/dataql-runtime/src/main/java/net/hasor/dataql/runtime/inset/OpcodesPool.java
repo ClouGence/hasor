@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.core.provider.SingleProvider;
+import net.hasor.core.Provider;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
@@ -54,7 +54,7 @@ public class OpcodesPool {
         }
     }
 
-    private static final Supplier<OpcodesPool> operatorManager = new SingleProvider<>(OpcodesPool::initPool);
+    private static final Supplier<OpcodesPool> operatorManager = Provider.ofc(OpcodesPool::initPool).asSingle();
 
     public static OpcodesPool defaultOpcodesPool() {
         return operatorManager.get();

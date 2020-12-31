@@ -17,6 +17,7 @@ package net.hasor.core;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
+import net.hasor.core.setting.AbstractSettings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.core.setting.StreamType;
 import net.hasor.utils.ExceptionUtils;
@@ -218,12 +219,8 @@ public final class Hasor {
         return this;
     }
 
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public AppContext build(Module... modules) {
-        if (modules != null) {
-            this.addModules(modules);
-        }
-        //
+    /**用简易的方式创建{@link Settings}容器。*/
+    public Settings buildSettings() {
         // .单独处理RUN_PATH
         String runPath = new File("").getAbsolutePath();
         this.addVariable("RUN_PATH", runPath);
@@ -273,8 +270,26 @@ public final class Hasor {
                     mainSettings.setSetting(settingKV.getKey(), settingKV.getValue(), namespaceKey);
                 }
             }
-            //
-            Environment env = new StandardEnvironment(this.context, mainSettings, this.variableMap, this.loader);
+            return mainSettings;
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+    }
+
+    /**用简易的方式创建{@link Environment}容器。*/
+    public Environment buildEnvironment() {
+        AbstractSettings buildSettings = (AbstractSettings) buildSettings();
+        return new StandardEnvironment(this.context, buildSettings, this.variableMap, this.loader);
+    }
+
+    /**用简易的方式创建{@link AppContext}容器。*/
+    public AppContext build(Module... modules) {
+        if (modules != null) {
+            this.addModules(modules);
+        }
+        //
+        try {
+            Environment env = this.buildEnvironment();
             AppContext appContext = new StatusAppContext(env);
             appContext.start(this.moduleList.toArray(new Module[0]));
             return appContext;

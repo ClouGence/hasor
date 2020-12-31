@@ -23,15 +23,12 @@ import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.CallSource;
 import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.interceptor.Transactional;
+import net.hasor.db.Transactional;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.annotation.RequestBody;
-import net.hasor.web.invoker.HttpParameters;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**

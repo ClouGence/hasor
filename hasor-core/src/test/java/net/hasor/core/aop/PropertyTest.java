@@ -16,7 +16,7 @@
 package net.hasor.core.aop;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import net.hasor.core.provider.InstanceProvider;
+import net.hasor.core.Provider;
 import net.hasor.utils.BeanUtils;
 import org.junit.Test;
 
@@ -30,7 +30,7 @@ public class PropertyTest {
     public void propertyTest1() throws Exception {
         SimplePropertyDelegate delegate = new SimplePropertyDelegate();
         AopClassConfig classConfig = new AopClassConfig();
-        classConfig.addProperty("name", String.class, InstanceProvider.of(delegate));
+        classConfig.addProperty("name", String.class, Provider.of(delegate));
         //
         Class<?> buildClass = classConfig.buildClass();
         Object instance = buildClass.newInstance();

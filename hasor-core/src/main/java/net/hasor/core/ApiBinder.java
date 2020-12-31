@@ -16,24 +16,25 @@
 package net.hasor.core;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.spi.SpiJudge;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.ExceptionUtils;
 
 import javax.inject.Singleton;
+import java.io.Closeable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.EventListener;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * Hasor的核心接口，主要用于收集Bean绑定信息。<p>
+ * Hasor 的核心接口，主要用于收集Bean绑定信息。<p>
  * Bind 参考了 Google Guice 的 Binder 接口设计，功能上大体相似。目的是提供一种不同于配置文件、注解方式的配置方法。
  * 这样一种设计并不是指 Hasor 抛弃配置文件和注解的优势，开发者可以根据项目的特征自行选择。
  * Hasor 的开发者可以将某一个类使用 ApiBinder 接口的 bindType 方法注册到容器中。这个工作与 Spring 配置文件中 Bean 配置的作用并无不同。
@@ -78,6 +79,30 @@ public interface ApiBinder {
      */
     public ApiBinder installModule(Module... module) throws Throwable;
 
+    /** same as {@link Module#onStop(AppContext)} */
+    public default <T extends Closeable> T onShutdown(T closeable) {
+        HasorUtils.pushShutdownListener(getEnvironment(), (event, eventData) -> {
+            closeable.close();
+        });
+        return closeable;
+    }
+
+    /** same as {@link Module#onStop(AppContext)} */
+    public default ApiBinder onShutdown(Consumer<AppContext> consumer) {
+        HasorUtils.pushShutdownListener(getEnvironment(), (event, eventData) -> {
+            consumer.accept((AppContext) eventData);
+        });
+        return this;
+    }
+
+    /** same as {@link Module#onStart(AppContext)} */
+    public default ApiBinder lazyLoad(Consumer<AppContext> consumer) {
+        HasorUtils.pushStartListener(getEnvironment(), (event, eventData) -> {
+            consumer.accept((AppContext) eventData);
+        });
+        return this;
+    }
+
     /** 是否为单例 */
     public boolean isSingleton(BindInfo<?> bindInfo);
 
@@ -91,9 +116,9 @@ public interface ApiBinder {
     }
 
     /** 加载带有 @DimModule 注解的类。 */
-    public default ApiBinder loadModule(Set<Class<?>> mabeModuleTypes, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
-        if (mabeModuleTypes != null && !mabeModuleTypes.isEmpty()) {
-            mabeModuleTypes.stream()//
+    public default ApiBinder loadModule(Set<Class<?>> maybeModuleTypes, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
+        if (maybeModuleTypes != null && !maybeModuleTypes.isEmpty()) {
+            maybeModuleTypes.stream()//
                     .filter(matcher)//
                     .filter(Matchers.annotatedWithClass(DimModule.class))//
                     .forEach(aClass -> loadModule(aClass, typeSupplier));
@@ -358,7 +383,7 @@ public interface ApiBinder {
 
     /** 设置一个 SPI 仲裁，一个SPI只能注册一个仲裁 */
     public default <T extends EventListener> void bindSpiJudge(Class<T> spiType, SpiJudge spiJudgeSupplier) {
-        this.bindSpiJudge(spiType, InstanceProvider.of(spiJudgeSupplier));
+        this.bindSpiJudge(spiType, Provider.of(spiJudgeSupplier));
     }
 
     /** 设置一个 SPI 仲裁，一个SPI只能注册一个仲裁 */
@@ -377,7 +402,7 @@ public interface ApiBinder {
         if (scopeTypeAnno == null) {
             throw new IllegalStateException("Annotation Type " + scopeType.getName() + " is not javax.inject.Scope");
         }
-        return this.bindScope(scopeType.getName(), InstanceProvider.of(scope));
+        return this.bindScope(scopeType.getName(), Provider.of(scope));
     }
 
     /**
@@ -387,7 +412,7 @@ public interface ApiBinder {
      * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
      */
     public default Supplier<Scope> bindScope(String scopeName, Scope scope) {
-        return this.bindScope(scopeName, InstanceProvider.of(scope));
+        return this.bindScope(scopeName, Provider.of(scope));
     }
 
     /**
@@ -524,7 +549,7 @@ public interface ApiBinder {
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
         public default OptionPropertyBindingBuilder<T> toInstance(final T instance) {
-            return this.toProvider(InstanceProvider.of(instance)).asEagerSingleton();
+            return this.toProvider(Provider.of(instance)).asEagerSingleton();
         }
 
         /**
@@ -602,7 +627,7 @@ public interface ApiBinder {
          * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
         public default TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, PropertyDelegate delegate) {
-            return dynamicProperty(name, propertyType, InstanceProvider.of(delegate));
+            return dynamicProperty(name, propertyType, Provider.of(delegate));
         }
 
         /**
@@ -640,7 +665,7 @@ public interface ApiBinder {
          * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
         public default TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, PropertyDelegate delegate) {
-            return dynamicReadOnlyProperty(name, propertyType, InstanceProvider.of(delegate));
+            return dynamicReadOnlyProperty(name, propertyType, Provider.of(delegate));
         }
 
         /**
@@ -749,7 +774,7 @@ public interface ApiBinder {
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
         public default OptionPropertyBindingBuilder<T> toScope(Scope... scope) {
-            Supplier[] supplierArray = Arrays.stream(scope).map(InstanceProvider::of).toArray(Supplier[]::new);
+            Supplier[] supplierArray = Arrays.stream(scope).map(Provider::of).toArray(Supplier[]::new);
             return this.toScope(supplierArray);
         }
 

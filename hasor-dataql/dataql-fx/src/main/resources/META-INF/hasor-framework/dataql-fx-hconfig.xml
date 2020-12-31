@@ -15,5 +15,11 @@
                 <bindFragment name="mybatis">net.hasor.dataql.fx.db.likemybatis.MybatisFragment</bindFragment>
             </bindFragmentSet>
         </dataqlFx>
+
+        <autoLoadSpi>
+            <spi>net.hasor.dataql.fx.db.FxSqlCheckChainSpi</spi>
+            <spi>net.hasor.dataql.fx.db.LookupConnectionListener</spi>
+            <spi>net.hasor.dataql.fx.db.LookupDataSourceListener</spi>
+        </autoLoadSpi>
     </hasor>
 </config>
