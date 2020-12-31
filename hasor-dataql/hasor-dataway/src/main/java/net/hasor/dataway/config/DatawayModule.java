@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataway.config;
-
 import net.hasor.core.Environment;
 import net.hasor.core.HasorUtils;
 import net.hasor.core.Settings;
@@ -43,17 +42,16 @@ public class DatawayModule implements WebModule {
 
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        // .是否启用 Dataway
         Environment environment = apiBinder.getEnvironment();
         Settings settings = environment.getSettings();
         boolean datawayApi = settings.getBoolean("hasor.dataway.enable", false);
         boolean datawayAdmin = settings.getBoolean("hasor.dataway.enableAdmin", false);
         if (!datawayApi) {
-            logger.info("dataway is disable. (enable: settings 'hasor.dataway.enable = true' or env 'HASOR_DATAQL_DATAWAY = true')");
+            logger.info("dataway is disable.");
             return;
         }
         //
-        // .Api接口
+        // .base urls
         String apiBaseUri = settings.getString("hasor.dataway.baseApiUrl", "/api/");
         if (StringUtils.isBlank(apiBaseUri)) {
             apiBaseUri = "/api/";
@@ -61,7 +59,7 @@ public class DatawayModule implements WebModule {
         if (!apiBaseUri.endsWith("/")) {
             apiBaseUri = apiBaseUri + "/";
         }
-        String adminBaseUri = settings.getString("hasor.dataway.baseAdminUrl", "/interface-ui/");
+        String adminBaseUri = apiBinder.getEnvironment().getSettings().getString("hasor.dataway.baseAdminUrl", "/interface-ui/");
         if (StringUtils.isBlank(adminBaseUri)) {
             adminBaseUri = "/interface-ui/";
         }
@@ -69,12 +67,59 @@ public class DatawayModule implements WebModule {
             adminBaseUri = adminBaseUri + "/";
         }
         //
-        logger.info("dataway api workAt " + apiBaseUri);
-
-
-
-        apiBinder.filter(fixUrl(apiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceApiFilter(apiBaseUri));
+        if (datawayAdmin) {
+            this.loadApiService(apiBinder, apiBaseUri, adminBaseUri);
+            this.loadAdminService(apiBinder, apiBaseUri, adminBaseUri);
+        } else {
+            this.loadApiService(apiBinder, apiBaseUri, null);
+            logger.info("dataway admin is disable.");
+        }
+        // dal
+        this.loadDal(apiBinder);
         //
+        // .注册 DatawayService接口
+        apiBinder.bindType(DatawayService.class).to(DatawayServiceImpl.class);
+    }
+
+    /** 配置 Dataway 服务拦截器 */
+    protected void loadApiService(WebApiBinder apiBinder, String apiBaseUri, String adminBaseUri) {
+        logger.info("dataway api workAt " + apiBaseUri);
+        apiBinder.filter(fixUrl(apiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceApiFilter(apiBaseUri, adminBaseUri));
+    }
+
+    /** 配置 Dataway 管理界面 */
+    protected void loadAdminService(WebApiBinder apiBinder, String apiBaseUri, String adminBaseUri) {
+        logger.info("dataway admin workAt " + adminBaseUri);
+        // 使用 findClass 虽然可以降低代码复杂度，但是会因为引入代码扫描而增加初始化时间
+        Class<?>[] controllerSet = new Class<?>[] { //
+                ApiDetailController.class,          //
+                ApiHistoryListController.class,     //
+                ApiInfoController.class,            //
+                ApiListController.class,            //
+                ApiHistoryGetController.class,      //
+                //
+                DisableController.class,            //
+                SmokeController.class,              //
+                SaveApiController.class,            //
+                PublishController.class,            //
+                PerformController.class,            //
+                DeleteController.class,             //
+                //                AnalyzeSchemaController.class,      //
+                //
+                Swagger2Controller.class,           //
+        };
+        for (Class<?> aClass : controllerSet) {
+            MappingToUrl toUrl = aClass.getAnnotation(MappingToUrl.class);
+            apiBinder.mappingTo(fixUrl(adminBaseUri + "/" + toUrl.value())).with(aClass);
+        }
+        apiBinder.filter(fixUrl(adminBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceAuthorizationFilter(adminBaseUri));
+        apiBinder.filter(fixUrl(adminBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceUiFilter(apiBaseUri, adminBaseUri));
+    }
+
+    /** 配置 Dataway 的 DAL */
+    protected void loadDal(WebApiBinder apiBinder) throws ClassNotFoundException {
+        Environment environment = apiBinder.getEnvironment();
+        Settings settings = environment.getSettings();
         String dalType = settings.getString("hasor.dataway.dataAccessLayer.dalType", "db");
         if (StringUtils.isBlank(dalType)) {
             throw new IllegalArgumentException("dataway dalType is missing.");
@@ -103,45 +148,6 @@ public class DatawayModule implements WebModule {
         if (!setupProvider) {
             throw new RuntimeException("DataAccessLayer is not specified.");
         }
-        //
-        // .注册 DatawayService接口
-        apiBinder.bindType(DatawayService.class).to(DatawayServiceImpl.class);
-        //
-        // .Dataway 后台管理界面
-        if (!datawayAdmin) {
-            logger.info("dataway admin is disable.");
-            return;
-        }
-        String uiBaseUri = settings.getString("hasor.dataway.baseAdminUrl", "/interface-ui/");
-        if (!uiBaseUri.endsWith("/")) {
-            uiBaseUri = uiBaseUri + "/";
-        }
-        logger.info("dataway admin workAt " + uiBaseUri);
-        //
-        // 使用 findClass 虽然可以降低代码复杂度，但是会因为引入代码扫描而增加初始化时间
-        Class<?>[] controllerSet = new Class<?>[]{ //
-                ApiDetailController.class,          //
-                ApiHistoryListController.class,     //
-                ApiInfoController.class,            //
-                ApiListController.class,            //
-                ApiHistoryGetController.class,      //
-                //
-                DisableController.class,            //
-                SmokeController.class,              //
-                SaveApiController.class,            //
-                PublishController.class,            //
-                PerformController.class,            //
-                DeleteController.class,             //
-                //                AnalyzeSchemaController.class,      //
-                //
-                Swagger2Controller.class,           //
-        };
-        for (Class<?> aClass : controllerSet) {
-            MappingToUrl toUrl = aClass.getAnnotation(MappingToUrl.class);
-            apiBinder.mappingTo(fixUrl(uiBaseUri + "/" + toUrl.value())).with(aClass);
-        }
-        apiBinder.filter(fixUrl(uiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceAuthorizationFilter(uiBaseUri));
-        apiBinder.filter(fixUrl(uiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceUiFilter(apiBaseUri, uiBaseUri));
     }
 
     private static String fixUrl(String url) {
