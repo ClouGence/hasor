@@ -64,7 +64,7 @@
         <module>hasor-dataql/dataql-runtime</module>
         <module>hasor-dataql/dataql-maven-plugin</module>
         <module>hasor-dataql/dataql-fx</module>
-        <module>hasor-dataql/hasor-dataway</module>
+        <module>hasor-dataql/dataql-dataway</module>
         <module>hasor-rsf/rsf-framework</module>
         <!--        <module>hasor-rsf/rsf-network</module>-->
         <!--        <module>hasor-rsf/rsf-gateway</module>-->
