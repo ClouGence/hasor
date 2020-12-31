@@ -16,12 +16,17 @@ const showMessage = (res) => {
     errorBox(`${response.status}: ${errorText} (${url})`);
 };
 
-function decodeUtf8(bytes, encode) {
+function decodeData(bytes, encode) {
     const bufferTypes = new Uint8Array(bytes);
-    if (encode !== '') {
-        return new TextDecoder(encode).decode(bufferTypes);
-    } else {
-        return new TextDecoder().decode(bufferTypes);
+    try {
+        if (encode !== '') {
+            return new TextDecoder(encode).decode(bufferTypes);
+        } else {
+            return new TextDecoder().decode(bufferTypes);
+        }
+    } catch (e) {
+        console.error('TextDecoder faile.', encode, bytes, e);
+        throw e;
     }
 }
 
@@ -137,14 +142,14 @@ export default function request(
             // json
             arrayBufferFromBlob(response.data).then((arrayBuffer) => {
                 response.dataTypeMode = 'json';
-                response.data = JSON.parse(decodeUtf8(arrayBuffer, contentEncode));
+                response.data = JSON.parse(decodeData(arrayBuffer, contentEncode));
                 successCallback(response);
             });
         } else if (contentType === 'text') {
             // text
             arrayBufferFromBlob(response.data).then((arrayBuffer) => {
                 response.dataTypeMode = 'text';
-                response.data = decodeUtf8(arrayBuffer, contentEncode);
+                response.data = decodeData(arrayBuffer, contentEncode);
                 successCallback(response);
             });
         } else {
