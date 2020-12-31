@@ -58,4 +58,8 @@ public interface XmlNode {
      * @return 返回属性值
      */
     public String getAttribute(String attName);
+
+    public Map<String, String> toSettingMap();
+
+    public Map<String, List<String>> toSettingsMap();
 }

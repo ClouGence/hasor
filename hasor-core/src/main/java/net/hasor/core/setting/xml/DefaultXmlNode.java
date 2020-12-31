@@ -106,6 +106,37 @@ public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
     }
 
     @Override
+    public Map<String, String> toSettingMap() {
+        Map<String, String> settingMap = new HashMap<>();
+        Map<String, List<String>> settingsMap = this.toSettingsMap();
+        settingsMap.forEach((key, value) -> {
+            settingMap.put(key, (value.size() > 0) ? value.get(0) : null);
+        });
+        return settingMap;
+    }
+
+    @Override
+    public Map<String, List<String>> toSettingsMap() {
+        Map<String, List<String>> tempSettingMap = new HashMap<>();
+        this.getAttributeMap().forEach((key, value) -> addSettingToMap(tempSettingMap, key, value));
+        this.getChildren().forEach(xmlNode -> {
+            String key = xmlNode.getName();
+            String value = xmlNode.getText().trim();
+            addSettingToMap(tempSettingMap, key, value);
+            Map<String, List<String>> subData = xmlNode.toSettingsMap();
+            subData.forEach((subKey, subValues) -> tempSettingMap.put(key + "." + subKey, subValues));
+        });
+        return tempSettingMap;
+    }
+
+    private static void addSettingToMap(Map<String, List<String>> datMap, String key, String value) {
+        if (!datMap.containsKey(key)) {
+            datMap.put(key, new ArrayList<>());
+        }
+        datMap.get(key).add(value);
+    }
+
+    @Override
     public String toString() {
         return this.getXmlText();
     }
