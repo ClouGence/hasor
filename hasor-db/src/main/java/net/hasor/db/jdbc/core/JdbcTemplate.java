@@ -941,7 +941,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
 
     /** Create a new RowMapper for reading columns as key-value pairs. */
     protected RowMapper<Map<String, Object>> getColumnMapRowMapper() {
-        return new ColumnMapRowMapper() {
+        return new ColumnMapRowMapper(this.mappingHandler.getTypeRegistry()) {
             @Override
             protected Map<String, Object> createColumnMap(final int columnCount) {
                 return JdbcTemplate.this.createResultsMap();
@@ -967,7 +967,8 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
 
     /** Create a new RowMapper for reading result objects from a single column.*/
     protected <T> RowMapper<T> getSingleColumnRowMapper(Class<T> requiredType) {
-        return new SingleColumnRowMapper<>(requiredType);
+        TypeHandlerRegistry typeHandler = this.getMappingHandler().getTypeRegistry();
+        return new SingleColumnRowMapper<>(requiredType, typeHandler);
     }
 
     /**创建用于保存结果集的数据Map。*/
@@ -1089,10 +1090,11 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         }
     }
 
-    private static class MultipleResultExtractor implements PreparedStatementCallback<List<Object>> {
+    private class MultipleResultExtractor implements PreparedStatementCallback<List<Object>> {
         @Override
         public List<Object> doInPreparedStatement(PreparedStatement ps) throws SQLException {
-            ReturnSqlParameter result = SqlParameterUtils.withReturnResult("TMP", new RowMapperResultSetExtractor<>(new ColumnMapRowMapper()));
+            ColumnMapRowMapper columnMapRowMapper = new ColumnMapRowMapper(getMappingHandler().getTypeRegistry());
+            ReturnSqlParameter result = SqlParameterUtils.withReturnResult("TMP", new RowMapperResultSetExtractor<>(columnMapRowMapper));
             boolean retVal = ps.execute();
             if (logger.isTraceEnabled()) {
                 logger.trace("statement.execute() returned '" + retVal + "'");

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.mapper;
+import net.hasor.db.types.TypeHandlerRegistry;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -31,6 +33,15 @@ public class SingleColumnRowMapper<T> extends AbstractRowMapper<T> {
      * @param requiredType the type that each result object is expected to match
      */
     public SingleColumnRowMapper(Class<T> requiredType) {
+        this(requiredType, TypeHandlerRegistry.DEFAULT);
+    }
+
+    /**
+     * Create a new SingleColumnRowMapper.
+     * @param requiredType the type that each result object is expected to match
+     */
+    public SingleColumnRowMapper(Class<T> requiredType, TypeHandlerRegistry typeHandler) {
+        super(typeHandler);
         this.requiredType = requiredType;
     }
 

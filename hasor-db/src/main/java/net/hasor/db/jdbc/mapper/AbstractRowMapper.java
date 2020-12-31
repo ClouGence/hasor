@@ -22,25 +22,40 @@ import net.hasor.utils.ResourcesUtils;
 import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
 /**
  * @author 赵永春 (zyc@byshell.org)
  * @version : 2014年5月23日
  */
 public abstract class AbstractRowMapper<T> implements RowMapper<T> {
+    private final TypeHandlerRegistry handlerRegistry;
+
+    public AbstractRowMapper() {
+        this(TypeHandlerRegistry.DEFAULT);
+    }
+
+    public AbstractRowMapper(TypeHandlerRegistry typeHandler) {
+        this.handlerRegistry = Objects.requireNonNull(typeHandler, "typeHandler is null.");
+    }
+
+    public TypeHandlerRegistry getHandlerRegistry() {
+        return this.handlerRegistry;
+    }
+
     /**获取列的值*/
-    protected static Object getResultSetValue(ResultSet rs, int columnIndex) throws SQLException {
+    protected Object getResultSetValue(ResultSet rs, int columnIndex) throws SQLException {
         return getResultSetTypeHandler(rs, columnIndex, null).getResult(rs, columnIndex);
     }
 
     /**获取列的值*/
-    protected static Object getResultSetValue(ResultSet rs, int columnIndex, Class<?> targetType) throws SQLException {
+    protected Object getResultSetValue(ResultSet rs, int columnIndex, Class<?> targetType) throws SQLException {
         TypeHandler<?> typeHandler = getResultSetTypeHandler(rs, columnIndex, targetType);
         return typeHandler.getResult(rs, columnIndex);
     }
 
     /**获取读取列用到 的 TypeHandler列的值*/
-    public static TypeHandler<?> getResultSetTypeHandler(ResultSet rs, int columnIndex, Class<?> targetType) throws SQLException {
+    public TypeHandler<?> getResultSetTypeHandler(ResultSet rs, int columnIndex, Class<?> targetType) throws SQLException {
         int columnType = rs.getMetaData().getColumnType(columnIndex);
         String columnClassName = rs.getMetaData().getColumnClassName(columnIndex);
         JDBCType jdbcType = JDBCType.valueOf(columnType);
@@ -52,7 +67,7 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
                 /**/
             }
         }
-        TypeHandler<?> typeHandler = TypeHandlerRegistry.DEFAULT.getTypeHandler(columnTypeClass, jdbcType);
+        TypeHandler<?> typeHandler = this.handlerRegistry.getTypeHandler(columnTypeClass, jdbcType);
         if (typeHandler == null) {
             String message = "jdbcType=" + jdbcType.getVendorTypeNumber() + " ,columnTypeClass=" + columnTypeClass;
             throw new SQLException("no typeHandler is matched to any available " + message);

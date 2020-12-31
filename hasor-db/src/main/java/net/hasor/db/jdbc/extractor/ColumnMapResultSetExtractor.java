@@ -16,6 +16,7 @@
 package net.hasor.db.jdbc.extractor;
 import net.hasor.db.jdbc.ResultSetExtractor;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
+import net.hasor.db.types.TypeHandlerRegistry;
 
 import java.util.Map;
 
@@ -36,5 +37,14 @@ public class ColumnMapResultSetExtractor extends RowMapperResultSetExtractor<Map
      */
     public ColumnMapResultSetExtractor(int rowsExpected) {
         super(new ColumnMapRowMapper(), rowsExpected);
+    }
+
+    /**
+     * 创建 {@link ColumnMapResultSetExtractor} 对象
+     * @param rowsExpected 预期结果集大小（实际得到的结果集条目不受此参数限制）。
+     * @param typeHandler
+     */
+    public ColumnMapResultSetExtractor(int rowsExpected, TypeHandlerRegistry typeHandler) {
+        super(new ColumnMapRowMapper(typeHandler), rowsExpected);
     }
 }

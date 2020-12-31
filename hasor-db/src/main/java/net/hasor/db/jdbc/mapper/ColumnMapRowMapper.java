@@ -16,6 +16,7 @@
 package net.hasor.db.jdbc.mapper;
 import net.hasor.db.jdbc.JdbcOperations;
 import net.hasor.db.jdbc.RowMapper;
+import net.hasor.db.types.TypeHandlerRegistry;
 import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 
 import java.sql.ResultSet;
@@ -45,6 +46,14 @@ import java.util.Map;
  * @see JdbcOperations#queryForMap(String)
  */
 public class ColumnMapRowMapper extends AbstractRowMapper<Map<String, Object>> {
+    public ColumnMapRowMapper() {
+        this(TypeHandlerRegistry.DEFAULT);
+    }
+
+    public ColumnMapRowMapper(TypeHandlerRegistry typeHandler) {
+        super(typeHandler);
+    }
+
     @Override
     public final Map<String, Object> mapRow(final ResultSet rs, final int rowNum) throws SQLException {
         ResultSetMetaData rsmd = rs.getMetaData();
