@@ -22,6 +22,7 @@
     <modules>
         <module>spring-cloud-provider</module>
         <module>spring-cloud-consumer</module>
+        <module>spring-cloud-getway</module>
     </modules>
 
     <dependencyManagement>

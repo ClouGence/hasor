@@ -3,7 +3,6 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.DimModule;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.QueryApiBinder;
-import net.hasor.dataway.config.NacosDiscoveryModule;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
 import net.hasor.spring.SpringModule;
@@ -32,7 +31,5 @@ public class DatawayModule implements SpringModule {
         queryBinder.installModule(new JdbcModule(Level.Full, "ds2", this.dataDs2));
         // udf/udfSource/import 指令 的类型创建委托给 spring
         queryBinder.bindFinder(Finder.TYPE_SUPPLIER.apply(springTypeSupplier(apiBinder)));
-        // 服务发现
-        apiBinder.installModule(new NacosDiscoveryModule("abc", "127.0.0.1", 2222));
     }
 }

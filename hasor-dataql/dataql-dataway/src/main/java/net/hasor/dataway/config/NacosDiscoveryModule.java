@@ -24,7 +24,10 @@ import net.hasor.web.WebModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.*;
 
 /**
  * 基于 Nacos 的 服务注册
@@ -36,36 +39,25 @@ public class NacosDiscoveryModule implements WebModule {
     private          String        nacosServerAddr;
     private          String        nacosNamespace;
     private          String        nacosGroupName;
-    //
     private          String        serviceName;
     private          String        serviceIP;
     private          int           servicePort;
+    //
     private          NamingService nacosNamingService;
 
-    public NacosDiscoveryModule(String serviceName, String serviceIP, int servicePort) {
-        if (StringUtils.isBlank(serviceName)) {
-            throw new IllegalArgumentException("serviceName is not specified");
-        }
-        if (StringUtils.isBlank(serviceIP)) {
-            throw new IllegalArgumentException("serviceIP is not specified");
-        }
-        if (servicePort <= 0) {
-            throw new IllegalArgumentException("servicePort is not specified");
-        }
-        this.serviceName = serviceName;
-        this.serviceIP = serviceIP;
-        this.servicePort = servicePort;
-    }
-
-    //    spring.cloud.nacos.discovery. = eth0
-    //    spring.cloud.nacos.discovery.preferred = 192.168.
     @Override
-    public void loadModule(WebApiBinder apiBinder) {
-        String nacosServerAddr = apiBinder.getEnvironment().getSettings().getString("hasor.dataway.settings.dal_nacos_addr");
-        String nacosNamespace = apiBinder.getEnvironment().getSettings().getString("hasor.dataway.settings.dal_nacos_namespace");
-        String nacosGroupName = apiBinder.getEnvironment().getSettings().getString("hasor.dataway.settings.dal_nacos_group");
-        BindInfo<NamingService> bindInfo = apiBinder.getBindInfo(NamingService.class);
+    public void loadModule(WebApiBinder apiBinder) throws SocketException {
+        boolean nacosDiscovery = apiBinder.getEnvironment().getSettings().getBoolean("hasor.dataway.settings.dal_nacos_discovery", false);
+        if (!nacosDiscovery) {
+            logger.info("nacos Discovery is disable.");
+            throw new IgnoreModuleException();
+        }
         //
+        BindInfo<NamingService> bindInfo = apiBinder.getBindInfo(NamingService.class);
+        String nacosServerAddr = apiBinder.getEnvironment().getSettings().getString("hasor.dataway.settings.dal_nacos_addr");
+        String nacosNamespace = apiBinder.getEnvironment().getSettings().getString("hasor.dataway.settings.dal_nacos_namespace", "public");
+        String nacosGroupName = apiBinder.getEnvironment().getSettings().getString("hasor.dataway.settings.dal_nacos_group", "DEFAULT_GROUP");
+        String serviceName = apiBinder.getEnvironment().getSettings().getString("hasor.dataway.settings.dal_nacos_service_name", "app");
         if (bindInfo == null && StringUtils.isBlank(nacosServerAddr)) {
             throw new IllegalArgumentException("config dal_nacos_addr is missing.");
         }
@@ -75,10 +67,55 @@ public class NacosDiscoveryModule implements WebModule {
         if (StringUtils.isBlank(nacosGroupName)) {
             throw new IllegalArgumentException("config dal_nacos_group is missing.");
         }
-        //
+        if (StringUtils.isBlank(serviceName)) {
+            throw new IllegalArgumentException("config dal_nacos_service_name is not specified");
+        }
         this.nacosServerAddr = nacosServerAddr;
         this.nacosNamespace = nacosNamespace;
         this.nacosGroupName = nacosGroupName;
+        this.serviceName = serviceName;
+        //
+        int nacosDiscoveryPort = apiBinder.getEnvironment().getSettings().getInteger("hasor.dataway.settings.dal_nacos_discovery_port", 0);
+        if (nacosDiscoveryPort <= 0) {
+            throw new IllegalArgumentException("config dal_nacos_service_port is not specified");
+        }
+        String nacosDiscoveryIP = apiBinder.getEnvironment().getSettings().getString("hasor.dataway.settings.dal_nacos_discovery_ip");
+        String nacosDiscoveryPrefix = apiBinder.getEnvironment().getSettings().getString("hasor.dataway.settings.dal_nacos_discovery_prefix");
+        String nacosDiscoveryNetworkInterface = apiBinder.getEnvironment().getSettings().getString("hasor.dataway.settings.dal_nacos_discovery_networkInterface");
+        this.servicePort = nacosDiscoveryPort;
+        if (StringUtils.isBlank(nacosDiscoveryIP) && StringUtils.isBlank(nacosDiscoveryPrefix) && StringUtils.isBlank(nacosDiscoveryNetworkInterface)) {
+            throw new IllegalArgumentException("must config dal_nacos_discovery_ip or dal_nacos_discovery_prefix or dal_nacos_discovery_networkInterface");
+        }
+        if (StringUtils.isNotBlank(nacosDiscoveryIP)) {
+            this.serviceIP = nacosDiscoveryIP;
+            return;
+        }
+        Set<NetworkInterface> interfaces = new HashSet<>();
+        if (StringUtils.isNotBlank(nacosDiscoveryNetworkInterface)) {
+            Set<String> match = new HashSet<>(Arrays.asList(nacosDiscoveryNetworkInterface.split(",")));
+            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+            while (networkInterfaces.hasMoreElements()) {
+                NetworkInterface nextElement = networkInterfaces.nextElement();
+                if (match.isEmpty()) {
+                    interfaces.add(nextElement);
+                } else if (match.contains(nextElement.getName())) {
+                    interfaces.add(nextElement);
+                }
+            }
+        }
+        //
+        Set<String> foundNetwork = new HashSet<>();
+        for (NetworkInterface networkInterface : interfaces) {
+            Enumeration<InetAddress> enumeration = networkInterface.getInetAddresses();
+            while (enumeration.hasMoreElements()) {
+                InetAddress nextElement = enumeration.nextElement();
+                String hostAddress = nextElement.getHostAddress();
+                if (StringUtils.isBlank(nacosDiscoveryPrefix) || hostAddress.startsWith(nacosDiscoveryPrefix)) {
+                    foundNetwork.add(hostAddress);
+                }
+            }
+        }
+        this.serviceIP = foundNetwork.stream().findAny().orElse(null);
     }
 
     @Override

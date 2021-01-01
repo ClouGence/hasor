@@ -20,21 +20,35 @@
         <HASOR_DATAQL_DATAWAY_DB_DBTYPE></HASOR_DATAQL_DATAWAY_DB_DBTYPE>
         <!-- DB 那两张表的前缀 -->
         <HASOR_DATAQL_DATAWAY_DB_TABLE_PREFIX></HASOR_DATAQL_DATAWAY_DB_TABLE_PREFIX>
+        <!-- Nacos 作为存储时，最大存储API条数，默认：4000 -->
+        <HASOR_DATAQL_DATAWAY_NACOS_API_MAX_SIZE>4000</HASOR_DATAQL_DATAWAY_NACOS_API_MAX_SIZE>
 
         <!-- nacos 的服务地址 -->
-        <HASOR_DATAQL_DATAWAY_NACOSDAL_ADDR></HASOR_DATAQL_DATAWAY_NACOSDAL_ADDR>
+        <HASOR_NACOS_ADDR></HASOR_NACOS_ADDR>
         <!-- nacos 上的 Namespace，默认为：public -->
-        <HASOR_DATAQL_DATAWAY_NACOSDAL_NAMESPACE>public</HASOR_DATAQL_DATAWAY_NACOSDAL_NAMESPACE>
+        <HASOR_NACOS_NAMESPACE>public</HASOR_NACOS_NAMESPACE>
         <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
-        <HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP>HASOR_DATAWAY</HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP>
-        <!-- Nacos 作为存储时，最大存储API条数，默认：4000 -->
-        <HASOR_DATAQL_DATAWAY_NACOSDAL_API_MAX_SIZE>4000</HASOR_DATAQL_DATAWAY_NACOSDAL_API_MAX_SIZE>
+        <HASOR_NACOS_GROUP>DEFAULT_GROUP</HASOR_NACOS_GROUP>
+        <!-- 使用 nacos 作为服务发现时，当前服务的名字 -->
+        <HASOR_NACOS_SERVICE_NAME>app</HASOR_NACOS_SERVICE_NAME>
+        <!-- 是否启用 nacos 服务发现模块，默认关闭 -->
+        <HASOR_NACOS_DISCOVERY>false</HASOR_NACOS_DISCOVERY>
+        <!-- 使用 nacos 作为服务发现时，当前服务的端口号 -->
+        <HASOR_NACOS_DISCOVERY_PORT>0</HASOR_NACOS_DISCOVERY_PORT>
+
+        <!-- 使用 nacos 作为服务发现时，使用固定的IP -->
+        <HASOR_NACOS_DISCOVERY_IP></HASOR_NACOS_DISCOVERY_IP>
+        <!-- 使用 nacos 作为服务发现时，使用IP前缀来匹配 -->
+        <HASOR_NACOS_DISCOVERY_PREFIX></HASOR_NACOS_DISCOVERY_PREFIX>
+        <!-- 使用 nacos 作为服务发现时，通过网卡名来确定（可以结合dal_nacos_discovery_prefix一起使用，另外可以通过，来在多个网卡中寻找匹配） -->
+        <HASOR_NACOS_DISCOVERY_NETWORK_INTERFACE></HASOR_NACOS_DISCOVERY_NETWORK_INTERFACE>
     </hasor.environmentVar>
 
     <hasor>
         <loadPackages>net.hasor.dataway.*</loadPackages>
         <modules>
             <module>net.hasor.dataway.config.DatawayModule</module>
+            <module>net.hasor.dataway.config.NacosDiscoveryModule</module>
         </modules>
 
         <!-- enable：默认不启用Dataway，也不启用 Dataway 的管理能力 -->
@@ -63,14 +77,26 @@
                 <dal_db_table_prefix>${HASOR_DATAQL_DATAWAY_DB_TABLE_PREFIX}</dal_db_table_prefix>
 
 
-                <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
-                <dal_nacos_addr>${HASOR_DATAQL_DATAWAY_NACOSDAL_ADDR}</dal_nacos_addr>
-                <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
-                <dal_nacos_namespace>${HASOR_DATAQL_DATAWAY_NACOSDAL_NAMESPACE}</dal_nacos_namespace>
-                <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
-                <dal_nacos_group>${HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP}</dal_nacos_group>
                 <!-- Nacos 作为存储的话，最大存储API条数，默认：4000 -->
-                <dal_nacos_api_max_size>${HASOR_DATAQL_DATAWAY_NACOSDAL_API_MAX_SIZE}</dal_nacos_api_max_size>
+                <dal_nacos_api_max_size>${HASOR_DATAQL_DATAWAY_NACOS_API_MAX_SIZE}</dal_nacos_api_max_size>
+                <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
+                <dal_nacos_addr>${HASOR_NACOS_ADDR}</dal_nacos_addr>
+                <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
+                <dal_nacos_namespace>${HASOR_NACOS_NAMESPACE}</dal_nacos_namespace>
+                <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
+                <dal_nacos_group>${HASOR_NACOS_GROUP}</dal_nacos_group>
+                <!-- 使用 nacos 作为服务发现时，当前服务的名字 -->
+                <dal_nacos_service_name>${HASOR_NACOS_SERVICE_NAME}</dal_nacos_service_name>
+                <!-- 是否启用 nacos 服务发现模块，默认关闭 -->
+                <dal_nacos_discovery>${HASOR_NACOS_DISCOVERY}</dal_nacos_discovery>
+                <!-- 使用 nacos 作为服务发现时，使用固定的IP -->
+                <dal_nacos_discovery_ip>${HASOR_NACOS_DISCOVERY_IP}</dal_nacos_discovery_ip>
+                <!-- 使用 nacos 作为服务发现时，使用IP前缀来匹配 -->
+                <dal_nacos_discovery_prefix>${HASOR_NACOS_DISCOVERY_PREFIX}</dal_nacos_discovery_prefix>
+                <!-- 使用 nacos 作为服务发现时，通过网卡名来确定（可以结合dal_nacos_discovery_prefix一起使用） -->
+                <dal_nacos_discovery_networkInterface>${HASOR_NACOS_DISCOVERY_NETWORK_INTERFACE}</dal_nacos_discovery_networkInterface>
+                <!-- 使用 nacos 作为服务发现时，当前服务的端口号 -->
+                <dal_nacos_discovery_port>${HASOR_NACOS_DISCOVERY_PORT}</dal_nacos_discovery_port>
             </settings>
 
             <!-- globalConfig 会通过 global-config 接口送给前端页面 -->
