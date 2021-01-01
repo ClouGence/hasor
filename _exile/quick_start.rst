@@ -7,7 +7,7 @@ Hasor 套件中携带了 web 子框架，通过前面的工程配置，您的项
 .. code-block:: java
     :linenos:
 
-    import net.hasor.web.WebController;
+    import net.example.hasor.web.WebController;
     public class My extends WebController {
         public void execute(){
             ...
@@ -36,7 +36,7 @@ Hasor 套件中携带了 web 子框架，通过前面的工程配置，您的项
 .. code-block:: java
     :linenos:
 
-    import net.hasor.web.WebController;
+    import net.example.hasor.web.WebController;
     @MappingTo("/my/my.htm")
     public class My extends WebController {
         public void execute(){

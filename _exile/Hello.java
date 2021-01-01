@@ -3,8 +3,8 @@ import io.swagger.models.Operation;
 import io.swagger.models.Path;
 import io.swagger.models.Swagger;
 import io.swagger.util.Json;
-import net.hasor.web.annotation.Any;
-import net.hasor.web.annotation.MappingTo;
+import net.example.hasor.web.annotation.Any;
+import net.example.hasor.web.annotation.MappingTo;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
