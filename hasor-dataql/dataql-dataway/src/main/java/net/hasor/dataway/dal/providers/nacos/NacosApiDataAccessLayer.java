@@ -269,11 +269,13 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
         this.configService = appContext.getInstance(ConfigService.class);
         if (this.configService == null) {
             Properties properties = new Properties();
-            properties.put("serverAddr", nacosServerAddr);
+            properties.put("serverAddr", this.nacosServerAddr);
             this.configService = NacosFactory.createConfigService(properties);
+            logger.info("nacosDal init ConfigService, serverAddr = " + this.nacosServerAddr + ", groupName=" + this.groupName);
+        } else {
+            logger.info("nacosDal Containers provide ConfigService.");
         }
         //
-        logger.info("nacosDal init groupName = " + this.groupName + ", server = " + this.nacosServerAddr);
         //
         // 注册和初始化 nacos
         NameThreadFactory threadFactory = new NameThreadFactory("NacosThread-%s", appContext.getClassLoader());

@@ -23,6 +23,8 @@
 
         <!-- nacos 的服务地址 -->
         <HASOR_DATAQL_DATAWAY_NACOSDAL_ADDR></HASOR_DATAQL_DATAWAY_NACOSDAL_ADDR>
+        <!-- nacos 上的 Namespace，默认为：public -->
+        <HASOR_DATAQL_DATAWAY_NACOSDAL_NAMESPACE>public</HASOR_DATAQL_DATAWAY_NACOSDAL_NAMESPACE>
         <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
         <HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP>HASOR_DATAWAY</HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP>
         <!-- Nacos 作为存储时，最大存储API条数，默认：4000 -->
@@ -63,6 +65,8 @@
 
                 <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
                 <dal_nacos_addr>${HASOR_DATAQL_DATAWAY_NACOSDAL_ADDR}</dal_nacos_addr>
+                <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
+                <dal_nacos_namespace>${HASOR_DATAQL_DATAWAY_NACOSDAL_NAMESPACE}</dal_nacos_namespace>
                 <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
                 <dal_nacos_group>${HASOR_DATAQL_DATAWAY_NACOSDAL_GROUP}</dal_nacos_group>
                 <!-- Nacos 作为存储的话，最大存储API条数，默认：4000 -->
