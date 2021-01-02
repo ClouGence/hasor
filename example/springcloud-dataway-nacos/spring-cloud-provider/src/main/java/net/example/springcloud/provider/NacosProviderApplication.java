@@ -10,8 +10,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @EnableDiscoveryClient
 @EnableHasor()
 @EnableHasorWeb(at = WorkAt.Interceptor)
-public class NacosDatawayProviderApplication {
+public class NacosProviderApplication {
     public static void main(String[] args) {
-        SpringApplication.run(NacosDatawayProviderApplication.class, args);
+        SpringApplication.run(NacosProviderApplication.class, args);
     }
 }
