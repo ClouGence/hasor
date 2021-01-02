@@ -1,45 +1,55 @@
 [0]
   #00  LDC_B     true
-  #01  IF        7
-  #02  LDC_D     11
-  #03  STORE     0
-  #04  LDC_D     11
-  #05  STORE     1
-  #06  GOTO      21
-  #07  LABEL     7
-  #08  LDC_B     true
-  #09  IF        13
-  #10  LDC_D     22
-  #11  STORE     2
-  #12  GOTO      21
-  #13  LABEL     13
-  #14  LDC_D     33
-  #15  STORE     3
-  #16  LDC_D     3456
-  #17  STORE     4
-  #18  LDC_S
-  #19  RETURN    0
-  #20  GOTO      21
-  #21  LABEL     21
-  #22  LDC_B     true
-  #23  IF        29
-  #24  LDC_D     11
-  #25  STORE     0
-  #26  LDC_D     11
-  #27  STORE     1
-  #28  GOTO      43
-  #29  LABEL     29
-  #30  LDC_B     true
-  #31  IF        35
-  #32  LDC_D     22
-  #33  STORE     2
-  #34  GOTO      43
+  #01  IF        9
+  #02  HINT_S
+  #03  LDC_D     11
+  #04  STORE     0
+  #05  LDC_D     11
+  #06  STORE     1
+  #07  HINT_D
+  #08  GOTO      25
+  #09  LABEL     9
+  #10  LDC_B     true
+  #11  IF        15
+  #12  LDC_D     22
+  #13  STORE     2
+  #14  GOTO      25
+  #15  LABEL     15
+  #16  HINT_S
+  #17  LDC_D     33
+  #18  STORE     3
+  #19  LDC_D     3456
+  #20  STORE     4
+  #21  LDC_S
+  #22  RETURN    0
+  #23  HINT_D
+  #24  GOTO      25
+  #25  LABEL     25
+  #26  LDC_B     true
+  #27  IF        35
+  #28  HINT_S
+  #29  LDC_D     11
+  #30  STORE     0
+  #31  LDC_D     11
+  #32  STORE     1
+  #33  HINT_D
+  #34  GOTO      53
   #35  LABEL     35
-  #36  LDC_D     33
-  #37  STORE     3
-  #38  LDC_D     3456
-  #39  STORE     4
-  #40  LDC_S
-  #41  RETURN    0
-  #42  GOTO      43
+  #36  LDC_B     true
+  #37  IF        43
+  #38  HINT_S
+  #39  LDC_D     22
+  #40  STORE     2
+  #41  HINT_D
+  #42  GOTO      53
   #43  LABEL     43
+  #44  HINT_S
+  #45  LDC_D     33
+  #46  STORE     3
+  #47  LDC_D     3456
+  #48  STORE     4
+  #49  LDC_S
+  #50  RETURN    0
+  #51  HINT_D
+  #52  GOTO      53
+  #53  LABEL     53

@@ -5,18 +5,20 @@
   #03  E_LOAD    #
   #04  GET       a
   #05  DO        ==
-  #06  IF        11
-  #07  LINE      2
-  #08  LDC_D     11
-  #09  STORE     0
-  #10  GOTO      20
-  #11  LABEL     11
-  #12  LINE      3
-  #13  LDC_B     true
-  #14  IF        19
-  #15  LINE      4
-  #16  LDC_D     22
-  #17  STORE     1
-  #18  GOTO      20
-  #19  LABEL     19
-  #20  LABEL     20
+  #06  IF        13
+  #07  HINT_S
+  #08  LINE      2
+  #09  LDC_D     11
+  #10  STORE     0
+  #11  HINT_D
+  #12  GOTO      22
+  #13  LABEL     13
+  #14  LINE      3
+  #15  LDC_B     true
+  #16  IF        21
+  #17  LINE      4
+  #18  LDC_D     22
+  #19  STORE     1
+  #20  GOTO      22
+  #21  LABEL     21
+  #22  LABEL     22

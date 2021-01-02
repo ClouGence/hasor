@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.core.aop;
-import net.hasor.core.MethodInterceptor;
 import net.hasor.core.exts.aop.Aop;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.test.core.aop.custom.MyAop;
 import net.hasor.test.core.aop.ignore.types.GrandFatherBean;
 import net.hasor.test.core.aop.ignore.types.JamesBean;
 import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 
 import java.lang.reflect.Method;
 import java.util.function.Predicate;
@@ -89,7 +87,7 @@ public class AopToosTest {
     @Test
     public void toosTest4() {
         AopClassConfig config = new AopClassConfig(Object.class);
-        config.addAopInterceptor(PowerMockito.mock(MethodInterceptor.class));
+        config.addAopInterceptor(invocation -> null);
         assert config.getSimpleName().startsWith("Object$Auto$");
         try {
             config.buildClass();

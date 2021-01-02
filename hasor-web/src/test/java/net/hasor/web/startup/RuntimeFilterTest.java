@@ -42,6 +42,15 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class RuntimeFilterTest extends AbstractTest {
     @Test
+    public void basic_test_0() {
+        HashMap<String, String> init_params = new HashMap<>();
+        ServletContext servletContext = servletInitParams(servlet25("/"), init_params);
+        //
+        servletContext.setAttribute("ss", "ss");
+        assert servletContext.getAttribute("ss").equals("ss");
+    }
+
+    @Test
     public void basic_test_1() throws Throwable {
         HashMap<String, String> init_params = new HashMap<>();
         init_params.put("hasor-root-module", StartModule.class.getName());

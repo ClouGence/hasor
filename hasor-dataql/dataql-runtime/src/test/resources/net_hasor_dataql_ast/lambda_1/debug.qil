@@ -19,33 +19,37 @@
   #3  RETURN    0
 
 [2]
-  #0  LINE      4, 8, 4, 9
-  #1  LOCAL     0, 0, a
-  #2  LINE      4, 10, 4, 11
-  #3  LOCAL     1, 1, b
-  #4  LINE      4, 25, 4, 30
-  #5  LDC_B     false
-  #6  LINE      4, 18, 4, 30
-  #7  RETURN    0
+  #00  LINE      4, 8, 4, 9
+  #01  LOCAL     0, 0, a
+  #02  LINE      4, 10, 4, 11
+  #03  LOCAL     1, 1, b
+  #04  HINT_S
+  #05  LINE      4, 25, 4, 30
+  #06  LDC_B     false
+  #07  LINE      4, 18, 4, 30
+  #08  RETURN    0
+  #09  HINT_D
 
 [3]
-  #00  LINE      8, 8, 8, 12
-  #01  LDC_B     true
-  #02  IF        8
-  #03  LINE      9, 15, 9, 19
-  #04  LDC_B     true
-  #05  LINE      9, 8, 9, 19
-  #06  RETURN    0
-  #07  GOTO      14
-  #08  LABEL     8
-  #09  LINE      10, 20, 10, 25
-  #10  LDC_B     false
-  #11  LINE      10, 13, 10, 25
-  #12  RETURN    0
-  #13  GOTO      14
-  #14  LABEL     14
-  #15  LINE      12, 10, 12, 13
-  #16  E_LOAD    #
-  #17  GET       aaa
-  #18  LINE      12, 4, 12, 13
-  #19  THROW     0
+  #00  HINT_S
+  #01  LINE      8, 8, 8, 12
+  #02  LDC_B     true
+  #03  IF        9
+  #04  LINE      9, 15, 9, 19
+  #05  LDC_B     true
+  #06  LINE      9, 8, 9, 19
+  #07  RETURN    0
+  #08  GOTO      15
+  #09  LABEL     9
+  #10  LINE      10, 20, 10, 25
+  #11  LDC_B     false
+  #12  LINE      10, 13, 10, 25
+  #13  RETURN    0
+  #14  GOTO      15
+  #15  LABEL     15
+  #16  LINE      12, 10, 12, 13
+  #17  E_LOAD    #
+  #18  GET       aaa
+  #19  LINE      12, 4, 12, 13
+  #20  THROW     0
+  #21  HINT_D

@@ -13,8 +13,8 @@
         <java.version>1.8</java.version>
         <hasor.version>4.2.2-SNAPSHOT</hasor.version>
         <swagger.version>2.7.0</swagger.version>
-        <spring-boot.version>2.4.1</spring-boot.version>
-        <spring-cloud.version>2020.0.0</spring-cloud.version>
+        <spring-boot.version>2.3.7.RELEASE</spring-boot.version>
+        <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
@@ -22,7 +22,7 @@
     <modules>
         <module>spring-cloud-provider</module>
         <module>spring-cloud-consumer</module>
-        <module>spring-cloud-getway</module>
+        <module>spring-cloud-gateway</module>
     </modules>
 
     <dependencyManagement>

@@ -21,6 +21,7 @@ import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.spi.BindInfoProvisionListener;
+import net.hasor.test.core.MockBindInfo;
 import net.hasor.test.core.basic.init.SingletonPublicCallInitBean;
 import net.hasor.test.core.basic.init.WithoutAnnoCallInitBean;
 import net.hasor.test.core.basic.pojo.PojoBean;
@@ -30,7 +31,6 @@ import net.hasor.test.core.basic.pojo.SampleBean;
 import net.hasor.test.core.binder.TestBinder;
 import net.hasor.test.core.scope.My;
 import net.hasor.test.core.scope.MyScope;
-import net.hasor.core.Provider;
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
@@ -184,7 +184,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
                 return aClass != PojoBeanTestBeanP.class;
             };
             //
-            BindInfo<?> valueInfo = PowerMockito.mock(BindInfo.class);
+            BindInfo<?> valueInfo = new MockBindInfo();
             Provider<Object> valProvider = Provider.of("val");
             //
             //
@@ -245,7 +245,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
                 return aClass != PojoBeanTestBeanC.class;
             };
             //
-            BindInfo<?> valueInfo = PowerMockito.mock(BindInfo.class);
+            BindInfo<?> valueInfo = new MockBindInfo();
             Provider<Object> valProvider = Provider.of("val");
             //
             //
@@ -302,7 +302,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
 
     @Test
     public void aopTest1() {
-        MethodInterceptor interceptor = PowerMockito.mock(MethodInterceptor.class);
+        MethodInterceptor interceptor = invocation -> null;
         //
         try {
             binder.bindInterceptor("xxx", interceptor);
@@ -377,7 +377,8 @@ public class BinderDataTest extends AbstractBinderDataTest {
         ApiBinderWrap binder = new ApiBinderWrap(newAbstractBinder(env, container));
         container.preInitialize();
         //
-        BindInfoProvisionListener listener = PowerMockito.mock(BindInfoProvisionListener.class);
+        BindInfoProvisionListener listener = bindInfo -> {
+        };
         binder.bindSpiListener(BindInfoProvisionListener.class, listener);
         //
         List<Supplier<EventListener>> list = container.getSpiContainer().getEventListenerList(BindInfoProvisionListener.class);

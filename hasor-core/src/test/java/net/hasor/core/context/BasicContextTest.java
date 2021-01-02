@@ -17,13 +17,13 @@ package net.hasor.core.context;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextWarp;
 import net.hasor.core.Environment;
+import net.hasor.core.Hasor;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.spi.ContextInitializeListener;
 import net.hasor.core.spi.ContextShutdownListener;
 import net.hasor.core.spi.ContextStartListener;
 import net.hasor.test.core.binder.TestBinder;
 import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -168,26 +168,12 @@ public class BasicContextTest {
 
     @Test
     public void test1() {
-        final AtomicInteger atomicInteger = new AtomicInteger(0);
-        AppContext appContext = PowerMockito.mock(AppContext.class);
-        PowerMockito.when(appContext.isStart()).thenReturn(true);
-        PowerMockito.doAnswer(invocationOnMock -> {
-            if (atomicInteger.get() == 0) {
-                atomicInteger.set(1);
-            } else {
-                atomicInteger.set(2);
-                throw new Exception();
-            }
-            return null;
-        }).when(appContext).shutdown();
-        //
+        AppContext appContext = Hasor.create().build();
         ShutdownHook hook = new ShutdownHook(appContext);
         //
+        assert appContext.isStart();
         hook.run();
-        assert atomicInteger.get() == 1;
-        //
-        hook.run();
-        assert atomicInteger.get() == 2;
+        assert !appContext.isStart();
     }
 
     @Test

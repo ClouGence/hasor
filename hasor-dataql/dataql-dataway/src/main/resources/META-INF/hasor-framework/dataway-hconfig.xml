@@ -31,6 +31,8 @@
         <HASOR_NACOS_GROUP>DEFAULT_GROUP</HASOR_NACOS_GROUP>
         <!-- 使用 nacos 作为服务发现时，当前服务的名字 -->
         <HASOR_NACOS_SERVICE_NAME>app</HASOR_NACOS_SERVICE_NAME>
+        <!-- 使用 nacos 作为服务发现时，当前服务所在的集群 -->
+        <HASOR_NACOS_CLUSTER_NAME>DEFAULT</HASOR_NACOS_CLUSTER_NAME>
         <!-- 是否启用 nacos 服务发现模块，默认关闭 -->
         <HASOR_NACOS_DISCOVERY>false</HASOR_NACOS_DISCOVERY>
         <!-- 使用 nacos 作为服务发现时，当前服务的端口号 -->
@@ -76,7 +78,6 @@
                 <!-- DB 那两张表的前缀 -->
                 <dal_db_table_prefix>${HASOR_DATAQL_DATAWAY_DB_TABLE_PREFIX}</dal_db_table_prefix>
 
-
                 <!-- Nacos 作为存储的话，最大存储API条数，默认：4000 -->
                 <dal_nacos_api_max_size>${HASOR_DATAQL_DATAWAY_NACOS_API_MAX_SIZE}</dal_nacos_api_max_size>
                 <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
@@ -85,8 +86,12 @@
                 <dal_nacos_namespace>${HASOR_NACOS_NAMESPACE}</dal_nacos_namespace>
                 <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
                 <dal_nacos_group>${HASOR_NACOS_GROUP}</dal_nacos_group>
+
+                <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
+                <dal_nacos_cluster_name>${HASOR_NACOS_CLUSTER_NAME}</dal_nacos_cluster_name>
                 <!-- 使用 nacos 作为服务发现时，当前服务的名字 -->
                 <dal_nacos_service_name>${HASOR_NACOS_SERVICE_NAME}</dal_nacos_service_name>
+
                 <!-- 是否启用 nacos 服务发现模块，默认关闭 -->
                 <dal_nacos_discovery>${HASOR_NACOS_DISCOVERY}</dal_nacos_discovery>
                 <!-- 使用 nacos 作为服务发现时，使用固定的IP -->

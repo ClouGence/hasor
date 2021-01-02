@@ -122,8 +122,8 @@ export default function request(
                 break;
             } else if (keyLC === 'content-type') {
                 // "application/json;charset=UTF-8"
-                contentEncode = response.headers[key];
-                const splitContent = contentEncode.split(';');
+                const contentTypeHeader = response.headers[key];
+                const splitContent = contentTypeHeader.split(';');
                 for (const splitItem in splitContent) {
                     const splitItemContent = splitContent[splitItem];
                     if (splitItemContent.toLowerCase().startsWith('charset=')) {

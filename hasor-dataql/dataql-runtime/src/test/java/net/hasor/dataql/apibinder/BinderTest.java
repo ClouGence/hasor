@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 测试用例
@@ -52,7 +53,8 @@ public class BinderTest extends AbstractTestResource {
     public void typeSupplier_1_test() throws IOException {
         objectMap.clear();
         DataQL dataQL = Hasor.create().build((QueryModule) apiBinder -> {
-            apiBinder.loadUdf(apiBinder.findClass(DimUdf.class), Matchers.anyClass(), supplier);
+            Set<Class<?>> aClass = apiBinder.findClass(DimUdf.class, "net.hasor.test.dataql.udfs");
+            apiBinder.loadUdf(aClass, Matchers.anyClass(), supplier);
         }).getInstance(DataQL.class);
         //
         Object unwrap = dataQL.createQuery("return test();").execute().getData().unwrap();

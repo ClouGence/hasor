@@ -51,4 +51,3 @@
   #08  LDC_S      select * from category where co_code like '%:itemCode%' and status = :status
   #09  CALL      2
   #10  RETURN    0
-

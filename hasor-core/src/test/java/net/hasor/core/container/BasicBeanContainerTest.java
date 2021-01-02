@@ -26,7 +26,6 @@ import net.hasor.test.core.basic.inject.constructor.*;
 import net.hasor.test.core.basic.pojo.PojoBean;
 import net.hasor.test.core.basic.pojo.SingletonSampleBean;
 import net.hasor.test.core.enums.SelectEnum;
-import net.hasor.core.Provider;
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
@@ -45,7 +44,7 @@ public class BasicBeanContainerTest {
 
     @Before
     public void beforeTest() {
-        Environment env = PowerMockito.mock(Environment.class);
+        Environment env = Hasor.create().buildEnvironment();
         this.beanContainer = new BeanContainer(env);
         this.appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
@@ -136,7 +135,7 @@ public class BasicBeanContainerTest {
 
     @Test
     public void basicTest5() {
-        BeanContainer container = new BeanContainer(PowerMockito.mock(Environment.class));
+        BeanContainer container = new BeanContainer(Hasor.create().buildEnvironment());
         container.init();
         container.close();
         //
@@ -257,11 +256,12 @@ public class BasicBeanContainerTest {
 
     @Test
     public void annotationTest1() {
-        Environment mockEnv = PowerMockito.mock(Environment.class);
+        Environment environment = Hasor.create().buildEnvironment();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
+        PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
         //
-        BeanContainer container = new BeanContainer(mockEnv);
+        BeanContainer container = new BeanContainer(environment);
         PowerMockito.when(appContext.getInstance(anyString())).then(invoker -> {
             BindInfo<Object> bindInfo = container.getBindInfoContainer().findBindInfo(invoker.getArguments()[0].toString());
             return container.providerOnlyBindInfo(bindInfo, appContext).get();

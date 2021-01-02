@@ -5,35 +5,39 @@
   #03  E_LOAD    #
   #04  GET       a
   #05  DO        ==
-  #06  IF        11
-  #07  LINE      2
-  #08  LDC_D     11
-  #09  STORE     0
-  #10  GOTO      37
-  #11  LABEL     11
-  #12  LINE      3
-  #13  LDC_B     true
-  #14  IF        19
-  #15  LINE      4
-  #16  LDC_D     22
-  #17  STORE     1
-  #18  GOTO      37
-  #19  LABEL     19
-  #20  LINE      7
-  #21  NEW_A
-  #22  LDC_D     1
-  #23  PUSH
-  #24  LINE      8
-  #25  LDC_D     22
+  #06  IF        13
+  #07  HINT_S
+  #08  LINE      2
+  #09  LDC_D     11
+  #10  STORE     0
+  #11  HINT_D
+  #12  GOTO      41
+  #13  LABEL     13
+  #14  LINE      3
+  #15  LDC_B     true
+  #16  IF        21
+  #17  LINE      4
+  #18  LDC_D     22
+  #19  STORE     1
+  #20  GOTO      41
+  #21  LABEL     21
+  #22  HINT_S
+  #23  LINE      7
+  #24  NEW_A
+  #25  LDC_D     1
   #26  PUSH
-  #27  LDC_D     3
-  #28  PUSH
-  #29  LDC_D     4
-  #30  PUSH
-  #31  LINE      9
-  #32  LDC_D     5
+  #27  LINE      8
+  #28  LDC_D     22
+  #29  PUSH
+  #30  LDC_D     3
+  #31  PUSH
+  #32  LDC_D     4
   #33  PUSH
-  #34  LINE      7
-  #35  RETURN    0
-  #36  GOTO      37
-  #37  LABEL     37
+  #34  LINE      9
+  #35  LDC_D     5
+  #36  PUSH
+  #37  LINE      7
+  #38  RETURN    0
+  #39  HINT_D
+  #40  GOTO      41
+  #41  LABEL     41

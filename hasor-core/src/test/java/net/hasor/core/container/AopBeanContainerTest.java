@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import net.hasor.core.MethodInterceptor;
-import net.hasor.core.Provider;
+import net.hasor.core.*;
 import net.hasor.core.aop.DynamicClass;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
@@ -46,7 +43,7 @@ public class AopBeanContainerTest {
 
     @Test
     public void aopTest1() {
-        Environment mockEnv = PowerMockito.mock(Environment.class);
+        Environment mockEnv = Hasor.create().buildEnvironment();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
         BeanContainer container = new BeanContainer(mockEnv);
@@ -69,7 +66,7 @@ public class AopBeanContainerTest {
 
     @Test
     public void aopTest2() {
-        Environment mockEnv = PowerMockito.mock(Environment.class);
+        Environment mockEnv = Hasor.create().buildEnvironment();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
         BeanContainer container = new BeanContainer(mockEnv);
@@ -92,7 +89,7 @@ public class AopBeanContainerTest {
 
     @Test
     public void aopTest3() {
-        Environment mockEnv = PowerMockito.mock(Environment.class);
+        Environment mockEnv = Hasor.create().buildEnvironment();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
         BeanContainer container = new BeanContainer(mockEnv);

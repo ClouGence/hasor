@@ -16,6 +16,7 @@
 package net.hasor.dataway.config;
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.pojo.Instance;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.utils.StringUtils;
@@ -42,8 +43,10 @@ public class NacosDiscoveryModule implements WebModule {
     private          String        serviceName;
     private          String        serviceIP;
     private          int           servicePort;
+    private          String        serviceClusterName;
     //
     private          NamingService nacosNamingService;
+    private          boolean       registerStatus;
 
     @Override
     public void loadModule(WebApiBinder apiBinder) throws SocketException {
@@ -82,7 +85,9 @@ public class NacosDiscoveryModule implements WebModule {
         String nacosDiscoveryIP = apiBinder.getEnvironment().getSettings().getString("hasor.dataway.settings.dal_nacos_discovery_ip");
         String nacosDiscoveryPrefix = apiBinder.getEnvironment().getSettings().getString("hasor.dataway.settings.dal_nacos_discovery_prefix");
         String nacosDiscoveryNetworkInterface = apiBinder.getEnvironment().getSettings().getString("hasor.dataway.settings.dal_nacos_discovery_networkInterface");
+        String nacosClusterName = apiBinder.getEnvironment().getSettings().getString("hasor.dataway.settings.dal_nacos_cluster_name");
         this.servicePort = nacosDiscoveryPort;
+        this.serviceClusterName = nacosClusterName;
         if (StringUtils.isBlank(nacosDiscoveryIP) && StringUtils.isBlank(nacosDiscoveryPrefix) && StringUtils.isBlank(nacosDiscoveryNetworkInterface)) {
             throw new IllegalArgumentException("must config dal_nacos_discovery_ip or dal_nacos_discovery_prefix or dal_nacos_discovery_networkInterface");
         }
@@ -132,13 +137,32 @@ public class NacosDiscoveryModule implements WebModule {
             logger.info("nacosNaming Containers provide NamingService.");
         }
         // 注册服务
-        this.nacosNamingService.registerInstance(this.serviceName, this.serviceIP, this.servicePort, this.nacosGroupName);
-        logger.info("nacosNaming register Service, serviceName=" + this.serviceName + ", ip=" + this.serviceIP + ", port=" + this.servicePort + ", groupName=" + this.nacosGroupName);
+        List<Instance> allInstances = this.nacosNamingService.getAllInstances(this.serviceName, this.nacosGroupName, Collections.singletonList(this.serviceClusterName));
+        for (Instance instance : allInstances) {
+            if (instance.getIp().equals(this.serviceIP) && instance.getPort() == this.servicePort) {
+                logger.info("nacosNaming register already exists, " + commonLogMessage());
+                this.registerStatus = false;
+                return;
+            }
+        }
+        this.nacosNamingService.registerInstance(this.serviceName, this.nacosGroupName, this.serviceIP, this.servicePort, this.serviceClusterName);
+        this.registerStatus = true;
+        logger.info("nacosNaming register Service, " + commonLogMessage());
     }
 
     @Override
     public void onStop(AppContext appContext) throws Throwable {
-        this.nacosNamingService.deregisterInstance(this.serviceName, this.serviceIP, this.servicePort, this.nacosGroupName);
-        logger.info("nacosNaming deregister Service, serviceName=" + this.serviceName + ", ip=" + this.serviceIP + ", port=" + this.servicePort + ", groupName=" + this.nacosGroupName);
+        if (this.registerStatus) {
+            logger.info("nacosNaming deregister Service, " + commonLogMessage());
+            this.nacosNamingService.deregisterInstance(this.serviceName, this.nacosGroupName, this.serviceIP, this.servicePort, this.serviceClusterName);
+        }
+    }
+
+    protected String commonLogMessage() {
+        return "serviceName=" + this.serviceName            //
+                + ", groupName=" + this.nacosGroupName      //
+                + ", ip=" + this.serviceIP                  //
+                + ", port=" + this.servicePort              //
+                + ", clusterName=" + this.serviceClusterName;
     }
 }

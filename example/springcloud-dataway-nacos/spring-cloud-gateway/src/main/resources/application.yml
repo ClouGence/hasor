@@ -1,0 +1,35 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: service-getway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:50610
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        # '/provider/' 开头的都转发到 -> service-provider
+        - id: ori-service-provider
+          uri: lb://service-provider/
+          predicates:
+            - Path=/provider/**
+        # '/consumer/' 开头的都转发到 -> service-consumer
+        - id: ori-service-consumer
+          uri: lb://service-consumer/
+          predicates:
+            - Path=/consumer/**
+        # '/api/' 开头的都转发到 -> dataway-provider（Dataway API 服务提供者）
+        - id: dataway-api-provider
+          uri: lb://dataway-provider/api/
+          predicates:
+            - Path=/api/**
+        # '/interface-ui/' 开头的都转发到 -> dataway-provider（Dataway 后台管理）
+        - id: dataway-admin-provider
+          uri: lb://dataway-provider/interface-ui/
+          predicates:
+            - Path=/interface-ui/**

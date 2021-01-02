@@ -15,10 +15,24 @@
   #13  E_LOAD    #
   #14  GET       aaa
   #15  STORE     0
-  #16  LINE      13
-  #17  E_LOAD    #
-  #18  GET       ss
-  #19  STORE     0
-  #20  LINE      16
-  #21  LDC_D     1
-  #22  RETURN    0
+  #16  HINT_S
+  #17  LINE      9
+  #18  LDC_S     f
+  #19  LDC_D     342391
+  #20  HINT
+  #21  LINE      10
+  #22  LDC_S     g
+  #23  LDC_D     1311768467294899695
+  #24  HINT
+  #25  LINE      11
+  #26  LDC_S     h
+  #27  LDC_D     999999999999999999999999999999999999999999999999999999999999
+  #28  HINT
+  #29  LINE      13
+  #30  E_LOAD    #
+  #31  GET       ss
+  #32  STORE     0
+  #33  HINT_D
+  #34  LINE      16
+  #35  LDC_D     1
+  #36  RETURN    0

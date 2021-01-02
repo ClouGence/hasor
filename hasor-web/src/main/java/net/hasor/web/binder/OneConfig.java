@@ -117,7 +117,8 @@ public class OneConfig extends HashMap<String, String> implements FilterConfig, 
     @Override
     public ServletContext getServletContext() {
         if (this.appContext != null) {
-            return this.appContext.get().getInstance(ServletContext.class);
+            AppContext appContext = this.appContext.get();
+            return appContext.getInstance(ServletContext.class);
         }
         return null;
     }

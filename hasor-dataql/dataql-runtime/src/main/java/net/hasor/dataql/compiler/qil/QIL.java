@@ -44,7 +44,7 @@ public class QIL {
             Instruction[] instList = this.queueSet[i];
             printInstList(i, instList, strBuffer);
         }
-        return strBuffer.toString();
+        return strBuffer.toString().trim();
     }
 
     private static void printInstList(int name, Instruction[] instList, StringBuilder strBuffer) {

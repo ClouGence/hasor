@@ -82,16 +82,19 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
+            <version>${spring.boot.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>
@@ -324,9 +327,9 @@
                         <phase>package</phase>
                         <configuration>
                             <target>
-                                <delete dir="${basedir}/target/src" />
-                                <delete file="${basedir}/target/original-${project.artifactId}-${project.version}.jar" />
-                                <delete file="${basedir}/target/original-${project.artifactId}-${project.version}-sources.jar" />
+                                <delete dir="${basedir}/target/src"/>
+                                <delete file="${basedir}/target/original-${project.artifactId}-${project.version}.jar"/>
+                                <delete file="${basedir}/target/original-${project.artifactId}-${project.version}-sources.jar"/>
                             </target>
                         </configuration>
                         <goals>

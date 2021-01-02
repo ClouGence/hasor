@@ -23,7 +23,6 @@ import net.hasor.test.core.enums.SelectEnum;
 import net.hasor.utils.CommonCodeUtils;
 import net.hasor.utils.io.IOUtils;
 import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -194,7 +193,6 @@ public class AopTest {
         assert AopClassLoader.getPrototypeType(instance.getClass()) == ConstructorBean.class;
         //
         assert !AopClassLoader.isDynamic(ConstructorBean.class);
-        assert !AopClassLoader.isDynamic(PowerMockito.mock(ConstructorBean.class));
         //
         {
             assert instance.getByteValue() == 1;

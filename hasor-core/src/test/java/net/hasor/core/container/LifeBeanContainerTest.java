@@ -40,7 +40,7 @@ public class LifeBeanContainerTest {
 
     @Before
     public void beforeTest() {
-        Environment env = PowerMockito.mock(Environment.class);
+        Environment env = Hasor.create().buildEnvironment();
         this.beanContainer = new BeanContainer(env);
         this.appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
@@ -49,7 +49,7 @@ public class LifeBeanContainerTest {
 
     @Test
     public void lifeTest1() {
-        Environment mockEnv = PowerMockito.mock(Environment.class);
+        Environment mockEnv = Hasor.create().buildEnvironment();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
         BeanContainer container = new BeanContainer(mockEnv);
@@ -68,7 +68,7 @@ public class LifeBeanContainerTest {
             return null;
         });
         //
-        Environment mockEnv = PowerMockito.mock(Environment.class);
+        Environment mockEnv = Hasor.create().buildEnvironment();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
         BeanContainer container = new BeanContainer(mockEnv);
@@ -101,7 +101,7 @@ public class LifeBeanContainerTest {
             return null;
         });
         //
-        Environment mockEnv = PowerMockito.mock(Environment.class);
+        Environment mockEnv = Hasor.create().buildEnvironment();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
         //

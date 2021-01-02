@@ -1,73 +1,83 @@
 [0]
   #00  LINE      1, 4, 1, 8
   #01  LDC_B     true
-  #02  IF        12
-  #03  LINE      2, 12, 2, 14
-  #04  LDC_D     11
-  #05  LINE      2, 8, 2, 10
-  #06  STORE     0
-  #07  LINE      3, 12, 3, 14
-  #08  LDC_D     11
-  #09  LINE      3, 8, 3, 10
-  #10  STORE     1
-  #11  GOTO      35
-  #12  LABEL     12
-  #13  LINE      4, 10, 4, 14
-  #14  LDC_B     true
-  #15  IF        21
-  #16  LINE      5, 16, 5, 18
-  #17  LDC_D     22
-  #18  LINE      5, 12, 5, 14
-  #19  STORE     2
-  #20  GOTO      35
-  #21  LABEL     21
-  #22  LINE      8, 16, 8, 18
-  #23  LDC_D     33
-  #24  LINE      8, 12, 8, 14
-  #25  STORE     3
-  #26  LINE      9, 18, 9, 22
-  #27  LDC_D     3456
-  #28  LINE      9, 12, 9, 15
-  #29  STORE     4
-  #30  LINE      10, 8, 10, 10
-  #31  LDC_S
-  #32  LINE      10, 1, 10, 10
-  #33  RETURN    0
-  #34  GOTO      35
-  #35  LABEL     35
-  #36  LINE      14, 4, 14, 8
-  #37  LDC_B     true
-  #38  IF        48
-  #39  LINE      15, 12, 15, 14
-  #40  LDC_D     11
-  #41  LINE      15, 8, 15, 10
-  #42  STORE     0
-  #43  LINE      16, 12, 16, 14
-  #44  LDC_D     11
-  #45  LINE      16, 8, 16, 10
-  #46  STORE     1
-  #47  GOTO      71
-  #48  LABEL     48
-  #49  LINE      17, 10, 17, 14
-  #50  LDC_B     true
-  #51  IF        57
-  #52  LINE      18, 16, 18, 18
-  #53  LDC_D     22
-  #54  LINE      18, 12, 18, 14
-  #55  STORE     2
-  #56  GOTO      71
-  #57  LABEL     57
-  #58  LINE      21, 16, 21, 18
-  #59  LDC_D     33
-  #60  LINE      21, 12, 21, 14
-  #61  STORE     3
-  #62  LINE      22, 18, 22, 22
-  #63  LDC_D     3456
-  #64  LINE      22, 12, 22, 15
-  #65  STORE     4
-  #66  LINE      23, 8, 23, 10
-  #67  LDC_S
-  #68  LINE      23, 1, 23, 10
-  #69  RETURN    0
-  #70  GOTO      71
-  #71  LABEL     71
+  #02  IF        14
+  #03  HINT_S
+  #04  LINE      2, 12, 2, 14
+  #05  LDC_D     11
+  #06  LINE      2, 8, 2, 10
+  #07  STORE     0
+  #08  LINE      3, 12, 3, 14
+  #09  LDC_D     11
+  #10  LINE      3, 8, 3, 10
+  #11  STORE     1
+  #12  HINT_D
+  #13  GOTO      39
+  #14  LABEL     14
+  #15  LINE      4, 10, 4, 14
+  #16  LDC_B     true
+  #17  IF        23
+  #18  LINE      5, 16, 5, 18
+  #19  LDC_D     22
+  #20  LINE      5, 12, 5, 14
+  #21  STORE     2
+  #22  GOTO      39
+  #23  LABEL     23
+  #24  HINT_S
+  #25  LINE      8, 16, 8, 18
+  #26  LDC_D     33
+  #27  LINE      8, 12, 8, 14
+  #28  STORE     3
+  #29  LINE      9, 18, 9, 22
+  #30  LDC_D     3456
+  #31  LINE      9, 12, 9, 15
+  #32  STORE     4
+  #33  LINE      10, 8, 10, 10
+  #34  LDC_S
+  #35  LINE      10, 1, 10, 10
+  #36  RETURN    0
+  #37  HINT_D
+  #38  GOTO      39
+  #39  LABEL     39
+  #40  LINE      14, 4, 14, 8
+  #41  LDC_B     true
+  #42  IF        54
+  #43  HINT_S
+  #44  LINE      15, 12, 15, 14
+  #45  LDC_D     11
+  #46  LINE      15, 8, 15, 10
+  #47  STORE     0
+  #48  LINE      16, 12, 16, 14
+  #49  LDC_D     11
+  #50  LINE      16, 8, 16, 10
+  #51  STORE     1
+  #52  HINT_D
+  #53  GOTO      81
+  #54  LABEL     54
+  #55  LINE      17, 10, 17, 14
+  #56  LDC_B     true
+  #57  IF        65
+  #58  HINT_S
+  #59  LINE      18, 16, 18, 18
+  #60  LDC_D     22
+  #61  LINE      18, 12, 18, 14
+  #62  STORE     2
+  #63  HINT_D
+  #64  GOTO      81
+  #65  LABEL     65
+  #66  HINT_S
+  #67  LINE      21, 16, 21, 18
+  #68  LDC_D     33
+  #69  LINE      21, 12, 21, 14
+  #70  STORE     3
+  #71  LINE      22, 18, 22, 22
+  #72  LDC_D     3456
+  #73  LINE      22, 12, 22, 15
+  #74  STORE     4
+  #75  LINE      23, 8, 23, 10
+  #76  LDC_S
+  #77  LINE      23, 1, 23, 10
+  #78  RETURN    0
+  #79  HINT_D
+  #80  GOTO      81
+  #81  LABEL     81

@@ -27,7 +27,7 @@ import java.util.Objects;
  */
 class ShutdownHook extends Thread implements Runnable {
     protected static Logger     logger = LoggerFactory.getLogger(ShutdownHook.class);
-    private          AppContext appContext;
+    private final    AppContext appContext;
 
     public ShutdownHook(AppContext appContext) {
         this.appContext = Objects.requireNonNull(appContext);
