@@ -17,8 +17,9 @@ public class TestDatawayController {
         this.restTemplate = restTemplate;
     }
 
-    @RequestMapping(value = "/api/{str}", method = RequestMethod.GET)
+    @RequestMapping(value = "/consumer/api/{str}", method = RequestMethod.GET)
     public Object echo(@PathVariable String str, @RequestParam() String message) {
-        return restTemplate.getForObject("http://dataway-provider/api/" + str + "?message=" + message, Map.class);
+        String result = restTemplate.getForObject("http://dataway-provider/api/" + str + "?message=" + message, String.class);
+        return "action: consumer -> dataway.\n result:" + result;
     }
 }

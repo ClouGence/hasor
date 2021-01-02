@@ -15,8 +15,9 @@ public class TestEchoController {
         this.restTemplate = restTemplate;
     }
 
-    @RequestMapping(value = "/echo/{str}", method = RequestMethod.GET)
+    @RequestMapping(value = "/consumer/echo/{str}", method = RequestMethod.GET)
     public String echo(@PathVariable String str) {
-        return restTemplate.getForObject("http://service-provider/echo/" + str, String.class);
+        String result = restTemplate.getForObject("http://service-provider/echo/" + str, String.class);
+        return "action: consumer -> provider.\n result:" + result;
     }
 }

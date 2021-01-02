@@ -1,0 +1,28 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: service-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: provider
+          uri: lb://service-provider
+          predicates:
+            - Path=/provider/**
+        - id: consumer
+          uri: lb://service-consumer
+          predicates:
+            - Path=/consumer/**
+        - id: datawayApi
+          uri: lb://dataway-provider
+          predicates:
+            - Path=/api/**
+        - id: datawayAdmin
+          uri: lb://dataway-provider
+          predicates:
+            - Path=/interface-ui/**
+    nacos:
+      config:
+        file-extension: yaml
+        prefix: gateway
