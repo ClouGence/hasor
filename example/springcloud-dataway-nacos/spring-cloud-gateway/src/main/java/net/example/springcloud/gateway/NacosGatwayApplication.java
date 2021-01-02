@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.example.springcloud.consumer;
+package net.example.springcloud.gateway;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -27,14 +27,14 @@ import org.springframework.web.client.RestTemplate;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-public class NacosConsumerApplication {
-    @LoadBalanced
+public class NacosGatwayApplication {
     @Bean
+    @LoadBalanced
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(NacosConsumerApplication.class, args);
+        SpringApplication.run(NacosGatwayApplication.class, args);
     }
 }
