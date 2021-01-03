@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * http://localhost:8081/consumer/echo/abc
+ * http://localhost:8081/echo/abc
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2021-01-02
  */
@@ -35,9 +35,9 @@ public class TestEchoController {
         this.restTemplate = restTemplate;
     }
 
-    @RequestMapping(value = "/consumer/echo/{str}", method = RequestMethod.GET)
+    @RequestMapping(value = "/echo/{str}", method = RequestMethod.GET)
     public String echo(@PathVariable String str) {
-        String result = restTemplate.getForObject("http://service-provider/provider/echo/" + str, String.class);
+        String result = restTemplate.getForObject("http://service-provider/echo/" + str, String.class);
         return "action: consumer -> provider.\n result:" + result;
     }
 }

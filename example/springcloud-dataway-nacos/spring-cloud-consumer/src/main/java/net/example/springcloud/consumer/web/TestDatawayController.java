@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * http://localhost:8081/consumer/api/abc?message=HelloWord
+ * http://localhost:8081/api/abc?message=HelloWord
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2021-01-02
  */
@@ -32,7 +32,7 @@ public class TestDatawayController {
         this.restTemplate = restTemplate;
     }
 
-    @RequestMapping(value = "/consumer/api/{str}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/{str}", method = RequestMethod.GET)
     public Object echo(@PathVariable String str, @RequestParam() String message) {
         String result = restTemplate.getForObject("http://dataway-provider/api/" + str + "?message=" + message, String.class);
         return "action: consumer -> dataway.\n result:" + result;

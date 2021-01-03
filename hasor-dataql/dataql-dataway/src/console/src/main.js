@@ -7,7 +7,6 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/public.css';
 import axios from 'axios';
-import {ApiUrl} from '@/utils/api-const';
 
 //
 const lastCheckVersion = localStorage.getItem('lastCheckVersion');
@@ -25,7 +24,7 @@ const toBoolean = (val) => {
 };
 
 axios({
-    url: ApiUrl.globalConfig,
+    url: 'api/global-config',
     method: 'GET',
     Accept: 'application/json',
     withCredentials: true,
@@ -58,6 +57,12 @@ axios({
             }
         });
     }
+    //
+    const contextPath = defaultOption['CONTEXT_PATH'];
+    window.CONTEXT_PATH = contextPath === undefined ? '' : contextPath;
+    window.API_BASE_URL = defaultOption['API_BASE_URL'];
+    window.ALL_MAC = defaultOption['ALL_MAC'];
+    window.DATAWAY_VERSION = defaultOption['DATAWAY_VERSION'];
     //
     Vue.prototype.defaultOption = defaultOption;
     Vue.config.productionTip = false;

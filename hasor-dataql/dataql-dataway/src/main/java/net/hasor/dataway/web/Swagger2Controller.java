@@ -57,8 +57,21 @@ public class Swagger2Controller extends BasicController {
             return dataMap;
         }).collect(Collectors.toList());
         //
+        String contextPath = invoker.getHttpRequest().getContextPath();
+        String contextPathProxy = invoker.getHttpRequest().getHeader("DW_CONTEXT_PATH_PROXY");
+        if (StringUtils.isBlank(contextPathProxy)) {
+            if (StringUtils.isBlank(contextPath)) {
+                contextPath = "/";
+            }
+            if (contextPath.endsWith("/")) {
+                contextPath = contextPath.substring(0, contextPath.length() - 1);
+            }
+        } else {
+            contextPath = contextPathProxy;
+        }
+        //
         String serverHost = localName;
-        String serverBasePath = invoker.getHttpRequest().getContextPath();
+        String serverBasePath = contextPath;
         return new Swagger2Query().execute(new HashMap<String, Object>() {{
             put("apiDataList", collectList);
             put("serverHost", serverHost);

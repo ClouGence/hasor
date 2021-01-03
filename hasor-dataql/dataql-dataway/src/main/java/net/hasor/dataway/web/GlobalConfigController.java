@@ -15,17 +15,27 @@
  */
 package net.hasor.dataway.web;
 import net.hasor.core.AppContext;
+import net.hasor.core.BindInfo;
 import net.hasor.core.XmlNode;
+import net.hasor.core.spi.BindInfoAware;
+import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.config.GlobalConfig;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
+import net.hasor.dataway.config.UiConfig;
+import net.hasor.utils.ResourcesUtils;
+import net.hasor.utils.StringUtils;
+import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Get;
 import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import java.util.Map;
+import java.io.InputStream;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.*;
 
 /**
  * 全局配置（不经过权限）
@@ -34,13 +44,54 @@ import java.util.Map;
  */
 @MappingToUrl("/api/global-config")
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
-public class GlobalConfigController extends BasicController {
+public class GlobalConfigController extends BasicController implements UiConfig, BindInfoAware {
+    private static final String       DATAWAY_VERSION;
     @Inject
-    private AppContext   appContext;
-    private GlobalConfig globalConfig;
+    private              AppContext   appContext;
+    private              String       apiBaseUri;
+    private              String       uiBaseUri;
+    private              GlobalConfig globalConfig;
+
+    static {
+        String version = null;
+        try {
+            InputStream inputStream = ResourcesUtils.getResourceAsStream("/META-INF/maven/net.hasor/hasor-dataway/pom.properties");
+            Properties properties = new Properties();
+            properties.load(inputStream);
+            version = properties.getProperty("version");
+        } catch (Exception e) {
+            version = DatawayService.VERSION;
+        }
+        DATAWAY_VERSION = version;
+    }
+
+    private static String allLocalMac() throws SocketException {
+        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+        Set<String> macPool = new HashSet<>();
+        while (interfaces.hasMoreElements()) {
+            NetworkInterface nextElement = interfaces.nextElement();
+            byte[] hardwareAddress = nextElement.getHardwareAddress();
+            if (hardwareAddress == null) {
+                continue;
+            }
+            StringBuilder strBuilder = new StringBuilder();
+            for (int i = 0; i < hardwareAddress.length; i++) {
+                String str = Integer.toHexString(hardwareAddress[i] & 0xff);
+                strBuilder.append((str.length() == 1) ? ("0" + str) : str);
+            }
+            macPool.add(strBuilder.toString());
+        }
+        return StringUtils.join(macPool.toArray(), ",").toUpperCase();
+    }
+
+    @Override
+    public void setBindInfo(BindInfo<?> bindInfo) {
+        this.uiBaseUri = (String) bindInfo.getMetaData(KEY_DATAWAY_UI_BASE_URI);
+        this.apiBaseUri = (String) bindInfo.getMetaData(KEY_DATAWAY_API_BASE_URI);
+    }
 
     @PostConstruct
-    public void initController() {
+    public void initController() throws SocketException {
         this.globalConfig = this.appContext.getInstance(GlobalConfig.class);
         XmlNode xmlNode = this.appContext.getEnvironment().getSettings().getXmlNode("hasor.dataway.globalConfig");
         if (xmlNode != null) {
@@ -51,10 +102,27 @@ public class GlobalConfigController extends BasicController {
                 }
             });
         }
+        //
+        this.globalConfig.put("API_BASE_URL", this.apiBaseUri);
+        this.globalConfig.put("ALL_MAC", allLocalMac());
+        this.globalConfig.put("DATAWAY_VERSION", DATAWAY_VERSION);
     }
 
     @Get
-    public Result<Map<String, String>> globalConfig() {
-        return Result.of(globalConfig);
+    public Result<Map<String, String>> globalConfig(Invoker invoker) {
+        String contextPath = invoker.getHttpRequest().getContextPath();
+        String contextPathProxy = invoker.getHttpRequest().getHeader("DW_CONTEXT_PATH_PROXY");
+        if (StringUtils.isBlank(contextPathProxy)) {
+            if (StringUtils.isBlank(contextPath)) {
+                contextPath = "/";
+            }
+            if (contextPath.endsWith("/")) {
+                contextPath = contextPath.substring(0, contextPath.length() - 1);
+            }
+        } else {
+            contextPath = contextPathProxy;
+        }
+        this.globalConfig.put("CONTEXT_PATH", contextPath);
+        return Result.of(this.globalConfig);
     }
 }

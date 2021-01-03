@@ -15,7 +15,6 @@
  */
 package net.hasor.dataway.service;
 import com.alibaba.fastjson.JSON;
-import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
@@ -33,9 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.*;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -46,15 +43,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InterfaceUiFilter implements InvokerFilter {
     protected static     Logger               logger           = LoggerFactory.getLogger(InterfaceUiFilter.class);
     private static final String               resourceBaseUri  = "/META-INF/hasor-framework/dataway-ui/";
-    private static final String               datawayVersion;
     private              String               resourceIndexUri = null;
-    private final        String               apiBaseUri;
     private final        String               uiBaseUri;
     private final        String               uiAdminBaseUri;
     private final        Map<String, Integer> resourceSize;
 
-    public InterfaceUiFilter(String apiBaseUri, String uiBaseUri) {
-        this.apiBaseUri = apiBaseUri;
+    public InterfaceUiFilter(String uiBaseUri) {
         this.uiBaseUri = uiBaseUri;
         this.uiAdminBaseUri = fixUrl(uiBaseUri + "/api/");
         this.resourceIndexUri = fixUrl(uiBaseUri + "/index.html");
@@ -63,19 +57,6 @@ public class InterfaceUiFilter implements InvokerFilter {
 
     private static String fixUrl(String url) {
         return url.replaceAll("/+", "/");
-    }
-
-    static {
-        String version = null;
-        try {
-            InputStream inputStream = ResourcesUtils.getResourceAsStream("/META-INF/maven/net.hasor/hasor-dataway/pom.properties");
-            Properties properties = new Properties();
-            properties.load(inputStream);
-            version = properties.getProperty("version");
-        } catch (Exception e) {
-            version = DatawayService.VERSION;
-        }
-        datawayVersion = version;
     }
 
     @Override
@@ -114,19 +95,7 @@ public class InterfaceUiFilter implements InvokerFilter {
                 IOUtils.copy(inputStream, outputStream);
             }
             //
-            String contextPath = httpRequest.getContextPath();
-            if (StringUtils.isBlank(contextPath)) {
-                contextPath = "/";
-            }
-            if (contextPath.endsWith("/")) {
-                contextPath = contextPath.substring(0, contextPath.length() - 1);
-            }
             String htmlBody = new String(outputStream.toByteArray());
-            htmlBody = htmlBody.replace("{CONTEXT_PATH}", contextPath);
-            htmlBody = htmlBody.replace("{API_BASE_URL}", fixUrl(this.apiBaseUri));
-            htmlBody = htmlBody.replace("{ADMIN_BASE_URL}", fixUrl(this.uiBaseUri));
-            htmlBody = htmlBody.replace("{ALL_MAC}", allLocalMac());
-            htmlBody = htmlBody.replace("{DATAWAY_VERSION}", datawayVersion);
             httpResponse.setContentType(invoker.getMimeType("html"));
             httpResponse.setContentLength(htmlBody.length());
             PrintWriter writer = httpResponse.getWriter();
@@ -194,24 +163,5 @@ public class InterfaceUiFilter implements InvokerFilter {
         httpResponse.addHeader("Access-Control-Allow-Headers", "Content-Type,X-InterfaceUI-Info");
         httpResponse.addHeader("Access-Control-Expose-Headers", "X-InterfaceUI-ContextType");
         httpResponse.addHeader("Access-Control-Max-Age", "3600");
-    }
-
-    private static String allLocalMac() throws SocketException {
-        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-        Set<String> macPool = new HashSet<>();
-        while (interfaces.hasMoreElements()) {
-            NetworkInterface nextElement = interfaces.nextElement();
-            byte[] hardwareAddress = nextElement.getHardwareAddress();
-            if (hardwareAddress == null) {
-                continue;
-            }
-            StringBuilder strBuilder = new StringBuilder();
-            for (int i = 0; i < hardwareAddress.length; i++) {
-                String str = Integer.toHexString(hardwareAddress[i] & 0xff);
-                strBuilder.append((str.length() == 1) ? ("0" + str) : str);
-            }
-            macPool.add(strBuilder.toString());
-        }
-        return StringUtils.join(macPool.toArray(), ",").toUpperCase();
     }
 }

@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.example.springcloud.provider.web;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+package net.hasor.dataway.config;
+import java.util.HashMap;
 
 /**
- * http://localhost:8082/echo/HelloWord
+ * 全局配置
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2021-01-02
+ * @version : 2020-12-31
  */
-@RestController
-public class EchoController {
-    @GetMapping(value = "/echo/{string}")
-    public String echo(@PathVariable String string) {
-        return "this value form provider -> " + string;
-    }
+public interface UiConfig {
+    public static final String KEY_DATAWAY_API_BASE_URI = "KEY_DATAWAY_API_BASE_URI";
+    public static final String KEY_DATAWAY_UI_BASE_URI  = "KEY_DATAWAY_UI_BASE_URI";
 }

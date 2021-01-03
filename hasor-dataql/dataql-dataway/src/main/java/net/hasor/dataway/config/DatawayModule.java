@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataway.config;
-import net.hasor.core.Environment;
-import net.hasor.core.HasorUtils;
-import net.hasor.core.Settings;
-import net.hasor.core.XmlNode;
+import net.hasor.core.*;
 import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.authorization.InterfaceAuthorizationFilter;
 import net.hasor.dataway.dal.ApiDataAccessLayer;
@@ -37,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-20
  */
-public class DatawayModule implements WebModule {
+public class DatawayModule implements WebModule, UiConfig {
     protected static Logger logger = LoggerFactory.getLogger(DatawayModule.class);
 
     @Override
@@ -112,11 +109,15 @@ public class DatawayModule implements WebModule {
                 Swagger2Controller.class,           //
         };
         for (Class<?> aClass : controllerSet) {
+            ApiBinder.MetaDataBindingBuilder<?> metaDataBinder = apiBinder.bindType(aClass).asEagerSingleton();
+            metaDataBinder.metaData(KEY_DATAWAY_UI_BASE_URI, adminBaseUri);
+            metaDataBinder.metaData(KEY_DATAWAY_API_BASE_URI, apiBaseUri);
+            //
             MappingToUrl toUrl = aClass.getAnnotation(MappingToUrl.class);
-            apiBinder.mappingTo(fixUrl(adminBaseUri + "/" + toUrl.value())).with(aClass);
+            apiBinder.mappingTo(fixUrl(adminBaseUri + "/" + toUrl.value())).with(metaDataBinder.toInfo());
         }
         apiBinder.filter(fixUrl(adminBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceAuthorizationFilter(adminBaseUri));
-        apiBinder.filter(fixUrl(adminBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceUiFilter(apiBaseUri, adminBaseUri));
+        apiBinder.filter(fixUrl(adminBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceUiFilter(adminBaseUri));
     }
 
     /** 配置 Dataway 的 DAL */

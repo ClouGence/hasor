@@ -251,7 +251,7 @@ export default {
             }
             //
             const self = this;
-            const requestURL = contextPath() + ('/' + this.requestApiInfo.path).replace('//', '/');
+            const requestURL = (contextPath() + '/' + this.requestApiInfo.path).replace('//', '/');
             request(requestURL, {
                 'direct': true,
                 'method': this.requestApiInfo.select,
