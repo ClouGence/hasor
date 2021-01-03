@@ -5,13 +5,15 @@
     - spring-cloud-consumer
     - spring-cloud-provider
 - 特点
-    - 使用 Nacos 作为接口配置信息的存储
-    - 连接了另外两个 MySQL 数据源
+    - Hasor Dataway 接口配置信息保存在 Nacos
+    - Spring Cloud 服务发现基于 Nacos
+    - Hasor Dataway 连接了另外两个 MySQL 数据源
+    - Dataway 服务在 provider 应用中注册了一个全新的服务名
 - consumer
     - http://localhost:8081/consumer/echo/abc
     - http://localhost:8081/consumer/api/abc?message=HelloWord
 - provider
-    - http://localhost:8082/provider/echo/abc
+    - http://localhost:8082/provider/echo/abc (SpringMVC 原生服务)
     - http://localhost:8082/api/abc?message=Helloword (需要到Dataway里面新建)
     - http://localhost:8082/interface-ui/ (Dataway界面)
 - gateway

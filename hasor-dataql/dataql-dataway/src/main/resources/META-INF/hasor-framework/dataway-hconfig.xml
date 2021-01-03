@@ -42,7 +42,7 @@
         <HASOR_NACOS_DISCOVERY_IP></HASOR_NACOS_DISCOVERY_IP>
         <!-- 使用 nacos 作为服务发现时，使用IP前缀来匹配 -->
         <HASOR_NACOS_DISCOVERY_PREFIX></HASOR_NACOS_DISCOVERY_PREFIX>
-        <!-- 使用 nacos 作为服务发现时，通过网卡名来确定（可以结合dal_nacos_discovery_prefix一起使用，另外可以通过，来在多个网卡中寻找匹配） -->
+        <!-- 使用 nacos 作为服务发现时，通过网卡名来确定服务IP（可以结合dal_nacos_discovery_prefix一起使用，便于进一步确定服务IP地址） -->
         <HASOR_NACOS_DISCOVERY_NETWORK_INTERFACE></HASOR_NACOS_DISCOVERY_NETWORK_INTERFACE>
     </hasor.environmentVar>
 
@@ -98,7 +98,7 @@
                 <dal_nacos_discovery_ip>${HASOR_NACOS_DISCOVERY_IP}</dal_nacos_discovery_ip>
                 <!-- 使用 nacos 作为服务发现时，使用IP前缀来匹配 -->
                 <dal_nacos_discovery_prefix>${HASOR_NACOS_DISCOVERY_PREFIX}</dal_nacos_discovery_prefix>
-                <!-- 使用 nacos 作为服务发现时，通过网卡名来确定（可以结合dal_nacos_discovery_prefix一起使用） -->
+                <!-- 使用 nacos 作为服务发现时，通过网卡名来确定服务IP（可以结合dal_nacos_discovery_prefix一起使用，便于进一步确定服务IP地址） -->
                 <dal_nacos_discovery_networkInterface>${HASOR_NACOS_DISCOVERY_NETWORK_INTERFACE}</dal_nacos_discovery_networkInterface>
                 <!-- 使用 nacos 作为服务发现时，当前服务的端口号 -->
                 <dal_nacos_discovery_port>${HASOR_NACOS_DISCOVERY_PORT}</dal_nacos_discovery_port>
