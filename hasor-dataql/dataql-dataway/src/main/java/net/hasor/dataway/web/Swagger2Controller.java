@@ -58,7 +58,9 @@ public class Swagger2Controller extends BasicController {
         }).collect(Collectors.toList());
         //
         String contextPath = invoker.getHttpRequest().getContextPath();
-        String contextPathProxy = invoker.getHttpRequest().getHeader("DW_CONTEXT_PATH_PROXY");
+        String contextPathProxy1 = invoker.getHttpRequest().getParameter("DW_CONTEXT_PATH_PROXY");
+        String contextPathProxy2 = invoker.getHttpRequest().getHeader("DW_CONTEXT_PATH_PROXY");
+        String contextPathProxy = StringUtils.isNotBlank(contextPathProxy1) ? contextPathProxy1 : contextPathProxy2;
         if (StringUtils.isBlank(contextPathProxy)) {
             if (StringUtils.isBlank(contextPath)) {
                 contextPath = "/";

@@ -46,7 +46,7 @@ public class SwaggerConfig {
                 .title("Spring Boot中使用Swagger2构建RESTful APIs")//
                 .description("参考手册：https://www.hasor.net/doc/display/dataql/")//
                 .termsOfServiceUrl("https://www.hasor.net/doc/display/dataql/")//
-                .contact("wxy").version("1.0")//
+                .contact("zyc@hasor.net").version("1.0")//
                 .build();
     }
 }
