@@ -28,6 +28,6 @@ public class JdbcDemo {
 ## 源码说明
 
 - 单一数据库无法满足 hasor-db 的单测试要求。因此建议同时启动下列在开发环境中使用了4 个主流数据库
-- 例：MySQL 8 驱动层面不支持 JDBC 时区类型，因此采用 PG 替代测试。
+- 例：MySQL 8 驱动层面不支持 JDBC 时区类型，因此采用 Oracle 替代测试。
 - 
 - docker-compose.yml（MySQL、PG、Oracle、MSSQL）

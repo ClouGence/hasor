@@ -19,7 +19,7 @@ if (lastCheckVersionDialogRemember === undefined || lastCheckVersionDialogRememb
     localStorage.setItem('lastCheckVersionDialogRemember', 'false');
 }
 
-const configIsBool = ['resultStructure', 'wrapAllParameters', 'showGitButton', 'checkDatawayVersion'];
+const configIsBool = ['resultStructure', 'wrapAllParameters', 'showGitButton', 'checkDatawayVersion', 'enableCrossDomain'];
 const toBoolean = (val) => {
     return val != null && val.toLowerCase() === 'true';
 };

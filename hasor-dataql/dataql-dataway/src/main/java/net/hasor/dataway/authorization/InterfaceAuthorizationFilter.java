@@ -17,7 +17,7 @@ package net.hasor.dataway.authorization;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataway.DatawayApi;
 import net.hasor.dataway.DatawayService;
-import net.hasor.dataway.config.CorsUtils;
+import net.hasor.dataway.service.CrossDomainService;
 import net.hasor.dataway.spi.AuthorizationChainSpi;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.*;
@@ -30,9 +30,10 @@ import java.lang.reflect.Method;
  * @version : 2020-06-03
  */
 public class InterfaceAuthorizationFilter implements InvokerFilter {
-    private SpiTrigger     spiTrigger     = null;
-    private DatawayService datawayService = null;
-    private String         uiAdminBaseUri = null;
+    private SpiTrigger         spiTrigger         = null;
+    private DatawayService     datawayService     = null;
+    private String             uiAdminBaseUri     = null;
+    private CrossDomainService crossDomainService = null;
 
     public InterfaceAuthorizationFilter(String uiBaseUri) {
         this.uiAdminBaseUri = (uiBaseUri + "/api/").replaceAll("/+", "/");
@@ -45,6 +46,7 @@ public class InterfaceAuthorizationFilter implements InvokerFilter {
     public void init(InvokerConfig config) {
         this.spiTrigger = config.getAppContext().getInstance(SpiTrigger.class);
         this.datawayService = config.getAppContext().getInstance(DatawayService.class);
+        this.crossDomainService = config.getAppContext().getInstance(CrossDomainService.class);
     }
 
     @Override
@@ -87,7 +89,7 @@ public class InterfaceAuthorizationFilter implements InvokerFilter {
             return chain.doNext(invoker);
         }
         // .扔一个错误出去
-        CorsUtils.setup(invoker);
+        this.crossDomainService.configureCross(datawayApi, invoker);
         invoker.getHttpResponse().sendError(401, "No permission.");
         return null;
     }

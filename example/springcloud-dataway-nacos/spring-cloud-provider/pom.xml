@@ -9,7 +9,6 @@
         <version>1.0</version>
     </parent>
     <artifactId>spring-cloud-provider</artifactId>
-    <packaging>jar</packaging>
 
     <dependencies>
         <!-- hasor & dataway related -->
@@ -24,24 +23,7 @@
             <version>${hasor.version}</version>
         </dependency>
 
-        <!-- integration Swagger related -->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger.version}</version>
-        </dependency>
-
         <!-- database -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.200</version>
-        </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -64,7 +46,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-`            <groupId>com.alibaba.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
             <version>2.2.3.RELEASE</version>
         </dependency>
@@ -86,21 +68,4 @@
             <version>1.2.3</version>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>

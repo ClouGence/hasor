@@ -9,7 +9,6 @@
         <version>1.0</version>
     </parent>
     <artifactId>spring-cloud-gateway</artifactId>
-    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -32,14 +31,4 @@
             <version>1.4.0</version>
         </dependency>
     </dependencies>
-
-    <!-- 插件依赖 -->
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 </project>

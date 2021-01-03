@@ -20,6 +20,7 @@ import java.util.function.Predicate;
  * 匹配器
  * @version : 2013-7-10
  * @author 赵永春 (zyc@hasor.net)
+ * @see java.util.function.Predicate
  */
 @Deprecated
 @FunctionalInterface

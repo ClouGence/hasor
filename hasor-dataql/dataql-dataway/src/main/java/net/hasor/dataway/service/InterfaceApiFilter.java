@@ -17,7 +17,6 @@ package net.hasor.dataway.service;
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.Inject;
 import net.hasor.core.spi.SpiTrigger;
-import net.hasor.dataway.config.CorsUtils;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.LoggerUtils;
 import net.hasor.dataway.dal.ApiDataAccessLayer;
@@ -53,6 +52,8 @@ public class InterfaceApiFilter implements InvokerFilter {
     private          SpiTrigger         spiTrigger;
     @Inject
     private          ApiDataAccessLayer dataAccessLayer;
+    @Inject
+    private          CrossDomainService crossDomainService;
     private final    String             apiBaseUri;
     private final    String             adminBaseUri;
 
@@ -85,7 +86,6 @@ public class InterfaceApiFilter implements InvokerFilter {
         //
         DatawayUtils.resetLocalTime();
         String mimeType = invoker.getMimeType("json");
-        CorsUtils.setup(invoker);
         //
         // .查询接口数据
         ApiInfo apiInfo = new ApiInfo();
@@ -137,6 +137,9 @@ public class InterfaceApiFilter implements InvokerFilter {
             }
         }
         apiInfo.setParameterMap(jsonParam);
+        //
+        // .配置跨域
+        this.crossDomainService.configureCross(apiInfo, invoker);
         //
         // .执行调用
         String finalScript = script;

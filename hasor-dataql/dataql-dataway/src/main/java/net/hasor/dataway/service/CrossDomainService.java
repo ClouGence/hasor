@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataway.config;
+package net.hasor.dataway.service;
+import net.hasor.core.InjectSettings;
+import net.hasor.dataway.DatawayApi;
+import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.convert.ConverterUtils;
 import net.hasor.web.Invoker;
 
+import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,8 +30,23 @@ import javax.servlet.http.HttpServletResponse;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-04-04
  */
-public class CorsUtils {
-    public static void setup(Invoker invoker) {
+@Singleton
+public class CrossDomainService {
+    @InjectSettings("hasor.dataway.globalConfig.enableCrossDomain")
+    private boolean enableCrossDomain;
+
+    public void configureCross(DatawayApi datawayApi, Invoker invoker) {
+        Object crossDomainVal = datawayApi.getOptionMap().get("enableCrossDomain");
+        boolean enableCrossDomainOnlyApi;
+        if (crossDomainVal == null || StringUtils.isBlank(crossDomainVal.toString())) {
+            enableCrossDomainOnlyApi = this.enableCrossDomain;
+        } else {
+            enableCrossDomainOnlyApi = (boolean) ConverterUtils.convert(Boolean.TYPE, crossDomainVal);
+        }
+        if (!enableCrossDomainOnlyApi) {
+            return;
+        }
+        //
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         HttpServletResponse httpResponse = invoker.getHttpResponse();
         //

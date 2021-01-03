@@ -106,7 +106,11 @@
 
             <!-- globalConfig 会通过 global-config 接口送给前端页面 -->
             <globalConfig>
+                <!-- 是否启用跨域访问能力 -->
+                <enableCrossDomain>true</enableCrossDomain>
+                <!-- 是否启用 Structure -->
                 <resultStructure>true</resultStructure>
+                <!-- 页面上 Structure 选项的配置模版 -->
                 <responseFormat><![CDATA[
 {
     "success"      : "@resultStatus",

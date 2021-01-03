@@ -16,7 +16,6 @@
 package net.hasor.dataway.service;
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.Inject;
-import net.hasor.core.Singleton;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.runtime.HintsSet;
@@ -27,6 +26,7 @@ import net.hasor.dataway.dal.*;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.CallSource;
 
+import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;

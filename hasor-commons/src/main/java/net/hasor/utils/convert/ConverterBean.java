@@ -227,7 +227,7 @@ public class ConverterBean {
      *
      * @exception ConversionException if thrown by an underlying Converter
      */
-    public Object convert(final Object value, final Class<?> targetType) {
+    public <T> T convert(final T value, final Class<? extends T> targetType) {
         Class<?> sourceType = value == null ? null : value.getClass();
         Object converted = value;
         Converter converter = this.lookup(sourceType, targetType);
@@ -247,7 +247,7 @@ public class ConverterBean {
                 converted = converted.toString();
             }
         }
-        return converted;
+        return (T) converted;
     }
 
     /**
