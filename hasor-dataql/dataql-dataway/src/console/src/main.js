@@ -45,7 +45,8 @@ axios({
         wrapAllParameters: false,
         wrapParameterName: 'root',
         showGitButton: true,
-        checkDatawayVersion: true
+        checkDatawayVersion: true,
+        enableCrossDomain: false
     };
     if (response.data.success) {
         const configs = response.data.result;

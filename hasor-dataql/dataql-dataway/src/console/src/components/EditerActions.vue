@@ -94,6 +94,13 @@
               <el-input v-model="optionInfoCopy['wrapParameterName']" :disabled="!optionInfoCopy['wrapAllParameters']" size="mini" style="width: 80px; display: inline-block"></el-input>
             </div>
           </el-collapse-item>
+          <el-collapse-item title="Cross Domain" name="1">
+            <div class="z-index-top" style="padding-right: 10px;">
+              <span style="padding-right: 5px;line-height: 24px;">Disable</span>
+              <el-switch v-model="optionInfoCopy['enableCrossDomain']" />
+              <span style="padding: 5px;line-height: 24px;">Enable</span>
+            </div>
+          </el-collapse-item>
           <!--          <el-collapse-item title="Cross" name="3">-->
           <!--            <div>简化流程：设计简洁直观的操作流程；</div>-->
           <!--            <div>清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；</div>-->
@@ -348,29 +355,29 @@ export default {
         },
         //
         doUpdate() {
-            this.optionInfoCopy = { ...this.defaultOption, ...this.optionInfo};
+            this.optionInfoCopy = {...this.defaultOption, ...this.optionInfo};
         }
     }
 };
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .is-disabled {
-        background-color: #f3f5f9 !important;
-        -webkit-filter: grayscale(1); /* Webkit */
-        filter: grayscale(1); /* W3C */
-    }
+.is-disabled {
+  background-color: #f3f5f9 !important;
+  -webkit-filter: grayscale(1); /* Webkit */
+  filter: grayscale(1); /* W3C */
+}
 
-    .el-timeline-item {
-        padding-bottom: 15px !important;
-    }
+.el-timeline-item {
+  padding-bottom: 15px !important;
+}
 
-    .el-timeline-item:hover {
-        background-color: #f7f7f7;
-        padding-bottom: 15px !important;
-    }
+.el-timeline-item:hover {
+  background-color: #f7f7f7;
+  padding-bottom: 15px !important;
+}
 
-    .el-timeline {
-        padding-inline-start: 5px !important;
-    }
+.el-timeline {
+  padding-inline-start: 5px !important;
+}
 </style>
