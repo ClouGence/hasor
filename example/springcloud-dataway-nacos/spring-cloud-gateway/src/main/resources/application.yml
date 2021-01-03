@@ -6,18 +6,22 @@ spring:
   cloud:
     gateway:
       routes:
+        # 代理后端 spring-cloud-provider 服务
         - id: provider
           uri: lb://service-provider
           predicates:
             - Path=/provider/**
+        # 代理后端 spring-cloud-consumer 服务
         - id: consumer
           uri: lb://service-consumer
           predicates:
             - Path=/consumer/**
+        # dataway api 服务
         - id: datawayApi
           uri: lb://dataway-provider
           predicates:
             - Path=/api/**
+        # dataway admin UI 界面
         - id: datawayAdmin
           uri: lb://dataway-provider
           predicates:

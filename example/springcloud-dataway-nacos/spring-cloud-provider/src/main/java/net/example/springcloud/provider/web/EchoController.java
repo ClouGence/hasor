@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * try visit http://127.0.0.1:8081/provider/echo/abc
+ * http://localhost:8082/provider/echo/HelloWord
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2021-01-02
  */

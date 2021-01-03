@@ -18,10 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-
 /**
- * try visit http://127.0.0.1:8081/consumer/api/abc?message=HelloWord
+ * http://localhost:8081/consumer/api/abc?message=HelloWord
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2021-01-02
  */
