@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.example.db.config;
-import net.hasor.core.ApiBinder;
 import net.hasor.core.DimModule;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.QueryApiBinder;
@@ -22,6 +21,8 @@ import net.hasor.dataway.dal.providers.db.InformationStorage;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
 import net.hasor.spring.SpringModule;
+import net.hasor.web.WebApiBinder;
+import net.hasor.web.WebModule;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -34,7 +35,7 @@ import java.util.Objects;
  */
 @DimModule
 @Component
-public class DatawayModule implements SpringModule {
+public class DatawayModule implements WebModule, SpringModule {
     @Resource(name = "metadataDs")
     private DataSource metadataDs = null;
     @Resource(name = "dataDs1")
@@ -43,7 +44,8 @@ public class DatawayModule implements SpringModule {
     private DataSource dataDs2    = null;
 
     @Override
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
+    public void loadModule(WebApiBinder apiBinder) throws Throwable {
+        apiBinder.setEncodingCharacter("UTF-8", "UTF-8");
         //
         // .check dataSource
         Objects.requireNonNull(this.metadataDs, "metadataDs is null");

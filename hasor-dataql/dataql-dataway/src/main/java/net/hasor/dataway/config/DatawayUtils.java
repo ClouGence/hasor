@@ -34,10 +34,7 @@ import net.hasor.web.Invoker;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -220,8 +217,8 @@ public class DatawayUtils {
                 return listener.doSerialization(apiInfo, invoker, lastResult);
             }, objectMap);
             //
-            String contentDisposition = null;//仅在 Bytes 下有效
-            long contentLength = -1;
+            String contentDisposition = null;// 仅在 Bytes 下有效
+            long contentLength = -1;         // 仅在 Bytes 下有效
             if (resultData instanceof SerializationInfo) {
                 contentType = ((SerializationInfo) resultData).getContentType();
                 contentDisposition = ((SerializationInfo) resultData).getContentDisposition();
@@ -229,53 +226,64 @@ public class DatawayUtils {
                 resultData = ((SerializationInfo) resultData).getData();
             }
             //
-            String responseContextType = null;
-            InputStream bodyInputStream = null;
             if (resultData instanceof String) {
-                responseContextType = "text";
+                //
+                setUIContextType(httpRequest, httpResponse, "text");
                 String characterEncoding = httpResponse.getCharacterEncoding();
-                byte[] bodyByte = toBytes(apiInfo, (String) resultData, characterEncoding);
-                contentLength = bodyByte.length;
-                bodyInputStream = new ByteArrayInputStream(bodyByte);
+                responseString(httpResponse, contentType, characterEncoding, (String) resultData);
             } else if (resultData instanceof byte[]) {
-                responseContextType = "bytes";
+                //
+                setUIContextType(httpRequest, httpResponse, "bytes");
                 byte[] bodyByte = (byte[]) resultData;
-                contentLength = bodyByte.length;
-                bodyInputStream = new ByteArrayInputStream(bodyByte);
+                responseBytes(httpResponse, contentType, contentDisposition, bodyByte.length, new ByteArrayInputStream(bodyByte));
             } else if (resultData instanceof InputStream) {
-                responseContextType = "bytes";
-                //contentLength = -1;
-                bodyInputStream = (InputStream) resultData;
+                //
+                setUIContextType(httpRequest, httpResponse, "bytes");
+                responseBytes(httpResponse, contentType, contentDisposition, -1, (InputStream) resultData);
             } else {
-                responseContextType = "json";
-                String body = JSON.toJSONString(resultData, SerializerFeature.WriteMapNullValue);
+                //
+                setUIContextType(httpRequest, httpResponse, "json");
                 String characterEncoding = httpResponse.getCharacterEncoding();
-                byte[] bodyByte = toBytes(apiInfo, body, characterEncoding);
-                contentLength = bodyByte.length;
-                bodyInputStream = new ByteArrayInputStream(bodyByte);
-            }
-            //
-            if (contentLength > 0) {
-                if (contentLength > Integer.MAX_VALUE) {
-                    httpResponse.setContentLengthLong(contentLength);
-                } else {
-                    httpResponse.setContentLength((int) contentLength);
-                }
-            }
-            if ("true".equalsIgnoreCase(httpRequest.getHeader("X-InterfaceUI-Info"))) {
-                httpResponse.setHeader("X-InterfaceUI-ContextType", responseContextType);
-            }
-            httpResponse.setContentType(contentType);
-            if (StringUtils.isNotBlank(contentDisposition)) {
-                httpResponse.setHeader("Content-Disposition", contentDisposition);
-            }
-            //
-            try (ServletOutputStream output = httpResponse.getOutputStream()) {
-                IOUtils.copy(bodyInputStream, output);
-                output.flush();
+                String body = JSON.toJSONString(resultData, SerializerFeature.WriteMapNullValue);
+                responseString(httpResponse, contentType, characterEncoding, body);
             }
         }
         return objectMap;
+    }
+
+    private static void setUIContextType(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String responseContextType) {
+        if ("true".equalsIgnoreCase(httpRequest.getHeader("X-InterfaceUI-Info"))) {
+            httpResponse.setHeader("X-InterfaceUI-ContextType", responseContextType);
+        }
+    }
+
+    private static void responseBytes(HttpServletResponse httpResponse, String contentType, String contentDisposition, long contentLength, InputStream bodyInputStream) throws IOException {
+        httpResponse.setContentType(contentType);
+        if (StringUtils.isNotBlank(contentDisposition)) {
+            httpResponse.setHeader("Content-Disposition", contentDisposition);
+        }
+        if (contentLength > 0) {
+            if (contentLength > Integer.MAX_VALUE) {
+                httpResponse.setContentLengthLong(contentLength);
+            } else {
+                httpResponse.setContentLength((int) contentLength);
+            }
+        }
+        try (ServletOutputStream output = httpResponse.getOutputStream()) {
+            IOUtils.copy(bodyInputStream, output);
+            output.flush();
+        }
+    }
+
+    private static void responseString(HttpServletResponse httpResponse, String contentType, String characterEncoding, String contentBody) throws IOException {
+        if (StringUtils.isNotBlank(characterEncoding)) {
+            contentType = contentType + ";charset=" + characterEncoding; // 如果有 charset 那么加上 charset，否则会造成编码丢失问题。
+        }
+        httpResponse.setContentType(contentType);
+        try (PrintWriter writer = httpResponse.getWriter()) {
+            writer.write(contentBody);
+            writer.flush();
+        }
     }
 
     public static String generateID() {
