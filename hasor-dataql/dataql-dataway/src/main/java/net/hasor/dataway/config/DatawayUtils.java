@@ -34,8 +34,10 @@ import net.hasor.web.Invoker;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -201,14 +203,6 @@ public class DatawayUtils {
         return finalResult;
     }
 
-    public static byte[] toBytes(ApiInfo apiInfo, String body, String characterEncoding) throws UnsupportedEncodingException {
-        if (apiInfo.isPerform()) {
-            return body.getBytes(characterEncoding);
-        } else {
-            return body.getBytes(StandardCharsets.ISO_8859_1);
-        }
-    }
-
     public static Object responseData(SpiTrigger spiTrigger, ApiInfo apiInfo, String contentType, Invoker invoker, Object objectMap) throws IOException {
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         HttpServletResponse httpResponse = invoker.getHttpResponse();
@@ -279,7 +273,9 @@ public class DatawayUtils {
         if (StringUtils.isNotBlank(characterEncoding)) {
             contentType = contentType + ";charset=" + characterEncoding; // 如果有 charset 那么加上 charset，否则会造成编码丢失问题。
         }
-        httpResponse.setContentType(contentType);
+        if (StringUtils.isNotBlank(contentType)) {
+            httpResponse.setContentType(contentType);
+        }
         try (PrintWriter writer = httpResponse.getWriter()) {
             writer.write(contentBody);
             writer.flush();
