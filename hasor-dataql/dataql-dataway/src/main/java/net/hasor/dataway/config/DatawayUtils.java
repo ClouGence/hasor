@@ -239,7 +239,7 @@ public class DatawayUtils {
             } else if (resultData instanceof InputStream) {
                 //
                 setUIContextType(httpRequest, httpResponse, "bytes");
-                responseBytes(httpResponse, contentType, contentDisposition, -1, (InputStream) resultData);
+                responseBytes(httpResponse, contentType, contentDisposition, contentLength, (InputStream) resultData);
             } else {
                 //
                 setUIContextType(httpRequest, httpResponse, "json");
