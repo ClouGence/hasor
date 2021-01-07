@@ -66,6 +66,8 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     /*当JDBC 结果集中如出现相同的列名仅仅大小写不同时。是否保留大小写列名敏感。
      * 如果为 true 表示不敏感，并且结果集Map中保留两个记录。如果为 false 则表示敏感，如出现冲突列名后者将会覆盖前者。*/
     private              boolean        resultsCaseInsensitive = true;
+    /** 当遇到 Exception 之后是否打印错误异常到日志中，这不影响异常到继续上抛。 */
+    private              boolean        loggerErrors           = true;
     private              MappingHandler mappingHandler         = MappingHandler.DEFAULT;
 
     /**
@@ -123,6 +125,14 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
 
     public void setResultsCaseInsensitive(final boolean resultsCaseInsensitive) {
         this.resultsCaseInsensitive = resultsCaseInsensitive;
+    }
+
+    public boolean isLoggerErrors() {
+        return loggerErrors;
+    }
+
+    public void setLoggerErrors(boolean loggerErrors) {
+        this.loggerErrors = loggerErrors;
     }
 
     public MappingHandler getMappingHandler() {
@@ -189,7 +199,9 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
                 JdbcTemplate.this.handleWarnings(ps);
                 return result;
             } catch (SQLException ex) {
-                logger.error(stmtSQL, ex);
+                if (this.isLoggerErrors()) {
+                    logger.error(stmtSQL, ex);
+                }
                 throw ex;
             } finally {
                 if (psc instanceof ParameterDisposer) {
