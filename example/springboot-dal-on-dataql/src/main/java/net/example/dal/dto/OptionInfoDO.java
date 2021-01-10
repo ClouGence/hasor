@@ -1,4 +1,4 @@
-package net.example.dal.dal.dto;
+package net.example.dal.dto;
 public class OptionInfoDO {
     private String key;
     private String value;

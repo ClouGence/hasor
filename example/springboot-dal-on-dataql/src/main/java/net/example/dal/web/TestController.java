@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.example.dal.web;
-import net.example.dal.dal.dto.OptionInfoDO;
-import net.example.dal.dal.ql.DelOptionQuery;
-import net.example.dal.dal.ql.GetOptionQuery;
-import net.example.dal.dal.ql.ListOptionQuery;
-import net.example.dal.dal.ql.SetOptionQuery;
+import net.example.dal.dto.OptionInfoDO;
+import net.example.dal.ql.DelOptionQuery;
+import net.example.dal.ql.GetOptionQuery;
+import net.example.dal.ql.ListOptionQuery;
+import net.example.dal.ql.SetOptionQuery;
 import net.hasor.dataql.DataQL;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
