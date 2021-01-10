@@ -6,6 +6,7 @@ import net.example.rsf.service.MessageServiceImpl;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
+
 /**
  *
  * @version : 2014年9月12日

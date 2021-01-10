@@ -1,8 +1,9 @@
-#Hasor-Nutz 整合例子
+# Hasor-Nutz 整合例子
 
 ## Nutz 整合 Hasor 之后 Nutz 哪些方面会有显著提升？
 
 多语言RPC
+
 1. 搭配 RSF 框架之后，Hasor 可以为 Nutz 提供部署完善的RPC服务的能力。
 2. RSF 支持 Hprose 框架协议，您可以通过 Hprose 多语言RPC，为 Nutz 异构技术架构提供支持。
 
@@ -15,8 +16,10 @@
 ```
 
 分布式服务
+
 1. RSF 对于服务提供了丰富的控制力，例如：多机房、异地调用、流控、服务路由。
 2. 通过 RSF 注册中心可以集中管理您所有RPC服务的：订阅、发布。
+
 ```
 <dependency>
     <groupId>net.hasor</groupId>

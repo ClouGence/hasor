@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+
 /**
  * 单机模式
  * @version : 2015年8月13日
@@ -25,6 +26,7 @@ import java.io.IOException;
  */
 public class CenterServerAlone {
     protected Logger logger = LoggerFactory.getLogger(getClass());
+
     public static void main(String[] args) throws IOException {
         Hasor.createAppContext("rsf-config.xml");
         System.in.read();

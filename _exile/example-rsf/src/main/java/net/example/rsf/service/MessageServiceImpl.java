@@ -15,6 +15,7 @@
  */
 package net.example.rsf.service;
 import net.hasor.rsf.RsfResult;
+
 /**
  * 服务实现
  * @version : 2016年11月07日

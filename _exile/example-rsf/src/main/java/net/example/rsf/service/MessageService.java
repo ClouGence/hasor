@@ -16,6 +16,7 @@
 package net.example.rsf.service;
 import net.hasor.rsf.RsfMessage;
 import net.hasor.rsf.RsfResult;
+
 /**
  * 消息接口
  * @version : 2015年11月27日

@@ -6,6 +6,7 @@ import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.RsfResult;
+
 /**
  *
  * @version : 2014年9月12日

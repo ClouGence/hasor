@@ -15,6 +15,7 @@
  */
 package net.example.nutz.customer;
 import net.hasor.core.InjectSettings;
+
 /**
  * @version : 2016年2月15日
  * @author 赵永春 (zyc@hasor.net)
@@ -24,6 +25,7 @@ public class HasorBean {
     private String myapp;
     @InjectSettings("${value}")
     private String value;
+
     //
     public String toString() {
         return "HasorBean - [myapp:" + this.myapp + ", value =" + this.value + "]";

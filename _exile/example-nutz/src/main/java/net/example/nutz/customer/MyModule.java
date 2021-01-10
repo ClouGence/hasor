@@ -17,6 +17,7 @@ package net.example.nutz.customer;
 import net.hasor.core.ApiBinder;
 import org.nutz.integration.hasor.NutzModule;
 import org.nutz.integration.hasor.annotation.HasorConfiguration;
+
 //
 //
 @HasorConfiguration

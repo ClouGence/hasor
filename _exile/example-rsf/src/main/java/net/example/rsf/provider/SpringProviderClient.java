@@ -1,6 +1,7 @@
 package net.example.rsf.provider;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 /**
  *
  * @version : 2014年9月12日
