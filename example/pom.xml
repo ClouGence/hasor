@@ -15,7 +15,8 @@
     <modules>
         <module>springboot-dataway-db</module>
         <module>springboot-dataway-nacos</module>
-        <!-- <module>springcloud-dataway-db</module>-->
         <module>springcloud-dataway-nacos</module>
+        <module>springboot-tconsole</module>
+        <module>springboot-dal-on-dataql</module>
     </modules>
 </project>

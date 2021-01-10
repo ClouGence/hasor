@@ -5,7 +5,7 @@ if (${_0} == null) {
 }
 
 var dataQuery = @@sql(dataKey)<%
-    select * from my_option where `key` = #{dataKey}
+    select * from my_option where "key" = #{dataKey}
 %>
 var data = dataQuery(${_0}) => [ # ];
 
