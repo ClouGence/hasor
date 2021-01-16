@@ -22,6 +22,7 @@ import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -46,12 +47,28 @@ import java.util.Map;
  * @see JdbcOperations#queryForMap(String)
  */
 public class ColumnMapRowMapper extends AbstractRowMapper<Map<String, Object>> {
+    private boolean caseInsensitive;
+
     public ColumnMapRowMapper() {
-        this(TypeHandlerRegistry.DEFAULT);
+        this(true, TypeHandlerRegistry.DEFAULT);
     }
 
     public ColumnMapRowMapper(TypeHandlerRegistry typeHandler) {
+        this(true, typeHandler);
+    }
+
+    public ColumnMapRowMapper(boolean caseInsensitive) {
+        this(TypeHandlerRegistry.DEFAULT);
+        this.caseInsensitive = caseInsensitive;
+    }
+
+    public ColumnMapRowMapper(boolean caseInsensitive, TypeHandlerRegistry typeHandler) {
         super(typeHandler);
+        this.caseInsensitive = caseInsensitive;
+    }
+
+    public boolean isCaseInsensitive() {
+        return this.caseInsensitive;
     }
 
     @Override
@@ -87,6 +104,10 @@ public class ColumnMapRowMapper extends AbstractRowMapper<Map<String, Object>> {
 
     /**创建一个 Map 用于存放数据*/
     protected Map<String, Object> createColumnMap(final int columnCount) {
-        return new LinkedCaseInsensitiveMap<>(columnCount);
+        if (this.caseInsensitive) {
+            return new LinkedCaseInsensitiveMap<>(columnCount);
+        } else {
+            return new LinkedHashMap<>();
+        }
     }
 }

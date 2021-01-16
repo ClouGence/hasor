@@ -28,7 +28,7 @@ import java.util.Map;
 public class ColumnMapResultSetExtractor extends RowMapperResultSetExtractor<Map<String, Object>> {
     /** 创建 {@link ColumnMapResultSetExtractor} 对象 */
     public ColumnMapResultSetExtractor() {
-        this(0);
+        this(true, 0);
     }
 
     /**
@@ -36,7 +36,7 @@ public class ColumnMapResultSetExtractor extends RowMapperResultSetExtractor<Map
      * @param rowsExpected 预期结果集大小（实际得到的结果集条目不受此参数限制）。
      */
     public ColumnMapResultSetExtractor(int rowsExpected) {
-        super(new ColumnMapRowMapper(), rowsExpected);
+        this(true, rowsExpected);
     }
 
     /**
@@ -45,6 +45,28 @@ public class ColumnMapResultSetExtractor extends RowMapperResultSetExtractor<Map
      * @param typeHandler
      */
     public ColumnMapResultSetExtractor(int rowsExpected, TypeHandlerRegistry typeHandler) {
-        super(new ColumnMapRowMapper(typeHandler), rowsExpected);
+        this(true, rowsExpected, typeHandler);
+    }
+
+    /** 创建 {@link ColumnMapResultSetExtractor} 对象 */
+    public ColumnMapResultSetExtractor(boolean caseInsensitive) {
+        this(caseInsensitive, 0);
+    }
+
+    /**
+     * 创建 {@link ColumnMapResultSetExtractor} 对象
+     * @param rowsExpected 预期结果集大小（实际得到的结果集条目不受此参数限制）。
+     */
+    public ColumnMapResultSetExtractor(boolean caseInsensitive, int rowsExpected) {
+        super(new ColumnMapRowMapper(caseInsensitive), rowsExpected);
+    }
+
+    /**
+     * 创建 {@link ColumnMapResultSetExtractor} 对象
+     * @param rowsExpected 预期结果集大小（实际得到的结果集条目不受此参数限制）。
+     * @param typeHandler
+     */
+    public ColumnMapResultSetExtractor(boolean caseInsensitive, int rowsExpected, TypeHandlerRegistry typeHandler) {
+        super(new ColumnMapRowMapper(caseInsensitive, typeHandler), rowsExpected);
     }
 }

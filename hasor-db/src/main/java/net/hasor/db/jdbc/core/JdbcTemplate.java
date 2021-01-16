@@ -892,7 +892,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
             if (retVal) {
                 try (ResultSet resultSet = cs.getResultSet()) {
                     String name = resultParameterName(sqlParameter, "#result-set-" + resultIndex);
-                    resultsMap.put(name, processResultSet(resultSet, sqlParameter));
+                    resultsMap.put(name, processResultSet(isResultsCaseInsensitive(),resultSet, sqlParameter));
                 }
             } else {
                 String name = resultParameterName(sqlParameter, "#update-count-" + resultIndex);
@@ -906,7 +906,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
                 try (ResultSet resultSet = cs.getResultSet()) {
                     if (resultSet != null) {
                         String name = resultParameterName(sqlParameter, "#result-set-" + resultIndex);
-                        resultsMap.put(name, processResultSet(resultSet, sqlParameter));
+                        resultsMap.put(name, processResultSet(isResultsCaseInsensitive(),resultSet, sqlParameter));
                     } else {
                         String name = resultParameterName(sqlParameter, "#update-count-" + resultIndex);
                         resultsMap.put(name, updateCount);
@@ -927,7 +927,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
      * @param param the corresponding stored procedure parameter
      * @return a Map that contains returned results
      */
-    protected static Object processResultSet(ResultSet rs, ReturnSqlParameter param) throws SQLException {
+    protected static Object processResultSet(boolean caseInsensitive,ResultSet rs, ReturnSqlParameter param) throws SQLException {
         if (rs != null) {
             if (param != null) {
                 if (param.getRowMapper() != null) {
@@ -941,7 +941,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
                     return param.getResultSetExtractor().extractData(rs);
                 }
             } else {
-                return new ColumnMapResultSetExtractor().extractData(rs);
+                return new ColumnMapResultSetExtractor(caseInsensitive).extractData(rs);
             }
         }
         return null;
@@ -1115,7 +1115,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
             List<Object> resultList = new ArrayList<>();
             if (retVal) {
                 try (ResultSet resultSet = ps.getResultSet()) {
-                    resultList.add(processResultSet(resultSet, result));
+                    resultList.add(processResultSet(isResultsCaseInsensitive(),resultSet, result));
                 }
             } else {
                 resultList.add(ps.getUpdateCount());
@@ -1124,7 +1124,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
                 int updateCount = ps.getUpdateCount();
                 try (ResultSet resultSet = ps.getResultSet()) {
                     if (resultSet != null) {
-                        resultList.add(processResultSet(resultSet, null));
+                        resultList.add(processResultSet(isResultsCaseInsensitive(),resultSet, null));
                     } else {
                         resultList.add(updateCount);
                     }
