@@ -100,6 +100,10 @@ public class InterfaceApiFilter implements InvokerFilter {
             if (anEnum != ApiStatusEnum.Published) {
                 throw new IllegalStateException("API is not published.");
             }
+            String apiMethod = object.get(FieldDef.METHOD);
+            if (!StringUtils.equalsIgnoreCase(httpMethod, apiMethod)) {
+                throw new IllegalStateException("request method are not allowed.");
+            }
             //
             apiInfo.setReleaseID(object.get(FieldDef.ID));
             apiInfo.setApiID(object.get(FieldDef.API_ID));
