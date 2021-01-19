@@ -30,7 +30,7 @@
         </el-radio-group>
       </div>
       <div style="float: right;">
-        <EditerActions ref="editerActionsPanel"
+        <EditorActions ref="editerActionsPanel"
                        :api-info="apiInfo" :request-body="requestBody" :request-header="headerData" :action-status="editerActions"
                        :option-info="optionData" @onOptionChange="(data)=> { this.optionData = data}"
                        @onAfterSave="onAfterSave" @onPublish="onAfterSave" @onDisable="onAfterSave"
@@ -73,7 +73,7 @@
   </div>
 </template>
 <script>
-import EditerActions from '../components/EditerActions';
+import EditorActions from '../components/EditorActions';
 import RequestPanel from '../components/RequestPanel';
 import ResponsePanel from '../components/ResponsePanel';
 import request from '../utils/request';
@@ -83,7 +83,7 @@ import {defineMonacoEditorFoo, loadMonacoEditorSelfTheme} from '@/utils/editorUt
 
 export default {
     components: {
-        RequestPanel, ResponsePanel, EditerActions
+        RequestPanel, ResponsePanel, EditorActions
     },
     data() {
         return {
