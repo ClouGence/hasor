@@ -48,7 +48,6 @@ public class InvokerCallerParamsBuilder {
     public Object[] resolveParams(Invoker invoker, Method targetMethod) throws Throwable {
         Class<?>[] targetParamClass = targetMethod.getParameterTypes();
         Annotation[][] targetParamAnno = targetMethod.getParameterAnnotations();
-        targetParamAnno = (targetParamAnno == null) ? new Annotation[0][0] : targetParamAnno;
         ArrayList<Object> paramsArray = new ArrayList<>();
         /*准备参数*/
         for (int i = 0; i < targetParamClass.length; i++) {
@@ -129,16 +128,19 @@ public class InvokerCallerParamsBuilder {
         } else if (pAnno instanceof RequestParameter) {
             atData = this.getRequestParam((RequestParameter) pAnno);
         } else if (pAnno instanceof RequestBody) {
+            String jsonBodyData = invoker.getJsonBodyString().trim();
             if (paramClass == String.class) {
-                atData = invoker.getJsonBodyString();
+                atData = jsonBodyData;
             } else if (paramClass == Map.class) {
-                atData = JSON.parseObject(invoker.getJsonBodyString());
+                atData = JSON.parseObject(jsonBodyData);
             } else if (paramClass == List.class) {
-                atData = JSON.parseArray(invoker.getJsonBodyString(), ArrayList.class);
+                jsonBodyData = (jsonBodyData.charAt(0) != '[') ? ("[" + jsonBodyData + "]") : jsonBodyData;
+                atData = JSON.parseArray(jsonBodyData, ArrayList.class);
             } else if (paramClass == Set.class) {
-                atData = JSON.parseArray(invoker.getJsonBodyString(), HashSet.class);
+                jsonBodyData = (jsonBodyData.charAt(0) != '[') ? ("[" + jsonBodyData + "]") : jsonBodyData;
+                atData = JSON.parseArray(jsonBodyData, HashSet.class);
             } else {
-                atData = JSON.parseObject(invoker.getJsonBodyString(), paramClass);
+                atData = JSON.parseObject(jsonBodyData, paramClass);
             }
         } else if (pAnno instanceof ParameterGroup) {
             try {
