@@ -79,7 +79,7 @@ public abstract class ResourcesUtils {
         }
     }
 
-    /**扫描classpath时找到资源的回调接口方法。*/
+    /** 扫描classpath时找到资源的回调接口方法。*/
     public static interface Scanner {
         /**
          * 找到资源(返回值为true表示找到预期的资源结束扫描，false表示继续扫描剩下的资源)
@@ -103,32 +103,36 @@ public abstract class ResourcesUtils {
         return Thread.currentThread().getContextClassLoader();
     }
 
-    /**合成所有属性文件的配置信息到一个{@link Map}接口中。*/
-    public static Map<String, String> getPropertys(final String[] resourcePaths) throws IOException {
-        return getPropertys(Arrays.asList(resourcePaths).iterator());
+    /** 合成所有属性文件的配置信息到一个{@link Map}接口中。*/
+    public static Map<String, String> getProperty(final String[] resourcePaths) throws IOException {
+        return getProperty(Arrays.asList(resourcePaths).iterator());
     }
 
-    /**合成所有属性文件的配置信息到一个{@link Map}接口中。*/
-    public static Map<String, String> getPropertys(final Iterator<String> iterator) throws IOException {
+    /** 合成所有属性文件的配置信息到一个{@link Map}接口中。*/
+    public static Map<String, String> getProperty(final Iterator<String> iterator) throws IOException {
         if (iterator == null) {
             return null;
         }
         //
+        ClassLoader classLoader = getCurrentLoader();
         Map<String, String> fullData = new HashMap<>();
         while (iterator.hasNext()) {
             String str = iterator.next();
-            Map<String, String> att = getPropertys(str);
-            if (att != null) {
-                fullData.putAll(att);
-            }
+            Map<String, String> att = getProperty(classLoader, str);
+            fullData.putAll(att);
         }
         return fullData;
     }
 
-    /**读取一个属性文件，并且以{@link Map}接口的形式返回。*/
-    public static Map<String, String> getPropertys(final String resourcePath) throws IOException {
+    /** 读取一个属性文件，并且以{@link Map}接口的形式返回。*/
+    public static Map<String, String> getProperty(final String resourcePath) throws IOException {
+        return getProperty(getCurrentLoader(), resourcePath);
+    }
+
+    /** 读取一个属性文件，并且以{@link Map}接口的形式返回。*/
+    public static Map<String, String> getProperty(final ClassLoader classLoader, final String resourcePath) throws IOException {
         Properties prop = new Properties();
-        InputStream in = getResourceAsStream(formatResource(resourcePath));
+        InputStream in = getResourceAsStream(classLoader, resourcePath);
         if (in != null) {
             prop.load(in);
         }
@@ -141,52 +145,107 @@ public abstract class ResourcesUtils {
         return resultData;
     }
 
-    /**获取classpath中可能存在的资源。*/
+    /*------------------------------------------------------------------------------*/
+
+    /** 获取 classpath 中可能存在的资源。*/
     public static URL getResource(String resourcePath) throws IOException {
-        if (resourcePath == null) {
+        if (StringUtils.isBlank(resourcePath)) {
             return null;
         }
-        resourcePath = formatResource(resourcePath);
-        URL url = getCurrentLoader().getResource(resourcePath);
-        return url;
+        //
+        if (resourcePath.startsWith("classpath:")) {
+            resourcePath = resourcePath.substring("classpath:".length());
+            return getResource(getCurrentLoader(), resourcePath);
+        } else if (resourcePath.startsWith("http:") || resourcePath.startsWith("https:") || resourcePath.startsWith("file:") || resourcePath.startsWith("jar:") || resourcePath.startsWith("ftp:")) {
+            return new URL(resourcePath);
+        } else {
+            return getResource(getCurrentLoader(), resourcePath);
+        }
     }
 
-    /**获取classpath中可能存在的资源列表。*/
+    /** 获取 classpath 中可能存在的资源。*/
+    public static URL getResource(ClassLoader classLoader, String resourcePath) throws IOException {
+        resourcePath = formatResource(resourcePath);
+        return classLoader.getResource(resourcePath);
+    }
+
+    /** 获取 classpath 中可能存在的资源列表。*/
     public static List<URL> getResources(String resourcePath) throws IOException {
+        return getResources(getCurrentLoader(), resourcePath);
+    }
+
+    /** 获取 classpath 中可能存在的资源列表。*/
+    public static List<URL> getResources(ClassLoader classLoader, String resourcePath) throws IOException {
         if (resourcePath == null) {
             return new ArrayList<>(0);
         }
         //
         resourcePath = formatResource(resourcePath);
         ArrayList<URL> urls = new ArrayList<>();
-        Enumeration<URL> eurls = getCurrentLoader().getResources(resourcePath);
-        while (eurls.hasMoreElements()) {
-            URL url = eurls.nextElement();
+        Enumeration<URL> urlEnumeration = classLoader.getResources(resourcePath);
+        while (urlEnumeration.hasMoreElements()) {
+            URL url = urlEnumeration.nextElement();
             urls.add(url);
         }
         return urls;
     }
 
-    /**获取可能存在的资源，以流的形式返回。*/
+    /*------------------------------------------------------------------------------*/
+
+    /** 获取可能存在的资源，以流的形式返回。*/
     public static InputStream getResourceAsStream(final File resourceFile) throws IOException {
         return getResourceAsStream(resourceFile.toURI().toURL());
     }
 
-    /**获取classpath中可能存在的资源，以流的形式返回。*/
+    /** 获取classpath中可能存在的资源，以流的形式返回。*/
     public static InputStream getResourceAsStream(final URI resourceURI) throws IOException {
         return getResourceAsStream(resourceURI.toURL());
     }
 
-    /**获取classpath中可能存在的资源，以流的形式返回。*/
-    public static InputStream getResourceAsStream(final URL resourceURL) throws IOException {
-        String protocol = resourceURL.getProtocol();
-        File path = new File(URLDecoder.decode(resourceURL.getFile(), "utf-8"));
-        if (protocol.equals("file")) {
-            //文件
-            if (path.canRead() && path.isFile()) {
-                return new AutoCloseInputStream(new FileInputStream(path));
+    /** 获取classpath中可能存在的资源列表，以流的形式返回。*/
+    public static List<InputStream> getResourcesAsStream(final String resourcePath) throws IOException {
+        ArrayList<InputStream> iss = new ArrayList<>();
+        List<URL> urls = getResources(resourcePath);
+        for (URL url : urls) {
+            InputStream in = getResourceAsStream(url);
+            if (in != null) {
+                iss.add(new AutoCloseInputStream(in));
             }
-        } else if (protocol.equals("jar")) {
+        }
+        return iss;
+    }
+
+    /** 获取classpath中可能存在的资源，以流的形式返回。*/
+    public static InputStream getResourceAsStream(String resourcePath) throws IOException {
+        URL url = getResource(resourcePath);
+        return (url == null) ? null : getResourceAsStream(url);
+    }
+
+    /** 获取classpath中可能存在的资源，以流的形式返回。*/
+    public static InputStream getResourceAsStream(final URL resourceURL) throws IOException {
+        String protocol = resourceURL.getProtocol().trim().toLowerCase();
+        switch (protocol) {
+        case "classpath": {
+            String resourcePath = resourceURL.getPath();
+            return getResourceAsStream(getCurrentLoader(), resourcePath);
+        }
+        case "http":
+        case "https":
+        case "ftp": {
+            return new AutoCloseInputStream(resourceURL.openStream());
+        }
+        case "file": {
+            File targetFile = new File(resourceURL.getPath());
+            if (targetFile.exists()) {
+                if (targetFile.canRead() && targetFile.isFile()) {
+                    return new AutoCloseInputStream(new FileInputStream(targetFile));
+                } else {
+                    throw new IOException("resource " + targetFile.getAbsolutePath() + " can not be read.");
+                }
+            }
+            return null;
+        }
+        case "jar": {
             //JAR文件
             JarFile jar = ((JarURLConnection) resourceURL.openConnection()).getJarFile();
             String jarFile = jar.getName().replace("\\", "/");
@@ -194,36 +253,16 @@ public abstract class ResourcesUtils {
             int beginIndex = resourcePath.indexOf(jarFile) + jarFile.length();
             String entPath = resourcePath.substring(beginIndex + 2);
             ZipEntry e = jar.getEntry(entPath);
-            return jar.getInputStream(e);
-        } else if (protocol.equals("classpath")) {
-            String resourcePath = formatResource(resourceURL.getPath());
-            return getResourceAsStream(resourcePath);
+            return new AutoCloseInputStream(jar.getInputStream(e));
         }
-        // TODO 该处处理其他协议的资源加载。诸如OSGi等协议。
-        return null;
+        default:
+            throw new IOException("");
+        }
     }
 
     /**获取classpath中可能存在的资源，以流的形式返回。*/
-    public static InputStream getResourceAsStream(String resourcePath) throws IOException {
-        resourcePath = formatResource(resourcePath);
-        InputStream inStream = getCurrentLoader().getResourceAsStream(resourcePath);
-        if (inStream == null) {
-            inStream = ClassLoader.getSystemClassLoader().getResourceAsStream(resourcePath);
-        }
-        return inStream;
-    }
-
-    /**获取classpath中可能存在的资源列表，以流的形式返回。*/
-    public static List<InputStream> getResourcesAsStream(final String resourcePath) throws IOException {
-        ArrayList<InputStream> iss = new ArrayList<>();
-        List<URL> urls = getResources(resourcePath);//已经调用过，formatResource(resourcePath);
-        for (URL url : urls) {
-            InputStream in = getResourceAsStream(url);//已经调用过，formatResource(resourcePath);
-            if (in != null) {
-                iss.add(in);
-            }
-        }
-        return iss;
+    public static InputStream getResourceAsStream(final ClassLoader classLoader, final String resourcePath) throws IOException {
+        return classLoader.getResourceAsStream(formatResource(resourcePath));
     }
 
     /**
@@ -237,7 +276,7 @@ public abstract class ResourcesUtils {
     }
     /*------------------------------------------------------------------------------*/
 
-    /**对某一个目录执行扫描。*/
+    /** 对某一个目录执行扫描。*/
     private static void scanDir(final File dirFile, final String wild, final Scanner item, final File contextDir) throws IOException {
         String contextPath = contextDir.getAbsolutePath().replace("\\", "/");
         //1.如果进来的就是一个文件。
@@ -277,7 +316,7 @@ public abstract class ResourcesUtils {
         }
     }
 
-    /**对某一个jar文件执行扫描。*/
+    /** 对某一个jar文件执行扫描。*/
     public static void scanJar(final JarFile jarFile, final String wild, final Scanner item) throws IOException {
         final Enumeration<JarEntry> jes = jarFile.entries();
         while (jes.hasMoreElements()) {
@@ -353,7 +392,7 @@ public abstract class ResourcesUtils {
         return rootList;
     }
 
-    /**获取所有ClassPath条目*/
+    /** 获取所有ClassPath条目 */
     public static Enumeration<URL> findAllClassPath(final String name) throws IOException {
         ClassLoader loader = getCurrentLoader();
         return loader.getResources(name);

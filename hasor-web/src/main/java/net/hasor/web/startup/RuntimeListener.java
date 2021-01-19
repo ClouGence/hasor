@@ -92,7 +92,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     /**加载属性文件*/
     protected Properties loadEnvProperties(ServletContext sc, String envPropertieName) throws IOException {
         if (StringUtils.isBlank(envPropertieName)) {
-            logger.info("properties file is undefinition.");
+            logger.info("properties file is not specified.");
             return null;
         } else {
             InputStream resourceAsStream = ResourcesUtils.getResourceAsStream(envPropertieName);
@@ -110,8 +110,8 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     protected AppContext doInit(ServletContext sc) {
         try {
             String rootModule = sc.getInitParameter("hasor-root-module");       // 启动入口
-            String configName = sc.getInitParameter("hasor-hconfig-name");      // 配置文件名
-            String envProperties = sc.getInitParameter("hasor-envconfig-name"); // 环境变量配置
+            String configName = sc.getInitParameter("hasor-hconfig-file");      // 配置文件名
+            String envProperties = sc.getInitParameter("hasor-env-file");       // 环境变量配置
             //
             Properties properties = this.loadEnvProperties(sc, envProperties);
             Module startModule = this.newRootModule(sc, rootModule);

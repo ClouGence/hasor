@@ -27,7 +27,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MethodAnnoInterceptor implements MethodInterceptor {
-    private Map<String, List<String>> callInfo = new HashMap<>();
+    private final Map<String, List<String>> callInfo = new HashMap<>();
 
     public Map<String, List<String>> getCallInfo() {
         return callInfo;
@@ -40,11 +40,7 @@ public class MethodAnnoInterceptor implements MethodInterceptor {
         invocation.getThis();
         //
         String methodName = invocation.getMethod().getName();
-        List<String> stringList = callInfo.get(methodName);
-        if (stringList == null) {
-            stringList = new ArrayList<>();
-            callInfo.put(methodName, stringList);
-        }
+        List<String> stringList = callInfo.computeIfAbsent(methodName, k -> new ArrayList<>());
         //
         try {
             stringList.add("BEFORE");

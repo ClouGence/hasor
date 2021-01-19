@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 package net.hasor.utils.convert;
-import net.hasor.utils.ContextClassLoaderLocal;
+import net.hasor.utils.supplier.ContextClassLoaderLocal;
 import net.hasor.utils.convert.convert.*;
 
 import java.io.File;

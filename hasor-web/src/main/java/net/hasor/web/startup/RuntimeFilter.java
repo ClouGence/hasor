@@ -30,6 +30,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -64,7 +65,7 @@ public class RuntimeFilter implements Filter {
         }
         // .编码
         if (this.appContext == null) {
-            this.appContext = RuntimeListener.getAppContext(filterConfig.getServletContext());
+            this.appContext = Objects.requireNonNull(RuntimeListener.getAppContext(filterConfig.getServletContext()), "AppContext has not been initialized.");
         }
         this.httpRequestEncoding = this.appContext.findBindingBean(HTTP_REQUEST_ENCODING_KEY, String.class);
         this.httpResponseEncoding = this.appContext.findBindingBean(HTTP_RESPONSE_ENCODING_KEY, String.class);

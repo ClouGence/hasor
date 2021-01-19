@@ -14,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.utils;
+package net.hasor.utils.supplier;
+import net.hasor.utils.BeanUtils;
+
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -99,9 +101,9 @@ import java.util.WeakHashMap;
  * @author Eric Pabst
  */
 public class ContextClassLoaderLocal<T> {
-    private Map<ClassLoader, T> valueByClassLoader     = new WeakHashMap<ClassLoader, T>();
-    private boolean             globalValueInitialized = false;
-    private T                   globalValue;
+    private final Map<ClassLoader, T> valueByClassLoader     = new WeakHashMap<>();
+    private       boolean             globalValueInitialized = false;
+    private       T                   globalValue;
 
     /** Construct a context classloader instance */
     public ContextClassLoaderLocal() {

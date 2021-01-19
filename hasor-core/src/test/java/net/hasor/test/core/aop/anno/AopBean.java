@@ -78,11 +78,9 @@ public class AopBean {
         return aCharValue;
     }
 
-    //
-    //
     @Aop(MethodAnnoInterceptor.class)
     public <T extends List<V>, V extends Settings> Map<String, Object> signatureMethod(T param1, V param2) {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<>();
         result.put("obj1", param1);
         result.put("obj2", param2);
         return result;
@@ -91,7 +89,7 @@ public class AopBean {
     //
     @Aop(MethodAnnoInterceptor.class)
     public Map<String, Object> signatureMethod(List<? super Date> param1, List<? extends Date> param2) {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<>();
         result.put("obj1", param1);
         result.put("obj2", param2);
         return result;

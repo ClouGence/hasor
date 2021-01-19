@@ -28,7 +28,7 @@ import java.io.IOException;
  */
 public class DyadicExpression extends CodeLocationInfo implements Expression {
     private final Expression  fstExpression;   //第一个表达式
-    private final SymbolToken symbolToken;    //运算符
+    private final SymbolToken symbolToken;     //运算符
     private final Expression  secExpression;   //第二个表达式
 
     public DyadicExpression(Expression fstExpression, SymbolToken symbolToken, Expression secExpression) {

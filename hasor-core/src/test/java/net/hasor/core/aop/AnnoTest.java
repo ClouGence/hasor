@@ -33,6 +33,14 @@ import java.util.function.Predicate;
 
 public class AnnoTest {
     @Test
+    public void sampleAopTest1() throws Exception {
+        try (AppContext appContext = Hasor.create().build()) {
+            AopBean instance = appContext.getInstance(AopBean.class);
+            assert instance instanceof DynamicClass;
+        }
+    }
+
+    @Test
     public void aopTest1() throws Exception {
         ClassAnnoInterceptor classInterceptor = new ClassAnnoInterceptor();
         MethodAnnoInterceptor methodInterceptor = new MethodAnnoInterceptor();

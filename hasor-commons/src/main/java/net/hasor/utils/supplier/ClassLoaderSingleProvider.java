@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.utils.supplier;
-import net.hasor.utils.ContextClassLoaderLocal;
-
 import java.util.function.Supplier;
 
 /**
