@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.spring.xml;
-import net.hasor.core.AppContext;
+import net.hasor.spring.SpringModule;
 import net.hasor.spring.beans.ContextFactoryBean;
 import net.hasor.utils.StringUtils;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -45,7 +45,7 @@ class HasorDefinitionParser extends AbstractHasorDefinitionParser {
     protected String beanID(Element element, NamedNodeMap attributes) {
         String beanID = revertProperty(attributes, "id");
         if (StringUtils.isBlank(beanID)) {
-            beanID = AppContext.class.getName();
+            beanID = SpringModule.DEFAULT_HASOR_BEAN_NAME;
         }
         return beanID.trim();
     }

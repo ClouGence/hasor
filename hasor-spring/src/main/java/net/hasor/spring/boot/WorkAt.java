@@ -20,8 +20,10 @@ package net.hasor.spring.boot;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum WorkAt {
-    /** 过滤器模式 */
+    /** 过滤器模式，以 web filter 的方式进行集成 */
     Filter,
-    /** 把 hasor-web 的 入口 filter 以 springwebmvc 的拦截器方式进行集成。 */
-    Interceptor
+    /** 拦截器模式，以 springwebmvc 的拦截器方式进行集成。 */
+    @Deprecated Interceptor,
+    /** 控制器模式，以 springwebmvc 的 Controller 方式进行集成 */
+    Controller
 }

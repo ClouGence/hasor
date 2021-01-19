@@ -16,6 +16,8 @@
 package net.hasor.spring.boot;
 import net.hasor.core.AppContext;
 import net.hasor.spring.beans.AbstractTypeSupplierTools;
+import net.hasor.spring.beans.RuntimeFilter2Controller;
+import net.hasor.spring.beans.RuntimeFilter2Interceptor;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.web.binder.OneConfig;
 import net.hasor.web.startup.RuntimeFilter;
@@ -31,10 +33,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
 import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.servlet.Filter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
@@ -84,27 +92,6 @@ public class WebHasorConfiguration extends AbstractTypeSupplierTools//
         return new ServletListenerRegistrationBean<>(new RuntimeListener(this.appContext));
     }
 
-    @Bean
-    @ConditionalOnWebApplication
-    @ConditionalOnClass(name = "net.hasor.web.startup.RuntimeFilter")
-    public FilterRegistrationBean<?> hasorRuntimeFilter() {
-        Objects.requireNonNull(this.appContext, "AppContext is not inject.");
-        Filter runtimeFilter = null;
-        if (this.filterWorkAt == WorkAt.Filter) {
-            runtimeFilter = new RuntimeFilter(this.appContext);    // 过滤器模式
-        } else {
-            runtimeFilter = new EmptyFilter();      // 拦截器模式
-        }
-        //
-        FilterRegistrationBean<Filter> filterBean = //
-                new FilterRegistrationBean<>(runtimeFilter);
-        filterBean.setUrlPatterns(Collections.singletonList(this.filterPath));
-        filterBean.setOrder(this.filterOrder);
-        filterBean.setName(RuntimeFilter.class.getName());
-        return filterBean;
-    }
-
-    /** 拦截器模式下，添加Spring 拦截器 */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         Objects.requireNonNull(this.appContext, "AppContext is not inject.");
@@ -114,18 +101,46 @@ public class WebHasorConfiguration extends AbstractTypeSupplierTools//
         try {
             RuntimeFilter runtimeFilter = new RuntimeFilter(appContext);
             runtimeFilter.init(new OneConfig("", () -> appContext));
-            Filter2Interceptor interceptor = new Filter2Interceptor(runtimeFilter);
-            //
-            String filterPath = this.filterPath;
-            if (filterPath.endsWith("/*")) {
-                filterPath = filterPath.substring(0, filterPath.length() - 2) + "/**";
-            }
+            RuntimeFilter2Interceptor interceptor = new RuntimeFilter2Interceptor(runtimeFilter);
             //
             registry.addInterceptor(interceptor)//
-                    .addPathPatterns(filterPath)//
+                    .addPathPatterns(evalFilterPath(this.filterPath))//
                     .order(this.filterOrder);
         } catch (Exception e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
+    }
+
+    @Bean
+    @ConditionalOnWebApplication
+    @ConditionalOnClass(name = "net.hasor.web.startup.RuntimeListener")
+    public Object addController(RequestMappingHandlerMapping requestMappingHandlerMapping) throws Exception {
+        Objects.requireNonNull(this.appContext, "AppContext is not inject.");
+        RuntimeFilter runtimeFilter = new RuntimeFilter(this.appContext);
+        String filterPath = evalFilterPath(this.filterPath);
+        //
+        switch (this.filterWorkAt) {
+            case Filter: {
+                FilterRegistrationBean<Filter> filterBean = new FilterRegistrationBean<>(runtimeFilter);
+                filterBean.setUrlPatterns(Collections.singletonList(filterPath));
+                filterBean.setOrder(this.filterOrder);
+                filterBean.setName(RuntimeFilter.class.getName());
+                return filterBean;
+            }
+            case Controller: {
+                RuntimeFilter2Controller handler = new RuntimeFilter2Controller(runtimeFilter, appContext);
+                Method handlerMethod = RuntimeFilter2Controller.class.getMethod("doHandler", HttpServletRequest.class, HttpServletResponse.class);
+                RequestMappingInfo info = RequestMappingInfo.paths(filterPath).methods(RequestMethod.values()).build();
+                requestMappingHandlerMapping.registerMapping(info, handler, handlerMethod);
+            }
+        }
+        return new Object();
+    }
+
+    private static String evalFilterPath(String filterPath) {
+        if (filterPath.endsWith("/*")) {
+            filterPath = filterPath.substring(0, filterPath.length() - 2) + "/**";
+        }
+        return filterPath;
     }
 }

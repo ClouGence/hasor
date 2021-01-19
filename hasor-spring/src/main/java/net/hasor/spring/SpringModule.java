@@ -26,6 +26,8 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface SpringModule extends Module {
+    public static String DEFAULT_HASOR_BEAN_NAME = AppContext.class.getName();
+
     /** 获取 SpringTypeSupplier */
     public default TypeSupplier springTypeSupplier(ApiBinder apiBinder) {
         Supplier<ApplicationContext> springProvider = apiBinder.getProvider(ApplicationContext.class);

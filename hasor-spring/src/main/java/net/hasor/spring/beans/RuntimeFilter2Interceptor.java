@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.spring.boot;
+package net.hasor.spring.beans;
 import net.hasor.web.startup.RuntimeFilter;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -26,16 +26,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version : 2020-04-22
  * @author 赵永春 (zyc@hasor.net)
  */
-class Filter2Interceptor extends HandlerInterceptorAdapter {
-    private RuntimeFilter runtimeFilter;
+public class RuntimeFilter2Interceptor extends HandlerInterceptorAdapter {
+    private final RuntimeFilter runtimeFilter;
 
-    public Filter2Interceptor(RuntimeFilter runtimeFilter) {
+    public RuntimeFilter2Interceptor(RuntimeFilter runtimeFilter) {
         this.runtimeFilter = runtimeFilter;
     }
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-        this.runtimeFilter.doFilter(request, response, (request1, response1) -> {
+        this.runtimeFilter.doFilter(request, response, (req, res) -> {
             atomicBoolean.set(true);
         });
         return atomicBoolean.get();

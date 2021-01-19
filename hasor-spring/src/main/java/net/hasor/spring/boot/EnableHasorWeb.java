@@ -36,6 +36,6 @@ public @interface EnableHasorWeb {
     /** Hasor 全局拦截器的顺序 */
     public int order() default 0;
 
-    /** Hasor 全局拦截器的工作模式，默认：过滤器模式。 */
-    public WorkAt at() default WorkAt.Filter;
+    /** Hasor 全局拦截器的工作模式，默认：控制器模式。 */
+    public WorkAt at() default WorkAt.Controller;
 }

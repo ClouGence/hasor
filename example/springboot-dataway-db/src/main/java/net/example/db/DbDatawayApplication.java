@@ -25,7 +25,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @version : 2021-01-02
  */
 @EnableHasor()
-@EnableHasorWeb(at = WorkAt.Interceptor)
+@EnableHasorWeb(at = WorkAt.Controller)
 @SpringBootApplication(scanBasePackages = { "net.example.db" })
 public class DbDatawayApplication {
     public static void main(String[] args) {
