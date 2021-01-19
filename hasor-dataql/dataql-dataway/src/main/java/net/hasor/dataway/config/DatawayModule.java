@@ -16,6 +16,7 @@
 package net.hasor.dataway.config;
 import net.hasor.core.*;
 import net.hasor.dataway.DatawayService;
+import net.hasor.dataway.authorization.AdminUiAuthorization;
 import net.hasor.dataway.authorization.InterfaceAuthorizationFilter;
 import net.hasor.dataway.dal.ApiDataAccessLayer;
 import net.hasor.dataway.service.DatawayServiceImpl;
@@ -86,7 +87,7 @@ public class DatawayModule implements WebModule, UiConfig {
     }
 
     /** 配置 Dataway 管理界面 */
-    protected void loadAdminService(WebApiBinder apiBinder, String apiBaseUri, String adminBaseUri) {
+    protected void loadAdminService(WebApiBinder apiBinder, String apiBaseUri, String adminBaseUri) throws Exception {
         logger.info("dataway admin workAt " + adminBaseUri);
         apiBinder.getEnvironment().getSettings().setSetting("hasor.dataway.baseAdminUrl", apiBaseUri);//必须要设置回去，否则后面依赖注入会不准确
         // 使用 findClass 虽然可以降低代码复杂度，但是会因为引入代码扫描而增加初始化时间
@@ -116,6 +117,9 @@ public class DatawayModule implements WebModule, UiConfig {
             MappingToUrl toUrl = aClass.getAnnotation(MappingToUrl.class);
             apiBinder.mappingTo(fixUrl(adminBaseUri + "/" + toUrl.value())).with(metaDataBinder.toInfo());
         }
+        //
+        AdminUiAuthorization uiAuthorization = new AdminUiAuthorization(adminBaseUri, apiBinder.getEnvironment());
+        apiBinder.filter(fixUrl(adminBaseUri + "/*")).through(Integer.MAX_VALUE, HasorUtils.autoAware(apiBinder.getEnvironment(), uiAuthorization));
         apiBinder.filter(fixUrl(adminBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceAuthorizationFilter(adminBaseUri));
         apiBinder.filter(fixUrl(adminBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceUiFilter(adminBaseUri));
     }

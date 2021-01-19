@@ -19,10 +19,7 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.XmlNode;
 import net.hasor.core.spi.BindInfoAware;
 import net.hasor.dataway.DatawayService;
-import net.hasor.dataway.config.GlobalConfig;
-import net.hasor.dataway.config.MappingToUrl;
-import net.hasor.dataway.config.Result;
-import net.hasor.dataway.config.UiConfig;
+import net.hasor.dataway.config.*;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
@@ -110,18 +107,7 @@ public class GlobalConfigController extends BasicController implements UiConfig,
 
     @Get
     public Result<Map<String, String>> globalConfig(Invoker invoker) {
-        String contextPath = invoker.getHttpRequest().getContextPath();
-        String contextPathProxy = invoker.getHttpRequest().getHeader("DW_CONTEXT_PATH_PROXY");
-        if (StringUtils.isBlank(contextPathProxy)) {
-            if (StringUtils.isBlank(contextPath)) {
-                contextPath = "/";
-            }
-            if (contextPath.endsWith("/")) {
-                contextPath = contextPath.substring(0, contextPath.length() - 1);
-            }
-        } else {
-            contextPath = contextPathProxy;
-        }
+        String contextPath = DatawayUtils.getDwContextPath(invoker, null);
         this.globalConfig.put("CONTEXT_PATH", contextPath);
         return Result.of(this.globalConfig);
     }

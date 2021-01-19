@@ -41,7 +41,7 @@ import java.util.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class WebController implements Controller {
-    private ThreadLocal<Invoker> invoker = new ThreadLocal<>();
+    private final ThreadLocal<Invoker> invoker = new ThreadLocal<>();
 
     public void initController(Invoker renderData) {
         if (this.invoker.get() != null) {

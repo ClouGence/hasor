@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.spring.boot;
-import javax.servlet.*;
-import java.io.IOException;
+package net.hasor.dataway.spi;
+import net.hasor.web.Invoker;
+
+import java.util.EventListener;
 
 /**
- * 空 Filter，打酱油用的。
- * @version : 2020-04-22
+ * 页面登陆
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2021-01-19
  */
-class EmptyFilter implements Filter {
-    @Override
-    public void init(FilterConfig filterConfig) {
-    }
-
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        chain.doFilter(request, response);
-    }
-
-    @Override
-    public void destroy() {
-    }
+public interface LoginPerformChainSpi extends EventListener {
+    public boolean doLogin(Invoker invoker);
 }

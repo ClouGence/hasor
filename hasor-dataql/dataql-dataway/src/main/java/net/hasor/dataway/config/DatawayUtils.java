@@ -50,6 +50,24 @@ import java.util.function.Supplier;
  * @version : 2020-03-20
  */
 public class DatawayUtils {
+    public static String getDwContextPath(Invoker invoker, String defaultPath) {
+        String contextPath = invoker.getHttpRequest().getContextPath();
+        String contextPathProxy1 = defaultPath;
+        String contextPathProxy2 = invoker.getHttpRequest().getHeader("DW_CONTEXT_PATH_PROXY");
+        String contextPathProxy = StringUtils.isNotBlank(contextPathProxy1) ? contextPathProxy1 : contextPathProxy2;
+        if (StringUtils.isBlank(contextPathProxy)) {
+            if (StringUtils.isBlank(contextPath)) {
+                contextPath = "/";
+            }
+            if (contextPath.endsWith("/")) {
+                contextPath = contextPath.substring(0, contextPath.length() - 1);
+            }
+        } else {
+            contextPath = contextPathProxy;
+        }
+        return contextPath;
+    }
+
     public static String evalCodeValueForSQL(String strCodeValue, Map<String, Object> strRequestBody) {
         StringBuilder paramKeyBuilder = new StringBuilder("");
         StringBuilder callKeyBuilder = new StringBuilder("");
@@ -177,27 +195,27 @@ public class DatawayUtils {
             // "executionTime": "@timeExecution",
             // "value"        : "@resultData"
             switch (value.toString()) {
-            case "@resultStatus":
-                finalResult.put(key.toString(), resultData.get("success"));
-                break;
-            case "@resultMessage":
-                finalResult.put(key.toString(), resultData.get("message"));
-                break;
-            case "@resultCode":
-                finalResult.put(key.toString(), resultData.get("code"));
-                break;
-            case "@timeLifeCycle":
-                finalResult.put(key.toString(), resultData.get("lifeCycleTime"));
-                break;
-            case "@timeExecution":
-                finalResult.put(key.toString(), resultData.get("executionTime"));
-                break;
-            case "@resultData":
-                finalResult.put(key.toString(), resultData.get("value"));
-                break;
-            default:
-                finalResult.put(key.toString(), value);
-                break;
+                case "@resultStatus":
+                    finalResult.put(key.toString(), resultData.get("success"));
+                    break;
+                case "@resultMessage":
+                    finalResult.put(key.toString(), resultData.get("message"));
+                    break;
+                case "@resultCode":
+                    finalResult.put(key.toString(), resultData.get("code"));
+                    break;
+                case "@timeLifeCycle":
+                    finalResult.put(key.toString(), resultData.get("lifeCycleTime"));
+                    break;
+                case "@timeExecution":
+                    finalResult.put(key.toString(), resultData.get("executionTime"));
+                    break;
+                case "@resultData":
+                    finalResult.put(key.toString(), resultData.get("value"));
+                    break;
+                default:
+                    finalResult.put(key.toString(), value);
+                    break;
             }
         }
         return finalResult;

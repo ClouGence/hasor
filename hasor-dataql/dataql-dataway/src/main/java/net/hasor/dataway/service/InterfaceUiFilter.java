@@ -41,12 +41,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version : 2020-03-20
  */
 public class InterfaceUiFilter implements InvokerFilter {
-    protected static     Logger               logger           = LoggerFactory.getLogger(InterfaceUiFilter.class);
-    private static final String               resourceBaseUri  = "/META-INF/hasor-framework/dataway-ui/";
-    private              String               resourceIndexUri = null;
-    private final        String               uiBaseUri;
-    private final        String               uiAdminBaseUri;
-    private final        Map<String, Integer> resourceSize;
+    protected static    Logger               logger           = LoggerFactory.getLogger(InterfaceUiFilter.class);
+    public static final String               resourceBaseUri  = "/META-INF/hasor-framework/dataway-ui/";
+    private             String               resourceIndexUri = null;
+    private final       String               uiBaseUri;
+    private final       String               uiAdminBaseUri;
+    private final       Map<String, Integer> resourceSize;
 
     public InterfaceUiFilter(String uiBaseUri) {
         this.uiBaseUri = uiBaseUri;

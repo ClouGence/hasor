@@ -15,6 +15,7 @@
  */
 package net.hasor.dataway.web;
 import net.hasor.dataql.fx.basic.StringUdfSource;
+import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.dal.EntityDef;
 import net.hasor.dataway.dal.FieldDef;
@@ -57,27 +58,13 @@ public class Swagger2Controller extends BasicController {
             return dataMap;
         }).collect(Collectors.toList());
         //
-        String contextPath = invoker.getHttpRequest().getContextPath();
-        String contextPathProxy1 = invoker.getHttpRequest().getParameter("DW_CONTEXT_PATH_PROXY");
-        String contextPathProxy2 = invoker.getHttpRequest().getHeader("DW_CONTEXT_PATH_PROXY");
-        String contextPathProxy = StringUtils.isNotBlank(contextPathProxy1) ? contextPathProxy1 : contextPathProxy2;
-        if (StringUtils.isBlank(contextPathProxy)) {
-            if (StringUtils.isBlank(contextPath)) {
-                contextPath = "/";
-            }
-            if (contextPath.endsWith("/")) {
-                contextPath = contextPath.substring(0, contextPath.length() - 1);
-            }
-        } else {
-            contextPath = contextPathProxy;
-        }
-        //
+        String contextPathProxy = invoker.getHttpRequest().getParameter("DW_CONTEXT_PATH_PROXY");
+        String contextPath = DatawayUtils.getDwContextPath(invoker, contextPathProxy);
         String serverHost = localName;
-        String serverBasePath = contextPath;
         return new Swagger2Query().execute(new HashMap<String, Object>() {{
             put("apiDataList", collectList);
             put("serverHost", serverHost);
-            put("serverBasePath", StringUtils.isNotBlank(serverBasePath) ? serverBasePath : "/");
+            put("serverBasePath", StringUtils.isNotBlank(contextPath) ? contextPath : "/");
         }}).getData().unwrap();
     }
 }

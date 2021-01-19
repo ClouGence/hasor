@@ -23,6 +23,15 @@
         <!-- Nacos 作为存储时，最大存储API条数，默认：4000 -->
         <HASOR_DATAQL_DATAWAY_NACOS_API_MAX_SIZE>4000</HASOR_DATAQL_DATAWAY_NACOS_API_MAX_SIZE>
 
+        <!-- 是否启用 Admin UI 的登陆认证 -->
+        <HASOR_DATAQL_DATAWAY_AUTHORIZATION_ENABLE>true</HASOR_DATAQL_DATAWAY_AUTHORIZATION_ENABLE>
+        <!-- 登陆认证方式在 basic 模式下的时候，配置的登陆账号 -->
+        <HASOR_DATAQL_DATAWAY_AUTHORIZATION_USERNAME>admin</HASOR_DATAQL_DATAWAY_AUTHORIZATION_USERNAME>
+        <!-- 登陆认证方式在 basic 模式下的时候，配置的登陆密码 -->
+        <HASOR_DATAQL_DATAWAY_AUTHORIZATION_PASSWORD>admin</HASOR_DATAQL_DATAWAY_AUTHORIZATION_PASSWORD>
+        <!-- 登陆页面资源 -->
+        <HASOR_DATAQL_DATAWAY_AUTHORIZATION_LOGIN_PAGE>classpath:/META-INF/hasor-framework/dataway-ui/login.html</HASOR_DATAQL_DATAWAY_AUTHORIZATION_LOGIN_PAGE>
+
         <!-- nacos 的服务地址 -->
         <HASOR_NACOS_ADDR></HASOR_NACOS_ADDR>
         <!-- nacos 上的 Namespace，默认为：public -->
@@ -55,10 +64,26 @@
 
         <!-- enable：默认不启用Dataway，也不启用 Dataway 的管理能力 -->
         <dataway enable="${HASOR_DATAQL_DATAWAY}" enableAdmin="${HASOR_DATAQL_DATAWAY_ADMIN}">
-            <!-- dataway  API工作路径 -->
+            <!-- dataway API工作路径 -->
             <baseApiUrl>${HASOR_DATAQL_DATAWAY_API_URL}</baseApiUrl>
             <!-- dataway-ui 的工作路径，必须开启管理功能 -->
             <baseAdminUrl>${HASOR_DATAQL_DATAWAY_UI_URL}</baseAdminUrl>
+
+
+
+            <!-- 是否启用 Admin UI 的登陆认证 -->
+            <!-- 登陆认证方式，可选为：basic(使用账号密码) | spi(通过用户扩展SPI实现) -->
+
+            <!-- 是否启用 Dataway 简易登陆认证 -->
+            <!--    enable : 是否启用，默认 true 启用、false 为不启用 -->
+            <authorization enable="${HASOR_DATAQL_DATAWAY_AUTHORIZATION_ENABLE}">
+                <!-- 登陆认证方式在 basic 模式下的时候，配置的登陆账号 -->
+                <username>${HASOR_DATAQL_DATAWAY_AUTHORIZATION_USERNAME}</username>
+                <!-- 登陆认证方式在 basic 模式下的时候，配置的登陆密码 -->
+                <password>${HASOR_DATAQL_DATAWAY_AUTHORIZATION_PASSWORD}</password>
+                <!-- 登陆页面资源 -->
+                <loginPageUri>${HASOR_DATAQL_DATAWAY_AUTHORIZATION_LOGIN_PAGE}</loginPageUri>
+            </authorization>
 
             <!-- 元信息访问层，dalType 元信息访问层默认使用的是哪种类型，提供者在 hasor.dataway.dataAccessLayer 中定义 -->
             <dataAccessLayer dalType="${HASOR_DATAQL_DATAWAY_DAL_TYPE}">
