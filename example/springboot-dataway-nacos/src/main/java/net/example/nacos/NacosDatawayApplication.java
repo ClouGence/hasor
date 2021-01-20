@@ -16,7 +16,6 @@
 package net.example.nacos;
 import net.hasor.spring.boot.EnableHasor;
 import net.hasor.spring.boot.EnableHasorWeb;
-import net.hasor.spring.boot.WorkAt;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -25,7 +24,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @version : 2021-01-02
  */
 @EnableHasor()
-@EnableHasorWeb(at = WorkAt.Interceptor)
+@EnableHasorWeb()
 @SpringBootApplication(scanBasePackages = { "net.example.nacos" })
 public class NacosDatawayApplication {
     public static void main(String[] args) {
