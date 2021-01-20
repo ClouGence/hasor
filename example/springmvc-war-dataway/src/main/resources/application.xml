@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:h="http://www.hasor.net/schema/spring-hasor"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.hasor.net/schema/spring-hasor http://www.hasor.net/schema/spring-hasor/spring-hasor-4.2.2.xsd">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="net.example.springmvc">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!-- DataSource -->
+    <bean id="basicDsConfig" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="maxActive" value="50"/>
+        <property name="maxWait" value="3000"/>
+        <property name="initialSize" value="1"/>
+        <property name="connectionErrorRetryAttempts" value="1"/>
+        <property name="breakAfterAcquireFailure" value="true"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="failFast" value="true"/>
+    </bean>
+    <bean id="metadataDs" parent="basicDsConfig">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:default"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+    <bean id="dataDs1" parent="basicDsConfig">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://daily.db.hasor.net:3306/example_data1?allowMultiQueries=true"/>
+        <property name="username" value="example"/>
+        <property name="password" value="LonkP-jW3@ptJPxePf"/>
+    </bean>
+    <bean id="dataDs2" parent="basicDsConfig">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://daily.db.hasor.net:3306/example_data2?allowMultiQueries=true"/>
+        <property name="username" value="example"/>
+        <property name="password" value="LonkP-jW3@ptJPxePf"/>
+    </bean>
+
+    <!-- load Hasor -->
+    <bean id="datawayModule" class="net.example.springmvc.core.DatawayModule">
+        <property name="metadataDs" ref="metadataDs"/>
+        <property name="dataDs1" ref="dataDs1"/>
+        <property name="dataDs2" ref="dataDs2"/>
+    </bean>
+    <h:hasor startWithRef="datawayModule">
+        <h:property name="HASOR_DATAQL_DATAWAY" value="true"/>
+        <h:property name="HASOR_DATAQL_DATAWAY_ADMIN" value="true"/>
+        <h:property name="HASOR_DATAQL_DATAWAY_API_URL" value="/api/"/>
+        <h:property name="HASOR_DATAQL_DATAWAY_UI_URL" value="/interface-ui/"/>
+    </h:hasor>
+</beans>

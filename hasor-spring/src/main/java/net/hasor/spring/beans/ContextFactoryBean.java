@@ -47,7 +47,7 @@ public class ContextFactoryBean extends AbstractEnvironmentAware implements Fact
     private          ApplicationContext applicationContext = null;
     private          String[]           loadModules        = null;
     private          String[]           scanPackages       = null;
-    private          BuildConfig        buildConfig        = new BuildConfig();
+    private final    BuildConfig        buildConfig        = new BuildConfig();
     // ------------------------------------------------------------------------ getter/setter
 
     public void setMainConfig(String mainConfig) {
@@ -103,7 +103,6 @@ public class ContextFactoryBean extends AbstractEnvironmentAware implements Fact
         return true;
     }
 
-    //
     // ------------------------------------------------------------------------ promise InitializingBean and DisposableBean.
     @Override
     public final void afterPropertiesSet() throws Exception {
@@ -116,18 +115,18 @@ public class ContextFactoryBean extends AbstractEnvironmentAware implements Fact
         }
         //
         Set<Class<?>> needCheckRepeat = new HashSet<>();
-        if (loadModules != null) {
-            for (String name : loadModules) {
+        if (this.loadModules != null) {
+            for (String name : this.loadModules) {
                 needCheckRepeat.add(this.applicationContext.getType(name));
-                buildConfig.loadModules.add((Module) this.applicationContext.getBean(name));
+                this.buildConfig.loadModules.add((Module) this.applicationContext.getBean(name));
             }
         }
         //
         if (this.scanPackages != null && this.scanPackages.length > 0) {
             Predicate<Class<?>> classPredicate = needCheckRepeat.isEmpty() ? Matchers.anyClass() : Matchers.anyClassExcludes(needCheckRepeat);
             AutoScanPackagesModule autoScanModule = new AutoScanPackagesModule(this.scanPackages, classPredicate);
-            autoScanModule.setApplicationContext(Objects.requireNonNull(applicationContext));
-            buildConfig.loadModules.add(autoScanModule);
+            autoScanModule.setApplicationContext(Objects.requireNonNull(this.applicationContext));
+            this.buildConfig.loadModules.add(autoScanModule);
         }
         //
         this.realAppContext = this.buildConfig.build(parentObject, this.applicationContext).build(this);

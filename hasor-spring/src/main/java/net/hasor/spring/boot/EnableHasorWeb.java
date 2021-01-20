@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
 @Import(value = { WebHasorConfiguration.class })
 public @interface EnableHasorWeb {
     /** Hasor 全局拦截器工作的目录 */
-    public String path() default "/*";
+    public String[] path() default "/*";
 
     /** Hasor 全局拦截器的顺序 */
     public int order() default 0;

@@ -15,17 +15,22 @@
  */
 package net.hasor.spring.xml;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
+import org.springframework.beans.factory.support.DefaultBeanNameGenerator;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+
+import java.util.function.Consumer;
 
 /**
  * Spring Xml 解析器基类
@@ -58,7 +63,7 @@ public abstract class AbstractHasorDefinitionParser implements BeanDefinitionPar
         return registerBean(element, parserContext, attributes, definition);
     }
 
-    /**摘抄 Spring 源码，将Bean注册到容器中*/
+    /**  摘抄 Spring 源码，将Bean注册到容器中*/
     private BeanDefinition registerBean(Element element, ParserContext parserContext, NamedNodeMap attributes, AbstractBeanDefinition definition) {
         if (!parserContext.isNested()) {
             try {
@@ -75,5 +80,34 @@ public abstract class AbstractHasorDefinitionParser implements BeanDefinitionPar
             }
         }
         return definition;
+    }
+
+    protected void exploreElement(Element element, String elementName, Consumer<Element> consumer) {
+        Node node = element.getFirstChild();
+        while (node != null) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element entry = (Element) node;
+                if (entry.getLocalName().equals(elementName)) {
+                    consumer.accept(entry);
+                }
+            }
+            node = node.getNextSibling();
+        }
+    }
+
+    protected BeanDefinitionHolder createBeanHolder(String beanType, ParserContext parserContext) {
+        return createBeanHolder(beanType, parserContext, beanDefinitionBuilder -> {
+            //
+        });
+    }
+
+    protected BeanDefinitionHolder createBeanHolder(String beanType, ParserContext parserContext, Consumer<BeanDefinitionBuilder> buildBean) {
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(beanType);
+        builder.setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_AUTODETECT);
+        buildBean.accept(builder);
+        //
+        AbstractBeanDefinition startWithDefine = builder.getBeanDefinition();
+        String beanName = new DefaultBeanNameGenerator().generateBeanName(startWithDefine, parserContext.getRegistry());
+        return new BeanDefinitionHolder(startWithDefine, beanName);
     }
 }

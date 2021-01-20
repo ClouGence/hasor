@@ -18,5 +18,6 @@
         <module>springcloud-dataway-nacos</module>
         <module>springboot-tconsole</module>
         <module>springboot-dal-on-dataql</module>
+        <module>springmvc-war-dataway</module>
     </modules>
 </project>

@@ -38,7 +38,7 @@ import java.util.function.Predicate;
 public class AutoScanPackagesModule extends AbstractTypeSupplierTools implements Module, ApplicationContextAware {
     protected static Logger              logger             = LoggerFactory.getLogger(AutoScanPackagesModule.class);
     private          String[]            loadModulePackages = null;
-    private          Predicate<Class<?>> include;
+    private final    Predicate<Class<?>> include;
 
     public AutoScanPackagesModule(String[] packages) {
         this(packages, null);
@@ -56,7 +56,7 @@ public class AutoScanPackagesModule extends AbstractTypeSupplierTools implements
 
     @Override
     public void loadModule(ApiBinder apiBinder) {
-        if (loadModulePackages == null) {
+        if (this.loadModulePackages == null) {
             this.loadModulePackages = apiBinder.getEnvironment().getSpanPackage();
         }
         //
@@ -72,7 +72,7 @@ public class AutoScanPackagesModule extends AbstractTypeSupplierTools implements
         });
         //
         logger.info("loadModule autoScan='true' scanPackages=" + StringUtils.join(this.loadModulePackages, ","));
-        Set<Class<?>> classSet = apiBinder.findClass(DimModule.class, loadModulePackages);
+        Set<Class<?>> classSet = apiBinder.findClass(DimModule.class, this.loadModulePackages);
         apiBinder.loadModule(classSet, include, typeSupplier);
     }
 }

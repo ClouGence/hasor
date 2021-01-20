@@ -23,17 +23,14 @@ import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.DefaultBeanNameGenerator;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 /**
  * 负责解析 h:hasor 标签
@@ -142,34 +139,5 @@ class HasorDefinitionParser extends AbstractHasorDefinitionParser {
         //
         // 结束
         return builder.getBeanDefinition();
-    }
-
-    protected void exploreElement(Element element, String elementName, Consumer<Element> consumer) {
-        Node node = element.getFirstChild();
-        while (node != null) {
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                Element entry = (Element) node;
-                if (entry.getLocalName().equals(elementName)) {
-                    consumer.accept(entry);
-                }
-            }
-            node = node.getNextSibling();
-        }
-    }
-
-    protected BeanDefinitionHolder createBeanHolder(String beanType, ParserContext parserContext) {
-        return createBeanHolder(beanType, parserContext, beanDefinitionBuilder -> {
-            //
-        });
-    }
-
-    protected BeanDefinitionHolder createBeanHolder(String beanType, ParserContext parserContext, Consumer<BeanDefinitionBuilder> buildBean) {
-        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(beanType);
-        builder.setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_AUTODETECT);
-        buildBean.accept(builder);
-        //
-        AbstractBeanDefinition startWithDefine = builder.getBeanDefinition();
-        String beanName = new DefaultBeanNameGenerator().generateBeanName(startWithDefine, parserContext.getRegistry());
-        return new BeanDefinitionHolder(startWithDefine, beanName);
     }
 }

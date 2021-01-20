@@ -19,6 +19,7 @@ import net.hasor.spring.beans.AbstractTypeSupplierTools;
 import net.hasor.spring.beans.RuntimeFilter2Controller;
 import net.hasor.spring.beans.RuntimeFilter2Interceptor;
 import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.StringUtils;
 import net.hasor.web.binder.OneConfig;
 import net.hasor.web.startup.RuntimeFilter;
 import net.hasor.web.startup.RuntimeListener;
@@ -43,7 +44,7 @@ import javax.servlet.Filter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
@@ -58,7 +59,7 @@ public class WebHasorConfiguration extends AbstractTypeSupplierTools//
     private static final Logger     logger      = LoggerFactory.getLogger(WebHasorConfiguration.class);
     @Autowired
     private              AppContext appContext;
-    private              String     filterPath  = "/*";
+    private              String[]   filterPath  = new String[] { "/*" };
     private              int        filterOrder = 0;
     private              WorkAt     filterWorkAt;
 
@@ -82,7 +83,7 @@ public class WebHasorConfiguration extends AbstractTypeSupplierTools//
         this.filterOrder = 0;
         this.filterWorkAt = enableHasor.at();
         //
-        logger.info("@EnableHasorWeb -> filterPath='" + this.filterPath + "', filterOrder='" + this.filterOrder + "', filterWorkAt='" + this.filterWorkAt + "'");
+        logger.info("@EnableHasorWeb -> filterPath=[" + StringUtils.join(this.filterPath, ",") + "], filterOrder='" + this.filterOrder + "', filterWorkAt='" + this.filterWorkAt + "'");
     }
 
     @Bean
@@ -117,12 +118,12 @@ public class WebHasorConfiguration extends AbstractTypeSupplierTools//
     public Object addController(RequestMappingHandlerMapping requestMappingHandlerMapping) throws Exception {
         Objects.requireNonNull(this.appContext, "AppContext is not inject.");
         RuntimeFilter runtimeFilter = new RuntimeFilter(this.appContext);
-        String filterPath = evalFilterPath(this.filterPath);
+        String[] filterPath = evalFilterPath(this.filterPath);
         //
         switch (this.filterWorkAt) {
             case Filter: {
                 FilterRegistrationBean<Filter> filterBean = new FilterRegistrationBean<>(runtimeFilter);
-                filterBean.setUrlPatterns(Collections.singletonList(filterPath));
+                filterBean.setUrlPatterns(Arrays.asList(filterPath));
                 filterBean.setOrder(this.filterOrder);
                 filterBean.setName(RuntimeFilter.class.getName());
                 return filterBean;
@@ -137,10 +138,15 @@ public class WebHasorConfiguration extends AbstractTypeSupplierTools//
         return new Object();
     }
 
-    private static String evalFilterPath(String filterPath) {
-        if (filterPath.endsWith("/*")) {
-            filterPath = filterPath.substring(0, filterPath.length() - 2) + "/**";
+    private static String[] evalFilterPath(String[] filterPath) {
+        String[] filterPathArray = new String[filterPath.length];
+        for (int i = 0; i < filterPath.length; i++) {
+            String tmp = filterPath[i];
+            if (tmp.endsWith("/*")) {
+                tmp = tmp.substring(0, tmp.length() - 2) + "/**";
+            }
+            filterPathArray[i] = tmp;
         }
-        return filterPath;
+        return filterPathArray;
     }
 }

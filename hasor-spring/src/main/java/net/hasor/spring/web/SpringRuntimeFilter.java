@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.spring.xml;
-import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+package net.hasor.spring.web;
+import net.hasor.core.AppContext;
+import net.hasor.web.startup.RuntimeFilter;
 
 /**
- * 负责注册 h:hasor、h:bean、h:web-dispatcher 标签解析器
- * @version : 2016年2月16日
+ * 入口Filter，同一个应用程序只能实例化一个 RuntimeFilter 对象。
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class HasorNamespaceHandler extends NamespaceHandlerSupport {
-    @Override
-    public void init() {
-        registerBeanDefinitionParser("hasor", new HasorDefinitionParser());
-        registerBeanDefinitionParser("bean", new BeanDefinitionParser());
-        registerBeanDefinitionParser("web-dispatcher", new WebDispatcherDefinitionParser());
+public class SpringRuntimeFilter extends RuntimeFilter {
+    public SpringRuntimeFilter() {
+        super(null);
+    }
+
+    public SpringRuntimeFilter(AppContext appContext) {
+        super(appContext);
     }
 }

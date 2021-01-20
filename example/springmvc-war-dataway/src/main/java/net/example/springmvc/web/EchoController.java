@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.spring.xml;
-import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+package net.example.springmvc.web;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 负责注册 h:hasor、h:bean、h:web-dispatcher 标签解析器
- * @version : 2016年2月16日
+ * http://localhost:8082/echo/HelloWord
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2021-01-02
  */
-public class HasorNamespaceHandler extends NamespaceHandlerSupport {
-    @Override
-    public void init() {
-        registerBeanDefinitionParser("hasor", new HasorDefinitionParser());
-        registerBeanDefinitionParser("bean", new BeanDefinitionParser());
-        registerBeanDefinitionParser("web-dispatcher", new WebDispatcherDefinitionParser());
+@RestController
+public class EchoController {
+    @GetMapping(value = "/echo/{string}")
+    public String echo(@PathVariable String string) {
+        return "this value form provider -> " + string;
     }
 }

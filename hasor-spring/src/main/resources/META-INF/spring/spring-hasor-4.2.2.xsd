@@ -88,4 +88,22 @@
             <xsd:attribute name="lazy" type="xsd:boolean" use="optional" default="true"/>
         </xsd:complexType>
     </xsd:element>
+
+    <!-- webDispatcher -->
+    <xsd:element name="web-dispatcher">
+        <xsd:complexType>
+            <xsd:sequence>
+                <!-- 拦截的路径 -->
+                <xsd:element name="mapping" minOccurs="1" maxOccurs="unbounded">
+                    <xsd:annotation>
+                        <xsd:documentation>HasorWeb 在 SpringMVC 中的 dispatcher 入口.</xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:attribute name="path" type="xsd:string" use="required"/>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
 </xsd:schema>

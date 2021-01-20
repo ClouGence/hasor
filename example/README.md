@@ -20,3 +20,7 @@
 
 ## springboot-tconsole
 - 基于 SpringBoot + tConsole 的 CLI 示例。
+
+# springmvc-war-dataway
+- 非 SpringBoot 的 SpringMVC 项目中使用 Dataway
+- 要求 Spring 版本 5.x+
