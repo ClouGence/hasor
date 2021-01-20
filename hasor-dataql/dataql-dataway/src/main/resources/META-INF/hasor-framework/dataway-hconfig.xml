@@ -69,12 +69,7 @@
             <!-- dataway-ui 的工作路径，必须开启管理功能 -->
             <baseAdminUrl>${HASOR_DATAQL_DATAWAY_UI_URL}</baseAdminUrl>
 
-
-
             <!-- 是否启用 Admin UI 的登陆认证 -->
-            <!-- 登陆认证方式，可选为：basic(使用账号密码) | spi(通过用户扩展SPI实现) -->
-
-            <!-- 是否启用 Dataway 简易登陆认证 -->
             <!--    enable : 是否启用，默认 true 启用、false 为不启用 -->
             <authorization enable="${HASOR_DATAQL_DATAWAY_AUTHORIZATION_ENABLE}">
                 <!-- 登陆认证方式在 basic 模式下的时候，配置的登陆账号 -->
@@ -163,6 +158,8 @@
             <spi>net.hasor.dataway.spi.PreExecuteChainSpi</spi>
             <spi>net.hasor.dataway.spi.ResultProcessChainSpi</spi>
             <spi>net.hasor.dataway.spi.SerializationChainSpi</spi>
+            <spi>net.hasor.dataway.spi.LoginPerformChainSpi</spi>
+            <spi>net.hasor.dataway.spi.LoginTokenChainSpi</spi>
         </autoLoadSpi>
     </hasor>
 </config>

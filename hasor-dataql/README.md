@@ -106,10 +106,10 @@ public class ConsoleDemo {
 &emsp;&emsp;ORM 类框架有一个最大的特点是具有 Mapping 过程，然后通过框架在进行 CURD 操作。
 例如：Mybatis、Hibernate。其中有一些甚至做到了更高级的界面化例如： apijson，但其本质依然是 ORM。
 
-&emsp;&emsp;而 DataQL 有很大不同。虽然 DataQL 提供了非常出色的基于 SQL 数据存取能力。但从技术架构上来审视，可以看出它并不是 ORM 框架。
+&emsp;&emsp;而 DataQL 有很大不同。虽然 DataQL 提供了非常出色的基于 SQL 数据存取能力。但从技术架构上来审视它并不是 ORM 框架。
 它没有 ORM 中最关键的 Mapping 过程。DataQL 专注的是：结果转换、数据和服务的聚合查询。
 
-&emsp;&emsp;造成 ORM 错觉的是由于 DataQL 充分利用 Udf 和 Fragment 奇妙的组合，提供了更便捷的数据库存储逻辑配置化而已。
+&emsp;&emsp;造成 ORM 错觉的是由于 DataQL 充分利用 UDF 和 Fragment 组合，提供了更便捷的数据库访问配置化而已。
 
 ----------
 ## Spring 中使用 Dataway
@@ -121,12 +121,12 @@ public class ConsoleDemo {
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-spring</artifactId>
-    <version>4.1.3</version>
+    <version>4.2.2</version>
 </dependency>
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-dataway</artifactId>
-    <version>4.1.3</version>
+    <version>4.2.2</version>
 </dependency>
 ```
 
@@ -152,37 +152,41 @@ HASOR_DATAQL_DATAWAY_UI_URL=/interface-ui/
 &emsp;&emsp;第三步，初始化 dataway 的必要数据库表。
 
 ```sql
-CREATE TABLE `interface_info` (
-    `api_id`          int(11)      NOT NULL AUTO_INCREMENT   COMMENT 'ID',
-    `api_method`      varchar(12)  NOT NULL                  COMMENT 'HttpMethod：GET、PUT、POST',
-    `api_path`        varchar(512) NOT NULL                  COMMENT '拦截路径',
-    `api_status`      int(2)       NOT NULL                  COMMENT '状态：0草稿，1发布，2有变更，3禁用',
-    `api_comment`     varchar(255)     NULL                  COMMENT '注释',
-    `api_type`        varchar(24)  NOT NULL                  COMMENT '脚本类型：SQL、DataQL',
-    `api_script`      mediumtext   NOT NULL                  COMMENT '查询脚本：xxxxxxx',
-    `api_schema`      mediumtext       NULL                  COMMENT '接口的请求/响应数据结构',
-    `api_sample`      mediumtext       NULL                  COMMENT '请求/响应/请求头样本数据',
-    `api_create_time` datetime     DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `api_gmt_time`    datetime     DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
-    PRIMARY KEY (`api_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='Dataway 中的API';
+CREATE TABLE interface_info (
+    api_id          varchar(64)  NOT NULL COMMENT 'ID',
+    api_method      varchar(12)  NOT NULL COMMENT 'HttpMethod：GET、PUT、POST',
+    api_path        varchar(512) NOT NULL COMMENT '拦截路径',
+    api_status      varchar(4)   NOT NULL COMMENT '状态：-1-删除, 0-草稿，1-发布，2-有变更，3-禁用',
+    api_comment     varchar(255) NOT NULL COMMENT '注释',
+    api_type        varchar(24)  NOT NULL COMMENT '脚本类型：SQL、DataQL',
+    api_script      mediumtext   NOT NULL COMMENT '查询脚本：xxxxxxx',
+    api_schema      mediumtext   NOT NULL COMMENT '接口的请求/响应数据结构',
+    api_sample      mediumtext   NOT NULL COMMENT '请求/响应/请求头样本数据',
+    api_option      mediumtext   NOT NULL COMMENT '扩展配置信息',
+    api_create_time varchar(32)  NOT NULL COMMENT '创建时间',
+    api_gmt_time    varchar(32)  NOT NULL COMMENT '修改时间',
+    PRIMARY KEY (api_id),
+    UNIQUE KEY uk_interface_info (api_path)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Dataway 中的API';
 
-CREATE TABLE `interface_release` (
-    `pub_id`          int(11)      NOT NULL AUTO_INCREMENT   COMMENT 'Publish ID',
-    `pub_api_id`      int(11)      NOT NULL                  COMMENT '所属API ID',
-    `pub_method`      varchar(12)  NOT NULL                  COMMENT 'HttpMethod：GET、PUT、POST',
-    `pub_path`        varchar(512) NOT NULL                  COMMENT '拦截路径',
-    `pub_status`      int(2)       NOT NULL                  COMMENT '状态：0有效，1无效（可能被下线）',
-    `pub_type`        varchar(24)  NOT NULL                  COMMENT '脚本类型：SQL、DataQL',
-    `pub_script`      mediumtext   NOT NULL                  COMMENT '查询脚本：xxxxxxx',
-    `pub_script_ori`  mediumtext   NOT NULL                  COMMENT '原始查询脚本，仅当类型为SQL时不同',
-    `pub_schema`      mediumtext       NULL                  COMMENT '接口的请求/响应数据结构',
-    `pub_sample`      mediumtext       NULL                  COMMENT '请求/响应/请求头样本数据',
-    `pub_release_time`datetime     DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间（下线不更新）',
-    PRIMARY KEY (`pub_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='Dataway API 发布历史。';
-
-create index idx_interface_release on interface_release (pub_api_id);
+CREATE TABLE interface_release (
+  pub_id           varchar(64)  NOT NULL COMMENT 'Publish ID',
+  pub_api_id       varchar(64)  NOT NULL COMMENT '所属API ID',
+  pub_method       varchar(12)  NOT NULL COMMENT 'HttpMethod：GET、PUT、POST',
+  pub_path         varchar(512) NOT NULL COMMENT '拦截路径',
+  pub_status       varchar(4)   NOT NULL COMMENT '状态：-1-删除, 0-草稿，1-发布，2-有变更，3-禁用',
+  pub_comment      varchar(255) NOT NULL COMMENT '注释',
+  pub_type         varchar(24)  NOT NULL COMMENT '脚本类型：SQL、DataQL',
+  pub_script       mediumtext   NOT NULL COMMENT '查询脚本：xxxxxxx',
+  pub_script_ori   mediumtext   NOT NULL COMMENT '原始查询脚本，仅当类型为SQL时不同',
+  pub_schema       mediumtext   NOT NULL COMMENT '接口的请求/响应数据结构',
+  pub_sample       mediumtext   NOT NULL COMMENT '请求/响应/请求头样本数据',
+  pub_option       mediumtext   NOT NULL COMMENT '扩展配置信息',
+  pub_release_time varchar(32)  NOT NULL COMMENT '发布时间（下线不更新）',
+  PRIMARY KEY (pub_id),
+  KEY idx_interface_release_api  (pub_api_id),
+  KEY idx_interface_release_path (pub_path)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Dataway API 发布历史。'
 ```
 
 &emsp;&emsp;最后一步，将 Spring 使用的数据源导入到 Hasor 环境共 Dataway 使用。
@@ -215,8 +219,3 @@ public class ExampleModule implements SpringModule {
 ![avatar](https://www.hasor.net/web/_images/CC2_D633_6D5C_MK4L.png)
 
 发布接口需要先进行冒烟测试，冒烟通过之后就可以点亮发布按钮。接口只有在发布之后才能在 Api List 页面中调用，前端才可以正常访问。
-
-
-## FAQ：
-
-&emsp;&emsp;拿到源码直接倒入工程后发现有一些类缺失是什么问题？ 答：请先执行一下 "mvn compile"。原因是：dataway的 dao 层采用的是 DataQL 方案。

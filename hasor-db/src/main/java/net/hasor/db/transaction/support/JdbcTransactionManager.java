@@ -38,10 +38,10 @@ import static net.hasor.db.transaction.Propagation.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcTransactionManager implements TransactionManager {
-    protected Logger                            logger              = LoggerFactory.getLogger(getClass());
-    private   LinkedList<JdbcTransactionStatus> tStatusStack        = new LinkedList<>();
-    private   DataSource                        dataSource          = null;
-    private   TransactionTemplateManager        transactionTemplate = null;
+    protected     Logger                            logger       = LoggerFactory.getLogger(getClass());
+    private final LinkedList<JdbcTransactionStatus> tStatusStack = new LinkedList<>();
+    private final DataSource                        dataSource;
+    private final TransactionTemplateManager        transactionTemplate;
 
     protected JdbcTransactionManager(final DataSource dataSource) {
         Objects.requireNonNull(dataSource);

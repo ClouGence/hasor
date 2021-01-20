@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataway.config;
-import java.util.HashMap;
-
 /**
  * 全局配置
  * @author 赵永春 (zyc@hasor.net)

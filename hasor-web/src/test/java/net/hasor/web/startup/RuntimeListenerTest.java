@@ -56,7 +56,7 @@ public class RuntimeListenerTest extends AbstractTest {
         HashMap<String, String> init_params = new HashMap<>();
         init_params.put("hasor-root-module", StartModule.class.getName());
         init_params.put("hasor-hconfig-file", "/net_hasor_web_startup/data-config.properties");
-        init_params.put("hasor-envconfig-file", "/net_hasor_web_startup/data-config.properties");
+        init_params.put("hasor-env-file", "/net_hasor_web_startup/data-config.properties");
         ServletContext servletContext = servletInitParams(servlet25("/"), init_params);
         //
         RuntimeListener listener = new RuntimeListener();
