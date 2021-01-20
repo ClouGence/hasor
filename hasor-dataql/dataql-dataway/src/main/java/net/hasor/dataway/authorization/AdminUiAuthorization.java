@@ -93,7 +93,8 @@ public class AdminUiAuthorization implements InvokerFilter, AppContextAware {
         if (invoker.getRequestPath().equalsIgnoreCase(this.loginActionUri)) {
             if (doLogin(invoker)) {
                 String contextPath = DatawayUtils.getDwContextPath(invoker, null);
-                invoker.getHttpResponse().sendRedirect(contextPath);
+                String redirect = fixUrl(contextPath + "/" + this.adminBaseUri);
+                invoker.getHttpResponse().sendRedirect(redirect);
                 return null;
             }
         }
