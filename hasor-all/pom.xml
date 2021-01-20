@@ -4,7 +4,7 @@
     <parent>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
-        <version>4.2.2-SNAPSHOT</version>
+        <version>4.2.2</version>
     </parent>
 
     <artifactId>hasor-all</artifactId>
@@ -327,9 +327,9 @@
                         <phase>package</phase>
                         <configuration>
                             <target>
-                                <delete dir="${basedir}/target/src"/>
-                                <delete file="${basedir}/target/original-${project.artifactId}-${project.version}.jar"/>
-                                <delete file="${basedir}/target/original-${project.artifactId}-${project.version}-sources.jar"/>
+                                <delete dir="${basedir}/target/src" />
+                                <delete file="${basedir}/target/original-${project.artifactId}-${project.version}.jar" />
+                                <delete file="${basedir}/target/original-${project.artifactId}-${project.version}-sources.jar" />
                             </target>
                         </configuration>
                         <goals>
