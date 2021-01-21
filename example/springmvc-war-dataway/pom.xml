@@ -10,7 +10,7 @@
 
     <!-- 配置属性 -->
     <properties>
-        <hasor.version>4.2.2-SNAPSHOT</hasor.version>
+        <hasor.version>4.2.3-SNAPSHOT</hasor.version>
         <spring.version>5.2.3.RELEASE</spring.version>
         <wtpversion>2.0</wtpversion>
         <downloadSources>true</downloadSources>

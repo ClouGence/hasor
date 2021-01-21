@@ -17,7 +17,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <hasor.version>4.2.2-SNAPSHOT</hasor.version>
+        <hasor.version>4.2.3-SNAPSHOT</hasor.version>
         <swagger.version>2.7.0</swagger.version>
     </properties>
 
