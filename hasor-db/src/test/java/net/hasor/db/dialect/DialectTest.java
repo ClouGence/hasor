@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.lambda;
+package net.hasor.db.dialect;
 import net.hasor.db.JdbcUtils;
-import net.hasor.db.jdbc.lambda.dialect.SqlDialect;
-import net.hasor.db.jdbc.lambda.dialect.SqlDialectRegister;
-import net.hasor.db.jdbc.mapping.BeanRowMapper;
-import net.hasor.db.jdbc.mapping.FieldInfo;
-import net.hasor.db.jdbc.mapping.MappingHandler;
-import net.hasor.db.jdbc.mapping.TableInfo;
+import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.dialect.SqlDialectRegister;
+import net.hasor.db.types.mapping.MappingRowMapper;
+import net.hasor.db.types.mapping.FieldInfo;
+import net.hasor.db.types.mapping.MappingHandler;
+import net.hasor.db.types.mapping.TableInfo;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.dto.TbUser;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_default_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -51,7 +51,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_mysql_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -68,7 +68,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_postgresql_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -85,7 +85,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_oracle_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -102,7 +102,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_h2_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -119,7 +119,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_hive_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -136,7 +136,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_sqllite_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -153,7 +153,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_herddb_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -170,7 +170,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_sqlserver2012_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -187,7 +187,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_informix_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -204,7 +204,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_db2_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -221,7 +221,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_hsql_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -238,7 +238,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_phoenix_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -255,7 +255,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_impala_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -272,7 +272,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_mariadb_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -289,7 +289,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_aliyun_ads_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
@@ -306,7 +306,7 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_aliyun_drds_1() {
         MappingHandler handler = MappingHandler.DEFAULT;
-        BeanRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> rowMapper = handler.resolveMapper(TbUser.class);
         TableInfo tableInfo = rowMapper.getTableInfo();
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //

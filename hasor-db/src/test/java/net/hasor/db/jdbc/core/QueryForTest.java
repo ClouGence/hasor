@@ -16,7 +16,7 @@
 package net.hasor.db.jdbc.core;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.mapping.BeanRowMapper;
+import net.hasor.db.types.mapping.MappingRowMapper;
 import net.hasor.db.jdbc.paramer.BeanSqlParameterSource;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.SingleDsModule;
@@ -106,7 +106,7 @@ public class QueryForTest extends AbstractDbTest {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
             TB_User tbUser = TestUtils.beanForData1();
-            BeanRowMapper<TbUser> rowMapper = BeanRowMapper.newInstance(TbUser.class);
+            MappingRowMapper<TbUser> rowMapper = MappingRowMapper.newInstance(TbUser.class);
             TbUser user = jdbcTemplate.queryForObject("select * from tb_user where userUUID = '" + tbUser.getUserUUID() + "'", rowMapper);
             assert user != null;
             assert tbUser.getUserUUID().equals(user.getUid());
@@ -119,7 +119,7 @@ public class QueryForTest extends AbstractDbTest {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
             TB_User tbUser = TestUtils.beanForData1();
-            BeanRowMapper<TbUser> rowMapper = BeanRowMapper.newInstance(TbUser.class);
+            MappingRowMapper<TbUser> rowMapper = MappingRowMapper.newInstance(TbUser.class);
             TbUser user = jdbcTemplate.queryForObject("select * from tb_user where userUUID = ?", rowMapper, tbUser.getUserUUID());
             assert user != null;
             assert tbUser.getUserUUID().equals(user.getUid());
@@ -132,7 +132,7 @@ public class QueryForTest extends AbstractDbTest {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
             TB_User tbUser = TestUtils.beanForData1();
-            BeanRowMapper<TbUser> rowMapper = BeanRowMapper.newInstance(TbUser.class);
+            MappingRowMapper<TbUser> rowMapper = MappingRowMapper.newInstance(TbUser.class);
             TbUser user = jdbcTemplate.queryForObject("select * from tb_user where userUUID = ?", new Object[] { tbUser.getUserUUID() }, rowMapper);
             assert user != null;
             assert tbUser.getUserUUID().equals(user.getUid());
@@ -146,7 +146,7 @@ public class QueryForTest extends AbstractDbTest {
             //
             TB_User tbUser = TestUtils.beanForData1();
             BeanSqlParameterSource beanSqlParameterSource = new BeanSqlParameterSource(tbUser);
-            BeanRowMapper<TbUser> rowMapper = BeanRowMapper.newInstance(TbUser.class);
+            MappingRowMapper<TbUser> rowMapper = MappingRowMapper.newInstance(TbUser.class);
             TbUser user = jdbcTemplate.queryForObject("select * from tb_user where userUUID = :userUUID", beanSqlParameterSource, rowMapper);
             assert user != null;
             assert tbUser.getUserUUID().equals(user.getUid());
@@ -161,7 +161,7 @@ public class QueryForTest extends AbstractDbTest {
             TB_User tbUser = TestUtils.beanForData1();
             Map<String, String> mapParams = new HashMap<>();
             mapParams.put("uuid", tbUser.getUserUUID());
-            BeanRowMapper<TbUser> rowMapper = BeanRowMapper.newInstance(TbUser.class);
+            MappingRowMapper<TbUser> rowMapper = MappingRowMapper.newInstance(TbUser.class);
             TbUser user = jdbcTemplate.queryForObject("select * from tb_user where userUUID = :uuid", mapParams, rowMapper);
             assert user != null;
             assert tbUser.getUserUUID().equals(user.getUid());

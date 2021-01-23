@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.mapping;
+package net.hasor.db.types.mapping;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -40,7 +40,7 @@ public class MappingTest extends AbstractDbTest {
     public void testBigDecimalTypeHandler_1() {
         TypeHandlerRegistry registry = TypeHandlerRegistry.DEFAULT;
         MappingHandler handler = new MappingHandler(registry);
-        BeanRowMapper<TbUser> resultMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> resultMapper = handler.resolveMapper(TbUser.class);
         //
         assert resultMapper != null;
         assert resultMapper.getMapperClass() == TbUser.class;
@@ -52,7 +52,7 @@ public class MappingTest extends AbstractDbTest {
     public void testBeanRowMapper_1() throws SQLException {
         TypeHandlerRegistry registry = TypeHandlerRegistry.DEFAULT;
         MappingHandler handler = new MappingHandler(registry);
-        BeanRowMapper<TbUser> resultMapper = handler.resolveMapper(TbUser.class);
+        MappingRowMapper<TbUser> resultMapper = handler.resolveMapper(TbUser.class);
         //
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
@@ -86,8 +86,8 @@ public class MappingTest extends AbstractDbTest {
     public void testBeanRowMapper_3() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            List<TB_User> mapList1 = jdbcTemplate.query("select * from tb_user", BeanRowMapper.newInstance(TB_User.class));
-            List<TB_User> mapList2 = jdbcTemplate.query("select * from tb_user", BeanRowMapper.newInstance(TB_User.class));
+            List<TB_User> mapList1 = jdbcTemplate.query("select * from tb_user", MappingRowMapper.newInstance(TB_User.class));
+            List<TB_User> mapList2 = jdbcTemplate.query("select * from tb_user", MappingRowMapper.newInstance(TB_User.class));
             //
             List<String> collect1 = mapList1.stream().map(TB_User::getName).collect(Collectors.toList());
             List<String> collect2 = mapList2.stream().map(TB_User::getName).collect(Collectors.toList());

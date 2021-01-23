@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.test.db.dto;
-import net.hasor.db.jdbc.mapping.Field;
-import net.hasor.db.jdbc.mapping.Table;
+import net.hasor.db.types.mapping.Field;
+import net.hasor.db.types.mapping.Table;
 
 import java.util.Date;
 
