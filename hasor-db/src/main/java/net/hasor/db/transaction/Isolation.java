@@ -25,7 +25,7 @@ public enum Isolation {
     /**
      * 默认事务隔离级别，具体使用的数据库事务隔离级别由底层决定。
      * @see java.sql.Connection*/
-    DEFAULT(-1),
+    DEFAULT(Connection.TRANSACTION_NONE),
     /**
      * 脏读
      * <p>脏读又称无效数据的读出，是指在数据库访问中，事务T1将某一值修改，然后事务T2读取该值，此后T1因为某种原因撤销对该值的修改，这就导致了T2所读取到的数据是无效的。
@@ -59,7 +59,7 @@ public enum Isolation {
      */
     SERIALIZABLE(Connection.TRANSACTION_SERIALIZABLE);
     //
-    private int value;
+    private final int value;
 
     Isolation(final int value) {
         this.value = value;
@@ -67,16 +67,16 @@ public enum Isolation {
 
     public static Isolation valueOf(final int value) {
         switch (value) {
-        case -1:
-            return Isolation.DEFAULT;
-        case Connection.TRANSACTION_READ_UNCOMMITTED:
-            return Isolation.READ_UNCOMMITTED;
-        case Connection.TRANSACTION_READ_COMMITTED:
-            return Isolation.READ_COMMITTED;
-        case Connection.TRANSACTION_REPEATABLE_READ:
-            return Isolation.REPEATABLE_READ;
-        case Connection.TRANSACTION_SERIALIZABLE:
-            return Isolation.SERIALIZABLE;
+            case Connection.TRANSACTION_NONE:
+                return Isolation.DEFAULT;
+            case Connection.TRANSACTION_READ_UNCOMMITTED:
+                return Isolation.READ_UNCOMMITTED;
+            case Connection.TRANSACTION_READ_COMMITTED:
+                return Isolation.READ_COMMITTED;
+            case Connection.TRANSACTION_REPEATABLE_READ:
+                return Isolation.REPEATABLE_READ;
+            case Connection.TRANSACTION_SERIALIZABLE:
+                return Isolation.SERIALIZABLE;
         }
         throw new IllegalStateException(String.format("Connection ISOLATION error level %s.", value));
     }
