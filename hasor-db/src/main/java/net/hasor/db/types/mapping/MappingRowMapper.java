@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.mapping;
+package net.hasor.db.types.mapping;
 import net.hasor.db.jdbc.RowMapper;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
@@ -34,7 +34,7 @@ import java.util.*;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class BeanRowMapper<T> implements RowMapper<T>, TableInfo {
+public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
     private final Class<T>                    mapperClass;
     private       String                      tableName;
     private       boolean                     caseInsensitive;
@@ -46,12 +46,12 @@ public class BeanRowMapper<T> implements RowMapper<T>, TableInfo {
     private final Map<String, TypeHandler<?>> columnTypeHandlerMap;
 
     /** Create a new ResultMapper.*/
-    public BeanRowMapper(Class<T> mapperClass) {
+    public MappingRowMapper(Class<T> mapperClass) {
         this(mapperClass, TypeHandlerRegistry.DEFAULT);
     }
 
     /** Create a new ResultMapper.*/
-    public BeanRowMapper(Class<T> mapperClass, TypeHandlerRegistry handlerRegistry) {
+    public MappingRowMapper(Class<T> mapperClass, TypeHandlerRegistry handlerRegistry) {
         this.mapperClass = mapperClass;
         this.columnNames = new ArrayList<>();
         this.columnFieldInfoMap = new HashMap<>();
@@ -104,7 +104,7 @@ public class BeanRowMapper<T> implements RowMapper<T>, TableInfo {
         }
     }
 
-    private void setupField(java.lang.reflect.Field property, net.hasor.db.jdbc.mapping.Field defField, TypeHandler<?> toTypeHandler) {
+    private void setupField(java.lang.reflect.Field property, Field defField, TypeHandler<?> toTypeHandler) {
         String columnName = null;
         JDBCType jdbcType = defField.jdbcType();
         if (StringUtils.isNotBlank(defField.name())) {
@@ -203,7 +203,7 @@ public class BeanRowMapper<T> implements RowMapper<T>, TableInfo {
      * Static factory method to create a new BeanPropertyRowMapper (with the mapped class specified only once).
      * @param mappedClass the class that each row should be mapped to
      */
-    public static <T> BeanRowMapper<T> newInstance(final Class<T> mappedClass) {
+    public static <T> MappingRowMapper<T> newInstance(final Class<T> mappedClass) {
         return MappingHandler.DEFAULT.resolveMapper(mappedClass);
     }
 
@@ -211,7 +211,7 @@ public class BeanRowMapper<T> implements RowMapper<T>, TableInfo {
      * Static factory method to create a new BeanPropertyRowMapper (with the mapped class specified only once).
      * @param mappedClass the class that each row should be mapped to
      */
-    public static <T> BeanRowMapper<T> newInstance(final Class<T> mappedClass, final TypeHandlerRegistry registry) {
+    public static <T> MappingRowMapper<T> newInstance(final Class<T> mappedClass, final TypeHandlerRegistry registry) {
         return new MappingHandler(registry).resolveMapper(mappedClass);
     }
 }

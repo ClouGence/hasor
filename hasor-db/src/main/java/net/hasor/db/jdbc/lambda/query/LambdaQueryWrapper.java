@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda.query;
+import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.lambda.LambdaOperations.LambdaQuery;
-import net.hasor.db.jdbc.lambda.dialect.SqlDialect;
 import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
 import net.hasor.db.jdbc.lambda.segment.OrderByKeyword;
 import net.hasor.db.jdbc.lambda.segment.Segment;
-import net.hasor.db.jdbc.mapping.FieldInfo;
-import net.hasor.db.jdbc.mapping.TableInfo;
+import net.hasor.db.types.mapping.FieldInfo;
+import net.hasor.db.types.mapping.TableInfo;
 import net.hasor.utils.reflect.SFunction;
 
 import java.util.*;

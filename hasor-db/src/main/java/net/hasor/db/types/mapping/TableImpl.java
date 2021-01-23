@@ -13,13 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.mapping;
+package net.hasor.db.types.mapping;
+import java.lang.annotation.Annotation;
+
 /**
  * 查询的表
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface TableInfo {
-    /** 表名 */
-    public String getTableName();
+class TableImpl implements Table {
+    private final String tableName;
+
+    public TableImpl(String tableName) {
+        this.tableName = tableName;
+    }
+
+    @Override
+    public String value() {
+        return this.tableName;
+    }
+
+    @Override
+    public String name() {
+        return this.tableName;
+    }
+
+    @Override
+    public boolean caseInsensitive() {
+        return true;
+    }
+
+    @Override
+    public boolean autoFiled() {
+        return true;
+    }
+
+    @Override
+    public Class<? extends Annotation> annotationType() {
+        return Table.class;
+    }
 }

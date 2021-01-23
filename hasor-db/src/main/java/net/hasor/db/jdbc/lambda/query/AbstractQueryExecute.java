@@ -15,13 +15,13 @@
  */
 package net.hasor.db.jdbc.lambda.query;
 import net.hasor.db.JdbcUtils;
+import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.dialect.SqlDialectRegister;
 import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.lambda.LambdaOperations.BoundSql;
 import net.hasor.db.jdbc.lambda.QueryExecute;
-import net.hasor.db.jdbc.lambda.dialect.SqlDialect;
-import net.hasor.db.jdbc.lambda.dialect.SqlDialectRegister;
-import net.hasor.db.jdbc.mapping.BeanRowMapper;
+import net.hasor.db.types.mapping.MappingRowMapper;
 
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -34,19 +34,19 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractQueryExecute<T> implements QueryExecute<T>, BoundSql {
-    protected final String           dbType;
-    private final   SqlDialect       dialect;
-    private final   Class<T>         exampleType;
-    private final   BeanRowMapper<T> exampleRowMapper;
-    private final   JdbcOperations   jdbcOperations;
-    private         boolean          useDialect;
+    protected final String              dbType;
+    private final   SqlDialect          dialect;
+    private final   Class<T>            exampleType;
+    private final   MappingRowMapper<T> exampleRowMapper;
+    private final   JdbcOperations      jdbcOperations;
+    private         boolean             useDialect;
 
     public AbstractQueryExecute(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
         this.exampleType = exampleType;
         this.jdbcOperations = jdbcTemplate;
         this.exampleRowMapper = (jdbcTemplate != null) ?//
                 jdbcTemplate.getMappingHandler().resolveMapper(exampleType) ://
-                BeanRowMapper.newInstance(exampleType);
+                MappingRowMapper.newInstance(exampleType);
         String tmpDbType;
         try {
             tmpDbType = this.getJdbcOperations().execute((ConnectionCallback<String>) con -> {
@@ -68,7 +68,7 @@ public abstract class AbstractQueryExecute<T> implements QueryExecute<T>, BoundS
         this.jdbcOperations = jdbcOperations;
         this.exampleRowMapper = (jdbcOperations instanceof JdbcTemplate) ?//
                 ((JdbcTemplate) jdbcOperations).getMappingHandler().resolveMapper(exampleType) ://
-                BeanRowMapper.newInstance(exampleType);
+                MappingRowMapper.newInstance(exampleType);
         this.dbType = dbType;
         this.dialect = (dialect == null) ? SqlDialect.DEFAULT : dialect;
     }
@@ -81,7 +81,7 @@ public abstract class AbstractQueryExecute<T> implements QueryExecute<T>, BoundS
         return this.jdbcOperations;
     }
 
-    protected BeanRowMapper<T> getRowMapper() {
+    protected MappingRowMapper<T> getRowMapper() {
         return this.exampleRowMapper;
     }
 

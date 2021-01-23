@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.mapping;
+package net.hasor.db.types.mapping;
 import net.hasor.db.types.TypeHandlerRegistry;
 
 import java.util.Map;
@@ -26,9 +26,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MappingHandler {
-    public final static MappingHandler                  DEFAULT = new MappingHandler(TypeHandlerRegistry.DEFAULT);
-    protected final     TypeHandlerRegistry             typeRegistry;
-    protected final     Map<Class<?>, BeanRowMapper<?>> resultMapperMap;
+    public final static MappingHandler                     DEFAULT = new MappingHandler(TypeHandlerRegistry.DEFAULT);
+    protected final     TypeHandlerRegistry                typeRegistry;
+    protected final     Map<Class<?>, MappingRowMapper<?>> resultMapperMap;
 
     public MappingHandler(TypeHandlerRegistry typeRegistry) {
         this.typeRegistry = Objects.requireNonNull(typeRegistry, "typeRegistry not null.");
@@ -39,15 +39,15 @@ public class MappingHandler {
         return this.typeRegistry;
     }
 
-    public <T> BeanRowMapper<T> resolveMapper(Class<T> dtoClass) {
-        BeanRowMapper<T> resultMapper = (BeanRowMapper<T>) this.resultMapperMap.get(dtoClass);
+    public <T> MappingRowMapper<T> resolveMapper(Class<T> dtoClass) {
+        MappingRowMapper<T> resultMapper = (MappingRowMapper<T>) this.resultMapperMap.get(dtoClass);
         if (resultMapper == null) {
             synchronized (this) {
-                resultMapper = (BeanRowMapper<T>) this.resultMapperMap.get(dtoClass);
+                resultMapper = (MappingRowMapper<T>) this.resultMapperMap.get(dtoClass);
                 if (resultMapper != null) {
                     return resultMapper;
                 }
-                resultMapper = new BeanRowMapper<>(dtoClass);
+                resultMapper = new MappingRowMapper<>(dtoClass);
                 //
                 this.resultMapperMap.put(dtoClass, resultMapper);
             }

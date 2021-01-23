@@ -24,11 +24,11 @@ import net.hasor.db.jdbc.lambda.LambdaOperations;
 import net.hasor.db.jdbc.lambda.query.LambdaQueryWrapper;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
-import net.hasor.db.jdbc.mapping.BeanRowMapper;
-import net.hasor.db.jdbc.mapping.MappingHandler;
 import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
+import net.hasor.db.types.mapping.MappingHandler;
+import net.hasor.db.types.mapping.MappingRowMapper;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
@@ -892,7 +892,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
             if (retVal) {
                 try (ResultSet resultSet = cs.getResultSet()) {
                     String name = resultParameterName(sqlParameter, "#result-set-" + resultIndex);
-                    resultsMap.put(name, processResultSet(isResultsCaseInsensitive(),resultSet, sqlParameter));
+                    resultsMap.put(name, processResultSet(isResultsCaseInsensitive(), resultSet, sqlParameter));
                 }
             } else {
                 String name = resultParameterName(sqlParameter, "#update-count-" + resultIndex);
@@ -906,7 +906,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
                 try (ResultSet resultSet = cs.getResultSet()) {
                     if (resultSet != null) {
                         String name = resultParameterName(sqlParameter, "#result-set-" + resultIndex);
-                        resultsMap.put(name, processResultSet(isResultsCaseInsensitive(),resultSet, sqlParameter));
+                        resultsMap.put(name, processResultSet(isResultsCaseInsensitive(), resultSet, sqlParameter));
                     } else {
                         String name = resultParameterName(sqlParameter, "#update-count-" + resultIndex);
                         resultsMap.put(name, updateCount);
@@ -927,7 +927,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
      * @param param the corresponding stored procedure parameter
      * @return a Map that contains returned results
      */
-    protected static Object processResultSet(boolean caseInsensitive,ResultSet rs, ReturnSqlParameter param) throws SQLException {
+    protected static Object processResultSet(boolean caseInsensitive, ResultSet rs, ReturnSqlParameter param) throws SQLException {
         if (rs != null) {
             if (param != null) {
                 if (param.getRowMapper() != null) {
@@ -972,7 +972,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
             return this.getSingleColumnRowMapper(requiredType);
         }
         //
-        BeanRowMapper<T> rowMapper = mappingHandler.resolveMapper(requiredType);
+        MappingRowMapper<T> rowMapper = mappingHandler.resolveMapper(requiredType);
         rowMapper.setCaseInsensitive(this.isResultsCaseInsensitive());
         return rowMapper;
     }
@@ -1115,7 +1115,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
             List<Object> resultList = new ArrayList<>();
             if (retVal) {
                 try (ResultSet resultSet = ps.getResultSet()) {
-                    resultList.add(processResultSet(isResultsCaseInsensitive(),resultSet, result));
+                    resultList.add(processResultSet(isResultsCaseInsensitive(), resultSet, result));
                 }
             } else {
                 resultList.add(ps.getUpdateCount());
@@ -1124,7 +1124,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
                 int updateCount = ps.getUpdateCount();
                 try (ResultSet resultSet = ps.getResultSet()) {
                     if (resultSet != null) {
-                        resultList.add(processResultSet(isResultsCaseInsensitive(),resultSet, null));
+                        resultList.add(processResultSet(isResultsCaseInsensitive(), resultSet, null));
                     } else {
                         resultList.add(updateCount);
                     }

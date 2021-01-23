@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda;
-import net.hasor.db.jdbc.mapping.FieldInfo;
+import net.hasor.db.types.mapping.FieldInfo;
 import net.hasor.utils.reflect.SFunction;
 
 import java.util.Collections;
