@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.lambda.dialect;
+package net.hasor.db.dialect;
 import net.hasor.db.JdbcUtils;
+import net.hasor.db.dialect.provider.*;
 import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 
 import java.util.Map;

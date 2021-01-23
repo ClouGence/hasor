@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.lambda.dialect;
+package net.hasor.db.dialect;
 import net.hasor.db.jdbc.lambda.segment.SqlLike;
-import net.hasor.db.jdbc.mapping.FieldInfo;
-import net.hasor.db.jdbc.mapping.TableInfo;
+import net.hasor.db.types.mapping.FieldInfo;
+import net.hasor.db.types.mapping.TableInfo;
 import net.hasor.utils.StringUtils;
 
 /**
@@ -41,12 +41,12 @@ public interface SqlDialect {
             return "%";
         }
         switch (likeType) {
-        case LEFT:
-            return "CONCAT('%', " + paramName + " )";
-        case RIGHT:
-            return "CONCAT( " + paramName + " ,'%')";
-        default:
-            return "CONCAT('%', " + paramName + " ,'%')";
+            case LEFT:
+                return "CONCAT('%', " + paramName + " )";
+            case RIGHT:
+                return "CONCAT( " + paramName + " ,'%')";
+            default:
+                return "CONCAT('%', " + paramName + " ,'%')";
         }
     }
 }

@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.lambda.dialect;
-import net.hasor.db.jdbc.mapping.FieldInfo;
-import net.hasor.db.jdbc.mapping.TableInfo;
+package net.hasor.db.dialect.provider;
+import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.types.mapping.FieldInfo;
+import net.hasor.db.types.mapping.TableInfo;
 
 /**
  * Aliyun Ads 的 SqlDialect 实现

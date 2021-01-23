@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.lambda.dialect;
-import net.hasor.db.jdbc.mapping.FieldInfo;
-import net.hasor.db.jdbc.mapping.TableInfo;
+package net.hasor.db.dialect.provider;
+import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.types.mapping.FieldInfo;
+import net.hasor.db.types.mapping.TableInfo;
 
 /**
- * H2 的 SqlDialect 实现
+ * HerdDB 的 SqlDialect 实现
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class H2Dialect implements SqlDialect {
+public class HerdDBDialect implements SqlDialect {
     @Override
     public String buildSelect(TableInfo tableInfo, FieldInfo fieldInfo) {
-        return "\"" + fieldInfo.getColumnName() + "\"";
+        return "`" + fieldInfo.getColumnName() + "`";
     }
 
     @Override
     public String buildTableName(TableInfo tableInfo) {
-        return "\"" + tableInfo.getTableName() + "\"";
+        return "`" + tableInfo.getTableName() + "`";
     }
 
     @Override
     public String buildConditionName(TableInfo tableInfo, FieldInfo fieldInfo) {
-        return "\"" + fieldInfo.getColumnName() + "\"";
+        return "`" + fieldInfo.getColumnName() + "`";
     }
 }

@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.lambda.dialect;
-import net.hasor.db.jdbc.mapping.FieldInfo;
-import net.hasor.db.jdbc.mapping.TableInfo;
+package net.hasor.db.dialect.provider;
+import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.types.mapping.FieldInfo;
+import net.hasor.db.types.mapping.TableInfo;
 
 /**
- * HSQL 对象名有大小写敏感不敏感的问题
+ * Impala 对象名有大小写敏感不敏感的问题
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class HSQLDialect implements SqlDialect {
+public class ImpalaDialect implements SqlDialect {
     @Override
     public String buildSelect(TableInfo tableInfo, FieldInfo fieldInfo) {
         return "\"" + fieldInfo.getColumnName() + "\"";
