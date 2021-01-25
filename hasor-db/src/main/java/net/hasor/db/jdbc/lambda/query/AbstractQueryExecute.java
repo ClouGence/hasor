@@ -33,7 +33,7 @@ import java.util.Map;
  * @version : 2020-10-27
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractQueryExecute<T> implements QueryExecute<T>, BoundSql {
+public abstract class AbstractQueryExecute<T> implements QueryExecute<T> {
     protected final String              dbType;
     private final   SqlDialect          dialect;
     private final   Class<T>            exampleType;
@@ -89,52 +89,58 @@ public abstract class AbstractQueryExecute<T> implements QueryExecute<T>, BoundS
         return (this.useDialect && this.dialect != null) ? this.dialect : SqlDialect.DEFAULT;
     }
 
+    protected abstract BoundSql getBoundSql();
+
     @Override
     public <V> QueryExecute<V> wrapperType(Class<V> wrapperType) {
         AbstractQueryExecute<T> self = this;
         return new AbstractQueryExecute<V>(wrapperType, this.jdbcOperations, this.dbType, this.dialect) {
-            public String getSqlString() {
-                return self.getSqlString();
-            }
-
-            public Object[] getArgs() {
-                return self.getArgs();
+            @Override
+            protected BoundSql getBoundSql() {
+                return self.getBoundSql();
             }
         };
     }
 
     @Override
     public <V> V query(ResultSetExtractor<V> rse) throws SQLException {
-        return this.jdbcOperations.query(getSqlString(), getArgs(), rse);
+        BoundSql boundSql = getBoundSql();
+        return this.jdbcOperations.query(boundSql.getSqlString(), boundSql.getArgs(), rse);
     }
 
     @Override
     public void query(RowCallbackHandler rch) throws SQLException {
-        this.jdbcOperations.query(getSqlString(), getArgs(), rch);
+        BoundSql boundSql = getBoundSql();
+        this.jdbcOperations.query(boundSql.getSqlString(), boundSql.getArgs(), rch);
     }
 
     @Override
     public <V> List<V> query(RowMapper<V> rowMapper) throws SQLException {
-        return this.jdbcOperations.query(getSqlString(), getArgs(), rowMapper);
+        BoundSql boundSql = getBoundSql();
+        return this.jdbcOperations.query(boundSql.getSqlString(), boundSql.getArgs(), rowMapper);
     }
 
     @Override
     public List<T> queryForList() throws SQLException {
-        return this.jdbcOperations.query(getSqlString(), getArgs(), getRowMapper());
+        BoundSql boundSql = getBoundSql();
+        return this.jdbcOperations.query(boundSql.getSqlString(), boundSql.getArgs(), getRowMapper());
     }
 
     @Override
     public T queryForObject() throws SQLException {
-        return this.jdbcOperations.queryForObject(getSqlString(), getArgs(), getRowMapper());
+        BoundSql boundSql = getBoundSql();
+        return this.jdbcOperations.queryForObject(boundSql.getSqlString(), boundSql.getArgs(), getRowMapper());
     }
 
     @Override
     public Map<String, Object> queryForMap() throws SQLException {
-        return this.jdbcOperations.queryForMap(getSqlString(), getArgs());
+        BoundSql boundSql = getBoundSql();
+        return this.jdbcOperations.queryForMap(boundSql.getSqlString(), boundSql.getArgs());
     }
 
     @Override
     public List<Map<String, Object>> queryForMapList() throws SQLException {
-        return this.jdbcOperations.queryForList(getSqlString(), getArgs());
+        BoundSql boundSql = getBoundSql();
+        return this.jdbcOperations.queryForList(boundSql.getSqlString(), boundSql.getArgs());
     }
 }

@@ -41,16 +41,52 @@ import static net.hasor.db.jdbc.lambda.segment.SqlKeyword.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T>> implements LambdaQuery<T> {
-    private final List<Segment> customSelect    = new ArrayList<>();
-    private final List<Segment> groupBySegments = new ArrayList<>();
-    private final List<Segment> orderBySegments = new ArrayList<>();
-    private       Page          pageInfo        = null;
-    private       boolean       lockGroupBy     = false;
-    private       boolean       lockOrderBy     = false;
-    private       String        result          = null;
+    private final List<Segment>                customSelect    = new ArrayList<>();
+    private final List<Segment>                groupBySegments = new ArrayList<>();
+    private final List<Segment>                orderBySegments = new ArrayList<>();
+    private       boolean                      lockGroupBy     = false;
+    private       boolean                      lockOrderBy     = false;
+    //
+    private       String                       result          = null;
+    private       Page                         pageInfo        = null;
+    private final BoundSql                     noPageBoundSql;
+    private final Function<BoundSql, BoundSql> pageBoundSql;
 
     public LambdaQueryWrapper(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
         super(exampleType, jdbcTemplate);
+        this.noPageBoundSql = new BoundSql() {
+            public String getSqlString() {
+                return oriSqlString();
+            }
+
+            public Object[] getArgs() {
+                return oriArgs();
+            }
+        };
+        this.pageBoundSql = boundSql -> {
+            return dialect().getPageSql(boundSql, pageInfo.getFirstRecordPosition(), pageInfo.getPageSize());
+        };
+    }
+
+    private String oriSqlString() {
+        if (this.result != null) {
+            return this.result;
+        }
+        MergeSqlSegment sqlSegment = new MergeSqlSegment();
+        sqlSegment.addSegment(SELECT);
+        sqlSegment.addSegment(buildColumns((this.groupBySegments.isEmpty() ? this.customSelect : this.groupBySegments)));
+        sqlSegment.addSegment(FROM);
+        sqlSegment.addSegment(buildTabName(this.dialect()));
+        if (!this.queryTemplate.isEmpty()) {
+            sqlSegment.addSegment(WHERE);
+            sqlSegment.addSegment(this.queryTemplate.sub(1));
+        }
+        this.result = sqlSegment.getSqlSegment();
+        return this.result;
+    }
+
+    private Object[] oriArgs() {
+        return this.queryParam.toArray().clone();
     }
 
     private Segment buildTabName(SqlDialect dialect) {
@@ -165,25 +201,6 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
         return this.addOrderBy(DESC, columns);
     }
 
-    @Override
-    public LambdaQuery<T> usePage(Page pageInfo) {
-        this.pageInfo = pageInfo;
-        return this.getSelf();
-    }
-
-    @Override
-    public Page generatePage() {
-        return generatePage(30);
-    }
-
-    @Override
-    public Page generatePage(int initPageSize) {
-        return new PageObject(initPageSize, () -> {
-            BoundSql countSql = dialect().getCountSql(this);
-            return getJdbcOperations().queryForInt(countSql.getSqlString(), countSql.getArgs());
-        });
-    }
-
     private LambdaQuery<T> addOrderBy(OrderByKeyword keyword, List<SFunction<T>> orderBy) {
         if (this.lockOrderBy) {
             throw new IllegalStateException("order by is locked.");
@@ -207,20 +224,26 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
     }
 
     @Override
-    public String getSqlString() {
-        if (this.result != null) {
-            return this.result;
-        }
-        MergeSqlSegment sqlSegment = new MergeSqlSegment();
-        sqlSegment.addSegment(SELECT);
-        sqlSegment.addSegment(buildColumns((this.groupBySegments.isEmpty() ? this.customSelect : this.groupBySegments)));
-        sqlSegment.addSegment(FROM);
-        sqlSegment.addSegment(buildTabName(this.dialect()));
-        if (!this.queryTemplate.isEmpty()) {
-            sqlSegment.addSegment(WHERE);
-            sqlSegment.addSegment(this.queryTemplate.sub(1));
-        }
-        this.result = sqlSegment.getSqlSegment();
-        return this.result;
+    public LambdaQuery<T> usePage(Page pageInfo) {
+        this.pageInfo = pageInfo;
+        return this.getSelf();
+    }
+
+    @Override
+    public Page generatePage() {
+        return generatePage(30);
+    }
+
+    @Override
+    public Page generatePage(int initPageSize) {
+        return new PageObject(initPageSize, () -> {
+            BoundSql countSql = dialect().getCountSql(this.noPageBoundSql);
+            return getJdbcOperations().queryForInt(countSql.getSqlString(), countSql.getArgs());
+        });
+    }
+
+    @Override
+    public BoundSql getBoundSql() {
+        return (this.pageInfo == null) ? this.noPageBoundSql : this.pageBoundSql.apply(this.noPageBoundSql);
     }
 }

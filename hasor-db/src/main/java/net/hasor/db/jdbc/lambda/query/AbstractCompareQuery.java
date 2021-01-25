@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda.query;
+import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.lambda.Compare;
 import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
@@ -226,16 +227,6 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
 
     protected abstract R getSelf();
 
-    @Override
-    public String getSqlString() {
-        return this.queryTemplate.noFirstSqlSegment();
-    }
-
-    @Override
-    public Object[] getArgs() {
-        return this.queryParam.toArray().clone();
-    }
-
     private Segment formatLikeValue(SqlLike like, Object param) {
         return () -> {
             format(param);
@@ -270,5 +261,18 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
     protected String conditionName(SFunction<T> property) {
         TableInfo tableInfo = super.getRowMapper().getTableInfo();
         return this.dialect().buildConditionName(tableInfo, columnName(property));
+    }
+
+    @Override
+    public BoundSql getBoundSql() {
+        return new BoundSql() {
+            public String getSqlString() {
+                return queryTemplate.noFirstSqlSegment();
+            }
+
+            public Object[] getArgs() {
+                return queryParam.toArray().clone();
+            }
+        };
     }
 }

@@ -35,7 +35,11 @@ public interface LambdaOperations {
     public <T> LambdaQuery<T> lambda(Class<T> exampleType, List<SFunction<T>> columns);
 
     /** 封装 */
-    public interface LambdaQuery<T> extends Compare<T, LambdaQuery<T>>, Func<T, LambdaQuery<T>>,//
-            BoundSql, QueryExecute<T> {
+    public interface LambdaQuery<T> extends Compare<T, LambdaQuery<T>>, Func<T, LambdaQuery<T>>, QueryExecute<T>, BoundSqlBuilder {
+    }
+
+    /** */
+    public interface BoundSqlBuilder {
+        public BoundSql getBoundSql();
     }
 }

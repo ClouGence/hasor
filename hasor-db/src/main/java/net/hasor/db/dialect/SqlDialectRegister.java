@@ -67,6 +67,9 @@ public class SqlDialectRegister {
     }
 
     public static SqlDialect findOrCreate(String dialectName, AppContext appContext) {
+        if (StringUtils.isBlank(dialectName)) {
+            return SqlDialect.DEFAULT;
+        }
         SqlDialect dialect = dialectCache.get(dialectName);
         if (dialect != null) {
             return dialect;
@@ -82,7 +85,7 @@ public class SqlDialectRegister {
                     aClass = ResourcesUtils.classForName(dialectName);
                 }
             } catch (Exception e) {
-                lastMessage = "load dialect class failed -> " + e.getMessage();
+                lastMessage = "load dialect '" + dialectName + "' class failed -> " + e.getMessage();
             }
         }
         //
