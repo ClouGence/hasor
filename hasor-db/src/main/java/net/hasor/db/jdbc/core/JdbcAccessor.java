@@ -28,9 +28,9 @@ import java.util.function.Function;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcAccessor {
-    private DataSource                        dataSource;
-    private Connection                        connection;
-    private EFunction<DataSource, Connection> accessorApply = TranManager::currentConnection;
+    private DataSource                                      dataSource;
+    private Connection                                      connection;
+    private EFunction<DataSource, Connection, SQLException> accessorApply = TranManager::currentConnection;
 
     /**Return the DataSource used by this template.*/
     public DataSource getDataSource() {
@@ -56,7 +56,7 @@ public class JdbcAccessor {
         return this.accessorApply;
     }
 
-    public void setAccessorApply(EFunction<DataSource, Connection> accessorApply) {
+    public void setAccessorApply(EFunction<DataSource, Connection, SQLException> accessorApply) {
         this.accessorApply = accessorApply;
     }
 

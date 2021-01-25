@@ -16,7 +16,7 @@
 package net.hasor.utils.function;
 import net.hasor.utils.ExceptionUtils;
 
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Consumer 允许异常抛出。
@@ -24,15 +24,15 @@ import java.util.function.Consumer;
  * @author 赵永春 (zyc@hasor.net)
  */
 @FunctionalInterface
-public interface EConsumer<T, E extends Throwable> extends Consumer<T> {
+public interface ESupplier<T, E extends Throwable> extends Supplier<T> {
     @Override
-    default void accept(T t) {
+    public default T get() {
         try {
-            this.eAccept(t);
+            return this.eGet();
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
 
-    void eAccept(T t) throws E;
+    T eGet() throws E;
 }

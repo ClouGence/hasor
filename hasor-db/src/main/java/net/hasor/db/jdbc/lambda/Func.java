@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda;
+import net.hasor.db.page.Page;
 import net.hasor.db.types.mapping.FieldInfo;
+import net.hasor.utils.function.EConsumer;
 import net.hasor.utils.reflect.SFunction;
 
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -85,4 +88,20 @@ public interface Func<T, R> {
 
     /** 排序(降序)，类似：order by xxx desc */
     public R desc(List<SFunction<T>> columns);
+
+    /** 设置分页信息 */
+    public R usePage(Page pageInfo);
+
+    /** 生成并设置分页信息 */
+    public default R generatePageAndUse(EConsumer<Page, SQLException> pageConsumer) throws SQLException {
+        Page generatePage = generatePage();
+        pageConsumer.eAccept(generatePage);
+        return usePage(generatePage);
+    }
+
+    /** 生成分页对象 */
+    public Page generatePage();
+
+    /** 生成分页对象 */
+    public Page generatePage(int initPageSize);
 }

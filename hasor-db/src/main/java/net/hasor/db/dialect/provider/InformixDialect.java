@@ -45,8 +45,8 @@ public class InformixDialect implements SqlDialect {
     }
 
     @Override
-    public BoundSql getPageSql(String sqlString, Object[] paramArray, int start, int limit) {
-        List<Object> paramArrays = new ArrayList<>(Arrays.asList(paramArray));
+    public BoundSql getPageSql(BoundSql boundSql, int start, int limit) {
+        List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
         StringBuilder sqlBuilder = new StringBuilder();
         List<Object> newParam = new ArrayList<>();
         sqlBuilder.append("SELECT ");
@@ -59,7 +59,7 @@ public class InformixDialect implements SqlDialect {
             newParam.add(limit);
         }
         sqlBuilder.append(" * FROM ( ");
-        sqlBuilder.append(sqlString);
+        sqlBuilder.append(boundSql.getSqlString());
         sqlBuilder.append(" ) TEMP_T ");
         //
         paramArrays.addAll(0, newParam);

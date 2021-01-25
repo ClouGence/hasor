@@ -63,8 +63,9 @@ public class SqlServer2012Dialect implements SqlDialect {
     }
 
     @Override
-    public BoundSql getCountSql(String sqlString, Object[] args) {
-        List<Object> paramArrays = new ArrayList<>(Arrays.asList(args));
+    public BoundSql getCountSql(BoundSql boundSql) {
+        String sqlString = boundSql.getSqlString();
+        List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
         //
         // .含有 order by 去掉它
         if (sqlString.toLowerCase().contains("order by")) {
@@ -83,8 +84,9 @@ public class SqlServer2012Dialect implements SqlDialect {
     }
 
     @Override
-    public BoundSql getPageSql(String sqlString, Object[] args, int start, int limit) {
-        List<Object> paramArrays = new ArrayList<>(Arrays.asList(args));
+    public BoundSql getPageSql(BoundSql boundSql, int start, int limit) {
+        String sqlString = boundSql.getSqlString();
+        List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
         //
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append(sqlString);

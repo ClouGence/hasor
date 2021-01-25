@@ -45,11 +45,11 @@ public class SqlLiteDialect implements SqlDialect {
     }
 
     @Override
-    public BoundSql getPageSql(String sqlString, Object[] args, int start, int limit) {
-        List<Object> paramArrays = new ArrayList<>(Arrays.asList(args));
+    public BoundSql getPageSql(BoundSql boundSql, int start, int limit) {
+        List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
         //
         StringBuilder sqlBuilder = new StringBuilder();
-        sqlBuilder.append(sqlString);
+        sqlBuilder.append(boundSql.getSqlString());
         if (start <= 0) {
             sqlBuilder.append(" LIMIT ? ");
             paramArrays.add(limit);

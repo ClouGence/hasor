@@ -16,7 +16,6 @@
 package net.hasor.utils.function;
 import net.hasor.utils.ExceptionUtils;
 
-import java.sql.SQLException;
 import java.util.function.Function;
 
 /**
@@ -25,15 +24,15 @@ import java.util.function.Function;
  * @author 赵永春 (zyc@hasor.net)
  */
 @FunctionalInterface
-public interface EFunction<T, R> extends Function<T, R> {
+public interface EFunction<T, R, E extends Throwable> extends Function<T, R> {
     @Override
     default R apply(T t) {
         try {
             return this.eApply(t);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
 
-    R eApply(T t) throws SQLException;
+    R eApply(T t) throws E;
 }

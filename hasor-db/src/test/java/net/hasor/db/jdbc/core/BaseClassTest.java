@@ -29,6 +29,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 /***
@@ -62,11 +63,16 @@ public class BaseClassTest extends AbstractDbTest {
 
     @Test
     public void jdbcAccessorTest_3() {
-        Function<DataSource, Connection> accessorApply = dataSource -> null;
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+        Function<DataSource, Connection> accessorApply = dataSource -> {
+            atomicBoolean.set(true);
+            return null;
+        };
         //
         JdbcAccessor jdbcTemplate = new JdbcAccessor();
         jdbcTemplate.setAccessorApply(accessorApply);
-        assert jdbcTemplate.getAccessorApply() == accessorApply;
+        jdbcTemplate.getAccessorApply().apply(null);
+        assert atomicBoolean.get();
     }
 
     @Test

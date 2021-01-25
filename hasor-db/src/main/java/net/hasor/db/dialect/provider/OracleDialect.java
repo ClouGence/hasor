@@ -45,18 +45,18 @@ public class OracleDialect implements SqlDialect {
     }
 
     @Override
-    public BoundSql getCountSql(String sqlString, Object[] args) {
-        String sqlBuilder = "SELECT COUNT(*) FROM (" + sqlString + ") TEMP_T";
-        return new BoundSql.BoundSqlObj(sqlBuilder, args);
+    public BoundSql getCountSql(BoundSql boundSql) {
+        String sqlBuilder = "SELECT COUNT(*) FROM (" + boundSql.getSqlString() + ") TEMP_T";
+        return new BoundSql.BoundSqlObj(sqlBuilder, boundSql.getArgs());
     }
 
     @Override
-    public BoundSql getPageSql(String sqlString, Object[] args, int start, int limit) {
-        List<Object> paramArrays = new ArrayList<>(Arrays.asList(args));
+    public BoundSql getPageSql(BoundSql boundSql, int start, int limit) {
+        List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
         //
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append("SELECT * FROM ( SELECT TMP.*, ROWNUM ROW_ID FROM ( ");
-        sqlBuilder.append(sqlString);
+        sqlBuilder.append(boundSql.getSqlString());
         sqlBuilder.append(" ) TMP WHERE ROWNUM <= ? ) WHERE ROW_ID > ?");
         //
         paramArrays.add(start + limit);

@@ -41,12 +41,13 @@ public class Db2Dialect implements SqlDialect {
     }
 
     @Override
-    public BoundSql getPageSql(String sqlString, Object[] paramArray, int start, int limit) {
+    public BoundSql getPageSql(BoundSql boundSql, int start, int limit) {
         final StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append("SELECT * FROM (SELECT TMP_PAGE.*,ROWNUMBER() OVER() AS ROW_ID FROM ( ");
-        sqlBuilder.append(sqlString);
+        sqlBuilder.append(boundSql.getSqlString());
         sqlBuilder.append(" ) AS TMP_PAGE) TMP_PAGE WHERE ROW_ID BETWEEN ? AND ?");
         //
+        Object[] paramArray = boundSql.getArgs();
         Object[] destArgs = new Object[paramArray.length + 2];
         System.arraycopy(paramArray, 0, destArgs, 0, paramArray.length);
         destArgs[paramArray.length] = start;

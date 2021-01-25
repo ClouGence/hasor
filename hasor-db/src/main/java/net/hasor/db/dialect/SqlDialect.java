@@ -25,6 +25,8 @@ import net.hasor.utils.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface SqlDialect {
+    public static final SqlDialect DEFAULT = new DefaultSqlDialect();
+
     /** 生成 select 时的列信息 */
     public String buildSelect(TableInfo tableInfo, FieldInfo fieldInfo);
 
@@ -49,10 +51,10 @@ public interface SqlDialect {
     }
 
     /** 生成 count 查询 SQL */
-    public default BoundSql getCountSql(String sqlString, Object[] args) {
-        return new BoundSql.BoundSqlObj("SELECT COUNT(*) FROM (" + sqlString + ") as TEMP_T", args.clone());
+    public default BoundSql getCountSql(BoundSql boundSql) {
+        return new BoundSql.BoundSqlObj("SELECT COUNT(*) FROM (" + boundSql.getSqlString() + ") as TEMP_T", boundSql.getArgs());
     }
 
     /** 生成分页查询 SQL */
-    public BoundSql getPageSql(String sqlString, Object[] args, int start, int limit);
+    public BoundSql getPageSql(BoundSql boundSql, int start, int limit);
 }

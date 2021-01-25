@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda.query;
+import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.lambda.LambdaOperations.LambdaQuery;
 import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
 import net.hasor.db.jdbc.lambda.segment.OrderByKeyword;
 import net.hasor.db.jdbc.lambda.segment.Segment;
+import net.hasor.db.page.Page;
+import net.hasor.db.page.PageObject;
 import net.hasor.db.types.mapping.FieldInfo;
 import net.hasor.db.types.mapping.TableInfo;
 import net.hasor.utils.reflect.SFunction;
@@ -41,6 +44,7 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
     private final List<Segment> customSelect    = new ArrayList<>();
     private final List<Segment> groupBySegments = new ArrayList<>();
     private final List<Segment> orderBySegments = new ArrayList<>();
+    private       Page          pageInfo        = null;
     private       boolean       lockGroupBy     = false;
     private       boolean       lockOrderBy     = false;
     private       String        result          = null;
@@ -159,6 +163,25 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
 
     public LambdaQuery<T> desc(List<SFunction<T>> columns) {
         return this.addOrderBy(DESC, columns);
+    }
+
+    @Override
+    public LambdaQuery<T> usePage(Page pageInfo) {
+        this.pageInfo = pageInfo;
+        return this.getSelf();
+    }
+
+    @Override
+    public Page generatePage() {
+        return generatePage(30);
+    }
+
+    @Override
+    public Page generatePage(int initPageSize) {
+        return new PageObject(initPageSize, () -> {
+            BoundSql countSql = dialect().getCountSql(this);
+            return getJdbcOperations().queryForInt(countSql.getSqlString(), countSql.getArgs());
+        });
     }
 
     private LambdaQuery<T> addOrderBy(OrderByKeyword keyword, List<SFunction<T>> orderBy) {
