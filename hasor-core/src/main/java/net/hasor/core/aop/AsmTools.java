@@ -34,30 +34,30 @@ public class AsmTools implements Opcodes {
     public static int getReturn(final String asmType) {
         char t = asmType.charAt(0);
         switch (t) {
-        case 'B':
-            return Opcodes.IRETURN;//Byte
-        case 'C':
-            return Opcodes.IRETURN;//Char
-        case 'D':
-            return Opcodes.DRETURN;//Double
-        case 'F':
-            return Opcodes.FRETURN;//Float
-        case 'I':
-            return Opcodes.IRETURN;//Integer
-        case 'J':
-            return Opcodes.LRETURN;//Long
-        case 'L':
-            return Opcodes.ARETURN;//Ref
-        case 'S':
-            return Opcodes.IRETURN;//Short
-        case 'Z':
-            return Opcodes.IRETURN;//Boolean
-        case '[':
-            return Opcodes.ARETURN;//Array
-        case 'V':
-            return Opcodes.RETURN;//Void
-        default:
-            throw new UnsupportedOperationException("Unsupported LOAD instruction.");//
+            case 'B':
+                return Opcodes.IRETURN;//Byte
+            case 'C':
+                return Opcodes.IRETURN;//Char
+            case 'D':
+                return Opcodes.DRETURN;//Double
+            case 'F':
+                return Opcodes.FRETURN;//Float
+            case 'I':
+                return Opcodes.IRETURN;//Integer
+            case 'J':
+                return Opcodes.LRETURN;//Long
+            case 'L':
+                return Opcodes.ARETURN;//Ref
+            case 'S':
+                return Opcodes.IRETURN;//Short
+            case 'Z':
+                return Opcodes.IRETURN;//Boolean
+            case '[':
+                return Opcodes.ARETURN;//Array
+            case 'V':
+                return Opcodes.RETURN;//Void
+            default:
+                throw new UnsupportedOperationException("Unsupported LOAD instruction.");//
         }
     }
 
@@ -65,28 +65,28 @@ public class AsmTools implements Opcodes {
     public static int getLoad(final String asmType) {
         char t = asmType.charAt(0);
         switch (t) {
-        case 'B':
-            return Opcodes.ILOAD;//Byte
-        case 'C':
-            return Opcodes.ILOAD;//Char
-        case 'D':
-            return Opcodes.DLOAD;//Double
-        case 'F':
-            return Opcodes.FLOAD;//Float
-        case 'I':
-            return Opcodes.ILOAD;//Integer
-        case 'J':
-            return Opcodes.LLOAD;//Long
-        case 'L':
-            return Opcodes.ALOAD;//Ref
-        case 'S':
-            return Opcodes.ILOAD;//Short
-        case 'Z':
-            return Opcodes.ILOAD;//Boolean
-        case '[':
-            return Opcodes.ALOAD;//Array
-        default:
-            throw new UnsupportedOperationException("Unsupported LOAD instruction.");//
+            case 'B':
+                return Opcodes.ILOAD;//Byte
+            case 'C':
+                return Opcodes.ILOAD;//Char
+            case 'D':
+                return Opcodes.DLOAD;//Double
+            case 'F':
+                return Opcodes.FLOAD;//Float
+            case 'I':
+                return Opcodes.ILOAD;//Integer
+            case 'J':
+                return Opcodes.LLOAD;//Long
+            case 'L':
+                return Opcodes.ALOAD;//Ref
+            case 'S':
+                return Opcodes.ILOAD;//Short
+            case 'Z':
+                return Opcodes.ILOAD;//Boolean
+            case '[':
+                return Opcodes.ALOAD;//Array
+            default:
+                throw new UnsupportedOperationException("Unsupported LOAD instruction.");//
         }
     }
     /**根据asm类型获取其ASTORE指令。*/
@@ -339,12 +339,12 @@ public class AsmTools implements Opcodes {
                     return "";
                 }
                 switch ((char) strInt) {
-                case '['://array
-                    return '[' + this.readType();
-                case 'L'://Object
-                    return 'L' + this.readToSemicolon();
-                default:
-                    return String.valueOf((char) strInt);
+                    case '['://array
+                        return '[' + this.readType();
+                    case 'L'://Object
+                        return 'L' + this.readToSemicolon();
+                    default:
+                        return String.valueOf((char) strInt);
                 }
             }
 

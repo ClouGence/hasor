@@ -63,7 +63,9 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     private final       AtomicReference<AppContextStatus> status          = new AtomicReference<>(AppContextStatus.Stopped);
 
     protected static enum AppContextStatus {
-        Stopped, Processing, Started
+        Stopped,
+        Processing,
+        Started
     }
 
     @Override
