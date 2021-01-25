@@ -14,27 +14,33 @@
  * limitations under the License.
  */
 package net.hasor.db.dialect;
-import net.hasor.db.types.mapping.FieldInfo;
-import net.hasor.db.types.mapping.TableInfo;
-
 /**
- * 默认 SqlDialect 实现
+ * SQL
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DefaultSqlDialect implements SqlDialect {
-    @Override
-    public String buildSelect(TableInfo tableInfo, FieldInfo fieldInfo) {
-        return fieldInfo.getColumnName();
-    }
+public interface BoundSql {
+    public String getSqlString();
 
-    @Override
-    public String buildTableName(TableInfo tableInfo) {
-        return tableInfo.getTableName();
-    }
+    public Object[] getArgs();
 
-    @Override
-    public String buildConditionName(TableInfo tableInfo, FieldInfo fieldInfo) {
-        return fieldInfo.getColumnName();
+    public static class BoundSqlObj implements BoundSql {
+        /** SQL */
+        private final String   sqlString;
+        private final Object[] paramArray;
+
+        public BoundSqlObj(String sqlString, Object[] paramArray) {
+            this.sqlString = sqlString;
+            this.paramArray = paramArray;
+        }
+
+        public String getSqlString() {
+            return this.sqlString;
+        }
+
+        @Override
+        public Object[] getArgs() {
+            return this.paramArray;
+        }
     }
 }

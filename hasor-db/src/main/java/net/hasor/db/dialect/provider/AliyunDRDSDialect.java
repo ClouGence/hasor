@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.db.dialect.provider;
+import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.types.mapping.FieldInfo;
 import net.hasor.db.types.mapping.TableInfo;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Aliyun DRDS 的 SqlDialect 实现
@@ -37,5 +42,23 @@ public class AliyunDRDSDialect implements SqlDialect {
     @Override
     public String buildConditionName(TableInfo tableInfo, FieldInfo fieldInfo) {
         return "`" + fieldInfo.getColumnName() + "`";
+    }
+
+    @Override
+    public BoundSql getPageSql(String sqlString, Object[] args, int start, int limit) {
+        List<Object> paramArrays = new ArrayList<>(Arrays.asList(args));
+        //
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append(sqlString);
+        if (start <= 0) {
+            sqlBuilder.append(" LIMIT ? ");
+            paramArrays.add(limit);
+        } else {
+            sqlBuilder.append(" LIMIT ?, ? ");
+            paramArrays.add(start);
+            paramArrays.add(limit);
+        }
+        //
+        return new BoundSql.BoundSqlObj(sqlBuilder.toString(), paramArrays.toArray());
     }
 }

@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.db.dialect;
+import net.hasor.core.AppContext;
+import net.hasor.core.BindInfo;
 import net.hasor.db.JdbcUtils;
 import net.hasor.db.dialect.provider.*;
+import net.hasor.utils.ResourcesUtils;
+import net.hasor.utils.StringUtils;
 import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 
 import java.util.Map;
@@ -50,30 +54,66 @@ public class SqlDialectRegister {
         registerDialectAlias(JdbcUtils.INFORMIX, InformixDialect.class);
     }
 
-    public static void registerDialectAlias(String alias, Class<? extends SqlDialect> dialectClass) {
-        dialectAliasMap.put(alias, dialectClass);
+    public static void registerDialectAlias(String dialectName, Class<? extends SqlDialect> dialectClass) {
+        dialectAliasMap.put(dialectName, dialectClass);
     }
 
-    public static void registerDialect(String dbType, SqlDialect sqlDialect) {
-        dialectCache.put(dbType, sqlDialect);
+    public static void registerDialect(String dialectName, SqlDialect sqlDialect) {
+        dialectCache.put(dialectName, sqlDialect);
     }
 
-    public static SqlDialect findOrCreate(String dbType) {
-        SqlDialect dialect = dialectCache.get(dbType);
+    public static SqlDialect findOrCreate(String dialectName) {
+        return findOrCreate(dialectName, null);
+    }
+
+    public static SqlDialect findOrCreate(String dialectName, AppContext appContext) {
+        SqlDialect dialect = dialectCache.get(dialectName);
         if (dialect != null) {
             return dialect;
         }
-        Class<?> aClass = dialectAliasMap.get(dbType);
-        if (aClass != null) {
+        //
+        String lastMessage = null;
+        Class<?> aClass = dialectAliasMap.get(dialectName);
+        if (aClass == null) {
             try {
-                dialect = (SqlDialect) aClass.newInstance();
+                if (appContext != null) {
+                    aClass = appContext.getClassLoader().loadClass(dialectName);
+                } else {
+                    aClass = ResourcesUtils.classForName(dialectName);
+                }
             } catch (Exception e) {
-                throw new IllegalStateException("create dialect failed " + e.getMessage(), e);
+                lastMessage = "load dialect class failed -> " + e.getMessage();
+            }
+        }
+        //
+        if (aClass != null) {
+            if (appContext != null) {
+                dialect = (SqlDialect) appContext.getInstance(aClass);
+            } else {
+                try {
+                    dialect = (SqlDialect) aClass.newInstance();
+                } catch (Exception e) {
+                    throw new IllegalStateException("create dialect failed -> " + e.getMessage(), e);
+                }
             }
         } else {
-            return SqlDialect.DEFAULT;
+            if (appContext != null) {
+                BindInfo<SqlDialect> dialectBindInfo = appContext.findBindingRegister(dialectName, SqlDialect.class);
+                if (dialectBindInfo != null) {
+                    dialect = appContext.getInstance(dialectBindInfo);
+                }
+            }
+            //
+            if (dialect == null) {
+                if (StringUtils.isNotBlank(lastMessage)) {
+                    throw new IllegalStateException(lastMessage);
+                } else {
+                    throw new IllegalStateException("No dialect '" + dialectName + "' found.");
+                }
+            }
         }
-        dialectCache.put(dbType, dialect);
+        //
+        dialectCache.put(dialectName, dialect);
         return dialect;
     }
 }

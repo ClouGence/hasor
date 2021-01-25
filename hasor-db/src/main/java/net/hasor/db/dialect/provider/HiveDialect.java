@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.dialect.provider;
+import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.types.mapping.FieldInfo;
 import net.hasor.db.types.mapping.TableInfo;
@@ -37,5 +38,10 @@ public class HiveDialect implements SqlDialect {
     @Override
     public String buildConditionName(TableInfo tableInfo, FieldInfo fieldInfo) {
         return "\"" + fieldInfo.getColumnName() + "\"";
+    }
+
+    @Override
+    public BoundSql getPageSql(String sqlString, Object[] args, int start, int limit) {
+        throw new UnsupportedOperationException();
     }
 }

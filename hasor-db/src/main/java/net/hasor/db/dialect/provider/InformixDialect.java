@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.db.dialect.provider;
+import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.types.mapping.FieldInfo;
 import net.hasor.db.types.mapping.TableInfo;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Informix 的 SqlDialect 实现
@@ -37,5 +42,27 @@ public class InformixDialect implements SqlDialect {
     @Override
     public String buildConditionName(TableInfo tableInfo, FieldInfo fieldInfo) {
         return "\"" + fieldInfo.getColumnName() + "\"";
+    }
+
+    @Override
+    public BoundSql getPageSql(String sqlString, Object[] paramArray, int start, int limit) {
+        List<Object> paramArrays = new ArrayList<>(Arrays.asList(paramArray));
+        StringBuilder sqlBuilder = new StringBuilder();
+        List<Object> newParam = new ArrayList<>();
+        sqlBuilder.append("SELECT ");
+        if (start > 0) {
+            sqlBuilder.append(" SKIP ? ");
+            newParam.add(start);
+        }
+        if (limit > 0) {
+            sqlBuilder.append(" FIRST ? ");
+            newParam.add(limit);
+        }
+        sqlBuilder.append(" * FROM ( ");
+        sqlBuilder.append(sqlString);
+        sqlBuilder.append(" ) TEMP_T ");
+        //
+        paramArrays.addAll(0, newParam);
+        return new BoundSql.BoundSqlObj(sqlBuilder.toString(), paramArrays.toArray());
     }
 }

@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.db.dialect.provider;
+import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.types.mapping.FieldInfo;
 import net.hasor.db.types.mapping.TableInfo;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Oracle 的 SqlDialect 实现
@@ -37,5 +42,25 @@ public class OracleDialect implements SqlDialect {
     @Override
     public String buildConditionName(TableInfo tableInfo, FieldInfo fieldInfo) {
         return "\"" + fieldInfo.getColumnName() + "\"";
+    }
+
+    @Override
+    public BoundSql getCountSql(String sqlString, Object[] args) {
+        String sqlBuilder = "SELECT COUNT(*) FROM (" + sqlString + ") TEMP_T";
+        return new BoundSql.BoundSqlObj(sqlBuilder, args);
+    }
+
+    @Override
+    public BoundSql getPageSql(String sqlString, Object[] args, int start, int limit) {
+        List<Object> paramArrays = new ArrayList<>(Arrays.asList(args));
+        //
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("SELECT * FROM ( SELECT TMP.*, ROWNUM ROW_ID FROM ( ");
+        sqlBuilder.append(sqlString);
+        sqlBuilder.append(" ) TMP WHERE ROWNUM <= ? ) WHERE ROW_ID > ?");
+        //
+        paramArrays.add(start + limit);
+        paramArrays.add(start);
+        return new BoundSql.BoundSqlObj(sqlBuilder.toString(), paramArrays.toArray());
     }
 }

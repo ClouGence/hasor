@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.dialect.provider;
+import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.types.mapping.FieldInfo;
 import net.hasor.db.types.mapping.TableInfo;
@@ -37,5 +38,19 @@ public class Db2Dialect implements SqlDialect {
     @Override
     public String buildConditionName(TableInfo tableInfo, FieldInfo fieldInfo) {
         return "\"" + fieldInfo.getColumnName() + "\"";
+    }
+
+    @Override
+    public BoundSql getPageSql(String sqlString, Object[] paramArray, int start, int limit) {
+        final StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("SELECT * FROM (SELECT TMP_PAGE.*,ROWNUMBER() OVER() AS ROW_ID FROM ( ");
+        sqlBuilder.append(sqlString);
+        sqlBuilder.append(" ) AS TMP_PAGE) TMP_PAGE WHERE ROW_ID BETWEEN ? AND ?");
+        //
+        Object[] destArgs = new Object[paramArray.length + 2];
+        System.arraycopy(paramArray, 0, destArgs, 0, paramArray.length);
+        destArgs[paramArray.length] = start;
+        destArgs[paramArray.length + 1] = limit;
+        return new BoundSql.BoundSqlObj(sqlBuilder.toString(), destArgs);
     }
 }
