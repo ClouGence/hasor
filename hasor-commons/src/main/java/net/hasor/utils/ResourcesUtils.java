@@ -225,38 +225,38 @@ public abstract class ResourcesUtils {
     public static InputStream getResourceAsStream(final URL resourceURL) throws IOException {
         String protocol = resourceURL.getProtocol().trim().toLowerCase();
         switch (protocol) {
-        case "classpath": {
-            String resourcePath = resourceURL.getPath();
-            return getResourceAsStream(getCurrentLoader(), resourcePath);
-        }
-        case "http":
-        case "https":
-        case "ftp": {
-            return new AutoCloseInputStream(resourceURL.openStream());
-        }
-        case "file": {
-            File targetFile = new File(resourceURL.getPath());
-            if (targetFile.exists()) {
-                if (targetFile.canRead() && targetFile.isFile()) {
-                    return new AutoCloseInputStream(new FileInputStream(targetFile));
-                } else {
-                    throw new IOException("resource " + targetFile.getAbsolutePath() + " can not be read.");
-                }
+            case "classpath": {
+                String resourcePath = resourceURL.getPath();
+                return getResourceAsStream(getCurrentLoader(), resourcePath);
             }
-            return null;
-        }
-        case "jar": {
-            //JAR文件
-            JarFile jar = ((JarURLConnection) resourceURL.openConnection()).getJarFile();
-            String jarFile = jar.getName().replace("\\", "/");
-            String resourcePath = URLDecoder.decode(resourceURL.getPath(), "utf-8");
-            int beginIndex = resourcePath.indexOf(jarFile) + jarFile.length();
-            String entPath = resourcePath.substring(beginIndex + 2);
-            ZipEntry e = jar.getEntry(entPath);
-            return new AutoCloseInputStream(jar.getInputStream(e));
-        }
-        default:
-            throw new IOException("");
+            case "http":
+            case "https":
+            case "ftp": {
+                return new AutoCloseInputStream(resourceURL.openStream());
+            }
+            case "file": {
+                File targetFile = new File(resourceURL.getPath());
+                if (targetFile.exists()) {
+                    if (targetFile.canRead() && targetFile.isFile()) {
+                        return new AutoCloseInputStream(new FileInputStream(targetFile));
+                    } else {
+                        throw new IOException("resource " + targetFile.getAbsolutePath() + " can not be read.");
+                    }
+                }
+                return null;
+            }
+            case "jar": {
+                //JAR文件
+                JarFile jar = ((JarURLConnection) resourceURL.openConnection()).getJarFile();
+                String jarFile = jar.getName().replace("\\", "/");
+                String resourcePath = URLDecoder.decode(resourceURL.getPath(), "utf-8");
+                int beginIndex = resourcePath.indexOf(jarFile) + jarFile.length();
+                String entPath = resourcePath.substring(beginIndex + 2);
+                ZipEntry e = jar.getEntry(entPath);
+                return new AutoCloseInputStream(jar.getInputStream(e));
+            }
+            default:
+                throw new IOException("");
         }
     }
 
@@ -340,6 +340,17 @@ public abstract class ResourcesUtils {
      * @param item 当找到资源时执行回调的接口。
      */
     public static void scan(final String wild, final Scanner item) throws IOException, URISyntaxException {
+        scan(getCurrentLoader(), wild, item);
+    }
+
+    /**
+     * 扫描classpath目录中的资源，每当发现一个资源时都将产生对{@link Scanner}接口的一次调用。请注意首个字符不可以是通配符。
+     * 如果资源是存在于jar包中的那么在获取的对象输入流时要在回调中处理完毕。
+     * 在扫描期间如果想随时退出扫描则{@link Scanner}接口的返回值给true即可。
+     * @param wild 扫描期间要排除资源的通配符。
+     * @param item 当找到资源时执行回调的接口。
+     */
+    public static void scan(ClassLoader classLoader, final String wild, final Scanner item) throws IOException, URISyntaxException {
         if (wild == null || wild.equals("")) {
             return;
         }
@@ -358,8 +369,8 @@ public abstract class ResourcesUtils {
         if (_wild.charAt(_wild.length() - 1) == '/') {
             _wild = _wild.substring(0, _wild.length() - 1);
         }
-        Enumeration<URL> urls = findAllClassPath(_wild);
-        List<URL> dirs = rootDir();
+        Enumeration<URL> urls = findAllClassPath(classLoader, _wild);
+        List<URL> dirs = rootDir(classLoader);
         //
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
@@ -383,8 +394,8 @@ public abstract class ResourcesUtils {
         return null;
     }
 
-    private static List<URL> rootDir() throws IOException {
-        Enumeration<URL> roote = findAllClassPath("");
+    private static List<URL> rootDir(ClassLoader classLoader) throws IOException {
+        Enumeration<URL> roote = findAllClassPath(classLoader, "");
         ArrayList<URL> rootList = new ArrayList<>();
         while (roote.hasMoreElements()) {
             rootList.add(roote.nextElement());
@@ -393,9 +404,8 @@ public abstract class ResourcesUtils {
     }
 
     /** 获取所有ClassPath条目 */
-    public static Enumeration<URL> findAllClassPath(final String name) throws IOException {
-        ClassLoader loader = getCurrentLoader();
-        return loader.getResources(name);
+    public static Enumeration<URL> findAllClassPath(ClassLoader classLoader, final String name) throws IOException {
+        return classLoader.getResources(name);
         //        Enumeration<URL> urls = null;
         //        if (loader instanceof URLClassLoader == false)
         //            urls = loader.getResources(name);

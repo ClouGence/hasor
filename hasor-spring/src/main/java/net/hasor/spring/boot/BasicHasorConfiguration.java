@@ -50,7 +50,7 @@ import java.util.*;
  */
 @Configuration(proxyBeanMethods = false)
 public class BasicHasorConfiguration extends AbstractTypeSupplierTools implements ImportAware {
-    private static Logger logger = LoggerFactory.getLogger(BasicHasorConfiguration.class);
+    private static final Logger logger = LoggerFactory.getLogger(BasicHasorConfiguration.class);
 
     @Override
     public final void setImportMetadata(AnnotationMetadata importMetadata) {

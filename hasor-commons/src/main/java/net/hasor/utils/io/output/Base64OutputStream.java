@@ -47,7 +47,7 @@ import java.io.Writer;
  * chars which will be flushed to the provided writer as the
  * internal buffer fills.</p> 
  */
-public class Base64OutputStreamWriter extends OutputStream {
+public class Base64OutputStream extends OutputStream {
     /**
      * The buffer where data is stored. 
      */
@@ -86,7 +86,7 @@ public class Base64OutputStreamWriter extends OutputStream {
      *
      * @throws IllegalArgumentException if size is negative.
      */
-    public Base64OutputStreamWriter(final int size, final Writer writer) {
+    public Base64OutputStream(final int size, final Writer writer) {
         if (size < 0) {
             throw new IllegalArgumentException("Negative initial size: " + size);
         }
@@ -179,10 +179,10 @@ public class Base64OutputStreamWriter extends OutputStream {
                 this.drainCharBuffer();
             }
             // Encode the int into four chars               
-            this.chars[this.encCount++] = Base64OutputStreamWriter.CA[i >>> 18 & 0x3f];
-            this.chars[this.encCount++] = Base64OutputStreamWriter.CA[i >>> 12 & 0x3f];
-            this.chars[this.encCount++] = Base64OutputStreamWriter.CA[i >>> 6 & 0x3f];
-            this.chars[this.encCount++] = Base64OutputStreamWriter.CA[i & 0x3f];
+            this.chars[this.encCount++] = Base64OutputStream.CA[i >>> 18 & 0x3f];
+            this.chars[this.encCount++] = Base64OutputStream.CA[i >>> 12 & 0x3f];
+            this.chars[this.encCount++] = Base64OutputStream.CA[i >>> 6 & 0x3f];
+            this.chars[this.encCount++] = Base64OutputStream.CA[i & 0x3f];
         }
         int left = this.count - eLen;
         if (!pad) {
@@ -197,9 +197,9 @@ public class Base64OutputStreamWriter extends OutputStream {
                 // Prepare the int
                 int i = (this.buf[eLen] & 0xff) << 10 | (left == 2 ? (this.buf[this.count - 1] & 0xff) << 2 : 0);
                 // write last four chars
-                this.writer.write(Base64OutputStreamWriter.CA[i >> 12]);
-                this.writer.write(Base64OutputStreamWriter.CA[i >>> 6 & 0x3f]);
-                this.writer.write(left == 2 ? Base64OutputStreamWriter.CA[i & 0x3f] : '=');
+                this.writer.write(Base64OutputStream.CA[i >> 12]);
+                this.writer.write(Base64OutputStream.CA[i >>> 6 & 0x3f]);
+                this.writer.write(left == 2 ? Base64OutputStream.CA[i & 0x3f] : '=');
                 this.writer.write('=');
             }
         }

@@ -30,12 +30,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Import(value = { WebHasorConfiguration.class })
 public @interface EnableHasorWeb {
-    /** Hasor 全局拦截器工作的目录 */
+    /** 全局拦截器的拦截路径 */
     public String[] path() default "/*";
 
-    /** Hasor 全局拦截器的顺序 */
+    /** 全局拦截器的顺序 */
     public int order() default 0;
 
-    /** Hasor 全局拦截器的工作模式，默认：控制器模式。 */
+    /** 全局拦截器的工作模式，默认：控制器模式 */
     public WorkAt at() default WorkAt.Controller;
 }

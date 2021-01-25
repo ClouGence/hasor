@@ -208,7 +208,7 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
             Set<String> checkAutoLoad = new HashSet<>(Arrays.asList(checkAutoLoadArrays));
             Set<Class<?>> autoLoadSet = new HashSet<>();
             try {
-                ResourcesUtils.scan("META-INF/services/*", (event, isInJar) -> {
+                ResourcesUtils.scan(this.environment.getClassLoader(), "META-INF/services/*", (event, isInJar) -> {
                     String eventName = event.getName().substring("META-INF/services/".length());
                     if (checkAutoLoad.contains(eventName)) {
                         try {

@@ -106,7 +106,7 @@ public class ClassPathResourceLoader implements ResourceLoader {
     }
 
     private static class SizeOutputStream extends OutputStream {
-        private AtomicLong atomicLong = new AtomicLong();
+        private final AtomicLong atomicLong = new AtomicLong();
 
         public long currentSize() {
             return atomicLong.get();

@@ -32,8 +32,8 @@ import java.util.zip.ZipFile;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ZipResourceLoader implements ResourceLoader {
-    private File              zipFile     = null;
-    private Map<String, Long> zipEntrySet = new HashMap<>();
+    private final File              zipFile;
+    private final Map<String, Long> zipEntrySet = new HashMap<>();
 
     public ZipResourceLoader(String zipFile) throws IOException {
         this.zipFile = new File(zipFile);
