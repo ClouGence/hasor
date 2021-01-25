@@ -212,20 +212,20 @@ public class JdbcConnection extends JdbcAccessor {
         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
             // Invocation on ConnectionProxy interface coming in...
             switch (method.getName()) {
-            case "getTargetConnection":
-                // Handle getTargetConnection method: return underlying Connection.
-                return this.target;
-            case "getTargetSource":
-                // Handle getTargetConnection method: return underlying DataSource.
-                return this.targetSource;
-            case "equals":
-                // Only consider equal when proxies are identical.
-                return proxy == args[0];
-            case "hashCode":
-                // Use hashCode of PersistenceManager proxy.
-                return System.identityHashCode(proxy);
-            case "close":
-                return null;
+                case "getTargetConnection":
+                    // Handle getTargetConnection method: return underlying Connection.
+                    return this.target;
+                case "getTargetSource":
+                    // Handle getTargetConnection method: return underlying DataSource.
+                    return this.targetSource;
+                case "equals":
+                    // Only consider equal when proxies are identical.
+                    return proxy == args[0];
+                case "hashCode":
+                    // Use hashCode of PersistenceManager proxy.
+                    return System.identityHashCode(proxy);
+                case "close":
+                    return null;
             }
             // Invoke method on target Connection.
             try {

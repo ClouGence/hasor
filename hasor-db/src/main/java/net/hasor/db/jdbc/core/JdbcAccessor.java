@@ -15,9 +15,11 @@
  */
 package net.hasor.db.jdbc.core;
 import net.hasor.db.transaction.TranManager;
+import net.hasor.utils.function.EFunction;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.function.Function;
 
 /**
@@ -26,9 +28,9 @@ import java.util.function.Function;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcAccessor {
-    private DataSource                       dataSource;
-    private Connection                       connection;
-    private Function<DataSource, Connection> accessorApply = TranManager::currentConnection;
+    private DataSource                        dataSource;
+    private Connection                        connection;
+    private EFunction<DataSource, Connection> accessorApply = TranManager::currentConnection;
 
     /**Return the DataSource used by this template.*/
     public DataSource getDataSource() {
@@ -54,14 +56,18 @@ public class JdbcAccessor {
         return this.accessorApply;
     }
 
-    public void setAccessorApply(Function<DataSource, Connection> accessorApply) {
+    public void setAccessorApply(EFunction<DataSource, Connection> accessorApply) {
         this.accessorApply = accessorApply;
     }
 
-    protected Connection applyConnection(DataSource dataSource) {
+    public void setAccessorApply(Function<DataSource, Connection> accessorApply) {
+        this.accessorApply = accessorApply::apply;
+    }
+
+    protected Connection applyConnection(DataSource dataSource) throws SQLException {
         if (this.accessorApply == null) {
             throw new IllegalArgumentException("accessorApply is null.");
         }
-        return this.accessorApply.apply(dataSource);
+        return this.accessorApply.eApply(dataSource);
     }
 }

@@ -28,7 +28,6 @@ import net.hasor.utils.reflect.SFunction;
 
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -45,8 +44,7 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
     private static final Map<String, FieldInfo> COLUMN_CACHE      = Collections.synchronizedMap(new WeakHashMap<>());
     private static final ReadWriteLock          COLUMN_CACHE_LOCK = new ReentrantReadWriteLock();
     protected            MergeSqlSegment        queryTemplate     = new MergeSqlSegment();
-    protected            AtomicInteger          paramNameSeq      = new AtomicInteger();
-    protected            Map<String, Object>    queryParam        = new HashMap<>();
+    protected            List<Object>           queryParam        = new ArrayList<>();
     private              Segment                nextSegmentPrefix = null;
     private              boolean                lookCondition     = false;
 
@@ -190,21 +188,14 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
         if (StringUtils.isBlank(sqlString)) {
             return this.getSelf();
         }
-        if (args == null || args.length == 0) {
-            this.queryTemplate.addSegment(() -> sqlString);
-            return this.getSelf();
-        }
-        MergeSqlSegment mergeSqlSegment = new MergeSqlSegment();
-        String[] splitKeep = StringUtils.splitKeep(sqlString, "?");
-        int argIndex = 0;
-        for (String term : splitKeep) {
-            if ("?".equals(term)) {
-                mergeSqlSegment.addSegment(formatSegment(args[argIndex++]));
-            } else if (StringUtils.isNotBlank(term)) {
-                mergeSqlSegment.addSegment(term::trim);
+        this.queryTemplate.addSegment(() -> {
+            if (args != null && args.length > 0) {
+                for (Object arg : args) {
+                    format(arg);
+                }
             }
-        }
-        this.queryTemplate.addSegment(mergeSqlSegment);
+            return sqlString;
+        });
         return this.getSelf();
     }
 
@@ -241,12 +232,15 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
     }
 
     @Override
-    public Map<String, Object> getArgs() {
-        return Collections.unmodifiableMap(this.queryParam);
+    public Object[] getArgs() {
+        return this.queryParam.toArray().clone();
     }
 
     private Segment formatLikeValue(SqlLike like, Object param) {
-        return () -> this.dialect().buildLike(like, format(param), param);
+        return () -> {
+            format(param);
+            return this.dialect().buildLike(like, param);
+        };
     }
 
     private Segment formatValue(Object... params) {
@@ -269,9 +263,8 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
     }
 
     protected String format(Object param) {
-        String genParamName = "param_" + this.paramNameSeq.incrementAndGet();
-        this.queryParam.put(genParamName, param);
-        return ":" + genParamName;
+        this.queryParam.add(param);
+        return "?";
     }
 
     protected String conditionName(SFunction<T> property) {

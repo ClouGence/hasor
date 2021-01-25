@@ -19,7 +19,7 @@ import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.dialect.SqlDialectRegister;
 import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.jdbc.lambda.LambdaOperations.BoundSql;
+import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.jdbc.lambda.QueryExecute;
 import net.hasor.db.types.mapping.MappingRowMapper;
 
@@ -97,7 +97,7 @@ public abstract class AbstractQueryExecute<T> implements QueryExecute<T>, BoundS
                 return self.getSqlString();
             }
 
-            public Map<String, Object> getArgs() {
+            public Object[] getArgs() {
                 return self.getArgs();
             }
         };

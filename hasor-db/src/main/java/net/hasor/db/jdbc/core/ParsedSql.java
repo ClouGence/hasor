@@ -128,7 +128,7 @@ public class ParsedSql {
         char[] statement = originalSql.toCharArray();
         int i = 0;
         while (i < statement.length) {
-            int skipToPosition = ParsedSql.skipCommentsAndQuotes(statement, i);//从当前为止掠过的长度
+            int skipToPosition = skipCommentsAndQuotes(statement, i);//从当前为止掠过的长度
             if (i != skipToPosition) {
                 if (skipToPosition >= statement.length) {
                     break;
@@ -142,7 +142,7 @@ public class ParsedSql {
                     i = i + 2;// Postgres-style "::" casting operator - to be skipped.
                     continue;
                 }
-                while (j < statement.length && !ParsedSql.isParameterSeparator(statement[j])) {
+                while (j < statement.length && !isParameterSeparator(statement[j])) {
                     j++;
                 }
                 if (j - i > 1) {
@@ -172,25 +172,26 @@ public class ParsedSql {
 
     /** Skip over comments and quoted names present in an SQL statement */
     private static int skipCommentsAndQuotes(final char[] statement, final int position) {
-        for (int i = 0; i < ParsedSql.START_SKIP.length; i++) {
-            if (statement[position] == ParsedSql.START_SKIP[i].charAt(0)) {
+        for (int i = 0; i < START_SKIP.length; i++) {
+            if (statement[position] == START_SKIP[i].charAt(0)) {
                 boolean match = true;
-                for (int j = 1; j < ParsedSql.START_SKIP[i].length(); j++) {
-                    if (!(statement[position + j] == ParsedSql.START_SKIP[i].charAt(j))) {
+                for (int j = 1; j < START_SKIP[i].length(); j++) {
+                    if (!(statement[position + j] == START_SKIP[i].charAt(j))) {
                         match = false;
                         break;
                     }
                 }
                 if (match) {
-                    int offset = ParsedSql.START_SKIP[i].length();
+                    int offset = START_SKIP[i].length();
                     for (int m = position + offset; m < statement.length; m++) {
-                        if (statement[m] == ParsedSql.STOP_SKIP[i].charAt(0)) {
+                        if (statement[m] == STOP_SKIP[i].charAt(0)) {
                             boolean endMatch = true;
                             int endPos = m;
-                            for (int n = 1; n < ParsedSql.STOP_SKIP[i].length(); n++) {
-                                if (m + n >= statement.length)
+                            for (int n = 1; n < STOP_SKIP[i].length(); n++) {
+                                if (m + n >= statement.length) {
                                     return statement.length;// last comment not closed properly
-                                if (!(statement[m + n] == ParsedSql.STOP_SKIP[i].charAt(n))) {
+                                }
+                                if (!(statement[m + n] == STOP_SKIP[i].charAt(n))) {
                                     endMatch = false;
                                     break;
                                 }
@@ -214,7 +215,7 @@ public class ParsedSql {
         if (Character.isWhitespace(c)) {
             return true;
         }
-        for (char separator : ParsedSql.PARAMETER_SEPARATORS) {
+        for (char separator : PARAMETER_SEPARATORS) {
             if (c == separator) {
                 return true;
             }

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda;
+import net.hasor.db.dialect.BoundSql;
 import net.hasor.utils.reflect.SFunction;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 提供 lambda 方式生成 SQL。
@@ -37,11 +37,5 @@ public interface LambdaOperations {
     /** 封装 */
     public interface LambdaQuery<T> extends Compare<T, LambdaQuery<T>>, Func<T, LambdaQuery<T>>,//
             BoundSql, QueryExecute<T> {
-    }
-
-    public interface BoundSql {
-        public String getSqlString();
-
-        public Map<String, Object> getArgs();
     }
 }
