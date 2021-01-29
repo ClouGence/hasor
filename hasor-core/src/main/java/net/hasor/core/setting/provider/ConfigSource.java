@@ -15,9 +15,8 @@
  *  * limitations under the License.
  *
  */
-package net.hasor.core.setting;
+package net.hasor.core.setting.provider;
 import java.io.Reader;
-import java.net.URI;
 import java.net.URL;
 
 /***
@@ -26,32 +25,31 @@ import java.net.URL;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ConfigSource {
-    private StreamType streamType;
-    private URI        resourceUri;
-    private URL        resourceUrl;
-    private Reader     resourceReader;
+    private final String     namespace;
+    private final StreamType streamType;
+    private final URL        resourceUrl;
+    private final Reader     resourceReader;
 
-    public ConfigSource(StreamType streamType, URI resourceUri) {
-        this.streamType = streamType;
-        this.resourceUri = resourceUri;
-    }
-
-    public ConfigSource(StreamType streamType, URL resourceUrl) {
+    public ConfigSource(String namespace, StreamType streamType, URL resourceUrl) {
+        this.namespace = namespace;
         this.streamType = streamType;
         this.resourceUrl = resourceUrl;
+        this.resourceReader = null;
     }
 
-    public ConfigSource(StreamType streamType, Reader resourceReader) {
+    public ConfigSource(String namespace, StreamType streamType, Reader resourceReader) {
+        this.namespace = namespace;
         this.streamType = streamType;
+        this.resourceUrl = null;
         this.resourceReader = resourceReader;
+    }
+
+    public String getNamespace() {
+        return this.namespace;
     }
 
     public StreamType getStreamType() {
         return streamType;
-    }
-
-    public URI getResourceUri() {
-        return resourceUri;
     }
 
     public URL getResourceUrl() {
@@ -63,9 +61,6 @@ public class ConfigSource {
     }
 
     public String toString() {
-        if (resourceUri != null) {
-            return this.streamType.name() + "@" + resourceUri.toString();
-        }
         if (resourceUrl != null) {
             return this.streamType.name() + "@" + resourceUrl.toString();
         }

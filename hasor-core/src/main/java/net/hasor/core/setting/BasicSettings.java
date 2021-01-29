@@ -15,7 +15,7 @@
  */
 package net.hasor.core.setting;
 import net.hasor.core.Settings;
-import net.hasor.core.XmlNode;
+import net.hasor.core.setting.data.TreeNode;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
@@ -29,10 +29,8 @@ import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Settings接口的抽象实现。
@@ -40,17 +38,12 @@ import java.util.Set;
  * @version : 2013-4-2
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractSettings implements Settings {
-    protected            Logger                            logger              = LoggerFactory.getLogger(getClass());
-    private static final SettingValue[]                    EMPTY_SETTING_VALUE = new SettingValue[0];
-    private              DecSpaceMap<String, SettingValue> dataMap;
+public class BasicSettings implements Settings {
+    protected     Logger                logger  = LoggerFactory.getLogger(getClass());
+    private final Map<String, TreeNode> dataMap = new ConcurrentHashMap<>();
 
-    public AbstractSettings() {
-        this.dataMap = new DecSpaceMap<>();
-    }
-
-    protected DecSpaceMap<String, SettingValue> allSettingValue() {
-        return dataMap;
+    protected Map<String, TreeNode> allSettingValue() {
+        return this.dataMap;
     }
 
     /**使用UpdateValue接口,遍历所有属性值,将它们重新计算并设置新的参数值。<p>
@@ -60,11 +53,9 @@ public abstract class AbstractSettings implements Settings {
         if (updateValue == null) {
             return;
         }
-        Set<SettingValue> valueSet = this.allSettingValue().valueSet();
-        if (valueSet != null) {
-            for (SettingValue sv : valueSet) {
-                updateValue.update(sv, this);
-            }
+        Collection<TreeNode> valueSet = this.allSettingValue().values();
+        for (TreeNode sv : valueSet) {
+            sv.update(updateValue, this);
         }
     }
 
@@ -74,90 +65,154 @@ public abstract class AbstractSettings implements Settings {
 
     /** 获取可用的命名空间。 */
     public String[] getSettingArray() {
-        Set<String> nsSet = this.allSettingValue().spaceSet();
+        Set<String> nsSet = this.allSettingValue().keySet();
         return nsSet.toArray(new String[0]);
     }
 
+    protected boolean isNsView() {
+        return false;
+    }
+
     /** 获取指在某个特定命名空间下的Settings接口对象。 */
-    public final AbstractSettings getSettings(final String namespace) {
-        final DecSpaceMap<String, SettingValue> localData = this.allSettingValue().space(namespace);
-        if (localData == null) {
-            return null;
-        }
-        return new AbstractSettings() {
-            public DecSpaceMap<String, SettingValue> allSettingValue() {
+    public final BasicSettings getSettings(final String namespace) {
+        final Map<String, TreeNode> localData = Collections.unmodifiableMap(new HashMap<String, TreeNode>() {{
+            put(namespace, allSettingValue().get(namespace));
+        }});
+        return new BasicSettings() {
+            public Map<String, TreeNode> allSettingValue() {
                 return localData;
+            }
+
+            protected boolean isNsView() {
+                return true;
             }
         };
     }
 
     /** 将整个配置项的多个值全部删除。 */
     public void removeSetting(String key) {
-        String lowerKey = StringUtils.isBlank(key) ? "" : key.toLowerCase();
-        this.allSettingValue().removeAll(lowerKey);// 所有命名空间的数据
+        if (StringUtils.isBlank(key)) {
+            throw new IllegalArgumentException("namespace or key is blank.");
+        }
+        String lowerCaseKey = key.trim().toLowerCase();
+        for (TreeNode treeNode : this.allSettingValue().values()) {
+            treeNode.findClear(lowerCaseKey);
+        }
     }
 
     /** 将整个配置项的多个值全部删除。 */
     public void removeSetting(String key, String namespace) {
-        String lowerKey = StringUtils.isBlank(key) ? "" : key.toLowerCase();
-        this.allSettingValue().remove(namespace, lowerKey);// 所有命名空间的数据
+        if (StringUtils.isBlank(namespace) || StringUtils.isBlank(key)) {
+            throw new IllegalArgumentException("namespace or key is blank.");
+        }
+        TreeNode treeNode = this.allSettingValue().get(namespace);
+        if (treeNode != null) {
+            treeNode.findClear(key.trim().toLowerCase());
+        }
     }
 
     /**
-     *  设置参数，如果出现多个值，则会覆盖。(使用默认命名空间 : DefaultNameSpace)
+     * 设置参数，如果出现多个值，则会覆盖。(使用默认命名空间 : DefaultNameSpace)
      * @see #DefaultNameSpace
      */
     @Override
     public void setSetting(String key, Object value) {
-        this.setSetting(key, value, DefaultNameSpace);
+        if (value instanceof SettingNode) {
+            this.setSetting(key, value, ((SettingNode) value).getSpace());
+        } else {
+            this.setSetting(key, value, DefaultNameSpace);
+        }
     }
 
     /** 设置参数，如果出现多个值，则会覆盖。 */
-    public void setSetting(final String key, final Object value, final String namespace) {
-        String lowerKey = StringUtils.isBlank(key) ? "" : key.toLowerCase();
-        this.removeSetting(lowerKey, namespace);
-        this.addSetting(lowerKey, value, namespace);
+    public void setSetting(String key, Object value, String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.isBlank(key)) {
+            throw new IllegalArgumentException("namespace or key is blank.");
+        }
+        //
+        Map<String, TreeNode> treeNodeMap = this.allSettingValue();
+        TreeNode dataNode = treeNodeMap.get(namespace);
+        if (dataNode == null) {
+            if (isNsView()) {
+                throw new IllegalStateException("namespace view mode, cannot be added new namespace.");
+            }
+            dataNode = new TreeNode(namespace);
+            treeNodeMap.put(namespace, dataNode);
+        }
+        //
+        if (value instanceof SettingNode) {
+            SettingNode node = (SettingNode) value;
+            dataNode.setNode(key.trim().toLowerCase(), node);
+        } else {
+            String valueStr = (value == null) ? null : value.toString();
+            dataNode.setValue(key.trim().toLowerCase(), valueStr);
+        }
     }
 
     /** 添加参数，如果参数名称相同则追加一项。 */
-    public void addSetting(final String key, final Object value) {
+    public void addSetting(String key, Object value) {
         this.addSetting(key, value, DefaultNameSpace);
     }
 
     /** 添加参数，如果参数名称相同则追加一项。 */
-    public void addSetting(final String key, final Object value, final String namespace) {
-        String lowerKey = StringUtils.isBlank(key) ? "" : key.toLowerCase();
-        DecSpaceMap<String, SettingValue> dataMap = this.allSettingValue();
-        SettingValue val = dataMap.get(namespace, lowerKey);
-        if (val == null) {
-            val = new SettingValue(namespace);
-            dataMap.put(namespace, lowerKey, val);
+    public void addSetting(String key, Object value, String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.isBlank(key)) {
+            throw new IllegalArgumentException("namespace or key is blank.");
         }
-        val.newValue(value);
+        //
+        Map<String, TreeNode> treeNodeMap = this.allSettingValue();
+        TreeNode dataNode = treeNodeMap.get(namespace);
+        if (dataNode == null) {
+            if (isNsView()) {
+                throw new IllegalStateException("namespace view mode, cannot be added new namespace.");
+            }
+            dataNode = new TreeNode(namespace);
+            treeNodeMap.put(namespace, dataNode);
+        }
+        //
+        if (value instanceof SettingNode) {
+            SettingNode node = (SettingNode) value;
+            dataNode.addNode(key.trim().toLowerCase(), node);
+        } else {
+            String valueStr = (value == null) ? null : value.toString();
+            dataNode.addValue(key.trim().toLowerCase(), valueStr);
+        }
     }
 
     /**清空已经装载的所有数据。*/
     protected void cleanData() {
         logger.debug("cleanData -> clear all data.");
-        this.allSettingValue().deleteAllSpace();
+        for (TreeNode dataNode : this.allSettingValue().values()) {
+            dataNode.clear();
+        }
     }
 
-    protected SettingValue[] findSettingValue(String name) {
-        name = StringUtils.isBlank(name) ? "" : name.toLowerCase();
-        List<SettingValue> svList = this.allSettingValue().get(name);
-        if (svList == null || svList.isEmpty()) {
-            return EMPTY_SETTING_VALUE;
+    protected SettingNode[] findSettingValue(String name) {
+        if (StringUtils.isBlank(name)) {
+            return new SettingNode[0];
         }
         //
-        svList.sort((o1, o2) -> {
+        List<SettingNode> dataNodeList = new ArrayList<>();
+        String lowerCase = name.trim().toLowerCase();
+        for (TreeNode dataNode : this.allSettingValue().values()) {
+            List<SettingNode> treeNodeList = dataNode.findNodes(lowerCase);
+            if (treeNodeList != null) {
+                dataNodeList.addAll(treeNodeList);
+            }
+        }
+        if (dataNodeList.isEmpty()) {
+            return new SettingNode[0];
+        }
+        //
+        dataNodeList.sort((o1, o2) -> {
             int o1Index = DefaultNameSpace.equalsIgnoreCase(o1.getSpace()) ? 0 : 1;
             int o2Index = DefaultNameSpace.equalsIgnoreCase(o2.getSpace()) ? 0 : 1;
             return Integer.compare(o1Index, o2Index);
         });
-        return svList.toArray(new SettingValue[0]);
+        return dataNodeList.toArray(new SettingNode[0]);
     }
 
-    protected <T> T converTo(Object oriObject, final Class<T> toType, final T defaultValue) {
+    protected <T> T convertTo(Object oriObject, final Class<T> toType, final T defaultValue) {
         // .获取不到数据，使用默认值替代
         if (oriObject == null) {
             if (defaultValue != null) {
@@ -165,10 +220,6 @@ public abstract class AbstractSettings implements Settings {
             } else {
                 return (T) BeanUtils.getDefaultValue(toType);
             }
-        }
-        // .原始数据是 FieldProperty 直接get
-        if (oriObject instanceof FieldProperty) {
-            return ((FieldProperty) oriObject).getValue(toType, defaultValue);
         }
         // .如果数据就是目标需要的类型那么就直接返回
         if (toType.isInstance(oriObject)) {
@@ -180,22 +231,22 @@ public abstract class AbstractSettings implements Settings {
 
     /** 解析全局配置参数，并且返回toType参数指定的类型。 */
     public final <T> T getToType(final String name, final Class<T> toType, final T defaultValue) {
-        SettingValue[] settingvar = this.findSettingValue(name);
-        if (settingvar == null || settingvar.length == 0) {
+        SettingNode[] settingVar = this.findSettingValue(name);
+        if (settingVar == null || settingVar.length == 0) {
             return defaultValue;
         }
-        return converTo(settingvar[0].getDefaultVar(), toType, defaultValue);
+        return convertTo(settingVar[0].getValue(), toType, defaultValue);
     }
 
     public <T> T[] getToTypeArray(final String name, final Class<T> toType, final T defaultValue) {
-        SettingValue[] varArrays = this.findSettingValue(name);
+        SettingNode[] varArrays = this.findSettingValue(name);
         if (varArrays == null) {
             return (T[]) Array.newInstance(toType, 0);
         }
-        List<T> targetObjects = new ArrayList<T>();
-        for (SettingValue var : varArrays) {
-            for (Object item : var.getVarList()) {
-                T finalItem = converTo(item, toType, defaultValue);
+        List<T> targetObjects = new ArrayList<>();
+        for (SettingNode var : varArrays) {
+            for (String item : var.getValues()) {
+                T finalItem = convertTo(item, toType, defaultValue);
                 targetObjects.add(finalItem);
             }
         }
@@ -520,12 +571,9 @@ public abstract class AbstractSettings implements Settings {
     }
 
     private String[] getFilePathArray(final String name, final String defaultValue, boolean includeName) {
-        ArrayList<String> filePaths = new ArrayList<String>();
+        ArrayList<String> filePaths = new ArrayList<>();
         for (String url : this.getSettingArray()) {
             Settings targetSettings = this.getSettings(url);
-            if (targetSettings == null) {
-                continue;
-            }
             String filePath = targetSettings.getString(name);
             if (StringUtils.isBlank(filePath)) {
                 continue;// 空
@@ -545,13 +593,13 @@ public abstract class AbstractSettings implements Settings {
         return filePaths.toArray(new String[0]);
     }
 
-    /** 解析全局配置参数，并且返回其{@link XmlNode}形式对象。 */
-    public XmlNode getXmlNode(final String name) {
-        return this.getToType(name, XmlNode.class, null);
+    /** 解析全局配置参数，并且返回其{@link SettingNode}形式对象。 */
+    public SettingNode getNode(final String name) {
+        return this.getToType(name, SettingNode.class, null);
     }
 
-    public XmlNode[] getXmlNodeArray(final String name) {
-        return this.getToTypeArray(name, XmlNode.class, null);
+    public SettingNode[] getNodeArray(final String name) {
+        return this.getToTypeArray(name, SettingNode.class, null);
     }
 
     public String toString() {

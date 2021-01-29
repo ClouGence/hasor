@@ -15,24 +15,23 @@
  */
 package net.hasor.core.setting;
 import net.hasor.core.Settings;
-import net.hasor.core.setting.xml.SaxXmlParser;
+import net.hasor.core.setting.provider.ConfigSource;
+import net.hasor.core.setting.provider.SettingsReader;
+import net.hasor.core.setting.provider.StreamType;
+import net.hasor.core.setting.provider.properties.PropertiesSettingsReader;
+import net.hasor.core.setting.provider.xml.XmlSettingsReader;
+import net.hasor.core.setting.provider.yaml.YamlSettingsReader;
 import net.hasor.utils.ResourcesUtils;
-import net.hasor.utils.StringUtils;
-import org.xml.sax.InputSource;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.Properties;
 
 /***
  * 传入{@link InputStream}的方式获取{@link Settings}接口的支持。
  * @version : 2013-9-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public class InputStreamSettings extends AbstractSettings implements IOSettings {
+public class InputStreamSettings extends BasicSettings implements IOSettings {
     private final LinkedList<ConfigSource> pendingConfigSource = new LinkedList<>();
 
     /**子类决定如何添加资源*/
@@ -48,7 +47,7 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
     /** 将一个配置源添加到列表，后面会通过 load 方法加载这些数据。
      * 注意：待处理列表中的数据一旦装载完毕将会从待处理列表中清除出去。*/
     public synchronized boolean addReader(Reader mainSettings, StreamType type) {
-        return this.addReader(new ConfigSource(type, mainSettings));
+        return this.addReader(new ConfigSource(DefaultNameSpace, type, mainSettings));
     }
 
     /** 将一个配置源添加到列表，后面会通过 load 方法加载这些数据。
@@ -57,7 +56,7 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
         if (configSource == null || configSource.getStreamType() == null) {
             return false;
         }
-        if (configSource.getResourceUrl() == null && configSource.getResourceUri() == null && configSource.getResourceReader() == null) {
+        if (configSource.getResourceUrl() == null && configSource.getResourceReader() == null) {
             return false;
         }
         for (ConfigSource cs : this.pendingConfigSource) {
@@ -81,23 +80,12 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
         ConfigSource entity = null;
         try {
             logger.debug("parsing...");
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-            factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-            factory.setFeature("http://xml.org/sax/features/namespaces", true);
-            SAXParser parser = factory.newSAXParser();
-            SaxXmlParser handler = new SaxXmlParser(this);
             while ((entity = this.pendingConfigSource.removeFirst()) != null) {
                 loadCount++;
                 Reader dataReader = null;
                 try {
                     // 拿到Reader
                     dataReader = entity.getResourceReader();
-                    if (dataReader == null && entity.getResourceUri() != null) {
-                        InputStream asStream = ResourcesUtils.getResourceAsStream(entity.getResourceUri());
-                        if (asStream != null) {
-                            dataReader = new InputStreamReader(asStream, Settings.DefaultCharset);
-                        }
-                    }
                     if (dataReader == null && entity.getResourceUrl() != null) {
                         InputStream asStream = ResourcesUtils.getResourceAsStream(entity.getResourceUrl());
                         if (asStream != null) {
@@ -109,30 +97,21 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
                         continue;
                     }
                     //
-                    //根据文件类型选择适合的解析器
-                    if (StreamType.Xml.equals(entity.getStreamType())) {
-                        //加载xml
-                        InputSource inputSource = new InputSource(dataReader);
-                        parser.parse(inputSource, handler);
-                    } else if (StreamType.Properties.equals(entity.getStreamType())) {
-                        //加载属性文件
-                        Properties properties = new Properties();
-                        properties.load(dataReader);
-                        if (!properties.isEmpty()) {
-                            //
-                            String namespace = (String) properties.get("namespace");
-                            if (StringUtils.isBlank(namespace)) {
-                                namespace = Settings.DefaultNameSpace;
-                            }
-                            for (Map.Entry<Object, Object> propEnt : properties.entrySet()) {
-                                String propKey = (String) propEnt.getKey();
-                                String propVal = (String) propEnt.getValue();
-                                if (StringUtils.isNotBlank(propVal)) {
-                                    this.addSetting(propKey, propVal, namespace);
-                                }
-                            }
-                        }
+                    SettingsReader settingsReader;
+                    switch (entity.getStreamType()) {
+                        case Xml:
+                            settingsReader = new XmlSettingsReader();
+                            break;
+                        case Yaml:
+                            settingsReader = new YamlSettingsReader();
+                            break;
+                        case Properties:
+                            settingsReader = new PropertiesSettingsReader();
+                            break;
+                        default:
+                            throw new UnsupportedOperationException(entity.getStreamType() + " Unsupported.");
                     }
+                    settingsReader.readSetting(null, entity, this);
                 } catch (Exception e) {
                     logger.error("load Config " + entity.toString() + " failed -> " + e.getMessage());
                     throw e;

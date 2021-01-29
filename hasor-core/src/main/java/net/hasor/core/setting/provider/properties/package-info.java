@@ -13,14 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.setting;
-import net.hasor.core.Settings;
-import net.hasor.core.setting.data.DataNode;
-
 /**
- * @version : 2014年10月11日
- * @author 赵永春 (zyc@hasor.net)
+ * <p>properties parsing support for Settings.</p>
  */
-public interface UpdateValue {
-    public void update(DataNode dataNode, Settings context);
-}
+package net.hasor.core.setting.provider.properties;

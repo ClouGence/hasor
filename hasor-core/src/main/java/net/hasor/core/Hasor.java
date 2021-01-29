@@ -17,9 +17,9 @@ package net.hasor.core;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
-import net.hasor.core.setting.AbstractSettings;
+import net.hasor.core.setting.BasicSettings;
 import net.hasor.core.setting.StandardContextSettings;
-import net.hasor.core.setting.StreamType;
+import net.hasor.core.setting.provider.StreamType;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
@@ -278,7 +278,7 @@ public final class Hasor {
 
     /**用简易的方式创建{@link Environment}容器。*/
     public Environment buildEnvironment() {
-        AbstractSettings buildSettings = (AbstractSettings) buildSettings();
+        BasicSettings buildSettings = (BasicSettings) buildSettings();
         return new StandardEnvironment(this.context, buildSettings, this.variableMap, this.loader);
     }
 

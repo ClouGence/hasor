@@ -15,7 +15,6 @@
  */
 package net.hasor.core.setting;
 import net.hasor.core.Settings;
-import net.hasor.core.XmlNode;
 
 import java.io.IOException;
 import java.util.Date;
@@ -188,8 +187,8 @@ public class SettingsWrap implements Settings {
         return this.settings.getDirectoryPath(name, defaultValue);
     }
 
-    public XmlNode getXmlNode(String name) {
-        return this.settings.getXmlNode(name);
+    public SettingNode getNode(String name) {
+        return this.settings.getNode(name);
     }
 
     public Character[] getCharArray(String name) {
@@ -304,8 +303,8 @@ public class SettingsWrap implements Settings {
         return this.settings.getDirectoryPathArray(name, defaultValue);
     }
 
-    public XmlNode[] getXmlNodeArray(String name) {
-        return this.settings.getXmlNodeArray(name);
+    public SettingNode[] getNodeArray(String name) {
+        return this.settings.getNodeArray(name);
     }
 
     @Override

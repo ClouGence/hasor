@@ -15,7 +15,7 @@
  *  * limitations under the License.
  *
  */
-package net.hasor.core.setting;
+package net.hasor.core.setting.provider;
 /***
  * 配置文件类型
  * @version : 16/7/2
@@ -23,5 +23,6 @@ package net.hasor.core.setting;
  */
 public enum StreamType {
     Xml,
-    Properties
+    Properties,
+    Yaml
 }

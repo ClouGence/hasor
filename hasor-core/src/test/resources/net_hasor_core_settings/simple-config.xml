@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://www.hasor.net/sechma/main">
-    <hasor.environmentVar>
-        <MY_ENV>my my my</MY_ENV>
-        <CONFLICTS_VAR>with xml</CONFLICTS_VAR>
-    </hasor.environmentVar>
+    <mySelf>
+        <myName>赵永春</myName>
+        <myAge>12</myAge>
+        <myBirthday>1986-01-01 00:00:00</myBirthday>
+        <myWork>Software Engineer</myWork>
+        <myProjectURL>http://www.hasor.net/</myProjectURL>
+        <source>Xml</source>
+    </mySelf>
+    <envName>${env}</envName>
 </config>

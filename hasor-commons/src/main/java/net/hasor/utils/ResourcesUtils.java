@@ -193,41 +193,42 @@ public abstract class ResourcesUtils {
     /*------------------------------------------------------------------------------*/
 
     /** 获取可能存在的资源，以流的形式返回。*/
-    public static InputStream getResourceAsStream(final File resourceFile) throws IOException {
-        return getResourceAsStream(resourceFile.toURI().toURL());
+    public static InputStream getResourceAsStream(File resourceFile) throws IOException {
+        return getResourceAsStream(getCurrentLoader(), resourceFile.toURI().toURL());
     }
 
     /** 获取classpath中可能存在的资源，以流的形式返回。*/
-    public static InputStream getResourceAsStream(final URI resourceURI) throws IOException {
-        return getResourceAsStream(resourceURI.toURL());
-    }
-
-    /** 获取classpath中可能存在的资源列表，以流的形式返回。*/
-    public static List<InputStream> getResourcesAsStream(final String resourcePath) throws IOException {
-        ArrayList<InputStream> iss = new ArrayList<>();
-        List<URL> urls = getResources(resourcePath);
-        for (URL url : urls) {
-            InputStream in = getResourceAsStream(url);
-            if (in != null) {
-                iss.add(new AutoCloseInputStream(in));
-            }
-        }
-        return iss;
+    public static InputStream getResourceAsStream(URI resourceURI) throws IOException {
+        return getResourceAsStream(getCurrentLoader(), resourceURI.toURL());
     }
 
     /** 获取classpath中可能存在的资源，以流的形式返回。*/
     public static InputStream getResourceAsStream(String resourcePath) throws IOException {
-        URL url = getResource(resourcePath);
-        return (url == null) ? null : getResourceAsStream(url);
+        return getResourceAsStream(getCurrentLoader(), resourcePath);
     }
 
     /** 获取classpath中可能存在的资源，以流的形式返回。*/
-    public static InputStream getResourceAsStream(final URL resourceURL) throws IOException {
+    public static InputStream getResourceAsStream(URL resourceURL) throws IOException {
+        return getResourceAsStream(getCurrentLoader(), resourceURL);
+    }
+
+    /** 获取classpath中可能存在的资源，以流的形式返回。*/
+    public static InputStream getResourceAsStream(ClassLoader classLoader, URI resourceURI) throws IOException {
+        return getResourceAsStream(classLoader, resourceURI.toURL());
+    }
+
+    /**获取classpath中可能存在的资源，以流的形式返回。*/
+    public static InputStream getResourceAsStream(ClassLoader classLoader, String resourcePath) throws IOException {
+        return classLoader.getResourceAsStream(formatResource(resourcePath));
+    }
+
+    /** 获取classpath中可能存在的资源，以流的形式返回。*/
+    public static InputStream getResourceAsStream(ClassLoader classLoader, URL resourceURL) throws IOException {
         String protocol = resourceURL.getProtocol().trim().toLowerCase();
         switch (protocol) {
             case "classpath": {
                 String resourcePath = resourceURL.getPath();
-                return getResourceAsStream(getCurrentLoader(), resourcePath);
+                return getResourceAsStream(classLoader, resourcePath);
             }
             case "http":
             case "https":
@@ -260,9 +261,17 @@ public abstract class ResourcesUtils {
         }
     }
 
-    /**获取classpath中可能存在的资源，以流的形式返回。*/
-    public static InputStream getResourceAsStream(final ClassLoader classLoader, final String resourcePath) throws IOException {
-        return classLoader.getResourceAsStream(formatResource(resourcePath));
+    /** 获取classpath中可能存在的资源列表，以流的形式返回。*/
+    public static List<InputStream> getResourceAsStreamList(ClassLoader classLoader, String resourcePath) throws IOException {
+        ArrayList<InputStream> iss = new ArrayList<>();
+        List<URL> urls = getResources(classLoader, resourcePath);
+        for (URL url : urls) {
+            InputStream in = getResourceAsStream(classLoader, url);
+            if (in != null) {
+                iss.add(new AutoCloseInputStream(in));
+            }
+        }
+        return iss;
     }
 
     /**

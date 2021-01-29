@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.setting;
 /**
- * 该接口表示一个自定义属性对象。
- * @version : 2011-9-30
- * @author 赵永春 (zyc@hasor.net)
+ * <p>Xml parsing support for Settings.</p>
  */
-public interface FieldProperty {
-    /** 读取属性*/
-    public <T> T getValue(Class<T> toType, T defaultValue);
-}
+package net.hasor.core.setting.provider.xml;

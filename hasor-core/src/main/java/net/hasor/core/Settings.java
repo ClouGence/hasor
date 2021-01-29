@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import net.hasor.core.setting.SettingNode;
+
 import java.io.IOException;
 import java.util.Date;
 
@@ -54,7 +56,7 @@ public interface Settings {
     public void addSetting(String key, Object var);
 
     /** 添加参数，如果参数名称相同则追加一项。 */
-    public void addSetting(String key, Object var, String currentXmlns);
+    public void addSetting(String key, Object var, String namespace);
     //
 
     /** 解析全局配置参数，并且返回其{@link Character}形式对象。 */
@@ -141,8 +143,8 @@ public interface Settings {
     /** 解析全局配置参数，并且返回字符串（用于表示目录，结尾带‘/’）。第二个参数为默认值。 */
     public String getDirectoryPath(String name, String defaultValue);
 
-    /** 解析全局配置参数，并且返回其{@link XmlNode}形式对象。 */
-    public XmlNode getXmlNode(String name);
+    /** 解析全局配置参数，并且返回其{@link SettingNode}形式对象。 */
+    public SettingNode getNode(String name);
     //
 
     /** 解析全局配置参数，并且返回其{@link Character}形式对象。 */
@@ -229,6 +231,6 @@ public interface Settings {
     /** 解析全局配置参数，并且返回字符串（用于表示目录，结尾带‘/’）。第二个参数为默认值。 */
     public String[] getDirectoryPathArray(String name, String defaultValue);
 
-    /** 解析全局配置参数，并且返回其{@link XmlNode}形式对象。 */
-    public XmlNode[] getXmlNodeArray(String name);
+    /** 解析全局配置参数，并且返回其{@link SettingNode}形式对象。 */
+    public SettingNode[] getNodeArray(String name);
 }

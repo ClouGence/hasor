@@ -15,6 +15,8 @@
  */
 package net.hasor.core.setting;
 import net.hasor.core.Settings;
+import net.hasor.core.setting.provider.ConfigSource;
+import net.hasor.core.setting.provider.StreamType;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.io.IOUtils;
 
@@ -72,12 +74,12 @@ public class StandardContextSettings extends InputStreamSettings {
         if (mainSettings != null) {
             outInitLog("stream", mainSettings);
         }
-        this.addReader(new ConfigSource(type, mainSettings));
+        this.addReader(new ConfigSource(DefaultNameSpace, type, mainSettings));
         refresh();
     }
 
     /**创建{@link StandardContextSettings}类型对象。*/
-    public StandardContextSettings(final String mainSettings) throws IOException, URISyntaxException {
+    public StandardContextSettings(String mainSettings) throws IOException, URISyntaxException {
         URL url = ResourcesUtils.getResource(mainSettings);
         if (url != null) {
             this.settingURI = url.toURI();
@@ -149,7 +151,7 @@ public class StandardContextSettings extends InputStreamSettings {
             try (InputStream stream = ResourcesUtils.getResourceAsStream(settingConfig)) {
                 if (stream != null) {
                     logger.info("addConfig '{}'", settingConfig);
-                    _addStream(settingConfig);
+                    _addStream(settingConfig.toURL());
                 } else {
                     logger.error("not found {}", settingConfig);
                 }
@@ -158,18 +160,13 @@ public class StandardContextSettings extends InputStreamSettings {
     }
 
     private void _addStream(URL resourceUrl) {
-        if (resourceUrl.toString().toLowerCase().endsWith(".xml")) {
-            this.addReader(new ConfigSource(StreamType.Xml, resourceUrl));
+        String lowerCase = resourceUrl.toString().toLowerCase();
+        if (lowerCase.endsWith(".xml")) {
+            this.addReader(new ConfigSource(DefaultNameSpace, StreamType.Xml, resourceUrl));
+        } else if (lowerCase.endsWith(".yaml") || lowerCase.endsWith(".yml")) {
+            this.addReader(new ConfigSource(DefaultNameSpace, StreamType.Yaml, resourceUrl));
         } else {
-            this.addReader(new ConfigSource(StreamType.Properties, resourceUrl));
-        }
-    }
-
-    private void _addStream(URI resourceUrl) {
-        if (resourceUrl.toString().toLowerCase().endsWith(".xml")) {
-            this.addReader(new ConfigSource(StreamType.Xml, resourceUrl));
-        } else {
-            this.addReader(new ConfigSource(StreamType.Properties, resourceUrl));
+            this.addReader(new ConfigSource(DefaultNameSpace, StreamType.Properties, resourceUrl));
         }
     }
 

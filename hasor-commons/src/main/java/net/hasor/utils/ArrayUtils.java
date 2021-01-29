@@ -298,6 +298,21 @@ public class ArrayUtils {
         }
         return array.clone();
     }
+    /**
+     * <p>Clones an array returning a typecast result and handling
+     * <code>null</code>.</p>
+     *
+     * <p>This method returns <code>null</code> for a <code>null</code> input array.</p>
+     *
+     * @param array  the array to clone, may be <code>null</code>
+     * @return the cloned array, <code>null</code> if <code>null</code> input
+     */
+    public static String[] clone(final String[] array) {
+        if (array == null) {
+            return null;
+        }
+        return array.clone();
+    }
     // nullToEmpty
     //-----------------------------------------------------------------------
 
@@ -307,7 +322,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -327,7 +342,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -347,7 +362,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -367,7 +382,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -387,7 +402,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -407,7 +422,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -427,7 +442,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -447,7 +462,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -467,7 +482,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -487,7 +502,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -507,7 +522,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -527,7 +542,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -547,7 +562,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -567,7 +582,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -587,7 +602,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -607,7 +622,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -627,7 +642,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -647,7 +662,7 @@ public class ArrayUtils {
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
      *
-     * <p>As a memory optimizing technique an empty array passed in will be overridden with 
+     * <p>As a memory optimizing technique an empty array passed in will be overridden with
      * the empty <code>public static</code> references in this class.</p>
      *
      * @param array  the array to check for <code>null</code> or empty
@@ -3517,7 +3532,34 @@ public class ArrayUtils {
         System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
         return joinedArray;
     }
-
+    /**
+     * <p>Adds all the elements of the given arrays into a new array.</p>
+     * <p>The new array contains all of the element of <code>array1</code> followed
+     * by all of the elements <code>array2</code>. When an array is returned, it is always
+     * a new array.</p>
+     *
+     * <pre>
+     * ArrayUtils.addAll(array1, null)   = cloned copy of array1
+     * ArrayUtils.addAll(null, array2)   = cloned copy of array2
+     * ArrayUtils.addAll([], [])         = []
+     * </pre>
+     *
+     * @param array1  the first array whose elements are added to the new array.
+     * @param array2  the second array whose elements are added to the new array.
+     * @return The new String[] array.
+     * @since 2.1
+     */
+    public static String[] addAll(final String[] array1, final String[] array2) {
+        if (array1 == null) {
+            return ArrayUtils.clone(array2);
+        } else if (array2 == null) {
+            return ArrayUtils.clone(array1);
+        }
+        String[] joinedArray = new String[array1.length + array2.length];
+        System.arraycopy(array1, 0, joinedArray, 0, array1.length);
+        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
+        return joinedArray;
+    }
     /**
      * <p>Copies the given array and adds the given element at the end of the new array.</p>
      *

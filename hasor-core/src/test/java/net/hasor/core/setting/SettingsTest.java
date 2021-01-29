@@ -15,13 +15,20 @@
  */
 package net.hasor.core.setting;
 import net.hasor.core.Settings;
+import net.hasor.core.setting.provider.ConfigSource;
+import net.hasor.core.setting.provider.StreamType;
 import net.hasor.test.core.enums.SelectEnum;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static net.hasor.core.Settings.DefaultNameSpace;
 
 /**
  *
@@ -34,57 +41,26 @@ public class SettingsTest {
     private static String TIME_FORMAT      = "HH:mm:ss";
     private static String DATA_FORMAT      = "yyyy-MM-dd";
 
-    // - 配置信息读取
     @Test
-    public void settingsTest() throws Exception {
-        Settings settings = new StandardContextSettings("/net_hasor_core_settings/data-config.xml");
-        settings = new SettingsWrap(settings);
+    public void mapTest() throws IOException {
+        InputStreamSettings inputStreamSettings = new InputStreamSettings();
+        assert inputStreamSettings.loadSettings() == 0;
         //
-        String myName = settings.getString("mySelf.myName");
-        assert myName.equals("赵永春");
+        StringReader ins = new StringReader(new String(new byte[] { 0, 0, 0 }));
+        assert inputStreamSettings.addReader(new ConfigSource(DefaultNameSpace, StreamType.Xml, ins));
+        assert !inputStreamSettings.addReader(new ConfigSource(DefaultNameSpace, StreamType.Xml, ins));
+        assert !inputStreamSettings.addReader(new ConfigSource(DefaultNameSpace, StreamType.Xml, (URL) null));
+        assert !inputStreamSettings.addReader(new ConfigSource(DefaultNameSpace, null, (URL) null));
+        assert !inputStreamSettings.addReader(new ConfigSource(DefaultNameSpace, null, ins));
         //
-        Integer myAge = settings.getInteger("mySelf.myAge");
-        assert myAge.equals(12);
-        //
-        Date myBirthday = settings.getDate("mySelf.myBirthday", DATA_TIME_FORMAT);
-        assert new SimpleDateFormat(DATA_TIME_FORMAT).parse("1986-01-01 00:00:00").getTime() == myBirthday.getTime();
-        //
-        String myWork = settings.getString("mySelf.myWork");
-        assert myWork.equals("Software Engineer");
-        //
-        String myProjectURL = settings.getString("mySelf.myProjectURL");
-        assert myProjectURL.equals("http://www.hasor.net/");
-        //
-        String source = settings.getString("mySelf.source");
-        assert source.equals("Xml");
+        try {
+            inputStreamSettings.loadSettings();
+            assert false;
+        } catch (IOException e) {
+            assert e.getMessage().startsWith("parsing failed -> ");
+        }
     }
 
-    // - 配置信息读取
-    @Test
-    public void propTest() throws Exception {
-        Settings settings = new StandardContextSettings("/net_hasor_core_settings/data-config.properties");
-        settings = new SettingsWrap(settings);
-        //
-        String myName = settings.getString("mySelf.myName");
-        assert myName.equals("赵永春");
-        //
-        Integer myAge = settings.getInteger("mySelf.myAge");
-        assert myAge.equals(12);
-        //
-        Date myBirthday = settings.getDate("mySelf.myBirthday", DATA_TIME_FORMAT);
-        assert new SimpleDateFormat(DATA_TIME_FORMAT).parse("1986-01-01 00:00:00").getTime() == myBirthday.getTime();
-        //
-        String myWork = settings.getString("mySelf.myWork");
-        assert myWork.equals("Software Engineer");
-        //
-        String myProjectURL = settings.getString("mySelf.myProjectURL");
-        assert myProjectURL.equals("http://www.hasor.net/");
-        //
-        String source = settings.getString("mySelf.source");
-        assert source.equals("Prop");
-    }
-
-    // - 配置信息读取
     @Test
     public void valueTest() throws Exception {
         Settings settings = new StandardContextSettings("/net_hasor_core_settings/value-config.xml");
@@ -274,12 +250,17 @@ public class SettingsTest {
         settings.addSetting("valueGroup.booleanValue_true", true, "http://schema_a");
         Boolean[] array = settings.getBooleanArray("valueGroup.booleanValue_true");
         assert array.length == 2;
-        assert !array[0];
-        assert array[1];
+        assert array[0];
+        assert !array[1];
+        //
+        String[] arrayStr = settings.getStringArray("valueGroup.booleanValue_true");
+        assert arrayStr.length == 2;
+        assert arrayStr[0].equals("true");
+        assert arrayStr[1].equals("n");
     }
 
     @Test
-    public void valueTest4() throws Exception {
+    public void valueTest4() {
         Settings settings = new InputStreamSettings();
         //
         settings.addSetting("charValue", 32);
@@ -287,27 +268,5 @@ public class SettingsTest {
         //
         settings.addSetting("charValue", ' ');
         assert settings.getChar("charValue") == ' ';
-    }
-
-    @Test
-    public void valueTest5() throws Exception {
-        String data = "" + //
-                "<?xml version='1.0' encoding='UTF-8'?>\n" +//
-                "<config xmlns='http://www.hasor.net/sechma/main'>\n" +//
-                "    <hasor debug='false'>\n" + //
-                "        <debug>true</debug>\n" +//
-                "    </hasor>\n" +//
-                "</config>";
-        //
-        InputStreamSettings settings = new InputStreamSettings();
-        settings.addReader(data, StreamType.Xml);
-        settings.loadSettings();
-        //
-        Boolean aBoolean = settings.getBoolean("hasor.debug");
-        Boolean[] aBooleanArray = settings.getBooleanArray("hasor.debug");
-        assert aBoolean;
-        assert aBooleanArray.length == 2;
-        assert !aBooleanArray[0];
-        assert aBooleanArray[1];
     }
 }

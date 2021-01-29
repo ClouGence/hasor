@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * <p>Xml parsing support for Settings.</p>
+ * <p>Yaml parsing support for Settings.</p>
  */
-package net.hasor.core.setting.xml;
+package net.hasor.core.setting.provider.yaml;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.setting;
+package net.hasor.utils.ref;
 import net.hasor.utils.Iterators;
 
 import java.util.*;
@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version : 2016-07-17
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DecSpaceMap<K, T> {
+public class SpaceHashMap<K, T> {
     protected Map<String, Map<K, T>> spaceMap = new HashMap<>();
 
     /**将一个值保存到一个命名空间下。*/
@@ -135,8 +135,8 @@ public class DecSpaceMap<K, T> {
         }
     }
 
-    public DecSpaceMap<K, T> space(final String space) {
-        DecSpaceMap<K, T> spaceMap = new DecSpaceMap<>();
+    public SpaceHashMap<K, T> space(final String space) {
+        SpaceHashMap<K, T> spaceMap = new SpaceHashMap<>();
         Map<K, T> dataMap = this.spaceMap.get(space);
         if (dataMap != null) {
             spaceMap.putAll(space, dataMap);
