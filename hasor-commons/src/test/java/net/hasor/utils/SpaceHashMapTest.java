@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.setting;
+package net.hasor.utils;
+import net.hasor.utils.ref.SpaceHashMap;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,13 +28,13 @@ import java.util.Set;
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MapTest {
+public class SpaceHashMapTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     // - 配置信息读取
     @Test
     public void mapTest() {
-        DecSpaceMap<String, String> spaceMap = new DecSpaceMap<>();
+        SpaceHashMap<String, String> spaceMap = new SpaceHashMap<>();
         spaceMap.putAll("aaa", new HashMap<>());
         spaceMap.putAll("bbb", new HashMap<>());
         //

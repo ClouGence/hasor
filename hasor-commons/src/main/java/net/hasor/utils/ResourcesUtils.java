@@ -204,7 +204,11 @@ public abstract class ResourcesUtils {
 
     /** 获取classpath中可能存在的资源，以流的形式返回。*/
     public static InputStream getResourceAsStream(String resourcePath) throws IOException {
-        return getResourceAsStream(getCurrentLoader(), resourcePath);
+        URL resource = getResource(resourcePath);
+        if (resource == null) {
+            return null;
+        }
+        return getResourceAsStream(getCurrentLoader(), resource);
     }
 
     /** 获取classpath中可能存在的资源，以流的形式返回。*/
@@ -219,7 +223,11 @@ public abstract class ResourcesUtils {
 
     /**获取classpath中可能存在的资源，以流的形式返回。*/
     public static InputStream getResourceAsStream(ClassLoader classLoader, String resourcePath) throws IOException {
-        return classLoader.getResourceAsStream(formatResource(resourcePath));
+        URL resource = getResource(resourcePath);
+        if (resource == null) {
+            return null;
+        }
+        return getResourceAsStream(classLoader, resource);
     }
 
     /** 获取classpath中可能存在的资源，以流的形式返回。*/
@@ -257,7 +265,7 @@ public abstract class ResourcesUtils {
                 return new AutoCloseInputStream(jar.getInputStream(e));
             }
             default:
-                throw new IOException("");
+                return classLoader.getResourceAsStream(resourceURL.toString());
         }
     }
 
@@ -424,7 +432,7 @@ public abstract class ResourcesUtils {
         //             * Jetty 使用getResources、Tomcat 使用findResources
         //             * 在Jetty中WebappsClassLoader只实现了没有重写findResources
         //             * 在Tomcat中WebappsClassLoader只实现了没有重写getResources
-        //             * 
+        //             *
         //             * TODO : 该处逻辑为：首先判断findResources方法是否被重写，如果被重写则调用它否则调用getResources
         //             */
         //            try {
