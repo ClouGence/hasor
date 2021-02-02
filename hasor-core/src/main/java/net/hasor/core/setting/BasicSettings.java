@@ -235,6 +235,9 @@ public class BasicSettings implements Settings {
         if (settingVar == null || settingVar.length == 0) {
             return defaultValue;
         }
+        if (SettingNode.class == toType || TreeNode.class == toType) {
+            return (T) settingVar[0];
+        }
         return convertTo(settingVar[0].getValue(), toType, defaultValue);
     }
 
@@ -242,6 +245,9 @@ public class BasicSettings implements Settings {
         SettingNode[] varArrays = this.findSettingValue(name);
         if (varArrays == null) {
             return (T[]) Array.newInstance(toType, 0);
+        }
+        if (SettingNode.class == toType || TreeNode.class == toType) {
+            return (T[]) varArrays;
         }
         List<T> targetObjects = new ArrayList<>();
         for (SettingNode var : varArrays) {

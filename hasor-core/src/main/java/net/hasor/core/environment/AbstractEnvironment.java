@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.core.environment;
-import net.hasor.core.*;
+import net.hasor.core.Environment;
+import net.hasor.core.EventContext;
+import net.hasor.core.Hasor;
+import net.hasor.core.Settings;
 import net.hasor.core.aop.AopClassLoader;
 import net.hasor.core.event.StandardEventManager;
-import net.hasor.core.setting.AbstractSettings;
-import net.hasor.core.setting.xml.DefaultXmlNode;
+import net.hasor.core.setting.BasicSettings;
+import net.hasor.core.setting.SettingNode;
 import net.hasor.utils.ScanClassPath;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
@@ -38,14 +41,14 @@ public abstract class AbstractEnvironment implements Environment {
     protected static Logger              logger       = LoggerFactory.getLogger(AbstractEnvironment.class);
     private          String[]            spanPackage  = null;
     private          ScanClassPath       scanUtils    = null;
-    private          AbstractSettings    settings     = null;
+    private          BasicSettings       settings     = null;
     private          Object              context      = null;
     private          ClassLoader         rootLoader   = null;
     private          EventContext        eventManager = null;
     private          Map<String, String> envMap       = null;
 
     /* --------------------------------------------------------------------------------- get/set */
-    public AbstractEnvironment(Object context, AbstractSettings settings) {
+    public AbstractEnvironment(Object context, BasicSettings settings) {
         this.settings = settings;
         this.context = context;
         this.rootLoader = new AopClassLoader();
@@ -131,7 +134,7 @@ public abstract class AbstractEnvironment implements Environment {
     }
 
     @Override
-    public AbstractSettings getSettings() {
+    public BasicSettings getSettings() {
         return this.settings;
     }
 
@@ -267,11 +270,11 @@ public abstract class AbstractEnvironment implements Environment {
         }
         // .3st，配置文件"hasor.environmentVar"
         Settings settings = getSettings();
-        XmlNode[] xmlPropArray = settings.getXmlNodeArray("hasor.environmentVar");
+        SettingNode[] environmentVar = settings.getNodeArray("hasor.environmentVar");
         List<String> envNames = new ArrayList<>();//用于收集环境变量名称
-        for (XmlNode xmlProp : xmlPropArray) {
-            for (XmlNode envItem : xmlProp.getChildren()) {
-                envNames.add(envItem.getName().toUpperCase());
+        for (SettingNode varGroups : environmentVar) {
+            for (SettingNode varItem : varGroups.getSubNodes()) {
+                envNames.add(varItem.getName().toUpperCase());
             }
         }
         for (String envItem : envNames) {
@@ -282,7 +285,7 @@ public abstract class AbstractEnvironment implements Environment {
                     continue;
                 }
             }
-            this.envMap.put(envItem.toUpperCase(), settings.getString("hasor.environmentVar." + envItem));
+            this.envMap.put(envItem.toUpperCase(), settings.getString("hasor.environmentVar." + envItem, ""));
         }
         // .4st，传入的配置
         if (frameworkEnvConfig != null && !frameworkEnvConfig.isEmpty()) {
@@ -301,28 +304,14 @@ public abstract class AbstractEnvironment implements Environment {
     /* ------------------------------------------------------------------------------------ init */
     @Override
     public void refreshVariables() {
-        this.getSettings().resetValues((oldValue, context) -> {
-            ArrayList<Object> varArrays = new ArrayList<>(oldValue.getVarList());
+        this.getSettings().resetValues((dataNode, context) -> {
+            String[] values = dataNode.getValues();
             //
-            for (int index = 0; index < varArrays.size(); index++) {
-                Object var = varArrays.get(index);
-                if (var instanceof DefaultXmlNode) {
-                    DefaultXmlNode xmlVar = (DefaultXmlNode) var;
-                    // .引用类型-直接更新引用对象的属性值。
-                    String val = evalSettingString(xmlVar.getText());
-                    xmlVar.setText(val);//引用类型
-                    Map<String, String> attributeMap = xmlVar.getAttributeMap();
-                    for (String attrKey : attributeMap.keySet()) {
-                        String newValue = evalSettingString(attributeMap.get(attrKey));
-                        attributeMap.put(attrKey, newValue);
-                    }
-                } else if (var instanceof CharSequence) {
-                    // .String类型-通过replace替换。
-                    String oldVal = String.valueOf(var);
-                    String newVal = evalSettingString(oldVal);
-                    oldValue.replace(index, var, newVal);//值类型
-                } else {
-                    //TODO
+            for (int index = 0; index < values.length; index++) {
+                String oldVar = values[index];
+                String newVal = evalSettingString(oldVar);
+                if (!StringUtils.equals(oldVar, newVal)) {
+                    dataNode.replace(index, newVal);
                 }
             }
         });
@@ -334,7 +323,7 @@ public abstract class AbstractEnvironment implements Environment {
         }
         Pattern keyPattern = Pattern.compile("(?:\\$\\{([\\w\\._-]+)\\}){1,1}");//  (?:\$\{([\w\._-]+)\}){1,1} -> ${...}
         Matcher keyM = keyPattern.matcher(evalString);
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
         while (keyM.find()) {
             String varKeyOri = keyM.group(1);
             String envKey = "%" + varKeyOri.toUpperCase() + "%";

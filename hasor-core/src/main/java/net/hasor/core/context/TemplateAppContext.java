@@ -22,6 +22,7 @@ import net.hasor.core.binder.ApiBinderInvocationHandler;
 import net.hasor.core.binder.BindInfoBuilderFactory;
 import net.hasor.core.container.BeanContainer;
 import net.hasor.core.info.MetaDataAdapter;
+import net.hasor.core.setting.SettingNode;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.core.spi.ContextInitializeListener;
 import net.hasor.core.spi.ContextShutdownListener;
@@ -41,10 +42,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static net.hasor.core.context.TemplateAppContext.AppContextStatus.*;
 
@@ -271,28 +269,20 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     protected ApiBinder newApiBinder() throws Throwable {
         //
         // .寻找ApiBinder扩展
-        Map<Class<?>, Class<?>> extBinderMap = new HashMap<>();
-        XmlNode[] innerBinderSet = this.getEnvironment().getSettings().getXmlNodeArray("hasor.innerApiBinderSet");
-        List<XmlNode> loadBinderSet = Arrays.stream(innerBinderSet).flatMap((Function<XmlNode, Stream<XmlNode>>) xmlNode -> {
-            List<XmlNode> xmlNodes = xmlNode.getChildren("binder");
-            return xmlNodes.stream();
-        }).collect(Collectors.toList());
-        //
+        SettingNode[] innerBinderSet = this.getEnvironment().getSettings().getNodeArray("hasor.innerApiBinderSet.binder");
+        List<SettingNode> loadBinderSet = new ArrayList<>(Arrays.asList(innerBinderSet));
         if (this.getEnvironment().getSettings().getBoolean("hasor.apiBinderSet.loadExternal", true)) {
-            XmlNode[] binderSet = this.getEnvironment().getSettings().getXmlNodeArray("hasor.apiBinderSet");
-            List<XmlNode> externalBinderSet = Arrays.stream(binderSet).flatMap((Function<XmlNode, Stream<XmlNode>>) xmlNode -> {
-                List<XmlNode> xmlNodes = xmlNode.getChildren("binder");
-                return xmlNodes.stream();
-            }).collect(Collectors.toList());
-            loadBinderSet.addAll(externalBinderSet);
+            SettingNode[] binderSet = this.getEnvironment().getSettings().getNodeArray("hasor.apiBinderSet.binder");
+            loadBinderSet.addAll(Arrays.asList(binderSet));
         }
         //
-        for (XmlNode atNode : loadBinderSet) {
+        Map<Class<?>, Class<?>> extBinderMap = new HashMap<>();
+        for (SettingNode atNode : loadBinderSet) {
             if (atNode == null) {
                 continue;
             }
-            String binderTypeStr = atNode.getAttribute("type");
-            String binderImplStr = atNode.getText();
+            String binderTypeStr = atNode.getSubValue("type");
+            String binderImplStr = atNode.getValue();
             if (StringUtils.isBlank(binderTypeStr) || StringUtils.isBlank(binderImplStr)) {
                 continue;
             }

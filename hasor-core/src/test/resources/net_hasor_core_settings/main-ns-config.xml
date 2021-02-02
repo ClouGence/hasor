@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:root="http://www.hasor.net/sechma/main" xmlns="http://test.my">
+    <!-- http://www.hasor.net/sechma/main 命名空间默认配置 -->
+    <root:config>
+        <root:appSettings.serverLocal.url>www.google.com</root:appSettings.serverLocal.url>
+    </root:config>
+
+    <appSettings>
+        <serverLocal url="www.126.com"/>
+    </appSettings>
+</config>

@@ -17,7 +17,7 @@ package net.hasor.core.context;
 import net.hasor.core.*;
 import net.hasor.core.aop.AopClassLoader;
 import net.hasor.core.aop.DynamicClass;
-import net.hasor.core.setting.StreamType;
+import net.hasor.core.setting.provider.StreamType;
 import net.hasor.test.core.aop.anno.AopBean;
 import net.hasor.test.core.aop.ignore.types.GrandFatherBean;
 import net.hasor.test.core.aop.ignore.types.JamesBean;

@@ -26,14 +26,14 @@ public class EnvLoadFileTest {
         System.setProperty("CONFLICTS_VAR", "with app");
         StandardEnvironment env = null;
         //
-        env = new StandardEnvironment(null, "/net_hasor_core_settings/simple-config.xml");
+        env = new StandardEnvironment(null, "/net_hasor_core_environment/simple-config.xml");
         assert "my my my".equals(env.evalString("%MY_ENV%"));
         assert "with app".equals(env.evalString("%CONFLICTS_VAR%"));
         //
         //
         Map<String, String> envMap = new HashMap<String, String>();
         envMap.put("CONFLICTS_VAR", "with env");
-        env = new StandardEnvironment(null, "/net_hasor_core_settings/simple-config.xml", envMap, Thread.currentThread().getContextClassLoader());
+        env = new StandardEnvironment(null, "/net_hasor_core_environment/simple-config.xml", envMap, Thread.currentThread().getContextClassLoader());
         assert "with env".equals(env.evalString("%CONFLICTS_VAR%"));
     }
 }

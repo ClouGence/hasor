@@ -103,4 +103,13 @@ public class XmlProviderTest {
         assert ns1.getString("appSettings.serverLocal.url").equals("www.126.com");
         assert ns2.getString("appSettings.serverLocal.url").equals("www.souhu.com");
     }
+
+    @Test
+    public void xmlTest_5() throws Exception {
+        InputStreamSettings settings = new InputStreamSettings();
+        settings.addResource("classpath:/net_hasor_core_settings/main-ns-config.xml", StreamType.Xml);
+        settings.loadSettings();
+        //
+        assert settings.getString("appSettings.serverLocal.url").equals("www.google.com");
+    }
 }

@@ -2,5 +2,6 @@
 <config xmlns="http://www.hasor.net/sechma/main">
     <hasor.environmentVar>
         <MY_ENV>my my my</MY_ENV>
+        <CONFLICTS_VAR>with xml</CONFLICTS_VAR>
     </hasor.environmentVar>
 </config>

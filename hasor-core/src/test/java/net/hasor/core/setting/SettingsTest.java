@@ -250,13 +250,13 @@ public class SettingsTest {
         settings.addSetting("valueGroup.booleanValue_true", true, "http://schema_a");
         Boolean[] array = settings.getBooleanArray("valueGroup.booleanValue_true");
         assert array.length == 2;
-        assert array[0];
-        assert !array[1];
+        assert !array[0];
+        assert array[1];
         //
         String[] arrayStr = settings.getStringArray("valueGroup.booleanValue_true");
         assert arrayStr.length == 2;
-        assert arrayStr[0].equals("true");
-        assert arrayStr[1].equals("n");
+        assert arrayStr[0].equals("n");
+        assert arrayStr[1].equals("true");
     }
 
     @Test
