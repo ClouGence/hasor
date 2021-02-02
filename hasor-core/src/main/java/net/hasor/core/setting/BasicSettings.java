@@ -136,7 +136,7 @@ public class BasicSettings implements Settings {
             if (isNsView()) {
                 throw new IllegalStateException("namespace view mode, cannot be added new namespace.");
             }
-            dataNode = new TreeNode(namespace);
+            dataNode = new TreeNode(namespace, "");
             treeNodeMap.put(namespace, dataNode);
         }
         //

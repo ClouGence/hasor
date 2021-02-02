@@ -24,6 +24,8 @@ import net.hasor.core.setting.provider.yaml.YamlSettingsReader;
 import net.hasor.utils.ResourcesUtils;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
 /***
@@ -40,19 +42,37 @@ public class InputStreamSettings extends BasicSettings implements IOSettings {
 
     /** 将一个配置源添加到列表，后面会通过 load 方法加载这些数据。
      * 注意：待处理列表中的数据一旦装载完毕将会从待处理列表中清除出去。*/
-    public synchronized boolean addReader(String mainSettings, StreamType type) {
+    public synchronized boolean addResource(String mainSettings, StreamType type) throws IOException {
+        return this.addStream(ResourcesUtils.getResourceAsStream(mainSettings), StandardCharsets.UTF_8, type);
+    }
+
+    /** 将一个配置源添加到列表，后面会通过 load 方法加载这些数据。
+     * 注意：待处理列表中的数据一旦装载完毕将会从待处理列表中清除出去。*/
+    public synchronized boolean addStream(InputStream mainSettings, StreamType type) {
+        return this.addStream(mainSettings, StandardCharsets.UTF_8, type);
+    }
+
+    /** 将一个配置源添加到列表，后面会通过 load 方法加载这些数据。
+     * 注意：待处理列表中的数据一旦装载完毕将会从待处理列表中清除出去。*/
+    public synchronized boolean addStream(InputStream mainSettings, Charset charset, StreamType type) {
+        return this.addReader(new InputStreamReader(mainSettings, charset), type);
+    }
+
+    /** 将一个配置源添加到列表，后面会通过 load 方法加载这些数据。
+     * 注意：待处理列表中的数据一旦装载完毕将会从待处理列表中清除出去。*/
+    public synchronized boolean addStringBody(String mainSettings, StreamType type) {
         return this.addReader(new StringReader(mainSettings), type);
     }
 
     /** 将一个配置源添加到列表，后面会通过 load 方法加载这些数据。
      * 注意：待处理列表中的数据一旦装载完毕将会从待处理列表中清除出去。*/
     public synchronized boolean addReader(Reader mainSettings, StreamType type) {
-        return this.addReader(new ConfigSource(DefaultNameSpace, type, mainSettings));
+        return this.addConfigSource(new ConfigSource(DefaultNameSpace, type, mainSettings));
     }
 
     /** 将一个配置源添加到列表，后面会通过 load 方法加载这些数据。
      * 注意：待处理列表中的数据一旦装载完毕将会从待处理列表中清除出去。*/
-    protected synchronized boolean addReader(ConfigSource configSource) {
+    protected synchronized boolean addConfigSource(ConfigSource configSource) {
         if (configSource == null || configSource.getStreamType() == null) {
             return false;
         }

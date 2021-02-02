@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.setting;
+import net.hasor.core.Settings;
 import net.hasor.core.setting.provider.ConfigSource;
 import net.hasor.core.setting.provider.StreamType;
 import net.hasor.core.setting.provider.xml.XmlSettingsReader;
@@ -65,7 +66,7 @@ public class XmlProviderTest {
                 "</config>";
         //
         InputStreamSettings settings = new InputStreamSettings();
-        settings.addReader(data, StreamType.Xml);
+        settings.addStringBody(data, StreamType.Xml);
         settings.loadSettings();
         //
         Boolean aBoolean = settings.getBoolean("hasor.debug");
@@ -74,5 +75,32 @@ public class XmlProviderTest {
         assert aBooleanArray.length == 2;
         assert aBooleanArray[0];
         assert !aBooleanArray[1];
+    }
+
+    @Test
+    public void xmlTest_3() throws Exception {
+        InputStreamSettings settings = new InputStreamSettings();
+        settings.addResource("classpath:/net_hasor_core_settings/ns1-config.xml", StreamType.Xml);
+        settings.addResource("classpath:/net_hasor_core_settings/ns2-config.xml", StreamType.Xml);
+        settings.loadSettings();
+        //
+        Settings ns1 = settings.getSettings("http://mode1.myProject.net");
+        Settings ns2 = settings.getSettings("http://mode2.myProject.net");
+        //
+        assert ns1.getString("appSettings.serverLocal.url").equals("www.126.com");
+        assert ns2.getString("appSettings.serverLocal.url").equals("www.souhu.com");
+    }
+
+    @Test
+    public void xmlTest_4() throws Exception {
+        InputStreamSettings settings = new InputStreamSettings();
+        settings.addResource("classpath:/net_hasor_core_settings/ns-all-config.xml", StreamType.Xml);
+        settings.loadSettings();
+        //
+        Settings ns1 = settings.getSettings("http://mode1.myProject.net");
+        Settings ns2 = settings.getSettings("http://mode2.myProject.net");
+        //
+        assert ns1.getString("appSettings.serverLocal.url").equals("www.126.com");
+        assert ns2.getString("appSettings.serverLocal.url").equals("www.souhu.com");
     }
 }

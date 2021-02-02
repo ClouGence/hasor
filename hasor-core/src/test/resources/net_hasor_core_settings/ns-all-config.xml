@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns:mod1="http://mode1.myProject.net" xmlns:mod2="http://mode2.myProject.net" xmlns="http://project.xdf.cn/program">
+<config xmlns:mod1="http://mode1.myProject.net" xmlns:mod2="http://mode2.myProject.net">
     <!-- mode1 配置 -->
     <mod1:config>
         <mod1:appSettings>
@@ -12,15 +12,4 @@
             <mod2:serverLocal mod2:url="www.souhu.com"/>
         </mod2:appSettings>
     </mod2:config>
-
-    <program>
-        <echoPath/>
-        <function/>
-        <if enable="true">
-            <function/>
-        </if>
-        <if enable="false">
-            <function/>
-        </if>
-    </program>
 </config>

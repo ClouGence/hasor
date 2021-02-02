@@ -47,11 +47,11 @@ public class SettingsTest {
         assert inputStreamSettings.loadSettings() == 0;
         //
         StringReader ins = new StringReader(new String(new byte[] { 0, 0, 0 }));
-        assert inputStreamSettings.addReader(new ConfigSource(DefaultNameSpace, StreamType.Xml, ins));
-        assert !inputStreamSettings.addReader(new ConfigSource(DefaultNameSpace, StreamType.Xml, ins));
-        assert !inputStreamSettings.addReader(new ConfigSource(DefaultNameSpace, StreamType.Xml, (URL) null));
-        assert !inputStreamSettings.addReader(new ConfigSource(DefaultNameSpace, null, (URL) null));
-        assert !inputStreamSettings.addReader(new ConfigSource(DefaultNameSpace, null, ins));
+        assert inputStreamSettings.addConfigSource(new ConfigSource(DefaultNameSpace, StreamType.Xml, ins));
+        assert !inputStreamSettings.addConfigSource(new ConfigSource(DefaultNameSpace, StreamType.Xml, ins));
+        assert !inputStreamSettings.addConfigSource(new ConfigSource(DefaultNameSpace, StreamType.Xml, (URL) null));
+        assert !inputStreamSettings.addConfigSource(new ConfigSource(DefaultNameSpace, null, (URL) null));
+        assert !inputStreamSettings.addConfigSource(new ConfigSource(DefaultNameSpace, null, ins));
         //
         try {
             inputStreamSettings.loadSettings();
