@@ -33,7 +33,7 @@ public @interface EnableHasorWeb {
     /** 全局拦截器的拦截路径 */
     public String[] path() default "/*";
 
-    /** 全局拦截器的顺序 */
+    /** 全局拦截器的顺序（仅在 Filter、Interceptor 下有效） */
     public int order() default 0;
 
     /** 全局拦截器的工作模式，默认：控制器模式 */

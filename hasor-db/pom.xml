@@ -94,7 +94,7 @@
 
     <build>
         <plugins>
-            <!-- 把 javassist、ognl 的源码和 class 集成到 hasor-dataql-fx 项目 中 -->
+            <!-- 把 jsqlparser 的源码和 class 集成到 hasor-db 项目中(为了解决 MSSQL 中分页查询语句改写处理 top 的问题) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -124,7 +124,7 @@
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
-                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                        <exclude>META-INF/maven/com.github.jsqlparser/**</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
