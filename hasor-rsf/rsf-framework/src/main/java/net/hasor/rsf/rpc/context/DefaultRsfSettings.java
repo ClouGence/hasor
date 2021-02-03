@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.context;
+import net.hasor.core.setting.SettingNode;
 import net.hasor.core.Settings;
-import net.hasor.core.XmlNode;
 import net.hasor.core.setting.SettingsWrap;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfOptionSet;
@@ -211,27 +211,23 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         this.defaultTimeout = getInteger("hasor.rsfConfig.defaultServiceValue.timeout", 6000);
         this.defaultSerializeType = getString("hasor.rsfConfig.serializeType.default", "Hessian");
         //
-        XmlNode[] serverOptSetArray = getXmlNodeArray("hasor.rsfConfig.serverOptionSet");
+        SettingNode[] serverOptSetArray = getNodeArray("hasor.rsfConfig.serverOptionSet.option");
         if (serverOptSetArray != null) {
-            for (XmlNode optSet : serverOptSetArray) {
-                for (XmlNode opt : optSet.getChildren("option")) {
-                    String key = opt.getAttribute("key");
-                    String var = opt.getText();
-                    if (!StringUtils.isBlank(key)) {
-                        this.serverOptionManager.addOption(key, var);
-                    }
+            for (SettingNode opt : serverOptSetArray) {
+                String key = opt.getSubValue("key");
+                String var = opt.getValue();
+                if (!StringUtils.isBlank(key)) {
+                    this.serverOptionManager.addOption(key, var);
                 }
             }
         }
-        XmlNode[] clientOptSetArray = getXmlNodeArray("hasor.rsfConfig.clientOptionSet");
+        SettingNode[] clientOptSetArray = getNodeArray("hasor.rsfConfig.clientOptionSet.option");
         if (clientOptSetArray != null) {
-            for (XmlNode optSet : clientOptSetArray) {
-                for (XmlNode opt : optSet.getChildren("option")) {
-                    String key = opt.getAttribute("key");
-                    String var = opt.getText();
-                    if (!StringUtils.isBlank(key)) {
-                        this.clientOptionManager.addOption(key, var);
-                    }
+            for (SettingNode opt : clientOptSetArray) {
+                String key = opt.getSubValue("key");
+                String var = opt.getValue();
+                if (!StringUtils.isBlank(key)) {
+                    this.clientOptionManager.addOption(key, var);
                 }
             }
         }
@@ -244,21 +240,21 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         String bindAddress = getString("hasor.rsfConfig.address", "local");
         InetAddress inetAddress = NetworkUtils.finalBindAddress(bindAddress);
         this.bindAddress = inetAddress.getHostAddress();
-        this.bindAddressSet = new HashMap<String, InterAddress>();
-        Map<String, String> connectorTmpSet = new HashMap<String, String>();
-        XmlNode[] connectorRoot = getXmlNodeArray("hasor.rsfConfig.connectorSet");
+        this.bindAddressSet = new HashMap<>();
+        Map<String, String> connectorTmpSet = new HashMap<>();
+        SettingNode[] connectorRoot = getNodeArray("hasor.rsfConfig.connectorSet");
         if (connectorRoot != null) {
-            for (XmlNode connectorSet : connectorRoot) {
-                if (connectorSet == null || connectorSet.getChildren().isEmpty()) {
+            for (SettingNode connectorSet : connectorRoot) {
+                if (connectorSet == null || connectorSet.getSubNodes() == null) {
                     continue;
                 }
-                for (XmlNode connector : connectorSet.getChildren()) {
+                for (SettingNode connector : connectorSet.getSubNodes()) {
                     connectorTmpSet.put(connector.getName(), "hasor.rsfConfig.connectorSet." + connector.getName());
                 }
             }
         }
         //
-        this.connectorSet = new HashMap<String, String>();
+        this.connectorSet = new HashMap<>();
         for (String connectorName : connectorTmpSet.keySet()) {
             String basePath = connectorTmpSet.get(connectorName);
             String name = this.getString(basePath + ".name");

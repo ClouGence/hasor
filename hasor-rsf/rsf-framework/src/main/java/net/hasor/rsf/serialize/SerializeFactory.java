@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.serialize;
 import net.hasor.core.Environment;
-import net.hasor.core.XmlNode;
+import net.hasor.core.setting.SettingNode;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.SerializeCoder;
 import net.hasor.rsf.domain.ProtocolStatus;
@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,15 +48,12 @@ public class SerializeFactory {
 
     public static SerializeFactory createFactory(RsfEnvironment environment) {
         SerializeFactory factory = new SerializeFactory();
-        XmlNode[] atNode = environment.getSettings().getXmlNodeArray("hasor.rsfConfig.serializeType");
+        SettingNode[] serList = environment.getSettings().getNodeArray("hasor.rsfConfig.serializeType.serialize");
         //
         String types = "";
-        for (XmlNode e : atNode) {
-            List<XmlNode> serList = e.getChildren("serialize");
-            for (XmlNode s : serList) {
-                initSerialize(factory, s, environment);
-                types += ("," + s.getAttribute("name"));
-            }
+        for (SettingNode s : serList) {
+            initSerialize(factory, s, environment);
+            types += ("," + s.getSubValue("name"));
         }
         if (!StringUtils.isBlank(types)) {
             types = types.substring(1);
@@ -66,9 +62,9 @@ public class SerializeFactory {
         return factory;
     }
 
-    private static void initSerialize(SerializeFactory factory, XmlNode atNode, Environment environment) {
-        String serializeType = atNode.getAttribute("name");
-        String serializeCoder = atNode.getText().trim();
+    private static void initSerialize(SerializeFactory factory, SettingNode atNode, Environment environment) {
+        String serializeType = atNode.getSubValue("name");
+        String serializeCoder = atNode.getValue().trim();
         //
         try {
             Class<?> aClass = environment.getClassLoader().loadClass(serializeCoder);

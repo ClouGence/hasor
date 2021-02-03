@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address.route.rule;
+import net.hasor.core.setting.SettingNode;
 import net.hasor.core.Settings;
-import net.hasor.core.XmlNode;
 import net.hasor.core.setting.InputStreamSettings;
-import net.hasor.core.setting.StreamType;
+import net.hasor.core.setting.provider.StreamType;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.utils.StringUtils;
@@ -25,9 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,14 +40,13 @@ public class RuleParser {
     public RuleParser(RsfEnvironment rsfEnvironment) {
         this.ruleTypeMap = new HashMap<>();
         RsfSettings rsfSettings = rsfEnvironment.getSettings();
-        XmlNode[] flowControlNodes = rsfSettings.getXmlNodeArray("hasor.rsfConfig.route.flowcontrol");
+        SettingNode[] flowControlNodes = rsfSettings.getNodeArray("hasor.rsfConfig.route.flowcontrol");
         if (flowControlNodes != null) {
-            for (XmlNode node : flowControlNodes) {
-                List<XmlNode> ruleTypes = node.getChildren();
-                ruleTypes = (ruleTypes == null) ? new ArrayList<>(0) : ruleTypes;
-                for (XmlNode ruleType : ruleTypes) {
+            for (SettingNode node : flowControlNodes) {
+                SettingNode[] ruleTypes = node.getSubNodes();
+                for (SettingNode ruleType : ruleTypes) {
                     String ruleID = ruleType.getName().trim().toLowerCase();
-                    String ruleClassName = ruleType.getText().trim();
+                    String ruleClassName = ruleType.getValue().trim();
                     try {
                         Class<?> ruleClass = rsfEnvironment.getClassLoader().loadClass(ruleClassName);
                         ruleTypeMap.put(ruleID, ruleClass);
@@ -106,7 +103,7 @@ public class RuleParser {
             //
             ruleObject = (AbstractRule) ruleClass.newInstance();
             ruleObject.setRouteID(ruleID);
-            ruleObject.setRouteBody(ruleSettings.getXmlNode("flowControl").getXmlText());
+            ruleObject.setRouteBody(ruleSettings.getNode("flowControl").toXml());
             ruleObject.enable(ruleEnable);
             ruleObject.parseControl(ruleSettings);
         } catch (Exception e) {

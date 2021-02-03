@@ -16,6 +16,7 @@
 package net.hasor.rsf.container;
 
 import net.hasor.core.*;
+import net.hasor.core.aop.PropertyDelegate;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.spi.SpiJudge;
 import net.hasor.rsf.RsfApiBinder;
