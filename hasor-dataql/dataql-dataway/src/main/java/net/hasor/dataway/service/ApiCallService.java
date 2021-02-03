@@ -102,7 +102,7 @@ public class ApiCallService {
                     execute = (QueryResult) data;
                 } else {
                     execute = QueryResultInfo.of(//
-                            0,                   // 状态码
+                            0,                              // 状态码
                             DomainHelper.convertTo(data),   // 结果
                             DatawayUtils.currentLostTime()  // 耗时
                     );
@@ -118,10 +118,10 @@ public class ApiCallService {
                 // .编译DataQL查询，并执行查询
                 final String scriptBody = scriptBuild.buildScript(parameterMap);
                 QIL compiler = this.spiTrigger.notifySpi(CompilerSpiListener.class, (listener, lastResult) -> {
-                    return listener.compiler(apiInfo, scriptBody, executeDataQL);
+                    return listener.compiler(apiInfo, scriptBody, this.executeDataQL);
                 }, null);
                 if (compiler == null) {
-                    compiler = CompilerSpiListener.DEFAULT.compiler(apiInfo, scriptBody, executeDataQL);
+                    compiler = CompilerSpiListener.DEFAULT.compiler(apiInfo, scriptBody, this.executeDataQL);
                 }
                 //
                 loggerUtils.addLog("compilerTime", DatawayUtils.currentLostTime());

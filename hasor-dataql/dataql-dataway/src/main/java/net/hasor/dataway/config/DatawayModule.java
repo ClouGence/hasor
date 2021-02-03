@@ -15,6 +15,7 @@
  */
 package net.hasor.dataway.config;
 import net.hasor.core.*;
+import net.hasor.core.setting.SettingNode;
 import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.authorization.AdminUiAuthorization;
 import net.hasor.dataway.authorization.InterfaceAuthorizationFilter;
@@ -133,14 +134,11 @@ public class DatawayModule implements WebModule, UiConfig {
             throw new IllegalArgumentException("dataway dalType is missing.");
         }
         boolean setupProvider = false;
-        XmlNode[] nodeArray = settings.getXmlNodeArray("hasor.dataway.dataAccessLayer.provider");
+        SettingNode[] nodeArray = settings.getNodeArray("hasor.dataway.dataAccessLayer.provider");
         if (nodeArray != null) {
-            for (XmlNode xmlNode : nodeArray) {
-                if (!"provider".equalsIgnoreCase(xmlNode.getName())) {
-                    continue;
-                }
-                String providerName = xmlNode.getAttribute("name");
-                String providerType = xmlNode.getText();
+            for (SettingNode settingNode : nodeArray) {
+                String providerName = settingNode.getSubValue("name");
+                String providerType = settingNode.getValue();
                 if (!dalType.equalsIgnoreCase(providerName) || StringUtils.isBlank(providerType)) {
                     continue;
                 }

@@ -39,8 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MimeTypeSupplier extends ConcurrentHashMap<String, String> implements MimeType {
     private static final long           serialVersionUID = -8955832291109288048L;
-    protected            Logger         logger           = LoggerFactory.getLogger(getClass());
-    private              ServletContext content;
+    private static final Logger         logger           = LoggerFactory.getLogger(MimeTypeSupplier.class);
+    private final        ServletContext content;
 
     public MimeTypeSupplier(ServletContext content) {
         this.content = content;
@@ -67,14 +67,20 @@ public class MimeTypeSupplier extends ConcurrentHashMap<String, String> implemen
 
     /**装载数据。*/
     public void loadResource(String resourceName) throws IOException {
-        List<InputStream> inStreamList = ResourcesUtils.getResourcesAsStream(resourceName);
+        ClassLoader classLoader = this.content.getClassLoader();
+        List<InputStream> inStreamList = null;
+        if (classLoader == null) {
+            inStreamList = ResourcesUtils.getResourceAsStreamList(resourceName);
+        } else {
+            inStreamList = ResourcesUtils.getResourceAsStreamList(this.content.getClassLoader(), resourceName);
+        }
         for (InputStream inStream : inStreamList) {
             this.loadStream(inStream);
         }
     }
 
     public void loadReader(Reader reader) throws IOException {
-        this.logger.debug("parsingReader...");
+        logger.debug("parsingReader...");
         prossParser(reader, saxParser -> {
             saxParser.parse(new InputSource(reader), new SaxXmlParser(MimeTypeSupplier.this));
         });

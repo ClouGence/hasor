@@ -16,7 +16,7 @@
 package net.hasor.dataway.web;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.XmlNode;
+import net.hasor.core.setting.SettingNode;
 import net.hasor.core.spi.BindInfoAware;
 import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.config.*;
@@ -90,9 +90,9 @@ public class GlobalConfigController extends BasicController implements UiConfig,
     @PostConstruct
     public void initController() throws SocketException {
         this.globalConfig = this.appContext.getInstance(GlobalConfig.class);
-        XmlNode xmlNode = this.appContext.getEnvironment().getSettings().getXmlNode("hasor.dataway.globalConfig");
-        if (xmlNode != null) {
-            Map<String, String> globalConfigMap = xmlNode.toSettingMap();
+        SettingNode settingNode = this.appContext.getEnvironment().getSettings().getNode("hasor.dataway.globalConfig");
+        if (settingNode != null) {
+            Map<String, String> globalConfigMap = settingNode.toMap();
             globalConfigMap.forEach((key, val) -> {
                 if (!globalConfig.containsKey(key)) {
                     globalConfig.put(key, val);

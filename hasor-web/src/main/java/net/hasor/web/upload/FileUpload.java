@@ -29,7 +29,7 @@ import net.hasor.web.upload.util.Streams;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static java.lang.String.format;
@@ -141,7 +141,7 @@ public class FileUpload {
     }
 
     /**
-     * Retrieves the character encoding used when reading the headers of an individual part. 
+     * Retrieves the character encoding used when reading the headers of an individual part.
      * When not specified, or <code>null</code>, the request encoding is used.
      * If that is also not specified, or <code>null</code>, the platform default encoding is used.
      * @return The encoding used to read part headers.
@@ -151,8 +151,8 @@ public class FileUpload {
     }
 
     /**
-     * Specifies the character encoding to be used when reading the headers of individual part. 
-     * When not specified, or <code>null</code>, the request encoding is used. 
+     * Specifies the character encoding to be used when reading the headers of individual part.
+     * When not specified, or <code>null</code>, the request encoding is used.
      * If that is also not specified, or <code>null</code>, the platform default encoding is used.
      * @param encoding The encoding used to read part headers.
      */
@@ -224,11 +224,7 @@ public class FileUpload {
             return null;
         }
         byte[] boundary;
-        try {
-            boundary = boundaryStr.getBytes("ISO-8859-1");
-        } catch (UnsupportedEncodingException e) {
-            boundary = boundaryStr.getBytes(); // Intentionally falls back to default charset
-        }
+        boundary = boundaryStr.getBytes(StandardCharsets.ISO_8859_1);
         return boundary;
     }
 

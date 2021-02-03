@@ -17,7 +17,8 @@ package net.hasor.web;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.core.setting.xml.DefaultXmlNode;
+import net.hasor.core.setting.SettingNode;
+import net.hasor.core.setting.data.TreeNode;
 import net.hasor.utils.Iterators;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.future.BasicFuture;
@@ -51,7 +52,9 @@ import static org.mockito.ArgumentMatchers.*;
 public class AbstractTest {
     //
     public enum LoadModule {
-        Web, Render, Valid
+        Web,
+        Render,
+        Valid
     }
 
     public interface BuildHasor {
@@ -112,6 +115,7 @@ public class AbstractTest {
         ServletContext servletContext = PowerMockito.mock(ServletContext.class);
         PowerMockito.when(servletContext.getContextPath()).thenReturn(context);
         PowerMockito.when(servletContext.getEffectiveMajorVersion()).thenThrow(new UnsupportedOperationException());
+        PowerMockito.when(servletContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
         return basicServlet(servletContext);
     }
 
@@ -121,6 +125,7 @@ public class AbstractTest {
         PowerMockito.when(servletContext.getContextPath()).thenReturn(context);
         PowerMockito.when(servletContext.getEffectiveMajorVersion()).thenReturn(123);
         PowerMockito.when(servletContext.getVirtualServerName()).thenThrow(new UnsupportedOperationException());
+        PowerMockito.when(servletContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
         return basicServlet(servletContext);
     }
 
@@ -130,35 +135,33 @@ public class AbstractTest {
         PowerMockito.when(servletContext.getContextPath()).thenReturn(context);
         PowerMockito.when(servletContext.getEffectiveMajorVersion()).thenReturn(123);
         PowerMockito.when(servletContext.getVirtualServerName()).thenReturn("abc");
+        PowerMockito.when(servletContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
         return basicServlet(servletContext);
     }
 
-    private DefaultXmlNode defaultInvokerCreaterSetXmlNode(LoadModule... modules) {
-        DefaultXmlNode xmlNode = new DefaultXmlNode(null, "invokerCreatorSet");
+    private SettingNode defaultInvokerCreaterSetXmlNode(LoadModule... modules) {
+        TreeNode xmlNode = new TreeNode(null, "invokerCreatorSet");
         List<LoadModule> moduleSet = Arrays.asList(modules);
         if (moduleSet.contains(LoadModule.Valid)) {
-            DefaultXmlNode validInvoker = new DefaultXmlNode(null, "invokerCreator");
-            validInvoker.getAttributeMap().put("type", "net.hasor.web.valid.ValidInvoker");
-            validInvoker.setText("net.hasor.web.valid.ValidInvokerCreator");
-            xmlNode.getChildren().add(validInvoker);
+            TreeNode validInvoker = xmlNode.newSubNode("invokerCreator");
+            validInvoker.setValue("type", "net.hasor.web.valid.ValidInvoker");
+            validInvoker.setValue("net.hasor.web.valid.ValidInvokerCreator");
         }
         if (moduleSet.contains(LoadModule.Render)) {
-            DefaultXmlNode renderInvoker = new DefaultXmlNode(null, "invokerCreator");
-            renderInvoker.getAttributeMap().put("type", "net.hasor.web.render.RenderInvoker");
-            renderInvoker.setText("net.hasor.web.render.RenderInvokerCreator");
-            xmlNode.getChildren().add(renderInvoker);
+            TreeNode renderInvoker = xmlNode.newSubNode("invokerCreator");
+            renderInvoker.setValue("type", "net.hasor.web.render.RenderInvoker");
+            renderInvoker.setValue("net.hasor.web.render.RenderInvokerCreator");
         }
         return xmlNode;
     }
 
-    private DefaultXmlNode defaultInnerApiBinderSetXmlNode(LoadModule... modules) {
-        DefaultXmlNode xmlNode = new DefaultXmlNode(null, "innerApiBinderSet");
+    private SettingNode defaultInnerApiBinderSetXmlNode(LoadModule... modules) {
+        TreeNode xmlNode = new TreeNode(null, "innerApiBinderSet");
         List<LoadModule> moduleSet = Arrays.asList(modules);
         if (moduleSet.contains(LoadModule.Web)) {
-            DefaultXmlNode webBinder = new DefaultXmlNode(null, "binder");
-            webBinder.getAttributeMap().put("type", "net.hasor.web.WebApiBinder");
-            webBinder.setText("net.hasor.web.binder.InvokerWebApiBinderCreator");
-            xmlNode.getChildren().add(webBinder);
+            TreeNode webBinder = xmlNode.newSubNode("binder");
+            webBinder.setValue("type", "net.hasor.web.WebApiBinder");
+            webBinder.setValue("net.hasor.web.binder.InvokerWebApiBinderCreator");
         }
         return xmlNode;
     }

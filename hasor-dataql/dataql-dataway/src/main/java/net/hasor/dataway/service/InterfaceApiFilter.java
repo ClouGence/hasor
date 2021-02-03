@@ -70,7 +70,6 @@ public class InterfaceApiFilter implements InvokerFilter {
     @Override
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
         HttpServletRequest httpRequest = invoker.getHttpRequest();
-        HttpServletResponse httpResponse = invoker.getHttpResponse();
         String requestURI = invoker.getRequestPath();
         String httpMethod = httpRequest.getMethod().toUpperCase().trim();
         if (!requestURI.startsWith(this.apiBaseUri)) {

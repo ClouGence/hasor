@@ -15,7 +15,7 @@
  */
 package net.hasor.dataql.fx;
 import net.hasor.core.Environment;
-import net.hasor.core.XmlNode;
+import net.hasor.core.setting.SettingNode;
 import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.QueryApiBinder;
 import net.hasor.dataql.QueryModule;
@@ -37,14 +37,11 @@ public class FxModule implements QueryModule {
     public void loadModule(QueryApiBinder apiBinder) throws Throwable {
         Environment environment = apiBinder.getEnvironment();
         // .注册外部执行器
-        XmlNode[] nodeArray = environment.getSettings().getXmlNodeArray("hasor.dataqlFx.bindFragmentSet.bindFragment");
+        SettingNode[] nodeArray = environment.getSettings().getNodeArray("hasor.dataqlFx.bindFragmentSet.bindFragment");
         if (nodeArray != null) {
-            for (XmlNode xmlNode : nodeArray) {
-                if (!"bindFragment".equalsIgnoreCase(xmlNode.getName())) {
-                    continue;
-                }
-                String fragmentName = xmlNode.getAttribute("name");
-                String fragmentType = xmlNode.getText();
+            for (SettingNode settingNode : nodeArray) {
+                String fragmentName = settingNode.getSubValue("name");
+                String fragmentType = settingNode.getValue();
                 Class<?> loadClass = environment.getClassLoader().loadClass(fragmentType);
                 logger.info("bindFragment '" + fragmentName + "' to " + loadClass.getName());
                 apiBinder.bindFragment(fragmentName, (Class<? extends FragmentProcess>) loadClass);

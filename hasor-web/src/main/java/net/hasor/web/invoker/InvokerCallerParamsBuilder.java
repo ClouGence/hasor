@@ -128,19 +128,24 @@ public class InvokerCallerParamsBuilder {
         } else if (pAnno instanceof RequestParameter) {
             atData = this.getRequestParam((RequestParameter) pAnno);
         } else if (pAnno instanceof RequestBody) {
-            String jsonBodyData = invoker.getJsonBodyString().trim();
-            if (paramClass == String.class) {
-                atData = jsonBodyData;
-            } else if (paramClass == Map.class) {
-                atData = JSON.parseObject(jsonBodyData);
-            } else if (paramClass == List.class) {
-                jsonBodyData = (jsonBodyData.charAt(0) != '[') ? ("[" + jsonBodyData + "]") : jsonBodyData;
-                atData = JSON.parseArray(jsonBodyData, ArrayList.class);
-            } else if (paramClass == Set.class) {
-                jsonBodyData = (jsonBodyData.charAt(0) != '[') ? ("[" + jsonBodyData + "]") : jsonBodyData;
-                atData = JSON.parseArray(jsonBodyData, HashSet.class);
+            String jsonBodyString = invoker.getJsonBodyString();
+            if (jsonBodyString == null) {
+                atData = null;
             } else {
-                atData = JSON.parseObject(jsonBodyData, paramClass);
+                String jsonBodyData = jsonBodyString.trim();
+                if (paramClass == String.class) {
+                    atData = jsonBodyData;
+                } else if (paramClass == Map.class) {
+                    atData = JSON.parseObject(jsonBodyData);
+                } else if (paramClass == List.class) {
+                    jsonBodyData = (jsonBodyData.charAt(0) != '[') ? ("[" + jsonBodyData + "]") : jsonBodyData;
+                    atData = JSON.parseArray(jsonBodyData, ArrayList.class);
+                } else if (paramClass == Set.class) {
+                    jsonBodyData = (jsonBodyData.charAt(0) != '[') ? ("[" + jsonBodyData + "]") : jsonBodyData;
+                    atData = JSON.parseArray(jsonBodyData, HashSet.class);
+                } else {
+                    atData = JSON.parseObject(jsonBodyData, paramClass);
+                }
             }
         } else if (pAnno instanceof ParameterGroup) {
             try {

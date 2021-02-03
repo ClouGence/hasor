@@ -16,7 +16,7 @@
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
-import net.hasor.core.XmlNode;
+import net.hasor.core.setting.SettingNode;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
@@ -44,14 +44,14 @@ class RootInvokerCreater implements InvokerCreator {
         //
         // .寻找InvokerCreater扩展
         Map<Class<?>, Class<?>> extBinderMap = new HashMap<>();
-        XmlNode[] nodeArray = settings.getXmlNodeArray("hasor.invokerCreatorSet.invokerCreator");
+        SettingNode[] nodeArray = settings.getNodeArray("hasor.invokerCreatorSet.invokerCreator");
         if (nodeArray != null && nodeArray.length > 0) {
-            for (XmlNode atNode : nodeArray) {
+            for (SettingNode atNode : nodeArray) {
                 if (atNode == null) {
                     continue;
                 }
-                String binderTypeStr = atNode.getAttribute("type");
-                String binderImplStr = atNode.getText();
+                String binderTypeStr = atNode.getSubValue("type");
+                String binderImplStr = atNode.getValue();
                 if (StringUtils.isBlank(binderTypeStr) || StringUtils.isBlank(binderImplStr)) {
                     continue;
                 }
