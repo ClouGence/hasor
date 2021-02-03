@@ -240,23 +240,24 @@ public class SettingsTest {
     public void valueTest3() throws Exception {
         Settings settings = new StandardContextSettings("/net_hasor_core_settings/value-config.xml");
         settings = new SettingsWrap(settings);
-        //
         assert settings.getBoolean("valueGroup.booleanValue_true");
+        //
         settings.setSetting("valueGroup.booleanValue_true", false);
         assert !settings.getBoolean("valueGroup.booleanValue_true");
+        //
         settings.setSetting("valueGroup.booleanValue_true", "n");
         assert !settings.getBoolean("valueGroup.booleanValue_true");
         //
         settings.addSetting("valueGroup.booleanValue_true", true, "http://schema_a");
-        Boolean[] array = settings.getBooleanArray("valueGroup.booleanValue_true");
-        assert array.length == 2;
-        assert !array[0];
-        assert array[1];
-        //
         String[] arrayStr = settings.getStringArray("valueGroup.booleanValue_true");
         assert arrayStr.length == 2;
-        assert arrayStr[0].equals("n");
-        assert arrayStr[1].equals("true");
+        assert arrayStr[0].equals("true");
+        assert arrayStr[1].equals("n");
+        //
+        Boolean[] array = settings.getBooleanArray("valueGroup.booleanValue_true");
+        assert array.length == 2;
+        assert array[0];
+        assert !array[1];
     }
 
     @Test

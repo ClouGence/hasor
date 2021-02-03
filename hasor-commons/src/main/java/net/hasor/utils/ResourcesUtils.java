@@ -270,6 +270,11 @@ public abstract class ResourcesUtils {
     }
 
     /** 获取classpath中可能存在的资源列表，以流的形式返回。*/
+    public static List<InputStream> getResourceAsStreamList(String resourcePath) throws IOException {
+        return getResourceAsStreamList(getCurrentLoader(), resourcePath);
+    }
+
+    /** 获取classpath中可能存在的资源列表，以流的形式返回。*/
     public static List<InputStream> getResourceAsStreamList(ClassLoader classLoader, String resourcePath) throws IOException {
         ArrayList<InputStream> iss = new ArrayList<>();
         List<URL> urls = getResources(classLoader, resourcePath);

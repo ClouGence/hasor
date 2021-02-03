@@ -15,8 +15,8 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.BindInfo;
-import net.hasor.core.PropertyDelegate;
 import net.hasor.core.Scope;
+import net.hasor.core.aop.PropertyDelegate;
 import net.hasor.core.aop.ReadWriteType;
 
 import java.util.function.Supplier;

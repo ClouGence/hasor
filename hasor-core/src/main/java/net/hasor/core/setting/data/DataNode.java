@@ -38,7 +38,7 @@ public class DataNode {
         if (this.allVarList.isEmpty()) {
             return null;
         } else {
-            return allVarList.get(0);
+            return allVarList.get(this.allVarList.size() - 1);
         }
     }
 
@@ -53,7 +53,7 @@ public class DataNode {
 
     public void addValue(String... values) {
         if (values != null && values.length > 0) {
-            this.allVarList.addAll(0, Arrays.asList(values));
+            this.allVarList.addAll(Arrays.asList(values));
         }
     }
 

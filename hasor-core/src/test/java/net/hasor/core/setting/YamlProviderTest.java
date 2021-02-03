@@ -54,7 +54,7 @@ public class YamlProviderTest {
         assert settings.getString("mySelf.source").equals("Yaml");
         //
         assert settings.getString("arrays").equals("b");
-        assert settings.getStringArray("arrays")[0].equals("b");
-        assert settings.getStringArray("arrays")[1].equals("a");
+        assert settings.getStringArray("arrays")[0].equals("a");
+        assert settings.getStringArray("arrays")[1].equals("b");
     }
 }

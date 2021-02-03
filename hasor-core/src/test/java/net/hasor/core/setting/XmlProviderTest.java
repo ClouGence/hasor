@@ -73,8 +73,8 @@ public class XmlProviderTest {
         Boolean[] aBooleanArray = settings.getBooleanArray("hasor.debug");
         assert aBoolean;
         assert aBooleanArray.length == 2;
-        assert aBooleanArray[0];
-        assert !aBooleanArray[1];
+        assert !aBooleanArray[0];
+        assert aBooleanArray[1];
     }
 
     @Test

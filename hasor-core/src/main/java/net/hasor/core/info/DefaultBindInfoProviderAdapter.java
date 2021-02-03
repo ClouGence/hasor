@@ -16,7 +16,7 @@
 package net.hasor.core.info;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.PropertyDelegate;
+import net.hasor.core.aop.PropertyDelegate;
 import net.hasor.core.aop.ReadWriteType;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;

@@ -197,16 +197,21 @@ public class BasicSettings implements Settings {
         for (TreeNode dataNode : this.allSettingValue().values()) {
             List<SettingNode> treeNodeList = dataNode.findNodes(lowerCase);
             if (treeNodeList != null) {
-                dataNodeList.addAll(treeNodeList);
+                treeNodeList.forEach(settingNode -> {
+                    if (!settingNode.isEmpty()) {
+                        dataNodeList.add(settingNode);
+                    }
+                });
             }
         }
         if (dataNodeList.isEmpty()) {
             return new SettingNode[0];
         }
-        //
+        // 排序 DefaultNameSpace 放到最后，同时 getToType 会取最后一条，相同命名空间的数据 add 最后一条要优先前面的。
+        // 因此只能通过排序放到最后。否则无法满足当 不同命名空间空间下 DefaultNameSpace 有两条数据情况下 DefaultNameSpace 中最后一条优先的要求。
         dataNodeList.sort((o1, o2) -> {
-            int o1Index = DefaultNameSpace.equalsIgnoreCase(o1.getSpace()) ? 0 : 1;
-            int o2Index = DefaultNameSpace.equalsIgnoreCase(o2.getSpace()) ? 0 : 1;
+            int o1Index = DefaultNameSpace.equalsIgnoreCase(o1.getSpace()) ? 0 : -1;
+            int o2Index = DefaultNameSpace.equalsIgnoreCase(o2.getSpace()) ? 0 : -1;
             return Integer.compare(o1Index, o2Index);
         });
         return dataNodeList.toArray(new SettingNode[0]);
@@ -235,10 +240,14 @@ public class BasicSettings implements Settings {
         if (settingVar == null || settingVar.length == 0) {
             return defaultValue;
         }
-        if (SettingNode.class == toType || TreeNode.class == toType) {
-            return (T) settingVar[0];
+        if (settingVar.length == 0) {
+            return null;
         }
-        return convertTo(settingVar[0].getValue(), toType, defaultValue);
+        if (SettingNode.class == toType || TreeNode.class == toType) {
+            return (T) settingVar[settingVar.length - 1];
+        } else {
+            return convertTo(settingVar[settingVar.length - 1].getValue(), toType, defaultValue);
+        }
     }
 
     public <T> T[] getToTypeArray(final String name, final Class<T> toType, final T defaultValue) {

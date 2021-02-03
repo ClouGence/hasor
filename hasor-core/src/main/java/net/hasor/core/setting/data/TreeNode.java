@@ -180,7 +180,15 @@ public class TreeNode implements SettingNode {
     }
 
     public TreeNode newNode(String configKey) {
-        return mkAndGet(configKey.split("\\."), 0);
+        int lastIndexOf = configKey.lastIndexOf(".");
+        if (lastIndexOf == -1) {
+            return newSubNode(configKey);
+        } else {
+            String parentConfigKey = configKey.substring(0, lastIndexOf);
+            String lastConfigKey = configKey.substring(lastIndexOf + 1);
+            TreeNode treeNode = mkAndGet(parentConfigKey.split("\\."), 0);
+            return treeNode.newSubNode(lastConfigKey);
+        }
     }
 
     public TreeNode newSubNode(String elementName, boolean setDefault) {
@@ -202,12 +210,9 @@ public class TreeNode implements SettingNode {
         }
         //
         if (setDefault || isInit) {
-            nodeList.add(0, treeNode);
-            TreeNode old = this.subDefault.get(elementName);
             this.subDefault.put(elementName, treeNode);
-        } else {
-            nodeList.add(treeNode);
         }
+        nodeList.add(treeNode);
         return treeNode;
     }
 
@@ -234,8 +239,8 @@ public class TreeNode implements SettingNode {
 
     private void appendNode(SettingNode src, SettingNode dest) {
         String[] values = src.getValues();
-        for (int i = values.length - 1; i >= 0; i--) {
-            dest.addValue(values[i]);
+        for (String value : values) {
+            dest.addValue(value);
         }
         for (SettingNode node : src.getSubNodes()) {
             ((TreeNode) dest).addSubNode(node, node.isDefault());
@@ -431,7 +436,7 @@ public class TreeNode implements SettingNode {
         }
     }
 
-    private boolean isEmpty() {
+    public boolean isEmpty() {
         return this.data.isEmpty() && this.subList.isEmpty() && this.subDefault.isEmpty();
     }
 

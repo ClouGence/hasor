@@ -55,9 +55,9 @@ public class NodeTest {
         treeNode.addValue("settings.abc", "3");
         assert treeNode.findNode("settings.abc").getValue().equals("3");
         assert treeNode.findNode("settings.abc").getValues().length == 3;
-        assert treeNode.findNode("settings.abc").getValues()[0].equals("3");
+        assert treeNode.findNode("settings.abc").getValues()[0].equals("1");
         assert treeNode.findNode("settings.abc").getValues()[1].equals("2");
-        assert treeNode.findNode("settings.abc").getValues()[2].equals("1");
+        assert treeNode.findNode("settings.abc").getValues()[2].equals("3");
         //
         treeNode.setValue("settings.abc", "4");
         assert treeNode.findNode("settings.abc").getValues().length == 1;
@@ -202,21 +202,47 @@ public class NodeTest {
         TreeNode treeNode = new TreeNode();
         treeNode.addValue("a", "1");
         treeNode.addValue("a", "2");
+        assert treeNode.getSubValue("a").equals("2");
+        assert treeNode.getSubValues("a").length == 2;
+        assert treeNode.getSubValues("a")[0].equals("1");
+        assert treeNode.getSubValues("a")[1].equals("2");
+        assert treeNode.getSubNodes().length == 1;
+        assert treeNode.getSubNodes()[0].getValue().equals("2");
+        assert treeNode.getSubNodes()[0].getValues().length == 2;
+        assert treeNode.getSubNodes()[0].getValues()[0].equals("1");
+        assert treeNode.getSubNodes()[0].getValues()[1].equals("2");
         //
         treeNode.addSubNode(new TreeNode("a"), true).addValue("3");
-        treeNode.addValue("a", "4");
-        //
-        assert treeNode.getSubKeys().length == 1;
-        assert treeNode.getSubKeys()[0].equals("a");
+        assert treeNode.getSubValue("a").equals("3");
+        assert treeNode.getSubValues("a").length == 3;
+        assert treeNode.getSubValues("a")[0].equals("1");
+        assert treeNode.getSubValues("a")[1].equals("2");
+        assert treeNode.getSubValues("a")[2].equals("3");
         assert treeNode.getSubNodes().length == 2;
+        assert treeNode.getSubNodes()[0].getValue().equals("2");
+        assert treeNode.getSubNodes()[0].getValues().length == 2;
+        assert treeNode.getSubNodes()[0].getValues()[0].equals("1");
+        assert treeNode.getSubNodes()[0].getValues()[1].equals("2");
+        assert treeNode.getSubNodes()[1].getValue().equals("3");
+        assert treeNode.getSubNodes()[1].getValues().length == 1;
+        assert treeNode.getSubNodes()[1].getValues()[0].equals("3");
         //
-        assert treeNode.getSubNodes()[0].getValue().equals("4");
-        assert treeNode.getSubNodes()[0].getValues()[0].equals("4");
-        assert treeNode.getSubNodes()[0].getValues()[1].equals("3");
-        //
-        assert treeNode.getSubNodes()[1].getValue().equals("2");
-        assert treeNode.getSubNodes()[1].getValues()[0].equals("2");
-        assert treeNode.getSubNodes()[1].getValues()[1].equals("1");
+        treeNode.addValue("a", "4");
+        assert treeNode.getSubValue("a").equals("4");
+        assert treeNode.getSubValues("a").length == 4;
+        assert treeNode.getSubValues("a")[0].equals("1");
+        assert treeNode.getSubValues("a")[1].equals("2");
+        assert treeNode.getSubValues("a")[2].equals("3");
+        assert treeNode.getSubValues("a")[3].equals("4");
+        assert treeNode.getSubNodes().length == 2;
+        assert treeNode.getSubNodes()[0].getValue().equals("2");
+        assert treeNode.getSubNodes()[0].getValues().length == 2;
+        assert treeNode.getSubNodes()[0].getValues()[0].equals("1");
+        assert treeNode.getSubNodes()[0].getValues()[1].equals("2");
+        assert treeNode.getSubNodes()[1].getValue().equals("4");
+        assert treeNode.getSubNodes()[1].getValues().length == 2;
+        assert treeNode.getSubNodes()[1].getValues()[0].equals("3");
+        assert treeNode.getSubNodes()[1].getValues()[1].equals("4");
     }
 
     @Test
@@ -232,13 +258,13 @@ public class NodeTest {
         assert treeNode.getSubKeys()[0].equals("a");
         assert treeNode.getSubNodes().length == 2;
         //
-        assert treeNode.getSubNodes()[0].getValue().equals("4");
-        assert treeNode.getSubNodes()[0].getValues()[0].equals("4");
-        assert treeNode.getSubNodes()[0].getValues()[1].equals("3");
+        assert treeNode.getSubNodes()[0].getValue().equals("2");
+        assert treeNode.getSubNodes()[0].getValues()[0].equals("1");
+        assert treeNode.getSubNodes()[0].getValues()[1].equals("2");
         //
-        assert treeNode.getSubNodes()[1].getValue().equals("2");
-        assert treeNode.getSubNodes()[1].getValues()[0].equals("2");
-        assert treeNode.getSubNodes()[1].getValues()[1].equals("1");
+        assert treeNode.getSubNodes()[1].getValue().equals("4");
+        assert treeNode.getSubNodes()[1].getValues()[0].equals("3");
+        assert treeNode.getSubNodes()[1].getValues()[1].equals("4");
     }
 
     @Test
@@ -275,8 +301,8 @@ public class NodeTest {
         root.addNode("root.dat.my", conf);
         assert root.findValues("root.dat.my.a").length == 2;
         assert root.findValue("root.dat.my.a").equals("1");
-        assert root.findValues("root.dat.my.a")[0].equals("1");
-        assert root.findValues("root.dat.my.a")[1].equals("2");
+        assert root.findValues("root.dat.my.a")[0].equals("2");
+        assert root.findValues("root.dat.my.a")[1].equals("1");
     }
 
     @Test
@@ -324,8 +350,8 @@ public class NodeTest {
         assert toMap.get("b").size() == 1;
         assert toMap.get("b").get(0).equals("2");
         assert toMap.get("abc.a").size() == 2;
-        assert toMap.get("abc.a").get(0).equals("4");
-        assert toMap.get("abc.a").get(1).equals("3");
+        assert toMap.get("abc.a").get(0).equals("3");
+        assert toMap.get("abc.a").get(1).equals("4");
     }
 
     @Test

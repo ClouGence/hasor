@@ -15,6 +15,7 @@
  */
 package net.hasor.core;
 import net.hasor.core.aop.AsmTools;
+import net.hasor.core.aop.PropertyDelegate;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.spi.SpiJudge;

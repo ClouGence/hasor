@@ -15,7 +15,6 @@
  */
 package net.hasor.core.aop;
 import net.hasor.core.MethodInterceptor;
-import net.hasor.core.PropertyDelegate;
 import net.hasor.core.Provider;
 import net.hasor.core.aop.InnerDelegateInvocation.DelegateInfo;
 import net.hasor.utils.BeanUtils;

@@ -34,6 +34,8 @@ public interface SettingNode {
 
     public boolean isDefault();
 
+    public boolean isEmpty();
+
     /** @return 获取节点名称 */
     public String getName();
 

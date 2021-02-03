@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
-import net.hasor.core.PropertyDelegate;
 import net.hasor.core.Provider;
+import net.hasor.core.aop.PropertyDelegate;
 import net.hasor.core.aop.ReadWriteType;
 
 import java.util.function.Predicate;

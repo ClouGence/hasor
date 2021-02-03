@@ -102,7 +102,6 @@ class SaxXmlParser extends DefaultHandler {
     }
 
     public void endElement(final String uri, final String localName, final String qName) throws SAXException {
-        //
         this.popNode(uri);
         this.curXmlns = uri;
     }
@@ -110,7 +109,7 @@ class SaxXmlParser extends DefaultHandler {
     public void endDocument() {
         this.root.forEach((xmlns, treeNode) -> {
             for (SettingNode node : treeNode.getSubNodes()) {
-                this.settings.setSetting(node.getName(), node);
+                this.settings.addSetting(node.getName(), node, xmlns);
             }
         });
     }

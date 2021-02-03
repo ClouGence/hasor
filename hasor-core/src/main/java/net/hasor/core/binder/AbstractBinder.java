@@ -15,6 +15,7 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.*;
+import net.hasor.core.aop.PropertyDelegate;
 import net.hasor.core.aop.ReadWriteType;
 import net.hasor.core.aop.SimplePropertyDelegate;
 import net.hasor.core.exts.aop.Matchers;
