@@ -68,7 +68,6 @@
                         <configuration>
                             <createSourcesJar>true</createSourcesJar>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <minimizeJar>true</minimizeJar>
                             <artifactSet>
                                 <includes>
                                     <include>javax.inject:javax.inject</include>
@@ -79,14 +78,14 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.yaml.snakeyaml</pattern>
-                                    <shadedPattern>net.hasor.core.setting.yaml</shadedPattern>
+                                    <shadedPattern>net.hasor.core.setting.provider.yaml</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
-                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                        <exclude>META-INF/maven/org.yaml/**</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
