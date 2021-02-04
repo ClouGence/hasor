@@ -15,9 +15,9 @@
  */
 package net.hasor.db.dialect;
 import net.hasor.db.jdbc.lambda.segment.SqlLike;
-import net.hasor.db.types.mapping.FieldInfo;
-import net.hasor.db.types.mapping.TableInfo;
 import net.hasor.utils.StringUtils;
+
+import java.sql.JDBCType;
 
 /**
  * SQL 方言
@@ -28,13 +28,13 @@ public interface SqlDialect {
     public static final SqlDialect DEFAULT = new DefaultSqlDialect();
 
     /** 生成 select 时的列信息 */
-    public String buildSelect(TableInfo tableInfo, FieldInfo fieldInfo);
+    public String buildSelect(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType);
 
     /** 生成 form 后面的表名 */
-    public String buildTableName(TableInfo tableInfo);
+    public String buildTableName(String category, String tableName);
 
     /** 生成 where 中用到的条件名（包括 group by、order by） */
-    public String buildConditionName(TableInfo tableInfo, FieldInfo fieldInfo);
+    public String buildColumnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType);
 
     public default String buildLike(SqlLike likeType, Object value) {
         if (value == null || StringUtils.isBlank(value.toString())) {

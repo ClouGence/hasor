@@ -36,6 +36,7 @@ import java.util.*;
  */
 public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
     private final Class<T>                    mapperClass;
+    private       String                      category;
     private       String                      tableName;
     private       boolean                     caseInsensitive;
     //
@@ -66,8 +67,9 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
         if (mapperClass.isAnnotationPresent(Table.class)) {
             defTable = mapperClass.getAnnotation(Table.class);
         } else {
-            defTable = new TableImpl(mapperClass.getSimpleName());
+            defTable = new TableImpl("", mapperClass.getSimpleName());
         }
+        this.tableName = defTable.category().trim();
         this.tableName = StringUtils.isNotBlank(defTable.name()) ? defTable.name() : defTable.value();
         this.caseInsensitive = defTable.caseInsensitive();
         boolean autoConfigField = defTable.autoFiled();
@@ -132,6 +134,11 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
 
     public Class<T> getMapperClass() {
         return this.mapperClass;
+    }
+
+    @Override
+    public String getCategory() {
+        return this.category;
     }
 
     public String getTableName() {

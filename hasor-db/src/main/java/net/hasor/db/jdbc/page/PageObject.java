@@ -1,10 +1,30 @@
-package net.hasor.db.page;
+/*
+ * Copyright 2002-2005 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package net.hasor.db.jdbc.page;
 import net.hasor.utils.function.ESupplier;
 
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * 分页接口 Page 的实现类
+ * @version : 2021-02-04
+ * @author 赵永春 (zyc@hasor.net)
+ */
 public class PageObject implements Page {
     /** 满足条件的总记录数 */
     private       ESupplier<Integer, SQLException> totalCountSupplier = () -> 0;
@@ -75,8 +95,8 @@ public class PageObject implements Page {
         int pgSize = getPageSize();
         int result = 1;
         if (pgSize > 0) {
-            int totalCount = totalCount();
-            result = totalCount() / pgSize;
+            int totalCount = getTotalCount();
+            result = getTotalCount() / pgSize;
             if ((totalCount == 0) || ((totalCount % pgSize) != 0)) {
                 result++;
             }
@@ -85,7 +105,7 @@ public class PageObject implements Page {
     }
 
     /** 获取记录总数 */
-    public int totalCount() throws SQLException {
+    public int getTotalCount() throws SQLException {
         if (this.totalCountInited.compareAndSet(false, true)) {
             this.totalCount = this.totalCountSupplier.eGet();
         }

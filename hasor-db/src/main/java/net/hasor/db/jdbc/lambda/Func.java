@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda;
-import net.hasor.db.page.Page;
+import net.hasor.db.jdbc.page.Page;
 import net.hasor.db.types.mapping.FieldInfo;
 import net.hasor.utils.function.EConsumer;
 import net.hasor.utils.reflect.SFunction;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * 动态拼条件。
+ * 条件构造器。
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -103,5 +103,5 @@ public interface Func<T, R> {
     public Page generatePage();
 
     /** 生成分页对象 */
-    public Page generatePage(int initPageSize);
+    public Page generatePage(int initPageSize, int currentPage);
 }

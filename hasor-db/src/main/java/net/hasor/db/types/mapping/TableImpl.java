@@ -22,10 +22,17 @@ import java.lang.annotation.Annotation;
  * @author 赵永春 (zyc@hasor.net)
  */
 class TableImpl implements Table {
+    private final String categoryName;
     private final String tableName;
 
-    public TableImpl(String tableName) {
+    public TableImpl(String categoryName, String tableName) {
+        this.categoryName = categoryName;
         this.tableName = tableName;
+    }
+
+    @Override
+    public String category() {
+        return this.categoryName;
     }
 
     @Override

@@ -16,8 +16,9 @@
 package net.hasor.db.dialect.provider;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
-import net.hasor.db.types.mapping.FieldInfo;
-import net.hasor.db.types.mapping.TableInfo;
+import net.hasor.utils.StringUtils;
+
+import java.sql.JDBCType;
 
 /**
  * Hive 的 SqlDialect 实现
@@ -26,18 +27,22 @@ import net.hasor.db.types.mapping.TableInfo;
  */
 public class HiveDialect implements SqlDialect {
     @Override
-    public String buildSelect(TableInfo tableInfo, FieldInfo fieldInfo) {
-        return "\"" + fieldInfo.getColumnName() + "\"";
+    public String buildSelect(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
+        return "\"" + columnName + "\"";
     }
 
     @Override
-    public String buildTableName(TableInfo tableInfo) {
-        return "\"" + tableInfo.getTableName() + "\"";
+    public String buildTableName(String category, String tableName) {
+        if (StringUtils.isBlank(category)) {
+            return "\"" + tableName + "\"";
+        } else {
+            return "\"" + category + "\".\"" + tableName + "\"";
+        }
     }
 
     @Override
-    public String buildConditionName(TableInfo tableInfo, FieldInfo fieldInfo) {
-        return "\"" + fieldInfo.getColumnName() + "\"";
+    public String buildColumnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
+        return "\"" + columnName + "\"";
     }
 
     @Override

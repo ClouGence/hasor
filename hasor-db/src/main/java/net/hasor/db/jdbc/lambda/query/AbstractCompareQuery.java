@@ -260,7 +260,8 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
 
     protected String conditionName(SFunction<T> property) {
         TableInfo tableInfo = super.getRowMapper().getTableInfo();
-        return this.dialect().buildConditionName(tableInfo, columnName(property));
+        FieldInfo columnField = columnName(property);
+        return this.dialect().buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), columnField.getColumnName(), columnField.getJdbcType(), columnField.getJavaType());
     }
 
     @Override

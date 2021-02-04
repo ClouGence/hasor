@@ -15,11 +15,9 @@
  */
 package net.hasor.db.dialect;
 import net.hasor.db.JdbcUtils;
-import net.hasor.db.dialect.SqlDialect;
-import net.hasor.db.dialect.SqlDialectRegister;
-import net.hasor.db.types.mapping.MappingRowMapper;
 import net.hasor.db.types.mapping.FieldInfo;
 import net.hasor.db.types.mapping.MappingHandler;
+import net.hasor.db.types.mapping.MappingRowMapper;
 import net.hasor.db.types.mapping.TableInfo;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.dto.TbUser;
@@ -39,9 +37,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate("");
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("userUUID");
         assert buildTableName.equals("tb_user");
@@ -56,9 +54,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.MYSQL);
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("`userUUID`");
         assert buildTableName.equals("`tb_user`");
@@ -73,9 +71,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.POSTGRESQL);
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("\"userUUID\"");
         assert buildTableName.equals("\"tb_user\"");
@@ -90,9 +88,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.ORACLE);
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("\"userUUID\"");
         assert buildTableName.equals("\"tb_user\"");
@@ -107,9 +105,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.H2);
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("\"userUUID\"");
         assert buildTableName.equals("\"tb_user\"");
@@ -124,9 +122,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.HIVE);
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("\"userUUID\"");
         assert buildTableName.equals("\"tb_user\"");
@@ -141,9 +139,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.SQLITE);
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("`userUUID`");
         assert buildTableName.equals("`tb_user`");
@@ -158,9 +156,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.HERDDB);
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("`userUUID`");
         assert buildTableName.equals("`tb_user`");
@@ -175,9 +173,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate("sqlserver2012");
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("[userUUID]");
         assert buildTableName.equals("[tb_user]");
@@ -192,9 +190,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.INFORMIX);
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("\"userUUID\"");
         assert buildTableName.equals("\"tb_user\"");
@@ -209,9 +207,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.DB2);
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("\"userUUID\"");
         assert buildTableName.equals("\"tb_user\"");
@@ -226,9 +224,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.HSQL);
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("\"userUUID\"");
         assert buildTableName.equals("\"tb_user\"");
@@ -243,9 +241,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.PHOENIX);
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("\"userUUID\"");
         assert buildTableName.equals("\"tb_user\"");
@@ -260,9 +258,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.IMPALA);
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("\"userUUID\"");
         assert buildTableName.equals("\"tb_user\"");
@@ -277,9 +275,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.MARIADB);
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("`userUUID`");
         assert buildTableName.equals("`tb_user`");
@@ -294,9 +292,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.ALIYUN_ADS);
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("`userUUID`");
         assert buildTableName.equals("`tb_user`");
@@ -311,9 +309,9 @@ public class DialectTest extends AbstractDbTest {
         FieldInfo property = rowMapper.findFieldInfoByProperty("uid");
         //
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.ALIYUN_DRDS);
-        String buildSelect = dialect.buildSelect(tableInfo, property);
-        String buildTableName = dialect.buildTableName(tableInfo);
-        String buildCondition = dialect.buildConditionName(tableInfo, property);
+        String buildSelect = dialect.buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
+        String buildTableName = dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        String buildCondition = dialect.buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), property.getColumnName(), property.getJdbcType(), property.getJavaType());
         //
         assert buildSelect.equals("`userUUID`");
         assert buildTableName.equals("`tb_user`");

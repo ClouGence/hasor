@@ -28,7 +28,7 @@ import java.util.Map;
 public class ColumnMapResultSetExtractor extends RowMapperResultSetExtractor<Map<String, Object>> {
     /** 创建 {@link ColumnMapResultSetExtractor} 对象 */
     public ColumnMapResultSetExtractor() {
-        this(true, 0);
+        this(true, 0, TypeHandlerRegistry.DEFAULT);
     }
 
     /**
@@ -36,7 +36,7 @@ public class ColumnMapResultSetExtractor extends RowMapperResultSetExtractor<Map
      * @param rowsExpected 预期结果集大小（实际得到的结果集条目不受此参数限制）。
      */
     public ColumnMapResultSetExtractor(int rowsExpected) {
-        this(true, rowsExpected);
+        this(true, rowsExpected, TypeHandlerRegistry.DEFAULT);
     }
 
     /**
@@ -50,7 +50,7 @@ public class ColumnMapResultSetExtractor extends RowMapperResultSetExtractor<Map
 
     /** 创建 {@link ColumnMapResultSetExtractor} 对象 */
     public ColumnMapResultSetExtractor(boolean caseInsensitive) {
-        this(caseInsensitive, 0);
+        this(caseInsensitive, 0, TypeHandlerRegistry.DEFAULT);
     }
 
     /**
@@ -58,7 +58,7 @@ public class ColumnMapResultSetExtractor extends RowMapperResultSetExtractor<Map
      * @param rowsExpected 预期结果集大小（实际得到的结果集条目不受此参数限制）。
      */
     public ColumnMapResultSetExtractor(boolean caseInsensitive, int rowsExpected) {
-        super(new ColumnMapRowMapper(caseInsensitive), rowsExpected);
+        this(caseInsensitive, rowsExpected, TypeHandlerRegistry.DEFAULT);
     }
 
     /**

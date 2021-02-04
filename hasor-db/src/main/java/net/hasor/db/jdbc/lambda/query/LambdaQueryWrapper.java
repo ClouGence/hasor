@@ -21,8 +21,8 @@ import net.hasor.db.jdbc.lambda.LambdaOperations.LambdaQuery;
 import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
 import net.hasor.db.jdbc.lambda.segment.OrderByKeyword;
 import net.hasor.db.jdbc.lambda.segment.Segment;
-import net.hasor.db.page.Page;
-import net.hasor.db.page.PageObject;
+import net.hasor.db.jdbc.page.Page;
+import net.hasor.db.jdbc.page.PageObject;
 import net.hasor.db.types.mapping.FieldInfo;
 import net.hasor.db.types.mapping.TableInfo;
 import net.hasor.utils.reflect.SFunction;
@@ -94,7 +94,7 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
         if (tableInfo == null) {
             throw new IllegalArgumentException("tableInfo not found.");
         }
-        return () -> dialect.buildTableName(tableInfo);
+        return () -> dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
     }
 
     private static Segment buildColumns(Collection<Segment> columnSegments) {
@@ -164,7 +164,7 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
     private LambdaQuery<T> select0(Collection<FieldInfo> allFiled, Predicate<FieldInfo> tester) {
         TableInfo tableInfo = super.getRowMapper().getTableInfo();
         allFiled.stream().filter(tester).forEach(fieldInfo -> {
-            String selectColumn = dialect().buildSelect(tableInfo, fieldInfo);
+            String selectColumn = dialect().buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), fieldInfo.getColumnName(), fieldInfo.getJdbcType(), fieldInfo.getJavaType());
             customSelect.add(() -> selectColumn);
         });
         return this;
@@ -231,15 +231,17 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
 
     @Override
     public Page generatePage() {
-        return generatePage(30);
+        return generatePage(30, 0);
     }
 
     @Override
-    public Page generatePage(int initPageSize) {
-        return new PageObject(initPageSize, () -> {
+    public Page generatePage(int initPageSize, int currentPage) {
+        PageObject pageObject = new PageObject(initPageSize, () -> {
             BoundSql countSql = dialect().getCountSql(this.noPageBoundSql);
             return getJdbcOperations().queryForInt(countSql.getSqlString(), countSql.getArgs());
         });
+        pageObject.setCurrentPage(currentPage);
+        return pageObject;
     }
 
     @Override

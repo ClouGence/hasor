@@ -16,14 +16,14 @@
 package net.hasor.db.dialect.provider;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
-import net.hasor.db.types.mapping.FieldInfo;
-import net.hasor.db.types.mapping.TableInfo;
 import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.StringUtils;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.OrderByElement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 
+import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,18 +35,22 @@ import java.util.List;
  */
 public class SqlServer2012Dialect implements SqlDialect {
     @Override
-    public String buildSelect(TableInfo tableInfo, FieldInfo fieldInfo) {
-        return "[" + fieldInfo.getColumnName() + "]";
+    public String buildSelect(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
+        return "[" + columnName + "]";
     }
 
     @Override
-    public String buildTableName(TableInfo tableInfo) {
-        return "[" + tableInfo.getTableName() + "]";
+    public String buildTableName(String category, String tableName) {
+        if (StringUtils.isBlank(category)) {
+            return "[" + tableName + "]";
+        } else {
+            return "[" + category + "].[" + tableName + "]";
+        }
     }
 
     @Override
-    public String buildConditionName(TableInfo tableInfo, FieldInfo fieldInfo) {
-        return "[" + fieldInfo.getColumnName() + "]";
+    public String buildColumnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
+        return "[" + columnName + "]";
     }
 
     protected Select parseSelect(String buildSqlString) {

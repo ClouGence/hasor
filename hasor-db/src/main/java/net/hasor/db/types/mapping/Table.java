@@ -27,6 +27,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Table {
+    /** 分类(对于mysql 是 db，对于 pg 是 schema，对于 oracle 是 owner) */
+    public String category() default "";
+
     /** 表名，为空的话表示采用类名为表名 see: {@link #name()} */
     public String value() default "";
 

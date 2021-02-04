@@ -46,7 +46,7 @@ public class FilterResultSetExtractor<T> extends RowMapperResultSetExtractor<T> 
     /**
      * 创建 {@link FilterResultSetExtractor} 对象
      * @param rowMapper 行映射器。
-     * @param rowsExpected 预期结果集大小（实际得到的结果集条目不受此参数限制）。
+     * @param rowsExpected 预期结果集大小（实际得到的结果集条目不受此参数限制）
      */
     public FilterResultSetExtractor(RowMapper<T> rowMapper, int rowsExpected) {
         this(s -> true, rowMapper, rowsExpected);
@@ -55,7 +55,7 @@ public class FilterResultSetExtractor<T> extends RowMapperResultSetExtractor<T> 
     /**
      * 创建 {@link FilterResultSetExtractor} 对象
      * @param rowMapper 行映射器。
-     * @param rowsExpected 预期结果集大小（实际得到的结果集条目不受此参数限制）。
+     * @param rowsExpected 预期结果集大小（实际得到的结果集条目不受此参数限制）
      */
     public FilterResultSetExtractor(Predicate<T> rowTester, RowMapper<T> rowMapper, int rowsExpected) {
         super(rowMapper, rowsExpected);
