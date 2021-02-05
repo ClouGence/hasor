@@ -20,11 +20,6 @@ import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * 该例子演示了事件链。及由事件引发的事件。
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
- */
 public class EventLinkTest {
     @Test
     public void syncEventTest() throws InterruptedException {

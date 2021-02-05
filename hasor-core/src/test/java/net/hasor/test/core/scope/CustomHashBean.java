@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.test.core.scope;
-//
 public class CustomHashBean {
     private int hashCode;
 

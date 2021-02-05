@@ -28,10 +28,6 @@ import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * @version : 2016-12-16
- * @author 赵永春 (zyc@hasor.net)
- */
 public class BinderHasorApiTest {
     @Test
     public void scopeTest1() {

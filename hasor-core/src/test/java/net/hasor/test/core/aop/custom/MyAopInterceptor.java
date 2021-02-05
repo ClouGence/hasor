@@ -17,16 +17,10 @@ package net.hasor.test.core.aop.custom;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
 
-/**
- * 一个 Aop 拦截器
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
- */
 public class MyAopInterceptor implements MethodInterceptor {
     private static boolean called  = false;
     private static boolean throwed = false;
 
-    //
     public static boolean isCalled() {
         return called;
     }
@@ -40,7 +34,6 @@ public class MyAopInterceptor implements MethodInterceptor {
         throwed = false;
     }
 
-    //
     public Object invoke(MethodInvocation invocation) throws Throwable {
         called = true;
         try {

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.context;
-import net.hasor.core.*;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.core.TypeSupplier;
 import net.hasor.test.core.basic.pojo.PojoBean;
 import org.junit.Test;
 

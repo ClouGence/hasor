@@ -16,22 +16,13 @@
 package net.hasor.core.setting;
 import net.hasor.core.setting.data.TreeNode;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- *
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
- */
 public class NodeTest {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-
     @Test
     public void treeNode_01() {
         TreeNode treeNode = new TreeNode("DDDD", "");

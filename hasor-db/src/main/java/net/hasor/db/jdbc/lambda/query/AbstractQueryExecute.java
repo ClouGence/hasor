@@ -21,7 +21,7 @@ import net.hasor.db.dialect.SqlDialectRegister;
 import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.lambda.QueryExecute;
-import net.hasor.db.types.mapping.MappingRowMapper;
+import net.hasor.db.dal.orm.MappingRowMapper;
 
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;

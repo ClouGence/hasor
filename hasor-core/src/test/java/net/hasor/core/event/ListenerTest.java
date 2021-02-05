@@ -21,11 +21,6 @@ import org.junit.Test;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- *
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
- */
 public class ListenerTest {
     @Test
     public void listenerTest0() throws Throwable {

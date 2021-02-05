@@ -32,10 +32,6 @@ import java.util.function.Predicate;
 
 import static org.mockito.ArgumentMatchers.any;
 
-/**
- * @author 赵永春 (zyc@hasor.net)
- * @version : 2016-12-16
- */
 public class AbstractBinderDataTest {
     protected Logger                                          logger = LoggerFactory.getLogger(getClass());
     protected Predicate<Class<?>>                             ignoreMatcher;

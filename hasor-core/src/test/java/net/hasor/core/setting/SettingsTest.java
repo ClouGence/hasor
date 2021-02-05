@@ -30,11 +30,6 @@ import java.util.Date;
 
 import static net.hasor.core.Settings.DefaultNameSpace;
 
-/**
- *
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
- */
 public class SettingsTest {
     protected      Logger logger           = LoggerFactory.getLogger(getClass());
     private static String DATA_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";

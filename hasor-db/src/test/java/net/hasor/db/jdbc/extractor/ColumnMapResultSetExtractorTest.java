@@ -18,6 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
+import net.hasor.db.types.TypeHandlerRegistry;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.SingleDsModule;
 import org.junit.Test;
@@ -40,9 +41,13 @@ public class ColumnMapResultSetExtractorTest extends AbstractDbTest {
             //
             List<Map<String, Object>> mapList1 = jdbcTemplate.query("select * from tb_user", new ColumnMapResultSetExtractor(1));
             List<Map<String, Object>> mapList2 = jdbcTemplate.query("select * from tb_user", new ColumnMapResultSetExtractor());
+            List<Map<String, Object>> mapList3 = jdbcTemplate.query("select * from tb_user", new ColumnMapResultSetExtractor(1, TypeHandlerRegistry.DEFAULT));
+            List<Map<String, Object>> mapList4 = jdbcTemplate.query("select * from tb_user", new ColumnMapResultSetExtractor(false, 1));
             //
             assert mapList1.size() == 1;
             assert mapList2.size() == 3;
+            assert mapList3.size() == 1;
+            assert mapList4.size() == 1;
         }
     }
 

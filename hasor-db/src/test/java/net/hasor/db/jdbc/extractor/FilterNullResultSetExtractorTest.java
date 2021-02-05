@@ -25,6 +25,7 @@ import org.junit.Test;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static net.hasor.test.db.utils.TestUtils.*;
@@ -102,5 +103,14 @@ public class FilterNullResultSetExtractorTest extends AbstractDbTest {
             assert collect.contains(beanForData1().getName());
             assert collect.contains(beanForData2().getName());
         }
+    }
+
+    @Test
+    public void testFilterNullResultSetExtractor_4() {
+        Predicate<Map<String, Object>> test = data -> data.get("loginPassword") != null;
+        FilterResultSetExtractor<Map<String, Object>> nonullExtractor = new FilterResultSetExtractor<>(new ColumnMapRowMapper(), 2);
+        nonullExtractor.setRowTester(test);
+        //
+        assert nonullExtractor.getRowTester() == test;
     }
 }

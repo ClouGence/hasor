@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.test.core.scope;
-//
 @My
 public class AnnoMyBean {
 }

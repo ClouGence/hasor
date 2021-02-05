@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.paramer;
+import net.hasor.db.jdbc.core.ParameterDisposer;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.dto.TB_User;
 import net.hasor.utils.BeanUtils;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 import static net.hasor.test.db.utils.TestUtils.beanForData1;
 
@@ -90,5 +93,42 @@ public class ParamsTest extends AbstractDbTest {
         assert tb_user.getUserUUID().equals(beanParams.getValue("userUUID"));
         //
         beanParams.cleanupParameters();
+    }
+
+    @Test
+    public void testParams_3() {
+        AtomicBoolean supplierValue = new AtomicBoolean();
+        AtomicBoolean clearValue = new AtomicBoolean();
+        Map<String, Object> map = new HashMap<>();
+        map.put("supplier", (Supplier<String>) () -> {
+            supplierValue.set(true);
+            return null;
+        });
+        map.put("clear", (ParameterDisposer) () -> clearValue.set(true));
+        //
+        MapSqlParameterSource parameter = new MapSqlParameterSource(map);
+        //
+        assert !supplierValue.get();
+        assert !clearValue.get();
+        //
+        parameter.getValue("supplier");
+        parameter.getValue("clear");
+        assert supplierValue.get();
+        assert !clearValue.get();
+        //
+        parameter.cleanupParameters();
+        assert supplierValue.get();
+        assert clearValue.get();
+    }
+
+    @Test
+    public void testParams_4() {
+        AtomicBoolean clearValue = new AtomicBoolean();
+        Object objects = (ParameterDisposer) () -> clearValue.set(true);
+        BeanSqlParameterSource parameter = new BeanSqlParameterSource(objects);
+        //
+        parameter.cleanupParameters();
+        //
+        assert clearValue.get();
     }
 }

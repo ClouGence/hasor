@@ -16,7 +16,6 @@
 package net.hasor.test.core.basic.inject;
 import net.hasor.test.core.basic.pojo.PojoBean;
 
-//
 public class OnlyGetPojoBeanRef {
     private PojoBean pojoBean;
 

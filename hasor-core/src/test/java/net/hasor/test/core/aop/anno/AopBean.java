@@ -20,10 +20,6 @@ import net.hasor.core.exts.aop.Aop;
 
 import java.util.*;
 
-/**
- * @version : 2016-12-16
- * @author 赵永春 (zyc@hasor.net)
- */
 @Aop(ClassAnnoInterceptor.class)
 @IgnoreProxy(ignore = false)
 public class AopBean {

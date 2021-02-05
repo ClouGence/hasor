@@ -23,8 +23,8 @@ import net.hasor.db.jdbc.lambda.segment.OrderByKeyword;
 import net.hasor.db.jdbc.lambda.segment.Segment;
 import net.hasor.db.jdbc.page.Page;
 import net.hasor.db.jdbc.page.PageObject;
-import net.hasor.db.types.mapping.FieldInfo;
-import net.hasor.db.types.mapping.TableInfo;
+import net.hasor.db.dal.orm.FieldInfo;
+import net.hasor.db.dal.orm.TableInfo;
 import net.hasor.utils.reflect.SFunction;
 
 import java.util.*;

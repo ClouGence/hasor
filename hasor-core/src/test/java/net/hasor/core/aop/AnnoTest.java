@@ -33,7 +33,7 @@ import java.util.function.Predicate;
 
 public class AnnoTest {
     @Test
-    public void sampleAopTest1() throws Exception {
+    public void sampleAopTest1() {
         try (AppContext appContext = Hasor.create().build()) {
             AopBean instance = appContext.getInstance(AopBean.class);
             assert instance instanceof DynamicClass;
@@ -41,7 +41,7 @@ public class AnnoTest {
     }
 
     @Test
-    public void aopTest1() throws Exception {
+    public void aopTest1() {
         ClassAnnoInterceptor classInterceptor = new ClassAnnoInterceptor();
         MethodAnnoInterceptor methodInterceptor = new MethodAnnoInterceptor();
         AppContext appContext = Hasor.create().build(apiBinder -> {

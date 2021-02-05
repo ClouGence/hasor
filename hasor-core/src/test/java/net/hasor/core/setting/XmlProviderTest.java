@@ -28,11 +28,6 @@ import java.net.URL;
 
 import static net.hasor.core.Settings.DefaultNameSpace;
 
-/**
- *
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
- */
 public class XmlProviderTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 

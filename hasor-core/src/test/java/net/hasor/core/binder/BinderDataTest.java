@@ -45,10 +45,6 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-/**
- * @version : 2016-12-16
- * @author 赵永春 (zyc@hasor.net)
- */
 public class BinderDataTest extends AbstractBinderDataTest {
     @Before
     public void beforeTest() throws IOException {

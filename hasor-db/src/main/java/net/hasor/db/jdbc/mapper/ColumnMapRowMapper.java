@@ -47,7 +47,7 @@ import java.util.Map;
  * @see JdbcOperations#queryForMap(String)
  */
 public class ColumnMapRowMapper extends AbstractRowMapper<Map<String, Object>> {
-    private boolean caseInsensitive;
+    private final boolean caseInsensitive;
 
     public ColumnMapRowMapper() {
         this(true, TypeHandlerRegistry.DEFAULT);
@@ -58,8 +58,7 @@ public class ColumnMapRowMapper extends AbstractRowMapper<Map<String, Object>> {
     }
 
     public ColumnMapRowMapper(boolean caseInsensitive) {
-        this(TypeHandlerRegistry.DEFAULT);
-        this.caseInsensitive = caseInsensitive;
+        this(caseInsensitive, TypeHandlerRegistry.DEFAULT);
     }
 
     public ColumnMapRowMapper(boolean caseInsensitive, TypeHandlerRegistry typeHandler) {
@@ -79,7 +78,9 @@ public class ColumnMapRowMapper extends AbstractRowMapper<Map<String, Object>> {
         for (int i = 1; i <= columnCount; i++) {
             String key = this.getColumnKey(ColumnMapRowMapper.lookupColumnName(rsmd, i));
             Object obj = this.getColumnValue(rs, i);
-            mapOfColValues.put(key, obj);
+            if (!mapOfColValues.containsKey(key)) {
+                mapOfColValues.put(key, obj);
+            }
         }
         return mapOfColValues;
     }

@@ -1,0 +1,43 @@
+server:
+  port: [ 8080,8082 ]
+spring:
+  application:
+    name: service-gateway
+  cloud:
+    gateway:
+      routes:
+        # 代理后端 spring-cloud-provider 服务
+        - id: provider
+          uri: lb://service-provider
+          predicates:
+            - Path=/provider/**
+          filters:
+            - RewritePath=/provider/(?<segment>.*), /$\{segment}
+        # 代理后端 spring-cloud-consumer 服务
+        - id: consumer
+          uri: lb://service-consumer
+          predicates:
+            - Path=/consumer/**
+          filters:
+            - RewritePath=/consumer/(?<segment>.*), /$\{segment}
+        # 代理 dataway api 服务
+        - id: datawayApi
+          uri: lb://dataway-provider
+          predicates:
+            - Path=/dataway/**
+          filters:
+            # 这里代理后端 Datway 服务，并在服务地址前面增加了一个 'dataway' 前缀。因此转发到后面之后只需要把前缀去掉
+            - RewritePath=/dataway/(?<segment>.*), /$\{segment}
+        # 代理 dataway admin UI
+        - id: datawayAdmin
+          uri: lb://dataway-provider
+          predicates:
+            - Path=/dataway-ui/**
+          filters:
+            # 告诉 UI，API 的 CONTEXT_PATH 已经被代理了
+            - AddRequestHeader=DW_CONTEXT_PATH_PROXY, /dataway
+            - RewritePath=/dataway-ui/(?<segment>.*), /interface-ui/$\{segment}
+    nacos:
+      config:
+        file-extension: yaml
+        prefix: gateway

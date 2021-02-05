@@ -22,10 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @version : 2016-12-16
- * @author 赵永春 (zyc@hasor.net)
- */
 public class ClassAnnoInterceptor implements MethodInterceptor {
     private final Map<String, List<String>> callInfo = new HashMap<>();
 

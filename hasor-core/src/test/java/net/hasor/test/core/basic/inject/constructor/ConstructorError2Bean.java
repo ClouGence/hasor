@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.test.core.basic.inject.constructor;
-//
 public class ConstructorError2Bean {
-    //
     public ConstructorError2Bean() throws Exception {
         throw new Exception("create Error.");
     }

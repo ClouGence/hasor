@@ -20,11 +20,6 @@ import net.hasor.core.Provider;
 import net.hasor.utils.BeanUtils;
 import org.junit.Test;
 
-/**
- *
- * @version : 2020-09-29
- * @author 赵永春 (zyc@hasor.net)
- */
 public class PropertyTest {
     @Test
     public void propertyTest1() throws Exception {

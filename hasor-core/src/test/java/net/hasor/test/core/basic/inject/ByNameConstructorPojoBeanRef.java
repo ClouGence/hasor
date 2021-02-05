@@ -19,7 +19,6 @@ import net.hasor.core.Inject;
 import net.hasor.core.Type;
 import net.hasor.test.core.basic.pojo.PojoBean;
 
-//
 public class ByNameConstructorPojoBeanRef {
     private PojoBean pojoBean;
 

@@ -18,7 +18,6 @@ import net.hasor.test.core.basic.pojo.PojoBean;
 
 import javax.inject.Inject;
 
-//
 public class Jsr330MethodRef {
     private PojoBean pojoBean;
 

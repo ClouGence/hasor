@@ -21,9 +21,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
 
-//
 // 8 种基本类型和其包装类型，以及4种时间类型和常用的枚举、字符串
-//
 public class PropertyBeanByByInjectSettingConfValue {
     //
     @InjectSettings("byteValue")

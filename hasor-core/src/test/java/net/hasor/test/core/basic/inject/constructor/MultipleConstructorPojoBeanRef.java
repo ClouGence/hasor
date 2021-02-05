@@ -17,7 +17,6 @@ package net.hasor.test.core.basic.inject.constructor;
 import net.hasor.core.ConstructorBy;
 import net.hasor.test.core.basic.pojo.PojoBean;
 
-//
 public class MultipleConstructorPojoBeanRef {
     private int      index = 0;
     private PojoBean pojoBean;

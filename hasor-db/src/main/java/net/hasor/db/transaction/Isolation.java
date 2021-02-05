@@ -44,7 +44,7 @@ public enum Isolation {
      */
     READ_COMMITTED(Connection.TRANSACTION_READ_COMMITTED),
     /**
-     * 可重复读取 
+     * 可重复读取
      * <p>可重复读(Repeatable Read)，当使用可重复读隔离级别时，在事务执行期间会锁定该事务以任何方式引用的所有行。
      * 因此，如果在同一个事务中发出同一个SELECT语句两次或更多次，那么产生的结果数据集总是相同的。
      * 因此，使用可重复读隔离级别的事务可以多次检索同一行集，并对它们执行任意操作，直到提交或回滚操作终止该事务。
@@ -81,7 +81,7 @@ public enum Isolation {
         throw new IllegalStateException(String.format("Connection ISOLATION error level %s.", value));
     }
 
-    protected int value() {
+    public int getValue() {
         return this.value;
     }
 }

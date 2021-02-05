@@ -25,9 +25,9 @@ import java.sql.Savepoint;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ConnectionHolder implements SavepointManager, ConnectionManager {
-    private int        referenceCount;
-    private DataSource dataSource;
-    private Connection connection;
+    private       int        referenceCount;
+    private final DataSource dataSource;
+    private       Connection connection;
 
     ConnectionHolder(final DataSource dataSource) {
         this.dataSource = dataSource;

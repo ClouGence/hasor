@@ -42,10 +42,6 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * @version : 2016-12-16
- * @author 赵永春 (zyc@hasor.net)
- */
 public class ContextHasorApiTest {
     @Test
     public void contextTest1() {

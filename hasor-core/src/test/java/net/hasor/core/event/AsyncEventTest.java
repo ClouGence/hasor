@@ -24,11 +24,6 @@ import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * 仅会被执行一次的事件
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
- */
 public class AsyncEventTest {
     @Test
     public void asyncEventTest() throws InterruptedException {

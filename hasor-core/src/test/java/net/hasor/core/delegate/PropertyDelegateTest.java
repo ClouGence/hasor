@@ -27,11 +27,6 @@ import org.junit.Test;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-/**
- *
- * @version : 2020-09-29
- * @author 赵永春 (zyc@hasor.net)
- */
 public class PropertyDelegateTest {
     @Test
     public void propertyTest1() {

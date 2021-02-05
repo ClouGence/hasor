@@ -15,7 +15,7 @@
  */
 package net.hasor.db.jdbc.lambda;
 import net.hasor.db.jdbc.page.Page;
-import net.hasor.db.types.mapping.FieldInfo;
+import net.hasor.db.dal.orm.FieldInfo;
 import net.hasor.utils.function.EConsumer;
 import net.hasor.utils.reflect.SFunction;
 

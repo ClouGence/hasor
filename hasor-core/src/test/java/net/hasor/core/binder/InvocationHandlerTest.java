@@ -32,10 +32,6 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 
-/**
- * @version : 2016-12-16
- * @author 赵永春 (zyc@hasor.net)
- */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ HasorUtils.class })
 public class InvocationHandlerTest extends AbstractBinderDataTest {

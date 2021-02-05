@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 
 public class DefaultSingletonTest {
     @Test
-    public void builderTest1() throws Throwable {
+    public void builderTest1() {
         AppContext appContext = Hasor.create().build(apiBinder -> {
             // 为每一个 apiBinder 声明的对象都设置单例
             apiBinder.bindSpiListener(CollectScopeChainSpi.class, new CollectScopeChainSpi() {

@@ -20,8 +20,8 @@ import net.hasor.db.jdbc.lambda.Compare;
 import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
 import net.hasor.db.jdbc.lambda.segment.Segment;
 import net.hasor.db.jdbc.lambda.segment.SqlLike;
-import net.hasor.db.types.mapping.FieldInfo;
-import net.hasor.db.types.mapping.TableInfo;
+import net.hasor.db.dal.orm.FieldInfo;
+import net.hasor.db.dal.orm.TableInfo;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.reflect.MethodUtils;
@@ -42,7 +42,7 @@ import static net.hasor.db.jdbc.lambda.segment.SqlKeyword.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T> implements Compare<T, R> {
-    private static final Map<String, FieldInfo> COLUMN_CACHE      = Collections.synchronizedMap(new WeakHashMap<>());
+    private static final Map<String, FieldInfo> COLUMN_CACHE      = new WeakHashMap<>();
     private static final ReadWriteLock          COLUMN_CACHE_LOCK = new ReentrantReadWriteLock();
     protected            MergeSqlSegment        queryTemplate     = new MergeSqlSegment();
     protected            List<Object>           queryParam        = new ArrayList<>();

@@ -43,7 +43,7 @@ public class JdbcTransactionManager implements TransactionManager {
     private final DataSource                        dataSource;
     private final TransactionTemplateManager        transactionTemplate;
 
-    protected JdbcTransactionManager(final DataSource dataSource) {
+    public JdbcTransactionManager(final DataSource dataSource) {
         Objects.requireNonNull(dataSource);
         this.dataSource = dataSource;
         this.transactionTemplate = new TransactionTemplateManager(this);

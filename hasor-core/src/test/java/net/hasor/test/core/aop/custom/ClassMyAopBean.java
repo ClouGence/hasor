@@ -15,7 +15,7 @@
  */
 package net.hasor.test.core.aop.custom;
 /**
- * 方法级别
+ * 类法级别
  * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */

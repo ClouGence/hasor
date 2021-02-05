@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.test.core.basic.inject.constructor;
-//
 public class ConstructorError1Bean {
-    //
     public ConstructorError1Bean() {
         throw new IllegalStateException("create Error.");
     }
