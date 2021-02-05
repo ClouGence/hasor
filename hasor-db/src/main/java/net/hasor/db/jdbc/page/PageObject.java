@@ -28,17 +28,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class PageObject implements Page {
     /** 满足条件的总记录数 */
     private       ESupplier<Integer, SQLException> totalCountSupplier = () -> 0;
-    private       int                              totalCount         = -1;
+    private       int                              totalCount         = 0;
     private final AtomicBoolean                    totalCountInited   = new AtomicBoolean(false);
     /** 每页记录数（-1表示无限大）*/
-    private       int                              pageSize           = -1;
+    private       int                              pageSize           = 0;
     /** 当前页号 */
     private       int                              currentPage        = 0;
     /** 起始页码的偏移量 */
     private       int                              pageNumberOffset   = 0;
 
     public PageObject() {
-        this.totalCountSupplier = () -> -1;
+        this.totalCountSupplier = () -> 0;
     }
 
     public PageObject(int pageSize, ESupplier<Integer, SQLException> totalCountSupplier) {
@@ -53,15 +53,20 @@ public class PageObject implements Page {
 
     /** 设置分页的页大小 */
     public void setPageSize(int pageSize) {
-        if (pageSize < 1) {
-            pageSize = 1;
+        if (pageSize <= 0) {
+            this.pageSize = 0;
+        } else {
+            this.pageSize = pageSize;
         }
-        this.pageSize = pageSize;
     }
 
     /**取当前页号 */
     public int getCurrentPage() {
-        return this.currentPage;
+        if (this.pageSize > 0) {
+            return this.currentPage + this.pageNumberOffset;
+        } else {
+            return this.pageNumberOffset;
+        }
     }
 
     /** 设置前页号 */
@@ -84,24 +89,33 @@ public class PageObject implements Page {
     /** 获取本页第一个记录的索引位置 */
     public int getFirstRecordPosition() {
         int pgSize = getPageSize();
-        if (pgSize < 0) {
+        if (pgSize <= 0) {
             return 0;
         }
-        return pgSize * getCurrentPage();
+        return pgSize * this.currentPage;
     }
 
     /** 获取总页数 */
     public int getTotalPage() throws SQLException {
         int pgSize = getPageSize();
-        int result = 1;
         if (pgSize > 0) {
             int totalCount = getTotalCount();
-            result = getTotalCount() / pgSize;
-            if ((totalCount == 0) || ((totalCount % pgSize) != 0)) {
+            if (totalCount == 0) {
+                return this.pageNumberOffset;
+            }
+            int result = totalCount / pgSize;
+            if ((totalCount % pgSize) != 0) {
                 result++;
             }
+            return result + this.pageNumberOffset;
+        } else {
+            int totalCount = getTotalCount();
+            if (totalCount > 0) {
+                return this.pageNumberOffset + 1;
+            } else {
+                return this.pageNumberOffset;
+            }
         }
-        return result + this.pageNumberOffset;
     }
 
     /** 获取记录总数 */

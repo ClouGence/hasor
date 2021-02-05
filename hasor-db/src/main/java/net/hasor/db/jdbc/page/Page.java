@@ -24,9 +24,10 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface Page {
+    /** 获取页大小，默认是 -1 标示无穷大。 */
     public int getPageSize();
 
-    /** 设置分页的页大小 */
+    /** 设置分页的页大小，-1标示无穷大 */
     public void setPageSize(int pageSize);
 
     /**取当前页号 */
@@ -65,7 +66,7 @@ public interface Page {
 
     /** 移动到最后一页 */
     public default void lastPage() throws SQLException {
-        setCurrentPage(getTotalPage());
+        setCurrentPage(getTotalPage() - 1);
     }
 
     /** 获取分页的页大小 */
