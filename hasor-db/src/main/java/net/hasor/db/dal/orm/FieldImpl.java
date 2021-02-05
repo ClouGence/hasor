@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.types.mapping;
+package net.hasor.db.dal.orm;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.UnknownTypeHandler;
 

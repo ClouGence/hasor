@@ -13,33 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.types.mapping;
-import net.hasor.db.types.TypeHandler;
-import net.hasor.db.types.UnknownTypeHandler;
-
+package net.hasor.db.dal.orm;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.sql.JDBCType;
 
 /**
- * 标记在字段上表示映射到的列
+ * 标记在类型上表示映射到的表
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Field {
-    /** 列名，为空的话表示采用字段名为列名 see: {@link #name()} */
+public @interface Table {
+    /** 分类(对于mysql 是 db，对于 pg 是 schema，对于 oracle 是 owner) */
+    public String category() default "";
+
+    /** 表名，为空的话表示采用类名为表名 see: {@link #name()} */
     public String value() default "";
 
     /** 表名，为空的话表示采用类名为表名 see: {@link #value()} */
     public String name() default "";
 
-    /** 使用的 jdbcType,如果没有配置那么会通过 javaType 来自动推断 */
-    public JDBCType jdbcType() default JDBCType.OTHER;
+    /** 列名是否不区分大小写，默认不区分 */
+    public boolean caseInsensitive() default true;
 
-    /** 使用的 typeHandler 功效和 Mybatis 的 TypeHandler 相同 */
-    public Class<? extends TypeHandler<?>> typeHandler() default UnknownTypeHandler.class;
+    /** 自动配置列，@Field 成为非必选项。 */
+    public boolean autoFiled() default true;
 }

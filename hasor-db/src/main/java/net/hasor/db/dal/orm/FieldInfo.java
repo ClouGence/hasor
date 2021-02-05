@@ -13,37 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.types.mapping;
+package net.hasor.db.dal.orm;
 import java.sql.JDBCType;
 
 /**
- * 字段 or 列 信息
+ * 字段信息
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-class FieldInfoImpl implements FieldInfo {
-    private final String   columnName;
-    private final JDBCType jdbcType;
-    private final Class<?> javaType;
+public interface FieldInfo {
+    /** 列名 */
+    public String getColumnName();
 
-    public FieldInfoImpl(String columnName, JDBCType jdbcType, Class<?> javaType) {
-        this.columnName = columnName;
-        this.jdbcType = jdbcType;
-        this.javaType = javaType;
-    }
+    /** 使用的 jdbcType,如果没有配置那么会通过 javaType 来自动推断 */
+    public JDBCType getJdbcType();
 
-    @Override
-    public String getColumnName() {
-        return this.columnName;
-    }
-
-    @Override
-    public JDBCType getJdbcType() {
-        return this.jdbcType;
-    }
-
-    @Override
-    public Class<?> getJavaType() {
-        return this.javaType;
-    }
+    /** 对应的 javaType */
+    public Class<?> getJavaType();
 }
