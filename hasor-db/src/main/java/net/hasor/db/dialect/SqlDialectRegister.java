@@ -20,9 +20,9 @@ import net.hasor.db.JdbcUtils;
 import net.hasor.db.dialect.provider.*;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
-import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 方言管理器
@@ -30,8 +30,8 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SqlDialectRegister {
-    private static final Map<String, Class<?>>   dialectAliasMap = new LinkedCaseInsensitiveMap<>();
-    private static final Map<String, SqlDialect> dialectCache    = new LinkedCaseInsensitiveMap<>();
+    private static final Map<String, Class<?>>   dialectAliasMap = new ConcurrentHashMap<>();
+    private static final Map<String, SqlDialect> dialectCache    = new ConcurrentHashMap<>();
 
     static {
         registerDialectAlias(JdbcUtils.POSTGRESQL, PostgreSqlDialect.class);
@@ -54,19 +54,19 @@ public class SqlDialectRegister {
         registerDialectAlias(JdbcUtils.INFORMIX, InformixDialect.class);
     }
 
-    public static void registerDialectAlias(String dialectName, Class<? extends SqlDialect> dialectClass) {
-        dialectAliasMap.put(dialectName, dialectClass);
+    public static void clearDialectCache() {
+        dialectCache.clear();
     }
 
-    public static void registerDialect(String dialectName, SqlDialect sqlDialect) {
-        dialectCache.put(dialectName, sqlDialect);
+    public static void registerDialectAlias(String dialectName, Class<? extends SqlDialect> dialectClass) {
+        dialectAliasMap.put(dialectName, dialectClass);
     }
 
     public static SqlDialect findOrCreate(String dialectName) {
         return findOrCreate(dialectName, null);
     }
 
-    public static SqlDialect findOrCreate(String dialectName, AppContext appContext) {
+    public static SqlDialect findOrCreate(final String dialectName, AppContext appContext) {
         if (StringUtils.isBlank(dialectName)) {
             return SqlDialect.DEFAULT;
         }
@@ -84,8 +84,8 @@ public class SqlDialectRegister {
                 } else {
                     aClass = ResourcesUtils.classForName(dialectName);
                 }
-            } catch (Exception e) {
-                lastMessage = "load dialect '" + dialectName + "' class failed -> " + e.getMessage();
+            } catch (ClassNotFoundException e) {
+                lastMessage = "load dialect '" + dialectName + "' class not found";
             }
         }
         //
@@ -96,7 +96,7 @@ public class SqlDialectRegister {
                 try {
                     dialect = (SqlDialect) aClass.newInstance();
                 } catch (Exception e) {
-                    throw new IllegalStateException("create dialect failed -> " + e.getMessage(), e);
+                    throw new IllegalStateException("load dialect '" + aClass.getName() + "' failed, " + e.getMessage(), e);
                 }
             }
         } else {
@@ -106,12 +106,11 @@ public class SqlDialectRegister {
                     dialect = appContext.getInstance(dialectBindInfo);
                 }
             }
-            //
             if (dialect == null) {
                 if (StringUtils.isNotBlank(lastMessage)) {
                     throw new IllegalStateException(lastMessage);
                 } else {
-                    throw new IllegalStateException("No dialect '" + dialectName + "' found.");
+                    throw new IllegalStateException("no dialect '" + dialectName + "' found.");
                 }
             }
         }

@@ -18,15 +18,14 @@ import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
+import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.OrderByElement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 
 import java.sql.JDBCType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * SqlServer 的 SqlDialect 实现
@@ -34,6 +33,29 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SqlServer2012Dialect implements SqlDialect {
+    private static final Map<String, Select> CACHE       = new WeakHashMap<>();
+    private static final Object              LOCK_OBJECT = new Object();
+
+    protected static Select parseSelect(String buildSqlString) {
+        Select select = CACHE.get(buildSqlString);
+        if (select != null) {
+            return select;
+        }
+        synchronized (LOCK_OBJECT) {
+            select = CACHE.get(buildSqlString);
+            if (select != null) {
+                return select;
+            }
+            try {
+                select = (Select) CCJSqlParserUtil.parse(buildSqlString);
+                CACHE.put(buildSqlString, select);
+                return select;
+            } catch (JSQLParserException e) {
+                throw ExceptionUtils.toRuntimeException(e);
+            }
+        }
+    }
+
     @Override
     public String buildSelect(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
         return "[" + columnName + "]";
@@ -51,19 +73,6 @@ public class SqlServer2012Dialect implements SqlDialect {
     @Override
     public String buildColumnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
         return "[" + columnName + "]";
-    }
-
-    protected Select parseSelect(String buildSqlString) {
-        Select select = null;//fxSql.attach(Select.class);
-        //        if (select == null) {
-        try {
-            select = (Select) CCJSqlParserUtil.parse(buildSqlString);
-            //fxSql.attach(Select.class, select);
-        } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e);
-        }
-        //        }
-        return select;
     }
 
     @Override

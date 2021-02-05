@@ -46,6 +46,11 @@ public class HiveDialect implements SqlDialect {
     }
 
     @Override
+    public BoundSql getCountSql(BoundSql boundSql) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public BoundSql getPageSql(BoundSql boundSql, int start, int limit) {
         throw new UnsupportedOperationException();
     }
