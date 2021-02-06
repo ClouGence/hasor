@@ -30,4 +30,10 @@ public class BasicRowMapperTest {
         };
         assert rowMapper.getHandlerRegistry() == TypeHandlerRegistry.DEFAULT;
     }
+
+    @Test
+    public void testColumnMapRowMapper_2() {
+        assert !new ColumnMapRowMapper(false).isCaseInsensitive();
+        assert new ColumnMapRowMapper(true).isCaseInsensitive();
+    }
 }

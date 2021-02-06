@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
+import net.hasor.db.dal.orm.MappingHandler;
+import net.hasor.db.dal.orm.MappingRowMapper;
 import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.SqlParameter.InSqlParameter;
 import net.hasor.db.jdbc.SqlParameter.OutSqlParameter;
 import net.hasor.db.jdbc.SqlParameter.ReturnSqlParameter;
 import net.hasor.db.jdbc.extractor.ColumnMapResultSetExtractor;
+import net.hasor.db.jdbc.extractor.RowCallbackHandlerResultSetExtractor;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.lambda.LambdaOperations;
 import net.hasor.db.jdbc.lambda.query.LambdaQueryWrapper;
@@ -27,8 +30,6 @@ import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
 import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
-import net.hasor.db.dal.orm.MappingHandler;
-import net.hasor.db.dal.orm.MappingRowMapper;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
@@ -130,7 +131,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     }
 
     public void loadSQL(final String sqlResource) throws IOException, SQLException {
-        this.loadSplitSQL(null, sqlResource);
+        this.loadSplitSQL(null, StandardCharsets.UTF_8, sqlResource);
     }
 
     public void loadSQL(final Charset charset, final String sqlResource) throws IOException, SQLException {
@@ -148,7 +149,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     public void loadSplitSQL(final String splitString, final Charset charset, final String sqlResource) throws IOException, SQLException {
         InputStream inStream = ResourcesUtils.getResourceAsStream(sqlResource);
         if (inStream == null) {
-            throw new IOException("can't find :" + sqlResource);
+            throw new IOException("can't find resource '" + sqlResource + "'");
         }
         InputStreamReader reader = new InputStreamReader(inStream, charset);
         this.loadSplitSQL(splitString, reader);
@@ -181,17 +182,15 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         }
         //
         return this.execute((ConnectionCallback<T>) con -> {
-            String stmtSQL = "";
             try (PreparedStatement ps = psc.createPreparedStatement(con)) {
                 JdbcTemplate.this.applyStatementSettings(ps);
-                stmtSQL = ps.toString();
                 T result = action.doInPreparedStatement(ps);
                 JdbcTemplate.this.handleWarnings(ps);
                 return result;
             } catch (SQLException ex) {
                 if (logger.isDebugEnabled()) {
                     String sql = JdbcTemplate.getSql(psc);
-                    logger.error(stmtSQL, ex);
+                    logger.error("execute SQL :" + sql, ex);
                 }
                 throw ex;
             } finally {
@@ -268,8 +267,8 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         return this.execute(this.getPreparedStatementCreator(sql, parameterSource), new MultipleResultExtractor());
     }
 
-    /***/
-    public <T> T query(final PreparedStatementCreator psc, final PreparedStatementSetter pss, final ResultSetExtractor<T> rse) throws SQLException {
+    @Override
+    public <T> T execute(final PreparedStatementCreator psc, final PreparedStatementSetter pss, final ResultSetExtractor<T> rse) throws SQLException {
         Objects.requireNonNull(rse, "ResultSetExtractor must not be null.");
         if (logger.isDebugEnabled()) {
             logger.debug("executing prepared SQL query");
@@ -290,7 +289,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
 
     @Override
     public <T> T query(final PreparedStatementCreator psc, final ResultSetExtractor<T> rse) throws SQLException {
-        return this.query(psc, null, rse);
+        return this.execute(psc, null, rse);
     }
 
     @Override
@@ -318,7 +317,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
 
     @Override
     public <T> T query(final String sql, final PreparedStatementSetter pss, final ResultSetExtractor<T> rse) throws SQLException {
-        return this.query(new SimplePreparedStatementCreator(sql), pss, rse);
+        return this.execute(new SimplePreparedStatementCreator(sql), pss, rse);
     }
 
     @Override
@@ -578,6 +577,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     }
 
     /***/
+    @Override
     public int executeUpdate(final PreparedStatementCreator psc, final PreparedStatementSetter pss) throws SQLException {
         if (logger.isDebugEnabled()) {
             logger.debug("executing prepared SQL update");
@@ -735,7 +735,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     @Override
     public int[] executeBatch(final String sql, final SqlParameterSource[] batchArgs) throws SQLException {
         if (batchArgs == null || batchArgs.length == 0) {
-            return new int[] { 0 };
+            return new int[0];
         }
         return this.executeBatch(sql, new SqlParameterSourceBatchPreparedStatementSetter(sql, batchArgs));
     }
@@ -812,6 +812,22 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     @Override
     public <T> T call(String callString, CallableStatementCallback<T> action) throws SQLException {
         return this.call(new SimpleCallableStatementCreator(callString), action);
+    }
+
+    @Override
+    public <T> T call(String callString, CallableStatementSetter setter, CallableStatementCallback<T> action) throws SQLException {
+        return this.call(new SimpleCallableStatementCreator(callString), cs -> {
+            try {
+                if (setter != null) {
+                    setter.setValues(cs);
+                }
+                return action.doInCallableStatement(cs);
+            } finally {
+                if (setter instanceof ParameterDisposer) {
+                    ((ParameterDisposer) setter).cleanupParameters();
+                }
+            }
+        });
     }
 
     @Override
@@ -926,7 +942,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
                     return (new RowMapperResultSetExtractor<>(rowMapper)).extractData(rs);
                 } else if (param.getRowCallbackHandler() != null) {
                     RowCallbackHandler rch = param.getRowCallbackHandler();
-                    (new JdbcTemplate.RowCallbackHandlerResultSetExtractor(rch)).extractData(rs);
+                    new RowCallbackHandlerResultSetExtractor(rch).extractData(rs);
                     return "ResultSet returned from stored procedure was processed";
                 } else if (param.getResultSetExtractor() != null) {
                     return param.getResultSetExtractor().extractData(rs);
@@ -1072,24 +1088,6 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         @Override
         public String getSql() {
             return this.callString;
-        }
-    }
-
-    /**使用 {@link RowCallbackHandler} 类型循环处理每一行记录的适配器*/
-    private static class RowCallbackHandlerResultSetExtractor implements ResultSetExtractor<Object> {
-        private final RowCallbackHandler rch;
-
-        public RowCallbackHandlerResultSetExtractor(final RowCallbackHandler rch) {
-            this.rch = rch;
-        }
-
-        @Override
-        public Object extractData(final ResultSet rs) throws SQLException {
-            int rowNum = 0;
-            while (rs.next()) {
-                this.rch.processRow(rs, rowNum++);
-            }
-            return null;
         }
     }
 

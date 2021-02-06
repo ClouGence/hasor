@@ -35,6 +35,8 @@ public interface JdbcOperations {
     /**执行一个 JDBC 操作。这个 JDBC 调用操作将会使用 PreparedStatement 接口执行。*/
     public <T> T execute(PreparedStatementCreator psc, PreparedStatementCallback<T> action) throws SQLException;
 
+    public <T> T execute(PreparedStatementCreator psc, PreparedStatementSetter pss, ResultSetExtractor<T> rse) throws SQLException;
+
     /**执行一个动态 SQL 语句。SQL 语句会被编译成 PreparedStatement 类型通过回调接口 PreparedStatementCallback 执行。*/
     public <T> T execute(String sql, PreparedStatementCallback<T> action) throws SQLException;
 
@@ -345,6 +347,9 @@ public interface JdbcOperations {
     /**执行一个更新语句（insert、update、delete），这个查询将会使用 PreparedStatement 接口操作。*/
     public int executeUpdate(String sql, Map<String, ?> paramMap) throws SQLException;
 
+    /**执行一个更新语句（insert、update、delete），这个查询将会使用 PreparedStatement 接口操作。*/
+    public int executeUpdate(PreparedStatementCreator psc, PreparedStatementSetter pss) throws SQLException;
+
     /**批量执行 insert 或 update、delete 语句，返回值用于表示受影响的行数。*/
     public int[] executeBatch(String[] sql) throws SQLException;
 
@@ -363,6 +368,8 @@ public interface JdbcOperations {
     public <T> T call(CallableStatementCreator csc, CallableStatementCallback<T> action) throws SQLException;
 
     public <T> T call(String callString, CallableStatementCallback<T> action) throws SQLException;
+
+    public <T> T call(String callString, CallableStatementSetter setter, CallableStatementCallback<T> action) throws SQLException;
 
     public Map<String, Object> call(String callString, List<SqlParameter> declaredParameters) throws SQLException;
 }

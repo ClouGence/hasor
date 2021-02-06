@@ -16,6 +16,7 @@
 package net.hasor.db.jdbc.core;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.db.dal.orm.MappingHandler;
 import net.hasor.db.datasource.ConnectionProxy;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.StatementCallback;
@@ -182,5 +183,23 @@ public class BaseClassTest extends AbstractDbTest {
             con.close();
             return null;
         });
+    }
+
+    @Test
+    public void jdbcTemplateTest_6() {
+        DataSource dataSource = PowerMockito.mock(DataSource.class);
+        Connection connection = PowerMockito.mock(Connection.class);
+        MappingHandler mappingHandler = PowerMockito.mock(MappingHandler.class);
+        //
+        assert new JdbcTemplate(dataSource, mappingHandler).getMappingHandler() == mappingHandler;
+        assert new JdbcTemplate(connection, mappingHandler).getMappingHandler() == mappingHandler;
+        //
+        assert new JdbcTemplate().getMappingHandler() == MappingHandler.DEFAULT;
+        //
+        assert new JdbcTemplate().isResultsCaseInsensitive();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        assert jdbcTemplate.isResultsCaseInsensitive();
+        jdbcTemplate.setResultsCaseInsensitive(false);
+        assert !jdbcTemplate.isResultsCaseInsensitive();
     }
 }
