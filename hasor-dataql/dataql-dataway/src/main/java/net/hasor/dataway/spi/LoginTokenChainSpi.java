@@ -24,5 +24,5 @@ import java.util.EventListener;
  * @version : 2021-01-19
  */
 public interface LoginTokenChainSpi extends EventListener {
-    public boolean doLogin(Invoker invoker);
+    public boolean doCheckToken(Invoker invoker);
 }

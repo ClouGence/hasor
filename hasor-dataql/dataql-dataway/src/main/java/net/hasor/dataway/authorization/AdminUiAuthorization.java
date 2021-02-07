@@ -105,9 +105,10 @@ public class AdminUiAuthorization implements InvokerFilter, AppContextAware {
     protected boolean checkDwAuthData(final Invoker invoker) throws NoSuchAlgorithmException {
         if (this.spiTrigger.hasSpi(LoginTokenChainSpi.class)) {
             // use spi trigger to check login
-            return this.spiTrigger.chainSpi(LoginTokenChainSpi.class, (listener, lastResult) -> {
-                return lastResult != null ? lastResult : listener.doLogin(invoker);
-            }, false);
+            Boolean result = this.spiTrigger.chainSpi(LoginTokenChainSpi.class, (listener, lastResult) -> {
+                return lastResult != null ? lastResult : listener.doCheckToken(invoker);
+            }, null);
+            return result != null && result;
         } else {
             // use default
             String cookieDwAuthData = cookieValue(invoker.getHttpRequest(), this.dwAuthDataCookieName);
@@ -172,9 +173,10 @@ public class AdminUiAuthorization implements InvokerFilter, AppContextAware {
         //
         if (this.spiTrigger.hasSpi(LoginPerformChainSpi.class)) {
             // use spi trigger to login
-            return this.spiTrigger.chainSpi(LoginPerformChainSpi.class, (listener, lastResult) -> {
+            Boolean result = this.spiTrigger.chainSpi(LoginPerformChainSpi.class, (listener, lastResult) -> {
                 return lastResult != null ? lastResult : listener.doLogin(invoker);
-            }, false);
+            }, null);
+            return result != null && result;
         } else {
             // use default
             String loginDwAuthData = CommonCodeUtils.MD5.getMD5(username + ":" + password);
