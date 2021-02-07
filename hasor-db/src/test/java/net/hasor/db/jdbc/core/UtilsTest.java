@@ -119,4 +119,33 @@ public class UtilsTest extends AbstractDbTest {
         assert buildValues.length == 1;
         assert buildValues[0] == arrays;
     }
+
+    @Test
+    public void buildSql_5() {
+        assert ParsedSql.getParsedSql("select ::abc").buildSql().equals("select ::abc");
+        assert ParsedSql.getParsedSql("select '::abc'").buildSql().equals("select '::abc'");
+        assert ParsedSql.getParsedSql("select ':abc'").buildSql().equals("select ':abc'");
+    }
+
+    @Test
+    public void buildSql_6() {
+        try {
+            ParsedSql.getParsedSql("select :abc , ?").buildValues(new MapSqlParameterSource(new HashMap<>()));
+            assert false;
+        } catch (Exception e) {
+            assert e.getMessage().startsWith("You can't mix named and traditional ? placeholders. You have ");
+        }
+    }
+
+    @Test
+    public void buildSql_7() {
+        String buildSql = ParsedSql.getParsedSql("/** a *").buildSql();
+        assert buildSql.equals("/** a *");
+    }
+
+    @Test
+    public void buildSql_8() {
+        String buildSql = ParsedSql.getParsedSql("-** a *").buildSql();
+        assert buildSql.equals("-** a *");
+    }
 }

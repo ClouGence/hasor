@@ -76,7 +76,7 @@ public class MultipleExtractorTest extends AbstractDbTest {
             String multipleSql = ""//
                     + "select * from tb_user where loginName = ?;\n"//
                     + "select * from tb_user where loginName = ?;\n";
-            List<Object> objectList = jdbcTemplate.multipleExecute(multipleSql, beanForData1().getName(), beanForData2().getName());
+            List<Object> objectList = jdbcTemplate.multipleExecute(multipleSql, beanForData1().getLoginName(), beanForData2().getLoginName());
             //
             assert objectList.size() == 2;
             assert objectList.get(0) instanceof ArrayList;

@@ -229,11 +229,6 @@ public class SqlParameterUtils implements SqlParameter {
         return new InSqlParameterUtilsImpl(null, jdbcType, null, null, null, value);
     }
 
-    public static InSqlParameter withInput(Object value, TypeHandler<?> typeHandler) {
-        JDBCType jdbcType = TypeHandlerRegistry.toSqlType(Objects.requireNonNull(value, "only value, can not be null.").getClass());
-        return new InSqlParameterUtilsImpl(null, jdbcType, null, null, typeHandler, value);
-    }
-
     public static InSqlParameter withInput(Object value, JDBCType jdbcType, TypeHandler<?> typeHandler) {
         return new InSqlParameterUtilsImpl(null, jdbcType, null, null, typeHandler, value);
     }
