@@ -10,8 +10,6 @@ const adminBaseUrl = (oriUrl) => {
 
 // 通用查 配置
 const ApiUrl = {
-    checkVersion: '//apis.hasor.net/projects/hasor-dataway/checkVersion',
-    //
     apiInfo: adminBaseUrl(`/api/api-info`),
     apiList: adminBaseUrl(`/api/api-list`),
     apiDetail: adminBaseUrl(`/api/api-detail`),

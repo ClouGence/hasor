@@ -147,8 +147,6 @@
                 <wrapParameterName>root</wrapParameterName>
                 <!-- 是否展示 Git 的按钮 -->
                 <showGitButton>true</showGitButton>
-                <!-- 是否检测版本，Dataway 会收集您一些信息。如关闭将不会接收到任何新版本提示信息。 -->
-                <checkDatawayVersion>true</checkDatawayVersion>
             </globalConfig>
         </dataway>
 

@@ -88,7 +88,7 @@ public class GlobalConfigController extends BasicController implements UiConfig,
     }
 
     @PostConstruct
-    public void initController() throws SocketException {
+    public void initController() {
         this.globalConfig = this.appContext.getInstance(GlobalConfig.class);
         SettingNode settingNode = this.appContext.getEnvironment().getSettings().getNode("hasor.dataway.globalConfig");
         if (settingNode != null) {
@@ -101,8 +101,6 @@ public class GlobalConfigController extends BasicController implements UiConfig,
         }
         //
         this.globalConfig.put("API_BASE_URL", this.apiBaseUri);
-        this.globalConfig.put("ALL_MAC", allLocalMac());
-        this.globalConfig.put("DATAWAY_VERSION", DATAWAY_VERSION);
     }
 
     @Get

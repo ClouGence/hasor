@@ -8,17 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import './assets/public.css';
 import axios from 'axios';
 
-//
-const lastCheckVersion = localStorage.getItem('lastCheckVersion');
-if (lastCheckVersion === undefined || lastCheckVersion === null) {
-    localStorage.setItem('lastCheckVersion', window.DATAWAY_VERSION);
-}
-const lastCheckVersionDialogRemember = localStorage.getItem('lastCheckVersionDialogRemember');
-if (lastCheckVersionDialogRemember === undefined || lastCheckVersionDialogRemember === null) {
-    localStorage.setItem('lastCheckVersionDialogRemember', 'false');
-}
-
-const configIsBool = ['resultStructure', 'wrapAllParameters', 'showGitButton', 'checkDatawayVersion', 'enableCrossDomain'];
+const configIsBool = ['resultStructure', 'wrapAllParameters', 'showGitButton', 'enableCrossDomain'];
 const toBoolean = (val) => {
     return val != null && val.toLowerCase() === 'true';
 };
@@ -44,7 +34,6 @@ axios({
         wrapAllParameters: false,
         wrapParameterName: 'root',
         showGitButton: true,
-        checkDatawayVersion: true,
         enableCrossDomain: false
     };
     if (response.data.success) {
@@ -61,8 +50,6 @@ axios({
     const contextPath = defaultOption['CONTEXT_PATH'];
     window.CONTEXT_PATH = contextPath === undefined ? '' : contextPath;
     window.API_BASE_URL = defaultOption['API_BASE_URL'];
-    window.ALL_MAC = defaultOption['ALL_MAC'];
-    window.DATAWAY_VERSION = defaultOption['DATAWAY_VERSION'];
     //
     Vue.prototype.defaultOption = defaultOption;
     Vue.config.productionTip = false;
