@@ -127,7 +127,7 @@ public class ApiBinderWrap implements ApiBinder {
     }
 
     @Override
-    public <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<T> listener) {
+    public <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<? extends T> listener) {
         this.apiBinder.bindSpiListener(spiType, listener);
     }
 

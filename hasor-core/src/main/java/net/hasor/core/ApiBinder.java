@@ -336,7 +336,7 @@ public interface ApiBinder {
     }
 
     /** 添加SPI监听器 */
-    public <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<T> listener);
+    public <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<? extends T> listener);
 
     /** 加载SPI监听器，可以在 spiType 上选择配置 @Spi 注解 */
     public default void loadSpiListener(Set<Class<?>> spiTypeSet) {

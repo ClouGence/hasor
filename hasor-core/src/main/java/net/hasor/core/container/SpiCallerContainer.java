@@ -147,7 +147,7 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
     }
 
     /** 注册一个 SPI 监听器 */
-    public synchronized <T extends EventListener> void addListener(Class<T> spiType, Supplier<T> spiListener) {
+    public synchronized <T extends EventListener> void addListener(Class<T> spiType, Supplier<? extends T> spiListener) {
         Objects.requireNonNull(spiType, "spiType is null.");
         Objects.requireNonNull(spiListener, "spiListener is null.");
         //

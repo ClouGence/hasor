@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.container;
-
 import net.hasor.core.*;
 import net.hasor.core.aop.PropertyDelegate;
 import net.hasor.core.binder.ApiBinderWrap;
@@ -38,7 +37,7 @@ import java.util.function.Supplier;
  * @version : 2014年11月12日
  */
 public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiBinder {
-    private final ApiBinder apiBinder;
+    private final ApiBinder      apiBinder;
     private final RsfEnvironment rsfEnvironment;
 
     protected InnerRsfApiBinder(ApiBinder apiBinder, RsfEnvironment rsfEnvironment) {
@@ -159,7 +158,7 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
     }
 
     @Override
-    public <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<T> listener) {
+    public <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<? extends T> listener) {
         this.apiBinder.bindSpiListener(spiType, listener);
     }
 
