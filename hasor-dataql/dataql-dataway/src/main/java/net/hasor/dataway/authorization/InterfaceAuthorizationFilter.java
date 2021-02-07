@@ -78,6 +78,10 @@ public class InterfaceAuthorizationFilter implements InvokerFilter {
                 }
             }
         }
+        // .没有配置权限策略，那么就不需要权限
+        if (uiAuthorization == null) {
+            return chain.doNext(invoker);
+        }
         // .执行权限检查SPI
         DatawayApi datawayApi = (StringUtils.isNotBlank(apiId) && !"-1".equalsIgnoreCase(apiId)) ?  //
                 this.datawayService.getApiById(apiId) :                                             //
