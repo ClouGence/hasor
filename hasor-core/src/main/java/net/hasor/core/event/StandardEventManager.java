@@ -33,8 +33,8 @@ import java.util.concurrent.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class StandardEventManager implements EventContext {
-    private ScheduledExecutorService                 executorService = null;
-    private ConcurrentMap<String, EventListenerPool> listenerMap     = new ConcurrentHashMap<>();
+    private final ScheduledExecutorService                 executorService;
+    private final ConcurrentMap<String, EventListenerPool> listenerMap = new ConcurrentHashMap<>();
 
     public StandardEventManager(int eventThreadPoolSize, String name, ClassLoader classLoader) {
         this.executorService = Executors.newScheduledThreadPool(eventThreadPoolSize, new NameThreadFactory(name + "-EventPool-%s", classLoader));
@@ -195,6 +195,11 @@ public class StandardEventManager implements EventContext {
             runnable.run();
             return null;
         });
+    }
+
+    @Override
+    public Executor getExecutor() {
+        return this.executorService;
     }
 
     private <T> Future<Boolean> fireEvent(String eventType, FireType fireType, EventCallBackHook<T> callBack, boolean atCurrentThread, T eventData) {
