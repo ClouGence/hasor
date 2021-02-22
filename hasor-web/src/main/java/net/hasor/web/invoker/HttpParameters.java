@@ -15,6 +15,7 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.function.ESupplier;
 import net.hasor.web.Invoker;
 import net.hasor.web.Mapping;
 import org.slf4j.Logger;
@@ -28,11 +29,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Http 参数解析
+ * Http 参数解析，对参数的操作不会影响到 request 和 response
  * @version : 2020-06-28
  * @author 赵永春 (zyc@hasor.net)
  */
-public class HttpParameters {
+public final class HttpParameters {
     private static final Logger                                 logger            = LoggerFactory.getLogger(InvokerCaller.class);
     private static final ThreadLocal<Map<String, List<String>>> headerParamLocal  = new ThreadLocal<>();
     private static final ThreadLocal<Map<String, List<String>>> cookieParamLocal  = new ThreadLocal<>();
@@ -40,14 +41,18 @@ public class HttpParameters {
     private static final ThreadLocal<Map<String, List<String>>> queryParamLocal   = new ThreadLocal<>();
     private static final ThreadLocal<Map<String, List<String>>> requestParamLocal = new ThreadLocal<>();
 
-    public static interface PreCaller<T> {
-        public T invoke(HttpParameters httpParameters) throws Throwable;
+    public static <T> T executeWorker(HttpServletRequest httpRequest, ESupplier<T, Throwable> worker) throws Throwable {
+        return executeWorker(null, httpRequest, worker);
     }
 
-    static <T> T preInvoke(Invoker invoker, PreCaller<T> preCaller) throws Throwable {
+    protected static <T> T executeWorker(Invoker invoker, ESupplier<T, Throwable> worker) throws Throwable {
+        return executeWorker(invoker, invoker.getHttpRequest(), worker);
+    }
+
+    private static <T> T executeWorker(Invoker invoker, HttpServletRequest httpRequest, ESupplier<T, Throwable> worker) throws Throwable {
         try {
-            init(invoker, invoker.getHttpRequest());
-            return preCaller.invoke(new HttpParameters());
+            init(invoker, httpRequest);
+            return worker.eGet();
         } finally {
             headerParamLocal.remove();
             cookieParamLocal.remove();
@@ -121,32 +126,34 @@ public class HttpParameters {
         //
         // path
         Map<String, List<String>> pathMap = new HashMap<>();
-        Mapping ownerMapping = invoker.ownerMapping();
-        if (ownerMapping != null) {
-            String requestPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
-            String matchVar = ownerMapping.getMappingToMatches();
-            String matchKey = "(?:\\{(\\w+)\\}){1,}";//  (?:\{(\w+)\}){1,}
-            Matcher keyM = Pattern.compile(matchKey).matcher(ownerMapping.getMappingTo());
-            Matcher varM = Pattern.compile(matchVar).matcher(requestPath);
-            ArrayList<String> keyArray = new ArrayList<>();
-            ArrayList<String> varArray = new ArrayList<>();
-            while (keyM.find()) {
-                keyArray.add(keyM.group(1));
-            }
-            varM.find();
-            for (int i = 1; i <= varM.groupCount(); i++) {
-                varArray.add(varM.group(i));
-            }
-            //
-            for (int i = 0; i < keyArray.size(); i++) {
-                String k = keyArray.get(i);
-                String v = varArray.get(i);
-                List<String> pArray = pathMap.get(k);
-                pArray = pArray == null ? new ArrayList<>() : pArray;
-                if (!pArray.contains(v)) {
-                    pArray.add(v);
+        if (invoker != null) {
+            Mapping ownerMapping = invoker.ownerMapping();
+            if (ownerMapping != null) {
+                String requestPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
+                String matchVar = ownerMapping.getMappingToMatches();
+                String matchKey = "(?:\\{(\\w+)\\}){1,}";//  (?:\{(\w+)\}){1,}
+                Matcher keyM = Pattern.compile(matchKey).matcher(ownerMapping.getMappingTo());
+                Matcher varM = Pattern.compile(matchVar).matcher(requestPath);
+                ArrayList<String> keyArray = new ArrayList<>();
+                ArrayList<String> varArray = new ArrayList<>();
+                while (keyM.find()) {
+                    keyArray.add(keyM.group(1));
                 }
-                pathMap.put(k, pArray);
+                varM.find();
+                for (int i = 1; i <= varM.groupCount(); i++) {
+                    varArray.add(varM.group(i));
+                }
+                //
+                for (int i = 0; i < keyArray.size(); i++) {
+                    String k = keyArray.get(i);
+                    String v = varArray.get(i);
+                    List<String> pArray = pathMap.get(k);
+                    pArray = pArray == null ? new ArrayList<>() : pArray;
+                    if (!pArray.contains(v)) {
+                        pArray.add(v);
+                    }
+                    pathMap.put(k, pArray);
+                }
             }
         }
         pathParamLocal.set(pathMap);

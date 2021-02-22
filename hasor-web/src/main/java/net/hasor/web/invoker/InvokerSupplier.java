@@ -16,6 +16,8 @@
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.function.EFunction;
+import net.hasor.utils.future.BasicFuture;
 import net.hasor.utils.io.IOUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.Mapping;
@@ -29,6 +31,8 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 
 /**
  * {@link Invoker} 接口实现类。
@@ -37,7 +41,7 @@ import java.util.Set;
  */
 public class InvokerSupplier implements Invoker {
     protected static Logger              logger          = LoggerFactory.getLogger(InvokerSupplier.class);
-    private          Set<String>         lockKeys        = new HashSet<>();
+    private final    Set<String>         lockKeys        = new HashSet<>();
     private          HttpServletRequest  httpRequest     = null;
     private          HttpServletResponse httpResponse    = null;
     private          AppContext          appContext      = null;
@@ -77,6 +81,23 @@ public class InvokerSupplier implements Invoker {
     @Override
     public HttpServletResponse getHttpResponse() {
         return this.httpResponse;
+    }
+
+    @Override
+    public <T> Future<T> asyncExecute(EFunction<Invoker, T, Throwable> consumer, Executor executor) {
+        BasicFuture<T> future = new BasicFuture<>();
+        Invoker invoker = this;
+        executor.execute(() -> {
+            try {
+                T result = HttpParameters.executeWorker(invoker, () -> {
+                    return consumer.eApply(invoker);
+                });
+                future.completed(result);
+            } catch (Throwable e) {
+                future.failed(e);
+            }
+        });
+        return future;
     }
 
     @Override

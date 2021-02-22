@@ -21,6 +21,6 @@ import java.util.concurrent.Future;
  * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface ExceuteCaller {
+public interface ExecuteCaller {
     public Future<Object> invoke(FilterChain chain) throws Throwable;
 }

@@ -24,7 +24,7 @@ import net.hasor.utils.StringUtils;
 import net.hasor.utils.future.BasicFuture;
 import net.hasor.utils.io.output.WriterOutputStream;
 import net.hasor.web.binder.OneConfig;
-import net.hasor.web.invoker.ExceuteCaller;
+import net.hasor.web.invoker.ExecuteCaller;
 import net.hasor.web.invoker.InvokerContext;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
@@ -385,7 +385,7 @@ public class AbstractTest {
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
         //
-        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
+        ExecuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
         caller.invoke(null).get();
         return stringWriter.toString();
     }
@@ -393,7 +393,7 @@ public class AbstractTest {
     protected Object callInvoker(AppContext appContext, HttpServletRequest request) throws Throwable {
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
-        ExceuteCaller caller = invokerContext.genCaller(request, PowerMockito.mock(HttpServletResponse.class));
+        ExecuteCaller caller = invokerContext.genCaller(request, PowerMockito.mock(HttpServletResponse.class));
         return caller.invoke(null).get();
     }
 }

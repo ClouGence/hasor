@@ -17,6 +17,7 @@ package net.hasor.web;
 import net.hasor.core.AppContext;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.function.EFunction;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +25,8 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -50,6 +53,15 @@ public interface Invoker extends MimeType {
 
     /** 获取 {@link HttpServletResponse} 对象。*/
     public HttpServletResponse getHttpResponse();
+
+    /** 安排一个异步任务来执行接下来的任务。*/
+    public <T> Future<T> asyncExecute(EFunction<Invoker, T, Throwable> consumer, Executor executor);
+
+    /** 安排一个异步任务来执行接下来的任务。*/
+    public default <T> Future<T> asyncExecute(EFunction<Invoker, T, Throwable> consumer) {
+        Executor executor = this.getAppContext().getEnvironment().getEventContext().getExecutor();
+        return this.asyncExecute(consumer, executor);
+    }
 
     /** 设置内容类型类型，如果没有配置那么会通过 renderType 配置进行自动推断，若 @RenderType 也未配置，那么不会进行任何操作。*/
     public String contentType();

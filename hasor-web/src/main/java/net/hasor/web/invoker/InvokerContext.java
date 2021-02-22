@@ -43,7 +43,7 @@ public class InvokerContext {
     private          AppContext         appContext     = null;
     private          Mapping[]          invokeArray    = new Mapping[0];
     private          FilterDef[]        filters        = new FilterDef[0];
-    private          RootInvokerCreater invokerCreater = null;
+    private          RootInvokerCreater invokerCreator = null;
 
     public void initContext(final AppContext appContext, final OneConfig configMap) throws Throwable {
         this.appContext = Objects.requireNonNull(appContext);
@@ -72,8 +72,8 @@ public class InvokerContext {
         for (FilterDef filter : this.filters) {
             filter.init(configMap);
         }
-        // .creater
-        this.invokerCreater = new RootInvokerCreater(appContext);
+        // .creator
+        this.invokerCreator = new RootInvokerCreater(appContext);
     }
 
     public void destroyContext() {
@@ -83,10 +83,10 @@ public class InvokerContext {
     }
 
     public Invoker newInvoker(Mapping define, HttpServletRequest request, HttpServletResponse response) {
-        return this.invokerCreater.createExt(new InvokerSupplier(define, this.appContext, request, response));
+        return this.invokerCreator.createExt(new InvokerSupplier(define, this.appContext, request, response));
     }
 
-    public ExceuteCaller genCaller(HttpServletRequest httpReq, HttpServletResponse httpRes) {
+    public ExecuteCaller genCaller(HttpServletRequest httpReq, HttpServletResponse httpRes) {
         Mapping foundDefine = null;
         for (Mapping define : this.invokeArray) {
             if (define.matchingMapping(httpReq)) {
@@ -96,9 +96,9 @@ public class InvokerContext {
         }
         //
         Invoker invoker = this.newInvoker(foundDefine, httpReq, httpRes);
-        ExceuteCaller exceuteCaller = null;
+        ExecuteCaller executeCaller = null;
         if (foundDefine == null) {
-            exceuteCaller = (chain) -> {
+            executeCaller = (chain) -> {
                 BasicFuture<Object> future = new BasicFuture<>();
                 future.completed(new InvokerChainInvocation(filters, innerInv -> {
                     if (chain != null) {
@@ -109,13 +109,12 @@ public class InvokerContext {
                 return future;
             };
         } else {
-            exceuteCaller = new InvokerCaller(() -> invoker, this.filters);
+            executeCaller = new InvokerCaller(() -> invoker, this.filters);
         }
         //
-        //
-        ExceuteCaller finalExceuteCaller = exceuteCaller;
-        return chain -> HttpParameters.preInvoke(invoker, (paramData) -> {
-            return finalExceuteCaller.invoke(chain);
+        ExecuteCaller finalExecuteCaller = executeCaller;
+        return chain -> HttpParameters.executeWorker(invoker, () -> {
+            return finalExecuteCaller.invoke(chain);
         });
     }
 }

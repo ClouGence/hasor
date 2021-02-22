@@ -64,14 +64,14 @@ public class InvokerBasicTest extends AbstractTest {
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
         {
-            ExceuteCaller caller = invokerContext.genCaller(mockRequest("post", new URL("http://www.hasor.net/abc.do")), servletResponse);
+            ExecuteCaller caller = invokerContext.genCaller(mockRequest("post", new URL("http://www.hasor.net/abc.do")), servletResponse);
             caller.invoke(null);
             assert responseType.contains("test/html");
         }
         //
         {
             responseType.clear();
-            ExceuteCaller caller = invokerContext.genCaller(mockRequest("get", new URL("http://www.hasor.net/abc.do")), servletResponse);
+            ExecuteCaller caller = invokerContext.genCaller(mockRequest("get", new URL("http://www.hasor.net/abc.do")), servletResponse);
             caller.invoke(null);
             assert responseType.contains("text/javacc_jj");
         }
@@ -91,7 +91,7 @@ public class InvokerBasicTest extends AbstractTest {
         //
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
-        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
+        ExecuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         caller.invoke(null).get();
         assert true;
         assert !action.isExecute();
@@ -161,7 +161,7 @@ public class InvokerBasicTest extends AbstractTest {
         //
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
-        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
+        ExecuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         caller.invoke(null).get();
         assert action.getData().get() == obj;
     }
@@ -182,7 +182,7 @@ public class InvokerBasicTest extends AbstractTest {
         //
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
-        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
+        ExecuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         caller.invoke(null).get();
         assert action.getData().get() != obj;
     }
@@ -203,7 +203,7 @@ public class InvokerBasicTest extends AbstractTest {
         //
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
-        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
+        ExecuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         try {
             caller.invoke(null).get();
             assert false;
@@ -231,7 +231,7 @@ public class InvokerBasicTest extends AbstractTest {
         //
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
-        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
+        ExecuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         try {
             caller.invoke(null).get();
             assert false;

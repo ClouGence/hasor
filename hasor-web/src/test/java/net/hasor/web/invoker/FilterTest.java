@@ -62,7 +62,7 @@ public class FilterTest extends AbstractTest {
         assert !j2eeFilter.isDestroy();
         assert !hasorFilter.isDestroy();
         //
-        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
+        ExecuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         caller.invoke(null).get();
         //
         assert j2eeFilter.isInit();
@@ -102,7 +102,7 @@ public class FilterTest extends AbstractTest {
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
         //
-        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
+        ExecuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         caller.invoke(null).get();
         //
         assert j2eeFilter1.isDoCall();
@@ -130,7 +130,7 @@ public class FilterTest extends AbstractTest {
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
         //
-        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
+        ExecuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         caller.invoke(null).get();
         //
         assert j2eeFilter1.isDoCall();

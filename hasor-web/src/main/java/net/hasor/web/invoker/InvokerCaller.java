@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * @version : 2014年8月27日
  * @author 赵永春 (zyc@hasor.net)
  */
-class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller {
+class InvokerCaller extends InvokerCallerParamsBuilder implements ExecuteCaller {
     protected static Logger            logger          = LoggerFactory.getLogger(InvokerCaller.class);
     private          FilterDef[]       filterArrays    = null;
     private          Supplier<Invoker> invokerSupplier = null;
