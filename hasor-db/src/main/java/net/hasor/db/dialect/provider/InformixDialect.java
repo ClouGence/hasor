@@ -64,7 +64,7 @@ public class InformixDialect implements SqlDialect {
         }
         sqlBuilder.append(" * FROM ( ");
         sqlBuilder.append(boundSql.getSqlString());
-        sqlBuilder.append(" ) TEMP_T ");
+        sqlBuilder.append(" ) TEMP_T");
         //
         paramArrays.addAll(0, newParam);
         return new BoundSql.BoundSqlObj(sqlBuilder.toString(), paramArrays.toArray());

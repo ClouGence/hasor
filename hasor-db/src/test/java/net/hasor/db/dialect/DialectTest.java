@@ -94,14 +94,14 @@ public class DialectTest extends AbstractDbTest {
         assert countSql.getArgs().length == 1;
         //
         BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
-        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ? ");
+        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(1);
         assert pageSql.getArgs()[2].equals(3);
         //
         BoundSql pageSql2 = dialect.getPageSql(this.queryBoundSql, 0, 3);
-        assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? ");
+        assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?");
         assert pageSql2.getArgs().length == 2;
         assert pageSql2.getArgs()[0].equals('F');
         assert pageSql2.getArgs()[1].equals(3);
@@ -125,7 +125,7 @@ public class DialectTest extends AbstractDbTest {
         assert countSql.getArgs().length == 1;
         //
         BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
-        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?  OFFSET ? ");
+        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? OFFSET ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(3);
@@ -175,7 +175,7 @@ public class DialectTest extends AbstractDbTest {
         assert countSql.getArgs().length == 1;
         //
         BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
-        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?  OFFSET ? ");
+        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? OFFSET ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(3);
@@ -228,14 +228,14 @@ public class DialectTest extends AbstractDbTest {
         assert countSql.getArgs().length == 1;
         //
         BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
-        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ? ");
+        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(1);
         assert pageSql.getArgs()[2].equals(3);
         //
         BoundSql pageSql2 = dialect.getPageSql(this.queryBoundSql, 0, 3);
-        assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? ");
+        assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?");
         assert pageSql2.getArgs().length == 2;
         assert pageSql2.getArgs()[0].equals('F');
         assert pageSql2.getArgs()[1].equals(3);
@@ -259,14 +259,14 @@ public class DialectTest extends AbstractDbTest {
         assert countSql.getArgs().length == 1;
         //
         BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
-        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ? ");
+        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(1);
         assert pageSql.getArgs()[2].equals(3);
         //
         BoundSql pageSql2 = dialect.getPageSql(this.queryBoundSql, 0, 3);
-        assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? ");
+        assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?");
         assert pageSql2.getArgs().length == 2;
         assert pageSql2.getArgs()[0].equals('F');
         assert pageSql2.getArgs()[1].equals(3);
@@ -290,7 +290,7 @@ public class DialectTest extends AbstractDbTest {
         assert countSql.getArgs().length == 1;
         //
         BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
-        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? ORDER BY CURRENT_TIMESTAMP offset ? rows fetch next ? rows only ");
+        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? ORDER BY CURRENT_TIMESTAMP offset ? rows fetch next ? rows only");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(1);
@@ -300,7 +300,7 @@ public class DialectTest extends AbstractDbTest {
         assert countSql2.getSqlString().equals("SELECT COUNT(*) FROM (SELECT * FROM tb_user WHERE age > 12 AND sex = ?) as TEMP_T");
         assert countSql2.getArgs().length == 1;
         BoundSql pageSql2 = dialect.getPageSql(this.queryBoundSql2, 1, 3);
-        assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? order by a desc offset ? rows fetch next ? rows only ");
+        assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? order by a desc offset ? rows fetch next ? rows only");
         assert pageSql2.getArgs().length == 3;
         assert pageSql2.getArgs()[0].equals('F');
         assert pageSql2.getArgs()[1].equals(1);
@@ -325,7 +325,7 @@ public class DialectTest extends AbstractDbTest {
         assert countSql.getArgs().length == 1;
         //
         BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
-        assert pageSql.getSqlString().equals("SELECT  SKIP ?  FIRST ?  * FROM ( select * from tb_user where age > 12 and sex = ? ) TEMP_T ");
+        assert pageSql.getSqlString().equals("SELECT  SKIP ?  FIRST ?  * FROM ( select * from tb_user where age > 12 and sex = ? ) TEMP_T");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals(1);
         assert pageSql.getArgs()[1].equals(3);
@@ -375,7 +375,7 @@ public class DialectTest extends AbstractDbTest {
         assert countSql.getArgs().length == 1;
         //
         BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
-        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?  OFFSET ? ");
+        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? OFFSET ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(3);
@@ -400,7 +400,7 @@ public class DialectTest extends AbstractDbTest {
         assert countSql.getArgs().length == 1;
         //
         BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
-        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?  OFFSET ? ");
+        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? OFFSET ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(3);
@@ -425,7 +425,7 @@ public class DialectTest extends AbstractDbTest {
         assert countSql.getArgs().length == 1;
         //
         BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
-        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?  OFFSET ? ");
+        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? OFFSET ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(3);
@@ -450,14 +450,14 @@ public class DialectTest extends AbstractDbTest {
         assert countSql.getArgs().length == 1;
         //
         BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
-        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ? ");
+        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(1);
         assert pageSql.getArgs()[2].equals(3);
         //
         BoundSql pageSql2 = dialect.getPageSql(this.queryBoundSql, 0, 3);
-        assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? ");
+        assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?");
         assert pageSql2.getArgs().length == 2;
         assert pageSql2.getArgs()[0].equals('F');
         assert pageSql2.getArgs()[1].equals(3);
@@ -481,14 +481,14 @@ public class DialectTest extends AbstractDbTest {
         assert countSql.getArgs().length == 1;
         //
         BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
-        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ? ");
+        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(1);
         assert pageSql.getArgs()[2].equals(3);
         //
         BoundSql pageSql2 = dialect.getPageSql(this.queryBoundSql, 0, 3);
-        assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? ");
+        assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?");
         assert pageSql2.getArgs().length == 2;
         assert pageSql2.getArgs()[0].equals('F');
         assert pageSql2.getArgs()[1].equals(3);
@@ -512,14 +512,14 @@ public class DialectTest extends AbstractDbTest {
         assert countSql.getArgs().length == 1;
         //
         BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
-        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ? ");
+        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(1);
         assert pageSql.getArgs()[2].equals(3);
         //
         BoundSql pageSql2 = dialect.getPageSql(this.queryBoundSql, 0, 3);
-        assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? ");
+        assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?");
         assert pageSql2.getArgs().length == 2;
         assert pageSql2.getArgs()[0].equals('F');
         assert pageSql2.getArgs()[1].equals(3);

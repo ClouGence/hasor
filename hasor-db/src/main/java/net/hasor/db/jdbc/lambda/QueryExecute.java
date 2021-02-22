@@ -58,4 +58,10 @@ public interface QueryExecute<T> {
     /** 执行查询，结果将被映射到一个列表(一个条目为每一行)的对象，
      * 列表中每一条记录都是<code>Map</code>类型对象。*/
     public List<Map<String, Object>> queryForMapList() throws SQLException;
+
+    /** 生成 select count() 查询语句并查询总数。*/
+    public int queryForCount() throws SQLException;
+
+    /** 生成 select count() 查询语句并查询总数。*/
+    public long queryForLargeCount() throws SQLException;
 }

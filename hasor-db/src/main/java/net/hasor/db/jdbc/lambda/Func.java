@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda;
-import net.hasor.db.jdbc.page.Page;
 import net.hasor.db.dal.orm.FieldInfo;
-import net.hasor.utils.function.EConsumer;
+import net.hasor.db.jdbc.page.Page;
 import net.hasor.utils.reflect.SFunction;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -92,16 +90,9 @@ public interface Func<T, R> {
     /** 设置分页信息 */
     public R usePage(Page pageInfo);
 
-    /** 生成并设置分页信息 */
-    public default R generatePageAndUse(EConsumer<Page, SQLException> pageConsumer) throws SQLException {
-        Page generatePage = generatePage();
-        pageConsumer.eAccept(generatePage);
-        return usePage(generatePage);
-    }
+    /** 获取对应的分页对象 */
+    public Page pageInfo();
 
     /** 生成分页对象 */
-    public Page generatePage();
-
-    /** 生成分页对象 */
-    public Page generatePage(int initPageSize, int currentPage);
+    public R initPage(int pageSize, int pageNumber);
 }

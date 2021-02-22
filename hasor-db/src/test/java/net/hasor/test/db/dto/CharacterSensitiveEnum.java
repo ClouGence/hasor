@@ -22,7 +22,8 @@ import net.hasor.db.types.EnumOfCode;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum CharacterSensitiveEnum implements EnumOfCode<CharacterSensitiveEnum> {
-    a, A;
+    a,
+    A;
 
     public CharacterSensitiveEnum valueOfCode(String name) {
         for (CharacterSensitiveEnum item : CharacterSensitiveEnum.values()) {

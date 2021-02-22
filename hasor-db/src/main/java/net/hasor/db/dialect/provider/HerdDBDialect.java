@@ -55,10 +55,10 @@ public class HerdDBDialect implements SqlDialect {
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append(boundSql.getSqlString());
         if (start <= 0) {
-            sqlBuilder.append(" LIMIT ? ");
+            sqlBuilder.append(" LIMIT ?");
             paramArrays.add(limit);
         } else {
-            sqlBuilder.append(" LIMIT ?, ? ");
+            sqlBuilder.append(" LIMIT ?, ?");
             paramArrays.add(start);
             paramArrays.add(limit);
         }

@@ -114,7 +114,7 @@ public class SqlServer2012Dialect implements SqlDialect {
             sqlBuilder.append(" ORDER BY CURRENT_TIMESTAMP");
         }
         //
-        sqlBuilder.append(" offset ? rows fetch next ? rows only ");
+        sqlBuilder.append(" offset ? rows fetch next ? rows only");
         paramArrays.add(start);
         paramArrays.add(limit);
         return new BoundSql.BoundSqlObj(sqlBuilder.toString(), paramArrays.toArray());

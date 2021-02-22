@@ -50,19 +50,17 @@ public class MySqlDialect implements SqlDialect {
 
     @Override
     public BoundSql getPageSql(BoundSql boundSql, int start, int limit) {
+        StringBuilder sqlBuilder = new StringBuilder(boundSql.getSqlString());
         List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
         //
-        StringBuilder sqlBuilder = new StringBuilder();
-        sqlBuilder.append(boundSql.getSqlString());
         if (start <= 0) {
-            sqlBuilder.append(" LIMIT ? ");
+            sqlBuilder.append(" LIMIT ?");
             paramArrays.add(limit);
         } else {
-            sqlBuilder.append(" LIMIT ?, ? ");
+            sqlBuilder.append(" LIMIT ?, ?");
             paramArrays.add(start);
             paramArrays.add(limit);
         }
-        //
         return new BoundSql.BoundSqlObj(sqlBuilder.toString(), paramArrays.toArray());
     }
 }

@@ -15,6 +15,7 @@
  */
 package net.hasor.db.jdbc.lambda;
 import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.dialect.SqlDialect;
 import net.hasor.utils.reflect.SFunction;
 
 import java.util.Collections;
@@ -41,5 +42,7 @@ public interface LambdaOperations {
     /** */
     public interface BoundSqlBuilder {
         public BoundSql getBoundSql();
+
+        public BoundSql getBoundSql(SqlDialect dialect);
     }
 }

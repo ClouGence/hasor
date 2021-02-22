@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda.query;
+import net.hasor.db.dal.orm.FieldInfo;
+import net.hasor.db.dal.orm.TableInfo;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -22,9 +24,6 @@ import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
 import net.hasor.db.jdbc.lambda.segment.OrderByKeyword;
 import net.hasor.db.jdbc.lambda.segment.Segment;
 import net.hasor.db.jdbc.page.Page;
-import net.hasor.db.jdbc.page.PageObject;
-import net.hasor.db.dal.orm.FieldInfo;
-import net.hasor.db.dal.orm.TableInfo;
 import net.hasor.utils.reflect.SFunction;
 
 import java.util.*;
@@ -41,20 +40,21 @@ import static net.hasor.db.jdbc.lambda.segment.SqlKeyword.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T>> implements LambdaQuery<T> {
-    private final List<Segment>                customSelect    = new ArrayList<>();
-    private final List<Segment>                groupBySegments = new ArrayList<>();
-    private final List<Segment>                orderBySegments = new ArrayList<>();
-    private       boolean                      lockGroupBy     = false;
-    private       boolean                      lockOrderBy     = false;
+    private final List<Segment> customSelect    = new ArrayList<>();
+    private final List<Segment> groupBySegments = new ArrayList<>();
+    private final List<Segment> orderBySegments = new ArrayList<>();
+    private       boolean       lockGroupBy     = false;
+    private       boolean       lockOrderBy     = false;
     //
-    private       String                       result          = null;
-    private       Page                         pageInfo        = null;
-    private final BoundSql                     noPageBoundSql;
-    private final Function<BoundSql, BoundSql> pageBoundSql;
+    private       String        result          = null;
 
     public LambdaQueryWrapper(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
         super(exampleType, jdbcTemplate);
-        this.noPageBoundSql = new BoundSql() {
+    }
+
+    @Override
+    public BoundSql getOriginalBoundSql() {
+        return new BoundSql() {
             public String getSqlString() {
                 return oriSqlString();
             }
@@ -62,9 +62,6 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
             public Object[] getArgs() {
                 return oriArgs();
             }
-        };
-        this.pageBoundSql = boundSql -> {
-            return dialect().getPageSql(boundSql, pageInfo.getFirstRecordPosition(), pageInfo.getPageSize());
         };
     }
 
@@ -225,27 +222,19 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
 
     @Override
     public LambdaQuery<T> usePage(Page pageInfo) {
-        this.pageInfo = pageInfo;
+        Page page = this.pageInfo();
+        page.setPageSize(pageInfo.getPageSize());
+        page.setCurrentPage(pageInfo.getCurrentPage());
+        page.setPageNumberOffset(pageInfo.getPageNumberOffset());
         return this.getSelf();
     }
 
     @Override
-    public Page generatePage() {
-        return generatePage(30, 0);
-    }
-
-    @Override
-    public Page generatePage(int initPageSize, int currentPage) {
-        PageObject pageObject = new PageObject(initPageSize, () -> {
-            BoundSql countSql = dialect().getCountSql(this.noPageBoundSql);
-            return getJdbcOperations().queryForInt(countSql.getSqlString(), countSql.getArgs());
-        });
-        pageObject.setCurrentPage(currentPage);
-        return pageObject;
-    }
-
-    @Override
-    public BoundSql getBoundSql() {
-        return (this.pageInfo == null) ? this.noPageBoundSql : this.pageBoundSql.apply(this.noPageBoundSql);
+    public LambdaQuery<T> initPage(int pageSize, int pageNumber) {
+        Page pageInfo = pageInfo();
+        pageInfo.setPageNumberOffset(0);
+        pageInfo.setPageSize(pageSize);
+        pageInfo.setCurrentPage(pageNumber);
+        return this.getSelf();
     }
 }

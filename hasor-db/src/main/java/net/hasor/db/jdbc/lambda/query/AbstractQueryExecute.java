@@ -15,13 +15,15 @@
  */
 package net.hasor.db.jdbc.lambda.query;
 import net.hasor.db.JdbcUtils;
+import net.hasor.db.dal.orm.MappingRowMapper;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.dialect.SqlDialectRegister;
 import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.lambda.QueryExecute;
-import net.hasor.db.dal.orm.MappingRowMapper;
+import net.hasor.db.jdbc.page.Page;
+import net.hasor.db.jdbc.page.PageObject;
 
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -40,6 +42,7 @@ public abstract class AbstractQueryExecute<T> implements QueryExecute<T> {
     private final   MappingRowMapper<T> exampleRowMapper;
     private final   JdbcOperations      jdbcOperations;
     private         boolean             useDialect;
+    private final   Page                pageInfo = new PageObject(0, this::queryForCount);
 
     public AbstractQueryExecute(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
         this.exampleType = exampleType;
@@ -89,15 +92,33 @@ public abstract class AbstractQueryExecute<T> implements QueryExecute<T> {
         return (this.useDialect && this.dialect != null) ? this.dialect : SqlDialect.DEFAULT;
     }
 
-    protected abstract BoundSql getBoundSql();
+    public final BoundSql getBoundSql(SqlDialect dialect) {
+        int pageSize = this.pageInfo.getPageSize();
+        if (pageSize > 0) {
+            int recordPosition = this.pageInfo.getFirstRecordPosition();
+            return dialect.getPageSql(getOriginalBoundSql(), recordPosition, pageSize);
+        } else {
+            return this.getOriginalBoundSql();
+        }
+    }
+
+    public final BoundSql getBoundSql() {
+        return this.getBoundSql(this.dialect);
+    }
+
+    protected abstract BoundSql getOriginalBoundSql();
+
+    public Page pageInfo() {
+        return this.pageInfo;
+    }
 
     @Override
     public <V> QueryExecute<V> wrapperType(Class<V> wrapperType) {
         AbstractQueryExecute<T> self = this;
         return new AbstractQueryExecute<V>(wrapperType, this.jdbcOperations, this.dbType, this.dialect) {
             @Override
-            protected BoundSql getBoundSql() {
-                return self.getBoundSql();
+            protected BoundSql getOriginalBoundSql() {
+                return self.getOriginalBoundSql();
             }
         };
     }
@@ -142,5 +163,17 @@ public abstract class AbstractQueryExecute<T> implements QueryExecute<T> {
     public List<Map<String, Object>> queryForMapList() throws SQLException {
         BoundSql boundSql = getBoundSql();
         return this.jdbcOperations.queryForList(boundSql.getSqlString(), boundSql.getArgs());
+    }
+
+    @Override
+    public int queryForCount() throws SQLException {
+        BoundSql countSql = this.dialect.getCountSql(this.getOriginalBoundSql());
+        return this.jdbcOperations.queryForInt(countSql.getSqlString(), countSql.getArgs());
+    }
+
+    @Override
+    public long queryForLargeCount() throws SQLException {
+        BoundSql countSql = this.dialect.getCountSql(this.getOriginalBoundSql());
+        return this.jdbcOperations.queryForLong(countSql.getSqlString(), countSql.getArgs());
     }
 }

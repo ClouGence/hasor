@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda.query;
+import net.hasor.db.dal.orm.FieldInfo;
+import net.hasor.db.dal.orm.TableInfo;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.lambda.Compare;
 import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
 import net.hasor.db.jdbc.lambda.segment.Segment;
 import net.hasor.db.jdbc.lambda.segment.SqlLike;
-import net.hasor.db.dal.orm.FieldInfo;
-import net.hasor.db.dal.orm.TableInfo;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.reflect.MethodUtils;
@@ -265,7 +265,7 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
     }
 
     @Override
-    public BoundSql getBoundSql() {
+    public BoundSql getOriginalBoundSql() {
         return new BoundSql() {
             public String getSqlString() {
                 return queryTemplate.noFirstSqlSegment();

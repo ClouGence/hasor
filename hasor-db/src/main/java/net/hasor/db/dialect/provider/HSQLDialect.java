@@ -55,11 +55,11 @@ public class HSQLDialect implements SqlDialect {
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append(boundSql.getSqlString());
         if (limit > 0) {
-            sqlBuilder.append(" LIMIT ? ");
+            sqlBuilder.append(" LIMIT ?");
             paramArrays.add(limit);
         }
         if (start > 0) {
-            sqlBuilder.append(" OFFSET ? ");
+            sqlBuilder.append(" OFFSET ?");
             paramArrays.add(start);
         }
         //
