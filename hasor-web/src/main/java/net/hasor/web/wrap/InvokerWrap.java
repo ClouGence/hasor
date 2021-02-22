@@ -15,11 +15,14 @@
  */
 package net.hasor.web.wrap;
 import net.hasor.core.AppContext;
+import net.hasor.utils.function.EFunction;
 import net.hasor.web.Invoker;
 import net.hasor.web.Mapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 
 /**
  * {@link Invoker} 接口包装器
@@ -27,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InvokerWrap implements Invoker {
-    private Invoker dataContext;
+    protected final Invoker dataContext;
 
     public InvokerWrap(Invoker dataContext) {
         this.dataContext = dataContext;
@@ -46,6 +49,16 @@ public class InvokerWrap implements Invoker {
     @Override
     public HttpServletResponse getHttpResponse() {
         return this.dataContext.getHttpResponse();
+    }
+
+    @Override
+    public <T> Future<T> asyncExecute(EFunction<Invoker, T, Throwable> consumer, Executor executor) {
+        return this.dataContext.asyncExecute(consumer, executor);
+    }
+
+    @Override
+    public <T> Future<T> asyncExecute(EFunction<Invoker, T, Throwable> consumer) {
+        return this.dataContext.asyncExecute(consumer);
     }
 
     @Override
