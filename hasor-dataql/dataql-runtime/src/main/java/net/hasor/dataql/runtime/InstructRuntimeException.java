@@ -22,21 +22,33 @@ import net.hasor.dataql.runtime.Location.RuntimeLocation;
  * @version : 2017-07-14
  */
 public class InstructRuntimeException extends RuntimeException {
-    private RuntimeLocation location = null;
+    private String          localizedMessage = null;
+    private RuntimeLocation location         = null;
 
     public InstructRuntimeException(RuntimeLocation location, String errorMessage) {
-        super("[" + location.toErrorMessage() + "] " + errorMessage);
+        super(errorMessage(location, errorMessage));
+        this.localizedMessage = errorMessage;
         this.location = location;
     }
 
     public InstructRuntimeException(RuntimeLocation location, String errorMessage, Throwable e) {
-        super("[" + location.toErrorMessage() + "] " + errorMessage, e);
+        super(errorMessage(location, errorMessage), e);
+        this.localizedMessage = errorMessage;
         this.location = location;
     }
 
     public InstructRuntimeException(RuntimeLocation location, Throwable e) {
-        super("[" + location.toErrorMessage() + "] " + e.getMessage(), e);
+        super(errorMessage(location, e.getMessage()), e);
+        this.localizedMessage = e.getLocalizedMessage();
         this.location = location;
+    }
+
+    private static String errorMessage(RuntimeLocation location, String errorMessage) {
+        return "[" + location.toErrorMessage() + "] " + errorMessage;
+    }
+
+    public String getLocalizedMessage() {
+        return this.localizedMessage;
     }
 
     public Location getLocation() {

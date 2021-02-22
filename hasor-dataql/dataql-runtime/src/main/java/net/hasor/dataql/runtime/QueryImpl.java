@@ -84,16 +84,10 @@ class QueryImpl extends HintsSet implements Query {
             instSequence.doNext(1);
         }
         // .结果处理
-        ExitType exitType = dataStack.getExitType();
-        long executionTime = processContext.executionTime();
+        ExitType exitType = (dataStack.getExitType() == null) ? ExitType.Return : dataStack.getExitType();
         int resultCode = dataStack.getResultCode();
         DataModel result = dataStack.getResult();
-        if (ExitType.Exit == exitType) {
-            return new QueryResultImpl(true, resultCode, result, executionTime);
-        } else if (ExitType.Return == exitType) {
-            return new QueryResultImpl(false, resultCode, result, executionTime);
-        } else {
-            throw new InstructRuntimeException(Location.unknownLocation(), exitType + " ExitType undefined.");
-        }
+        long executionTime = processContext.executionTime();
+        return new QueryResultImpl(exitType, resultCode, result, executionTime);
     }
 }

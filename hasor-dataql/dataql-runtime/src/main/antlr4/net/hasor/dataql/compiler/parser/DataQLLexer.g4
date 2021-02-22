@@ -16,6 +16,7 @@ IF      : 'if';
 ELSE    : 'else';
 RETURN  : 'return';
 THROW   : 'throw';
+ASSERT  : 'assert';
 EXIT    : 'exit';
 VAR     : 'var';
 RUN     : 'run';

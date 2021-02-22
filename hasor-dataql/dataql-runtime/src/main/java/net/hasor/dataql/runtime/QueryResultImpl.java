@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.DataModel;
+import net.hasor.dataql.runtime.mem.ExitType;
 
 /**
  * 结果
@@ -23,20 +24,21 @@ import net.hasor.dataql.domain.DataModel;
  * @version : 2017-03-23
  */
 class QueryResultImpl implements QueryResult {
-    private boolean   isExit;
-    private int       exitCode;
-    private DataModel dataModel;
-    private long      executionTime;
+    private final ExitType  exitType;
+    private final int       exitCode;
+    private final DataModel dataModel;
+    private final long      executionTime;
 
-    QueryResultImpl(boolean isExit, int exitCode, DataModel dataModel, long executionTime) {
-        this.isExit = isExit;
+    QueryResultImpl(ExitType exitType, int exitCode, DataModel dataModel, long executionTime) {
+        this.exitType = exitType;
         this.exitCode = exitCode;
         this.dataModel = dataModel;
         this.executionTime = executionTime;
     }
 
-    public boolean isExit() {
-        return isExit;
+    @Override
+    public ExitType getExitType() {
+        return this.exitType;
     }
 
     @Override

@@ -22,6 +22,7 @@ import net.hasor.dataql.compiler.qil.CompilerContext;
 import net.hasor.dataql.compiler.qil.InstCompiler;
 import net.hasor.dataql.compiler.qil.InstQueue;
 import net.hasor.dataql.compiler.qil.Label;
+import net.hasor.dataql.domain.TypeOfEnum;
 
 /**
  * 对 RouteVariable 的下标操作
@@ -56,7 +57,7 @@ public class SubscriptRouteVariableInstCompiler implements InstCompiler<Subscrip
             queue.inst(COPY);   // typeof 的值Copy 一份用来做两次 if 判断
             //
             nextLabel = queue.labelDef();
-            queue.inst(LDC_S, "string");
+            queue.inst(LDC_S, TypeOfEnum.String.typeCode());
             queue.inst(DO, "==");
             queue.inst(IF, nextLabel);
             queue.inst(POP);
@@ -65,7 +66,7 @@ public class SubscriptRouteVariableInstCompiler implements InstCompiler<Subscrip
             queue.inst(LABEL, nextLabel);
             //
             nextLabel = queue.labelDef();
-            queue.inst(LDC_S, "number");
+            queue.inst(LDC_S, TypeOfEnum.Number.typeCode());
             queue.inst(DO, "==");
             queue.inst(IF, nextLabel);
             queue.inst(PULL);

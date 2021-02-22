@@ -25,5 +25,5 @@ public enum ExitType {
     /** 非正常退出，终止后续指令序列执行并抛出异常 */
     Throw,
     /** 中断正常执行，并退出整个执行序列 */
-    Exit
+    Exit,
 }

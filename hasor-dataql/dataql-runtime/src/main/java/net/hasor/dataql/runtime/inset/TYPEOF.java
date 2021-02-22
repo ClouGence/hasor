@@ -25,6 +25,12 @@ import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
 
+import static net.hasor.dataql.domain.TypeOfEnum.Boolean;
+import static net.hasor.dataql.domain.TypeOfEnum.Number;
+import static net.hasor.dataql.domain.TypeOfEnum.Object;
+import static net.hasor.dataql.domain.TypeOfEnum.String;
+import static net.hasor.dataql.domain.TypeOfEnum.*;
+
 /**
  * TYPEOF   // 计算表达式值的类型。
  *         - 参数说明：共0参数；
@@ -40,60 +46,40 @@ class TYPEOF implements InsetProcess {
         return TYPEOF;
     }
 
-    public static enum TypeOfEnum {
-        String("string"),   //
-        Number("number"),   //
-        Boolean("boolean"), //
-        Object("object"),   //
-        List("list"),       //
-        Udf("udf"),         //
-        Null("null");       //
-        private final String typeOfEnum;
-
-        public String typeCode() {
-            return typeOfEnum;
-        }
-
-        TypeOfEnum(String typeOfEnum) {
-            this.typeOfEnum = typeOfEnum;
-        }
-    }
-
     @Override
     public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) {
         DataModel dataModel = DomainHelper.convertTo(dataStack.pop());
         if (dataModel.isObject()) {
-            dataStack.push(TypeOfEnum.Object.typeCode());
+            dataStack.push(Object.typeCode());
             return;
         }
         if (dataModel.isList()) {
-            dataStack.push(TypeOfEnum.List.typeCode());
+            dataStack.push(List.typeCode());
             return;
         }
         if (dataModel.isUdf()) {
-            dataStack.push(TypeOfEnum.Udf.typeCode());
+            dataStack.push(Udf.typeCode());
             return;
         }
         if (dataModel.isValue()) {
             ValueModel val = (ValueModel) dataModel;
             if (val.isNull()) {
-                dataStack.push(TypeOfEnum.Null.typeCode());
+                dataStack.push(Null.typeCode());
                 return;
             }
             if (val.isNumber()) {
-                dataStack.push(TypeOfEnum.Number.typeCode());
+                dataStack.push(Number.typeCode());
                 return;
             }
             if (val.isString()) {
-                dataStack.push(TypeOfEnum.String.typeCode());
+                dataStack.push(String.typeCode());
                 return;
             }
             if (val.isBoolean()) {
-                dataStack.push(TypeOfEnum.Boolean.typeCode());
+                dataStack.push(Boolean.typeCode());
                 return;
             }
         }
-        //
         throw new InstructRuntimeException(sequence.programLocation(), "DataModel type is unknown.");
     }
 }

@@ -205,6 +205,15 @@ public class DefaultDataQLVisitor<T> extends AbstractParseTreeVisitor<T> impleme
     }
 
     @Override
+    public T visitAssertInst(AssertInstContext ctx) {
+        visitChildren(ctx);
+        //
+        AssertInst varInst = code(new AssertInst((Variable) this.instStack.pop()), ctx);
+        ((InstSet) this.instStack.peek()).addInst(varInst);
+        return null;
+    }
+
+    @Override
     public T visitAnyObject(AnyObjectContext ctx) {
         return visitChildren(ctx);
     }

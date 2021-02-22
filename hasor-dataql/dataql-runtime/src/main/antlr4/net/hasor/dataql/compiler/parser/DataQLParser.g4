@@ -13,8 +13,8 @@ hintInst        : HINT IDENTIFIER ASS primitiveValue SEM?;
 importInst      : IMPORT ROU? STRING AS IDENTIFIER SEM?;
 
 /* 语句块 */
-blockSet        : OCBR hintInst* ((runInst | varInst | ifInst | breakInst) (SEM)?)* CCBR #multipleInst  // 多行语句
-                | (runInst | varInst | ifInst | breakInst) (SEM)?                        #singleInst    // 单行语句
+blockSet        : OCBR hintInst* ((runInst | varInst | ifInst | breakInst | assertInst) (SEM)?)* CCBR #multipleInst  // 多行语句
+                | (runInst | varInst | ifInst | breakInst | assertInst) (SEM)?                        #singleInst    // 单行语句
                 ;
 
 /* if 语句 */
@@ -32,6 +32,9 @@ varInst         : VAR IDENTIFIER ASS anyObject;
 
 /* run 语句 run ... */
 runInst         : RUN anyObject;
+
+/* assert 语句 assert ... */
+assertInst      : ASSERT anyObject;
 
 /* ----------------------------------------------------------------------------------- 路由 */
 

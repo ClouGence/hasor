@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql;
 import net.hasor.dataql.domain.DataModel;
+import net.hasor.dataql.runtime.mem.ExitType;
 
 /**
  * 结果集
@@ -23,7 +24,12 @@ import net.hasor.dataql.domain.DataModel;
  */
 public interface QueryResult {
     /** 执行结果是否通过 EXIT 形式返回的 */
-    public boolean isExit();
+    public default boolean isExit() {
+        return ExitType.Exit == getExitType();
+    }
+ 
+    /** 执行结果是否通过 EXIT 形式返回的 */
+    public ExitType getExitType();
 
     /** 获得退出码。如果未指定退出码，则默认值为 0 */
     public int getCode();
