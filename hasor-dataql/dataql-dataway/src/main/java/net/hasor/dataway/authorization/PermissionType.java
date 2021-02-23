@@ -30,6 +30,8 @@ public enum PermissionType {
     ApiHistory("api_history"),
     /** UI- API的编辑和保存操作 */
     ApiEdit("api_edit"),
+    /** UI- 在编辑页面执行API */
+    ApiPerform("api_perform"),
     /** UI- 接口发布能力(仅:冒烟/发布) */
     ApiPublish("api_publish"),
     /** UI- 已发布接口进行禁用 or 下线 */

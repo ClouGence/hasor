@@ -33,7 +33,7 @@ public enum PermissionGroup {
     /** 分组:只读 */
     Group_ReadOnly(new PermissionType[] { ApiList, ApiInfo, ApiHistory }),
     /** 分组:仅执行 */
-    Group_Execute(new PermissionType[] { ApiExecute }),
+    Group_Execute(new PermissionType[] { ApiExecute, ApiPerform }),
     ;
     private final PermissionType[] permissionTypes;
 

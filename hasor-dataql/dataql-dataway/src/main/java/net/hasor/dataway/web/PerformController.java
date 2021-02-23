@@ -22,8 +22,8 @@ import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.service.ApiCallService;
 import net.hasor.dataway.spi.ApiInfo;
 import net.hasor.dataway.spi.CallSource;
-import net.hasor.db.transaction.Propagation;
 import net.hasor.db.Transactional;
+import net.hasor.db.transaction.Propagation;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.QueryParameter;
@@ -37,7 +37,7 @@ import java.util.Map;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/perform")
-@RefAuthorization(PermissionType.ApiEdit)
+@RefAuthorization(PermissionType.ApiPerform)
 public class PerformController extends BasicController {
     @Inject
     private ApiCallService apiCallService;
