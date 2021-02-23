@@ -34,12 +34,13 @@ import java.util.regex.Pattern;
  * @author 赵永春 (zyc@hasor.net)
  */
 public final class HttpParameters {
-    private static final Logger                                 logger            = LoggerFactory.getLogger(InvokerCaller.class);
-    private static final ThreadLocal<Map<String, List<String>>> headerParamLocal  = new ThreadLocal<>();
-    private static final ThreadLocal<Map<String, List<String>>> cookieParamLocal  = new ThreadLocal<>();
-    private static final ThreadLocal<Map<String, List<String>>> pathParamLocal    = new ThreadLocal<>();
-    private static final ThreadLocal<Map<String, List<String>>> queryParamLocal   = new ThreadLocal<>();
-    private static final ThreadLocal<Map<String, List<String>>> requestParamLocal = new ThreadLocal<>();
+    private static final Logger                                 logger                 = LoggerFactory.getLogger(InvokerCaller.class);
+    private static final ThreadLocal<Map<String, Object>>       requestAttributesLocal = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, List<String>>> headerParamLocal       = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, List<String>>> cookieParamLocal       = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, List<String>>> pathParamLocal         = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, List<String>>> queryParamLocal        = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, List<String>>> requestParamLocal      = new ThreadLocal<>();
 
     public static <T> T executeWorker(HttpServletRequest httpRequest, ESupplier<T, Throwable> worker) throws Throwable {
         return executeWorker(null, httpRequest, worker);
@@ -54,6 +55,7 @@ public final class HttpParameters {
             init(invoker, httpRequest);
             return worker.eGet();
         } finally {
+            requestAttributesLocal.remove();
             headerParamLocal.remove();
             cookieParamLocal.remove();
             pathParamLocal.remove();
@@ -167,6 +169,15 @@ public final class HttpParameters {
             });
         }
         requestParamLocal.set(requestMap);
+        //
+        // Attributes
+        Map<String, Object> attributes = new HashMap<>();
+        Enumeration<String> attributeNames = httpRequest.getAttributeNames();
+        while (attributeNames.hasMoreElements()) {
+            String attrKey = attributeNames.nextElement();
+            attributes.put(attrKey, httpRequest.getAttribute(attrKey));
+        }
+        requestAttributesLocal.set(attributes);
     }
 
     private static String urlDecoder(String encoding, String oriData) {
@@ -258,6 +269,11 @@ public final class HttpParameters {
         return appendMap(cookieParamLocal.get(), newCookie);
     }
     // ---------------------------------------------------------------------------
+
+    /** 获取 header ，数据是 Map 形式 */
+    public static Map<String, Object> requestAttributeMap() {
+        return requestAttributesLocal.get();
+    }
 
     /** 获取 header ，数据是 Map 形式 */
     public static Map<String, String> headerMap() {
