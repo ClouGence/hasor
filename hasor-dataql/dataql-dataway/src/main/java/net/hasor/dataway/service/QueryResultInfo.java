@@ -16,6 +16,7 @@
 package net.hasor.dataway.service;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.DataModel;
+import net.hasor.dataql.runtime.mem.ExitType;
 
 /**
  * QueryResult 接口的一个简单实现。
@@ -23,12 +24,14 @@ import net.hasor.dataql.domain.DataModel;
  * @version : 2020-04-19
  */
 public class QueryResultInfo implements QueryResult {
+    private ExitType  exitType;
     private int       exitCode;
     private DataModel dataModel;
     private long      executionTime;
 
-    public static QueryResult of(int exitCode, DataModel dataModel, long executionTime) {
+    public static QueryResult of(ExitType exitType, int exitCode, DataModel dataModel, long executionTime) {
         QueryResultInfo info = new QueryResultInfo();
+        info.exitType = exitType;
         info.exitCode = exitCode;
         info.dataModel = dataModel;
         info.executionTime = executionTime;
@@ -36,8 +39,8 @@ public class QueryResultInfo implements QueryResult {
     }
 
     @Override
-    public boolean isExit() {
-        return false;
+    public ExitType getExitType() {
+        return this.exitType;
     }
 
     @Override

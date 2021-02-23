@@ -15,7 +15,7 @@
  */
 package net.hasor.dataway.spi;
 import net.hasor.dataway.DatawayApi;
-import net.hasor.dataway.authorization.AuthorizationType;
+import net.hasor.dataway.authorization.PermissionType;
 
 import java.util.EventListener;
 
@@ -27,10 +27,10 @@ import java.util.EventListener;
 public interface AuthorizationChainSpi extends EventListener {
     /**
      * UI 界面上的操作在进入执行之前会先走这个 SPI 进行一次权限校验。
-     * @param checkType 界面的操作
-     * @param apiId apiId
+     * @param permission 操作
+     * @param apiInfo apiId
      * @param defaultCheck 默认通过还是拒绝，如果是 ChainSpi 则是上一个 ChainSpi 的结果。
      * @return 返回 true 或 false 表示通过还是失败。
      */
-    public boolean doCheck(AuthorizationType checkType, DatawayApi apiId, boolean defaultCheck);
+    public boolean doCheck(PermissionType permission, DatawayApi apiInfo, boolean defaultCheck);
 }

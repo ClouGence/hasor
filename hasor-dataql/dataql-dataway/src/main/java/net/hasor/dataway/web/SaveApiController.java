@@ -16,7 +16,7 @@
 package net.hasor.dataway.web;
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.Inject;
-import net.hasor.dataway.authorization.AuthorizationType;
+import net.hasor.dataway.authorization.PermissionType;
 import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
@@ -40,7 +40,7 @@ import java.util.*;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/save-api")
-@RefAuthorization(AuthorizationType.ApiEdit)
+@RefAuthorization(PermissionType.ApiEdit)
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class SaveApiController extends BasicController implements Constant {
     @Inject

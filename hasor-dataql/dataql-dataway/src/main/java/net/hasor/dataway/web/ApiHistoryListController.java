@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataway.authorization.AuthorizationType;
+import net.hasor.dataway.authorization.PermissionType;
 import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/api-history")
-@RefAuthorization(AuthorizationType.ApiHistory)
+@RefAuthorization(PermissionType.ApiHistory)
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class ApiHistoryListController extends BasicController {
     @Get

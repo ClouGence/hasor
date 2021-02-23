@@ -67,7 +67,7 @@ public class InterfaceAuthorizationFilter implements InvokerFilter {
         if (refAuthorization == null) {
             refAuthorization = mappingMethod.getDeclaringClass().getAnnotation(RefAuthorization.class);
         }
-        AuthorizationType uiAuthorization = (refAuthorization != null) ? refAuthorization.value() : null;
+        PermissionType uiAuthorization = (refAuthorization != null) ? refAuthorization.value() : null;
         String apiId = null;
         String queryString = invoker.getHttpRequest().getQueryString();
         if (StringUtils.isNotBlank(queryString)) {

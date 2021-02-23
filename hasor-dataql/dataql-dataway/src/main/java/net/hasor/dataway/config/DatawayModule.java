@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataway.config;
-import net.hasor.core.*;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Environment;
+import net.hasor.core.HasorUtils;
+import net.hasor.core.Settings;
 import net.hasor.core.setting.SettingNode;
 import net.hasor.dataway.DatawayService;
 import net.hasor.dataway.authorization.AdminUiAuthorization;
@@ -45,6 +48,9 @@ public class DatawayModule implements WebModule, UiConfig {
         Settings settings = environment.getSettings();
         boolean datawayApi = settings.getBoolean("hasor.dataway.enable", false);
         boolean datawayAdmin = settings.getBoolean("hasor.dataway.enableAdmin", false);
+        boolean datawaySwagger = settings.getBoolean("hasor.dataway.enableSwaggerApi", false);
+        datawaySwagger = datawayAdmin || datawaySwagger;
+        //
         if (!datawayApi) {
             logger.info("dataway is disable.");
             return;
@@ -65,6 +71,13 @@ public class DatawayModule implements WebModule, UiConfig {
         if (!adminBaseUri.endsWith("/")) {
             adminBaseUri = adminBaseUri + "/";
         }
+        apiBinder.getEnvironment().getSettings().setSetting("hasor.dataway.baseApiUrl", apiBaseUri);//必须要设置回去，否则后面依赖注入会不准确
+        apiBinder.getEnvironment().getSettings().setSetting("hasor.dataway.baseAdminUrl", apiBaseUri);//必须要设置回去，否则后面依赖注入会不准确
+        //
+        logger.info("dataway '/api/docs/swagger2.json' is " + (datawaySwagger ? "enable." : "disable."));
+        if (datawaySwagger) {
+            loadController(apiBinder, Swagger2Controller.class, adminBaseUri, apiBaseUri);
+        }
         //
         if (datawayAdmin) {
             this.loadApiService(apiBinder, apiBaseUri, adminBaseUri);
@@ -83,14 +96,12 @@ public class DatawayModule implements WebModule, UiConfig {
     /** 配置 Dataway 服务拦截器 */
     protected void loadApiService(WebApiBinder apiBinder, String apiBaseUri, String adminBaseUri) {
         logger.info("dataway api workAt " + apiBaseUri);
-        apiBinder.getEnvironment().getSettings().setSetting("hasor.dataway.baseApiUrl", apiBaseUri);//必须要设置回去，否则后面依赖注入会不准确
         apiBinder.filter(fixUrl(apiBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceApiFilter(apiBaseUri, adminBaseUri));
     }
 
     /** 配置 Dataway 管理界面 */
     protected void loadAdminService(WebApiBinder apiBinder, String apiBaseUri, String adminBaseUri) throws Exception {
         logger.info("dataway admin workAt " + adminBaseUri);
-        apiBinder.getEnvironment().getSettings().setSetting("hasor.dataway.baseAdminUrl", apiBaseUri);//必须要设置回去，否则后面依赖注入会不准确
         // 使用 findClass 虽然可以降低代码复杂度，但是会因为引入代码扫描而增加初始化时间
         Class<?>[] controllerSet = new Class<?>[] { //
                 GlobalConfigController.class,       //
@@ -107,22 +118,24 @@ public class DatawayModule implements WebModule, UiConfig {
                 PerformController.class,            //
                 DeleteController.class,             //
                 //                AnalyzeSchemaController.class,      //
-                //
-                Swagger2Controller.class,           //
         };
         for (Class<?> aClass : controllerSet) {
-            ApiBinder.MetaDataBindingBuilder<?> metaDataBinder = apiBinder.bindType(aClass).asEagerSingleton();
-            metaDataBinder.metaData(KEY_DATAWAY_UI_BASE_URI, adminBaseUri);
-            metaDataBinder.metaData(KEY_DATAWAY_API_BASE_URI, apiBaseUri);
-            //
-            MappingToUrl toUrl = aClass.getAnnotation(MappingToUrl.class);
-            apiBinder.mappingTo(fixUrl(adminBaseUri + "/" + toUrl.value())).with(metaDataBinder.toInfo());
+            loadController(apiBinder, aClass, adminBaseUri, apiBaseUri);
         }
         //
         AdminUiAuthorization uiAuthorization = new AdminUiAuthorization(adminBaseUri, apiBinder.getEnvironment());
         apiBinder.filter(fixUrl(adminBaseUri + "/*")).through(Integer.MAX_VALUE, HasorUtils.autoAware(apiBinder.getEnvironment(), uiAuthorization));
         apiBinder.filter(fixUrl(adminBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceAuthorizationFilter(adminBaseUri));
         apiBinder.filter(fixUrl(adminBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceUiFilter(adminBaseUri));
+    }
+
+    private void loadController(WebApiBinder apiBinder, Class<?> aClass, String adminBaseUri, String apiBaseUri) {
+        ApiBinder.MetaDataBindingBuilder<?> metaDataBinder = apiBinder.bindType(aClass).asEagerSingleton();
+        metaDataBinder.metaData(KEY_DATAWAY_UI_BASE_URI, adminBaseUri);
+        metaDataBinder.metaData(KEY_DATAWAY_API_BASE_URI, apiBaseUri);
+        //
+        MappingToUrl toUrl = aClass.getAnnotation(MappingToUrl.class);
+        apiBinder.mappingTo(fixUrl(adminBaseUri + "/" + toUrl.value())).with(metaDataBinder.toInfo());
     }
 
     /** 配置 Dataway 的 DAL */

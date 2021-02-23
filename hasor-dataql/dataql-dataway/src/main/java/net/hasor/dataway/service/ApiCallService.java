@@ -22,7 +22,8 @@ import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
-import net.hasor.dataway.authorization.AuthorizationType;
+import net.hasor.dataql.runtime.mem.ExitType;
+import net.hasor.dataway.authorization.PermissionType;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.LoggerUtils;
 import net.hasor.dataway.spi.*;
@@ -79,7 +80,7 @@ public class ApiCallService {
             // .执行权限检查SPI
             if (this.spiTrigger.hasSpi(AuthorizationChainSpi.class)) {
                 Boolean checkResult = spiTrigger.chainSpi(AuthorizationChainSpi.class, (listener, lastResult) -> {
-                    return listener.doCheck(AuthorizationType.ApiExecute, apiInfo, lastResult);
+                    return listener.doCheck(PermissionType.ApiExecute, apiInfo, lastResult);
                 }, true);
                 if (checkResult == null || !checkResult) {
                     throw new StatusMessageException(401, "no permission of api " + apiInfo.getApiPath());
@@ -102,7 +103,8 @@ public class ApiCallService {
                     execute = (QueryResult) data;
                 } else {
                     execute = QueryResultInfo.of(//
-                            0,                              // 状态码
+                            ExitType.Return,                //
+                            0,                     // 状态码
                             DomainHelper.convertTo(data),   // 结果
                             DatawayUtils.currentLostTime()  // 耗时
                     );

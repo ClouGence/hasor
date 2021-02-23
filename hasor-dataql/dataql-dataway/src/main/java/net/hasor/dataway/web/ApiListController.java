@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataway.authorization.AuthorizationType;
+import net.hasor.dataway.authorization.PermissionType;
 import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/api-list")
-@RefAuthorization(AuthorizationType.ApiList)
+@RefAuthorization(PermissionType.ApiList)
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class ApiListController extends BasicController {
     @Get

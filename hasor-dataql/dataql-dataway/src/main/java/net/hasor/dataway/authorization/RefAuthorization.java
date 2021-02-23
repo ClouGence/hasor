@@ -25,5 +25,5 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RefAuthorization {
     /** 标定点权限 */
-    public AuthorizationType value();
+    public PermissionType value();
 }

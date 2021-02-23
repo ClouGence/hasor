@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataway.authorization.AuthorizationType;
+import net.hasor.dataway.authorization.PermissionType;
 import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
@@ -36,7 +36,7 @@ import java.util.Map;
  * @version : 2020-03-25
  */
 @MappingToUrl("/api/disable")
-@RefAuthorization(AuthorizationType.ApiDisable)
+@RefAuthorization(PermissionType.ApiDisable)
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class DisableController extends BasicController {
     @Post

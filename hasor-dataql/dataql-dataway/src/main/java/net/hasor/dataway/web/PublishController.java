@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataway.web;
-import net.hasor.dataway.authorization.AuthorizationType;
+import net.hasor.dataway.authorization.PermissionType;
 import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
@@ -43,7 +43,7 @@ import java.util.Map;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/publish")
-@RefAuthorization(AuthorizationType.ApiPublish)
+@RefAuthorization(PermissionType.ApiPublish)
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class PublishController extends BasicController {
     @Post

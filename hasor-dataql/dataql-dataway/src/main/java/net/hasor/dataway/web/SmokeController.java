@@ -17,7 +17,7 @@ package net.hasor.dataway.web;
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.Inject;
 import net.hasor.dataql.domain.DomainHelper;
-import net.hasor.dataway.authorization.AuthorizationType;
+import net.hasor.dataway.authorization.PermissionType;
 import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.dataway.config.MappingToUrl;
@@ -52,7 +52,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/smoke")
-@RefAuthorization(AuthorizationType.ApiEdit)
+@RefAuthorization(PermissionType.ApiEdit)
 public class SmokeController extends BasicController implements Constant {
     protected static Logger         logger = LoggerFactory.getLogger(SmokeController.class);
     @Inject

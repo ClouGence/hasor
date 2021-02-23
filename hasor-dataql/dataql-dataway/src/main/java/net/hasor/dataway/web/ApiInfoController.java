@@ -15,7 +15,7 @@
  */
 package net.hasor.dataway.web;
 import com.alibaba.fastjson.JSON;
-import net.hasor.dataway.authorization.AuthorizationType;
+import net.hasor.dataway.authorization.PermissionType;
 import net.hasor.dataway.authorization.RefAuthorization;
 import net.hasor.dataway.config.MappingToUrl;
 import net.hasor.dataway.config.Result;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  * @version : 2020-03-24
  */
 @MappingToUrl("/api/api-info")
-@RefAuthorization(AuthorizationType.ApiInfo)
+@RefAuthorization(PermissionType.ApiInfo)
 @RenderType(value = "json", engineType = JsonRenderEngine.class)
 public class ApiInfoController extends BasicController {
     @Get

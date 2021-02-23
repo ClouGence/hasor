@@ -232,9 +232,18 @@ public class TreeNode implements SettingNode {
         if (StringUtils.isBlank(elementName)) {
             throw new IllegalArgumentException("elementName must not blank.");
         }
-        TreeNode treeNode = this.newSubNode(elementName, setDefault);
+        SettingNode treeNode = this.newSubNode(elementName, setDefault);
         appendNode(target, treeNode);
         return treeNode;
+    }
+
+    public SettingNode getOrNewSubNode(String elementName) {
+        SettingNode[] subNodes = this.getSubNodes(elementName);
+        if (subNodes == null || subNodes.length == 0) {
+            return this.newSubNode(elementName, true);
+        } else {
+            return this.getSubNode(elementName);
+        }
     }
 
     private void appendNode(SettingNode src, SettingNode dest) {
@@ -281,7 +290,11 @@ public class TreeNode implements SettingNode {
             return tn.mkAndGet(keyPath, index + 1);
         }
     }
+
     // ------------------------------------------------------------------------
+    public TreeNode findOrCreateNode(String configKey) {
+        return mkAndGet(configKey.split("\\."), 0);
+    }
 
     public TreeNode findNode(String configKey) {
         if (configKey.equals(".") || configKey.equals("")) {

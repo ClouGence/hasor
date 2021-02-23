@@ -7,6 +7,9 @@
         <HASOR_DATAQL_DATAWAY_API_URL>/api/</HASOR_DATAQL_DATAWAY_API_URL>
         <!-- 是否开启 dataway-ui 管理功能（注意生产环境要设置为 false） -->
         <HASOR_DATAQL_DATAWAY_ADMIN>false</HASOR_DATAQL_DATAWAY_ADMIN>
+        <!-- 是否开启 /api/docs/swagger2.json 地址，通过该地址可以 Swagger 导出 -->
+        <!--      仅 HASOR_DATAQL_DATAWAY_ADMIN 为 false 时配置有效，若 HASOR_DATAQL_DATAWAY_ADMIN 为 true 则同时相当于设置 HASOR_DATAQL_DATAWAY_SWAGGER 也为 true -->
+        <HASOR_DATAQL_DATAWAY_SWAGGER>false</HASOR_DATAQL_DATAWAY_SWAGGER>
         <!-- dataway-ui 的工作路径，必须开启管理功能 -->
         <HASOR_DATAQL_DATAWAY_UI_URL>/interface-ui/</HASOR_DATAQL_DATAWAY_UI_URL>
         <!-- 元信息访问层默认使用的是哪种类型，提供者在 hasor.dataway.dataAccessLayer 中定义 -->
@@ -63,7 +66,7 @@
         </modules>
 
         <!-- enable：默认不启用Dataway，也不启用 Dataway 的管理能力 -->
-        <dataway enable="${HASOR_DATAQL_DATAWAY}" enableAdmin="${HASOR_DATAQL_DATAWAY_ADMIN}">
+        <dataway enable="${HASOR_DATAQL_DATAWAY}" enableAdmin="${HASOR_DATAQL_DATAWAY_ADMIN}" enableSwaggerApi="${HASOR_DATAQL_DATAWAY_SWAGGER}">
             <!-- dataway API工作路径 -->
             <baseApiUrl>${HASOR_DATAQL_DATAWAY_API_URL}</baseApiUrl>
             <!-- dataway-ui 的工作路径，必须开启管理功能 -->
