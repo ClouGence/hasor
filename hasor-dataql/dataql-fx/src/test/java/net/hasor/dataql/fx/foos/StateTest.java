@@ -3,15 +3,15 @@ import net.hasor.core.Hasor;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ListModel;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.fx.AbstractTestResource;
-import net.hasor.dataql.runtime.InstructRuntimeException;
 import org.junit.Test;
 
 import java.io.IOException;
 
 public class StateTest extends AbstractTestResource {
     @Test
-    public void decNumber() throws IOException, InstructRuntimeException {
+    public void decNumber() throws IOException, QueryRuntimeException {
         String qlString = "";
         qlString = qlString + "import 'net.hasor.dataql.fx.basic.StateUdfSource' as state;";
         qlString = qlString + "var decNum = state.decNumber(0); return [ decNum(),decNum(),decNum() ]";
@@ -25,7 +25,7 @@ public class StateTest extends AbstractTestResource {
     }
 
     @Test
-    public void incNumber() throws IOException, InstructRuntimeException {
+    public void incNumber() throws IOException, QueryRuntimeException {
         String qlString = "";
         qlString = qlString + "import 'net.hasor.dataql.fx.basic.StateUdfSource' as state;";
         qlString = qlString + "var decNum = state.incNumber(0); return [ decNum(),decNum(),decNum() ]";

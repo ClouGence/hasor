@@ -3,8 +3,8 @@ import net.hasor.core.Hasor;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ValueModel;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.fx.AbstractTestResource;
-import net.hasor.dataql.runtime.InstructRuntimeException;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.util.Date;
 
 public class TimeTest extends AbstractTestResource {
     @Test
-    public void now() throws IOException, InstructRuntimeException {
+    public void now() throws IOException, QueryRuntimeException {
         String qlString = "";
         qlString = qlString + "import 'net.hasor.dataql.fx.basic.DateTimeUdfSource' as time;";
         qlString = qlString + "return time.now()";
@@ -29,7 +29,7 @@ public class TimeTest extends AbstractTestResource {
     }
 
     @Test
-    public void time() throws IOException, InstructRuntimeException {
+    public void time() throws IOException, QueryRuntimeException {
         String qlString = "";
         qlString = qlString + "import 'net.hasor.dataql.fx.basic.DateTimeUdfSource' as time;";
         qlString = qlString + "var now = time.now() ; return (time.year(now) + '-' + time.month(now) + '-' + time.day(now))";
@@ -43,7 +43,7 @@ public class TimeTest extends AbstractTestResource {
     }
 
     @Test
-    public void format() throws IOException, InstructRuntimeException {
+    public void format() throws IOException, QueryRuntimeException {
         String qlString = "";
         qlString = qlString + "import 'net.hasor.dataql.fx.basic.DateTimeUdfSource' as time;";
         qlString = qlString + "return time.format(time.now(),'yyyy-MM-dd')";
@@ -57,7 +57,7 @@ public class TimeTest extends AbstractTestResource {
     }
 
     @Test
-    public void parse() throws IOException, InstructRuntimeException, ParseException {
+    public void parse() throws IOException, QueryRuntimeException, ParseException {
         String qlString = "";
         qlString = qlString + "import 'net.hasor.dataql.fx.basic.DateTimeUdfSource' as time;";
         qlString = qlString + "return time.parser('2017-03-15 12:44:56','yyyy-MM-dd hh:mm:ss')";

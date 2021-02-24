@@ -1,7 +1,7 @@
 %target_pacakge%
 import net.hasor.dataql.*;
-import net.hasor.dataql.compiler.ParseException;
-import net.hasor.dataql.compiler.QueryModel;
+import net.hasor.dataql.parser.QueryParseException;
+import net.hasor.dataql.parser.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.*;
 import net.hasor.utils.ResourcesUtils;

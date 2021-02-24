@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.mojo.dataql;
-import net.hasor.dataql.compiler.ast.inst.HintInst;
-import net.hasor.dataql.compiler.ast.inst.RootBlockSet;
-import net.hasor.dataql.compiler.ast.value.PrimitiveVariable;
+import net.hasor.dataql.parser.ast.inst.HintInst;
+import net.hasor.dataql.parser.ast.inst.RootBlockSet;
+import net.hasor.dataql.parser.ast.value.PrimitiveVariable;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;

@@ -3,8 +3,8 @@ import net.hasor.core.Hasor;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ValueModel;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.fx.AbstractTestResource;
-import net.hasor.dataql.runtime.InstructRuntimeException;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class IdentifierTest extends AbstractTestResource {
     @Test
-    public void uuid() throws IOException, InstructRuntimeException {
+    public void uuid() throws IOException, QueryRuntimeException {
         String qlString = "";
         qlString = qlString + "import 'net.hasor.dataql.fx.basic.StateUdfSource' as state;";
         qlString = qlString + "return state.uuid()";
@@ -25,7 +25,7 @@ public class IdentifierTest extends AbstractTestResource {
     }
 
     @Test
-    public void uuid2() throws IOException, InstructRuntimeException {
+    public void uuid2() throws IOException, QueryRuntimeException {
         String qlString = "";
         qlString = qlString + "import 'net.hasor.dataql.fx.basic.StateUdfSource' as state;";
         qlString = qlString + "return state.uuidToShort();";
