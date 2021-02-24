@@ -34,28 +34,22 @@ import java.util.regex.Pattern;
  * @author 赵永春 (zyc@hasor.net)
  */
 public final class HttpParameters {
-    private static final Logger                                 logger                 = LoggerFactory.getLogger(InvokerCaller.class);
-    private static final ThreadLocal<Map<String, Object>>       requestAttributesLocal = new ThreadLocal<>();
-    private static final ThreadLocal<Map<String, List<String>>> headerParamLocal       = new ThreadLocal<>();
-    private static final ThreadLocal<Map<String, List<String>>> cookieParamLocal       = new ThreadLocal<>();
-    private static final ThreadLocal<Map<String, List<String>>> pathParamLocal         = new ThreadLocal<>();
-    private static final ThreadLocal<Map<String, List<String>>> queryParamLocal        = new ThreadLocal<>();
-    private static final ThreadLocal<Map<String, List<String>>> requestParamLocal      = new ThreadLocal<>();
-
-    public static <T> T executeWorker(HttpServletRequest httpRequest, ESupplier<T, Throwable> worker) throws Throwable {
-        return executeWorker(null, httpRequest, worker);
-    }
+    private static final Logger                                 logger            = LoggerFactory.getLogger(InvokerCaller.class);
+    private static final ThreadLocal<Invoker>                   invokerLocal      = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, List<String>>> headerParamLocal  = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, List<String>>> cookieParamLocal  = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, List<String>>> pathParamLocal    = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, List<String>>> queryParamLocal   = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, List<String>>> requestParamLocal = new ThreadLocal<>();
 
     protected static <T> T executeWorker(Invoker invoker, ESupplier<T, Throwable> worker) throws Throwable {
-        return executeWorker(invoker, invoker.getHttpRequest(), worker);
-    }
-
-    private static <T> T executeWorker(Invoker invoker, HttpServletRequest httpRequest, ESupplier<T, Throwable> worker) throws Throwable {
+        Objects.requireNonNull(invoker, "invoker is null.");
         try {
-            init(invoker, httpRequest);
+            invokerLocal.set(invoker);
+            init(invoker, invoker.getHttpRequest());
             return worker.eGet();
         } finally {
-            requestAttributesLocal.remove();
+            invokerLocal.remove();
             headerParamLocal.remove();
             cookieParamLocal.remove();
             pathParamLocal.remove();
@@ -169,15 +163,6 @@ public final class HttpParameters {
             });
         }
         requestParamLocal.set(requestMap);
-        //
-        // Attributes
-        Map<String, Object> attributes = new HashMap<>();
-        Enumeration<String> attributeNames = httpRequest.getAttributeNames();
-        while (attributeNames.hasMoreElements()) {
-            String attrKey = attributeNames.nextElement();
-            attributes.put(attrKey, httpRequest.getAttribute(attrKey));
-        }
-        requestAttributesLocal.set(attributes);
     }
 
     private static String urlDecoder(String encoding, String oriData) {
@@ -270,9 +255,9 @@ public final class HttpParameters {
     }
     // ---------------------------------------------------------------------------
 
-    /** 获取 header ，数据是 Map 形式 */
-    public static Map<String, Object> requestAttributeMap() {
-        return requestAttributesLocal.get();
+    /** 获取 Invoker */
+    public static Invoker localInvoker() {
+        return invokerLocal.get();
     }
 
     /** 获取 header ，数据是 Map 形式 */

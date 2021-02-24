@@ -35,7 +35,7 @@ import java.util.*;
 public class WebUdfSource implements UdfSourceAssembly {
     /** jsonBody */
     public static Object jsonBody() {
-        Invoker invoker = FxWebInterceptor.invoker();
+        Invoker invoker = HttpParameters.localInvoker();
         if (invoker == null) {
             return null;
         }
@@ -71,7 +71,7 @@ public class WebUdfSource implements UdfSourceAssembly {
 
     /** 临时 Cookie。临时 Cookie 的 MaxAge = -1 */
     public static boolean tempCookie(String cookieName, String value) {
-        HttpServletResponse httpResponse = FxWebInterceptor.invoker().getHttpResponse();
+        HttpServletResponse httpResponse = HttpParameters.localInvoker().getHttpResponse();
         Cookie cookie = new Cookie(cookieName, value);
         cookie.setMaxAge(-1);
         httpResponse.addCookie(cookie);
@@ -89,7 +89,7 @@ public class WebUdfSource implements UdfSourceAssembly {
 
     /** 存储 Cookie */
     public static boolean storeCookie(String cookieName, String value, int maxAge) {
-        HttpServletResponse httpResponse = FxWebInterceptor.invoker().getHttpResponse();
+        HttpServletResponse httpResponse = HttpParameters.localInvoker().getHttpResponse();
         Cookie cookie = new Cookie(cookieName, value);
         if (maxAge <= 0) {
             maxAge = -1;
@@ -112,7 +112,7 @@ public class WebUdfSource implements UdfSourceAssembly {
 
     /** 删除 Cookie */
     public static boolean removeCookie(String cookieName) {
-        HttpServletResponse httpResponse = FxWebInterceptor.invoker().getHttpResponse();
+        HttpServletResponse httpResponse = HttpParameters.localInvoker().getHttpResponse();
         Cookie cookie = new Cookie(cookieName, "");
         cookie.setMaxAge(0);
         httpResponse.addCookie(cookie);
@@ -151,14 +151,14 @@ public class WebUdfSource implements UdfSourceAssembly {
         if (StringUtils.isBlank(headerName)) {
             return false;
         }
-        FxWebInterceptor.invoker().getHttpResponse().setHeader(headerName, value);
+        HttpParameters.localInvoker().getHttpResponse().setHeader(headerName, value);
         return true;
     }
 
     /** 批量设置 HeaderMap */
     public static boolean setHeaderAll(Map<String, String> headerMap) {
         if (headerMap != null) {
-            HttpServletResponse httpResponse = FxWebInterceptor.invoker().getHttpResponse();
+            HttpServletResponse httpResponse = HttpParameters.localInvoker().getHttpResponse();
             headerMap.forEach(httpResponse::setHeader);
             return true;
         }
@@ -170,14 +170,14 @@ public class WebUdfSource implements UdfSourceAssembly {
         if (StringUtils.isBlank(headerName)) {
             return false;
         }
-        FxWebInterceptor.invoker().getHttpResponse().addHeader(headerName, value);
+        HttpParameters.localInvoker().getHttpResponse().addHeader(headerName, value);
         return true;
     }
 
     /** 批量添加 HeaderMap */
     public static boolean addHeaderAll(Map<String, String> headerMap) {
         if (headerMap != null) {
-            HttpServletResponse httpResponse = FxWebInterceptor.invoker().getHttpResponse();
+            HttpServletResponse httpResponse = HttpParameters.localInvoker().getHttpResponse();
             headerMap.forEach(httpResponse::addHeader);
             return true;
         }
@@ -185,9 +185,18 @@ public class WebUdfSource implements UdfSourceAssembly {
     }
     // --------------------------------------------------------------------------------------------
 
+    /** session */
+    private static HttpSession servletSession() {
+        Invoker invoker = HttpParameters.localInvoker();
+        if (invoker == null) {
+            return null;
+        }
+        return invoker.getHttpRequest().getSession();
+    }
+
     /** sessionKeys */
     public static List<String> sessionKeys() {
-        HttpSession httpSession = FxWebInterceptor.servletSession();
+        HttpSession httpSession = servletSession();
         if (httpSession == null) {
             return Collections.emptyList();
         }
@@ -204,7 +213,7 @@ public class WebUdfSource implements UdfSourceAssembly {
         if (StringUtils.isBlank(key)) {
             return null;
         }
-        HttpSession httpSession = FxWebInterceptor.servletSession();
+        HttpSession httpSession = servletSession();
         if (httpSession == null) {
             return null;
         }
@@ -216,9 +225,9 @@ public class WebUdfSource implements UdfSourceAssembly {
         if (StringUtils.isBlank(key)) {
             return null;
         }
-        HttpSession httpSession = FxWebInterceptor.servletSession();
+        HttpSession httpSession = servletSession();
         if (httpSession == null) {
-            httpSession = FxWebInterceptor.invoker().getHttpRequest().getSession(true);
+            httpSession = HttpParameters.localInvoker().getHttpRequest().getSession(true);
         }
         Object oldValue = httpSession.getAttribute(key);
         httpSession.setAttribute(key, newValue);
@@ -230,7 +239,7 @@ public class WebUdfSource implements UdfSourceAssembly {
         if (StringUtils.isBlank(key)) {
             return false;
         }
-        HttpSession httpSession = FxWebInterceptor.servletSession();
+        HttpSession httpSession = servletSession();
         if (httpSession == null) {
             return false;
         }
@@ -240,7 +249,7 @@ public class WebUdfSource implements UdfSourceAssembly {
 
     /** 删除所有Key */
     public static boolean cleanSession() {
-        HttpSession httpSession = FxWebInterceptor.servletSession();
+        HttpSession httpSession = servletSession();
         if (httpSession == null) {
             return false;
         }
@@ -253,7 +262,7 @@ public class WebUdfSource implements UdfSourceAssembly {
 
     /** Invalidates this session then unbinds any objects bound to it. */
     public static boolean sessionInvalidate() {
-        HttpSession httpSession = FxWebInterceptor.servletSession();
+        HttpSession httpSession = servletSession();
         if (httpSession == null) {
             return false;
         }
@@ -263,7 +272,7 @@ public class WebUdfSource implements UdfSourceAssembly {
 
     /** Session ID. */
     public static String sessionId() {
-        HttpSession httpSession = FxWebInterceptor.servletSession();
+        HttpSession httpSession = servletSession();
         if (httpSession == null) {
             return null;
         }
@@ -272,7 +281,7 @@ public class WebUdfSource implements UdfSourceAssembly {
 
     /** 返回客户端发送与之关联的请求的最后一次时间. */
     public static long sessionLastAccessedTime() {
-        HttpSession httpSession = FxWebInterceptor.servletSession();
+        HttpSession httpSession = servletSession();
         if (httpSession == null) {
             return 0;
         }

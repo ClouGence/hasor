@@ -19,9 +19,6 @@ import net.hasor.core.setting.SettingNode;
 import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.QueryApiBinder;
 import net.hasor.dataql.QueryModule;
-import net.hasor.dataql.fx.web.FxWebInterceptor;
-import net.hasor.utils.ResourcesUtils;
-import net.hasor.web.WebApiBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,14 +42,6 @@ public class FxModule implements QueryModule {
                 Class<?> loadClass = environment.getClassLoader().loadClass(fragmentType);
                 logger.info("bindFragment '" + fragmentName + "' to " + loadClass.getName());
                 apiBinder.bindFragment(fragmentName, (Class<? extends FragmentProcess>) loadClass);
-            }
-        }
-        //
-        // .如果是 Web 环境那么初始化 web 相关的 函数包。
-        if (ResourcesUtils.getResource("/net/hasor/web/WebApiBinder.class") != null) {
-            WebApiBinder webApiBinder = apiBinder.tryCast(WebApiBinder.class);
-            if (webApiBinder != null) {
-                webApiBinder.filter("/*").through(Integer.MAX_VALUE - 1, FxWebInterceptor.class);
             }
         }
     }
