@@ -3,6 +3,10 @@ body {
     padding: 0px;
 }
 
+.el-header, .el-main {
+    padding: 0px !important;
+}
+
 .el-table td, .el-table th {
     padding: 2px 0 !important;
 }
@@ -29,7 +33,6 @@ body {
 .vue-splitter-container {
     padding: 1px;
 }
-
 
 .el-tabs--card > .el-tabs__header {
     padding-left: 30px;

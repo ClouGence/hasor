@@ -30,9 +30,9 @@ module.exports = {
     devServer: {
         host: 'localhost',//target host
         port: 8888,
-        publicPath: '/interface-ui',
+        publicPath: '/interface-ui/',
         proxy: {
-            '/api':{
+            '/api': {
                 target: 'http://localhost:8080',
                 changeOrigin: true,
                 ws: true

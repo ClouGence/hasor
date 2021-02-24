@@ -1,11 +1,11 @@
 package net.hasor.dataway.web;
 import net.hasor.dataql.*;
-import net.hasor.dataql.compiler.ParseException;
-import net.hasor.dataql.compiler.QueryModel;
+import net.hasor.dataql.parser.QueryParseException;
+import net.hasor.dataql.parser.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.CompilerArguments;
 import net.hasor.dataql.runtime.HintsSet;
-import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.utils.ResourcesUtils;
 
@@ -27,15 +27,15 @@ public class Swagger2Query extends HintsSet implements Query {
         this.setHints(hintsSet);
     }
 
-    public Swagger2Query() throws IOException, ParseException {
+    public Swagger2Query() throws IOException, QueryParseException {
         this(Finder.DEFAULT, Collections.emptyMap());
     }
 
-    public Swagger2Query(DataQL dataQL) throws IOException, ParseException {
+    public Swagger2Query(DataQL dataQL) throws IOException, QueryParseException {
         this(dataQL.getFinder(), dataQL.getShareVarMap());
     }
 
-    public Swagger2Query(Finder finder, Map<String, Supplier<?>> shareVarMap) throws IOException, ParseException {
+    public Swagger2Query(Finder finder, Map<String, Supplier<?>> shareVarMap) throws IOException, QueryParseException {
         Set<String> keySet = shareVarMap.keySet();
         InputStream inputStream = Objects.requireNonNull(ResourcesUtils.getResourceAsStream(sourceCode), sourceCode);
         QueryModel queryModel = QueryHelper.queryParser(inputStream, StandardCharsets.UTF_8);
@@ -50,7 +50,7 @@ public class Swagger2Query extends HintsSet implements Query {
     }
 
     @Override
-    public QueryResult execute(CustomizeScope customizeScope) throws InstructRuntimeException {
+    public QueryResult execute(CustomizeScope customizeScope) throws QueryRuntimeException {
         this.dataQuery.setHints(this);
         return this.dataQuery.execute(customizeScope);
     }

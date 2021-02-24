@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import net.hasor.core.spi.SpiTrigger;
+import net.hasor.dataql.DataQueryException;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
@@ -133,6 +134,7 @@ public class DatawayUtils {
                 put("success", true);
                 put("message", "OK");
                 put("code", queryResult.getCode());
+                put("location", null);
                 put("lifeCycleTime", currentLostTime());
                 put("executionTime", queryResult.executionTime());
                 put("value", resultValue);
@@ -154,23 +156,23 @@ public class DatawayUtils {
             return Result.of(specialValue);
         }
         //
-        Map<String, Object> resultData = null;
+        Map<String, Object> resultData = new LinkedHashMap<>();
+        resultData.put("success", false);
+        resultData.put("message", e.getLocalizedMessage());
+        resultData.put("value", specialValue);
+        resultData.put("lifeCycleTime", currentLostTime());
         if (e instanceof ThrowRuntimeException) {
-            resultData = new LinkedHashMap<>();
-            resultData.put("success", false);
-            resultData.put("message", e.getMessage());
+            resultData.put("location", ((ThrowRuntimeException) e).getLocation().toString());
             resultData.put("code", ((ThrowRuntimeException) e).getThrowCode());
-            resultData.put("lifeCycleTime", currentLostTime());
             resultData.put("executionTime", ((ThrowRuntimeException) e).getExecutionTime());
-            resultData.put("value", specialValue);
-        } else {
-            resultData = new LinkedHashMap<>();
-            resultData.put("success", false);
-            resultData.put("message", e.getMessage());
+        } else if (e instanceof DataQueryException) {
+            resultData.put("location", ((DataQueryException) e).getLocation().toString());
             resultData.put("code", 500);
-            resultData.put("lifeCycleTime", currentLostTime());
             resultData.put("executionTime", -1);
-            resultData.put("value", specialValue);
+        } else {
+            resultData.put("location", "Unknown");
+            resultData.put("code", 500);
+            resultData.put("executionTime", -1);
         }
         return Result.of(doResponseFormat(optionMap, resultData));
     }
@@ -188,18 +190,15 @@ public class DatawayUtils {
                 finalResult.put(key.toString(), null);
                 continue;
             }
-            // "success"      : "@resultStatus",
-            // "message"      : "@resultMessage",
-            // "code"         : "@resultCode",
-            // "lifeCycleTime": "@timeLifeCycle",
-            // "executionTime": "@timeExecution",
-            // "value"        : "@resultData"
             switch (value.toString()) {
                 case "@resultStatus":
                     finalResult.put(key.toString(), resultData.get("success"));
                     break;
                 case "@resultMessage":
                     finalResult.put(key.toString(), resultData.get("message"));
+                    break;
+                case "@codeLocation":
+                    finalResult.put(key.toString(), resultData.get("location"));
                     break;
                 case "@resultCode":
                     finalResult.put(key.toString(), resultData.get("code"));

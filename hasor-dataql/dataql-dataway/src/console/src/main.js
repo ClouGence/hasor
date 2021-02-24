@@ -26,6 +26,7 @@ axios({
             '{\n' +
             '  "success"      : "@resultStatus",\n' +
             '  "message"      : "@resultMessage",\n' +
+            '  "location"     : "@codeLocation",\n' +
             '  "code"         : "@resultCode",\n' +
             '  "lifeCycleTime": "@timeLifeCycle",\n' +
             '  "executionTime": "@timeExecution",\n' +

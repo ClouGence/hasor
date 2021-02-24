@@ -138,6 +138,7 @@
 {
     "success"      : "@resultStatus",
     "message"      : "@resultMessage",
+    "location"     : "@blockLocation",
     "code"         : "@resultCode",
     "lifeCycleTime": "@timeLifeCycle",
     "executionTime": "@timeExecution",

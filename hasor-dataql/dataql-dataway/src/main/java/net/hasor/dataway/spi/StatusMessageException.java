@@ -15,7 +15,7 @@
  */
 package net.hasor.dataway.spi;
 import net.hasor.dataql.domain.DomainHelper;
-import net.hasor.dataql.runtime.Location;
+import net.hasor.dataql.parser.location.LocationUtils;
 import net.hasor.dataql.runtime.ThrowRuntimeException;
 
 /**
@@ -25,13 +25,13 @@ import net.hasor.dataql.runtime.ThrowRuntimeException;
  */
 public class StatusMessageException extends ThrowRuntimeException {
     public StatusMessageException(int throwCode, String errorMessage) {
-        super(Location.unknownLocation(), errorMessage);
+        super(LocationUtils.unknownLocation(), errorMessage);
         this.throwCode = throwCode;
         this.result = DomainHelper.convertTo(errorMessage);
     }
 
     public StatusMessageException(int throwCode, String errorMessage, Throwable e) {
-        super(Location.unknownLocation(), errorMessage, e);
+        super(LocationUtils.unknownLocation(), errorMessage, e);
         this.throwCode = throwCode;
         this.result = DomainHelper.convertTo(errorMessage);
     }
