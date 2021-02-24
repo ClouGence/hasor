@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,17 +41,17 @@ public interface Query extends Hints, Cloneable {
     }
 
     /** 执行查询 */
-    public default QueryResult execute() throws InstructRuntimeException {
+    public default QueryResult execute() throws QueryRuntimeException {
         return this.execute(symbol -> Collections.emptyMap());
     }
 
     /** 执行查询 */
-    public default QueryResult execute(Map<String, ?> envData) throws InstructRuntimeException {
+    public default QueryResult execute(Map<String, ?> envData) throws QueryRuntimeException {
         return this.execute(symbol -> envData);
     }
 
     /** 执行查询 */
-    public default QueryResult execute(Object[] envData) throws InstructRuntimeException {
+    public default QueryResult execute(Object[] envData) throws QueryRuntimeException {
         if (envData == null) {
             return this.execute(Collections.emptyMap());
         }
@@ -63,7 +63,7 @@ public interface Query extends Hints, Cloneable {
     }
 
     /** 执行查询 */
-    public QueryResult execute(CustomizeScope customizeScope) throws InstructRuntimeException;
+    public QueryResult execute(CustomizeScope customizeScope) throws QueryRuntimeException;
 
     /** 复制一个Query */
     public Query clone();

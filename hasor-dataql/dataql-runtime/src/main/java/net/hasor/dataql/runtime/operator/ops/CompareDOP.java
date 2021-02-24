@@ -15,8 +15,8 @@
  */
 package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.runtime.InstructRuntimeException;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.parser.location.RuntimeLocation;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 /**
@@ -29,7 +29,7 @@ public class CompareDOP extends AbstractDOP {
     private static final Integer BOOL_TRUE  = 1;
 
     @Override
-    public Object doDyadicProcess(RuntimeLocation location, String operator, Object fstObject, Object secObject, Hints option) throws InstructRuntimeException {
+    public Object doDyadicProcess(RuntimeLocation location, String operator, Object fstObject, Object secObject, Hints option) throws QueryRuntimeException {
         //
         // .Boolean 和 Number 混杂模式下，先统一成为 number 在做判断
         if (OperatorUtils.isBoolean(fstObject) && OperatorUtils.isBoolean(secObject)) {

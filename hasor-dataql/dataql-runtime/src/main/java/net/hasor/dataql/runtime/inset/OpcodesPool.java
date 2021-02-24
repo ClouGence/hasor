@@ -15,11 +15,11 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.core.Provider;
+import net.hasor.dataql.parser.location.RuntimeLocation;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.InstructRuntimeException;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -38,17 +38,17 @@ public class OpcodesPool {
         this.processes[inst.getOpcode()] = inst;
     }
 
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws QueryRuntimeException {
         RuntimeLocation location = sequence.programLocation();
         try {
             InsetProcess process = this.processes[sequence.currentInst().getInstCode()];
             process.doWork(sequence, dataHeap, dataStack, envStack, context);
         } catch (Exception e) {
-            InstructRuntimeException ire = null;
-            if (e instanceof InstructRuntimeException) {
-                ire = (InstructRuntimeException) e;
+            QueryRuntimeException ire = null;
+            if (e instanceof QueryRuntimeException) {
+                ire = (QueryRuntimeException) e;
             } else {
-                ire = new InstructRuntimeException(location, e);
+                ire = new QueryRuntimeException(location, e);
             }
             throw ire;
         }

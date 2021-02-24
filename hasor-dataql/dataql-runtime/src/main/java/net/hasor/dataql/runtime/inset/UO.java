@@ -18,7 +18,7 @@ import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -41,7 +41,7 @@ class UO implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws QueryRuntimeException {
         String dyadicSymbol = sequence.currentInst().getString(0);
         Object expData = dataStack.pop();
         //
@@ -53,7 +53,7 @@ class UO implements InsetProcess {
         OperatorProcess process = context.findUnaryOperator(dyadicSymbol, expType);
         //
         if (process == null) {
-            throw new InstructRuntimeException(sequence.programLocation(), "UO -> " + dyadicSymbol + " OperatorProcess is Undefined");
+            throw new QueryRuntimeException(sequence.programLocation(), "UO -> " + dyadicSymbol + " OperatorProcess is Undefined");
         }
         //
         Object result = process.doProcess(sequence.programLocation(), dyadicSymbol, new Object[] { expData }, context.currentHints());

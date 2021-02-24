@@ -35,5 +35,5 @@ public interface InsetProcess extends Opcodes {
             DataStack dataStack,    // 数据栈
             EnvStack envStack,      // 环境栈
             InsetProcessContext context   // 执行器上下文
-    ) throws InstructRuntimeException;
+    ) throws QueryRuntimeException;
 }

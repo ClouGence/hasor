@@ -20,7 +20,7 @@ import net.hasor.dataql.domain.ValueModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -80,6 +80,6 @@ class TYPEOF implements InsetProcess {
                 return;
             }
         }
-        throw new InstructRuntimeException(sequence.programLocation(), "DataModel type is unknown.");
+        throw new QueryRuntimeException(sequence.programLocation(), "DataModel type is unknown.");
     }
 }

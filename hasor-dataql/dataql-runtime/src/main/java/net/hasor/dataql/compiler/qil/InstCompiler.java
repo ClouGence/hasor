@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil;
-import net.hasor.dataql.compiler.ast.CodeLocation;
-import net.hasor.dataql.compiler.ast.CodeLocation.CodePosition;
-import net.hasor.dataql.compiler.ast.Inst;
+import net.hasor.dataql.parser.ast.Inst;
+import net.hasor.dataql.parser.location.CodeLocation;
+import net.hasor.dataql.parser.location.Location;
 import net.hasor.dataql.runtime.CompilerArguments.CodeLocationEnum;
 
 /**
@@ -33,22 +33,22 @@ public interface InstCompiler<T extends Inst> extends Opcodes {
      */
     public abstract void doCompiler(T astInst, InstQueue queue, CompilerContext compilerContext);
 
-    public default void instLocationFocus(InstQueue queue, CodeLocation location) {
+    public default void instLocationFocus(InstQueue queue, Location location) {
         this.instLocation(true, queue, location);
     }
 
-    public default void instLocation(InstQueue queue, CodeLocation location) {
+    public default void instLocation(InstQueue queue, Location location) {
         this.instLocation(false, queue, location);
     }
 
-    public default void instLocation(boolean focus, InstQueue queue, CodeLocation location) {
+    public default void instLocation(boolean focus, InstQueue queue, Location location) {
         CodeLocationEnum locationEnum = queue.getCompilerArguments().getCodeLocation();
         if (location == null || locationEnum == null || locationEnum == CodeLocationEnum.NONE) {
             return;
         }
         //
-        CodePosition startPosition = location.getStartPosition();
-        CodePosition endPosition = location.getEndPosition();
+        CodeLocation startPosition = location.getStartPosition();
+        CodeLocation endPosition = location.getEndPosition();
         if (startPosition == null || endPosition == null) {
             return;
         }

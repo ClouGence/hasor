@@ -15,8 +15,8 @@
  */
 package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.runtime.InstructRuntimeException;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.parser.location.RuntimeLocation;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.operator.OperatorProcess;
 import net.hasor.utils.StringUtils;
 
@@ -28,26 +28,26 @@ import net.hasor.utils.StringUtils;
 abstract class AbstractDOP implements OperatorProcess {
     /**执行运算*/
     @Override
-    public Object doProcess(RuntimeLocation location, String operator, Object[] args, Hints option) throws InstructRuntimeException {
+    public Object doProcess(RuntimeLocation location, String operator, Object[] args, Hints option) throws QueryRuntimeException {
         if (args == null) {
-            throw new InstructRuntimeException(location, "dyadic operator error, args is null.");
+            throw new QueryRuntimeException(location, "dyadic operator error, args is null.");
         }
         if (args.length != 2) {
-            throw new InstructRuntimeException(location, "dyadic operator error, args count expect 2 , but " + args.length);
+            throw new QueryRuntimeException(location, "dyadic operator error, args count expect 2 , but " + args.length);
         }
         if (!testIn(new String[] { "+", "-", "*", "/", "%", "\\", ">", ">=", "<", "<=", "==", "!=", "&", "|", "^", "<<", ">>", ">>>", "||", "&&" }, operator)) {
-            throw new InstructRuntimeException(location, "does not support dyadic Operator -> " + operator);
+            throw new QueryRuntimeException(location, "does not support dyadic Operator -> " + operator);
         }
         return this.doDyadicProcess(location, operator, args[0], args[1], option);
     }
 
-    protected static InstructRuntimeException throwError(RuntimeLocation location, String operator, Object realFstObject, Object realSecObject, String message) {
+    protected static QueryRuntimeException throwError(RuntimeLocation location, String operator, Object realFstObject, Object realSecObject, String message) {
         String fstDataType = realFstObject == null ? "null" : realFstObject.getClass().getName();
         String secDataType = realSecObject == null ? "null" : realSecObject.getClass().getName();
         message = StringUtils.isBlank(message) ? "no message." : message;
-        return new InstructRuntimeException(location, fstDataType + " and " + secDataType + " , Cannot be used as '" + operator + "' -> " + message);
+        return new QueryRuntimeException(location, fstDataType + " and " + secDataType + " , Cannot be used as '" + operator + "' -> " + message);
     }
 
     /**执行运算*/
-    public abstract Object doDyadicProcess(RuntimeLocation location, String operator, Object fstObject, Object secObject, Hints option) throws InstructRuntimeException;
+    public abstract Object doDyadicProcess(RuntimeLocation location, String operator, Object fstObject, Object secObject, Hints option) throws QueryRuntimeException;
 }

@@ -18,7 +18,7 @@ import net.hasor.dataql.UdfSource;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -39,16 +39,16 @@ class M_TYP implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws QueryRuntimeException {
         String udfType = sequence.currentInst().getString(0);
         Object loadObject = null;
         try {
             loadObject = context.loadObject(udfType);
         } catch (ClassNotFoundException e) {
-            throw new InstructRuntimeException(sequence.programLocation(), udfType + " ClassNotFoundException.", e);
+            throw new QueryRuntimeException(sequence.programLocation(), udfType + " ClassNotFoundException.", e);
         }
         if (loadObject == null) {
-            throw new InstructRuntimeException(sequence.programLocation(), "loadObject is null.");
+            throw new QueryRuntimeException(sequence.programLocation(), "loadObject is null.");
         }
         //
         if (loadObject instanceof UdfSource) {

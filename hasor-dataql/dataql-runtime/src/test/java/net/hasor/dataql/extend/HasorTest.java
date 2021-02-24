@@ -5,7 +5,7 @@ import net.hasor.dataql.*;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataql.domain.ValueModel;
-import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 public class HasorTest {
     @Test
-    public void hasor_0() throws IOException, InstructRuntimeException {
+    public void hasor_0() throws IOException, QueryRuntimeException {
         AppContext appContext = Hasor.create().build((QueryModule) apiBinder -> {
             apiBinder.addShareVarInstance("abc", true);
             apiBinder.addShareVarInstance("bcd", false);
@@ -29,7 +29,7 @@ public class HasorTest {
     }
 
     @Test
-    public void hasor_1() throws IOException, InstructRuntimeException {
+    public void hasor_1() throws IOException, QueryRuntimeException {
         AppContext appContext = Hasor.create().build();
         DataQL dataQL = appContext.getInstance(DataQL.class);
         QueryResult queryResult = dataQL.createQuery("var a= 10 ; return a").execute();
@@ -40,7 +40,7 @@ public class HasorTest {
     }
 
     @Test
-    public void hasor_2() throws IOException, InstructRuntimeException {
+    public void hasor_2() throws IOException, QueryRuntimeException {
         AppContext appContext = Hasor.create().build();
         DataQL dataQL = appContext.getInstance(DataQL.class);
         //
@@ -57,7 +57,7 @@ public class HasorTest {
     }
 
     @Test
-    public void hasor_3() throws IOException, InstructRuntimeException {
+    public void hasor_3() throws IOException, QueryRuntimeException {
         AppContext appContext = Hasor.create().build(apiBinder -> {
             Udf testUdf = (readOnly, params) -> readOnly.getHint("abc");
             QueryApiBinder queryApiBinder = apiBinder.tryCast(QueryApiBinder.class);

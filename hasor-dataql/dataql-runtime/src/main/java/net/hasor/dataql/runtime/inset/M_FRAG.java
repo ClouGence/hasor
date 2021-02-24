@@ -15,11 +15,11 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.FragmentProcess;
+import net.hasor.dataql.parser.location.RuntimeLocation;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.InstructRuntimeException;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.mem.*;
 
 /**
@@ -44,7 +44,7 @@ class M_FRAG implements InsetProcess {
         String fragmentType = sequence.currentInst().getString(1);
         FragmentProcess loadObject = context.findFragmentProcess(fragmentType);
         if (loadObject == null) {
-            throw new InstructRuntimeException(location, fragmentType + " fragment undefine.");
+            throw new QueryRuntimeException(location, fragmentType + " fragment undefine.");
         }
         //
         RefFragmentCall fragmentCall = new RefFragmentCall(location, isBach, loadObject);

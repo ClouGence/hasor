@@ -15,8 +15,8 @@
  */
 package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.runtime.InstructRuntimeException;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.parser.location.RuntimeLocation;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 
 import java.util.Objects;
 
@@ -27,7 +27,7 @@ import java.util.Objects;
  */
 public class ObjectEqDOP extends AbstractDOP {
     @Override
-    public Object doDyadicProcess(RuntimeLocation location, String operator, Object fstObject, Object secObject, Hints option) throws InstructRuntimeException {
+    public Object doDyadicProcess(RuntimeLocation location, String operator, Object fstObject, Object secObject, Hints option) throws QueryRuntimeException {
         if ("==".equals(operator)) {
             return Objects.equals(fstObject, secObject);
         }

@@ -27,7 +27,7 @@ public interface QueryResult {
     public default boolean isExit() {
         return ExitType.Exit == getExitType();
     }
- 
+
     /** 执行结果是否通过 EXIT 形式返回的 */
     public ExitType getExitType();
 

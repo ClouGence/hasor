@@ -15,7 +15,7 @@
  */
 package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.parser.location.RuntimeLocation;
 import net.hasor.dataql.runtime.operator.OperatorProcess;
 
 /**

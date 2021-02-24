@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.dataql.compiler.ast.CodeLocation.CodeLocationInfo;
-import net.hasor.dataql.compiler.ast.CodeLocation.CodePosition;
 import net.hasor.dataql.compiler.qil.Instruction;
 import net.hasor.dataql.compiler.qil.QIL;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.parser.location.BlockLocation;
+import net.hasor.dataql.parser.location.CodeLocation;
+import net.hasor.dataql.parser.location.LocationUtils;
+import net.hasor.dataql.parser.location.RuntimeLocation;
 import net.hasor.utils.StringUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -71,15 +72,15 @@ public class InstSequence {
 
     /** 获取当前程序指令指针位置以及运行的代码位置信息 */
     public RuntimeLocation programLocation() {
-        CodeLocationInfo codeLocation = new CodeLocationInfo();
+        BlockLocation blockLocation = new BlockLocation();
         if (this.codeLocation.length == 4) {
-            codeLocation.setStartPosition(new CodePosition(this.codeLocation[0], this.codeLocation[1]));
-            codeLocation.setEndPosition(new CodePosition(this.codeLocation[2], this.codeLocation[3]));
+            blockLocation.setStartPosition(new CodeLocation(this.codeLocation[0], this.codeLocation[1]));
+            blockLocation.setEndPosition(new CodeLocation(this.codeLocation[2], this.codeLocation[3]));
         } else {
-            codeLocation.setStartPosition(new CodePosition(this.codeLocation[0], -1));
-            codeLocation.setEndPosition(new CodePosition(-1, -1));
+            blockLocation.setStartPosition(new CodeLocation(this.codeLocation[0], -1));
+            blockLocation.setEndPosition(new CodeLocation(-1, -1));
         }
-        return Location.atRuntime(codeLocation, this.address, this.programPointer());
+        return LocationUtils.atRuntime(blockLocation, this.address, this.programPointer());
     }
 
     /** 克隆一个 */
@@ -124,13 +125,13 @@ public class InstSequence {
     }
 
     /** 移动指令序列指针，到下一个位置。 */
-    public boolean doNext(int nextSkip) throws InstructRuntimeException {
+    public boolean doNext(int nextSkip) throws QueryRuntimeException {
         if (this.jumpMark) {
             this.jumpMark = false;
             return true;
         }
         if (nextSkip < 0) {
-            throw new InstructRuntimeException(programLocation(), "nextSkip must be > 0");
+            throw new QueryRuntimeException(programLocation(), "nextSkip must be > 0");
         }
         int newPosition = this.sequenceIndex.get() + nextSkip;
         if (newPosition > this.endPosition) {

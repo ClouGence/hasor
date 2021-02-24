@@ -16,11 +16,9 @@
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.Query;
-import net.hasor.dataql.compiler.ParseException;
-import net.hasor.dataql.compiler.QueryModel;
-import net.hasor.dataql.compiler.ast.inst.RootBlockSet;
-import net.hasor.dataql.compiler.parser.*;
 import net.hasor.dataql.compiler.qil.*;
+import net.hasor.dataql.parser.*;
+import net.hasor.dataql.parser.ast.inst.RootBlockSet;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -72,7 +70,7 @@ public class QueryHelper {
         return queryParser(CharStreams.fromStream(Objects.requireNonNull(inputStream), charset));
     }
 
-    public static QueryModel queryParser(CharStream charStream) throws ParseException {
+    public static QueryModel queryParser(CharStream charStream) throws QueryParseException {
         DataQLLexer lexer = new DataQLLexer(charStream);
         lexer.removeErrorListeners();
         lexer.addErrorListener(ThrowingErrorListener.INSTANCE);

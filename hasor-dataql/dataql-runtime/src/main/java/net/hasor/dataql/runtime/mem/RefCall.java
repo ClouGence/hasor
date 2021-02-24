@@ -20,8 +20,8 @@ import net.hasor.dataql.Udf;
 import net.hasor.dataql.UdfSource;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.DomainHelper;
-import net.hasor.dataql.runtime.InstructRuntimeException;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.parser.location.RuntimeLocation;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.utils.ExceptionUtils;
 
 /**
@@ -40,7 +40,7 @@ public class RefCall {
         this.refCall = refCall;
     }
 
-    public Object invokeMethod(Object[] paramArrays, Hints optionSet, Finder finder) throws InstructRuntimeException {
+    public Object invokeMethod(Object[] paramArrays, Hints optionSet, Finder finder) throws QueryRuntimeException {
         try {
             Object[] objects = paramArrays.clone();
             if (this.autoUnwrap) {
@@ -56,11 +56,11 @@ public class RefCall {
             }
             return DomainHelper.convertTo(result);
         } catch (Throwable e) {
-            if (e instanceof InstructRuntimeException) {
-                throw (InstructRuntimeException) e;
+            if (e instanceof QueryRuntimeException) {
+                throw (QueryRuntimeException) e;
             }
             throw ExceptionUtils.toRuntimeException(e, throwable -> {
-                return new InstructRuntimeException(location, throwable.getMessage(), throwable);
+                return new QueryRuntimeException(location, throwable.getMessage(), throwable);
             });
         }
     }

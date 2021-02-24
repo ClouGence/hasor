@@ -15,11 +15,11 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.Udf;
+import net.hasor.dataql.parser.location.RuntimeLocation;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.InstructRuntimeException;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.mem.*;
 
 /**
@@ -38,14 +38,14 @@ class M_DEF implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws QueryRuntimeException {
         RuntimeLocation location = sequence.programLocation();
         Object refCall = dataStack.pop();
         if (refCall == null) {
-            throw new InstructRuntimeException(location, "target is null.");
+            throw new QueryRuntimeException(location, "target is null.");
         }
         if (!(refCall instanceof Udf)) {
-            throw new InstructRuntimeException(location, "target or Property is not UDF.");
+            throw new QueryRuntimeException(location, "target or Property is not UDF.");
         }
         boolean innerUDF = refCall instanceof RefFragmentCall || refCall instanceof RefLambdaCall;
         refCall = new RefCall(location, !innerUDF, (Udf) refCall);

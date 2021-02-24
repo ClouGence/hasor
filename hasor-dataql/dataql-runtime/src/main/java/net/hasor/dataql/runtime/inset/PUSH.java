@@ -18,7 +18,7 @@ import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -39,7 +39,7 @@ class PUSH implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws QueryRuntimeException {
         Object data = dataStack.pop();
         Object ors = dataStack.peek();
         //
@@ -47,6 +47,6 @@ class PUSH implements InsetProcess {
             ((ListModel) ors).add(data);
             return;
         }
-        throw new InstructRuntimeException(sequence.programLocation(), "output data error, target type must be ListModel.");
+        throw new QueryRuntimeException(sequence.programLocation(), "output data error, target type must be ListModel.");
     }
 }

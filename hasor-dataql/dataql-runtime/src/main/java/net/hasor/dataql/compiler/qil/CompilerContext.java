@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil;
-import net.hasor.dataql.compiler.ast.Inst;
+import net.hasor.dataql.parser.ast.Inst;
 
 import java.io.IOException;
 import java.io.InputStream;

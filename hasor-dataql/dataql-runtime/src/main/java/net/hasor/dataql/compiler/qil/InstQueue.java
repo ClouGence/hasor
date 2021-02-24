@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.compiler.qil;
-import net.hasor.dataql.compiler.CompilerException;
+import net.hasor.dataql.compiler.QueryCompilerException;
 import net.hasor.dataql.runtime.CompilerArguments;
 import net.hasor.utils.StringUtils;
 
@@ -133,11 +133,11 @@ public class InstQueue {
         return new Label(this.labelIndex.incrementAndGet());
     }
 
-    public Instruction[][] buildArrays() throws CompilerException {
+    public Instruction[][] buildArrays() throws QueryCompilerException {
         for (LinkedList<InstructionInfo> instList : this.instSet) {
             for (InstructionInfo inst : instList) {
                 if (!inst.replaceLabel()) {
-                    throw new CompilerException("compiler error -> inst(" + inst.getInstCode() + ") encounter not insert Label.");
+                    throw new QueryCompilerException("compiler error -> inst(" + inst.getInstCode() + ") encounter not insert Label.");
                 }
             }
         }

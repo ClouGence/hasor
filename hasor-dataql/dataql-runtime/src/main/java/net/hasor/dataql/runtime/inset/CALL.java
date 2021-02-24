@@ -37,7 +37,7 @@ class CALL implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws QueryRuntimeException {
         Instruction instruction = sequence.currentInst();
         int paramCount = instruction.getInt(0);
         //
@@ -50,7 +50,7 @@ class CALL implements InsetProcess {
         //
         Object refCallObj = dataStack.pop();
         if (!(refCallObj instanceof RefCall)) {
-            throw new InstructRuntimeException(sequence.programLocation(), "target is not RefCall.");
+            throw new QueryRuntimeException(sequence.programLocation(), "target is not RefCall.");
         }
         //
         RefCall refCall = (RefCall) refCallObj;

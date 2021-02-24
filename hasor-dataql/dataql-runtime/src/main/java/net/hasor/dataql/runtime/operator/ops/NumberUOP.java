@@ -15,8 +15,8 @@
  */
 package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.runtime.InstructRuntimeException;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.parser.location.RuntimeLocation;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 /**
@@ -26,11 +26,11 @@ import net.hasor.dataql.runtime.operator.OperatorUtils;
  */
 public class NumberUOP extends AbstractUOP {
     @Override
-    public Object doUnaryProcess(RuntimeLocation location, String operator, Object object, Hints option) throws InstructRuntimeException {
+    public Object doUnaryProcess(RuntimeLocation location, String operator, Object object, Hints option) throws QueryRuntimeException {
         if ("-".equals(operator) && object instanceof Number) {
             return OperatorUtils.negate((Number) object);
         }
         String dataType = object == null ? "null" : object.getClass().getName();
-        throw new InstructRuntimeException(location, dataType + " , Cannot be used as '" + operator + "'.");
+        throw new QueryRuntimeException(location, dataType + " , Cannot be used as '" + operator + "'.");
     }
 }

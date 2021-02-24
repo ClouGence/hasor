@@ -15,14 +15,14 @@
  */
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.domain.DataModel;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.parser.location.RuntimeLocation;
 
 /**
  * DataQL 运行时异常
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-14
  */
-public class ThrowRuntimeException extends InstructRuntimeException {
+public class ThrowRuntimeException extends QueryRuntimeException {
     protected int       throwCode     = 500;
     protected long      executionTime = -1;
     protected DataModel result        = null;

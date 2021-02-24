@@ -19,7 +19,7 @@ import net.hasor.dataql.domain.ValueModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -48,7 +48,7 @@ class PULL implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws QueryRuntimeException {
         int point = 0;
         if (sequence.currentInst().getArrays().length > 0) {
             point = sequence.currentInst().getInt(0);
@@ -78,7 +78,7 @@ class PULL implements InsetProcess {
         });
         //
         if (!(data instanceof Collection)) {
-            throw new InstructRuntimeException(sequence.programLocation(), "output data error, target type must be Collection.");
+            throw new QueryRuntimeException(sequence.programLocation(), "output data error, target type must be Collection.");
         }
         int size = ((Collection) data).size();
         if (point < 0) {

@@ -20,8 +20,8 @@ import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.runtime.HintsSet;
-import net.hasor.dataql.runtime.InstructRuntimeException;
 import net.hasor.dataql.runtime.QueryHelper;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 
 import javax.script.*;
 import java.util.HashMap;
@@ -101,7 +101,7 @@ class DataQLCompiledScript extends CompiledScript implements Hints {
         try {
             query.setHints(this);
             return query.execute(customizeScope);
-        } catch (InstructRuntimeException e) {
+        } catch (QueryRuntimeException e) {
             throw new ScriptException(e);
         }
     }

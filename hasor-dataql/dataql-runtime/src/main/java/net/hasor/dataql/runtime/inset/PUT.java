@@ -18,7 +18,7 @@ import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -39,7 +39,7 @@ class PUT implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws QueryRuntimeException {
         String fieldName = sequence.currentInst().getString(0);
         Object useData = dataStack.pop();
         Object containerData = dataStack.peek();
@@ -48,6 +48,6 @@ class PUT implements InsetProcess {
             ((ObjectModel) containerData).put(fieldName, useData);
             return;
         }
-        throw new InstructRuntimeException(sequence.programLocation(), "output data error, target type must be ObjectModel.");
+        throw new QueryRuntimeException(sequence.programLocation(), "output data error, target type must be ObjectModel.");
     }
 }

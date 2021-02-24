@@ -15,8 +15,8 @@
  */
 package net.hasor.dataql.runtime.operator;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.runtime.InstructRuntimeException;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.parser.location.RuntimeLocation;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 
 /**
  * 一元运算代理。
@@ -33,7 +33,7 @@ class UnaryProxyOperatorProcess implements OperatorMatch {
     }
 
     @Override
-    public Object doProcess(RuntimeLocation location, String operator, Object[] args, Hints option) throws InstructRuntimeException {
+    public Object doProcess(RuntimeLocation location, String operator, Object[] args, Hints option) throws QueryRuntimeException {
         return this.process.doProcess(location, operator, args, option);
     }
 

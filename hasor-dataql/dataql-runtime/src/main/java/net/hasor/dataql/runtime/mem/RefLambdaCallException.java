@@ -15,15 +15,15 @@
  */
 package net.hasor.dataql.runtime.mem;
 import net.hasor.dataql.domain.DataModel;
-import net.hasor.dataql.runtime.InstructRuntimeException;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.parser.location.RuntimeLocation;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 
 /**
  * 代理 Lambda 使其成为 UDF.
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class RefLambdaCallException extends InstructRuntimeException {
+public class RefLambdaCallException extends QueryRuntimeException {
     private final int       resultCode;
     private final DataModel result;
 

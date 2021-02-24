@@ -15,8 +15,8 @@
  */
 package net.hasor.dataql;
 import net.hasor.core.BindInfo;
-import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
+import net.hasor.dataql.parser.QueryModel;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 

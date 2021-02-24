@@ -15,8 +15,8 @@
  */
 package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.runtime.InstructRuntimeException;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.parser.location.RuntimeLocation;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.operator.OperatorProcess;
 
 /**
@@ -26,20 +26,20 @@ import net.hasor.dataql.runtime.operator.OperatorProcess;
  */
 abstract class AbstractUOP implements OperatorProcess {
     /**执行运算*/
-    public Object doProcess(RuntimeLocation location, String operator, Object[] args, Hints option) throws InstructRuntimeException {
+    public Object doProcess(RuntimeLocation location, String operator, Object[] args, Hints option) throws QueryRuntimeException {
         if (args == null) {
-            throw new InstructRuntimeException(location, "unary operator error, args is null.");
+            throw new QueryRuntimeException(location, "unary operator error, args is null.");
         }
         if (args.length != 1) {
-            throw new InstructRuntimeException(location, "unary operator error, args count expect 1 , but " + args.length);
+            throw new QueryRuntimeException(location, "unary operator error, args count expect 1 , but " + args.length);
         }
         if (!testIn(new String[] { "!", "-" }, operator)) {
-            throw new InstructRuntimeException(location, "does not support unary Operator -> " + operator);
+            throw new QueryRuntimeException(location, "does not support unary Operator -> " + operator);
         }
         //
         return this.doUnaryProcess(location, operator, args[0], option);
     }
 
     /**执行运算*/
-    public abstract Object doUnaryProcess(RuntimeLocation location, String operator, Object object, Hints option) throws InstructRuntimeException;
+    public abstract Object doUnaryProcess(RuntimeLocation location, String operator, Object object, Hints option) throws QueryRuntimeException;
 }

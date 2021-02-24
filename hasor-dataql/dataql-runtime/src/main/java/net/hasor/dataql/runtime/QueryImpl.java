@@ -58,7 +58,7 @@ class QueryImpl extends HintsSet implements Query {
     }
 
     @Override
-    public QueryResultImpl execute(CustomizeScope customize) throws InstructRuntimeException {
+    public QueryResultImpl execute(CustomizeScope customize) throws QueryRuntimeException {
         InstSequence instSequence = new InstSequence(0, this.qil);
         //
         // .创建指令执行环境

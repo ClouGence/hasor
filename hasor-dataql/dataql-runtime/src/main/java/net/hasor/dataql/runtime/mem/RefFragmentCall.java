@@ -17,8 +17,8 @@ package net.hasor.dataql.runtime.mem;
 import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.Udf;
-import net.hasor.dataql.runtime.InstructRuntimeException;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.parser.location.RuntimeLocation;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 
 import java.util.*;
 
@@ -52,7 +52,7 @@ public class RefFragmentCall implements Udf {
                 // .参数类型校验
                 Object dataModel = fragmentParams.get(key);
                 if (!(dataModel instanceof List)) {
-                    throw new InstructRuntimeException(this.location, "The batch fragment args must be an array.");
+                    throw new QueryRuntimeException(this.location, "The batch fragment args must be an array.");
                 }
                 List<?> listData = (List<?>) dataModel;
                 //
@@ -88,7 +88,7 @@ public class RefFragmentCall implements Udf {
                 if (strBuild.length() > 0) {
                     strBuild.deleteCharAt(strBuild.length() - 1);
                 }
-                throw new InstructRuntimeException(this.location, "batch fragment,All args must have the same length -> [" + strBuild.toString() + "]");
+                throw new QueryRuntimeException(this.location, "batch fragment,All args must have the same length -> [" + strBuild.toString() + "]");
             }
             //
             return this.fragmentProcess.batchRunFragment(readOnly, fragmentParamsArray, fragmentString);

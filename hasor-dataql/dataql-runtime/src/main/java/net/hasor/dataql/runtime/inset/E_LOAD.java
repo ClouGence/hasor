@@ -17,7 +17,7 @@ package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataIterator;
 import net.hasor.dataql.runtime.mem.DataStack;
@@ -40,7 +40,7 @@ class E_LOAD implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws QueryRuntimeException {
         String symbol = sequence.currentInst().getString(0);
         if (envStack.isEmpty()) {
             dataStack.push(null);
@@ -67,7 +67,7 @@ class E_LOAD implements InsetProcess {
             }
             dataStack.push(objects);
         } else {
-            throw new InstructRuntimeException(sequence.programLocation(), "symbol '" + symbol + "' is not define.");
+            throw new QueryRuntimeException(sequence.programLocation(), "symbol '" + symbol + "' is not define.");
         }
     }
 }

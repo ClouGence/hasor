@@ -21,7 +21,7 @@ public class AssertRuntimeTest extends AbstractTestResource implements HintValue
             compilerQL.execute();
             assert false;
         } catch (Exception e) {
-            assert e.getMessage().equalsIgnoreCase("[line 1:0~1:12 ,QIL 0:9] assert test failed.");
+            assert e.getMessage().contains("assert test failed.");
             assert e.getLocalizedMessage().equalsIgnoreCase("assert test failed.");
         }
     }
@@ -40,7 +40,7 @@ public class AssertRuntimeTest extends AbstractTestResource implements HintValue
             compilerQL.execute();
             assert false;
         } catch (Exception e) {
-            assert e.getMessage().equalsIgnoreCase("[line 1:0~1:9 ,QIL 0:19] assert expression value is not 'boolean' type.");
+            assert e.getMessage().contains("assert expression value is not 'boolean' type.");
             assert e.getLocalizedMessage().equalsIgnoreCase("assert expression value is not 'boolean' type.");
         }
     }
@@ -52,7 +52,7 @@ public class AssertRuntimeTest extends AbstractTestResource implements HintValue
             compilerQL.execute();
             assert false;
         } catch (Exception e) {
-            assert e.getMessage().equalsIgnoreCase("[line 1:36~1:57 ,QIL 0:26] assert expression value is not 'boolean' type.");
+            assert e.getMessage().contains("assert expression value is not 'boolean' type.");
             assert e.getLocalizedMessage().equalsIgnoreCase("assert expression value is not 'boolean' type.");
         }
         //

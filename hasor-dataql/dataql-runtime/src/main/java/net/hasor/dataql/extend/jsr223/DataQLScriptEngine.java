@@ -16,8 +16,8 @@
 package net.hasor.dataql.extend.jsr223;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.compiler.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
+import net.hasor.dataql.parser.QueryModel;
 import net.hasor.dataql.runtime.CompilerArguments;
 import net.hasor.dataql.runtime.HintsSet;
 import net.hasor.dataql.runtime.QueryHelper;

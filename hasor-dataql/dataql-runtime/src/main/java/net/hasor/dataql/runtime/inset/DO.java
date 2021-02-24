@@ -18,7 +18,7 @@ import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.InstructRuntimeException;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
@@ -42,7 +42,7 @@ class DO implements InsetProcess {
     }
 
     @Override
-    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws InstructRuntimeException {
+    public void doWork(InstSequence sequence, DataHeap dataHeap, DataStack dataStack, EnvStack envStack, InsetProcessContext context) throws QueryRuntimeException {
         String dyadicSymbol = sequence.currentInst().getString(0);
         Object secExpData = dataStack.pop();
         Object fstExpData = dataStack.pop();
@@ -64,7 +64,7 @@ class DO implements InsetProcess {
                 isPositive = OperatorUtils.gteq(number, 0);
             } else {
                 String msg = (fstExpData == null) ? "is null." : "must number.";
-                throw new InstructRuntimeException(sequence.programLocation(), "DO -> first data " + msg);
+                throw new QueryRuntimeException(sequence.programLocation(), "DO -> first data " + msg);
             }
             if (secExpData == null) {
                 secExpData = 0;
@@ -86,7 +86,7 @@ class DO implements InsetProcess {
         OperatorProcess process = context.findDyadicOperator(dyadicSymbol, fstType, secType);
         //
         if (process == null) {
-            throw new InstructRuntimeException(sequence.programLocation(), "DO -> '" + fstType.getName() + "' and '" + secType.getName() + "' operation '" + dyadicSymbol + "' not support.");
+            throw new QueryRuntimeException(sequence.programLocation(), "DO -> '" + fstType.getName() + "' and '" + secType.getName() + "' operation '" + dyadicSymbol + "' not support.");
         }
         //
         Object result = process.doProcess(sequence.programLocation(), dyadicSymbol, new Object[] { fstExpData, secExpData }, context.currentHints());

@@ -15,9 +15,9 @@
  */
 package net.hasor.dataql;
 import net.hasor.core.Settings;
-import net.hasor.dataql.compiler.QueryModel;
-import net.hasor.dataql.compiler.ast.AstVisitor;
-import net.hasor.dataql.compiler.ast.InstVisitorContext;
+import net.hasor.dataql.parser.QueryModel;
+import net.hasor.dataql.parser.ast.AstVisitor;
+import net.hasor.dataql.parser.ast.InstVisitorContext;
 import net.hasor.dataql.runtime.CompilerArguments;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.utils.ResourcesUtils;

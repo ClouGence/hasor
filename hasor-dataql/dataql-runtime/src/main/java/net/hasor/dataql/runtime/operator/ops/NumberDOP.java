@@ -15,8 +15,8 @@
  */
 package net.hasor.dataql.runtime.operator.ops;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.runtime.InstructRuntimeException;
-import net.hasor.dataql.runtime.Location.RuntimeLocation;
+import net.hasor.dataql.parser.location.RuntimeLocation;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 import java.math.BigDecimal;
@@ -31,7 +31,7 @@ import static net.hasor.dataql.Hints.MIN_INTEGER_WIDTH;
  */
 public class NumberDOP extends AbstractDOP {
     @Override
-    public Object doDyadicProcess(RuntimeLocation location, String operator, Object fstObject, Object secObject, Hints option) throws InstructRuntimeException {
+    public Object doDyadicProcess(RuntimeLocation location, String operator, Object fstObject, Object secObject, Hints option) throws QueryRuntimeException {
         if (!(fstObject instanceof Number) || !(secObject instanceof Number)) {
             throw throwError(location, operator, fstObject, secObject, "requirements must be numerical.");
         }
@@ -56,26 +56,26 @@ public class NumberDOP extends AbstractDOP {
         // .数值计算
         Number result = null;
         switch (operator.charAt(0)) {
-        case '+':
-            result = OperatorUtils.add((Number) fstObject, (Number) secObject);
-            break;
-        case '-':
-            result = OperatorUtils.subtract((Number) fstObject, (Number) secObject);
-            break;
-        case '*':
-            result = OperatorUtils.multiply((Number) fstObject, (Number) secObject);
-            break;
-        case '/':
-            result = OperatorUtils.divide((Number) fstObject, (Number) secObject, maxDecimal, roundingMode);
-            break;
-        case '\\':
-            result = OperatorUtils.aliquot((Number) fstObject, (Number) secObject);
-            break;
-        case '%':
-            result = OperatorUtils.mod((Number) fstObject, (Number) secObject);
-            break;
-        default:
-            throw throwError(location, operator, fstObject, secObject, "this operator nonsupport.");
+            case '+':
+                result = OperatorUtils.add((Number) fstObject, (Number) secObject);
+                break;
+            case '-':
+                result = OperatorUtils.subtract((Number) fstObject, (Number) secObject);
+                break;
+            case '*':
+                result = OperatorUtils.multiply((Number) fstObject, (Number) secObject);
+                break;
+            case '/':
+                result = OperatorUtils.divide((Number) fstObject, (Number) secObject, maxDecimal, roundingMode);
+                break;
+            case '\\':
+                result = OperatorUtils.aliquot((Number) fstObject, (Number) secObject);
+                break;
+            case '%':
+                result = OperatorUtils.mod((Number) fstObject, (Number) secObject);
+                break;
+            default:
+                throw throwError(location, operator, fstObject, secObject, "this operator nonsupport.");
         }
         if (result == null) {
             throw throwError(location, operator, fstObject, secObject, "evaluation result is empty.");
