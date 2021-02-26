@@ -115,5 +115,11 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

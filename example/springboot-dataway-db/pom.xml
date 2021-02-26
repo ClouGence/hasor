@@ -99,5 +99,11 @@
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
         </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
