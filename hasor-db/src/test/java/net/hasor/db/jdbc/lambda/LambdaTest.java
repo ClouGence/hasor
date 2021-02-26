@@ -44,14 +44,14 @@ public class LambdaTest extends AbstractDbTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            List<TbUser> tbUsers1 = jdbcTemplate.lambda(TbUser.class).queryForList();
+            List<TbUser> tbUsers1 = jdbcTemplate.lambdaQuery(TbUser.class).queryForList();
             List<String> collect1 = tbUsers1.stream().map(TbUser::getName).collect(Collectors.toList());
             assert collect1.size() == 3;
             assert collect1.contains(beanForData1().getName());
             assert collect1.contains(beanForData2().getName());
             assert collect1.contains(beanForData3().getName());
             //
-            List<Map<String, Object>> tbUsers2 = jdbcTemplate.lambda(TbUser.class).queryForMapList();
+            List<Map<String, Object>> tbUsers2 = jdbcTemplate.lambdaQuery(TbUser.class).queryForMapList();
             List<String> collect2 = tbUsers2.stream().map(tbUser -> {
                 return (String) tbUser.get("name");
             }).collect(Collectors.toList());
@@ -61,7 +61,7 @@ public class LambdaTest extends AbstractDbTest {
             assert collect2.contains(beanForData3().getName());
             //
             List<String> collect3 = new ArrayList<>();
-            jdbcTemplate.lambda(TbUser.class).query((rs, rowNum) -> {
+            jdbcTemplate.lambdaQuery(TbUser.class).query((rs, rowNum) -> {
                 collect3.add(rs.getString("name"));
             });
             assert collect3.size() == 3;
@@ -69,7 +69,7 @@ public class LambdaTest extends AbstractDbTest {
             assert collect3.contains(beanForData2().getName());
             assert collect3.contains(beanForData3().getName());
             //
-            List<Map<String, Object>> tbUsers4 = jdbcTemplate.lambda(TbUser.class)//
+            List<Map<String, Object>> tbUsers4 = jdbcTemplate.lambdaQuery(TbUser.class)//
                     .query(new RowMapperResultSetExtractor<>(new ColumnMapRowMapper()));
             List<String> collect4 = tbUsers4.stream().map(tbUser -> {
                 return (String) tbUser.get("name");
@@ -79,7 +79,7 @@ public class LambdaTest extends AbstractDbTest {
             assert collect4.contains(beanForData2().getName());
             assert collect4.contains(beanForData3().getName());
             //
-            List<Map<String, Object>> tbUsers5 = jdbcTemplate.lambda(TbUser.class).query(new ColumnMapRowMapper());
+            List<Map<String, Object>> tbUsers5 = jdbcTemplate.lambdaQuery(TbUser.class).query(new ColumnMapRowMapper());
             List<String> collect5 = tbUsers5.stream().map(tbUser -> {
                 return (String) tbUser.get("name");
             }).collect(Collectors.toList());
@@ -91,17 +91,17 @@ public class LambdaTest extends AbstractDbTest {
     }
 
     @Test
-    public void lambda_select_2() throws SQLException {
+    public void lambdaQuery_select_2() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            List<TbUser> tbUsers1 = jdbcTemplate.lambda(TbUser.class).selectAll().queryForList();
-            List<TbUser> tbUsers2 = jdbcTemplate.lambda(TbUser.class).queryForList();
+            List<TbUser> tbUsers1 = jdbcTemplate.lambdaQuery(TbUser.class).selectAll().queryForList();
+            List<TbUser> tbUsers2 = jdbcTemplate.lambdaQuery(TbUser.class).queryForList();
             assert tbUsers1.size() == 3;
             assert tbUsers2.size() == 3;
             //
             Map<String, Object> forData1 = mapForData1();
-            List<TbUser> tbUsers3 = jdbcTemplate.lambda(TbUser.class)//
+            List<TbUser> tbUsers3 = jdbcTemplate.lambdaQuery(TbUser.class)//
                     .eq(TbUser::getAccount, forData1.get("loginName")).queryForList();
             assert tbUsers3.size() == 1;
             assert tbUsers3.get(0).getAccount().equals("muhammad");
@@ -111,17 +111,17 @@ public class LambdaTest extends AbstractDbTest {
     }
 
     @Test
-    public void lambda_select_3() throws SQLException {
+    public void lambdaQuery_select_3() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            List<TB_User> tbUsers1 = jdbcTemplate.lambda(TB_User.class).selectAll().queryForList();
-            List<TB_User> tbUsers2 = jdbcTemplate.lambda(TB_User.class).queryForList();
+            List<TB_User> tbUsers1 = jdbcTemplate.lambdaQuery(TB_User.class).selectAll().queryForList();
+            List<TB_User> tbUsers2 = jdbcTemplate.lambdaQuery(TB_User.class).queryForList();
             assert tbUsers1.size() == 3;
             assert tbUsers2.size() == 3;
             //
             Map<String, Object> forData1 = mapForData1();
-            List<TB_User> tbUsers3 = jdbcTemplate.lambda(TB_User.class)//
+            List<TB_User> tbUsers3 = jdbcTemplate.lambdaQuery(TB_User.class)//
                     .eq(TB_User::getLoginName, forData1.get("loginName")).queryForList();
             assert tbUsers3.size() == 1;
             assert tbUsers3.get(0).getLoginName().equals("muhammad");
@@ -131,11 +131,11 @@ public class LambdaTest extends AbstractDbTest {
     }
 
     @Test
-    public void lambda_select_4() throws SQLException {
+    public void lambdaQuery_select_4() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            TbUser tbUser = jdbcTemplate.lambda(TbUser.class)//
+            TbUser tbUser = jdbcTemplate.lambdaQuery(TbUser.class)//
                     .eq(TbUser::getAccount, "muhammad").apply("limit 1").queryForObject();
             //
             assert tbUser.getName().equals("默罕默德");
@@ -143,11 +143,11 @@ public class LambdaTest extends AbstractDbTest {
     }
 
     @Test
-    public void lambda_select_5() throws SQLException {
+    public void lambdaQuery_select_5() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            TB_User tbUser = jdbcTemplate.lambda(TbUser.class)//
+            TB_User tbUser = jdbcTemplate.lambdaQuery(TbUser.class)//
                     .eq(TbUser::getAccount, "muhammad").apply("limit 1")//
                     .wrapperType(TB_User.class).queryForObject();
             //
@@ -157,11 +157,11 @@ public class LambdaTest extends AbstractDbTest {
     }
 
     @Test
-    public void lambda_select_6() throws SQLException {
+    public void lambdaQuery_select_6() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            Map<String, Object> tbUser = jdbcTemplate.lambda(TbUser.class)//
+            Map<String, Object> tbUser = jdbcTemplate.lambdaQuery(TbUser.class)//
                     .eq(TbUser::getAccount, "muhammad").apply("limit 1")//
                     .queryForMap();
             //

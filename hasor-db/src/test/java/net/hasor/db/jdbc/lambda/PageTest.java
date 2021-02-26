@@ -30,7 +30,7 @@ import org.junit.Test;
 public class PageTest extends AbstractDbTest {
     @Test
     public void pageTest_1() {
-        BoundSql boundSql = new JdbcTemplate().lambda(TbUser.class).select(TbUser::getAccount)//
+        BoundSql boundSql = new JdbcTemplate().lambdaQuery(TbUser.class).select(TbUser::getAccount)//
                 .initPage(10, 2)//
                 .getBoundSql(SqlDialectRegister.findOrCreate(JdbcUtils.MYSQL));
         assert boundSql.getSqlString().equals("SELECT loginName FROM tb_user LIMIT ?, ?");
@@ -40,7 +40,7 @@ public class PageTest extends AbstractDbTest {
 
     @Test
     public void pageTest_2() {
-        BoundSql boundSql = new JdbcTemplate().lambda(TbUser.class).select(TbUser::getAccount)//
+        BoundSql boundSql = new JdbcTemplate().lambdaQuery(TbUser.class).select(TbUser::getAccount)//
                 .eq(TbUser::getIndex, 1)//
                 .between(TbUser::getAccount, 2, 3)//
                 .initPage(10, 2)//

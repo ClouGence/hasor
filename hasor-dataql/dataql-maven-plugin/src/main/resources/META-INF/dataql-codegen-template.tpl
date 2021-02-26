@@ -1,9 +1,12 @@
 %target_pacakge%
 import net.hasor.dataql.*;
-import net.hasor.dataql.parser.QueryParseException;
-import net.hasor.dataql.parser.QueryModel;
 import net.hasor.dataql.compiler.qil.QIL;
-import net.hasor.dataql.runtime.*;
+import net.hasor.dataql.parser.QueryModel;
+import net.hasor.dataql.parser.QueryParseException;
+import net.hasor.dataql.runtime.CompilerArguments;
+import net.hasor.dataql.runtime.HintsSet;
+import net.hasor.dataql.runtime.QueryHelper;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.utils.ResourcesUtils;
 
 import java.io.IOException;
@@ -13,9 +16,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.function.Supplier;
-
 
 // Generated from '%source_resource%'
 %inject_name%
@@ -27,15 +28,15 @@ public class %target_name% extends HintsSet implements Query {
         this.setHints(hintsSet);
     }
 
-    public %target_name%() throws IOException, ParseException {
+    public %target_name%() throws IOException, QueryParseException {
         this(Finder.DEFAULT, Collections.emptyMap());
     }
 
-    public %target_name%(DataQL dataQL) throws IOException, ParseException {
+    public %target_name%(DataQL dataQL) throws IOException, QueryParseException {
         this(dataQL.getFinder(), dataQL.getShareVarMap());
     }
 
-    public %target_name%(Finder finder, Map<String, Supplier<?>> shareVarMap) throws IOException, ParseException {
+    public %target_name%(Finder finder, Map<String, Supplier<?>> shareVarMap) throws IOException, QueryParseException {
         Set<String> keySet = shareVarMap.keySet();
         InputStream inputStream = Objects.requireNonNull(ResourcesUtils.getResourceAsStream(sourceCode), sourceCode);
         QueryModel queryModel = QueryHelper.queryParser(inputStream, Charset.forName("UTF-8"));
@@ -50,7 +51,7 @@ public class %target_name% extends HintsSet implements Query {
     }
 
     @Override
-    public QueryResult execute(CustomizeScope customizeScope) throws InstructRuntimeException {
+    public QueryResult execute(CustomizeScope customizeScope) throws QueryRuntimeException {
         this.dataQuery.setHints(this);
         return this.dataQuery.execute(customizeScope);
     }

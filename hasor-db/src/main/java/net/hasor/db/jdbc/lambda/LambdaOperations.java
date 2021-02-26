@@ -16,10 +16,6 @@
 package net.hasor.db.jdbc.lambda;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
-import net.hasor.utils.reflect.SFunction;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * 提供 lambda 方式生成 SQL。
@@ -28,15 +24,24 @@ import java.util.List;
  */
 public interface LambdaOperations {
     /** 相当于 select * form */
-    public default <T> LambdaQuery<T> lambda(Class<T> exampleType) {
-        return lambda(exampleType, Collections.emptyList());
-    }
+    public <T> LambdaQuery<T> lambdaQuery(Class<T> exampleType);
 
     /** 相当于 select xxx,xxx,xxx form */
-    public <T> LambdaQuery<T> lambda(Class<T> exampleType, List<SFunction<T>> columns);
+    public <T> LambdaUpdate<T> lambdaUpdate(Class<T> exampleType);
+
+    /** 相当于 select xxx,xxx,xxx form */
+    public <T> LambdaInsert<T> lambdaInsert(Class<T> exampleType);
 
     /** 封装 */
     public interface LambdaQuery<T> extends Compare<T, LambdaQuery<T>>, Func<T, LambdaQuery<T>>, QueryExecute<T>, BoundSqlBuilder {
+    }
+
+    /** 封装 */
+    public interface LambdaUpdate<T> extends Compare<T, LambdaUpdate<T>>, UpdateExecute<T>, BoundSqlBuilder {
+    }
+
+    /** 封装 */
+    public interface LambdaInsert<T> extends Compare<T, LambdaInsert<T>>, InsertExecute<T>, BoundSqlBuilder {
     }
 
     /** */

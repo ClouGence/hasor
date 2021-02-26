@@ -24,7 +24,9 @@ import net.hasor.db.jdbc.extractor.ColumnMapResultSetExtractor;
 import net.hasor.db.jdbc.extractor.RowCallbackHandlerResultSetExtractor;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.lambda.LambdaOperations;
+import net.hasor.db.jdbc.lambda.query.LambdaInsertWrapper;
 import net.hasor.db.jdbc.lambda.query.LambdaQueryWrapper;
+import net.hasor.db.jdbc.lambda.query.LambdaUpdateWrapper;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
 import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
@@ -34,7 +36,6 @@ import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
 import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
-import net.hasor.utils.reflect.SFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -954,8 +955,19 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         return null;
     }
 
-    public <T> LambdaQuery<T> lambda(Class<T> exampleType, List<SFunction<T>> columns) {
-        return new LambdaQueryWrapper<>(exampleType, this).select(columns);
+    @Override
+    public <T> LambdaQuery<T> lambdaQuery(Class<T> exampleType) {
+        return new LambdaQueryWrapper<>(exampleType, this);
+    }
+
+    @Override
+    public <T> LambdaUpdate<T> lambdaUpdate(Class<T> exampleType) {
+        return new LambdaUpdateWrapper<>(exampleType, this);
+    }
+
+    @Override
+    public <T> LambdaInsert<T> lambdaInsert(Class<T> exampleType) {
+        return new LambdaInsertWrapper<>(exampleType, this);
     }
 
     /** Create a new RowMapper for reading columns as key-value pairs. */
