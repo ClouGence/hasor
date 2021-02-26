@@ -32,7 +32,7 @@ import java.util.*;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SqlServer2012Dialect implements SqlDialect {
+public class SqlServerDialect implements SqlDialect {
     private static final Map<String, Select> CACHE       = new WeakHashMap<>();
     private static final Object              LOCK_OBJECT = new Object();
 

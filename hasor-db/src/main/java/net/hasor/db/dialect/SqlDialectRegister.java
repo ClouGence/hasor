@@ -34,24 +34,29 @@ public class SqlDialectRegister {
     private static final Map<String, SqlDialect> dialectCache    = new ConcurrentHashMap<>();
 
     static {
-        registerDialectAlias(JdbcUtils.POSTGRESQL, PostgreSqlDialect.class);
-        registerDialectAlias(JdbcUtils.HSQL, HSQLDialect.class);
-        registerDialectAlias(JdbcUtils.PHOENIX, PhoenixDialect.class);
-        registerDialectAlias(JdbcUtils.IMPALA, ImpalaDialect.class);
-        registerDialectAlias(JdbcUtils.MYSQL, MySqlDialect.class);
-        registerDialectAlias(JdbcUtils.MARIADB, MariaDBDialect.class);
         registerDialectAlias(JdbcUtils.ALIYUN_ADS, AliyunAdsDialect.class);
         registerDialectAlias(JdbcUtils.ALIYUN_DRDS, AliyunDRDSDialect.class);
-        registerDialectAlias(JdbcUtils.SQLITE, SqlLiteDialect.class);
-        registerDialectAlias(JdbcUtils.HERDDB, HerdDBDialect.class);
-        registerDialectAlias("sqlserver2012", SqlServer2012Dialect.class);
-        registerDialectAlias(JdbcUtils.DERBY, SqlServer2012Dialect.class);// Apache Derby
-        registerDialectAlias(JdbcUtils.ORACLE, OracleDialect.class);
         registerDialectAlias(JdbcUtils.ALI_ORACLE, OracleDialect.class);
-        registerDialectAlias(JdbcUtils.H2, H2Dialect.class);
-        registerDialectAlias(JdbcUtils.HIVE, HiveDialect.class);
         registerDialectAlias(JdbcUtils.DB2, Db2Dialect.class);
+        registerDialectAlias(JdbcUtils.DERBY, SqlServerDialect.class);// Apache Derby
+        registerDialectAlias(JdbcUtils.DM, DmDialect.class);
+        registerDialectAlias(JdbcUtils.H2, H2Dialect.class);
+        registerDialectAlias(JdbcUtils.HERDDB, HerdDBDialect.class);
+        registerDialectAlias(JdbcUtils.HIVE, HiveDialect.class);
+        registerDialectAlias(JdbcUtils.HSQL, HSQLDialect.class);
+        registerDialectAlias(JdbcUtils.IMPALA, ImpalaDialect.class);
         registerDialectAlias(JdbcUtils.INFORMIX, InformixDialect.class);
+        registerDialectAlias(JdbcUtils.KINGBASE, KingbaseDialect.class);
+        registerDialectAlias(JdbcUtils.MARIADB, MariaDBDialect.class);
+        registerDialectAlias(JdbcUtils.MYSQL, MySqlDialect.class);
+        registerDialectAlias("oracle12c", Oracle12cDialect.class);
+        registerDialectAlias(JdbcUtils.ORACLE, OracleDialect.class);
+        registerDialectAlias(JdbcUtils.PHOENIX, PhoenixDialect.class);
+        registerDialectAlias(JdbcUtils.POSTGRESQL, PostgreSqlDialect.class);
+        registerDialectAlias(JdbcUtils.SQLITE, SqlLiteDialect.class);
+        registerDialectAlias(JdbcUtils.SQL_SERVER, SqlServerDialect.class);
+        registerDialectAlias("sqlserver2012", SqlServerDialect.class);
+        registerDialectAlias("sqlserver2005", SqlServer2005Dialect.class);
     }
 
     public static void clearDialectCache() {
