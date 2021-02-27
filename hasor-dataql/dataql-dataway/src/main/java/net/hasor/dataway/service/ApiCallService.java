@@ -16,7 +16,6 @@
 package net.hasor.dataway.service;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.DataQL;
-import net.hasor.dataql.DataQueryException;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.compiler.qil.QIL;
@@ -179,10 +178,8 @@ public class ApiCallService {
         }
         if (e instanceof ThrowRuntimeException) {
             value = ((ThrowRuntimeException) e).getResult().unwrap();
-        } else if (e instanceof DataQueryException) {
-            value = ((DataQueryException) e).getLocation().toString() + " : " + e.getMessage();
         } else {
-            value = e.getLocalizedMessage();
+            value = e.getMessage();
         }
         logger.error("requestFailed - " + loggerUtils.logException(e).toJson());
         //

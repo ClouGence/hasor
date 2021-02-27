@@ -22,6 +22,10 @@ import net.hasor.utils.ref.BeanMap;
 import java.util.*;
 
 public class DomainHelper {
+    public static ValueModel nullDomain() {
+        return ValueModel.NULL;
+    }
+
     public static ListModel newList() {
         return new ListModel();
     }

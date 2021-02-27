@@ -17,6 +17,7 @@ package net.hasor.dataql.runtime.mem;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.Udf;
 import net.hasor.dataql.domain.DataModel;
+import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataql.runtime.InsetProcessContext;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.inset.OpcodesPool;
@@ -61,7 +62,7 @@ public class RefLambdaCall implements Udf {
         }
         DataModel result = cloneStack.getResult();
         if (cloneStack.getExitType() != ExitType.Throw) {
-            return result.unwrap();
+            return (result != null) ? result.unwrap() : DomainHelper.nullDomain();
         } else {
             throw new RefLambdaCallException(       //
                     instSequence.programLocation(), //

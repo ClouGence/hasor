@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.mem;
-import net.hasor.dataql.Finder;
-import net.hasor.dataql.Hints;
-import net.hasor.dataql.Udf;
-import net.hasor.dataql.UdfSource;
+import net.hasor.dataql.*;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.dataql.domain.DomainHelper;
 import net.hasor.dataql.parser.location.RuntimeLocation;
@@ -40,7 +37,7 @@ public class RefCall {
         this.refCall = refCall;
     }
 
-    public Object invokeMethod(Object[] paramArrays, Hints optionSet, Finder finder) throws QueryRuntimeException {
+    public Object invokeMethod(Object[] paramArrays, Hints optionSet, Finder finder) throws DataQueryException {
         try {
             Object[] objects = paramArrays.clone();
             if (this.autoUnwrap) {
@@ -56,11 +53,12 @@ public class RefCall {
             }
             return DomainHelper.convertTo(result);
         } catch (Throwable e) {
-            if (e instanceof QueryRuntimeException) {
-                throw (QueryRuntimeException) e;
+            if (e instanceof DataQueryException) {
+                throw (DataQueryException) e;
             }
             throw ExceptionUtils.toRuntimeException(e, throwable -> {
-                return new QueryRuntimeException(location, throwable.getMessage(), throwable);
+                String message = e.getClass().getName() + ": " + throwable.getLocalizedMessage();
+                return new QueryRuntimeException(location, message, throwable);
             });
         }
     }
