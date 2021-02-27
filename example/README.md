@@ -1,26 +1,17 @@
-## springboot-dal-on-dataql
-- 一个标准的 SpringBoot 工程。
-- 使用 DataQL 替代 Mybatis 等框架作为，数据访问组建。
+# Hasor 例子
 
-## springboot-dataway-db
-- 一个标准的 SpringBoot + Dataway 工程。
-- Dataway 上配置的接口信息保存在 H2 数据库上（每次重启会丢失）
+- 使用数据库作为接口配置信息的存储（Demo 中使用的是 H2 内存数据库）
+- 连接了另外两个 MySQL 数据源
 
-## springboot-dataway-nacos
-- 一个标准的 SpringBoot + Dataway 工程。
-- Nacos 需要预先准备，建议版本：1.4+
-- Dataway 上配置的接口信息保存在 Nacos 上。
+try run
 
-## springcloud-dataway-nacos
-- 一个标准的 SpringCloud + Dataway 工程
-- Spring Cloud 服务发现基于 Nacos
-- Hasor Dataway 连接了另外两个 MySQL 数据源
-- Hasor Dataway 接口配置信息保存在 Nacos
-- Dataway 服务在 provider 应用中注册了一个全新的服务名
-
-## springboot-tconsole
-- 基于 SpringBoot + tConsole 的 CLI 示例。
-
-# springmvc-war-dataway
-- 非 SpringBoot 的 SpringMVC 项目中使用 Dataway
-- 要求 Spring 版本 5.x+
+```js
+hint FRAGMENT_SQL_DATA_SOURCE = "ds2"
+var dd = @@sql() <%
+    show tables;
+%>
+return [
+    dd(),
+    myName()
+]
+```
