@@ -25,8 +25,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URL;
 
-import static net.hasor.core.Settings.DefaultNameSpace;
-
 public class PropertiesProviderTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -34,7 +32,7 @@ public class PropertiesProviderTest {
     public void propertiesTest() throws IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL conf = ResourcesUtils.getResource("/net_hasor_core_settings/simple-config.properties");
-        ConfigSource configSource = new ConfigSource(DefaultNameSpace, StreamType.Properties, conf);
+        ConfigSource configSource = new ConfigSource(StreamType.Properties, conf);
         //
         PropertiesSettingsReader reader = new PropertiesSettingsReader();
         BasicSettings settings = new BasicSettings();

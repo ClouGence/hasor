@@ -46,7 +46,7 @@ public class PropertiesSettingsReader implements SettingsReader {
         if (resourceReader != null) {
             Properties properties = new Properties();
             properties.load(resourceReader);
-            loadProperties(readTo, properties, configSource.getNamespace());
+            loadProperties(readTo, properties);
             return;
         }
         //
@@ -56,15 +56,15 @@ public class PropertiesSettingsReader implements SettingsReader {
             if (asStream != null) {
                 Properties properties = new Properties();
                 properties.load(new InputStreamReader(asStream, StandardCharsets.UTF_8));
-                loadProperties(readTo, properties, configSource.getNamespace());
+                loadProperties(readTo, properties);
             }
             return;
         }
     }
 
-    protected void loadProperties(Settings readTo, Properties properties, String namespace) {
+    protected void loadProperties(Settings readTo, Properties properties) {
         properties.forEach((k, v) -> {
-            readTo.addSetting(k.toString().toLowerCase(), v, namespace);
+            readTo.addSetting(k.toString().toLowerCase(), v, Settings.DefaultNameSpace);
         });
     }
 }

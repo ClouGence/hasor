@@ -28,13 +28,11 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static net.hasor.core.Settings.DefaultNameSpace;
-
 public class SettingsTest {
-    protected      Logger logger           = LoggerFactory.getLogger(getClass());
-    private static String DATA_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    private static String TIME_FORMAT      = "HH:mm:ss";
-    private static String DATA_FORMAT      = "yyyy-MM-dd";
+    protected            Logger logger           = LoggerFactory.getLogger(getClass());
+    private static final String DATA_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String TIME_FORMAT      = "HH:mm:ss";
+    private static final String DATA_FORMAT      = "yyyy-MM-dd";
 
     @Test
     public void mapTest() throws IOException {
@@ -42,11 +40,11 @@ public class SettingsTest {
         assert inputStreamSettings.loadSettings() == 0;
         //
         StringReader ins = new StringReader(new String(new byte[] { 0, 0, 0 }));
-        assert inputStreamSettings.addConfigSource(new ConfigSource(DefaultNameSpace, StreamType.Xml, ins));
-        assert !inputStreamSettings.addConfigSource(new ConfigSource(DefaultNameSpace, StreamType.Xml, ins));
-        assert !inputStreamSettings.addConfigSource(new ConfigSource(DefaultNameSpace, StreamType.Xml, (URL) null));
-        assert !inputStreamSettings.addConfigSource(new ConfigSource(DefaultNameSpace, null, (URL) null));
-        assert !inputStreamSettings.addConfigSource(new ConfigSource(DefaultNameSpace, null, ins));
+        assert inputStreamSettings.addConfigSource(new ConfigSource(StreamType.Xml, ins));
+        assert !inputStreamSettings.addConfigSource(new ConfigSource(StreamType.Xml, ins));
+        assert !inputStreamSettings.addConfigSource(new ConfigSource(StreamType.Xml, (URL) null));
+        assert !inputStreamSettings.addConfigSource(new ConfigSource(null, (URL) null));
+        assert !inputStreamSettings.addConfigSource(new ConfigSource(null, ins));
         //
         try {
             inputStreamSettings.loadSettings();
@@ -264,5 +262,17 @@ public class SettingsTest {
         //
         settings.addSetting("charValue", ' ');
         assert settings.getChar("charValue") == ' ';
+    }
+
+    @Test
+    public void conflictTest1() throws IOException {
+        InputStreamSettings settings = new InputStreamSettings();
+        settings.addResource("/net_hasor_core_settings/conflict-config.xml", StreamType.Xml);
+        settings.loadSettings();
+        //
+        assert settings.getBoolean("hasor.debug");
+        assert settings.getBooleanArray("hasor.debug").length == 2;
+        assert !settings.getBooleanArray("hasor.debug")[0];
+        assert settings.getBooleanArray("hasor.debug")[1];
     }
 }

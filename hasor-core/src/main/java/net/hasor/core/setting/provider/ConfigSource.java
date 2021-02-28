@@ -25,27 +25,20 @@ import java.net.URL;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ConfigSource {
-    private final String     namespace;
     private final StreamType streamType;
     private final URL        resourceUrl;
     private final Reader     resourceReader;
 
-    public ConfigSource(String namespace, StreamType streamType, URL resourceUrl) {
-        this.namespace = namespace;
+    public ConfigSource(StreamType streamType, URL resourceUrl) {
         this.streamType = streamType;
         this.resourceUrl = resourceUrl;
         this.resourceReader = null;
     }
 
-    public ConfigSource(String namespace, StreamType streamType, Reader resourceReader) {
-        this.namespace = namespace;
+    public ConfigSource(StreamType streamType, Reader resourceReader) {
         this.streamType = streamType;
         this.resourceUrl = null;
         this.resourceReader = resourceReader;
-    }
-
-    public String getNamespace() {
-        return this.namespace;
     }
 
     public StreamType getStreamType() {

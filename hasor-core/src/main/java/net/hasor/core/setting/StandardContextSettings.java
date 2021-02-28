@@ -74,7 +74,7 @@ public class StandardContextSettings extends InputStreamSettings {
         if (mainSettings != null) {
             outInitLog("stream", mainSettings);
         }
-        this.addConfigSource(new ConfigSource(DefaultNameSpace, type, mainSettings));
+        this.addConfigSource(new ConfigSource(type, mainSettings));
         refresh();
     }
 
@@ -162,11 +162,11 @@ public class StandardContextSettings extends InputStreamSettings {
     private void _addStream(URL resourceUrl) {
         String lowerCase = resourceUrl.toString().toLowerCase();
         if (lowerCase.endsWith(".xml")) {
-            this.addConfigSource(new ConfigSource(DefaultNameSpace, StreamType.Xml, resourceUrl));
+            this.addConfigSource(new ConfigSource(StreamType.Xml, resourceUrl));
         } else if (lowerCase.endsWith(".yaml") || lowerCase.endsWith(".yml")) {
-            this.addConfigSource(new ConfigSource(DefaultNameSpace, StreamType.Yaml, resourceUrl));
+            this.addConfigSource(new ConfigSource(StreamType.Yaml, resourceUrl));
         } else {
-            this.addConfigSource(new ConfigSource(DefaultNameSpace, StreamType.Properties, resourceUrl));
+            this.addConfigSource(new ConfigSource(StreamType.Properties, resourceUrl));
         }
     }
 

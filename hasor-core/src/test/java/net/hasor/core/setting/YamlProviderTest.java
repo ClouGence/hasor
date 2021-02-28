@@ -25,8 +25,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URL;
 
-import static net.hasor.core.Settings.DefaultNameSpace;
-
 public class YamlProviderTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -34,7 +32,7 @@ public class YamlProviderTest {
     public void yamlTest_1() throws IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL conf = ResourcesUtils.getResource("/net_hasor_core_settings/simple-config.yaml");
-        ConfigSource configSource = new ConfigSource(DefaultNameSpace, StreamType.Yaml, conf);
+        ConfigSource configSource = new ConfigSource(StreamType.Yaml, conf);
         //
         YamlSettingsReader reader = new YamlSettingsReader();
         BasicSettings settings = new BasicSettings();

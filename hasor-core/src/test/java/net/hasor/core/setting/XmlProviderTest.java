@@ -26,8 +26,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URL;
 
-import static net.hasor.core.Settings.DefaultNameSpace;
-
 public class XmlProviderTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -35,7 +33,7 @@ public class XmlProviderTest {
     public void xmlTest_1() throws IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL conf = ResourcesUtils.getResource("/net_hasor_core_settings/simple-config.xml");
-        ConfigSource configSource = new ConfigSource(DefaultNameSpace, StreamType.Xml, conf);
+        ConfigSource configSource = new ConfigSource(StreamType.Xml, conf);
         //
         XmlSettingsReader reader = new XmlSettingsReader();
         BasicSettings settings = new BasicSettings();

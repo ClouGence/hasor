@@ -48,7 +48,7 @@ public class YamlSettingsReader implements SettingsReader {
         Reader resourceReader = configSource.getResourceReader();
         if (resourceReader != null) {
             Object yamlConfig = new Yaml().load(resourceReader);
-            loadYaml(readTo, yamlConfig, configSource.getNamespace());
+            loadYaml(readTo, yamlConfig);
             return;
         }
         //
@@ -57,17 +57,18 @@ public class YamlSettingsReader implements SettingsReader {
             InputStream asStream = ResourcesUtils.getResourceAsStream(classLoader, resourceUrl);
             if (asStream != null) {
                 Object yamlData = new Yaml().load(asStream);
-                loadYaml(readTo, yamlData, configSource.getNamespace());
+                loadYaml(readTo, yamlData);
             }
             return;
         }
     }
 
-    protected void loadYaml(Settings readTo, Object yamlConfig, String namespace) throws IOException {
+    protected void loadYaml(Settings readTo, Object yamlConfig) throws IOException {
         if (!(yamlConfig instanceof Map)) {
             throw new IOException("The first level of YAML must be Map.");
         }
         //
+        String namespace = Settings.DefaultNameSpace;
         TreeNode treeNode = new TreeNode(namespace, "");
         loadYaml(treeNode, yamlConfig);
         for (SettingNode node : treeNode.getSubNodes()) {

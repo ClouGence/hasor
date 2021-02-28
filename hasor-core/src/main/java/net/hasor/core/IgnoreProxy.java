@@ -29,6 +29,6 @@ public @interface IgnoreProxy {
     /** 当前注解的配置生效范围是否传递到子包或子类中。如果设置为 false 表示配置只有在当前包或类有效，不会传播到子包或子类中（默认为 true）*/
     public boolean propagate() default true;
 
-    /** 是否忽略Aop配置（默认为 false） */
+    /** 是否忽略Aop配置（默认为 true） */
     public boolean ignore() default true;
 }

@@ -263,8 +263,8 @@ public class ContainerUtils {
         return null;
     }
 
-    private static String PROP_NAME_PROPAGATE = "propagate";
-    private static String PROP_NAME_IGNORE    = "ignore";
+    private static final String PROP_NAME_PROPAGATE = "propagate";
+    private static final String PROP_NAME_IGNORE    = "ignore";
 
     private static Boolean testAopIgnore(ClassLoader rootLoader, String packageName) {
         if (packageName == null) {
