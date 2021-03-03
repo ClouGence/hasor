@@ -48,7 +48,7 @@ public class MonthOfTimeTypeHandler extends AbstractTypeHandler<Month> {
         return toMonth(timestamp);
     }
 
-    private static Month toMonth(Timestamp timestamp) {
+    protected Month toMonth(Timestamp timestamp) {
         if (timestamp == null) {
             return null;
         }

@@ -46,7 +46,7 @@ public class NClobTypeHandler extends AbstractTypeHandler<String> {
         return toString(clob);
     }
 
-    private String toString(NClob clob) throws SQLException {
+    protected String toString(NClob clob) throws SQLException {
         if (clob == null) {
             return null;
         }

@@ -46,7 +46,7 @@ public class ClobTypeHandler extends AbstractTypeHandler<String> {
         return toString(clob);
     }
 
-    private String toString(Clob clob) throws SQLException {
+    protected String toString(Clob clob) throws SQLException {
         if (clob == null) {
             return null;
         }

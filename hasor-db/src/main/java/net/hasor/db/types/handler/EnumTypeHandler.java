@@ -112,15 +112,15 @@ public class EnumTypeHandler<E extends Enum<E>> extends AbstractTypeHandler<E> {
         return s == null ? null : valueOf(s);
     }
 
-    private E valueByOfValue(int s) {
+    protected E valueByOfValue(int s) {
         return this.ofValue.valueOfCode(s);
     }
 
-    private E valueByOfCode(String s) {
+    protected E valueByOfCode(String s) {
         return this.ofCode.valueOfCode(s);
     }
 
-    private E valueOf(String enumDat) {
+    protected E valueOf(String enumDat) {
         if (this.ofCode != null) {
             return this.ofCode.valueOfCode(enumDat);
         } else {

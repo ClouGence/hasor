@@ -45,7 +45,7 @@ public class InstantTypeHandler extends AbstractTypeHandler<Instant> {
         return getInstant(timestamp);
     }
 
-    private static Instant getInstant(Timestamp timestamp) {
+    protected Instant getInstant(Timestamp timestamp) {
         if (timestamp != null) {
             return timestamp.toInstant();
         }

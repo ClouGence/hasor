@@ -58,7 +58,7 @@ public class MonthDayOfNumberTypeHandler extends AbstractTypeHandler<MonthDay> {
         return monthDay == 0 && cs.wasNull() ? null : parseMonthDay(monthDay);
     }
 
-    private static MonthDay parseMonthDay(int monthDay) throws SQLException {
+    protected MonthDay parseMonthDay(int monthDay) throws SQLException {
         String mdStr = String.valueOf(monthDay);
         if (mdStr.length() == 3) {
             mdStr = "0" + mdStr;

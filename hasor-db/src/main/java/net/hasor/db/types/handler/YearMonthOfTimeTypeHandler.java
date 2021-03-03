@@ -48,7 +48,7 @@ public class YearMonthOfTimeTypeHandler extends AbstractTypeHandler<YearMonth> {
         return toYearMonth(timestamp);
     }
 
-    private static YearMonth toYearMonth(Timestamp timestamp) {
+    protected YearMonth toYearMonth(Timestamp timestamp) {
         if (timestamp == null) {
             return null;
         }

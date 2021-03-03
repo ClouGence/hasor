@@ -61,7 +61,7 @@ public class NClobReaderTypeHandler extends AbstractTypeHandler<Reader> {
         return toReader(cs.getNClob(columnIndex));
     }
 
-    private Reader toReader(NClob clob) throws SQLException {
+    protected Reader toReader(NClob clob) throws SQLException {
         if (clob == null) {
             return null;
         } else {

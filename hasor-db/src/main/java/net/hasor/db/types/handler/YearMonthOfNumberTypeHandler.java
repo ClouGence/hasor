@@ -54,7 +54,7 @@ public class YearMonthOfNumberTypeHandler extends AbstractTypeHandler<YearMonth>
         return yearMonth == 0 && cs.wasNull() ? null : parseYearMonth(yearMonth);
     }
 
-    private static YearMonth parseYearMonth(int yearMonth) throws SQLException {
+    protected YearMonth parseYearMonth(int yearMonth) throws SQLException {
         String ymStr = String.valueOf(yearMonth);
         if (ymStr.length() != 6) {
             throw new SQLException("JDBC requires that the yearMonth value must be 6 Numbers");

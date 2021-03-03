@@ -48,7 +48,7 @@ public class YearOfTimeTypeHandler extends AbstractTypeHandler<Year> {
         return toYear(timestamp);
     }
 
-    private static Year toYear(Timestamp timestamp) {
+    protected Year toYear(Timestamp timestamp) {
         if (timestamp == null) {
             return null;
         }

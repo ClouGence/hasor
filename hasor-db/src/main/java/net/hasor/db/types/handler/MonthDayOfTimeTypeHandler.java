@@ -51,7 +51,7 @@ public class MonthDayOfTimeTypeHandler extends AbstractTypeHandler<MonthDay> {
         return toMonthDay(timestamp);
     }
 
-    private static MonthDay toMonthDay(Timestamp timestamp) {
+    protected MonthDay toMonthDay(Timestamp timestamp) {
         if (timestamp == null) {
             return null;
         }

@@ -61,7 +61,7 @@ public class ClobReaderTypeHandler extends AbstractTypeHandler<Reader> {
         return toReader(cs.getClob(columnIndex));
     }
 
-    private Reader toReader(Clob clob) throws SQLException {
+    protected Reader toReader(Clob clob) throws SQLException {
         if (clob == null) {
             return null;
         } else {

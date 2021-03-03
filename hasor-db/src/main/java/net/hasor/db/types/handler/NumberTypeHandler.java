@@ -106,7 +106,7 @@ public class NumberTypeHandler extends AbstractTypeHandler<Number> {
         });
     }
 
-    private static interface NumberResultValue {
+    protected static interface NumberResultValue {
         public String getColumnClassName() throws SQLException;
 
         public java.sql.Timestamp getTimestamp() throws SQLException;
@@ -117,7 +117,7 @@ public class NumberTypeHandler extends AbstractTypeHandler<Number> {
     }
 
     /**获取列的值*/
-    protected static Number getResultSetValue(NumberResultValue rs) throws SQLException {
+    protected Number getResultSetValue(NumberResultValue rs) throws SQLException {
         Object obj = rs.getObject();
         if (obj == null) {
             return null;

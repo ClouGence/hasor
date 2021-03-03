@@ -61,7 +61,7 @@ public class BlobInputStreamTypeHandler extends AbstractTypeHandler<InputStream>
         return toInputStream(cs.getBlob(columnIndex));
     }
 
-    private InputStream toInputStream(Blob blob) throws SQLException {
+    protected InputStream toInputStream(Blob blob) throws SQLException {
         if (blob == null) {
             return null;
         } else {
