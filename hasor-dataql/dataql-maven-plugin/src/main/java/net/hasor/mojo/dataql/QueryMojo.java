@@ -20,7 +20,7 @@ import net.hasor.dataql.parser.ast.value.PrimitiveVariable;
 import net.hasor.dataql.runtime.QueryHelper;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
-import net.hasor.utils.io.AutoCloseInputStream;
+import net.hasor.utils.io.input.AutoCloseInputStream;
 import net.hasor.utils.io.FileUtils;
 import net.hasor.utils.io.IOUtils;
 import org.apache.maven.model.Resource;

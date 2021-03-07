@@ -162,7 +162,7 @@ public class TreeNode implements SettingNode {
         return this.subList.keySet().toArray(new String[0]);
     }
 
-    public SettingNode[] getSubNodes() {
+    public TreeNode[] getSubNodes() {
         if (this.subList.isEmpty()) {
             return EMPTY;
         }
@@ -498,6 +498,30 @@ public class TreeNode implements SettingNode {
                 list.addAll(Arrays.asList(values));
             }
         });
+        return hashMap;
+    }
+
+    public Map<String, Object> toMapData() {
+        Map<String, Object> hashMap = new HashMap<>();
+        TreeNode[] subNodes = this.getSubNodes();
+        for (TreeNode treeNode : subNodes) {
+            String name = treeNode.getName();
+            String[] values = treeNode.getValues();
+            if (values == null || values.length == 0) {
+                if (!hashMap.containsKey(name)) {
+                    hashMap.put(name, treeNode.toMapData());
+                } else {
+                    Object o = hashMap.get(name);
+                    if (o instanceof List) {
+                        ((List) o).add(treeNode.toMapData());
+                    } else {
+                        hashMap.put(name, new ArrayList<>(Arrays.asList(o, treeNode.toMapData())));
+                    }
+                }
+            } else {
+                hashMap.put(name, (values.length == 1) ? values[0] : values);
+            }
+        }
         return hashMap;
     }
 
