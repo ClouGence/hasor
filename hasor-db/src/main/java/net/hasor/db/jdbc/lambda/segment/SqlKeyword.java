@@ -38,6 +38,7 @@ public enum SqlKeyword implements Segment {
     GROUP_BY("GROUP BY"),//
     HAVING("HAVING"),//
     ORDER_BY("ORDER BY"),//
+    //
     EXISTS("EXISTS"),//
     SELECT("SELECT"),//
     COLUMNS("*"),//

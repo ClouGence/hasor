@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda.segment;
+import net.hasor.utils.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.List;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MergeSqlSegment implements Segment {
+public final class MergeSqlSegment implements Segment {
     private final List<Segment> segments = new ArrayList<>();
 
     public MergeSqlSegment(List<Segment> segments) {
@@ -56,12 +58,30 @@ public class MergeSqlSegment implements Segment {
     private String getSqlSegment(List<Segment> dataList) {
         StringBuilder strBuilder = new StringBuilder("");
         for (Segment segment : dataList) {
-            strBuilder.append(segment.getSqlSegment()).append(" ");
+            String str = segment.getSqlSegment();
+            if (StringUtils.isNotBlank(str)) {
+                strBuilder.append(str).append(" ");
+            } else {
+                strBuilder.append(" ");
+            }
         }
         return strBuilder.toString().trim();
     }
 
     public boolean isEmpty() {
         return this.segments.isEmpty();
+    }
+
+    public Segment firstSqlSegment() {
+        if (this.segments.isEmpty()) {
+            return null;
+        } else {
+            Segment segment = segments.get(0);
+            if (segment instanceof MergeSqlSegment) {
+                return ((MergeSqlSegment) segment).firstSqlSegment();
+            } else {
+                return segment;
+            }
+        }
     }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.dal.orm;
+package net.hasor.db.jdbc.lambda.mapping;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.UnknownTypeHandler;
 
@@ -52,6 +52,16 @@ class FieldImpl implements Field {
     @Override
     public Class<? extends TypeHandler<?>> typeHandler() {
         return UnknownTypeHandler.class;
+    }
+
+    @Override
+    public boolean update() {
+        return true;
+    }
+
+    @Override
+    public boolean insert() {
+        return true;
     }
 
     @Override

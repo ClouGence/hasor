@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.dal.orm;
+package net.hasor.db.jdbc.lambda.mapping;
 import net.hasor.db.jdbc.RowMapper;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
@@ -22,12 +22,14 @@ import net.hasor.utils.BeanUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
+import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 
 import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 用于 POJO 的 RowMapper，带有 ORM 能力
@@ -38,13 +40,18 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
     private final Class<T>                    mapperClass;
     private       String                      category;
     private       String                      tableName;
+    private       boolean                     useQualifier;
     private       boolean                     caseInsensitive;
     //
+    private final List<String>                propertyNames;
     private final Map<String, String>         propertyColumnMapping;
-    private final Map<String, String>         columnPropertyMapping;
+    private final Map<String, FieldInfo>      propertyFieldInfoMap;
+    private final Map<String, TypeHandler<?>> propertyTypeHandlerMap;
+    //
     private final List<String>                columnNames;
-    private final Map<String, FieldInfo>      columnFieldInfoMap;
-    private final Map<String, TypeHandler<?>> columnTypeHandlerMap;
+    private final Map<String, List<String>>   columnPropertyMapping;
+    private final Map<String, String>         columnPropertyMappingForWrite;
+    //
 
     /** Create a new ResultMapper.*/
     public MappingRowMapper(Class<T> mapperClass) {
@@ -54,10 +61,13 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
     /** Create a new ResultMapper.*/
     public MappingRowMapper(Class<T> mapperClass, TypeHandlerRegistry handlerRegistry) {
         this.mapperClass = mapperClass;
-        this.columnNames = new ArrayList<>();
-        this.columnFieldInfoMap = new HashMap<>();
-        this.columnTypeHandlerMap = new HashMap<>();
+        this.caseInsensitive = true;
+        this.propertyNames = new ArrayList<>();
         this.propertyColumnMapping = new HashMap<>();
+        this.propertyFieldInfoMap = new HashMap<>();
+        this.propertyTypeHandlerMap = new HashMap<>();
+        this.columnPropertyMappingForWrite = new HashMap<>();
+        this.columnNames = new ArrayList<>();
         this.columnPropertyMapping = new HashMap<>();
         this.initialize(mapperClass, Objects.requireNonNull(handlerRegistry, "handlerRegistry is null."));
     }
@@ -69,9 +79,9 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
         } else {
             defTable = new TableImpl("", mapperClass.getSimpleName());
         }
-        this.tableName = defTable.category().trim();
+        this.category = defTable.category().trim();
         this.tableName = StringUtils.isNotBlank(defTable.name()) ? defTable.name() : defTable.value();
-        this.caseInsensitive = defTable.caseInsensitive();
+        this.useQualifier = defTable.useQualifier();
         boolean autoConfigField = defTable.autoFiled();
         List<java.lang.reflect.Field> allFields = BeanUtils.findALLFields(mapperClass);
         for (java.lang.reflect.Field field : allFields) {
@@ -94,7 +104,7 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
         }
     }
 
-    private Field defField(java.lang.reflect.Field dtoField, boolean autoConfigField) {
+    protected Field defField(java.lang.reflect.Field dtoField, boolean autoConfigField) {
         if (dtoField.isAnnotationPresent(Field.class)) {
             return dtoField.getAnnotation(Field.class);
         } else if (autoConfigField) {
@@ -107,6 +117,7 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
     }
 
     private void setupField(java.lang.reflect.Field property, Field defField, TypeHandler<?> toTypeHandler) {
+        String propertyName = property.getName();
         String columnName = null;
         JDBCType jdbcType = defField.jdbcType();
         if (StringUtils.isNotBlank(defField.name())) {
@@ -115,21 +126,33 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
             columnName = defField.value();
         }
         if (StringUtils.isBlank(columnName)) {
-            columnName = property.getName();
+            columnName = propertyName;
         }
         if (jdbcType == JDBCType.OTHER) {
             jdbcType = TypeHandlerRegistry.toSqlType(property.getType());
         }
         //
         String useColumnName = columnName;
-        if (this.caseInsensitive) {
-            useColumnName = useColumnName.toUpperCase();
+        FieldInfo fieldInfo = new FieldInfoImpl(useColumnName, propertyName, jdbcType, property.getType(), defField.insert(), defField.update());
+        //
+        this.propertyNames.add(propertyName);
+        this.propertyColumnMapping.put(propertyName, useColumnName);
+        this.propertyFieldInfoMap.put(propertyName, fieldInfo);
+        this.propertyTypeHandlerMap.put(propertyName, toTypeHandler);
+        //
+        if (!this.columnNames.contains(useColumnName)) {
+            this.columnNames.add(useColumnName);
         }
-        this.columnNames.add(useColumnName);
-        this.columnFieldInfoMap.put(useColumnName, new FieldInfoImpl(columnName, jdbcType, property.getType()));
-        this.columnTypeHandlerMap.put(useColumnName, toTypeHandler);
-        this.columnPropertyMapping.put(useColumnName, property.getName());
-        this.propertyColumnMapping.put(property.getName(), useColumnName);
+        List<String> stringList = this.columnPropertyMapping.computeIfAbsent(useColumnName, k -> new ArrayList<>());
+        stringList.add(propertyName);
+        if (fieldInfo.isInsert() || fieldInfo.isUpdate()) {
+            if (this.columnPropertyMappingForWrite.containsKey(useColumnName)) {
+                String differentProperty = "'" + propertyName + "','" + this.columnPropertyMappingForWrite.get(useColumnName) + "'";
+                throw new IllegalStateException("mapping different property " + differentProperty + " write the same column '" + useColumnName + "'.");
+            } else {
+                this.columnPropertyMappingForWrite.put(useColumnName, propertyName);
+            }
+        }
     }
 
     public Class<T> getMapperClass() {
@@ -153,17 +176,36 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
         this.caseInsensitive = caseInsensitive;
     }
 
-    public FieldInfo findFieldInfoByProperty(String propertyName) {
-        String columnName = this.propertyColumnMapping.get(propertyName);
-        return this.columnFieldInfoMap.get(columnName);
-    }
-
-    public Collection<FieldInfo> allFieldInfoByProperty() {
-        return this.columnFieldInfoMap.values();
-    }
-
     public TableInfo getTableInfo() {
         return this;
+    }
+
+    public List<String> getColumnNames() {
+        return this.columnNames;
+    }
+
+    public List<String> getPropertyNames() {
+        return propertyNames;
+    }
+
+    public FieldInfo findFieldByProperty(String propertyName) {
+        return this.propertyFieldInfoMap.get(propertyName);
+    }
+
+    public List<FieldInfo> findFieldByColumn(String columnName) {
+        List<String> propertyNames = this.columnPropertyMapping.get(columnName);
+        if (propertyNames == null) {
+            return null;
+        }
+        return propertyNames.stream()//
+                .map(this.propertyFieldInfoMap::get)//
+                .filter(Objects::nonNull)//
+                .collect(Collectors.toList());
+    }
+
+    public FieldInfo findWriteFieldByColumn(String columnName) {
+        String propertyName = this.columnPropertyMappingForWrite.get(columnName);
+        return this.propertyFieldInfoMap.get(propertyName);
     }
 
     @Override
@@ -180,12 +222,10 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
     private T tranResultSet(final ResultSet rs, final T targetObject) throws SQLException {
         ResultSetMetaData rsmd = rs.getMetaData();
         int nrOfColumns = rsmd.getColumnCount();
-        Map<String, Integer> resultColumnMap = new HashMap<>();
+        Map<String, Integer> resultColumnMap = this.caseInsensitive ? new LinkedCaseInsensitiveMap<>() : new LinkedHashMap<>();
         for (int i = 1; i <= nrOfColumns; i++) {
             String colName = rsmd.getColumnName(i);
-            if (this.caseInsensitive) {
-                resultColumnMap.put(colName.toUpperCase(), i);
-            } else {
+            if (!resultColumnMap.containsKey(colName)) {
                 resultColumnMap.put(colName, i);
             }
         }
@@ -195,13 +235,15 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
                 continue;
             }
             int realIndex = resultColumnMap.get(columnName);
-            TypeHandler<?> realHandler = this.columnTypeHandlerMap.get(columnName);
-            Object result = realHandler.getResult(rs, realIndex);
-            //
-            String propertyName = this.columnPropertyMapping.get(columnName);
-            Class<?> propertyType = BeanUtils.getPropertyOrFieldType(this.mapperClass, propertyName);
-            Object convert = ConverterUtils.convert(propertyType, result);
-            BeanUtils.writePropertyOrField(targetObject, propertyName, convert);
+            List<String> propertyNames = this.columnPropertyMapping.get(columnName);
+            for (String propertyName : propertyNames) {
+                TypeHandler<?> realHandler = this.propertyTypeHandlerMap.get(propertyName);
+                Object result = realHandler.getResult(rs, realIndex);
+                //
+                Class<?> propertyType = BeanUtils.getPropertyOrFieldType(this.mapperClass, propertyName);
+                Object convert = ConverterUtils.convert(propertyType, result);
+                BeanUtils.writePropertyOrField(targetObject, propertyName, convert);
+            }
         }
         return targetObject;
     }

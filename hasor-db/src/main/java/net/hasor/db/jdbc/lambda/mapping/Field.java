@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.dal.orm;
+package net.hasor.db.jdbc.lambda.mapping;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.UnknownTypeHandler;
 
@@ -34,7 +34,7 @@ public @interface Field {
     /** 列名，为空的话表示采用字段名为列名 see: {@link #name()} */
     public String value() default "";
 
-    /** 表名，为空的话表示采用类名为表名 see: {@link #value()} */
+    /** 列名，为空的话表示采用类名为表名 see: {@link #value()} */
     public String name() default "";
 
     /** 使用的 jdbcType,如果没有配置那么会通过 javaType 来自动推断 */
@@ -42,4 +42,10 @@ public @interface Field {
 
     /** 使用的 typeHandler 功效和 Mybatis 的 TypeHandler 相同 */
     public Class<? extends TypeHandler<?>> typeHandler() default UnknownTypeHandler.class;
+
+    /** 参与更新 */
+    public boolean update() default true;
+
+    /** 参与新增 */
+    public boolean insert() default true;
 }

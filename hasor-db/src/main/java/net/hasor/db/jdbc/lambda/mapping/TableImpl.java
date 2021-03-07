@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.dal.orm;
+package net.hasor.db.jdbc.lambda.mapping;
 import java.lang.annotation.Annotation;
 
 /**
@@ -46,8 +46,8 @@ class TableImpl implements Table {
     }
 
     @Override
-    public boolean caseInsensitive() {
-        return true;
+    public boolean useQualifier() {
+        return false;
     }
 
     @Override

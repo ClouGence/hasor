@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.dal.orm;
+package net.hasor.db.jdbc.lambda.mapping;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -36,9 +36,9 @@ public @interface Table {
     /** 表名，为空的话表示采用类名为表名 see: {@link #value()} */
     public String name() default "";
 
-    /** 列名是否不区分大小写，默认不区分 */
-    public boolean caseInsensitive() default true;
+    /** 是否使用限定符，默认不使用。如果遇到列名是关键字那么需要设置为 true。 */
+    public boolean useQualifier() default false;
 
-    /** 自动配置列，@Field 成为非必选项。 */
+    /** 自动配置列，类的成员字段无论是否标记过 @Field 注解，都会被识别为字段。 */
     public boolean autoFiled() default true;
 }

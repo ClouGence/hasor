@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.dal.orm;
+package net.hasor.db.jdbc.lambda.mapping;
 import java.sql.JDBCType;
 
 /**
@@ -23,18 +23,29 @@ import java.sql.JDBCType;
  */
 class FieldInfoImpl implements FieldInfo {
     private final String   columnName;
+    private final String   propertyName;
     private final JDBCType jdbcType;
     private final Class<?> javaType;
+    private final boolean  insert;
+    private final boolean  update;
 
-    public FieldInfoImpl(String columnName, JDBCType jdbcType, Class<?> javaType) {
+    public FieldInfoImpl(String columnName, String propertyName, JDBCType jdbcType, Class<?> javaType, boolean insert, boolean update) {
         this.columnName = columnName;
+        this.propertyName = propertyName;
         this.jdbcType = jdbcType;
         this.javaType = javaType;
+        this.insert = insert;
+        this.update = update;
     }
 
     @Override
     public String getColumnName() {
         return this.columnName;
+    }
+
+    @Override
+    public String getPropertyName() {
+        return this.propertyName;
     }
 
     @Override
@@ -45,5 +56,15 @@ class FieldInfoImpl implements FieldInfo {
     @Override
     public Class<?> getJavaType() {
         return this.javaType;
+    }
+
+    @Override
+    public boolean isUpdate() {
+        return this.update;
+    }
+
+    @Override
+    public boolean isInsert() {
+        return this.insert;
     }
 }

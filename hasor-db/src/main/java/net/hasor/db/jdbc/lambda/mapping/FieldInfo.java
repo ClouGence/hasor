@@ -13,16 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.dal.orm;
+package net.hasor.db.jdbc.lambda.mapping;
+import java.sql.JDBCType;
+
 /**
- * 查询的表
+ * 字段信息
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface TableInfo {
-    /** 分类(对于mysql 是 db，对于 pg 是 schema，对于 oracle 是 owner) */
-    public String getCategory();
+public interface FieldInfo {
+    /** 列名 */
+    public String getColumnName();
 
-    /** 表名 */
-    public String getTableName();
+    /** 属性名 */
+    public String getPropertyName();
+    
+    /** 使用的 jdbcType,如果没有配置那么会通过 javaType 来自动推断 */
+    public JDBCType getJdbcType();
+
+    /** 对应的 javaType */
+    public Class<?> getJavaType();
+
+    /** 参与更新 */
+    public boolean isUpdate();
+
+    /** 参与新增 */
+    public boolean isInsert();
 }
