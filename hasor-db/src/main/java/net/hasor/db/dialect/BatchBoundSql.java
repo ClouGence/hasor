@@ -13,11 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.dialect.provider;
+package net.hasor.db.dialect;
 /**
- * MariaDB 的 SqlDialect 实现
+ * SQL
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MariaDBDialect extends MySqlDialect {
+public interface BatchBoundSql extends BoundSql {
+    public String getSqlString();
+
+    public Object[][] getArgs();
+
+    public static class BatchBoundSqlObj extends BoundSqlObj implements BatchBoundSql {
+        public BatchBoundSqlObj(String sqlString, Object[][] paramArray) {
+            super(sqlString, paramArray);
+        }
+
+        @Override
+        public Object[][] getArgs() {
+            return (Object[][]) super.getArgs();
+        }
+    }
 }

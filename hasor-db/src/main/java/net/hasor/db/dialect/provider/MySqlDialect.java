@@ -15,7 +15,8 @@
  */
 package net.hasor.db.dialect.provider;
 import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.dialect.BoundSql.BoundSqlObj;
+import net.hasor.db.dialect.MultipleInsertSqlDialect;
 import net.hasor.utils.StringUtils;
 
 import java.sql.JDBCType;
@@ -28,14 +29,9 @@ import java.util.List;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MySqlDialect implements SqlDialect {
+public class MySqlDialect implements MultipleInsertSqlDialect {
     @Override
-    public String buildSelect(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
-        return "`" + columnName + "`";
-    }
-
-    @Override
-    public String buildTableName(String category, String tableName) {
+    public String tableName(String category, String tableName) {
         if (StringUtils.isBlank(category)) {
             return "`" + tableName + "`";
         } else {
@@ -44,15 +40,16 @@ public class MySqlDialect implements SqlDialect {
     }
 
     @Override
-    public String buildColumnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
+    public String columnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
         return "`" + columnName + "`";
     }
 
     @Override
-    public BoundSql getPageSql(BoundSql boundSql, int start, int limit) {
-        StringBuilder sqlBuilder = new StringBuilder(boundSql.getSqlString());
+    public BoundSql pageSql(BoundSql boundSql, int start, int limit) {
         List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
         //
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append(boundSql.getSqlString());
         if (start <= 0) {
             sqlBuilder.append(" LIMIT ?");
             paramArrays.add(limit);
@@ -61,6 +58,41 @@ public class MySqlDialect implements SqlDialect {
             paramArrays.add(start);
             paramArrays.add(limit);
         }
-        return new BoundSql.BoundSqlObj(sqlBuilder.toString(), paramArrays.toArray());
+        //
+        return new BoundSqlObj(sqlBuilder.toString(), paramArrays.toArray());
+    }
+
+    // multipleRecordInsert
+    //                 insert into t(id, name) values
+    //                   (1, 'A'),
+    //                   (2, 'B'),
+    //                   (3, 'C')
+    @Override
+    public String multipleRecordInsertPrepare() {
+        return "";
+    }
+
+    @Override
+    public String multipleRecordInsertSplitRecord() {
+        return ",";
+    }
+
+    @Override
+    public String multipleRecordInsertBeforeValues(boolean firstRecord, String tableNameAndColumn) {
+        if (firstRecord) {
+            return "insert into " + tableNameAndColumn + " values (";
+        } else {
+            return "(";
+        }
+    }
+
+    @Override
+    public String multipleRecordInsertAfterValues() {
+        return ")";
+    }
+
+    @Override
+    public String multipleRecordInsertFinish() {
+        return "";
     }
 }

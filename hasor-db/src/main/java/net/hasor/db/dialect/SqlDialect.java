@@ -27,16 +27,13 @@ import java.sql.JDBCType;
 public interface SqlDialect {
     public static final SqlDialect DEFAULT = new DefaultSqlDialect();
 
-    /** 生成 select 时的列信息 */
-    public String buildSelect(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType);
-
     /** 生成 form 后面的表名 */
-    public String buildTableName(String category, String tableName);
+    public String tableName(String category, String tableName);
 
     /** 生成 where 中用到的条件名（包括 group by、order by） */
-    public String buildColumnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType);
+    public String columnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType);
 
-    public default String buildLike(SqlLike likeType, Object value) {
+    public default String like(SqlLike likeType, Object value) {
         if (value == null || StringUtils.isBlank(value.toString())) {
             return "%";
         }
@@ -51,10 +48,10 @@ public interface SqlDialect {
     }
 
     /** 生成 count 查询 SQL */
-    public default BoundSql getCountSql(BoundSql boundSql) {
+    public default BoundSql countSql(BoundSql boundSql) {
         return new BoundSql.BoundSqlObj("SELECT COUNT(*) FROM (" + boundSql.getSqlString() + ") as TEMP_T", boundSql.getArgs());
     }
 
     /** 生成分页查询 SQL */
-    public BoundSql getPageSql(BoundSql boundSql, int start, int limit);
+    public BoundSql pageSql(BoundSql boundSql, int start, int limit);
 }

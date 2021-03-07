@@ -15,9 +15,9 @@
  */
 package net.hasor.db.dialect.provider;
 /**
- * MariaDB 的 SqlDialect 实现
+ * Aliyun Ads for mysql 的 SqlDialect 实现
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MariaDBDialect extends MySqlDialect {
+public class AliyunAdsForMySqlDialect extends MySqlDialect {
 }

@@ -20,9 +20,9 @@ import net.hasor.db.JdbcUtils;
 import net.hasor.db.dialect.provider.*;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 方言管理器
@@ -30,11 +30,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SqlDialectRegister {
-    private static final Map<String, Class<?>>   dialectAliasMap = new ConcurrentHashMap<>();
-    private static final Map<String, SqlDialect> dialectCache    = new ConcurrentHashMap<>();
+    private static final Map<String, Class<?>>   dialectAliasMap = new LinkedCaseInsensitiveMap<>();
+    private static final Map<String, SqlDialect> dialectCache    = new LinkedCaseInsensitiveMap<>();
 
     static {
-        registerDialectAlias(JdbcUtils.ALIYUN_ADS, AliyunAdsDialect.class);
+        registerDialectAlias(JdbcUtils.ALIYUN_ADS, AliyunAdsForMySqlDialect.class);
         registerDialectAlias(JdbcUtils.ALIYUN_DRDS, AliyunDRDSDialect.class);
         registerDialectAlias(JdbcUtils.ALI_ORACLE, OracleDialect.class);
         registerDialectAlias(JdbcUtils.DB2, Db2Dialect.class);
@@ -57,6 +57,7 @@ public class SqlDialectRegister {
         registerDialectAlias(JdbcUtils.SQL_SERVER, SqlServerDialect.class);
         registerDialectAlias("sqlserver2012", SqlServerDialect.class);
         registerDialectAlias("sqlserver2005", SqlServer2005Dialect.class);
+        registerDialectAlias(JdbcUtils.XUGU, XuGuDialect.class);
     }
 
     public static void clearDialectCache() {

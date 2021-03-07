@@ -13,11 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.dialect.provider;
+package net.hasor.db.dialect;
 /**
- * MariaDB 的 SqlDialect 实现
+ * 扩展了 SqlDialect 接口增加了 insert 多记录的方言
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MariaDBDialect extends MySqlDialect {
+public interface MultipleInsertSqlDialect extends SqlDialect {
+    /** 开始多记录 insert */
+    public String multipleRecordInsertPrepare();
+
+    /** 用于切分多个记录的字符 */
+    public String multipleRecordInsertSplitRecord();
+
+    /** 开始一组值 */
+    public String multipleRecordInsertBeforeValues(boolean firstRecord, String tableNameAndColumn);
+
+    /** 结束一组值 */
+    public String multipleRecordInsertAfterValues();
+
+    /** 结束多记录 insert */
+    public String multipleRecordInsertFinish();
 }

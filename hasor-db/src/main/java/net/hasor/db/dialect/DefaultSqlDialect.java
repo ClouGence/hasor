@@ -25,12 +25,7 @@ import java.sql.JDBCType;
  */
 public class DefaultSqlDialect implements SqlDialect {
     @Override
-    public String buildSelect(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
-        return columnName;
-    }
-
-    @Override
-    public String buildTableName(String category, String tableName) {
+    public String tableName(String category, String tableName) {
         if (StringUtils.isBlank(category)) {
             return tableName;
         } else {
@@ -39,17 +34,17 @@ public class DefaultSqlDialect implements SqlDialect {
     }
 
     @Override
-    public String buildColumnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
+    public String columnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
         return columnName;
     }
 
     @Override
-    public BoundSql getCountSql(BoundSql boundSql) {
+    public BoundSql countSql(BoundSql boundSql) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public BoundSql getPageSql(BoundSql boundSql, int start, int limit) {
+    public BoundSql pageSql(BoundSql boundSql, int start, int limit) {
         throw new UnsupportedOperationException();
     }
 }
