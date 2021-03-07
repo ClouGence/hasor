@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import net.hasor.db.dal.orm.MappingHandler;
-import net.hasor.db.dal.orm.MappingRowMapper;
+import net.hasor.db.jdbc.lambda.mapping.MappingHandler;
+import net.hasor.db.jdbc.lambda.mapping.MappingRowMapper;
 import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.SqlParameter.InSqlParameter;
 import net.hasor.db.jdbc.SqlParameter.OutSqlParameter;
@@ -24,6 +24,7 @@ import net.hasor.db.jdbc.extractor.ColumnMapResultSetExtractor;
 import net.hasor.db.jdbc.extractor.RowCallbackHandlerResultSetExtractor;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.lambda.LambdaOperations;
+import net.hasor.db.jdbc.lambda.query.LambdaDeleteWrapper;
 import net.hasor.db.jdbc.lambda.query.LambdaInsertWrapper;
 import net.hasor.db.jdbc.lambda.query.LambdaQueryWrapper;
 import net.hasor.db.jdbc.lambda.query.LambdaUpdateWrapper;
@@ -958,6 +959,11 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     @Override
     public <T> LambdaQuery<T> lambdaQuery(Class<T> exampleType) {
         return new LambdaQueryWrapper<>(exampleType, this);
+    }
+
+    @Override
+    public <T> LambdaDelete<T> lambdaDelete(Class<T> exampleType) {
+        return new LambdaDeleteWrapper<>(exampleType, this);
     }
 
     @Override
