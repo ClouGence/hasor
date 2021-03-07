@@ -48,10 +48,9 @@ public class MySqlDialect implements MultipleInsertSqlDialect {
 
     @Override
     public BoundSql pageSql(BoundSql boundSql, int start, int limit) {
+        StringBuilder sqlBuilder = new StringBuilder(boundSql.getSqlString());
         List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
         //
-        StringBuilder sqlBuilder = new StringBuilder();
-        sqlBuilder.append(boundSql.getSqlString());
         if (start <= 0) {
             sqlBuilder.append(" LIMIT ?");
             paramArrays.add(limit);

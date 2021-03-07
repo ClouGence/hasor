@@ -71,7 +71,7 @@ public class SqlServerDialect implements SqlDialect {
     public String columnName(boolean useQualifier, String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
         String leftQualifier = useQualifier ? "[" : "";
         String rightQualifier = useQualifier ? "]" : "";
-        return leftQualifier + tableName + rightQualifier;
+        return leftQualifier + columnName + rightQualifier;
     }
 
     @Override

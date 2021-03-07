@@ -34,11 +34,13 @@ public class Oracle12cDialect extends OracleDialect {
 
     @Override
     public BoundSql pageSql(BoundSql boundSql, int start, int limit) {
+        StringBuilder sqlBuilder = new StringBuilder(boundSql.getSqlString());
         List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
-        String pageQuery = boundSql.getSqlString() + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        //
+        sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
         //
         paramArrays.add(start);
         paramArrays.add(limit);
-        return new BoundSql.BoundSqlObj(pageQuery, paramArrays.toArray());
+        return new BoundSql.BoundSqlObj(sqlBuilder.toString(), paramArrays.toArray());
     }
 }

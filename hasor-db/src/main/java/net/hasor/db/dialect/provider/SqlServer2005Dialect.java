@@ -41,6 +41,8 @@ public class SqlServer2005Dialect extends SqlServerDialect implements MultipleIn
     @Override
     public BoundSql pageSql(BoundSql boundSql, int start, int limit) {
         String sqlString = boundSql.getSqlString();
+        List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
+        //
         StringBuilder pagingBuilder = new StringBuilder();
         String orderby = getOrderByPart(sqlString);
         String distinctStr = "";
@@ -66,7 +68,6 @@ public class SqlServer2005Dialect extends SqlServerDialect implements MultipleIn
                 //FIX#299：原因：mysql中limit 10(offset,size) 是从第10开始（不包含10）,；而这里用的BETWEEN是两边都包含，所以改为offset+1
                 firstParam + " AND " + secondParam + " ORDER BY __row_number__";
         //
-        List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
         paramArrays.add(firstParam);
         paramArrays.add(secondParam);
         return new BoundSql.BoundSqlObj(sqlString, paramArrays.toArray());

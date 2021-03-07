@@ -53,11 +53,12 @@ public class OracleDialect implements MultipleInsertSqlDialect {
 
     @Override
     public BoundSql pageSql(BoundSql boundSql, int start, int limit) {
+        String sqlString = boundSql.getSqlString();
         List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
         //
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append("SELECT * FROM ( SELECT TMP.*, ROWNUM ROW_ID FROM ( ");
-        sqlBuilder.append(boundSql.getSqlString());
+        sqlBuilder.append(sqlString);
         sqlBuilder.append(" ) TMP WHERE ROWNUM <= ? ) WHERE ROW_ID > ?");
         //
         paramArrays.add(start + limit);
