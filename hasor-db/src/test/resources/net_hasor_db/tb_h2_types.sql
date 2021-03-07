@@ -1,4 +1,4 @@
-/* see http://www.h2database.com/html/datatypes.html */
+/* http://www.h2database.com/html/datatypes.html */
 create table tb_h2_types
 (
     id              identity,

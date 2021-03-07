@@ -1,3 +1,4 @@
+/* see https://docs.oracle.com/cd/B28359_01/server.111/b28286/sql_elements001.htm#SQLRF50950 */
 create table tb_oracle_types
 (
     c_char                       CHAR,
