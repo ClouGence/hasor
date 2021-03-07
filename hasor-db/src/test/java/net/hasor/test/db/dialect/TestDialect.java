@@ -23,22 +23,17 @@ import java.sql.JDBCType;
 @Aop(TestDialectAop.class)
 public class TestDialect implements SqlDialect {
     @Override
-    public String buildSelect(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
+    public String tableName(boolean useQualifier, String category, String tableName) {
         return null;
     }
 
     @Override
-    public String buildTableName(String category, String tableName) {
+    public String columnName(boolean useQualifier, String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
         return null;
     }
 
     @Override
-    public String buildColumnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
-        return null;
-    }
-
-    @Override
-    public BoundSql getPageSql(BoundSql boundSql, int start, int limit) {
+    public BoundSql pageSql(BoundSql boundSql, int start, int limit) {
         return null;
     }
 }

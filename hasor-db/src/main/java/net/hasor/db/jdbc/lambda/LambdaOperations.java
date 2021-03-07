@@ -14,40 +14,45 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda;
-import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.SqlDialect;
-
 /**
  * 提供 lambda 方式生成 SQL。
  * @version : 2020-10-27
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface LambdaOperations {
-    /** 相当于 select * form */
-    public <T> LambdaQuery<T> lambdaQuery(Class<T> exampleType);
+    /** 相当于 select xxx,xxx,xxx form */
+    public <T> LambdaInsert<T> lambdaInsert(Class<T> exampleType);
 
     /** 相当于 select xxx,xxx,xxx form */
     public <T> LambdaUpdate<T> lambdaUpdate(Class<T> exampleType);
 
-    /** 相当于 select xxx,xxx,xxx form */
-    public <T> LambdaInsert<T> lambdaInsert(Class<T> exampleType);
+    /** 相当于 select * form */
+    public <T> LambdaQuery<T> lambdaQuery(Class<T> exampleType);
 
-    /** 封装 */
-    public interface LambdaQuery<T> extends Compare<T, LambdaQuery<T>>, Func<T, LambdaQuery<T>>, QueryExecute<T>, BoundSqlBuilder {
+    /** 相当于 delete */
+    public <T> LambdaDelete<T> lambdaDelete(Class<T> exampleType);
+
+    /** lambda query */
+    public interface LambdaQuery<T> extends LambdaCommon<QueryExecute<T>, T>, QueryExecute<T>, QueryCompare<T, LambdaQuery<T>>, QueryFunc<T, LambdaQuery<T>> {
     }
 
-    /** 封装 */
-    public interface LambdaUpdate<T> extends Compare<T, LambdaUpdate<T>>, UpdateExecute<T>, BoundSqlBuilder {
+    /** lambda update */
+    public interface LambdaUpdate<T> extends LambdaCommon<UpdateExecute<T>, T>, UpdateExecute<T>, QueryCompare<T, LambdaUpdate<T>> {
     }
 
-    /** 封装 */
-    public interface LambdaInsert<T> extends Compare<T, LambdaInsert<T>>, InsertExecute<T>, BoundSqlBuilder {
+    /** lambda Delete */
+    public interface LambdaDelete<T> extends LambdaCommon<DeleteExecute<T>, T>, DeleteExecute<T>, QueryCompare<T, LambdaDelete<T>> {
     }
 
-    /** */
-    public interface BoundSqlBuilder {
-        public BoundSql getBoundSql();
+    /** lambda insert */
+    public interface LambdaInsert<T> extends LambdaCommon<LambdaInsert<T>, T>, InsertExecute<T> {
+    }
 
-        public BoundSql getBoundSql(SqlDialect dialect);
+    /** lambda insert */
+    public interface LambdaCommon<R, T> {
+        /** 参考的样本对象 */
+        public Class<T> exampleType();
+
+        public R useQualifier();
     }
 }

@@ -40,7 +40,21 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- jsqlparser -->
+        <!-- shade -->
+        <dependency>
+            <groupId>ognl</groupId>
+            <artifactId>ognl</artifactId>
+            <version>3.2.14</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+            <version>3.1</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>com.github.jsqlparser</groupId>
             <artifactId>jsqlparser</artifactId>
@@ -111,10 +125,20 @@
                             <minimizeJar>true</minimizeJar>
                             <artifactSet>
                                 <includes>
+                                    <include>ognl:ognl</include>
+                                    <include>org.javassist:javassist</include>
                                     <include>com.github.jsqlparser:jsqlparser</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
+                                <relocation>
+                                    <pattern>ognl</pattern>
+                                    <shadedPattern>net.hasor.db.ognl</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>javassist</pattern>
+                                    <shadedPattern>net.hasor.db.javassist</shadedPattern>
+                                </relocation>
                                 <relocation>
                                     <pattern>net.sf.jsqlparser</pattern>
                                     <shadedPattern>net.hasor.db.jsqlparser</shadedPattern>
@@ -124,6 +148,8 @@
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
+                                        <exclude>META-INF/maven/ognl/**</exclude>
+                                        <exclude>META-INF/maven/org.javassist/**</exclude>
                                         <exclude>META-INF/maven/com.github.jsqlparser/**</exclude>
                                     </excludes>
                                 </filter>

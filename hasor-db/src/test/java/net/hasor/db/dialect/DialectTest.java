@@ -15,6 +15,8 @@
  */
 package net.hasor.db.dialect;
 import net.hasor.db.JdbcUtils;
+import net.hasor.db.dialect.provider.Oracle12cDialect;
+import net.hasor.db.dialect.provider.SqlServer2005Dialect;
 import net.hasor.test.db.AbstractDbTest;
 import org.junit.Test;
 
@@ -52,24 +54,22 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_default_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate("");
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("userUUID");
         assert buildTableName1.equals("tb_user");
         assert buildTableName2.equals("abc.tb_user");
         assert buildCondition.equals("userUUID");
         //
         try {
-            dialect.getCountSql(this.queryBoundSql);
+            dialect.countSql(this.queryBoundSql);
             assert false;
         } catch (Exception e) {
             assert true;
         }
         try {
-            dialect.getPageSql(this.queryBoundSql, 1, 3);
+            dialect.pageSql(this.queryBoundSql, 1, 3);
             assert false;
         } catch (Exception e) {
             assert true;
@@ -79,28 +79,55 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_mysql_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.MYSQL);
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("`userUUID`");
         assert buildTableName1.equals("`tb_user`");
         assert buildTableName2.equals("`abc`.`tb_user`");
         assert buildCondition.equals("`userUUID`");
         //
-        BoundSql countSql = dialect.getCountSql(this.queryBoundSql);
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
         assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) as TEMP_T");
         assert countSql.getArgs().length == 1;
         //
-        BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
         assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(1);
         assert pageSql.getArgs()[2].equals(3);
         //
-        BoundSql pageSql2 = dialect.getPageSql(this.queryBoundSql, 0, 3);
+        BoundSql pageSql2 = dialect.pageSql(this.queryBoundSql, 0, 3);
+        assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?");
+        assert pageSql2.getArgs().length == 2;
+        assert pageSql2.getArgs()[0].equals('F');
+        assert pageSql2.getArgs()[1].equals(3);
+    }
+
+    @Test
+    public void dialect_dm_1() {
+        SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.DM);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        //
+        assert buildTableName1.equals("\"tb_user\"");
+        assert buildTableName2.equals("\"abc\".\"tb_user\"");
+        assert buildCondition.equals("\"userUUID\"");
+        //
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
+        assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) TEMP_T");
+        assert countSql.getArgs().length == 1;
+        //
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
+        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ?");
+        assert pageSql.getArgs().length == 3;
+        assert pageSql.getArgs()[0].equals('F');
+        assert pageSql.getArgs()[1].equals(1);
+        assert pageSql.getArgs()[2].equals(3);
+        //
+        BoundSql pageSql2 = dialect.pageSql(this.queryBoundSql, 0, 3);
         assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?");
         assert pageSql2.getArgs().length == 2;
         assert pageSql2.getArgs()[0].equals('F');
@@ -110,21 +137,19 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_postgresql_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.POSTGRESQL);
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("\"userUUID\"");
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
         assert buildCondition.equals("\"userUUID\"");
         //
-        BoundSql countSql = dialect.getCountSql(this.queryBoundSql);
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
         assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) as TEMP_T");
         assert countSql.getArgs().length == 1;
         //
-        BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
         assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? OFFSET ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
@@ -135,21 +160,19 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_oracle_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.ORACLE);
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("\"userUUID\"");
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
         assert buildCondition.equals("\"userUUID\"");
         //
-        BoundSql countSql = dialect.getCountSql(this.queryBoundSql);
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
         assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) TEMP_T");
         assert countSql.getArgs().length == 1;
         //
-        BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
         assert pageSql.getSqlString().equals("SELECT * FROM ( SELECT TMP.*, ROWNUM ROW_ID FROM ( select * from tb_user where age > 12 and sex = ? ) TMP WHERE ROWNUM <= ? ) WHERE ROW_ID > ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
@@ -160,21 +183,19 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_h2_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.H2);
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("\"userUUID\"");
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
         assert buildCondition.equals("\"userUUID\"");
         //
-        BoundSql countSql = dialect.getCountSql(this.queryBoundSql);
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
         assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) as TEMP_T");
         assert countSql.getArgs().length == 1;
         //
-        BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
         assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? OFFSET ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
@@ -185,25 +206,23 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_hive_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.HIVE);
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("\"userUUID\"");
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
         assert buildCondition.equals("\"userUUID\"");
         //
         //
         try {
-            dialect.getCountSql(this.queryBoundSql);
+            dialect.countSql(this.queryBoundSql);
             assert false;
         } catch (Exception e) {
             assert true;
         }
         try {
-            dialect.getPageSql(this.queryBoundSql, 1, 3);
+            dialect.pageSql(this.queryBoundSql, 1, 3);
             assert false;
         } catch (Exception e) {
             assert true;
@@ -213,28 +232,26 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_sqllite_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.SQLITE);
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("`userUUID`");
         assert buildTableName1.equals("`tb_user`");
         assert buildTableName2.equals("`abc`.`tb_user`");
         assert buildCondition.equals("`userUUID`");
         //
-        BoundSql countSql = dialect.getCountSql(this.queryBoundSql);
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
         assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) as TEMP_T");
         assert countSql.getArgs().length == 1;
         //
-        BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
         assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(1);
         assert pageSql.getArgs()[2].equals(3);
         //
-        BoundSql pageSql2 = dialect.getPageSql(this.queryBoundSql, 0, 3);
+        BoundSql pageSql2 = dialect.pageSql(this.queryBoundSql, 0, 3);
         assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?");
         assert pageSql2.getArgs().length == 2;
         assert pageSql2.getArgs()[0].equals('F');
@@ -244,28 +261,26 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_herddb_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.HERDDB);
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("`userUUID`");
         assert buildTableName1.equals("`tb_user`");
         assert buildTableName2.equals("`abc`.`tb_user`");
         assert buildCondition.equals("`userUUID`");
         //
-        BoundSql countSql = dialect.getCountSql(this.queryBoundSql);
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
         assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) as TEMP_T");
         assert countSql.getArgs().length == 1;
         //
-        BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
         assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(1);
         assert pageSql.getArgs()[2].equals(3);
         //
-        BoundSql pageSql2 = dialect.getPageSql(this.queryBoundSql, 0, 3);
+        BoundSql pageSql2 = dialect.pageSql(this.queryBoundSql, 0, 3);
         assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?");
         assert pageSql2.getArgs().length == 2;
         assert pageSql2.getArgs()[0].equals('F');
@@ -275,31 +290,29 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_sqlserver2012_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate("sqlserver2012");
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("[userUUID]");
         assert buildTableName1.equals("[tb_user]");
         assert buildTableName2.equals("[abc].[tb_user]");
         assert buildCondition.equals("[userUUID]");
         //
-        BoundSql countSql = dialect.getCountSql(this.queryBoundSql);
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
         assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) as TEMP_T");
         assert countSql.getArgs().length == 1;
         //
-        BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
         assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? ORDER BY CURRENT_TIMESTAMP offset ? rows fetch next ? rows only");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(1);
         assert pageSql.getArgs()[2].equals(3);
         //
-        BoundSql countSql2 = dialect.getCountSql(this.queryBoundSql2);
+        BoundSql countSql2 = dialect.countSql(this.queryBoundSql2);
         assert countSql2.getSqlString().equals("SELECT COUNT(*) FROM (SELECT * FROM tb_user WHERE age > 12 AND sex = ?) as TEMP_T");
         assert countSql2.getArgs().length == 1;
-        BoundSql pageSql2 = dialect.getPageSql(this.queryBoundSql2, 1, 3);
+        BoundSql pageSql2 = dialect.pageSql(this.queryBoundSql2, 1, 3);
         assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? order by a desc offset ? rows fetch next ? rows only");
         assert pageSql2.getArgs().length == 3;
         assert pageSql2.getArgs()[0].equals('F');
@@ -310,21 +323,19 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_informix_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.INFORMIX);
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("\"userUUID\"");
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
         assert buildCondition.equals("\"userUUID\"");
         //
-        BoundSql countSql = dialect.getCountSql(this.queryBoundSql);
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
         assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) as TEMP_T");
         assert countSql.getArgs().length == 1;
         //
-        BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
         assert pageSql.getSqlString().equals("SELECT  SKIP ?  FIRST ?  * FROM ( select * from tb_user where age > 12 and sex = ? ) TEMP_T");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals(1);
@@ -335,21 +346,19 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_db2_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.DB2);
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("\"userUUID\"");
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
         assert buildCondition.equals("\"userUUID\"");
         //
-        BoundSql countSql = dialect.getCountSql(this.queryBoundSql);
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
         assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) as TEMP_T");
         assert countSql.getArgs().length == 1;
         //
-        BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
         assert pageSql.getSqlString().equals("SELECT * FROM (SELECT TMP_PAGE.*,ROWNUMBER() OVER() AS ROW_ID FROM ( select * from tb_user where age > 12 and sex = ? ) AS TMP_PAGE) TMP_PAGE WHERE ROW_ID BETWEEN ? AND ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
@@ -360,21 +369,19 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_hsql_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.HSQL);
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("\"userUUID\"");
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
         assert buildCondition.equals("\"userUUID\"");
         //
-        BoundSql countSql = dialect.getCountSql(this.queryBoundSql);
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
         assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) as TEMP_T");
         assert countSql.getArgs().length == 1;
         //
-        BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
         assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? OFFSET ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
@@ -385,21 +392,19 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_phoenix_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.PHOENIX);
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("\"userUUID\"");
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
         assert buildCondition.equals("\"userUUID\"");
         //
-        BoundSql countSql = dialect.getCountSql(this.queryBoundSql);
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
         assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) as TEMP_T");
         assert countSql.getArgs().length == 1;
         //
-        BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
         assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? OFFSET ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
@@ -410,21 +415,19 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_impala_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.IMPALA);
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("\"userUUID\"");
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
         assert buildCondition.equals("\"userUUID\"");
         //
-        BoundSql countSql = dialect.getCountSql(this.queryBoundSql);
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
         assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) as TEMP_T");
         assert countSql.getArgs().length == 1;
         //
-        BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
         assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ? OFFSET ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
@@ -435,28 +438,26 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_mariadb_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.MARIADB);
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("`userUUID`");
         assert buildTableName1.equals("`tb_user`");
         assert buildTableName2.equals("`abc`.`tb_user`");
         assert buildCondition.equals("`userUUID`");
         //
-        BoundSql countSql = dialect.getCountSql(this.queryBoundSql);
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
         assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) as TEMP_T");
         assert countSql.getArgs().length == 1;
         //
-        BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
         assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(1);
         assert pageSql.getArgs()[2].equals(3);
         //
-        BoundSql pageSql2 = dialect.getPageSql(this.queryBoundSql, 0, 3);
+        BoundSql pageSql2 = dialect.pageSql(this.queryBoundSql, 0, 3);
         assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?");
         assert pageSql2.getArgs().length == 2;
         assert pageSql2.getArgs()[0].equals('F');
@@ -466,28 +467,26 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_aliyun_ads_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.ALIYUN_ADS);
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("`userUUID`");
         assert buildTableName1.equals("`tb_user`");
         assert buildTableName2.equals("`abc`.`tb_user`");
         assert buildCondition.equals("`userUUID`");
         //
-        BoundSql countSql = dialect.getCountSql(this.queryBoundSql);
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
         assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) as TEMP_T");
         assert countSql.getArgs().length == 1;
         //
-        BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
         assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(1);
         assert pageSql.getArgs()[2].equals(3);
         //
-        BoundSql pageSql2 = dialect.getPageSql(this.queryBoundSql, 0, 3);
+        BoundSql pageSql2 = dialect.pageSql(this.queryBoundSql, 0, 3);
         assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?");
         assert pageSql2.getArgs().length == 2;
         assert pageSql2.getArgs()[0].equals('F');
@@ -497,31 +496,57 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_aliyun_drds_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.ALIYUN_DRDS);
-        String buildSelect = dialect.buildSelect("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
-        String buildTableName1 = dialect.buildTableName("", "tb_user");
-        String buildTableName2 = dialect.buildTableName("abc", "tb_user");
-        String buildCondition = dialect.buildColumnName("", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, "", "tb_user");
+        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
+        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
         //
-        assert buildSelect.equals("`userUUID`");
         assert buildTableName1.equals("`tb_user`");
         assert buildTableName2.equals("`abc`.`tb_user`");
         assert buildCondition.equals("`userUUID`");
         //
-        BoundSql countSql = dialect.getCountSql(this.queryBoundSql);
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
         assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) as TEMP_T");
         assert countSql.getArgs().length == 1;
         //
-        BoundSql pageSql = dialect.getPageSql(this.queryBoundSql, 1, 3);
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
         assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?, ?");
         assert pageSql.getArgs().length == 3;
         assert pageSql.getArgs()[0].equals('F');
         assert pageSql.getArgs()[1].equals(1);
         assert pageSql.getArgs()[2].equals(3);
         //
-        BoundSql pageSql2 = dialect.getPageSql(this.queryBoundSql, 0, 3);
+        BoundSql pageSql2 = dialect.pageSql(this.queryBoundSql, 0, 3);
         assert pageSql2.getSqlString().equals("select * from tb_user where age > 12 and sex = ? LIMIT ?");
         assert pageSql2.getArgs().length == 2;
         assert pageSql2.getArgs()[0].equals('F');
         assert pageSql2.getArgs()[1].equals(3);
+    }
+
+    @Test
+    public void dialect_oracle12c_1() {
+        SqlDialect dialect = new Oracle12cDialect();
+        //
+        BoundSql countSql = dialect.countSql(this.queryBoundSql);
+        assert countSql.getSqlString().equals("SELECT COUNT(*) FROM (select * from tb_user where age > 12 and sex = ?) TEMP_T");
+        assert countSql.getArgs().length == 1;
+        //
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
+        assert pageSql.getSqlString().equals("select * from tb_user where age > 12 and sex = ? OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        assert pageSql.getArgs().length == 3;
+        assert pageSql.getArgs()[0].equals('F');
+        assert pageSql.getArgs()[1].equals(1);
+        assert pageSql.getArgs()[2].equals(3);
+    }
+
+    @Test
+    public void dialect_sqlserver2005_1() {
+        SqlDialect dialect = new SqlServer2005Dialect();
+        //
+        BoundSql pageSql = dialect.pageSql(this.queryBoundSql, 1, 3);
+        assert pageSql.getSqlString().equals("WITH selectTemp AS (SELECT TOP 100 PERCENT  ROW_NUMBER() OVER (ORDER BY CURRENT_TIMESTAMP) as __row_number__,  * from tb_user where age > 12 and sex = ?) SELECT * FROM selectTemp WHERE __row_number__ BETWEEN 2 AND 4 ORDER BY __row_number__");
+        assert pageSql.getArgs().length == 3;
+        assert pageSql.getArgs()[0].equals('F');
+        assert pageSql.getArgs()[1].equals(2L);
+        assert pageSql.getArgs()[2].equals(4L);
     }
 }

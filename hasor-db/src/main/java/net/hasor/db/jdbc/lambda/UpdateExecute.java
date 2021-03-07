@@ -14,54 +14,34 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda;
-import net.hasor.db.dal.orm.FieldInfo;
+import net.hasor.db.jdbc.lambda.mapping.FieldInfo;
 import net.hasor.utils.reflect.SFunction;
 
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * lambda SQL 执行
+ * lambda Update 执行器
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface UpdateExecute<T> {
-    /** 参考的样本对象 */
-    public Class<T> exampleType();
-
-    /** 根据 Lambda 构造器的条件执行删除。 */
-    public int delete() throws SQLException;
-
+public interface UpdateExecute<T> extends BoundSqlBuilder {
     /** 生成 select count() 查询语句并查询总数。*/
-    public int updateCount() throws SQLException;
+    public int doUpdate() throws SQLException;
 
-    /** 生成 select count() 查询语句并查询总数。*/
-    public long updateLargeCount() throws SQLException;
+    /** 设置 update 的 set 中的值。 */
+    public UpdateExecute<T> applyUpdateTo(T newValue) throws SQLException;
 
-    /** 根据 Lambda 构造器的条件作为筛选条件，将它们更新为新的状态。 */
-    public int updateTo(T newValue) throws SQLException;
+    /** 设置指定列 update 的 set 中的值。 */
+    public UpdateExecute<T> applyUpdateTo(T newValue, String... columns) throws SQLException;
 
-    /**
-     * 查询指定列。
-     * 在分组查询下：设置参数中，只有 group by 列才会被查询。 */
-    public int updateTo(T newValue, String... columns);
+    /** 设置指定列 update 的 set 中的值。 */
+    public UpdateExecute<T> applyUpdateTo(T newValue, SFunction<T> property) throws SQLException;
 
-    /**
-     * 查询指定列。
-     * 在分组查询下：设置参数中，只有 group by 列才会被查询。 */
-    public default int updateTo(T newValue, SFunction<T> column) {
-        return updateTo(newValue, Collections.singletonList(column));
-    }
+    /** 设置指定列 update 的 set 中的值。 */
+    public UpdateExecute<T> applyUpdateTo(T newValue, List<SFunction<T>> propertyList) throws SQLException;
 
-    /**
-     * 查询指定列。
-     * 在分组查询下：设置参数中，只有 group by 列才会被查询。 */
-    public int updateTo(T newValue, List<SFunction<T>> columns);
-
-    /**
-     * 按条件过滤查询指定列。
-     * 在分组查询下：设置参数中，只有 group by 列才会被查询。 */
-    public int updateTo(T newValue, Predicate<FieldInfo> tester);
+    /** 设置指定列 update 的 set 中的值。 */
+    public UpdateExecute<T> applyUpdateTo(T newValue, Predicate<FieldInfo> tester) throws SQLException;
 }

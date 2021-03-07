@@ -16,7 +16,7 @@
 package net.hasor.db.jdbc.core;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.dal.orm.MappingHandler;
+import net.hasor.db.jdbc.lambda.mapping.MappingHandler;
 import net.hasor.db.datasource.ConnectionProxy;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.StatementCallback;

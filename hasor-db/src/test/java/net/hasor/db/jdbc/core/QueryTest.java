@@ -16,7 +16,7 @@
 package net.hasor.db.jdbc.core;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.dal.orm.MappingRowMapper;
+import net.hasor.db.jdbc.lambda.mapping.MappingRowMapper;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.paramer.BeanSqlParameterSource;
 import net.hasor.test.db.AbstractDbTest;

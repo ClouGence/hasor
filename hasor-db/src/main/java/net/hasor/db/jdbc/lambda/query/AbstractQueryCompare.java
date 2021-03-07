@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda.query;
-import net.hasor.db.dal.orm.FieldInfo;
-import net.hasor.db.dal.orm.TableInfo;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.jdbc.lambda.Compare;
+import net.hasor.db.jdbc.lambda.QueryCompare;
+import net.hasor.db.jdbc.lambda.mapping.FieldInfo;
+import net.hasor.db.jdbc.lambda.mapping.TableInfo;
 import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
 import net.hasor.db.jdbc.lambda.segment.Segment;
 import net.hasor.db.jdbc.lambda.segment.SqlLike;
@@ -37,11 +37,11 @@ import java.util.function.Consumer;
 import static net.hasor.db.jdbc.lambda.segment.SqlKeyword.*;
 
 /**
- * 提供 lambda 方式生成 SQL。
+ * 扩展了 AbstractQueryExecute 提供 lambda 方式生成 SQL。 实现了 Compare 接口。
  * @version : 2020-10-27
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T> implements Compare<T, R> {
+public abstract class AbstractQueryCompare<T, R> extends AbstractQueryExecute<T> implements QueryCompare<T, R> {
     private static final Map<String, FieldInfo> COLUMN_CACHE      = new WeakHashMap<>();
     private static final ReadWriteLock          COLUMN_CACHE_LOCK = new ReentrantReadWriteLock();
     protected            MergeSqlSegment        queryTemplate     = new MergeSqlSegment();
@@ -49,7 +49,7 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
     private              Segment                nextSegmentPrefix = null;
     private              boolean                lookCondition     = false;
 
-    public AbstractCompareQuery(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
+    public AbstractQueryCompare(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
         super(exampleType, jdbcTemplate);
     }
 
@@ -83,7 +83,7 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
             }
             attr = StringUtils.firstCharToLowerCase(attr);
             //
-            FieldInfo fieldInfo = super.getRowMapper().findFieldInfoByProperty(attr);
+            FieldInfo fieldInfo = super.getRowMapper().findFieldByProperty(attr);
             COLUMN_CACHE.put(cacheKey, fieldInfo);
             return fieldInfo;
         } finally {
@@ -104,7 +104,7 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
     }
 
     @Override
-    public R nested(Consumer<Compare<T, R>> lambda) {
+    public R nested(Consumer<QueryCompare<T, R>> lambda) {
         this.addCondition(LEFT);
         this.nextSegmentPrefix = EMPTY;
         lambda.accept(this);
@@ -230,7 +230,7 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
     private Segment formatLikeValue(SqlLike like, Object param) {
         return () -> {
             format(param);
-            return this.dialect().buildLike(like, param);
+            return this.dialect().like(like, param);
         };
     }
 
@@ -261,7 +261,7 @@ public abstract class AbstractCompareQuery<T, R> extends AbstractQueryExecute<T>
     protected String conditionName(SFunction<T> property) {
         TableInfo tableInfo = super.getRowMapper().getTableInfo();
         FieldInfo columnField = columnName(property);
-        return this.dialect().buildColumnName(tableInfo.getCategory(), tableInfo.getTableName(), columnField.getColumnName(), columnField.getJdbcType(), columnField.getJavaType());
+        return this.dialect().columnName(isQualifier(), tableInfo.getCategory(), tableInfo.getTableName(), columnField.getColumnName(), columnField.getJdbcType(), columnField.getJavaType());
     }
 
     @Override

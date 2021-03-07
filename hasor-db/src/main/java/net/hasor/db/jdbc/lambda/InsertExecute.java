@@ -14,36 +14,41 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda;
-import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.jdbc.lambda.LambdaOperations.LambdaQuery;
 
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
- * lambda SQL 执行
+ * lambda Insert 执行器
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface InsertExecute<T> {
-    /** 参考的样本对象 */
-    public Class<T> exampleType();
+public interface InsertExecute<T> extends BoundSqlBuilder {
+    /** 执行插入。*/
+    public int doInsert() throws SQLException;
 
-    /** 插入一条记录。 */
-    public long insert(T entity) throws SQLException;
+    /** 使用多 values 方式生成 SQL */
+    public InsertExecute<T> useMultipleValues();
 
     /** 批量插入记录。 */
-    public default long batchInsert(T... entity) throws SQLException {
-        return batchInsert(Arrays.asList(entity));
+    public default InsertExecute<T> applyEntity(T entity) {
+        return applyEntity(Collections.singletonList(entity));
     }
 
     /** 批量插入记录。 */
-    public long batchInsert(List<T> entity) throws SQLException;
+    public InsertExecute<T> applyEntity(List<T> entity);
 
     /** insert form select */
-    public <V> long insertFromQuery(LambdaQuery<V> lambdaQuery) throws SQLException;
+    public <V> InsertExecute<T> applyQueryAsInsert(LambdaQuery<V> lambdaQuery);
 
-    /** build insert form select sql*/
-    public <V> BoundSql buildInsertFromQuery(LambdaQuery<V> lambdaQuery) throws SQLException;
+    /** 批量插入记录。 */
+    public default InsertExecute<T> applyMap(Map<String, Object> dataMap) {
+        return applyMap(Collections.singletonList(dataMap));
+    }
+
+    /** 批量插入记录。 */
+    public InsertExecute<T> applyMap(List<Map<String, Object>> dataMapList);
 }

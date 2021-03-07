@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda.query;
-import net.hasor.db.dal.orm.FieldInfo;
-import net.hasor.db.dal.orm.TableInfo;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.lambda.LambdaOperations.LambdaQuery;
+import net.hasor.db.jdbc.lambda.QueryExecute;
+import net.hasor.db.jdbc.lambda.mapping.FieldInfo;
+import net.hasor.db.jdbc.lambda.mapping.MappingRowMapper;
+import net.hasor.db.jdbc.lambda.mapping.TableInfo;
 import net.hasor.db.jdbc.lambda.segment.MergeSqlSegment;
 import net.hasor.db.jdbc.lambda.segment.OrderByKeyword;
 import net.hasor.db.jdbc.lambda.segment.Segment;
@@ -35,11 +37,11 @@ import static net.hasor.db.jdbc.lambda.segment.OrderByKeyword.*;
 import static net.hasor.db.jdbc.lambda.segment.SqlKeyword.*;
 
 /**
- * 提供 lambda 方式生成 SQL。
+ * 提供 lambda query 能力。是 LambdaQuery 接口的实现类。
  * @version : 2020-10-27
  * @author 赵永春 (zyc@hasor.net)
  */
-public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T>> implements LambdaQuery<T> {
+public class LambdaQueryWrapper<T> extends AbstractQueryCompare<T, LambdaQuery<T>> implements LambdaQuery<T> {
     private final List<Segment> customSelect    = new ArrayList<>();
     private final List<Segment> groupBySegments = new ArrayList<>();
     private final List<Segment> orderBySegments = new ArrayList<>();
@@ -75,8 +77,13 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
         sqlSegment.addSegment(FROM);
         sqlSegment.addSegment(buildTabName(this.dialect()));
         if (!this.queryTemplate.isEmpty()) {
-            sqlSegment.addSegment(WHERE);
-            sqlSegment.addSegment(this.queryTemplate.sub(1));
+            Segment firstSqlSegment = this.queryTemplate.firstSqlSegment();
+            if (firstSqlSegment == GROUP_BY || firstSqlSegment == HAVING || firstSqlSegment == ORDER_BY) {
+                sqlSegment.addSegment(this.queryTemplate);
+            } else {
+                sqlSegment.addSegment(WHERE);
+                sqlSegment.addSegment(this.queryTemplate.sub(1));
+            }
         }
         this.result = sqlSegment.getSqlSegment();
         return this.result;
@@ -91,7 +98,7 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
         if (tableInfo == null) {
             throw new IllegalArgumentException("tableInfo not found.");
         }
-        return () -> dialect.buildTableName(tableInfo.getCategory(), tableInfo.getTableName());
+        return () -> dialect.tableName(isQualifier(), tableInfo.getCategory(), tableInfo.getTableName());
     }
 
     private static Segment buildColumns(Collection<Segment> columnSegments) {
@@ -130,6 +137,12 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
     }
 
     @Override
+    public QueryExecute<T> useQualifier() {
+        this.enableQualifier();
+        return this;
+    }
+
+    @Override
     public LambdaQuery<T> selectAll() {
         this.customSelect.clear();
         return this;
@@ -154,14 +167,16 @@ public class LambdaQueryWrapper<T> extends AbstractCompareQuery<T, LambdaQuery<T
 
     @Override
     public final LambdaQuery<T> select(Predicate<FieldInfo> tester) {
-        Collection<FieldInfo> allFiled = super.getRowMapper().allFieldInfoByProperty();
-        return this.select0(allFiled, tester);
+        MappingRowMapper<T> rowMapper = super.getRowMapper();
+        List<String> allProperty = rowMapper.getPropertyNames();
+        List<FieldInfo> collect = allProperty.stream().map(rowMapper::findFieldByProperty).collect(Collectors.toList());
+        return this.select0(collect, tester);
     }
 
     private LambdaQuery<T> select0(Collection<FieldInfo> allFiled, Predicate<FieldInfo> tester) {
         TableInfo tableInfo = super.getRowMapper().getTableInfo();
         allFiled.stream().filter(tester).forEach(fieldInfo -> {
-            String selectColumn = dialect().buildSelect(tableInfo.getCategory(), tableInfo.getTableName(), fieldInfo.getColumnName(), fieldInfo.getJdbcType(), fieldInfo.getJavaType());
+            String selectColumn = dialect().columnName(isQualifier(), tableInfo.getCategory(), tableInfo.getTableName(), fieldInfo.getColumnName(), fieldInfo.getJdbcType(), fieldInfo.getJavaType());
             customSelect.add(() -> selectColumn);
         });
         return this;

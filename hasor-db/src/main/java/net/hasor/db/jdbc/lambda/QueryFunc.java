@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda;
-import net.hasor.db.dal.orm.FieldInfo;
+import net.hasor.db.jdbc.lambda.mapping.FieldInfo;
 import net.hasor.db.jdbc.page.Page;
 import net.hasor.utils.reflect.SFunction;
 
@@ -23,11 +23,11 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * 条件构造器。
+ * Query 复杂操作构造器。
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface Func<T, R> {
+public interface QueryFunc<T, R> {
     /**
      * 查询指定列。
      * 在分组查询下：返回所有分组列 */

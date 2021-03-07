@@ -25,7 +25,7 @@ import java.util.function.Consumer;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface Compare<T, R> {
+public interface QueryCompare<T, R> {
     /** 等于条件 查询，类似：'or ...' */
     public R or();
 
@@ -33,19 +33,19 @@ public interface Compare<T, R> {
     public R and();
 
     /** 括号方式嵌套一组查询条件，与现有条件为并且关系。类似：'and ( ...where... )' */
-    public default R and(Consumer<Compare<T, R>> lambda) {
+    public default R and(Consumer<QueryCompare<T, R>> lambda) {
         this.and();
         return this.nested(lambda);
     }
 
     /** 括号方式嵌套一组查询条件，与现有条件为或关系。类似：'or ( ...where... )' */
-    public default R or(Consumer<Compare<T, R>> lambda) {
+    public default R or(Consumer<QueryCompare<T, R>> lambda) {
         this.or();
         return this.nested(lambda);
     }
 
     /** 括号方式嵌套一组查询条件 */
-    public R nested(Consumer<Compare<T, R>> lambda);
+    public R nested(Consumer<QueryCompare<T, R>> lambda);
 
     /** 等于条件 查询，类似：'col = ?' */
     public R eq(SFunction<T> property, Object value);

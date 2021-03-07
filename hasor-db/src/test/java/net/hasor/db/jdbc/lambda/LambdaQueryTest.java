@@ -38,7 +38,7 @@ import static net.hasor.test.db.utils.TestUtils.*;
  * @version : 2014-1-13
  * @author 赵永春 (zyc@hasor.net)
  */
-public class LambdaTest extends AbstractDbTest {
+public class LambdaQueryTest extends AbstractDbTest {
     @Test
     public void lambda_select_1() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
@@ -167,6 +167,20 @@ public class LambdaTest extends AbstractDbTest {
             //
             assert tbUser.get("name").equals("默罕默德");
             assert tbUser.get("loginName").equals("muhammad");
+        }
+    }
+
+    @Test
+    public void lambdaQuery_lambdaCount_7() throws SQLException {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            int lambdaCount1 = jdbcTemplate.lambdaQuery(TbUser.class)//
+                    .eq(TbUser::getAccount, "muhammad")//
+                    .queryForCount();
+            assert lambdaCount1 == 1;
+            assert jdbcTemplate.lambdaQuery(TbUser.class).queryForCount() == 3;
+            assert jdbcTemplate.lambdaQuery(TbUser.class).queryForLargeCount() == 3L;
         }
     }
 }

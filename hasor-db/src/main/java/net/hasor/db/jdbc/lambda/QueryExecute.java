@@ -23,14 +23,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * lambda SQL 执行
+ * lambda Query 执行
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface QueryExecute<T> {
-    /** 参考的样本对象 */
-    public Class<T> exampleType();
-
+public interface QueryExecute<T> extends BoundSqlBuilder {
     /** QueryExecute 的查询类型转换为另外一个类型。*/
     public <V> QueryExecute<V> wrapperType(Class<V> wrapperType) throws SQLException;
 

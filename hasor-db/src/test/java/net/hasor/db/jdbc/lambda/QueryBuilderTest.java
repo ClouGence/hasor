@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda;
+import net.hasor.db.dialect.BatchBoundSql;
 import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.dialect.provider.MySqlDialect;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.test.db.AbstractDbTest;
+import net.hasor.test.db.dto.TB_User;
 import net.hasor.test.db.dto.TbUser;
 import org.junit.Test;
 
@@ -24,6 +28,9 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import static net.hasor.test.db.utils.TestUtils.beanForData1;
+import static net.hasor.test.db.utils.TestUtils.mapForData2;
 
 /***
  *
@@ -422,5 +429,21 @@ public class QueryBuilderTest extends AbstractDbTest {
         assert boundSql1.getArgs()[0].equals(1);
         assert boundSql1.getArgs()[1].equals(2);
         assert boundSql1.getArgs()[2].equals(3);
+    }
+
+    @Test
+    public void queryBuilder9() {
+        LambdaOperations.LambdaInsert<TB_User> lambdaInsert = new JdbcTemplate().lambdaInsert(TB_User.class);
+        lambdaInsert.applyEntity(beanForData1());
+        lambdaInsert.applyMap(mapForData2());
+        //
+        SqlDialect dialect = new MySqlDialect();
+        BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
+        assert boundSql1 instanceof BatchBoundSql;
+        assert boundSql1.getSqlString().equals("insert into TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) values ( ?,?,?,?,?,?,? )");
+        //
+        BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
+        assert boundSql2 instanceof BatchBoundSql;
+        assert boundSql2.getSqlString().equals("insert into `TB_User` ( `userUUID` , `name` , `loginName` , `loginPassword` , `email` , `index` , `registerTime` ) values ( ?,?,?,?,?,?,? )");
     }
 }

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.lambda.query;
-import net.hasor.db.dal.orm.FieldInfo;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.lambda.LambdaOperations.LambdaUpdate;
+import net.hasor.db.jdbc.lambda.UpdateExecute;
+import net.hasor.db.jdbc.lambda.mapping.FieldInfo;
 import net.hasor.utils.reflect.SFunction;
 
 import java.sql.SQLException;
@@ -24,53 +25,54 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * 提供 lambda 方式生成 SQL。
+ * 提供 lambda update 能力。是 LambdaUpdate 接口的实现类。
  * @version : 2020-10-27
  * @author 赵永春 (zyc@hasor.net)
  */
-public class LambdaUpdateWrapper<T> extends AbstractCompareQuery<T, LambdaUpdate<T>> implements LambdaUpdate<T> {
+public class LambdaUpdateWrapper<T> extends AbstractQueryCompare<T, LambdaUpdate<T>> implements LambdaUpdate<T> {
     public LambdaUpdateWrapper(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
         super(exampleType, jdbcTemplate);
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public int delete() throws SQLException {
-        return 0;
-    }
-
-    @Override
-    public int updateCount() throws SQLException {
-        return 0;
-    }
-
-    @Override
-    public long updateLargeCount() throws SQLException {
-        return 0;
-    }
-
-    @Override
-    public int updateTo(T newValue) throws SQLException {
-        return 0;
-    }
-
-    @Override
-    public int updateTo(T newValue, String... columns) {
-        return 0;
-    }
-
-    @Override
-    public int updateTo(T newValue, List<SFunction<T>> columns) {
-        return 0;
-    }
-
-    @Override
-    public int updateTo(T newValue, Predicate<FieldInfo> tester) {
-        return 0;
-    }
-
-    @Override
     protected LambdaUpdate<T> getSelf() {
         return this;
+    }
+
+    @Override
+    public LambdaUpdate<T> useQualifier() {
+        this.enableQualifier();
+        return this;
+    }
+
+    @Override
+    public int doUpdate() throws SQLException {
+        return 0;
+    }
+
+    @Override
+    public UpdateExecute<T> applyUpdateTo(T newValue) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public UpdateExecute<T> applyUpdateTo(T newValue, String... columns) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public UpdateExecute<T> applyUpdateTo(T newValue, SFunction<T> property) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public UpdateExecute<T> applyUpdateTo(T newValue, List<SFunction<T>> propertyList) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public UpdateExecute<T> applyUpdateTo(T newValue, Predicate<FieldInfo> tester) throws SQLException {
+        return null;
     }
 }
