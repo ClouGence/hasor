@@ -28,10 +28,10 @@ public interface SqlDialect {
     public static final SqlDialect DEFAULT = new DefaultSqlDialect();
 
     /** 生成 form 后面的表名 */
-    public String tableName(String category, String tableName);
+    public String tableName(boolean useQualifier, String category, String tableName);
 
     /** 生成 where 中用到的条件名（包括 group by、order by） */
-    public String columnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType);
+    public String columnName(boolean useQualifier, String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType);
 
     public default String like(SqlLike likeType, Object value) {
         if (value == null || StringUtils.isBlank(value.toString())) {

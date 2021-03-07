@@ -57,26 +57,25 @@ public class SqlServerDialect implements SqlDialect {
     }
 
     @Override
-    public String buildSelect(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
-        return "[" + columnName + "]";
-    }
-
-    @Override
-    public String buildTableName(String category, String tableName) {
+    public String tableName(boolean useQualifier, String category, String tableName) {
+        String leftQualifier = useQualifier ? "[" : "";
+        String rightQualifier = useQualifier ? "]" : "";
         if (StringUtils.isBlank(category)) {
-            return "[" + tableName + "]";
+            return leftQualifier + tableName + rightQualifier;
         } else {
-            return "[" + category + "].[" + tableName + "]";
+            return leftQualifier + category + rightQualifier + "." + leftQualifier + tableName + rightQualifier;
         }
     }
 
     @Override
-    public String buildColumnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
-        return "[" + columnName + "]";
+    public String columnName(boolean useQualifier, String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
+        String leftQualifier = useQualifier ? "[" : "";
+        String rightQualifier = useQualifier ? "]" : "";
+        return leftQualifier + tableName + rightQualifier;
     }
 
     @Override
-    public BoundSql getCountSql(BoundSql boundSql) {
+    public BoundSql countSql(BoundSql boundSql) {
         String sqlString = boundSql.getSqlString();
         List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
         //
@@ -97,7 +96,7 @@ public class SqlServerDialect implements SqlDialect {
     }
 
     @Override
-    public BoundSql getPageSql(BoundSql boundSql, int start, int limit) {
+    public BoundSql pageSql(BoundSql boundSql, int start, int limit) {
         String sqlString = boundSql.getSqlString();
         List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
         //

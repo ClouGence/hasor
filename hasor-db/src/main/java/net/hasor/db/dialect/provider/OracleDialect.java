@@ -30,17 +30,19 @@ import java.util.List;
  */
 public class OracleDialect implements MultipleInsertSqlDialect {
     @Override
-    public String tableName(String category, String tableName) {
+    public String tableName(boolean useQualifier, String category, String tableName) {
+        String qualifier = useQualifier ? "\"" : "";
         if (StringUtils.isBlank(category)) {
-            return "\"" + tableName + "\"";
+            return qualifier + tableName + qualifier;
         } else {
-            return "\"" + category + "\".\"" + tableName + "\"";
+            return qualifier + category + qualifier + "." + qualifier + tableName + qualifier;
         }
     }
 
     @Override
-    public String columnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
-        return "\"" + columnName + "\"";
+    public String columnName(boolean useQualifier, String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
+        String qualifier = useQualifier ? "\"" : "";
+        return qualifier + columnName + qualifier;
     }
 
     @Override

@@ -15,20 +15,19 @@
  */
 package net.hasor.db.dialect.provider;
 import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.dialect.MultipleInsertSqlDialect;
 import net.hasor.utils.StringUtils;
-import net.sf.jsqlparser.statement.select.Select;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * SqlServer2005 的 SqlDialect 实现 (form mybatis-plus-extension-3.3.0.jar ,com.baomidou.mybatisplus.extension.plugins.pagination.dialects.SQLServer2005Dialect)
  * @author hubin
  * @since 2016-11-10
  */
-public class SqlServer2005Dialect extends SqlServerDialect {
-    private static final Map<String, Select> CACHE       = new WeakHashMap<>();
-    private static final Object              LOCK_OBJECT = new Object();
-
+public class SqlServer2005Dialect extends SqlServerDialect implements MultipleInsertSqlDialect {
     private static String getOrderByPart(String sql) {
         String loweredString = sql.toLowerCase();
         int orderByIndex = loweredString.indexOf("order by");
@@ -40,7 +39,7 @@ public class SqlServer2005Dialect extends SqlServerDialect {
     }
 
     @Override
-    public BoundSql getPageSql(BoundSql boundSql, int start, int limit) {
+    public BoundSql pageSql(BoundSql boundSql, int start, int limit) {
         String sqlString = boundSql.getSqlString();
         StringBuilder pagingBuilder = new StringBuilder();
         String orderby = getOrderByPart(sqlString);
@@ -71,5 +70,39 @@ public class SqlServer2005Dialect extends SqlServerDialect {
         paramArrays.add(firstParam);
         paramArrays.add(secondParam);
         return new BoundSql.BoundSqlObj(sqlString, paramArrays.toArray());
+    }
+
+    // multipleRecordInsert
+    //                     INSERT INTO t (Name, Location)
+    //                               SELECT 'Name1', 'Location1'
+    //                     UNION ALL SELECT 'Name2', 'Location2'
+    //                     UNION ALL SELECT 'Name3', 'Location3'
+    @Override
+    public String multipleRecordInsertPrepare() {
+        return "";
+    }
+
+    @Override
+    public String multipleRecordInsertSplitRecord() {
+        return "union all";
+    }
+
+    @Override
+    public String multipleRecordInsertBeforeValues(boolean firstRecord, String tableNameAndColumn) {
+        if (firstRecord) {
+            return "insert into " + tableNameAndColumn + " select";
+        } else {
+            return "select";
+        }
+    }
+
+    @Override
+    public String multipleRecordInsertAfterValues() {
+        return "";
+    }
+
+    @Override
+    public String multipleRecordInsertFinish() {
+        return "";
     }
 }

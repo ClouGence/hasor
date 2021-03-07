@@ -27,26 +27,23 @@ import java.sql.JDBCType;
  */
 public class Db2Dialect implements SqlDialect {
     @Override
-    public String buildSelect(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
-        return "\"" + columnName + "\"";
-    }
-
-    @Override
-    public String buildTableName(String category, String tableName) {
+    public String tableName(boolean useQualifier, String category, String tableName) {
+        String qualifier = useQualifier ? "\"" : "";
         if (StringUtils.isBlank(category)) {
-            return "\"" + tableName + "\"";
+            return qualifier + tableName + qualifier;
         } else {
-            return "\"" + category + "\".\"" + tableName + "\"";
+            return qualifier + category + qualifier + "." + qualifier + tableName + qualifier;
         }
     }
 
     @Override
-    public String buildColumnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
-        return "\"" + columnName + "\"";
+    public String columnName(boolean useQualifier, String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
+        String qualifier = useQualifier ? "\"" : "";
+        return qualifier + columnName + qualifier;
     }
 
     @Override
-    public BoundSql getPageSql(BoundSql boundSql, int start, int limit) {
+    public BoundSql pageSql(BoundSql boundSql, int start, int limit) {
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append("SELECT * FROM (SELECT TMP_PAGE.*,ROWNUMBER() OVER() AS ROW_ID FROM ( ");
         sqlBuilder.append(boundSql.getSqlString());

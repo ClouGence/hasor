@@ -25,7 +25,7 @@ import java.sql.JDBCType;
  */
 public class DefaultSqlDialect implements SqlDialect {
     @Override
-    public String tableName(String category, String tableName) {
+    public String tableName(boolean useQualifier, String category, String tableName) {
         if (StringUtils.isBlank(category)) {
             return tableName;
         } else {
@@ -34,7 +34,7 @@ public class DefaultSqlDialect implements SqlDialect {
     }
 
     @Override
-    public String columnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
+    public String columnName(boolean useQualifier, String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
         return columnName;
     }
 
