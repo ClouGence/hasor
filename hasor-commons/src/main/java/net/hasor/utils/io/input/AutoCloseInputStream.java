@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.utils.io;
+package net.hasor.utils.io.input;
 import java.io.IOException;
 import java.io.InputStream;
 
