@@ -27,13 +27,13 @@ import java.util.List;
  */
 public class Oracle12cDialect extends OracleDialect {
     @Override
-    public BoundSql getCountSql(BoundSql boundSql) {
+    public BoundSql countSql(BoundSql boundSql) {
         String sqlBuilder = "SELECT COUNT(*) FROM (" + boundSql.getSqlString() + ") TEMP_T";
         return new BoundSql.BoundSqlObj(sqlBuilder, boundSql.getArgs());
     }
 
     @Override
-    public BoundSql getPageSql(BoundSql boundSql, int start, int limit) {
+    public BoundSql pageSql(BoundSql boundSql, int start, int limit) {
         List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
         String pageQuery = boundSql.getSqlString() + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         //

@@ -15,7 +15,7 @@
  */
 package net.hasor.db.dialect.provider;
 import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.dialect.MultipleInsertSqlDialect;
 import net.hasor.utils.StringUtils;
 
 import java.sql.JDBCType;
@@ -28,14 +28,9 @@ import java.util.List;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class OracleDialect implements SqlDialect {
+public class OracleDialect implements MultipleInsertSqlDialect {
     @Override
-    public String buildSelect(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
-        return "\"" + columnName + "\"";
-    }
-
-    @Override
-    public String buildTableName(String category, String tableName) {
+    public String tableName(String category, String tableName) {
         if (StringUtils.isBlank(category)) {
             return "\"" + tableName + "\"";
         } else {
@@ -44,18 +39,18 @@ public class OracleDialect implements SqlDialect {
     }
 
     @Override
-    public String buildColumnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
+    public String columnName(String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
         return "\"" + columnName + "\"";
     }
 
     @Override
-    public BoundSql getCountSql(BoundSql boundSql) {
+    public BoundSql countSql(BoundSql boundSql) {
         String sqlBuilder = "SELECT COUNT(*) FROM (" + boundSql.getSqlString() + ") TEMP_T";
         return new BoundSql.BoundSqlObj(sqlBuilder, boundSql.getArgs());
     }
 
     @Override
-    public BoundSql getPageSql(BoundSql boundSql, int start, int limit) {
+    public BoundSql pageSql(BoundSql boundSql, int start, int limit) {
         List<Object> paramArrays = new ArrayList<>(Arrays.asList(boundSql.getArgs()));
         //
         StringBuilder sqlBuilder = new StringBuilder();
@@ -66,5 +61,37 @@ public class OracleDialect implements SqlDialect {
         paramArrays.add(start + limit);
         paramArrays.add(start);
         return new BoundSql.BoundSqlObj(sqlBuilder.toString(), paramArrays.toArray());
+    }
+
+    // multipleRecordInsert
+    //                     insert all
+    //                       into jack_20170206_aa(a,b) values('4014033')
+    //                       into jack_20170206_aa(a,b) values('4065304')
+    //                       into jack_20170206_aa(a,b) values('4088136')
+    //                       into jack_20170206_aa(a,b) values('4092405')
+    //                     select 1 from dual;
+    @Override
+    public String multipleRecordInsertPrepare() {
+        return "insert all";
+    }
+
+    @Override
+    public String multipleRecordInsertSplitRecord() {
+        return "";
+    }
+
+    @Override
+    public String multipleRecordInsertBeforeValues(boolean firstRecord, String tableNameAndColumn) {
+        return "into " + tableNameAndColumn + " values (";
+    }
+
+    @Override
+    public String multipleRecordInsertAfterValues() {
+        return ")";
+    }
+
+    @Override
+    public String multipleRecordInsertFinish() {
+        return "select 1 from dual";
     }
 }
