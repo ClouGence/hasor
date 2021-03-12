@@ -54,10 +54,17 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
         return typeHandler.getResult(rs, columnIndex);
     }
 
-    /**获取读取列用到 的 TypeHandler列的值*/
+    /** 获取读取列用到的那个 TypeHandler */
     public TypeHandler<?> getResultSetTypeHandler(ResultSet rs, int columnIndex, Class<?> targetType) throws SQLException {
         int columnType = rs.getMetaData().getColumnType(columnIndex);
+        String columnTypeName = rs.getMetaData().getColumnTypeName(columnIndex);
         String columnClassName = rs.getMetaData().getColumnClassName(columnIndex);
+        //
+        // TODO with mysql `YEAR` type , columnType is DATE . but getDate() throw  Long cast Date failed.
+        if ("YEAR".equalsIgnoreCase(columnTypeName)) {
+            columnType = JDBCType.INTEGER.getVendorTypeNumber();
+        }
+        //
         JDBCType jdbcType = JDBCType.valueOf(columnType);
         Class<?> columnTypeClass = targetType;
         if (columnTypeClass == null) {
