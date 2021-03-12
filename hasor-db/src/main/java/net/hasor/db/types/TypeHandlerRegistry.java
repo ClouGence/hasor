@@ -237,11 +237,11 @@ public final class TypeHandlerRegistry {
         this.registerCross(JDBCType.ARRAY, Object.class, createSingleTypeHandler(ArrayTypeHandler.class));
     }
 
-    private static TypeHandler<?> createSingleTypeHandler(Class<? extends TypeHandler<?>> typeHandler) {
+    private TypeHandler<?> createSingleTypeHandler(Class<? extends TypeHandler<?>> typeHandler) {
         cachedSingleHandlers.computeIfAbsent(typeHandler, type -> {
             try {
                 if (typeHandler == UnknownTypeHandler.class) {
-                    return new UnknownTypeHandler(DEFAULT);
+                    return defaultTypeHandler;
                 } else {
                     return typeHandler.newInstance();
                 }
