@@ -1,6 +1,6 @@
 /* https://dev.mysql.com/doc/refman/5.7/en/data-types.html
  * https://dev.mysql.com/doc/refman/8.0/en/data-types.html */
-CREATE TABLE tb_mysql_types
+create table tb_mysql_types
 (
     c_serial                     serial,
 
