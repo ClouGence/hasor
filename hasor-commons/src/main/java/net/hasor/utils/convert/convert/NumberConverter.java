@@ -86,8 +86,8 @@ import java.util.Locale;
  */
 @SuppressWarnings("rawtypes")
 public abstract class NumberConverter extends AbstractConverter {
-    private static final Integer ZERO = new Integer(0);
-    private static final Integer ONE  = new Integer(1);
+    private static final Integer ZERO = 0;
+    private static final Integer ONE  = 1;
     private              String  pattern;
     private              boolean allowDecimals;
     private              boolean useLocaleFormat;

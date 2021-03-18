@@ -45,7 +45,6 @@ import java.util.Collection;
  * @version $Revision: 640131 $ $Date: 2008-03-23 02:10:31 +0000 (Sun, 23 Mar 2008) $
  * @since 1.8.0
  */
-@SuppressWarnings({ "rawtypes" })
 public abstract class AbstractConverter implements Converter {
     /** 当转换出错时是否返回默认值。*/
     private boolean useDefault   = false;
@@ -82,8 +81,8 @@ public abstract class AbstractConverter implements Converter {
      * successfully and no default is specified.
      */
     @Override
-    public Object convert(final Class type, Object value) {
-        Class sourceType = value == null ? null : value.getClass();
+    public Object convert(final Class<?> type, Object value) {
+        Class<?> sourceType = value == null ? null : value.getClass();
         value = this.convertArray(value);//如果数据源是一个Array 或 集合 那么取得第一个元素。
         //Missing Value
         if (value == null) {
@@ -110,7 +109,7 @@ public abstract class AbstractConverter implements Converter {
      * 处理转换错误。<p>
      * 如果设置了default属性则当遇到错误时返回默认值。否则引发{@link ConversionException}异常。
      */
-    protected Object handleError(final Class type, final Object value, final Throwable cause) {
+    protected Object handleError(final Class<?> type, final Object value, final Throwable cause) {
         if (this.useDefault) {
             return this.handleMissing(type);
         }
@@ -131,7 +130,7 @@ public abstract class AbstractConverter implements Converter {
     }
 
     /**执行类型转换代码。*/
-    protected abstract Object convertToType(Class type, Object value) throws Throwable;
+    protected abstract Object convertToType(Class<?> type, Object value) throws Throwable;
 
     /**
      * Return the first element from an Array (or Collection)
@@ -155,7 +154,7 @@ public abstract class AbstractConverter implements Converter {
             }
         }
         if (value instanceof Collection) {
-            Collection collection = (Collection) value;
+            Collection<?> collection = (Collection<?>) value;
             if (collection.size() > 0) {
                 return collection.iterator().next();
             } else {
@@ -177,10 +176,10 @@ public abstract class AbstractConverter implements Converter {
     }
 
     /**获取默认值*/
-    protected abstract Class getDefaultType();
+    protected abstract Class<?> getDefaultType();
 
     /**返回指定类型的默认值.*/
-    protected Object getDefault(final Class type) {
+    protected Object getDefault(final Class<?> type) {
         if (type.equals(String.class)) {
             return null;
         } else {
@@ -198,7 +197,7 @@ public abstract class AbstractConverter implements Converter {
     }
 
     /**当遇到空值传入或者返回值为空的时候*/
-    protected Object handleMissing(final Class type) {
+    protected Object handleMissing(final Class<?> type) {
         if (this.useDefault || type.equals(String.class)) {
             Object value = this.getDefault(type);
             if (this.useDefault && value != null && !type.equals(value.getClass())) {
@@ -219,12 +218,12 @@ public abstract class AbstractConverter implements Converter {
      * @param type The <code>java.lang.Class</code>.
      * @return The String representation.
      */
-    public String toString(final Class type) {
+    public String toString(final Class<?> type) {
         String typeName = null;
         if (type == null) {
             typeName = "null";
         } else if (type.isArray()) {
-            Class elementType = type.getComponentType();
+            Class<?> elementType = type.getComponentType();
             int count = 1;
             while (elementType.isArray()) {
                 elementType = elementType.getComponentType();

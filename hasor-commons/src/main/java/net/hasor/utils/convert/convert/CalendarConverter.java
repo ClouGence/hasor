@@ -32,7 +32,6 @@ import java.util.Calendar;
  * @version $Revision: 640131 $
  * @since 1.8.0
  */
-@SuppressWarnings("rawtypes")
 public final class CalendarConverter extends DateTimeConverter {
     /**
      * Construct a <b>java.util.Calendar</b> <i>Converter</i> that throws
@@ -60,7 +59,7 @@ public final class CalendarConverter extends DateTimeConverter {
      * @return The default type this <code>Converter</code> handles.
      */
     @Override
-    protected Class getDefaultType() {
+    protected Class<?> getDefaultType() {
         return Calendar.class;
     }
 }

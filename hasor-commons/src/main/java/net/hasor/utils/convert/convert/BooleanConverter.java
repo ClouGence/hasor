@@ -29,7 +29,7 @@ import net.hasor.utils.convert.Converter;
  * <code>ConversionException</code> if a conversion error occurs.
  * <p>
  * By default any object whose string representation is one of the values
- * {"yes", "y", "true", "on", "1"} is converted to Boolean.TRUE, and 
+ * {"yes", "y", "true", "on", "1"} is converted to Boolean.TRUE, and
  * string representations {"no", "n", "false", "off", "0"} are converted
  * to Boolean.FALSE. The recognised true/false strings can be changed by:
  * <pre>
@@ -53,7 +53,6 @@ import net.hasor.utils.convert.Converter;
  * @version $Revision: 801644 $ $Date: 2009-08-06 14:38:56 +0100 (Thu, 06 Aug 2009) $
  * @since 1.3
  */
-@SuppressWarnings("rawtypes")
 public final class BooleanConverter extends AbstractConverter {
     // ----------------------------------------------------------- Constructors
 
@@ -153,7 +152,7 @@ public final class BooleanConverter extends AbstractConverter {
      * @since 1.8.0
      */
     @Override
-    protected Class getDefaultType() {
+    protected Class<?> getDefaultType() {
         return Boolean.class;
     }
 
@@ -168,7 +167,7 @@ public final class BooleanConverter extends AbstractConverter {
      *  shall be invoked on this object, and the result compared (ignoring
      *  case) against the known "true" and "false" string values.
      *
-     * @return Boolean.TRUE if the value was a recognised "true" value, 
+     * @return Boolean.TRUE if the value was a recognised "true" value,
      *  Boolean.FALSE if the value was a recognised "false" value, or
      *  the default value if the value was not recognised and the constructor
      *  was provided with a default value.
@@ -177,7 +176,7 @@ public final class BooleanConverter extends AbstractConverter {
      * @since 1.8.0
      */
     @Override
-    protected Object convertToType(final Class type, final Object value) throws Throwable {
+    protected Object convertToType(final Class<?> type, final Object value) throws Throwable {
         // All the values in the trueStrings and falseStrings arrays are
         // guaranteed to be lower-case. By converting the input value
         // to lowercase too, we can use the efficient String.equals method

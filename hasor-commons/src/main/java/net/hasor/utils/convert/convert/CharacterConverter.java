@@ -29,7 +29,6 @@ import net.hasor.utils.convert.Converter;
  * @version $Revision: 690380 $ $Date: 2008-08-29 21:04:38 +0100 (Fri, 29 Aug 2008) $
  * @since 1.3
  */
-@SuppressWarnings("rawtypes")
 public final class CharacterConverter extends AbstractConverter {
     /**
      * Construct a <b>java.lang.Character</b> <i>Converter</i> that throws
@@ -58,7 +57,7 @@ public final class CharacterConverter extends AbstractConverter {
      * @since 1.8.0
      */
     @Override
-    protected Class getDefaultType() {
+    protected Class<?> getDefaultType() {
         return Character.class;
     }
 
@@ -85,7 +84,7 @@ public final class CharacterConverter extends AbstractConverter {
      * @since 1.8.0
      */
     @Override
-    protected Object convertToType(final Class type, final Object value) throws Exception {
+    protected Object convertToType(final Class<?> type, final Object value) throws Exception {
         String string = value.toString();
         if (string.length() == 0) {
             return BeanUtils.getDefaultValue(type);

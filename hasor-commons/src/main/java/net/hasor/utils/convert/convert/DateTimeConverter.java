@@ -78,7 +78,6 @@ import java.util.TimeZone;
  * @version $Revision: 640131 $ $Date: 2008-03-23 02:10:31 +0000 (Sun, 23 Mar 2008) $
  * @since 1.8.0
  */
-@SuppressWarnings("rawtypes")
 public abstract class DateTimeConverter extends AbstractConverter {
     private String[] patterns;
     private String   displayPatterns;
@@ -203,7 +202,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
     }
 
     @Override
-    public Object convert(final Class type, final Object value) {
+    public Object convert(final Class<?> type, final Object value) {
         if (value == null) {
             return null;
         }
@@ -279,8 +278,8 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @throws Exception if conversion cannot be performed successfully
      */
     @Override
-    protected Object convertToType(final Class targetType, final Object value) throws Exception {
-        Class sourceType = value.getClass();
+    protected Object convertToType(final Class<?> targetType, final Object value) throws Exception {
+        Class<?> sourceType = value.getClass();
         // Handle java.sql.Timestamp
         if (value instanceof java.sql.Timestamp) {
             // ---------------------- JDK 1.3 Fix ----------------------
@@ -356,7 +355,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @param value The long value to convert.
      * @return The converted date value.
      */
-    private Object toDate(final Class type, final long value) {
+    private Object toDate(final Class<?> type, final long value) {
         // java.util.Date
         if (type.equals(Date.class)) {
             return new Date(value);
@@ -411,7 +410,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @param value The String value to convert.
      * @return The converted Number value.
      */
-    private Object toDate(final Class type, final String value) {
+    private Object toDate(final Class<?> type, final String value) {
         // java.sql.Date
         if (type.equals(java.sql.Date.class)) {
             try {
@@ -484,13 +483,12 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @return The converted Date object.
      * @throws Exception if an error occurs parsing the date.
      */
-    private Calendar parse(final Class sourceType, final Class targetType, final String value) throws Exception {
+    private Calendar parse(final Class<?> sourceType, final Class<?> targetType, final String value) throws Exception {
         Exception firstEx = null;
         for (String pattern : this.patterns) {
             try {
                 DateFormat format = this.getFormat(pattern);
-                Calendar calendar = this.parse(sourceType, targetType, value, format);
-                return calendar;
+                return this.parse(sourceType, targetType, value, format);
             } catch (Exception ex) {
                 if (firstEx == null) {
                     firstEx = ex;
@@ -516,7 +514,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @return The converted Calendar object.
      * @throws ConversionException if the String cannot be converted.
      */
-    private Calendar parse(final Class sourceType, final Class targetType, final String value, final DateFormat format) {
+    private Calendar parse(final Class<?> sourceType, final Class<?> targetType, final String value, final DateFormat format) {
         format.setLenient(false);
         ParsePosition pos = new ParsePosition(0);
         Date parsedDate = format.parse(value, pos); // ignore the result (use the Calendar)
@@ -527,8 +525,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
             }
             throw new ConversionException(msg);
         }
-        Calendar calendar = format.getCalendar();
-        return calendar;
+        return format.getCalendar();
     }
 
     /**
@@ -538,7 +535,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
      */
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(this.toString(this.getClass()));
         buffer.append("[UseDefault=");
         buffer.append(this.isUseDefault());

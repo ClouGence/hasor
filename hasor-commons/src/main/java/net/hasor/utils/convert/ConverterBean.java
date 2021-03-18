@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 package net.hasor.utils.convert;
-import net.hasor.utils.supplier.ContextClassLoaderLocal;
 import net.hasor.utils.convert.convert.*;
+import net.hasor.utils.supplier.ContextClassLoaderLocal;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -64,8 +64,7 @@ import java.util.Collection;
  * conversion errors, you could do this:</p>
  * <pre>
  *   // No-args constructor gets the version that throws exceptions
- *   Converter myConverter =
- *    new org.more.convert.convert.IntegerConverter();
+ *   Converter myConverter = new net.hasor.utils.convert.convert.IntegerConverter();
  *   ConverterUtils.register(myConverter, Integer.TYPE);    // Native type
  *   ConverterUtils.register(myConverter, Integer.class);   // Wrapper class
  * </pre>
@@ -103,8 +102,8 @@ import java.util.Collection;
  * @since 1.7
  */
 public class ConverterBean {
-    private static final Integer                              ZERO                 = new Integer(0);
-    private static final Character                            SPACE                = new Character(' ');
+    private static final Integer                              ZERO                 = 0;
+    private static final Character                            SPACE                = ' ';
     /** Contains <code>ConverterBean</code> instances indexed by context classloader. */
     private static final ConverterBeanContextClassLoaderLocal BEANS_BY_CLASSLOADER = new ConverterBeanContextClassLoaderLocal();
 
@@ -508,7 +507,7 @@ public class ConverterBean {
             return this.lookup(targetType);
         }
         Converter converter = null;
-        // Convert --> String 
+        // Convert --> String
         if (targetType == String.class) {
             converter = this.lookup(sourceType);
             if (converter == null && (sourceType.isArray() || Collection.class.isAssignableFrom(sourceType))) {
@@ -519,7 +518,7 @@ public class ConverterBean {
             }
             return converter;
         }
-        // Convert --> String array 
+        // Convert --> String array
         if (targetType == String[].class) {
             if (sourceType.isArray() || Collection.class.isAssignableFrom(sourceType)) {
                 converter = this.lookup(sourceType);

@@ -42,7 +42,6 @@ import net.hasor.utils.convert.Converter;
  * @version $Revision: 690380 $ $Date: 2008-08-29 21:04:38 +0100 (Fri, 29 Aug 2008) $
  * @since 1.3
  */
-@SuppressWarnings({ "rawtypes" })
 public final class StringConverter extends AbstractConverter {
     /**
      * Construct a <b>java.lang.String</b> <i>Converter</i> that throws a <code>ConversionException</code> if an error occurs.
@@ -65,7 +64,7 @@ public final class StringConverter extends AbstractConverter {
      * @since 1.8.0
      */
     @Override
-    protected Class getDefaultType() {
+    protected Class<?> getDefaultType() {
         return String.class;
     }
 
@@ -78,7 +77,7 @@ public final class StringConverter extends AbstractConverter {
      * @since 1.8.0
      */
     @Override
-    protected Object convertToType(final Class type, final Object value) throws Throwable {
+    protected Object convertToType(final Class<?> type, final Object value) throws Throwable {
         return value.toString();
     }
 }

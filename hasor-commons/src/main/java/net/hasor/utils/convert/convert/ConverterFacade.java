@@ -29,7 +29,6 @@ import net.hasor.utils.convert.Converter;
  * @version $Revision: 552084 $ $Date: 2007-06-30 04:04:13 +0100 (Sat, 30 Jun 2007) $
  * @since 1.8.0
  */
-@SuppressWarnings({ "rawtypes" })
 public final class ConverterFacade implements Converter {
     private final Converter converter;
 
@@ -56,7 +55,7 @@ public final class ConverterFacade implements Converter {
      * @return The converted value.
      */
     @Override
-    public Object convert(final Class type, final Object value) {
+    public Object convert(final Class<?> type, final Object value) {
         return this.converter.convert(type, value);
     }
 

@@ -20,7 +20,6 @@ package net.hasor.utils.convert.convert;
  * @version : 2013-8-13
  * @author 赵永春 (zyc@hasor.net)
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public final class EnumConverter extends AbstractConverter {
     public EnumConverter() {
         super();
@@ -31,18 +30,18 @@ public final class EnumConverter extends AbstractConverter {
     }
 
     @Override
-    protected Class getDefaultType() {
+    protected Class<?> getDefaultType() {
         return Enum.class;
     }
 
     @Override
-    protected Object convertToType(final Class type, final Object value) throws Throwable {
-        Class<Enum> forEnum = type;
+    protected Object convertToType(final Class<?> type, final Object value) throws Throwable {
+        Class<Enum<?>> forEnum = (Class<Enum<?>>) type;
         String strValue = value.toString();
         //
         for (Enum<?> item : forEnum.getEnumConstants()) {
             String enumValue = item.name().toLowerCase();
-            if (enumValue.equals(strValue.toLowerCase()) == true) {
+            if (enumValue.equals(strValue.toLowerCase())) {
                 return item;
             }
         }
