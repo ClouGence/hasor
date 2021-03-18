@@ -15,8 +15,8 @@
  */
 package net.hasor.test.db.dialect;
 import net.hasor.core.exts.aop.Aop;
-import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.lambda.dialect.BoundSql;
+import net.hasor.db.lambda.dialect.SqlDialect;
 
 import java.sql.JDBCType;
 

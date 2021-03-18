@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.lambda;
-import net.hasor.db.dialect.BatchBoundSql;
-import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.SqlDialect;
-import net.hasor.db.dialect.provider.MySqlDialect;
+package net.hasor.db.lambda;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.lambda.dialect.BatchBoundSql;
+import net.hasor.db.lambda.dialect.BoundSql;
+import net.hasor.db.lambda.dialect.SqlDialect;
+import net.hasor.db.lambda.dialect.provider.MySqlDialect;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.dto.TB_User;
 import net.hasor.test.db.dto.TbUser;
+import net.hasor.test.db.dto.TbUserShadow;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -440,10 +441,25 @@ public class QueryBuilderTest extends AbstractDbTest {
         SqlDialect dialect = new MySqlDialect();
         BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
         assert boundSql1 instanceof BatchBoundSql;
-        assert boundSql1.getSqlString().equals("insert into TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) values ( ?,?,?,?,?,?,? )");
+        assert boundSql1.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
         //
         BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
         assert boundSql2 instanceof BatchBoundSql;
-        assert boundSql2.getSqlString().equals("insert into `TB_User` ( `userUUID` , `name` , `loginName` , `loginPassword` , `email` , `index` , `registerTime` ) values ( ?,?,?,?,?,?,? )");
+        assert boundSql2.getSqlString().equals("INSERT INTO `TB_User` ( `userUUID` , `name` , `loginName` , `loginPassword` , `email` , `index` , `registerTime` ) VALUES ( ?,?,?,?,?,?,? )");
+    }
+
+    @Test
+    public void queryBuilder10() {
+        LambdaOperations.LambdaInsert<TbUserShadow> lambdaInsert = new JdbcTemplate().lambdaInsert(TbUserShadow.class);
+        lambdaInsert.applyQueryAsInsert(new JdbcTemplate().lambdaQuery(TB_User.class).eq(TB_User::getIndex, 123));
+        //
+        SqlDialect dialect = new MySqlDialect();
+        BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
+        assert !(boundSql1 instanceof BatchBoundSql);
+        assert boundSql1.getSqlString().equals("INSERT INTO tb_user_shadow ( userUUID , name , loginName , loginPassword , email , index , registerTime )  SELECT * FROM TB_User WHERE index = ?");
+        //
+        BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
+        assert !(boundSql2 instanceof BatchBoundSql);
+        assert boundSql2.getSqlString().equals("INSERT INTO `tb_user_shadow` ( `userUUID` , `name` , `loginName` , `loginPassword` , `email` , `index` , `registerTime` )  SELECT * FROM `TB_User` WHERE `index` = ?");
     }
 }

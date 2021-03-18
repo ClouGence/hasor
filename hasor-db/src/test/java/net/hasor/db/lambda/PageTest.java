@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.lambda;
+package net.hasor.db.lambda;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.JdbcUtils;
-import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.SqlDialectRegister;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.lambda.dialect.BoundSql;
+import net.hasor.db.lambda.dialect.SqlDialectRegister;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TB_User;

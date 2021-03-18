@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.test.db.dto;
-import net.hasor.db.lambda.mapping.Field;
 import net.hasor.db.lambda.mapping.Table;
 
 import java.util.Date;
@@ -24,29 +23,22 @@ import java.util.Date;
  * @version : 2013-12-10
  * @author 赵永春 (zyc@hasor.net)
  */
-@Table("tb_user")
-public class TbUser {
-    @Field("userUUID")
-    private String uid;
-    @Field()
+@Table("tb_user_shadow")
+public class TbUserShadow {
+    private String userUUID;
     private String name;
-    @Field("loginName")
-    private String account;
-    @Field("loginPassword")
-    private String password;
-    @Field("email")
-    private String mail;
-    @Field()
+    private String loginName;
+    private String loginPassword;
+    private String email;
     private int    index;
-    @Field("registerTime")
-    private Date   createTime;
+    private Date   registerTime;
 
-    public String getUid() {
-        return uid;
+    public String getUserUUID() {
+        return userUUID;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setUserUUID(String userUUID) {
+        this.userUUID = userUUID;
     }
 
     public String getName() {
@@ -57,28 +49,28 @@ public class TbUser {
         this.name = name;
     }
 
-    public String getAccount() {
-        return account;
+    public String getLoginName() {
+        return loginName;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
     }
 
-    public String getPassword() {
-        return password;
+    public String getLoginPassword() {
+        return loginPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setLoginPassword(String loginPassword) {
+        this.loginPassword = loginPassword;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public int getIndex() {
@@ -89,11 +81,11 @@ public class TbUser {
         this.index = index;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public Date getRegisterTime() {
+        return registerTime;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setRegisterTime(Date registerTime) {
+        this.registerTime = registerTime;
     }
 }

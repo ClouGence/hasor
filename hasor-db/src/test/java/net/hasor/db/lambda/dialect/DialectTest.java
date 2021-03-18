@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.dialect;
+package net.hasor.db.lambda.dialect;
 import net.hasor.db.JdbcUtils;
-import net.hasor.db.dialect.provider.Oracle12cDialect;
-import net.hasor.db.dialect.provider.SqlServer2005Dialect;
+import net.hasor.db.lambda.dialect.provider.Oracle12cDialect;
+import net.hasor.db.lambda.dialect.provider.SqlServer2005Dialect;
 import net.hasor.test.db.AbstractDbTest;
 import org.junit.Test;
 

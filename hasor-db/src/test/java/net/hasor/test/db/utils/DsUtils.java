@@ -87,6 +87,8 @@ public class DsUtils {
     }
 
     public static Connection localOracle() throws SQLException {
-        return DriverManager.getConnection(ORACLE_JDBC_URL, "sys as sysdba", "oracle");
+        Connection connection = DriverManager.getConnection(ORACLE_JDBC_URL, "sys as sysdba", "oracle");
+        connection.createStatement().execute("alter session set current_schema = SCOTT");
+        return connection;
     }
 }
