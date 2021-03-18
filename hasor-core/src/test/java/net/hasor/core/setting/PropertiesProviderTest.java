@@ -39,8 +39,8 @@ public class PropertiesProviderTest {
         reader.readSetting(classLoader, configSource, settings);
         //
         assert settings.getString("mySelf.myName").equals("赵永春");
-        assert settings.getString("myself.myname").equals("赵永春");
-        assert settings.getInteger("myself.myage") == 12;
+        assert settings.getString("myself.myname") == null;
+        assert settings.getInteger("mySelf.myAge") == 12;
         assert settings.getString("mySelf.myBirthday").equals("1986-01-01 00:00:00");
         assert settings.getString("mySelf.myWork").equals("Software Engineer");
         assert settings.getString("mySelf.myProjectURL").equals("http://www.hasor.net/");

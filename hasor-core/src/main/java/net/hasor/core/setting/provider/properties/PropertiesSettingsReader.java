@@ -64,7 +64,7 @@ public class PropertiesSettingsReader implements SettingsReader {
 
     protected void loadProperties(Settings readTo, Properties properties) {
         properties.forEach((k, v) -> {
-            readTo.addSetting(k.toString().toLowerCase(), v, Settings.DefaultNameSpace);
+            readTo.addSetting(k.toString(), v, Settings.DefaultNameSpace);
         });
     }
 }

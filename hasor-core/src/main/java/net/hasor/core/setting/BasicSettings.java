@@ -94,7 +94,7 @@ public class BasicSettings implements Settings {
         if (StringUtils.isBlank(key)) {
             throw new IllegalArgumentException("namespace or key is blank.");
         }
-        String lowerCaseKey = key.trim().toLowerCase();
+        String lowerCaseKey = key.trim();
         for (TreeNode treeNode : this.allSettingValue().values()) {
             treeNode.findClear(lowerCaseKey);
         }
@@ -107,7 +107,7 @@ public class BasicSettings implements Settings {
         }
         TreeNode treeNode = this.allSettingValue().get(namespace);
         if (treeNode != null) {
-            treeNode.findClear(key.trim().toLowerCase());
+            treeNode.findClear(key.trim());
         }
     }
 
@@ -136,16 +136,16 @@ public class BasicSettings implements Settings {
             if (isNsView()) {
                 throw new IllegalStateException("namespace view mode, cannot be added new namespace.");
             }
-            dataNode = new TreeNode(namespace, "");
+            dataNode = new TreeNode("", namespace);
             treeNodeMap.put(namespace, dataNode);
         }
         //
         if (value instanceof SettingNode) {
             SettingNode node = (SettingNode) value;
-            dataNode.setNode(key.trim().toLowerCase(), node);
+            dataNode.setNode(key.trim(), node);
         } else {
             String valueStr = (value == null) ? null : value.toString();
-            dataNode.setValue(key.trim().toLowerCase(), valueStr);
+            dataNode.setValue(key.trim(), valueStr);
         }
     }
 
@@ -166,16 +166,16 @@ public class BasicSettings implements Settings {
             if (isNsView()) {
                 throw new IllegalStateException("namespace view mode, cannot be added new namespace.");
             }
-            dataNode = new TreeNode(namespace, "");
+            dataNode = new TreeNode("", namespace);
             treeNodeMap.put(namespace, dataNode);
         }
         //
         if (value instanceof SettingNode) {
             SettingNode node = (SettingNode) value;
-            dataNode.addNode(key.trim().toLowerCase(), node);
+            dataNode.addNode(key.trim(), node);
         } else {
             String valueStr = (value == null) ? null : value.toString();
-            dataNode.addValue(key.trim().toLowerCase(), valueStr);
+            dataNode.addValue(key.trim(), valueStr);
         }
     }
 
@@ -193,7 +193,7 @@ public class BasicSettings implements Settings {
         }
         //
         List<SettingNode> dataNodeList = new ArrayList<>();
-        String lowerCase = name.trim().toLowerCase();
+        String lowerCase = name.trim();
         for (TreeNode dataNode : this.allSettingValue().values()) {
             List<SettingNode> treeNodeList = dataNode.findNodes(lowerCase);
             if (treeNodeList != null) {

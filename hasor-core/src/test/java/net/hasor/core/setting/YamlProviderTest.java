@@ -39,8 +39,31 @@ public class YamlProviderTest {
         reader.readSetting(classLoader, configSource, settings);
         //
         assert settings.getString("mySelf.myName").equals("赵永春");
-        assert settings.getString("myself.myname").equals("赵永春");
-        assert settings.getInteger("myself.myage") == 12;
+        assert settings.getString("myself.myname") == null;
+        assert settings.getInteger("mySelf.myAge") == 12;
+        assert settings.getString("mySelf.myBirthday").equals("1986-01-01 00:00:00");
+        assert settings.getString("mySelf.myWork").equals("Software Engineer");
+        assert settings.getString("mySelf.myProjectURL").equals("http://www.hasor.net/");
+        assert settings.getString("mySelf.source").equals("Yaml");
+        //
+        assert settings.getString("arrays").equals("b");
+        assert settings.getStringArray("arrays")[0].equals("a");
+        assert settings.getStringArray("arrays")[1].equals("b");
+    }
+
+    @Test
+    public void yamlTest_2() throws IOException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        URL conf = ResourcesUtils.getResource("/net_hasor_core_settings/simple2-config.yaml");
+        ConfigSource configSource = new ConfigSource(StreamType.Yaml, conf);
+        //
+        YamlSettingsReader reader = new YamlSettingsReader();
+        BasicSettings settings = new BasicSettings();
+        reader.readSetting(classLoader, configSource, settings);
+        //
+        assert settings.getString("mySelf.myName").equals("赵永春");
+        assert settings.getString("myself.myname") == null;
+        assert settings.getInteger("mySelf.myAge") == 12;
         assert settings.getString("mySelf.myBirthday").equals("1986-01-01 00:00:00");
         assert settings.getString("mySelf.myWork").equals("Software Engineer");
         assert settings.getString("mySelf.myProjectURL").equals("http://www.hasor.net/");

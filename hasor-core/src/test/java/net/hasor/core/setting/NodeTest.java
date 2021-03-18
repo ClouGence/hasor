@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class NodeTest {
     @Test
     public void treeNode_01() {
-        TreeNode treeNode = new TreeNode("DDDD", "");
+        TreeNode treeNode = new TreeNode("", "DDDD");
         //
         treeNode.addValue("settings.abc", "123");
         assert treeNode.getSubNode("settings").getSubNode("abc").getValue().equals("123");
@@ -239,7 +239,7 @@ public class NodeTest {
     @Test
     public void treeNode_10() {
         TreeNode treeNode = new TreeNode();
-        treeNode.newSubNode("a").addValue("1");
+        treeNode.newNode("a").addValue("1");
         treeNode.addValue("a", "2");
         //
         treeNode.addSubNode(new TreeNode("a"), true).addValue("3");
@@ -364,16 +364,16 @@ public class NodeTest {
     @Test
     public void treeNode_17() {
         TreeNode conf = new TreeNode();
-        conf.newSubNode("a").setValue("1");
-        conf.newSubNode("b").setValue("2");
+        conf.newNode("a").setValue("1");
+        conf.newNode("b").setValue("2");
         //
-        TreeNode abcNode1 = conf.newSubNode("abc");
-        abcNode1.newSubNode("a").setValue("3");
-        abcNode1.newSubNode("a").setValue("4");
+        TreeNode abcNode1 = conf.newNode("abc");
+        abcNode1.newNode("a").setValue("3");
+        abcNode1.newNode("a").setValue("4");
         //
-        TreeNode abcNode2 = conf.newSubNode("abc");
-        abcNode2.newSubNode("a").setValue("5");
-        abcNode2.newSubNode("a").setValue("6");
+        TreeNode abcNode2 = conf.newNode("abc");
+        abcNode2.newNode("a").setValue("5");
+        abcNode2.newNode("a").setValue("6");
         //
         assert conf.getSubKeys().length == 3;
         //
@@ -388,32 +388,32 @@ public class NodeTest {
         TreeNode conf = new TreeNode();
         assert conf.toString().equals("TreeNode{space='', name='', value=null, dataSize=0, subKeysSize=0, subSize=0}");
         //
-        conf.newSubNode("a").setValue("1");
+        conf.newNode("a").setValue("1");
         assert conf.toString().equals("TreeNode{space='', name='', value=null, dataSize=0, subKeysSize=1, subSize=1}");
-        conf.newSubNode("b").setValue("2");
+        conf.newNode("b").setValue("2");
         assert conf.toString().equals("TreeNode{space='', name='', value=null, dataSize=0, subKeysSize=2, subSize=2}");
         //
-        TreeNode abcNode1 = conf.newSubNode("abc");
+        TreeNode abcNode1 = conf.newNode("abc");
         assert conf.toString().equals("TreeNode{space='', name='', value=null, dataSize=0, subKeysSize=3, subSize=3}");
-        abcNode1.newSubNode("a").setValue("3");
-        abcNode1.newSubNode("a").setValue("4");
+        abcNode1.newNode("a").setValue("3");
+        abcNode1.newNode("a").setValue("4");
         assert conf.toString().equals("TreeNode{space='', name='', value=null, dataSize=0, subKeysSize=3, subSize=3}");
         //
-        conf.newSubNode("b").setValue("5");
+        conf.newNode("b").setValue("5");
         assert conf.toString().equals("TreeNode{space='', name='', value=null, dataSize=0, subKeysSize=3, subSize=3}");
     }
 
     @Test
     public void treeNode_19() {
         TreeNode conf = new TreeNode();
-        conf.newSubNode("a").setValue("1");
-        conf.newSubNode("b").setValue("2");
-        TreeNode abcNode1 = conf.newSubNode("abc");
-        abcNode1.newSubNode("a").setValue("3");
-        abcNode1.newSubNode("a").setValue("4");
-        TreeNode abcNode2 = conf.newSubNode("abc");
-        abcNode2.newSubNode("a").setValue("5");
-        abcNode2.newSubNode("a").setValue("6");
+        conf.newNode("a").setValue("1");
+        conf.newNode("b").setValue("2");
+        TreeNode abcNode1 = conf.newNode("abc");
+        abcNode1.newNode("a").setValue("3");
+        abcNode1.newNode("a").setValue("4");
+        TreeNode abcNode2 = conf.newNode("abc");
+        abcNode2.newNode("a").setValue("5");
+        abcNode2.newNode("a").setValue("6");
         //
         Map<String, String> toMap = conf.toMap();
         assert toMap.size() == 3;
@@ -437,14 +437,14 @@ public class NodeTest {
     @Test
     public void treeNode_20() {
         TreeNode conf = new TreeNode();
-        conf.newSubNode("a").setValue("1");
-        conf.newSubNode("b").setValue("2");
-        TreeNode abcNode1 = conf.newSubNode("abc");
-        abcNode1.newSubNode("a").setValue("3");
-        abcNode1.newSubNode("a").setValue("4");
-        TreeNode abcNode2 = conf.newSubNode("abc");
-        abcNode2.newSubNode("a").setValue("5");
-        abcNode2.newSubNode("a").setValue("6");
+        conf.newNode("a").setValue("1");
+        conf.newNode("b").setValue("2");
+        TreeNode abcNode1 = conf.newNode("abc");
+        abcNode1.newNode("a").setValue("3");
+        abcNode1.newNode("a").setValue("4");
+        TreeNode abcNode2 = conf.newNode("abc");
+        abcNode2.newNode("a").setValue("5");
+        abcNode2.newNode("a").setValue("6");
         //
         conf.update((dataNode, context) -> {
             if (dataNode.getValues().length > 0) {
@@ -474,8 +474,8 @@ public class NodeTest {
     @Test
     public void treeNode_21() {
         TreeNode conf = new TreeNode();
-        conf.newSubNode("a").setValue("1");
-        conf.newSubNode("b").setValue("2");
+        conf.newNode("a").setValue("1");
+        conf.newNode("b").setValue("2");
         //
         conf.update((dataNode, context) -> {
             String[] values = dataNode.getValues();
@@ -488,5 +488,19 @@ public class NodeTest {
         assert toMap.size() == 2;
         assert toMap.get("a").equals("aac");
         assert toMap.get("b").equals("aac");
+    }
+
+    @Test
+    public void treeNode_22() {
+        TreeNode treeNode = new TreeNode("", "DDDD");
+        //
+        treeNode.addValue("settings.abc", "123");
+        assert treeNode.getSubNode("settings").getSubNode("abc").getValue().equals("123");
+        assert treeNode.getFullName().equals("");
+        assert treeNode.getSubNode("settings").getFullName().equals("settings");
+        assert treeNode.getSubNode("settings").getSubNode("abc").getFullName().equals("settings.abc");
+        assert treeNode.findNode("settings.abc").getValue().equals("123");
+        assert treeNode.getSubNode("settings").getParent() == treeNode;
+        assert treeNode.getSpace().equals("DDDD");
     }
 }

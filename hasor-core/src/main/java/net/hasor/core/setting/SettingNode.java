@@ -72,9 +72,9 @@ public interface SettingNode {
     /** @return 获取属性集合 */
     public SettingNode[] getSubNodes();
 
-    public SettingNode newSubNode(String elementName);
+    public SettingNode newNode(String elementName);
 
-    public SettingNode newNode(String configKey);
+    public SettingNode newLast(String configKey);
 
     public void clearSub();
 
@@ -93,6 +93,8 @@ public interface SettingNode {
     public void addValue(String configKey, String value);
 
     public SettingNode findNode(String configKey);
+
+    public SettingNode findOrNew(String configKey);
 
     public List<SettingNode> findNodes(String configKey);
 

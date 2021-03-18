@@ -43,7 +43,7 @@ class SaxXmlParser extends DefaultHandler {
     private TreeNode getRoot(String uri) {
         TreeNode treeNode = this.root.get(uri);
         if (treeNode == null) {
-            treeNode = new TreeNode(uri, "");
+            treeNode = new TreeNode("", uri);
             this.root.put(uri, treeNode);
         }
         return treeNode;
@@ -73,7 +73,7 @@ class SaxXmlParser extends DefaultHandler {
         if (curNode == null) {
             return this.pushNode(uri, this.getRoot(uri));
         } else {
-            TreeNode newSubNode = curNode.newNode(localName.trim().toLowerCase());
+            TreeNode newSubNode = curNode.newLast(localName.trim());
             return pushNode(uri, newSubNode);
         }
     }
@@ -86,7 +86,7 @@ class SaxXmlParser extends DefaultHandler {
             if (StringUtils.isBlank(attName)) {
                 continue;
             }
-            treeNode.addValue(attName.trim().toLowerCase(), attValue);
+            treeNode.addValue(attName.trim(), attValue);
         }
         this.curXmlns = uri;
     }

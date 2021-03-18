@@ -53,7 +53,7 @@ public class TreeNode implements SettingNode {
         this.name = name == null ? "" : name.trim();
     }
 
-    public TreeNode(String space, String name) {
+    public TreeNode(String name, String space) {
         this.parent = null;
         this.space = space == null ? "" : space.trim();
         this.name = name == null ? "" : name.trim();
@@ -175,26 +175,18 @@ public class TreeNode implements SettingNode {
         return treeNodes.toArray(EMPTY);
     }
 
-    public TreeNode newSubNode(String elementName) {
-        return newSubNode(elementName, false);
+    public TreeNode newNode(String elementName) {
+        return newNode(elementName, false);
     }
 
-    public TreeNode newNode(String configKey) {
-        int lastIndexOf = configKey.lastIndexOf(".");
-        if (lastIndexOf == -1) {
-            return newSubNode(configKey);
-        } else {
-            String parentConfigKey = configKey.substring(0, lastIndexOf);
-            String lastConfigKey = configKey.substring(lastIndexOf + 1);
-            TreeNode treeNode = mkAndGet(parentConfigKey.split("\\."), 0);
-            return treeNode.newSubNode(lastConfigKey);
-        }
-    }
-
-    public TreeNode newSubNode(String elementName, boolean setDefault) {
+    public TreeNode newNode(String elementName, boolean setDefault) {
         if (StringUtils.isBlank(elementName)) {
             throw new IllegalArgumentException("elementName must not blank.");
         }
+        if (elementName.contains(".")) {
+            throw new IllegalArgumentException("elementName contains symbol '.'");
+        }
+        //
         boolean isInit = false;
         TreeNode treeNode = new TreeNode(this, elementName);
         List<TreeNode> nodeList = this.subList.get(elementName);
@@ -216,6 +208,18 @@ public class TreeNode implements SettingNode {
         return treeNode;
     }
 
+    public TreeNode newLast(String configKey) {
+        int lastIndexOf = configKey.lastIndexOf(".");
+        if (lastIndexOf == -1) {
+            return newNode(configKey);
+        } else {
+            String parentConfigKey = configKey.substring(0, lastIndexOf);
+            String lastConfigKey = configKey.substring(lastIndexOf + 1);
+            TreeNode treeNode = mkAndGet(parentConfigKey.split("\\."), 0);
+            return treeNode.newNode(lastConfigKey);
+        }
+    }
+
     public SettingNode addSubNode(SettingNode treeNode) {
         return addSubNode(treeNode.getName(), treeNode, false);
     }
@@ -232,18 +236,9 @@ public class TreeNode implements SettingNode {
         if (StringUtils.isBlank(elementName)) {
             throw new IllegalArgumentException("elementName must not blank.");
         }
-        SettingNode treeNode = this.newSubNode(elementName, setDefault);
+        SettingNode treeNode = this.newNode(elementName, setDefault);
         appendNode(target, treeNode);
         return treeNode;
-    }
-
-    public SettingNode getOrNewSubNode(String elementName) {
-        SettingNode[] subNodes = this.getSubNodes(elementName);
-        if (subNodes == null || subNodes.length == 0) {
-            return this.newSubNode(elementName, true);
-        } else {
-            return this.getSubNode(elementName);
-        }
     }
 
     private void appendNode(SettingNode src, SettingNode dest) {
@@ -284,23 +279,23 @@ public class TreeNode implements SettingNode {
         }
         TreeNode tn = null;
         if ((tn = this.getSubNode(keyPath[index])) == null) {
-            TreeNode treeNode = this.newSubNode(keyPath[index], true);
+            TreeNode treeNode = this.newNode(keyPath[index], true);
             return treeNode.mkAndGet(keyPath, index + 1);
         } else {
             return tn.mkAndGet(keyPath, index + 1);
         }
     }
-
     // ------------------------------------------------------------------------
-    public TreeNode findOrCreateNode(String configKey) {
-        return mkAndGet(configKey.split("\\."), 0);
-    }
 
     public TreeNode findNode(String configKey) {
         if (configKey.equals(".") || configKey.equals("")) {
             return this;
         }
         return findNode(configKey.split("\\."), 0);
+    }
+
+    public TreeNode findOrNew(String configKey) {
+        return mkAndGet(configKey.split("\\."), 0);
     }
 
     private TreeNode findNode(String[] keyPath, int index) {

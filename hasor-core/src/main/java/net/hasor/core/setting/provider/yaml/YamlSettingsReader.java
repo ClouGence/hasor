@@ -69,7 +69,7 @@ public class YamlSettingsReader implements SettingsReader {
         }
         //
         String namespace = Settings.DefaultNameSpace;
-        TreeNode treeNode = new TreeNode(namespace, "");
+        TreeNode treeNode = new TreeNode("", namespace);
         loadYaml(treeNode, yamlConfig);
         for (SettingNode node : treeNode.getSubNodes()) {
             readTo.addSetting(node.getName(), node, namespace);
@@ -83,7 +83,7 @@ public class YamlSettingsReader implements SettingsReader {
         //
         if (yamlConfig instanceof Map) {
             ((Map<?, ?>) yamlConfig).forEach((BiConsumer<Object, Object>) (key, value) -> {
-                TreeNode treeNode = parentNode.newNode(key.toString().trim().toLowerCase());
+                TreeNode treeNode = parentNode.newLast(key.toString().trim());
                 loadYaml(treeNode, value);
             });
         } else if (yamlConfig instanceof List) {
