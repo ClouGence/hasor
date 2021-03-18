@@ -140,15 +140,15 @@ public class AbstractTest {
     }
 
     private SettingNode defaultInvokerCreaterSetXmlNode(LoadModule... modules) {
-        TreeNode xmlNode = new TreeNode(null, "invokerCreatorSet");
+        TreeNode xmlNode = new TreeNode("invokerCreatorSet");
         List<LoadModule> moduleSet = Arrays.asList(modules);
         if (moduleSet.contains(LoadModule.Valid)) {
-            TreeNode validInvoker = xmlNode.newSubNode("invokerCreator");
+            TreeNode validInvoker = xmlNode.newNode("invokerCreator");
             validInvoker.setValue("type", "net.hasor.web.valid.ValidInvoker");
             validInvoker.setValue("net.hasor.web.valid.ValidInvokerCreator");
         }
         if (moduleSet.contains(LoadModule.Render)) {
-            TreeNode renderInvoker = xmlNode.newSubNode("invokerCreator");
+            TreeNode renderInvoker = xmlNode.newNode("invokerCreator");
             renderInvoker.setValue("type", "net.hasor.web.render.RenderInvoker");
             renderInvoker.setValue("net.hasor.web.render.RenderInvokerCreator");
         }
@@ -156,10 +156,10 @@ public class AbstractTest {
     }
 
     private SettingNode defaultInnerApiBinderSetXmlNode(LoadModule... modules) {
-        TreeNode xmlNode = new TreeNode(null, "innerApiBinderSet");
+        TreeNode xmlNode = new TreeNode("innerApiBinderSet");
         List<LoadModule> moduleSet = Arrays.asList(modules);
         if (moduleSet.contains(LoadModule.Web)) {
-            TreeNode webBinder = xmlNode.newSubNode("binder");
+            TreeNode webBinder = xmlNode.newNode("binder");
             webBinder.setValue("type", "net.hasor.web.WebApiBinder");
             webBinder.setValue("net.hasor.web.binder.InvokerWebApiBinderCreator");
         }
