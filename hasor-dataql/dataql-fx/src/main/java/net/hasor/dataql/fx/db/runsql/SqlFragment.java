@@ -26,15 +26,17 @@ import net.hasor.dataql.fx.db.FxSqlCheckChainSpi;
 import net.hasor.dataql.fx.db.FxSqlCheckChainSpi.FxSqlInfo;
 import net.hasor.dataql.fx.db.LookupConnectionListener;
 import net.hasor.dataql.fx.db.LookupDataSourceListener;
-import net.hasor.dataql.fx.db.fxquery.DefaultFxQuery;
-import net.hasor.dataql.fx.db.fxquery.FxQuery;
-import net.hasor.dataql.fx.db.runsql.dialect.SqlPageDialect;
 import net.hasor.db.JdbcUtils;
+import net.hasor.db.dal.fxquery.DefaultFxQuery;
+import net.hasor.db.dal.fxquery.FxQuery;
 import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.core.ArgPreparedStatementSetter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
+import net.hasor.db.lambda.dialect.BoundSql;
+import net.hasor.db.lambda.dialect.SqlDialect;
+import net.hasor.db.lambda.dialect.SqlDialectRegister;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
 
@@ -74,11 +76,16 @@ public class SqlFragment implements FragmentProcess {
     /** SqlMode 目前只会在 '批量' 和 '分页' 两个场景下才参与判断。 */
     public static enum SqlMode {
         /** DML：insert、update、delete、replace、exec */
-        Insert, Update, Delete, Procedure,
+        Insert,
+        Update,
+        Delete,
+        Procedure,
         /** DML：select */
         Query,
         /** DDL：create、drop、alter */
-        Create, Drop, Alter,
+        Create,
+        Drop,
+        Alter,
         /** Other */
         Other,
     }
@@ -226,13 +233,16 @@ public class SqlFragment implements FragmentProcess {
             }
         }
         //
-        final SqlPageDialect pageDialect = SqlPageDialectRegister.findOrCreate(sqlDialect, this.appContext);
+        final SqlDialect pageDialect = SqlDialectRegister.findOrCreate(sqlDialect, this.appContext);
         //        Hints hints,                        // 查询包含的 Hint
         //        FxQuery fxQuery,                    // 查询语句
         //        Map<String, Object> queryParamMap,  // 查询参数
         //        SqlPageDialect pageDialect,         // 分页方言服务
         //        SqlPageQuery pageQuery              // 用于执行分页查询的服务
-        return new SqlPageObject(hints, fxSql, paramMap, pageDialect, this);
+        String sqlQuery = fxSql.buildQueryString(paramMap);
+        Object[] sqlArgs = fxSql.buildParameterSource(paramMap).toArray();
+        BoundSql boundSql = new BoundSql.BoundSqlObj(sqlQuery, sqlArgs);
+        return new SqlPageObject(hints, boundSql, pageDialect, this);
     }
 
     /** 非分页模式 */

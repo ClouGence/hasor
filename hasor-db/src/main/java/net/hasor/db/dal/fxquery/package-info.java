@@ -13,23 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.fx.db.fxquery;
-import java.util.List;
-
 /**
- * Query 文本处理器，兼容 #{...}、${...} 两种写法。
+ * FxSQL Parser
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-03-28
  */
-public interface FxQuery {
-    /** 是否包含替换占位符，如果包含替换占位符那么不能使用批量模式 */
-    public boolean isHavePlaceholder();
-
-    public String buildQueryString(Object context);
-
-    public List<Object> buildParameterSource(Object context);
-
-    public <T> T attach(Class<? extends T> attach, T attachValue);
-
-    public <T> T attach(Class<? extends T> attach);
-}
+package net.hasor.db.dal.fxquery;

@@ -71,25 +71,7 @@ public class OracleDialect implements SqlDialect, InsertSqlDialect {
         String qualifier = useQualifier ? "\"" : "";
         return qualifier + fmtString + qualifier;
     }
-
-    @Override
-    public boolean supportInsertInto() {
-        return true;
-    }
-
-    @Override
-    public String insertWithInto(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields) {
-        // insert into t(id, name) values (?, ?);
-        int fieldCount = insertFields.size();
-        String allColumns = insertFields.stream().map(fieldInfo -> {
-            return columnName(useQualifier, category, tableName, fieldInfo.getColumnName(), fieldInfo.getJdbcType(), fieldInfo.getJavaType());
-        }).reduce((s1, s2) -> {
-            return s1 + "." + s2;
-        }).orElse("");
-        //
-        return "INSERT INTO " + tableName(useQualifier, category, tableName) + "(" + allColumns + ") VALUES (" + StringUtils.repeat(",?", fieldCount).substring(1) + ")";
-    }
-
+ 
     @Override
     public boolean supportInsertIgnore() {
         return true;

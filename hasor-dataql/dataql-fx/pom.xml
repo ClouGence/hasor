@@ -23,64 +23,9 @@
         </developer>
     </developers>
 
-
     <properties>
         <antlr4.visitor>true</antlr4.visitor>
     </properties>
-
-    <build>
-        <plugins>
-            <!-- 把 javassist、ognl 的源码和 class 集成到 hasor-dataql-fx 项目 中 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createSourcesJar>true</createSourcesJar>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <minimizeJar>true</minimizeJar>
-                            <artifactSet>
-                                <includes>
-                                    <include>ognl:ognl</include>
-                                    <include>org.javassist:javassist</include>
-                                    <include>com.github.jsqlparser:jsqlparser</include>
-                                    <include>net.hasor:hasor-dataql-fx</include>
-                                </includes>
-                            </artifactSet>
-                            <relocations>
-                                <relocation>
-                                    <pattern>ognl</pattern>
-                                    <shadedPattern>net.hasor.dataql.fx.db.ognl</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>javassist</pattern>
-                                    <shadedPattern>net.hasor.dataql.fx.db.javassist</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>net.sf.jsqlparser</pattern>
-                                    <shadedPattern>net.hasor.dataql.fx.db.jsqlparser</shadedPattern>
-                                </relocation>
-                            </relocations>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/MANIFEST.MF</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
     <!-- 引用依赖 -->
     <dependencies>
@@ -98,20 +43,6 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-db</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ognl</groupId>
-            <artifactId>ognl</artifactId>
-            <version>3.2.14</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.github.jsqlparser</groupId>
-            <artifactId>jsqlparser</artifactId>
-            <version>3.1</version>
-            <scope>compile</scope>
-            <optional>true</optional>
         </dependency>
 
         <!-- web -->

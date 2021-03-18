@@ -15,7 +15,7 @@
  */
 package net.hasor.dataql.fx.db.likemybatis;
 import net.hasor.dataql.Hints;
-import net.hasor.dataql.fx.db.fxquery.FxQuery;
+import net.hasor.db.dal.fxquery.FxQuery;
 import net.hasor.dataql.fx.db.runsql.SqlFragment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

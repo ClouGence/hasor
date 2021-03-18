@@ -24,11 +24,6 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface InsertSqlDialect extends SqlDialect {
-    /** 是否支持 insert into */
-    public boolean supportInsertInto();
-
-    public String insertWithInto(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields);
-
     /** 是否支持 insert ignore */
     public boolean supportInsertIgnore();
 

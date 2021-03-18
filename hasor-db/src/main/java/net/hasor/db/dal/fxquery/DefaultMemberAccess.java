@@ -28,7 +28,7 @@
 //  THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 //  DAMAGE.
 //--------------------------------------------------------------------------
-package net.hasor.dataql.fx.db.fxquery;
+package net.hasor.db.dal.fxquery;
 import ognl.MemberAccess;
 
 import java.lang.reflect.AccessibleObject;

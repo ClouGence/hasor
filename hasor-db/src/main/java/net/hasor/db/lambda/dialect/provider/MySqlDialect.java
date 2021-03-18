@@ -66,19 +66,6 @@ public class MySqlDialect implements SqlDialect, InsertSqlDialect {
     }
 
     @Override
-    public boolean supportInsertInto() {
-        return true;
-    }
-
-    @Override
-    public String insertWithInto(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields) {
-        // insert into t(id, name) values (?, ?);
-        String allColumns = buildAllColumns(useQualifier, category, tableName, insertFields);
-        int fieldCount = insertFields.size();
-        return "INSERT INTO " + tableName(useQualifier, category, tableName) + "(" + allColumns + ") VALUES (" + StringUtils.repeat(",?", fieldCount).substring(1) + ")";
-    }
-
-    @Override
     public boolean supportInsertIgnore() {
         return true;
     }
