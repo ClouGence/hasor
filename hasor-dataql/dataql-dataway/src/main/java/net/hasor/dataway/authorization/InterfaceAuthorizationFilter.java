@@ -93,7 +93,9 @@ public class InterfaceAuthorizationFilter implements InvokerFilter {
             return chain.doNext(invoker);
         }
         // .扔一个错误出去
-        this.crossDomainService.configureCross(datawayApi, invoker);
+        if (datawayApi != null) {
+            this.crossDomainService.configureCross(datawayApi, invoker);
+        }
         invoker.getHttpResponse().sendError(401, "No permission.");
         return null;
     }
