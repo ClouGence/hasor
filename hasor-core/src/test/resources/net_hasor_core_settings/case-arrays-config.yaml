@@ -1,0 +1,11 @@
+arrays: [ 'a','b' ]
+
+dsPool:
+  - ds.Config:
+      - dsName: oracle
+        dsConfigType: OracleConfig
+        connConfigType: OracleConnConfig
+      - dsName: mysql
+        dsConfigType: MySqlConfig
+        connConfigType: MySqlConnConfig
+

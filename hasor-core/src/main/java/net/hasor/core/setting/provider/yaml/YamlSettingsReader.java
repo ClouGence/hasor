@@ -31,7 +31,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -59,7 +59,6 @@ public class YamlSettingsReader implements SettingsReader {
                 Object yamlData = new Yaml().load(asStream);
                 loadYaml(readTo, yamlData);
             }
-            return;
         }
     }
 
@@ -69,29 +68,56 @@ public class YamlSettingsReader implements SettingsReader {
         }
         //
         String namespace = Settings.DefaultNameSpace;
-        TreeNode treeNode = new TreeNode("", namespace);
-        loadYaml(treeNode, yamlConfig);
-        for (SettingNode node : treeNode.getSubNodes()) {
+        TreeNode parentNode = new TreeNode("", namespace);
+        //
+        TreeNode loadMap = loadMap((Map<String, Object>) yamlConfig);
+        copyTreeNode(loadMap, parentNode);
+        //
+        for (SettingNode node : parentNode.getSubNodes()) {
             readTo.addSetting(node.getName(), node, namespace);
         }
     }
 
-    protected void loadYaml(TreeNode parentNode, Object yamlConfig) {
-        if (yamlConfig == null) {
-            return;
-        }
-        //
-        if (yamlConfig instanceof Map) {
-            ((Map<?, ?>) yamlConfig).forEach((BiConsumer<Object, Object>) (key, value) -> {
-                TreeNode treeNode = parentNode.newLast(key.toString().trim());
-                loadYaml(treeNode, value);
-            });
-        } else if (yamlConfig instanceof List) {
-            for (Object object : (List) yamlConfig) {
-                loadYaml(parentNode, object);
+    protected List<TreeNode> loadList(List<Object> yamlConfig) {
+        return yamlConfig.stream().map(yamlValue -> {
+            TreeNode treeNode = new TreeNode("");
+            if (yamlValue instanceof List) {
+                throw new UnsupportedOperationException("Unsupported array/array struct.");
+            } else if (yamlValue instanceof Map) {
+                TreeNode loadMap = loadMap((Map<String, Object>) yamlValue);
+                copyTreeNode(loadMap, treeNode);
+            } else if (yamlValue != null) {
+                treeNode.addValue(String.valueOf(yamlValue));
             }
-        } else {
-            parentNode.addValue(yamlConfig.toString());
+            return treeNode;
+        }).collect(Collectors.toList());
+    }
+
+    protected TreeNode loadMap(Map<String, Object> yamlConfig) {
+        TreeNode mapNode = new TreeNode("");
+        yamlConfig.forEach((key, value) -> {
+            if (value instanceof List) {
+                List<TreeNode> treeNodes = loadList((List<Object>) value);
+                for (TreeNode node : treeNodes) {
+                    TreeNode newLast = mapNode.newLast(key);
+                    copyTreeNode(node, newLast);
+                }
+            } else if (value instanceof Map) {
+                TreeNode loadMap = loadMap((Map<String, Object>) value);
+                mapNode.addNode(key, loadMap);
+            } else if (value != null) {
+                mapNode.addValue(key, String.valueOf(value));
+            }
+        });
+        return mapNode;
+    }
+
+    private static void copyTreeNode(TreeNode form, TreeNode to) {
+        for (String subValue : form.getValues()) {
+            to.addValue(subValue);
+        }
+        for (TreeNode subItem : form.getSubNodes()) {
+            to.addSubNode(subItem);
         }
     }
 }

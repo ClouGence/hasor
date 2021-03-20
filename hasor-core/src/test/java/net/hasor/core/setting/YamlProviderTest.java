@@ -54,23 +54,30 @@ public class YamlProviderTest {
     @Test
     public void yamlTest_2() throws IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        URL conf = ResourcesUtils.getResource("/net_hasor_core_settings/simple2-config.yaml");
+        URL conf = ResourcesUtils.getResource("/net_hasor_core_settings/case-arrays-config.yaml");
         ConfigSource configSource = new ConfigSource(StreamType.Yaml, conf);
         //
         YamlSettingsReader reader = new YamlSettingsReader();
         BasicSettings settings = new BasicSettings();
         reader.readSetting(classLoader, configSource, settings);
         //
-        assert settings.getString("mySelf.myName").equals("赵永春");
-        assert settings.getString("myself.myname") == null;
-        assert settings.getInteger("mySelf.myAge") == 12;
-        assert settings.getString("mySelf.myBirthday").equals("1986-01-01 00:00:00");
-        assert settings.getString("mySelf.myWork").equals("Software Engineer");
-        assert settings.getString("mySelf.myProjectURL").equals("http://www.hasor.net/");
-        assert settings.getString("mySelf.source").equals("Yaml");
-        //
         assert settings.getString("arrays").equals("b");
         assert settings.getStringArray("arrays")[0].equals("a");
         assert settings.getStringArray("arrays")[1].equals("b");
+        //
+        assert settings.getNodeArray("dsPool.ds.Config").length == 2;
+        assert settings.getNodeArray("dsPool.ds.Config")[0].getSubNode("dsName").getValue().equals("oracle");
+        assert settings.getNodeArray("dsPool.ds.Config")[0].getSubNode("dsConfigType").getValue().equals("OracleConfig");
+        assert settings.getNodeArray("dsPool.ds.Config")[0].getSubNode("connConfigType").getValue().equals("OracleConnConfig");
+        assert settings.getNodeArray("dsPool.ds.Config")[1].getSubNode("dsName").getValue().equals("mysql");
+        assert settings.getNodeArray("dsPool.ds.Config")[1].getSubNode("dsConfigType").getValue().equals("MySqlConfig");
+        assert settings.getNodeArray("dsPool.ds.Config")[1].getSubNode("connConfigType").getValue().equals("MySqlConnConfig");
+        //
+        assert settings.getStringArray("dsPool.ds.Config.dsName")[0].equals("oracle");
+        assert settings.getStringArray("dsPool.ds.Config.dsName")[1].equals("mysql");
+        assert settings.getStringArray("dsPool.ds.Config.dsConfigType")[0].equals("OracleConfig");
+        assert settings.getStringArray("dsPool.ds.Config.dsConfigType")[1].equals("MySqlConfig");
+        assert settings.getStringArray("dsPool.ds.Config.connConfigType")[0].equals("OracleConnConfig");
+        assert settings.getStringArray("dsPool.ds.Config.connConfigType")[1].equals("MySqlConnConfig");
     }
 }
