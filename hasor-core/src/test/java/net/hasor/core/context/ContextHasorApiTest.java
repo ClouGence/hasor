@@ -141,6 +141,8 @@ public class ContextHasorApiTest {
         assert context.getEnvironment().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Tiny.name());
         assert context.getEnvironment().getVariable("HASOR_LOAD_MODULE").equals("false");
         assert context.getEnvironment().getVariable("HASOR_LOAD_EXTERNALBINDER").equals("false");
+        assert !context.getEnvironment().getSettings().getBoolean("hasor.modules.loadModule");
+        assert !context.getEnvironment().getSettings().getBoolean("hasor.apiBinderSet.loadExternal");
         assert !(context.getInstance(AopBean.class) instanceof DynamicClass);
     }
 
@@ -149,8 +151,8 @@ public class ContextHasorApiTest {
         AppContext context = Hasor.create().asCore().build();
         assert context.getEnvironment().runMode() == Hasor.Level.Core;
         assert context.getEnvironment().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Core.name());
-        assert context.getEnvironment().getVariable("HASOR_LOAD_MODULE").equals("true");
-        assert context.getEnvironment().getVariable("HASOR_LOAD_EXTERNALBINDER").equals("true");
+        assert context.getEnvironment().getSettings().getBoolean("hasor.modules.loadModule");
+        assert context.getEnvironment().getSettings().getBoolean("hasor.apiBinderSet.loadExternal");
         assert context.getInstance(AopBean.class) instanceof DynamicClass;
     }
 
@@ -159,8 +161,8 @@ public class ContextHasorApiTest {
         AppContext context = Hasor.create().asFull().build();
         assert context.getEnvironment().runMode() == Hasor.Level.Full;
         assert context.getEnvironment().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Full.name());
-        assert context.getEnvironment().getVariable("HASOR_LOAD_MODULE").equals("true");
-        assert context.getEnvironment().getVariable("HASOR_LOAD_EXTERNALBINDER").equals("true");
+        assert context.getEnvironment().getSettings().getBoolean("hasor.modules.loadModule");
+        assert context.getEnvironment().getSettings().getBoolean("hasor.apiBinderSet.loadExternal");
         assert context.getInstance(AopBean.class) instanceof DynamicClass;
     }
 
@@ -169,8 +171,8 @@ public class ContextHasorApiTest {
         AppContext context = Hasor.create().build();
         assert context.getEnvironment().runMode() == Hasor.Level.Full;
         assert context.getEnvironment().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Full.name());
-        assert context.getEnvironment().getVariable("HASOR_LOAD_MODULE").equals("true");
-        assert context.getEnvironment().getVariable("HASOR_LOAD_EXTERNALBINDER").equals("true");
+        assert context.getEnvironment().getSettings().getBoolean("hasor.modules.loadModule");
+        assert context.getEnvironment().getSettings().getBoolean("hasor.apiBinderSet.loadExternal");
         assert context.getInstance(AopBean.class) instanceof DynamicClass;
     }
 
