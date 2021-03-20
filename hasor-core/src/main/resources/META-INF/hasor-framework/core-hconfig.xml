@@ -2,24 +2,13 @@
 <config xmlns:root="http://www.hasor.net/sechma/main" xmlns="http://www.hasor.net/sechma/hasor-core">
     <!-- http://www.hasor.net/sechma/main 命名空间默认配置 -->
     <root:config>
-        <root:hasor.loadPackages>${HASOR_LOAD_PACKAGES}</root:hasor.loadPackages>
+        <root:hasor.loadPackages>${HASOR_LOAD_PACKAGES:net.*,org.*,com.*}</root:hasor.loadPackages>
     </root:config>
     <!-- ============================================================================ -->
     <!-- 环境变量定义,如果和(系统环境变量,java环境变量,java属性)冲突那么将会放弃配置文件中配置的环境变量,并同时产生一条警告。 -->
     <hasor.environmentVar>
-        <!-- 默认加载的包 -->
-        <HASOR_LOAD_PACKAGES>net.*,org.*,com.*</HASOR_LOAD_PACKAGES>
-        <!-- 是否加载模块 -->
-        <HASOR_LOAD_MODULE>true</HASOR_LOAD_MODULE>
-        <!-- 是否加载外部apiBinderSet -->
-        <HASOR_LOAD_EXTERNALBINDER>true</HASOR_LOAD_EXTERNALBINDER>
-        <!-- 程序入口模块类名(默认为空) -->
-        <HASOR_LOAD_STARTUP></HASOR_LOAD_STARTUP>
-        <!-- 执行事件的线程池大小 -->
-        <HASOR_LOAD_EVENT_POOL>8</HASOR_LOAD_EVENT_POOL>
         <!-- 工作目录 -->
         <WORK_HOME>%USER.HOME%/hasor-work</WORK_HOME>
-
         <!-- 程序目录（不可配置，框架启动会自动初始化这个值） -->
         <RUN_PATH>./</RUN_PATH>
         <!-- 运行模式（不可配置，框架启动会自动初始化这个值）值范围：smaller、none -->
@@ -31,20 +20,20 @@
         <!-- 包扫描覆盖范围，逗号间隔 -->
         <loadPackages>net.hasor.*</loadPackages>
 
-        <!-- 执行事件的线程池大小 -->
-        <eventThreadPoolSize>${HASOR_LOAD_EVENT_POOL}</eventThreadPoolSize>
+        <!-- 执行事件的线程池大小，默认 8 -->
+        <eventThreadPoolSize>${HASOR_LOAD_EVENT_POOL:8}</eventThreadPoolSize>
 
         <!-- 程序入口模块类名 (由StartupModule插件提供) -->
         <startup>${HASOR_LOAD_STARTUP}</startup>
 
-        <!-- 默认要装载的模块 -->
-        <modules loadModule="${HASOR_LOAD_MODULE}" throwLoadError="true">
+        <!-- 默认要装载的模块，默认 true -->
+        <modules loadModule="${HASOR_LOAD_MODULE:true}" throwLoadError="true">
             <module>net.hasor.core.exts.startup.StartupModule</module>
             <module>net.hasor.core.exts.aop.AopModule</module>
         </modules>
 
         <!-- ApiBinder 扩展（多个 type 可以指定同一个实现类，Hasor 会自动映射到同一个实例对象上），loadExternal 属性可以控制是否加载这些 binder -->
-        <apiBinderSet loadExternal="${HASOR_LOAD_EXTERNALBINDER}">
+        <apiBinderSet loadExternal="${HASOR_LOAD_EXTERNALBINDER:true}">
             <!--<binder type="net.hasor.plugins.data.DataApiBinder">net.hasor.plugins.data.DataApiBinderCreater</binder>-->
         </apiBinderSet>
 

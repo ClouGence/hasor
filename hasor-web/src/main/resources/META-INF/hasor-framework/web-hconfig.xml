@@ -4,21 +4,6 @@
         <!-- 包扫描覆盖范围，逗号间隔 -->
         <loadPackages>net.hasor.web.*</loadPackages>
 
-        <environmentVar>
-            <!-- 是否启用母版页 -->
-            <HASOR_RESTFUL_LAYOUT>false</HASOR_RESTFUL_LAYOUT>
-            <!-- 母版页资源文件位置（可选，默认为：/layout） -->
-            <HASOR_RESTFUL_LAYOUT_PATH>/layout</HASOR_RESTFUL_LAYOUT_PATH>
-            <!-- 页面资源文件位置（可选，默认为：/templates） -->
-            <HASOR_RESTFUL_LAYOUT_TEMPLATES>/templates</HASOR_RESTFUL_LAYOUT_TEMPLATES>
-
-            <!-- fileupload 允许的请求大小 -->
-            <HASOR_UPLOAD_MAX_REQUEST_SIZE>-1</HASOR_UPLOAD_MAX_REQUEST_SIZE>
-            <!-- fileupload 允许上传的单个文件大小 -->
-            <HASOR_UPLOAD_MAX_FILE_SIZE>-1</HASOR_UPLOAD_MAX_FILE_SIZE>
-
-        </environmentVar>
-
         <!-- 默认要装载的模块 -->
         <modules>
             <module>net.hasor.web.render.RenderWebPlugin</module>
@@ -40,9 +25,9 @@
             <!-- 上传文件缓存目录 -->
             <cacheDirectory>%WORK_HOME%/temp/fragment</cacheDirectory>
             <!-- 允许的请求大小 ( -1 表示不限制)-->
-            <maxRequestSize>${HASOR_UPLOAD_MAX_REQUEST_SIZE}</maxRequestSize>
+            <maxRequestSize>${HASOR_UPLOAD_MAX_REQUEST_SIZE:-1}</maxRequestSize>
             <!-- 允许上传的单个文件大小( -1 表示不限制) -->
-            <maxFileSize>${HASOR_UPLOAD_MAX_FILE_SIZE}</maxFileSize>
+            <maxFileSize>${HASOR_UPLOAD_MAX_FILE_SIZE:-1}</maxFileSize>
         </fileupload>
 
         <!-- 布局管理
@@ -50,11 +35,11 @@
                 - placeholder   被渲染的页面在其装饰页面中的 占位符
                 - defaultLayout 首先会在 layoutPath 中以相同的路径和文件名寻找装饰器，如果找不到那么将会逐层向上寻找。
          -->
-        <layout enable="${HASOR_RESTFUL_LAYOUT}" placeholder="content_placeholder" defaultLayout="default.html">
+        <layout enable="${HASOR_RESTFUL_LAYOUT:false}" placeholder="content_placeholder" defaultLayout="default.html">
             <!-- 布局模版位置 -->
-            <layoutPath>${HASOR_RESTFUL_LAYOUT_PATH}</layoutPath>
+            <layoutPath>${HASOR_RESTFUL_LAYOUT_PATH:/layout}</layoutPath>
             <!-- 页面模版位置 -->
-            <templatePath>${HASOR_RESTFUL_LAYOUT_TEMPLATES}</templatePath>
+            <templatePath>${HASOR_RESTFUL_LAYOUT_TEMPLATES:/templates}</templatePath>
         </layout>
 
         <autoLoadSpi>

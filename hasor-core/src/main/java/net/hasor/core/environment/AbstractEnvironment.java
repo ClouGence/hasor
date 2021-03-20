@@ -321,23 +321,31 @@ public abstract class AbstractEnvironment implements Environment {
         if (StringUtils.isBlank(evalString)) {
             return "";
         }
-        Pattern keyPattern = Pattern.compile("(?:\\$\\{([\\w\\._-]+)\\}){1,1}");//  (?:\$\{([\w\._-]+)\}){1,1} -> ${...}
-        Matcher keyM = keyPattern.matcher(evalString);
-        Map<String, String> data = new HashMap<>();
-        while (keyM.find()) {
-            String varKeyOri = keyM.group(1);
-            String envKey = "%" + varKeyOri.toUpperCase() + "%";
-            String var = this.evalString(envKey);
-            if (envKey.equalsIgnoreCase(var)) {
-                data.put("${" + varKeyOri + "}", envKey);
-            } else {
-                data.put("${" + varKeyOri + "}", var);
+        //
+        String newEvalString = new GenericTokenParser(new String[] { "${" }, "}", (builder, token, content) -> {
+            String varKey = content;
+            String varDefault = "";
+            int defaultIndexOf = content.indexOf(":");
+            if (defaultIndexOf != -1) {
+                varDefault = content.substring(defaultIndexOf + 1);
+                varKey = content.substring(0, defaultIndexOf);
             }
-        }
-        String newEvalString = evalString;
-        for (String key : data.keySet()) {
-            newEvalString = newEvalString.replace(key, data.get(key));
-        }
+            //
+            String envKey = "%" + varKey.toUpperCase() + "%";
+            String dataKey = "${" + varKey + "}";
+            //
+            String var = this.evalString(envKey);
+            if (StringUtils.isBlank(var) && StringUtils.isNotBlank(varDefault)) {
+                var = varDefault;
+            }
+            //
+            if (envKey.equalsIgnoreCase(var)) {
+                return envKey;
+            } else {
+                return var;
+            }
+        }).parse(evalString);
+        //
         if (!evalString.equalsIgnoreCase(newEvalString)) {
             logger.debug("replace settingValue '{}' to '{}'.", evalString, newEvalString);
         }

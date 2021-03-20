@@ -1,63 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://www.hasor.net/sechma/dataway">
-    <hasor.environmentVar>
-        <!-- 是否启用 Dataway 功能，默认不启用 -->
-        <HASOR_DATAQL_DATAWAY>false</HASOR_DATAQL_DATAWAY>
-        <!-- dataway  API工作路径 -->
-        <HASOR_DATAQL_DATAWAY_API_URL>/api/</HASOR_DATAQL_DATAWAY_API_URL>
-        <!-- 是否开启 dataway-ui 管理功能（注意生产环境要设置为 false） -->
-        <HASOR_DATAQL_DATAWAY_ADMIN>false</HASOR_DATAQL_DATAWAY_ADMIN>
-        <!-- 是否开启 /api/docs/swagger2.json 地址，通过该地址可以 Swagger 导出 -->
-        <!--      仅 HASOR_DATAQL_DATAWAY_ADMIN 为 false 时配置有效，若 HASOR_DATAQL_DATAWAY_ADMIN 为 true 则同时相当于设置 HASOR_DATAQL_DATAWAY_SWAGGER 也为 true -->
-        <HASOR_DATAQL_DATAWAY_SWAGGER>false</HASOR_DATAQL_DATAWAY_SWAGGER>
-        <!-- dataway-ui 的工作路径，必须开启管理功能 -->
-        <HASOR_DATAQL_DATAWAY_UI_URL>/interface-ui/</HASOR_DATAQL_DATAWAY_UI_URL>
-        <!-- 元信息访问层默认使用的是哪种类型，提供者在 hasor.dataway.dataAccessLayer 中定义 -->
-        <HASOR_DATAQL_DATAWAY_DAL_TYPE>db</HASOR_DATAQL_DATAWAY_DAL_TYPE>
-
-        <!-- 当使用 db 作为 元信息存储器的时候的配置项目 -->
-        <!--      指定数据库类型，一般情况下 Dataway 可以自动识别数据库类型。
-                  如未能正确识数据库类型时，会引发 "dataway dbType unknown." 警告日志。
-                  可以通过配置该选项来强制指定数据库类型，配置项值可以参考 JdbcUtils
-        -->
-        <HASOR_DATAQL_DATAWAY_DB_DBTYPE></HASOR_DATAQL_DATAWAY_DB_DBTYPE>
-        <!-- DB 那两张表的前缀 -->
-        <HASOR_DATAQL_DATAWAY_DB_TABLE_PREFIX></HASOR_DATAQL_DATAWAY_DB_TABLE_PREFIX>
-        <!-- Nacos 作为存储时，最大存储API条数，默认：4000 -->
-        <HASOR_DATAQL_DATAWAY_NACOS_API_MAX_SIZE>4000</HASOR_DATAQL_DATAWAY_NACOS_API_MAX_SIZE>
-
-        <!-- 是否启用 Admin UI 的登陆认证 -->
-        <HASOR_DATAQL_DATAWAY_AUTHORIZATION_ENABLE>true</HASOR_DATAQL_DATAWAY_AUTHORIZATION_ENABLE>
-        <!-- 登陆认证方式在 basic 模式下的时候，配置的登陆账号 -->
-        <HASOR_DATAQL_DATAWAY_AUTHORIZATION_USERNAME>admin</HASOR_DATAQL_DATAWAY_AUTHORIZATION_USERNAME>
-        <!-- 登陆认证方式在 basic 模式下的时候，配置的登陆密码 -->
-        <HASOR_DATAQL_DATAWAY_AUTHORIZATION_PASSWORD>admin</HASOR_DATAQL_DATAWAY_AUTHORIZATION_PASSWORD>
-        <!-- 登陆页面资源 -->
-        <HASOR_DATAQL_DATAWAY_AUTHORIZATION_LOGIN_PAGE>classpath:/META-INF/hasor-framework/dataway-ui/login.html</HASOR_DATAQL_DATAWAY_AUTHORIZATION_LOGIN_PAGE>
-
-        <!-- nacos 的服务地址 -->
-        <HASOR_NACOS_ADDR></HASOR_NACOS_ADDR>
-        <!-- nacos 上的 Namespace，默认为：public -->
-        <HASOR_NACOS_NAMESPACE>public</HASOR_NACOS_NAMESPACE>
-        <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
-        <HASOR_NACOS_GROUP>DEFAULT_GROUP</HASOR_NACOS_GROUP>
-        <!-- 使用 nacos 作为服务发现时，当前服务的名字 -->
-        <HASOR_NACOS_SERVICE_NAME>app</HASOR_NACOS_SERVICE_NAME>
-        <!-- 使用 nacos 作为服务发现时，当前服务所在的集群 -->
-        <HASOR_NACOS_CLUSTER_NAME>DEFAULT</HASOR_NACOS_CLUSTER_NAME>
-        <!-- 是否启用 nacos 服务发现模块，默认关闭 -->
-        <HASOR_NACOS_DISCOVERY>false</HASOR_NACOS_DISCOVERY>
-        <!-- 使用 nacos 作为服务发现时，当前服务的端口号 -->
-        <HASOR_NACOS_DISCOVERY_PORT>0</HASOR_NACOS_DISCOVERY_PORT>
-
-        <!-- 使用 nacos 作为服务发现时，使用固定的IP -->
-        <HASOR_NACOS_DISCOVERY_IP></HASOR_NACOS_DISCOVERY_IP>
-        <!-- 使用 nacos 作为服务发现时，使用IP前缀来匹配 -->
-        <HASOR_NACOS_DISCOVERY_PREFIX></HASOR_NACOS_DISCOVERY_PREFIX>
-        <!-- 使用 nacos 作为服务发现时，通过网卡名来确定服务IP（可以结合dal_nacos_discovery_prefix一起使用，便于进一步确定服务IP地址） -->
-        <HASOR_NACOS_DISCOVERY_NETWORK_INTERFACE></HASOR_NACOS_DISCOVERY_NETWORK_INTERFACE>
-    </hasor.environmentVar>
-
     <hasor>
         <loadPackages>net.hasor.dataway.*</loadPackages>
         <modules>
@@ -65,26 +7,31 @@
             <module>net.hasor.dataway.config.NacosDiscoveryModule</module>
         </modules>
 
-        <!-- enable：默认不启用Dataway，也不启用 Dataway 的管理能力 -->
-        <dataway enable="${HASOR_DATAQL_DATAWAY}" enableAdmin="${HASOR_DATAQL_DATAWAY_ADMIN}" enableSwaggerApi="${HASOR_DATAQL_DATAWAY_SWAGGER}">
+        <!-- enable：是否启用 Dataway 功能，默认不启用 -->
+        <!-- enableAdmin： 是否开启 dataway-ui 管理功能（注意生产环境要设置为 false） -->
+        <dataway enable="${HASOR_DATAQL_DATAWAY:false}" enableAdmin="${HASOR_DATAQL_DATAWAY_ADMIN:false}">
+            <!-- 是否开启 /api/docs/swagger2.json 地址，通过该地址可以 Swagger 导出 -->
+            <!--      仅 HASOR_DATAQL_DATAWAY_ADMIN 为 false 时配置有效，若 HASOR_DATAQL_DATAWAY_ADMIN 为 true 则同时相当于设置 HASOR_DATAQL_DATAWAY_SWAGGER 也为 true -->
+            <enableSwaggerApi>${HASOR_DATAQL_DATAWAY_SWAGGER:false}</enableSwaggerApi>
+
             <!-- dataway API工作路径 -->
-            <baseApiUrl>${HASOR_DATAQL_DATAWAY_API_URL}</baseApiUrl>
+            <baseApiUrl>${HASOR_DATAQL_DATAWAY_API_URL:/api/}</baseApiUrl>
             <!-- dataway-ui 的工作路径，必须开启管理功能 -->
-            <baseAdminUrl>${HASOR_DATAQL_DATAWAY_UI_URL}</baseAdminUrl>
+            <baseAdminUrl>${HASOR_DATAQL_DATAWAY_UI_URL:/interface-ui/}</baseAdminUrl>
 
             <!-- 是否启用 Admin UI 的登陆认证 -->
             <!--    enable : 是否启用，默认 true 启用、false 为不启用 -->
-            <authorization enable="${HASOR_DATAQL_DATAWAY_AUTHORIZATION_ENABLE}">
+            <authorization enable="${HASOR_DATAQL_DATAWAY_AUTHORIZATION_ENABLE:true}">
                 <!-- 登陆认证方式在 basic 模式下的时候，配置的登陆账号 -->
-                <username>${HASOR_DATAQL_DATAWAY_AUTHORIZATION_USERNAME}</username>
+                <username>${HASOR_DATAQL_DATAWAY_AUTHORIZATION_USERNAME:admin}</username>
                 <!-- 登陆认证方式在 basic 模式下的时候，配置的登陆密码 -->
-                <password>${HASOR_DATAQL_DATAWAY_AUTHORIZATION_PASSWORD}</password>
+                <password>${HASOR_DATAQL_DATAWAY_AUTHORIZATION_PASSWORD:admin}</password>
                 <!-- 登陆页面资源 -->
-                <loginPageUri>${HASOR_DATAQL_DATAWAY_AUTHORIZATION_LOGIN_PAGE}</loginPageUri>
+                <loginPageUri>${HASOR_DATAQL_DATAWAY_AUTHORIZATION_LOGIN_PAGE:classpath:/META-INF/hasor-framework/dataway-ui/login.html}</loginPageUri>
             </authorization>
 
-            <!-- 元信息访问层，dalType 元信息访问层默认使用的是哪种类型，提供者在 hasor.dataway.dataAccessLayer 中定义 -->
-            <dataAccessLayer dalType="${HASOR_DATAQL_DATAWAY_DAL_TYPE}">
+            <!-- 元信息访问层默认使用的是哪种类型，提供者在 hasor.dataway.dataAccessLayer 包中定义 -->
+            <dataAccessLayer dalType="${HASOR_DATAQL_DATAWAY_DAL_TYPE:db}">
                 <!-- 使用数据库充当 Dataway 的元信息存储器 -->
                 <provider name="db">net.hasor.dataway.dal.providers.db.DataBaseApiDataAccessLayerCreator</provider>
                 <!-- 使用 nacos 充当 Dataway 的元信息存储器（Nacos作为接口配置信息存储情况下不支持历史记录能力[历史数据会产生大量过期数据]） -->
@@ -101,22 +48,22 @@
                 <!-- DB 那两张表的前缀 -->
                 <dal_db_table_prefix>${HASOR_DATAQL_DATAWAY_DB_TABLE_PREFIX}</dal_db_table_prefix>
 
-                <!-- Nacos 作为存储的话，最大存储API条数，默认：4000 -->
-                <dal_nacos_api_max_size>${HASOR_DATAQL_DATAWAY_NACOS_API_MAX_SIZE}</dal_nacos_api_max_size>
-                <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
+                <!-- Nacos 作为存储时，最大存储API条数，默认：4000 -->
+                <dal_nacos_api_max_size>${HASOR_DATAQL_DATAWAY_NACOS_API_MAX_SIZE:4000}</dal_nacos_api_max_size>
+                <!-- nacos 的服务地址 -->
                 <dal_nacos_addr>${HASOR_NACOS_ADDR}</dal_nacos_addr>
+                <!-- nacos 上的 Namespace，默认为：public -->
+                <dal_nacos_namespace>${HASOR_NACOS_NAMESPACE:public}</dal_nacos_namespace>
                 <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
-                <dal_nacos_namespace>${HASOR_NACOS_NAMESPACE}</dal_nacos_namespace>
-                <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
-                <dal_nacos_group>${HASOR_NACOS_GROUP}</dal_nacos_group>
+                <dal_nacos_group>${HASOR_NACOS_GROUP:DEFAULT_GROUP}</dal_nacos_group>
 
                 <!-- 当使用 nacos 作为 元信息存储器的时候的配置项目 -->
-                <dal_nacos_cluster_name>${HASOR_NACOS_CLUSTER_NAME}</dal_nacos_cluster_name>
+                <dal_nacos_cluster_name>${HASOR_NACOS_CLUSTER_NAME:DEFAULT}</dal_nacos_cluster_name>
                 <!-- 使用 nacos 作为服务发现时，当前服务的名字 -->
-                <dal_nacos_service_name>${HASOR_NACOS_SERVICE_NAME}</dal_nacos_service_name>
+                <dal_nacos_service_name>${HASOR_NACOS_SERVICE_NAME:app}</dal_nacos_service_name>
 
                 <!-- 是否启用 nacos 服务发现模块，默认关闭 -->
-                <dal_nacos_discovery>${HASOR_NACOS_DISCOVERY}</dal_nacos_discovery>
+                <dal_nacos_discovery>${HASOR_NACOS_DISCOVERY:false}</dal_nacos_discovery>
                 <!-- 使用 nacos 作为服务发现时，使用固定的IP -->
                 <dal_nacos_discovery_ip>${HASOR_NACOS_DISCOVERY_IP}</dal_nacos_discovery_ip>
                 <!-- 使用 nacos 作为服务发现时，使用IP前缀来匹配 -->
@@ -124,7 +71,7 @@
                 <!-- 使用 nacos 作为服务发现时，通过网卡名来确定服务IP（可以结合dal_nacos_discovery_prefix一起使用，便于进一步确定服务IP地址） -->
                 <dal_nacos_discovery_networkInterface>${HASOR_NACOS_DISCOVERY_NETWORK_INTERFACE}</dal_nacos_discovery_networkInterface>
                 <!-- 使用 nacos 作为服务发现时，当前服务的端口号 -->
-                <dal_nacos_discovery_port>${HASOR_NACOS_DISCOVERY_PORT}</dal_nacos_discovery_port>
+                <dal_nacos_discovery_port>${HASOR_NACOS_DISCOVERY_PORT:0}</dal_nacos_discovery_port>
             </settings>
 
             <!-- globalConfig 会通过 global-config 接口送给前端页面 -->
