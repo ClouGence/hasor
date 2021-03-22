@@ -301,7 +301,9 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
                 // .重定向构造方法
                 Constructor<T> tConstructor = (Constructor<T>) referConstructor.get();
                 try {
-                    tConstructor = proxyType.getConstructor(tConstructor.getParameterTypes());
+                    if (tConstructor.getDeclaringClass() != proxyType) {
+                        tConstructor = proxyType.getConstructor(tConstructor.getParameterTypes());// 类型被代理了，需要重新定位构造方法。
+                    }
                 } catch (NoSuchMethodException e) {
                     throw new IllegalStateException(e);
                 }

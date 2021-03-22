@@ -30,7 +30,7 @@ import java.util.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AsmTools implements Opcodes {
-    /**根据类型获取其Return指令。*/
+    /** 根据类型获取其Return指令 */
     public static int getReturn(final String asmType) {
         char t = asmType.charAt(0);
         switch (t) {
@@ -61,7 +61,7 @@ public class AsmTools implements Opcodes {
         }
     }
 
-    /**根据类型获取其Load指令。*/
+    /** 根据类型获取其Load指令 */
     public static int getLoad(final String asmType) {
         char t = asmType.charAt(0);
         switch (t) {
@@ -89,7 +89,7 @@ public class AsmTools implements Opcodes {
                 throw new UnsupportedOperationException("Unsupported LOAD instruction.");//
         }
     }
-    /**根据asm类型获取其ASTORE指令。*/
+    /** 根据asm类型获取其ASTORE指令 */
     /*public static int getAstore(final String asmType) {
         char t = asmType.charAt(0);
         switch (t) {
@@ -118,7 +118,7 @@ public class AsmTools implements Opcodes {
         }
     }*/
 
-    /**将某一个类型转为asm形式的表述， int 转为 I，String转为 Ljava/lang/String。*/
+    /** 将某一个类型转为asm形式的表述， int 转为 I，String转为 Ljava/lang/String */
     public static String toAsmType(final Class<?> classType) {
         if (classType == int.class) {
             return "I";
@@ -145,7 +145,7 @@ public class AsmTools implements Opcodes {
         }
     }
 
-    /**将某一个类型转为asm形式的表述， int,int 转为 II，String,int转为 Ljava/lang/String;I。*/
+    /** 将某一个类型转为asm形式的表述， int,int 转为 II，String,int转为 Ljava/lang/String;I */
     public static String toAsmType(final Class<?>[] classType) {
         String returnString = "";
         for (Class<?> c : classType) {
@@ -155,7 +155,7 @@ public class AsmTools implements Opcodes {
         return returnString;
     }
 
-    /**获取方法的Signature描述信息。*/
+    /** 获取方法的Signature描述信息 */
     public static String toAsmSignature(Method targetMethod) {
         class MoreType {
             String          name       = null;
@@ -273,7 +273,7 @@ public class AsmTools implements Opcodes {
         return atString;
     }
 
-    /**获取方法的ASM格式描述信息。*/
+    /** 获取方法的ASM格式描述信息 */
     public static String toAsmFullDesc(Method method) {
         StringBuffer str = new StringBuffer();
         str.append(method.getName());
@@ -289,7 +289,7 @@ public class AsmTools implements Opcodes {
         return str.toString();
     }
 
-    /**获取方法的ASM格式描述信息。*/
+    /** 获取方法的ASM格式描述信息 */
     public static String toAsmDesc(Method method) {
         StringBuffer str = new StringBuffer();
         str.append("(");
@@ -308,7 +308,7 @@ public class AsmTools implements Opcodes {
      * 将IIIILjava/lang/Integer;F形式的ASM类型表述分解为数组。
      * 测试字符串IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean; ->
      *      ["I", "I", "I", "I", "Ljava/lang/Integer;", "F", "[[[I", "Ljava/lang.Boolean"]
-     *  */
+     */
     public static String[] splitAsmType(final String asmTypes) {
         class AsmTypeRead {
             StringReader sread = null;
@@ -371,7 +371,7 @@ public class AsmTools implements Opcodes {
         }
     }
 
-    /**将类名转换为asm类名。*/
+    /** 将类名转换为asm类名 */
     public static String replaceClassName(final Class<?> targetClass) {
         return targetClass.getName().replace(".", "/");
     }
@@ -388,7 +388,7 @@ public class AsmTools implements Opcodes {
         return typeStr;
     }
 
-    /**通过位运算决定check是否在data里。*/
+    /** 通过位运算决定check是否在data里 */
     public static boolean checkAnd(final int data, int... check) {
         for (int checkItem : check) {
             int or = data | checkItem;
@@ -409,7 +409,7 @@ public class AsmTools implements Opcodes {
         return false;
     }
 
-    /**将一个Ljava/lang/Object;形式的字符串转化为java/lang/Object形式。*/
+    /** 将一个Ljava/lang/Object;形式的字符串转化为java/lang/Object形式 */
     public static String asmTypeToType(final String asmType) {
         if (asmType.charAt(0) == 'L') {
             return asmType.substring(1, asmType.length() - 1);
@@ -418,13 +418,13 @@ public class AsmTools implements Opcodes {
         }
     }
 
-    /**父类是否支持*/
+    /** 父类是否支持 */
     public static boolean isSupport(Class<?> superClass) {
         String resName = superClass.getName().replace(".", "/") + ".class";
         if (resName.startsWith("java/") || resName.startsWith("javax/")) {
             return false;
         } else {
-            return AsmTools.checkAnd(superClass.getModifiers(), Modifier.PUBLIC);
+            return !AsmTools.checkAnd(superClass.getModifiers(), Modifier.PRIVATE);
         }
     }
 

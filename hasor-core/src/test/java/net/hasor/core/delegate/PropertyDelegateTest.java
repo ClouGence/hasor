@@ -20,6 +20,8 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.aop.SimplePropertyDelegate;
 import net.hasor.test.core.basic.pojo.PojoBean;
+import net.hasor.test.core.basic.pojo.PojoBean1;
+import net.hasor.test.core.basic.pojo.PojoBean2;
 import net.hasor.test.core.basic.pojo.SampleBean;
 import net.hasor.utils.BeanUtils;
 import org.junit.Test;
@@ -130,5 +132,24 @@ public class PropertyDelegateTest {
         setMethod.invoke(pojoBean, "Hello");
         //
         assert "Hello".equals(getMethod.invoke(pojoBean));
+    }
+
+    @Test
+    public void propertyTest7() {
+        // 注册两个 Bean 并且共享同一个 name 属性。
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            SimplePropertyDelegate delegate = new SimplePropertyDelegate("helloWord");
+            apiBinder.bindType(PojoBean1.class).dynamicProperty("name", String.class, delegate);
+            apiBinder.bindType(PojoBean2.class).dynamicProperty("name", String.class, delegate);
+        });
+        // 创建两个 Bean
+        PojoBean1 pojoBean1 = appContext.getInstance(PojoBean1.class);
+        PojoBean2 pojoBean2 = appContext.getInstance(PojoBean2.class);
+        //
+        assert BeanUtils.readProperty(pojoBean1, "name").equals("helloWord");
+        assert BeanUtils.readProperty(pojoBean2, "name").equals("helloWord");
+        BeanUtils.writeProperty(pojoBean1, "name", "newValue");
+        assert BeanUtils.readProperty(pojoBean1, "name").equals("newValue");
+        assert BeanUtils.readProperty(pojoBean2, "name").equals("newValue");
     }
 }

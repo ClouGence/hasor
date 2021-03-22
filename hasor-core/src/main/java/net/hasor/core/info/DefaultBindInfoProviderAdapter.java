@@ -125,12 +125,34 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     }
 
     /**获得需要IoC的属性列表*/
-    public Constructor<?> getConstructor(Class<?> targetClass, AppContext appContext) {
-        Constructor<?> c = ConstructorUtils.getAccessibleConstructor(targetClass, genConstructorInfo(appContext).types);
+    public Constructor<?> getConstructor(Class<?> targetClass, AppContext appContext) throws NoSuchMethodException {
+        Class<?>[] constructorParamTypes = genConstructorInfo(appContext).types;
+        Constructor<?> c = ConstructorUtils.getAccessibleConstructor(targetClass, constructorParamTypes);
         if (c == null) {
-            c = targetClass.getConstructors()[0];
+            Constructor<?>[] constructors = targetClass.getConstructors();
+            if (constructors.length > 0) {
+                c = constructors[0];
+            } else {
+                c = getDeclaredConstructor(targetClass, constructorParamTypes);
+            }
         }
         return c;
+    }
+
+    private Constructor<?> getDeclaredConstructor(Class<?> targetClass, Class<?>[] constructorParamTypes) throws NoSuchMethodException {
+        try {
+            Constructor<?> c = targetClass.getDeclaredConstructor(constructorParamTypes);
+            c.setAccessible(true);
+            return c;
+        } catch (NoSuchMethodException e) {
+            Constructor<?>[] constructors = targetClass.getDeclaredConstructors();
+            if (constructors.length > 0) {
+                constructors[0].setAccessible(true);
+                return constructors[0];
+            } else {
+                throw e;
+            }
+        }
     }
 
     /**获得需要IoC的属性列表*/
