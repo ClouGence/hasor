@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.test.web.filters;
+import net.hasor.core.Singleton;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerConfig;
 import net.hasor.web.InvokerFilter;
-
-import javax.inject.Singleton;
 
 @Singleton
 public class SimpleInvokerFilter implements InvokerFilter {

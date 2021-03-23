@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.spring.beans;
-import net.hasor.core.Provider;
 import net.hasor.core.TypeSupplier;
 import org.springframework.context.ApplicationContext;
 
@@ -30,7 +29,12 @@ public class SpringTypeSupplier implements TypeSupplier {
     private final Supplier<ApplicationContext> applicationContext;
 
     public SpringTypeSupplier(ApplicationContext applicationContext) {
-        this(Provider.of(Objects.requireNonNull(applicationContext)));
+        this(applicationContextSupplier(applicationContext));
+    }
+
+    private static Supplier<ApplicationContext> applicationContextSupplier(ApplicationContext applicationContext) {
+        Objects.requireNonNull(applicationContext, "applicationContext is null.");
+        return () -> applicationContext;
     }
 
     public SpringTypeSupplier(Supplier<ApplicationContext> applicationContext) {

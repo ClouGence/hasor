@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.tconsole;
+import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.tconsole.TelCommand;
 import net.hasor.tconsole.TelExecutor;
 import net.hasor.utils.StringUtils;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.StringWriter;
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class ListRsfInstruct implements TelExecutor {
     @Override
     public String helpInfo() {
         return "show service list.\r\n"//
-                + " - list      (show all service id list.)\r\n"// 
+                + " - list      (show all service id list.)\r\n"//
                 + " - list -h   (show help info.)\r\n";
     }
 

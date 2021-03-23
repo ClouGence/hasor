@@ -15,12 +15,12 @@
  */
 package net.hasor.dataql.fx.web;
 import com.alibaba.fastjson.JSON;
+import net.hasor.core.Singleton;
 import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.invoker.HttpParameters;
 
-import javax.inject.Singleton;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;

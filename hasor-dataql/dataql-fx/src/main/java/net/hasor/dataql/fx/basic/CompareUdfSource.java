@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.basic;
+import net.hasor.core.Singleton;
 import net.hasor.dataql.UdfSourceAssembly;
-
-import javax.inject.Singleton;
 
 /**
  * 比较函数。函数库引入 <code>import 'net.hasor.dataql.fx.basic.CompareUdfSource' as compare;</code>

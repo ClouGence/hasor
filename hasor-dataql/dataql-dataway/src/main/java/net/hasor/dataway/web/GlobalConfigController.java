@@ -16,6 +16,7 @@
 package net.hasor.dataway.web;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Inject;
 import net.hasor.core.setting.SettingNode;
 import net.hasor.core.spi.BindInfoAware;
 import net.hasor.dataway.DatawayService;
@@ -28,7 +29,6 @@ import net.hasor.web.objects.JsonRenderEngine;
 import net.hasor.web.render.RenderType;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import java.io.InputStream;
 import java.net.NetworkInterface;
 import java.net.SocketException;

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.tconsole;
+import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
 import net.hasor.tconsole.TelCommand;
 import net.hasor.tconsole.TelExecutor;
 import net.hasor.tconsole.TelReader;
 import net.hasor.utils.StringUtils;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -40,7 +40,7 @@ public class FlowRsfInstruct implements TelExecutor {
     @Override
     public String helpInfo() {
         return "service flowControl show/update.\r\n"//
-                + " - flow             (show help info.)\r\n"// 
+                + " - flow             (show help info.)\r\n"//
                 + " - rule -s XXXX     (show service flowControl info of XXXX.)\r\n"//
                 + " - flow -u XXXX     (update service flowControl info of XXXX.)\r\n"//
                 + " - flow -c XXXX     (clean service flowControl info of XXXX.)";

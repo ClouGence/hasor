@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.test.web.actions.mapping;
+import net.hasor.core.Singleton;
 import net.hasor.test.web.actions.servlet.SimpleServlet;
 import net.hasor.web.annotation.MappingTo;
-
-import javax.inject.Singleton;
 
 /**
  * @version : 2017-01-08

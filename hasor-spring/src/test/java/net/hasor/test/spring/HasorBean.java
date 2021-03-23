@@ -15,8 +15,7 @@
  */
 package net.hasor.test.spring;
 import net.hasor.core.InjectSettings;
-
-import javax.inject.Singleton;
+import net.hasor.core.Singleton;
 
 /**
  * 使用Hasor的方式注入Spring的Bean。

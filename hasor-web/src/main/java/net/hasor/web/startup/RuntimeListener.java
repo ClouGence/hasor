@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.web.startup;
-import net.hasor.core.*;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
+import net.hasor.core.Settings;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
@@ -50,12 +53,17 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     }
 
     public RuntimeListener(AppContext appContext) {
-        this(Provider.of(Objects.requireNonNull(appContext, "appContext is null.")));
+        this(appContextSupplier(appContext));
     }
 
     public RuntimeListener(Supplier<AppContext> appContext) {
         this.appContext = Objects.requireNonNull(appContext, "appContext is null.");
         this.contextIsOutsite = true;
+    }
+
+    private static Supplier<AppContext> appContextSupplier(AppContext appContext) {
+        Objects.requireNonNull(appContext, "appContext is null.");
+        return () -> appContext;
     }
 
     /**获取{@link AppContext}*/
@@ -129,7 +137,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     public final void contextInitialized(final ServletContextEvent servletContextEvent) {
         // 1. 初始化
         if (this.appContext == null) {
-            this.appContext = Provider.of(this.doInit(servletContextEvent.getServletContext()));
+            this.appContext = appContextSupplier(this.doInit(servletContextEvent.getServletContext()));
         }
         this.spiTrigger = this.appContext.get().getInstance(SpiTrigger.class);
         // 2.放入ServletContext环境。

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.basic;
+import net.hasor.core.Singleton;
 import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.utils.*;
 
-import javax.inject.Singleton;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.List;

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.encryt;
+import net.hasor.core.Singleton;
 import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.utils.ArrayUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.inject.Singleton;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;

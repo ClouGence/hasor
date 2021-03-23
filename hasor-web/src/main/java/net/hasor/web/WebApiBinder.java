@@ -16,7 +16,6 @@
 package net.hasor.web;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
 import net.hasor.core.TypeSupplier;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
@@ -404,7 +403,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
         /**绑定实现。*/
         public default void toInstance(RenderEngine renderEngine) {
-            this.toProvider(Provider.of(renderEngine));
+            this.toProvider(() -> renderEngine);
         }
 
         /**绑定实现。*/

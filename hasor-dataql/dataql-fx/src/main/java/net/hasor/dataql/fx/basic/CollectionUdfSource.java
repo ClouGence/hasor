@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.basic;
+import net.hasor.core.Singleton;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.Udf;
@@ -24,7 +25,6 @@ import net.hasor.dataql.domain.ListModel;
 import net.hasor.dataql.domain.ObjectModel;
 import net.hasor.utils.ExceptionUtils;
 
-import javax.inject.Singleton;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;

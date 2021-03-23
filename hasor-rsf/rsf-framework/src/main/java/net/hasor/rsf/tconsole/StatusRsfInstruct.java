@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.tconsole;
+import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
 import net.hasor.tconsole.TelCommand;
 import net.hasor.tconsole.TelExecutor;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.StringWriter;
 
 /**
@@ -35,7 +35,7 @@ public class StatusRsfInstruct implements TelExecutor {
     @Override
     public String helpInfo() {
         return "switching application service online/offline.\r\n"//
-                + " - status      (show help info.)\r\n"// 
+                + " - status      (show help info.)\r\n"//
                 + " - status info (show application online status.)\r\n"//
                 + " - status on   (online application , publishing/subscription to registry.)\r\n"//
                 + " - status off  (offline application , remove publishing/subscription form registry.)";

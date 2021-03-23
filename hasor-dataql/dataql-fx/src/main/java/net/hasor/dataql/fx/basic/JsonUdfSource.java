@@ -15,9 +15,8 @@
  */
 package net.hasor.dataql.fx.basic;
 import com.alibaba.fastjson.JSON;
+import net.hasor.core.Singleton;
 import net.hasor.dataql.UdfSourceAssembly;
-
-import javax.inject.Singleton;
 
 /**
  * Json函数。函数库引入 <code>import 'net.hasor.dataql.fx.basic.JsonUdfSource' as json;</code>

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web.binder;
-import net.hasor.core.Provider;
 import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.supplier.SingleProvider;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerConfig;
@@ -34,7 +34,7 @@ public class J2eeFilterAsFilter implements InvokerFilter, Filter {
     protected Supplier<? extends Filter> j2eeFilter = null;
 
     public J2eeFilterAsFilter(Supplier<? extends Filter> j2eeFilter) {
-        this.j2eeFilter = Provider.of(j2eeFilter).asSingle();
+        this.j2eeFilter = new SingleProvider<>(j2eeFilter);
     }
 
     public final void init(InvokerConfig config) throws Throwable {

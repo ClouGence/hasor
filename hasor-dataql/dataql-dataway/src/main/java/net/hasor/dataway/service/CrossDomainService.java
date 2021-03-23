@@ -15,13 +15,12 @@
  */
 package net.hasor.dataway.service;
 import net.hasor.core.InjectSettings;
+import net.hasor.core.Singleton;
 import net.hasor.dataway.DatawayApi;
-import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
 import net.hasor.web.Invoker;
 
-import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

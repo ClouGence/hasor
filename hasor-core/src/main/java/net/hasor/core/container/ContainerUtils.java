@@ -244,9 +244,9 @@ public class ContainerUtils {
             return ignore;
         }
         if (targetType.getPackage() != null) {
-            return testAopIgnore(rootLoader, targetType.getPackage().getName());
+            ignore = testAopIgnore(rootLoader, targetType.getPackage().getName());
         }
-        return false;
+        return (ignore != null) ? ignore : false;
     }
 
     private static Boolean testAopIgnore(Class<?> targetType, boolean isRootClass) {

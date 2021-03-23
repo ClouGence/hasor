@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.encryt;
+import net.hasor.core.Singleton;
 import net.hasor.dataql.UdfSourceAssembly;
 
-import javax.inject.Singleton;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 

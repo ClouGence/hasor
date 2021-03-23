@@ -16,6 +16,8 @@
 package net.hasor.dataql.fx.db.runsql;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Hints;
@@ -41,8 +43,6 @@ import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.StringReader;

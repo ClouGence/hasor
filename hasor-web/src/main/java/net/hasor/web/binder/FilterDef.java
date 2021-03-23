@@ -16,7 +16,6 @@
 package net.hasor.web.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerConfig;
@@ -36,9 +35,9 @@ public class FilterDef implements InvokerFilter {
     private final UriPatternMatcher       patternMatcher;
     private final OneConfig               initParams;
     //
-    private       AtomicBoolean           inited;
-    private       BindInfo<?>             targetType;
-    private       Supplier<InvokerFilter> targetFilter;
+    private final AtomicBoolean           inited;
+    private final BindInfo<?>             targetType;
+    private final Supplier<InvokerFilter> targetFilter;
 
     public FilterDef(int index, UriPatternMatcher patternMatcher, Map<String, String> initParams,//
             BindInfo<? extends InvokerFilter> bindInfo, Supplier<AppContext> appContext//
@@ -48,7 +47,7 @@ public class FilterDef implements InvokerFilter {
         this.initParams = new OneConfig(bindInfo.getBindID(), initParams, appContext);
         this.inited = new AtomicBoolean(false);
         this.targetType = bindInfo;
-        this.targetFilter = Provider.ofs(() -> appContext.get().getInstance(bindInfo));
+        this.targetFilter = () -> appContext.get().getInstance(bindInfo);
     }
 
     /***/

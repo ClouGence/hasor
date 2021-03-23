@@ -13,25 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
-/**
- * Hasor模块，带有启动通知模块
- * @version : 2013-3-20
- * @author 赵永春 (zyc@hasor.net)
- */
-@Deprecated
-public interface LifeModule extends Module {
-    /**
-     * 启动过程。
-     * @param appContext appContext
-     * @throws Throwable init异常抛出
-     */
-    public void onStart(AppContext appContext) throws Throwable;
+package net.hasor.dataql.fx.basic;
+import net.hasor.core.Singleton;
+import net.hasor.dataql.UdfSourceAssembly;
 
-    /**
-     * 终止过程。
-     * @param appContext appContext
-     * @throws Throwable init异常抛出
-     */
-    public void onStop(AppContext appContext) throws Throwable;
+
+/**
+ * 数学函数。函数库引入 <code>import 'net.hasor.dataql.fx.basic.NumberUdfSource' as number;</code>
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2019-12-12
+ */
+@Singleton
+public class NumberUdfSource implements UdfSourceAssembly {
+    public static int inRange(int value, int min, int max) {
+        if (Math.min(value, min) == value) {
+            return min;
+        } else if (Math.max(value, max) == value) {
+            return max;
+        } else {
+            return value;
+        }
+    }
 }

@@ -36,12 +36,12 @@ import java.util.function.Predicate;
  */
 public class MappingDef implements Mapping {
     private final int                 index;
-    private       BindInfo<?>         targetType;
-    private       String              mappingTo;
-    private       String              mappingToMatches;
-    private       Map<String, Method> httpMapping;
-    private       Map<String, String> contentTypeMapping;
-    private       Set<Method>         asyncMethod;
+    private final BindInfo<?>         targetType;
+    private final String              mappingTo;
+    private final String              mappingToMatches;
+    private final Map<String, Method> httpMapping;
+    private final Map<String, String> contentTypeMapping;
+    private final Set<Method>         asyncMethod;
     private       AsyncSupported      defaultAsync = AsyncSupported.no;
 
     public MappingDef(int index, BindInfo<?> targetType, String mappingTo, Predicate<Method> methodMatcher) {

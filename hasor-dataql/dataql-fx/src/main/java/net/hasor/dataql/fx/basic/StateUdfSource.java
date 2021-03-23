@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.basic;
+import net.hasor.core.Singleton;
 import net.hasor.dataql.Udf;
 import net.hasor.dataql.UdfSourceAssembly;
 
-import javax.inject.Singleton;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 

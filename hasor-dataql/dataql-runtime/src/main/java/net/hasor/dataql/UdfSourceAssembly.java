@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-import net.hasor.core.Provider;
 import net.hasor.dataql.domain.DataModel;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
+import net.hasor.utils.supplier.SingleProvider;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Method;
@@ -68,7 +68,8 @@ public interface UdfSourceAssembly extends UdfSource {
         Class<?> targetType = getClass();
         Supplier<?> supplier = getSupplier(targetType, finder);
         Predicate<Method> predicate = getPredicate(targetType);
-        return Provider.of(new TypeUdfMap(targetType, supplier, predicate));
+        TypeUdfMap udfMap = new TypeUdfMap(targetType, supplier, predicate);
+        return () -> udfMap;
     }
 
     public static class TypeUdfMap extends HashMap<String, Udf> {
@@ -77,7 +78,7 @@ public interface UdfSourceAssembly extends UdfSource {
         }
 
         public TypeUdfMap(Class<?> utilType, Predicate<Method> methodTypeMatcher) {
-            this(utilType, Provider.of((Callable<Object>) utilType::newInstance).asSingle(), methodTypeMatcher);
+            this(utilType, new SingleProvider<>(() -> (Callable<Object>) utilType::newInstance), methodTypeMatcher);
         }
 
         public TypeUdfMap(Class<?> utilType, Supplier<?> provider, Predicate<Method> methodTypeMatcher) {

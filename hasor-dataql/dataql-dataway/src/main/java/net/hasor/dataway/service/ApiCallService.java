@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataway.service;
+import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.Query;
@@ -32,8 +34,6 @@ import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;

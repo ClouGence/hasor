@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db;
+import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.Udf;
 import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionTemplate;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * 数据库事务函数库。函数库引入 <code>import 'net.hasor.dataql.fx.db.TransactionUdfSource' as tran;</code>

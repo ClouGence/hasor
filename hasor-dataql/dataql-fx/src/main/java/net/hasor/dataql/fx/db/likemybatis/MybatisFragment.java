@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db.likemybatis;
+import net.hasor.core.Singleton;
 import net.hasor.dataql.Hints;
-import net.hasor.db.dal.fxquery.FxQuery;
 import net.hasor.dataql.fx.db.runsql.SqlFragment;
+import net.hasor.db.dal.fxquery.FxQuery;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.inject.Singleton;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;

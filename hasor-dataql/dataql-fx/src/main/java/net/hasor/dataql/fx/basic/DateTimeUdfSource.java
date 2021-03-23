@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.basic;
+import net.hasor.core.Singleton;
 import net.hasor.dataql.UdfSourceAssembly;
 
-import javax.inject.Singleton;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

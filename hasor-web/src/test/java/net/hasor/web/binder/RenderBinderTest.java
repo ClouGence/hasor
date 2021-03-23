@@ -16,7 +16,6 @@
 package net.hasor.web.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
 import net.hasor.test.web.actions.basic.BasicAction;
 import net.hasor.test.web.render.AnnoErrorRenderEngine;
 import net.hasor.test.web.render.SimpleRenderEngine;
@@ -51,7 +50,7 @@ public class RenderBinderTest extends AbstractTest {
     @Test
     public void renderTest_2() throws Throwable {
         final SimpleRenderEngine testRenderEngine = new SimpleRenderEngine();
-        final Supplier<SimpleRenderEngine> testRenderEngineProvider = Provider.of(testRenderEngine);
+        final Supplier<SimpleRenderEngine> testRenderEngineProvider = () -> testRenderEngine;
         //
         AppContext appContext = buildWebAppContext(apiBinder -> {
             BindInfo<SimpleRenderEngine> engineBindInfo1 = apiBinder.bindType(SimpleRenderEngine.class).uniqueName().asEagerSingleton().toInfo();

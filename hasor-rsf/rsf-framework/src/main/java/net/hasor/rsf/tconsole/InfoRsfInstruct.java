@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.tconsole;
+import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
@@ -22,8 +24,6 @@ import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.tconsole.TelCommand;
 import net.hasor.tconsole.TelExecutor;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.StringWriter;
 import java.util.*;
 

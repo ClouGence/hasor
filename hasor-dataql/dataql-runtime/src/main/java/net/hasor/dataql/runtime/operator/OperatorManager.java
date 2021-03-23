@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.operator;
-import net.hasor.core.Provider;
 import net.hasor.dataql.runtime.operator.ops.*;
+import net.hasor.utils.supplier.SingleProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,7 +80,7 @@ public class OperatorManager implements DyadicOperatorRegistry, UnaryOperatorReg
         return null;
     }
 
-    private static Supplier<OperatorManager> operatorManager = Provider.ofc(OperatorManager::initManager).asSingle();
+    private static final Supplier<OperatorManager> operatorManager = new SingleProvider<>(OperatorManager::initManager);
 
     public static OperatorManager defaultManager() {
         return operatorManager.get();

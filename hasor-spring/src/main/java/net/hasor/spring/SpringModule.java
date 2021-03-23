@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.spring;
-import net.hasor.core.*;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.Module;
+import net.hasor.core.TypeSupplier;
 import net.hasor.spring.beans.SpringTypeSupplier;
 import org.springframework.context.ApplicationContext;
 
@@ -43,12 +46,12 @@ public interface SpringModule extends Module {
     /** 使用 Spring getBean(Class) 方式获取Bean。  */
     public default <T> Supplier<T> getSupplierOfType(ApiBinder apiBinder, Class<T> targetType) {
         Supplier<ApplicationContext> provider = apiBinder.getProvider(ApplicationContext.class);
-        return (Provider<T>) () -> provider.get().getBean(targetType);
+        return () -> provider.get().getBean(targetType);
     }
 
     /** 使用 Spring getBean(String) 方式获取Bean。  */
     public default <T> Supplier<T> getSupplierOfName(ApiBinder apiBinder, String beanName) {
         Supplier<ApplicationContext> provider = apiBinder.getProvider(ApplicationContext.class);
-        return (Provider<T>) () -> (T) provider.get().getBean(beanName);
+        return () -> (T) provider.get().getBean(beanName);
     }
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.core.Provider;
 import net.hasor.dataql.parser.location.RuntimeLocation;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InsetProcessContext;
@@ -23,6 +22,7 @@ import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.mem.DataHeap;
 import net.hasor.dataql.runtime.mem.DataStack;
 import net.hasor.dataql.runtime.mem.EnvStack;
+import net.hasor.utils.supplier.SingleProvider;
 
 import java.util.function.Supplier;
 
@@ -54,7 +54,7 @@ public class OpcodesPool {
         }
     }
 
-    private static final Supplier<OpcodesPool> operatorManager = Provider.ofc(OpcodesPool::initPool).asSingle();
+    private static final Supplier<OpcodesPool> operatorManager = new SingleProvider<>(OpcodesPool::initPool);
 
     public static OpcodesPool defaultOpcodesPool() {
         return operatorManager.get();

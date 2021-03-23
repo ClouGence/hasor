@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.tconsole.commands;
+import net.hasor.core.Singleton;
 import net.hasor.tconsole.TelCommand;
 import net.hasor.tconsole.TelContext;
 import net.hasor.tconsole.TelExecutor;
 import net.hasor.utils.StringUtils;
 
-import javax.inject.Singleton;
 import java.io.StringWriter;
 import java.util.List;
 
