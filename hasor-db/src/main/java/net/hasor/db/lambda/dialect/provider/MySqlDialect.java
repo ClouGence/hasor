@@ -66,7 +66,7 @@ public class MySqlDialect implements SqlDialect, InsertSqlDialect {
     }
 
     @Override
-    public boolean supportInsertIgnore() {
+    public boolean supportInsertIgnore(List<FieldInfo> pkFields) {
         return true;
     }
 
@@ -75,11 +75,11 @@ public class MySqlDialect implements SqlDialect, InsertSqlDialect {
         // insert ignore t(id, name) values (?, ?);
         String allColumns = buildAllColumns(useQualifier, category, tableName, insertFields);
         int fieldCount = insertFields.size();
-        return "INSERT IGNORE " + tableName(useQualifier, category, tableName) + "(" + allColumns + ") VALUES (" + StringUtils.repeat(",?", fieldCount).substring(1) + ")";
+        return "INSERT IGNORE " + tableName(useQualifier, category, tableName) + " ( " + allColumns + " ) VALUES ( " + StringUtils.repeat(",?", fieldCount).substring(1) + " )";
     }
 
     @Override
-    public boolean supportInsertReplace() {
+    public boolean supportInsertReplace(List<FieldInfo> pkFields) {
         return true;
     }
 
@@ -88,14 +88,14 @@ public class MySqlDialect implements SqlDialect, InsertSqlDialect {
         // replace into t(id, name) values (?, ?);
         String allColumns = buildAllColumns(useQualifier, category, tableName, insertFields);
         int fieldCount = insertFields.size();
-        return "REPLACE INTO " + tableName(useQualifier, category, tableName) + "(" + allColumns + ") VALUES (" + StringUtils.repeat(",?", fieldCount).substring(1) + ")";
+        return "REPLACE INTO " + tableName(useQualifier, category, tableName) + " ( " + allColumns + " ) VALUES ( " + StringUtils.repeat(",?", fieldCount).substring(1) + " )";
     }
 
     private String buildAllColumns(boolean useQualifier, String category, String tableName, List<FieldInfo> insertFields) {
         return insertFields.stream().map(fieldInfo -> {
             return columnName(useQualifier, category, tableName, fieldInfo.getColumnName(), fieldInfo.getJdbcType(), fieldInfo.getJavaType());
         }).reduce((s1, s2) -> {
-            return s1 + "." + s2;
+            return s1 + " , " + s2;
         }).orElse("");
     }
 }

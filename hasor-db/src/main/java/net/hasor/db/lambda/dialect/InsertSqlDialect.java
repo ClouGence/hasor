@@ -25,12 +25,12 @@ import java.util.List;
  */
 public interface InsertSqlDialect extends SqlDialect {
     /** 是否支持 insert ignore */
-    public boolean supportInsertIgnore();
+    public boolean supportInsertIgnore(List<FieldInfo> pkFields);
 
     public String insertWithIgnore(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields);
 
     /** 是否支持 insert replace */
-    public boolean supportInsertReplace();
+    public boolean supportInsertReplace(List<FieldInfo> pkFields);
 
     public String insertWithReplace(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields);
 }

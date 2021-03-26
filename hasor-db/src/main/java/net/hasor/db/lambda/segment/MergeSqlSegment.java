@@ -36,9 +36,9 @@ public final class MergeSqlSegment implements Segment {
         this.segments.addAll(Arrays.asList(segments));
     }
 
-    public void addSegment(Segment segment) {
-        if (segment != null) {
-            this.segments.add(segment);
+    public void addSegment(Segment... segmentArrays) {
+        if (segmentArrays != null) {
+            this.segments.addAll(Arrays.asList(segmentArrays));
         }
     }
 

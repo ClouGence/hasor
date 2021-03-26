@@ -22,6 +22,9 @@ import java.sql.SQLException;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface DeleteExecute<T> extends BoundSqlBuilder {
-    /** 根据 Lambda 构造器的条件执行删除。 */
+    /** 根据 Lambda 构造器的条件执行删除 */
     public int doDelete() throws SQLException;
+
+    /** 允许空 Where条件（注意：空 Where 条件会导致删除整个数据库） */
+    public DeleteExecute<T> allowEmptyWhere();
 }

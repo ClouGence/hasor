@@ -20,33 +20,37 @@ package net.hasor.db.lambda.segment;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum SqlKeyword implements Segment {
-    AND("AND"),//
-    OR("OR"),//
-    IN("IN"),//
-    NOT("NOT"),//
-    LIKE("LIKE"),//
-    EQ("="),//
-    NE("<>"),//
-    GT(">"),//
-    GE(">="),//
-    LT("<"),//
-    LE("<="),//
-    IS_NULL("IS NULL"),//
-    IS_NOT_NULL("IS NOT NULL"),//
-    BETWEEN("BETWEEN"),//
+    AND("AND"),                 //
+    OR("OR"),                   //
+    IN("IN"),                   //
+    NOT("NOT"),                 //
+    LIKE("LIKE"),               //
+    EQ("="),                    //
+    NE("<>"),                   //
+    GT(">"),                    //
+    GE(">="),                   //
+    LT("<"),                    //
+    LE("<="),                   //
+    IS_NULL("IS NULL"),         //
+    IS_NOT_NULL("IS NOT NULL"), //
+    BETWEEN("BETWEEN"),         //
     //
-    GROUP_BY("GROUP BY"),//
-    HAVING("HAVING"),//
-    ORDER_BY("ORDER BY"),//
+    GROUP_BY("GROUP BY"),       //
+    HAVING("HAVING"),           //
+    ORDER_BY("ORDER BY"),       //
     //
-    EXISTS("EXISTS"),//
-    SELECT("SELECT"),//
-    COLUMNS("*"),//
-    FROM("FROM"),//
-    WHERE("WHERE"),//
-    EMPTY(""),//
-    LEFT("("),  //
-    RIGHT(")")  //
+    INSERT("INSERT"),           //
+    INTO("INTO"),               //
+    VALUES("VALUES"),           //
+    EXISTS("EXISTS"),           //
+    SELECT("SELECT"),           //
+    DELETE("DELETE"),           //
+    COLUMNS("*"),               //
+    FROM("FROM"),               //
+    WHERE("WHERE"),             //
+    EMPTY(""),                  //
+    LEFT("("),                  //
+    RIGHT(")")                  //
     ;
     //
     private final String sqlString;

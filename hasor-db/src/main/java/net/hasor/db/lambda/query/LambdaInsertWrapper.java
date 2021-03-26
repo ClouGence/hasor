@@ -34,10 +34,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static net.hasor.db.lambda.segment.SqlKeyword.LEFT;
-import static net.hasor.db.lambda.segment.SqlKeyword.RIGHT;
+import static net.hasor.db.lambda.segment.SqlKeyword.*;
 
 /**
  * 提供 lambda insert 能力。是 LambdaInsert 接口的实现类。
@@ -177,7 +177,7 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
         if (this.insertAsQuery != null) {
             // insert into
             MergeSqlSegment insertTemplate = new MergeSqlSegment();
-            insertTemplate.addSegment(() -> "INSERT INTO");
+            insertTemplate.addSegment(INSERT, INTO);
             // columns
             insertTemplate.addSegment(getTableNameAndColumn(dialect));
             // select
@@ -214,6 +214,17 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
     }
 
     @Override
+    public <V> InsertExecute<T> applyQueryAsInsert(Class<V> exampleType, Consumer<LambdaQuery<V>> queryBuilderConsumer) {
+        if (queryBuilderConsumer != null) {
+            LambdaQueryWrapper<V> queryWrapper = new LambdaQueryWrapper<>(exampleType, this.getJdbcTemplate());
+            queryBuilderConsumer.accept(queryWrapper);
+            return applyQueryAsInsert(queryWrapper);
+        } else {
+            return this;
+        }
+    }
+
+    @Override
     public int[] executeGetResult() throws SQLException {
         try {
             BoundSql boundSql = getBoundSql();
@@ -222,7 +233,7 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
                 if (boundSql.getArgs().length > 1) {
                     return this.getJdbcTemplate().executeBatch(sqlString, ((BatchBoundSql) boundSql).getArgs());
                 } else {
-                    int i = this.getJdbcTemplate().executeUpdate(sqlString, boundSql.getArgs()[0]);
+                    int i = this.getJdbcTemplate().executeUpdate(sqlString, (Object[]) boundSql.getArgs()[0]);
                     return new int[] { i };
                 }
             } else {
@@ -238,12 +249,11 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
     protected BoundSql standardInsert(SqlDialect dialect) {
         // insert into
         MergeSqlSegment insertTemplate = new MergeSqlSegment();
-        insertTemplate.addSegment(() -> "INSERT INTO");
+        insertTemplate.addSegment(INSERT, INTO);
         // columns
         insertTemplate.addSegment(getTableNameAndColumn(dialect));
         // values
-        insertTemplate.addSegment(() -> "VALUES");
-        insertTemplate.addSegment(LEFT);
+        insertTemplate.addSegment(VALUES, LEFT);
         insertTemplate.addSegment(() -> StringUtils.repeat(",?", this.insertFields.size()).substring(1));
         insertTemplate.addSegment(RIGHT);
         //
@@ -261,14 +271,14 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
         String tableName = rowMapper.getTableName();
         switch (this.insertStrategy) {
             case Ignore: {
-                if (dialect.supportInsertIgnore()) {
+                if (dialect.supportInsertIgnore(this.pkFields)) {
                     String sqlString = dialect.insertWithIgnore(this.isQualifier(), category, tableName, this.pkFields, this.insertFields);
                     return buildBatchBoundSql(sqlString);
                 }
                 break;
             }
             case Replace: {
-                if (dialect.supportInsertReplace()) {
+                if (dialect.supportInsertReplace(this.pkFields)) {
                     String sqlString = dialect.insertWithReplace(this.isQualifier(), category, tableName, this.pkFields, this.insertFields);
                     return buildBatchBoundSql(sqlString);
                 }
@@ -286,7 +296,7 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
         return new BatchBoundSql.BatchBoundSqlObj(batchSql, args);
     }
 
-    protected enum InsertStrategy {
+    protected static enum InsertStrategy {
         Ignore,
         Replace,
         Into

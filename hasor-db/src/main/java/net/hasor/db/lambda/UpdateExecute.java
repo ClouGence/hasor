@@ -31,17 +31,17 @@ public interface UpdateExecute<T> extends BoundSqlBuilder {
     public int doUpdate() throws SQLException;
 
     /** 设置 update 的 set 中的值。 */
-    public UpdateExecute<T> applyUpdateTo(T newValue) throws SQLException;
+    public UpdateExecute<T> applyNewValue(T newValue) throws SQLException;
 
-    /** 设置指定列 update 的 set 中的值。 */
-    public UpdateExecute<T> applyUpdateTo(T newValue, String... columns) throws SQLException;
+    /** 设置指定列 update 的 set 中的值 */
+    public UpdateExecute<T> applyNewValue(T newValue, String... columns) throws SQLException;
 
-    /** 设置指定列 update 的 set 中的值。 */
-    public UpdateExecute<T> applyUpdateTo(T newValue, SFunction<T> property) throws SQLException;
+    /** 设置指定列 update 的 set 中的值 */
+    public UpdateExecute<T> applyNewValue(T newValue, SFunction<T> property) throws SQLException;
 
-    /** 设置指定列 update 的 set 中的值。 */
-    public UpdateExecute<T> applyUpdateTo(T newValue, List<SFunction<T>> propertyList) throws SQLException;
+    /** 设置指定列 update 的 set 中的值 */
+    public UpdateExecute<T> applyNewValue(T newValue, List<SFunction<T>> propertyList) throws SQLException;
 
-    /** 设置指定列 update 的 set 中的值。 */
-    public UpdateExecute<T> applyUpdateTo(T newValue, Predicate<FieldInfo> tester) throws SQLException;
+    /** 设置指定列 update 的 set 中的值 */
+    public UpdateExecute<T> applyNewValue(T newValue, Predicate<FieldInfo> tester) throws SQLException;
 }

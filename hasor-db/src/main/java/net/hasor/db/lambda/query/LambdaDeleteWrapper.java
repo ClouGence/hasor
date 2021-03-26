@@ -15,9 +15,17 @@
  */
 package net.hasor.db.lambda.query;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.lambda.DeleteExecute;
 import net.hasor.db.lambda.LambdaOperations.LambdaDelete;
+import net.hasor.db.lambda.dialect.BoundSql;
+import net.hasor.db.lambda.dialect.SqlDialect;
+import net.hasor.db.lambda.mapping.TableInfo;
+import net.hasor.db.lambda.segment.MergeSqlSegment;
+import net.hasor.db.lambda.segment.Segment;
 
 import java.sql.SQLException;
+
+import static net.hasor.db.lambda.segment.SqlKeyword.*;
 
 /**
  * 提供 lambda delete 能力。是 LambdaDelete 接口的实现类。
@@ -25,9 +33,10 @@ import java.sql.SQLException;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class LambdaDeleteWrapper<T> extends AbstractQueryCompare<T, LambdaDelete<T>> implements LambdaDelete<T> {
+    private boolean allowEmptyWhere = false;
+
     public LambdaDeleteWrapper(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
         super(exampleType, jdbcTemplate);
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -42,7 +51,47 @@ public class LambdaDeleteWrapper<T> extends AbstractQueryCompare<T, LambdaDelete
     }
 
     @Override
+    public DeleteExecute<T> allowEmptyWhere() {
+        this.allowEmptyWhere = true;
+        return this;
+    }
+
+    @Override
+    public BoundSql getOriginalBoundSql() {
+        // must be clean , The rebuildSQL will reinitialize.
+        this.queryParam.clear();
+        //
+        String sqlQuery = rebuildSql();
+        Object[] args = this.queryParam.toArray().clone();
+        return new BoundSql.BoundSqlObj(sqlQuery, args);
+    }
+
+    private String rebuildSql() {
+        MergeSqlSegment sqlSegment = new MergeSqlSegment();
+        sqlSegment.addSegment(DELETE);
+        sqlSegment.addSegment(FROM);
+        sqlSegment.addSegment(buildTabName(this.dialect()));
+        if (!this.queryTemplate.isEmpty()) {
+            sqlSegment.addSegment(WHERE);
+            sqlSegment.addSegment(this.queryTemplate.sub(1));
+        } else if (!this.allowEmptyWhere) {
+            throw new UnsupportedOperationException("The dangerous DELETE operation, You must call `allowEmptyWhere()` to enable DELETE ALL.");
+        }
+        return sqlSegment.getSqlSegment();
+    }
+
+    private Segment buildTabName(SqlDialect dialect) {
+        TableInfo tableInfo = super.getRowMapper().getTableInfo();
+        if (tableInfo == null) {
+            throw new IllegalArgumentException("tableInfo not found.");
+        }
+        return () -> dialect.tableName(isQualifier(), tableInfo.getCategory(), tableInfo.getTableName());
+    }
+
+    @Override
     public int doDelete() throws SQLException {
-        return 0;
+        BoundSql boundSql = getBoundSql();
+        String sqlString = boundSql.getSqlString();
+        return this.getJdbcTemplate().executeUpdate(sqlString, boundSql.getArgs());
     }
 }

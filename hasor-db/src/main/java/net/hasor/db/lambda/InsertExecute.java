@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * lambda Insert 执行器
@@ -59,6 +60,9 @@ public interface InsertExecute<T> extends BoundSqlBuilder {
 
     /** insert form select */
     public <V> InsertExecute<T> applyQueryAsInsert(LambdaQuery<V> lambdaQuery);
+
+    /** insert form select */
+    public <V> InsertExecute<T> applyQueryAsInsert(Class<V> exampleType, Consumer<LambdaQuery<V>> queryBuilderConsumer);
 
     /** 批量插入记录。 */
     public default InsertExecute<T> applyMap(Map<String, Object> dataMap) {

@@ -15,10 +15,10 @@
  */
 package net.hasor.db.lambda.query;
 import net.hasor.db.JdbcUtils;
-import net.hasor.db.lambda.dialect.SqlDialect;
-import net.hasor.db.lambda.dialect.SqlDialectRegister;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.lambda.dialect.SqlDialect;
+import net.hasor.db.lambda.dialect.SqlDialectRegister;
 import net.hasor.db.lambda.mapping.MappingRowMapper;
 
 import java.sql.DatabaseMetaData;

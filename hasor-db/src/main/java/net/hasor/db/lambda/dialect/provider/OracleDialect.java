@@ -71,10 +71,10 @@ public class OracleDialect implements SqlDialect, InsertSqlDialect {
         String qualifier = useQualifier ? "\"" : "";
         return qualifier + fmtString + qualifier;
     }
- 
+
     @Override
-    public boolean supportInsertIgnore() {
-        return true;
+    public boolean supportInsertIgnore(List<FieldInfo> pkFields) {
+        return !pkFields.isEmpty();
     }
 
     @Override
@@ -98,8 +98,8 @@ public class OracleDialect implements SqlDialect, InsertSqlDialect {
     }
 
     @Override
-    public boolean supportInsertReplace() {
-        return true;
+    public boolean supportInsertReplace(List<FieldInfo> pkFields) {
+        return !pkFields.isEmpty();
     }
 
     @Override
@@ -128,12 +128,15 @@ public class OracleDialect implements SqlDialect, InsertSqlDialect {
 
     private static StringBuilder buildMergeInfoBasic(boolean useQualifier, String category, String tableName, List<FieldInfo> allColumns, List<FieldInfo> pkColumns) {
         StringBuilder mergeBuilder = new StringBuilder();
-        String finalTableName = fmtQualifier(useQualifier, category) + "." + fmtQualifier(useQualifier, tableName);
+        String finalTableName = fmtQualifier(useQualifier, tableName);
+        if (StringUtils.isNotBlank(category)) {
+            finalTableName = fmtQualifier(useQualifier, category) + "." + finalTableName;
+        }
         mergeBuilder.append("MERGE INTO " + finalTableName + " TMP USING( SELECT ");
         for (int i = 0; i < allColumns.size(); i++) {
             FieldInfo fieldInfo = allColumns.get(i);
             if (i != 0) {
-                mergeBuilder.append(",");
+                mergeBuilder.append(" , ");
             }
             mergeBuilder.append("? " + fmtQualifier(useQualifier, fieldInfo.getColumnName()));
         }
@@ -145,7 +148,7 @@ public class OracleDialect implements SqlDialect, InsertSqlDialect {
             String pkColumn = fmtQualifier(useQualifier, pkColumns.get(i).getColumnName());
             mergeBuilder.append("TMP." + pkColumn + " = SRC." + pkColumn);
         }
-        mergeBuilder.append(") ");
+        mergeBuilder.append(")");
         return mergeBuilder;
     }
 
@@ -161,11 +164,11 @@ public class OracleDialect implements SqlDialect, InsertSqlDialect {
         for (int i = 0; i < allColumns.size(); i++) {
             FieldInfo column = allColumns.get(i);
             if (i != 0) {
-                mergeBuilder.append(",");
+                mergeBuilder.append(" , ");
             }
             mergeBuilder.append("SRC." + fmtQualifier(useQualifier, column.getColumnName()));
         }
-        mergeBuilder.append(") ");
+        mergeBuilder.append(")");
         //
         return mergeBuilder;
     }
@@ -177,7 +180,7 @@ public class OracleDialect implements SqlDialect, InsertSqlDialect {
         for (int i = 0; i < allColumns.size(); i++) {
             FieldInfo column = allColumns.get(i);
             if (i != 0) {
-                mergeBuilder.append(",");
+                mergeBuilder.append(" , ");
             }
             String columnName = fmtQualifier(useQualifier, column.getColumnName());
             mergeBuilder.append(columnName + " = SRC." + columnName);
