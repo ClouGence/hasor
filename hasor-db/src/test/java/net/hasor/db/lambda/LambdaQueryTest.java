@@ -34,8 +34,8 @@ import java.util.stream.Collectors;
 import static net.hasor.test.db.utils.TestUtils.*;
 
 /***
- * 批量Insert语句执行
- * @version : 2014-1-13
+ * Lambda 方式执行 Select 操作
+ * @version : 2021-3-22
  * @author 赵永春 (zyc@hasor.net)
  */
 public class LambdaQueryTest extends AbstractDbTest {

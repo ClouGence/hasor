@@ -15,14 +15,9 @@
  */
 package net.hasor.db.lambda;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.lambda.dialect.BatchBoundSql;
 import net.hasor.db.lambda.dialect.BoundSql;
-import net.hasor.db.lambda.dialect.SqlDialect;
-import net.hasor.db.lambda.dialect.provider.MySqlDialect;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.dto.TB_User;
 import net.hasor.test.db.dto.TbUser;
-import net.hasor.test.db.dto.TbUserShadow;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -30,15 +25,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static net.hasor.test.db.utils.TestUtils.beanForData1;
-import static net.hasor.test.db.utils.TestUtils.mapForData2;
-
 /***
- *
- * @version : 2014-1-13
+ * @version : 2021-3-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class QueryBuilderTest extends AbstractDbTest {
+public class BuilderQueryTest extends AbstractDbTest {
     @Test
     public void queryBuilder1() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
@@ -430,36 +421,5 @@ public class QueryBuilderTest extends AbstractDbTest {
         assert boundSql1.getArgs()[0].equals(1);
         assert boundSql1.getArgs()[1].equals(2);
         assert boundSql1.getArgs()[2].equals(3);
-    }
-
-    @Test
-    public void queryBuilder9() {
-        LambdaOperations.LambdaInsert<TB_User> lambdaInsert = new JdbcTemplate().lambdaInsert(TB_User.class);
-        lambdaInsert.applyEntity(beanForData1());
-        lambdaInsert.applyMap(mapForData2());
-        //
-        SqlDialect dialect = new MySqlDialect();
-        BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
-        assert boundSql1 instanceof BatchBoundSql;
-        assert boundSql1.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
-        //
-        BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
-        assert boundSql2 instanceof BatchBoundSql;
-        assert boundSql2.getSqlString().equals("INSERT INTO `TB_User` ( `userUUID` , `name` , `loginName` , `loginPassword` , `email` , `index` , `registerTime` ) VALUES ( ?,?,?,?,?,?,? )");
-    }
-
-    @Test
-    public void queryBuilder10() {
-        LambdaOperations.LambdaInsert<TbUserShadow> lambdaInsert = new JdbcTemplate().lambdaInsert(TbUserShadow.class);
-        lambdaInsert.applyQueryAsInsert(new JdbcTemplate().lambdaQuery(TB_User.class).eq(TB_User::getIndex, 123));
-        //
-        SqlDialect dialect = new MySqlDialect();
-        BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
-        assert !(boundSql1 instanceof BatchBoundSql);
-        assert boundSql1.getSqlString().equals("INSERT INTO tb_user_shadow ( userUUID , name , loginName , loginPassword , email , index , registerTime )  SELECT * FROM TB_User WHERE index = ?");
-        //
-        BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
-        assert !(boundSql2 instanceof BatchBoundSql);
-        assert boundSql2.getSqlString().equals("INSERT INTO `tb_user_shadow` ( `userUUID` , `name` , `loginName` , `loginPassword` , `email` , `index` , `registerTime` )  SELECT * FROM `TB_User` WHERE `index` = ?");
     }
 }
