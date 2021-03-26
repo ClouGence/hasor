@@ -21,6 +21,9 @@ import net.hasor.db.jdbc.SqlParameter.ReturnSqlParameter;
 import net.hasor.db.jdbc.extractor.ColumnMapResultSetExtractor;
 import net.hasor.db.jdbc.extractor.RowCallbackHandlerResultSetExtractor;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
+import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
+import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
+import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
 import net.hasor.db.lambda.LambdaOperations;
 import net.hasor.db.lambda.mapping.MappingHandler;
 import net.hasor.db.lambda.mapping.MappingRowMapper;
@@ -28,9 +31,6 @@ import net.hasor.db.lambda.query.LambdaDeleteWrapper;
 import net.hasor.db.lambda.query.LambdaInsertWrapper;
 import net.hasor.db.lambda.query.LambdaQueryWrapper;
 import net.hasor.db.lambda.query.LambdaUpdateWrapper;
-import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
-import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
-import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
 import net.hasor.utils.ResourcesUtils;
@@ -997,7 +997,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
             return this.getSingleColumnRowMapper(requiredType);
         }
         //
-        MappingRowMapper<T> rowMapper = mappingHandler.resolveMapper(requiredType);
+        MappingRowMapper<T> rowMapper = this.mappingHandler.resolveMapper(requiredType);
         rowMapper.setCaseInsensitive(this.isResultsCaseInsensitive());
         return rowMapper;
     }
@@ -1019,7 +1019,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
 
     /** Create a new PreparedStatementSetter.*/
     protected PreparedStatementSetter newArgPreparedStatementSetter(final Object[] args) {
-        return new ArgPreparedStatementSetter(args);
+        return new ArgPreparedStatementSetter(this.mappingHandler.getTypeRegistry(), args);
     }
 
     /** Build a PreparedStatementCreator based on the given SQL and named parameters. */
@@ -1051,7 +1051,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         }
     }
 
-    /**至返回结果集中的一条数据。*/
+    /** 至返回结果集中的一条数据。*/
     private static <T> T requiredSingleResult(final Collection<T> results) throws SQLException {
         if (results == null || results.isEmpty()) {
             return null;
@@ -1063,12 +1063,12 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         return results.iterator().next();
     }
 
-    /**获取SQL*/
+    /** 获取SQL*/
     protected static interface SqlProvider {
         public String getSql();
     }
 
-    /**接口 {@link PreparedStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link PreparedStatement}对象。*/
+    /** 接口 {@link PreparedStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link PreparedStatement}对象。*/
     private static class SimplePreparedStatementCreator implements PreparedStatementCreator, JdbcTemplate.SqlProvider {
         private final String sql;
 
@@ -1141,7 +1141,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         }
     }
 
-    /**接口 {@link PreparedStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link PreparedStatement}对象。*/
+    /** 接口 {@link PreparedStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link PreparedStatement}对象。*/
     private class MapPreparedStatementCreator implements PreparedStatementCreator, ParameterDisposer, JdbcTemplate.SqlProvider {
         private final ParsedSql          parsedSql;
         private final SqlParameterSource paramSource;
@@ -1161,7 +1161,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
             //3.创建PreparedStatement对象，并设置参数
             PreparedStatement statement = con.prepareStatement(sqlToUse);
             for (int i = 0; i < paramArray.length; i++) {
-                StatementSetterUtils.setParameterValue(statement, i + 1, paramArray[i]);
+                getMappingHandler().getTypeRegistry().setParameterValue(statement, i + 1, paramArray[i]);
             }
             StatementSetterUtils.cleanupParameters(paramArray);
             return statement;
@@ -1180,7 +1180,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
         }
     }
 
-    /**接口 {@link BatchPreparedStatementSetter} 的简单实现，目的是设置批量操作*/
+    /** 接口 {@link BatchPreparedStatementSetter} 的简单实现，目的是设置批量操作 */
     private class SqlParameterSourceBatchPreparedStatementSetter implements BatchPreparedStatementSetter, ParameterDisposer {
         private final ParsedSql            parsedSql;
         private final SqlParameterSource[] batchArgs;
@@ -1196,9 +1196,9 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
             //1.确定参数对象
             Object[] sqlValue = this.parsedSql.buildValues(paramSource);
             //2.设置参数
-            int sqlColIndx = 1;
+            int sqlColIndex = 1;
             for (Object element : sqlValue) {
-                StatementSetterUtils.setParameterValue(ps, sqlColIndx++, element);
+                getMappingHandler().getTypeRegistry().setParameterValue(ps, sqlColIndex++, element);
             }
         }
 

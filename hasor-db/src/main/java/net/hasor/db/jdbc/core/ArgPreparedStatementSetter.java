@@ -15,6 +15,7 @@
  */
 package net.hasor.db.jdbc.core;
 import net.hasor.db.jdbc.PreparedStatementSetter;
+import net.hasor.db.types.TypeHandlerRegistry;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -24,9 +25,15 @@ import java.sql.SQLException;
  * @author Juergen Hoeller
  */
 public class ArgPreparedStatementSetter implements PreparedStatementSetter, ParameterDisposer {
-    private final Object[] args;
+    private final TypeHandlerRegistry typeHandlerRegistry;
+    private final Object[]            args;
 
-    public ArgPreparedStatementSetter(final Object[] args) {
+    public ArgPreparedStatementSetter(Object[] args) {
+        this(TypeHandlerRegistry.DEFAULT, args);
+    }
+
+    public ArgPreparedStatementSetter(TypeHandlerRegistry typeHandlerRegistry, Object[] args) {
+        this.typeHandlerRegistry = typeHandlerRegistry;
         this.args = args;
     }
 
@@ -41,7 +48,7 @@ public class ArgPreparedStatementSetter implements PreparedStatementSetter, Para
     }
 
     protected void doSetValue(final PreparedStatement ps, final int parameterPosition, final Object argValue) throws SQLException {
-        StatementSetterUtils.setParameterValue(ps, parameterPosition, argValue);
+        this.typeHandlerRegistry.setParameterValue(ps, parameterPosition, argValue);
     }
 
     @Override

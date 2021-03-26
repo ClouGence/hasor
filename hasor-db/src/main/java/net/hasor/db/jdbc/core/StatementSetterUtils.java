@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import net.hasor.db.types.TypeHandler;
-import net.hasor.db.types.TypeHandlerRegistry;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -28,17 +23,6 @@ import java.util.Collection;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class StatementSetterUtils {
-    /***/
-    public static void setParameterValue(final PreparedStatement ps, final int parameterPosition, final Object inValue) throws SQLException {
-        if (inValue == null) {
-            ps.setObject(parameterPosition, null);
-        } else {
-            Class<?> valueClass = inValue.getClass();
-            TypeHandler typeHandler = TypeHandlerRegistry.DEFAULT.getTypeHandler(valueClass);
-            typeHandler.setParameter(ps, parameterPosition, inValue, TypeHandlerRegistry.DEFAULT.toSqlType(valueClass));
-        }
-    }
-
     /**
      * Clean up all resources held by parameter values which were passed to an execute method. This is for example important for closing LOB values.
      * @param paramValues parameter values supplied. May be <code>null</code>.

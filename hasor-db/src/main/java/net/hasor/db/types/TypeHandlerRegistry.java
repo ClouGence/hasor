@@ -24,12 +24,10 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.JDBCType;
-import java.sql.NClob;
+import java.sql.*;
 import java.time.*;
 import java.time.chrono.JapaneseDate;
+import java.util.Date;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -413,5 +411,16 @@ public final class TypeHandlerRegistry {
 
     public UnknownTypeHandler getDefaultTypeHandler() {
         return this.defaultTypeHandler;
+    }
+
+    /***/
+    public void setParameterValue(final PreparedStatement ps, final int parameterPosition, final Object value) throws SQLException {
+        if (value == null) {
+            ps.setObject(parameterPosition, null);
+        } else {
+            Class<?> valueClass = value.getClass();
+            TypeHandler<Object> typeHandler = (TypeHandler<Object>) getTypeHandler(valueClass);
+            typeHandler.setParameter(ps, parameterPosition, value, toSqlType(valueClass));
+        }
     }
 }
