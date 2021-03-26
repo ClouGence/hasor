@@ -24,6 +24,10 @@ import net.hasor.test.db.dto.TB_User;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static net.hasor.test.db.utils.TestUtils.*;
 
 /***
  * Lambda 方式执行 Delete 操作
@@ -35,11 +39,27 @@ public class LambdaDeleteTest extends AbstractDbTest {
     public void lambda_delete_1() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            jdbcTemplate.execute("delete from tb_user");
             //
-            LambdaDelete<TB_User> lambdaInsert = jdbcTemplate.lambdaDelete(TB_User.class);
-            int delete = lambdaInsert.allowEmptyWhere().doDelete();
+            LambdaDelete<TB_User> lambdaDelete = jdbcTemplate.lambdaDelete(TB_User.class);
+            int delete = lambdaDelete.allowEmptyWhere().doDelete();
             assert delete == 3;
+        }
+    }
+
+    @Test
+    public void lambda_delete_2() throws SQLException {
+        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            //
+            LambdaDelete<TB_User> lambdaDelete = jdbcTemplate.lambdaDelete(TB_User.class);
+            int delete = lambdaDelete.eq(TB_User::getLoginName, beanForData1().getLoginName()).doDelete();
+            assert delete == 1;
+            //
+            List<TB_User> tbUsers = jdbcTemplate.lambdaQuery(TB_User.class).queryForList();
+            assert tbUsers.size() == 2;
+            List<String> collect = tbUsers.stream().map(TB_User::getUserUUID).collect(Collectors.toList());
+            assert collect.contains(beanForData2().getUserUUID());
+            assert collect.contains(beanForData3().getUserUUID());
         }
     }
 }

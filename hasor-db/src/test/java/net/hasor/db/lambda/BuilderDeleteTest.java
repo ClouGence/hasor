@@ -70,4 +70,17 @@ public class BuilderDeleteTest extends AbstractDbTest {
         assert !(boundSql2 instanceof BatchBoundSql);
         assert boundSql2.getSqlString().equals("DELETE FROM `TB_User` WHERE ( `index` = ? )");
     }
+
+    @Test
+    public void deleteBuilder_4() {
+        LambdaDelete<TB_User> lambdaDelete = new JdbcTemplate().lambdaDelete(TB_User.class);
+        lambdaDelete.eq(TB_User::getLoginName, "admin").and().eq(TB_User::getLoginPassword, "pass");
+        //
+        SqlDialect dialect = new MySqlDialect();
+        BoundSql boundSql1 = lambdaDelete.getBoundSql(dialect);
+        assert boundSql1.getSqlString().equals("DELETE FROM TB_User WHERE loginName = ? AND loginPassword = ?");
+        //
+        BoundSql boundSql2 = lambdaDelete.useQualifier().getBoundSql(dialect);
+        assert boundSql2.getSqlString().equals("DELETE FROM `TB_User` WHERE `loginName` = ? AND `loginPassword` = ?");
+    }
 }
