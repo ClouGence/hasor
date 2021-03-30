@@ -1,6 +1,6 @@
 # JDBC 框架
 
-&emsp;&emsp;Hasor-DB 是一款基于jdbc的数据库访问框架，保留了大部分 Spring-JDBC 接口能力，完全重写了实现才有了它。可以说 Spring-JDBC + Lambda + ORM 等于 hasor-db。
+&emsp;&emsp;Hasor-DB 是一款基于 jdbc 的数据库访问框架，最佳实践集中化实现。
 
 ----------
 ## 特性
@@ -20,17 +20,7 @@
 ## 样例
 
 ```java
-public class JdbcDemo {
-    public static void main(String[] args) {
-        AppContext appContext = Hasor.create().build(apiBinder -> {
-            DataSource dataSource = ... //创建数据源
-            apiBinder.installModule(new JdbcModule(Level.Full, dataSource));
-        });
-
-        JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-        jdbcTemplate.queryForInt("select count(1) from TB_User");
-    }
-}
+JdbcTemplate jdbcTemplate = new JdbcTemplate();
 ```
 
 ## 源码说明

@@ -15,7 +15,8 @@
  */
 package net.hasor.db.jdbc.core;
 import net.hasor.db.jdbc.ConnectionCallback;
-import net.hasor.db.jdbc.extractor.ColumnMapResultSetExtractor;
+import net.hasor.db.metadata.MySqlMetadataSupplier;
+import net.hasor.db.metadata.mysql.MySqlTable;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.utils.DsUtils;
 import net.hasor.utils.ResourcesUtils;
@@ -26,10 +27,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 /***
  * execute 系列方法测试
@@ -38,13 +36,10 @@ import java.util.Map;
  */
 public class LoadTest extends AbstractDbTest {
     private boolean hasTable(JdbcTemplate jdbcTemplate) throws SQLException {
-
-        List<Map<String, Object>> mapList = jdbcTemplate.execute((ConnectionCallback<List<Map<String, Object>>>) con -> {
-            try (ResultSet tbUser = con.getMetaData().getTables(null, null, "tb_user", new String[] { "TABLE" })) {
-                return new ColumnMapResultSetExtractor().extractData(tbUser);
-            }
+        return jdbcTemplate.execute((ConnectionCallback<Boolean>) con -> {
+            MySqlTable tables = new MySqlMetadataSupplier(con).getTable("devtester", "tb_user");
+            return tables != null;
         });
-        return !mapList.isEmpty();
     }
 
     @Test

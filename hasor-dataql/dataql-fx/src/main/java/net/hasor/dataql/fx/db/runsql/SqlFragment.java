@@ -36,9 +36,9 @@ import net.hasor.db.jdbc.core.ArgPreparedStatementSetter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
-import net.hasor.db.lambda.dialect.BoundSql;
-import net.hasor.db.lambda.dialect.SqlDialect;
-import net.hasor.db.lambda.dialect.SqlDialectRegister;
+import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.dialect.SqlDialectRegister;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
 

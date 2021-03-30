@@ -16,8 +16,8 @@
 package net.hasor.dataql.fx.db.runsql;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.UdfSourceAssembly;
-import net.hasor.db.lambda.dialect.BoundSql;
-import net.hasor.db.lambda.dialect.SqlDialect;
+import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.dialect.SqlDialect;
 import net.hasor.utils.convert.ConverterUtils;
 
 import java.sql.SQLException;
