@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.binder.BindInfoBuilder;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.test.core.basic.pojo.PojoBean;
@@ -124,6 +126,58 @@ public class BindInfoContainerTest {
             assert false;
         } catch (Exception e) {
             assert e.getMessage().equals("conflict type '" + PojoBean.class.getName() + "' of same name ''");
+        }
+    }
+
+    @Test
+    public void infoTest7() {
+        PojoBean pojoBeanA = new PojoBean();
+        PojoBean pojoBeanB = new PojoBean();
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            apiBinder.bindType(PojoBean.class).idWith("a").toInstance(pojoBeanA);
+            apiBinder.bindType(PojoBean.class).idWith("b").toInstance(pojoBeanB);
+        });
+        //
+        assert appContext.getInstance("a") == pojoBeanA;
+        assert appContext.getInstance("b") == pojoBeanB;
+    }
+
+    @Test
+    public void infoTest8() {
+        try {
+            Hasor.create().build(apiBinder -> {
+                apiBinder.bindType(PojoBean.class).idWith("a").toInstance(new PojoBean());
+                apiBinder.bindType(PojoBean.class).idWith("a").toInstance(new PojoBean());
+            });
+            assert false;
+        } catch (Exception e) {
+            assert e.getMessage().equals("duplicate bind -> id value is a");
+        }
+    }
+
+    @Test
+    public void infoTest9() {
+        PojoBean pojoBeanA = new PojoBean();
+        PojoBean pojoBeanB = new PojoBean();
+        AppContext appContext = Hasor.create().build(apiBinder -> {
+            apiBinder.bindType(PojoBean.class).nameWith("a").toInstance(pojoBeanA);
+            apiBinder.bindType(PojoBean.class).nameWith("b").toInstance(pojoBeanB);
+        });
+        //
+        assert appContext.findBindingBean("a", PojoBean.class) == pojoBeanA;
+        assert appContext.findBindingBean("b", PojoBean.class) == pojoBeanB;
+    }
+
+    @Test
+    public void infoTest10() {
+        try {
+            Hasor.create().build(apiBinder -> {
+                apiBinder.bindType(PojoBean.class).nameWith("a").toInstance(new PojoBean());
+                apiBinder.bindType(PojoBean.class).nameWith("a").toInstance(new PojoBean());
+            });
+            assert false;
+        } catch (Exception e) {
+            assert e.getMessage().startsWith("duplicate bind -> bindName 'a' conflict with bindType='class net.hasor.test.core.basic.pojo.PojoBean', bindID='");
         }
     }
 

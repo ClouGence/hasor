@@ -196,7 +196,8 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
             newValue = Objects.requireNonNull(newValue);
             BindInfo bindInfo = this.findBindInfo((String) newValue, target.getBindType());
             if (bindInfo != null) {
-                throw new IllegalStateException("duplicate bind -> bindName '" + newValue + "' conflict with '" + bindInfo + "'");
+                String bindMessage = "bindType='" + bindInfo.getBindType() + "', bindID='" + bindInfo.getBindID() + "'";
+                throw new IllegalStateException("duplicate bind -> bindName '" + newValue + "' conflict with " + bindMessage);
             }
         }
         // .
@@ -225,10 +226,12 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
             value.forEach(bindID -> {
                 BindInfo<?> bindInfo = idDataSource.get(bindID);
                 String name = StringUtils.isBlank(bindInfo.getBindName()) ? null : bindInfo.getBindName();
-                if (names.contains(name)) {
-                    throw new IllegalStateException("conflict type '" + key + "' of same name '" + (StringUtils.isBlank(name) ? "'" : (" with name '" + name + "'")));
-                } else {
-                    names.add(name);
+                if (name != null) {
+                    if (names.contains(name)) {
+                        throw new IllegalStateException("conflict type '" + key + "' of same name '" + (StringUtils.isBlank(name) ? "'" : (" with name '" + name + "'")));
+                    } else {
+                        names.add(name);
+                    }
                 }
             });
             names.clear();
