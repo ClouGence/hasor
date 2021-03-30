@@ -24,13 +24,8 @@ import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
 import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
-import net.hasor.db.lambda.LambdaOperations;
-import net.hasor.db.lambda.mapping.MappingHandler;
-import net.hasor.db.lambda.mapping.MappingRowMapper;
-import net.hasor.db.lambda.query.LambdaDeleteWrapper;
-import net.hasor.db.lambda.query.LambdaInsertWrapper;
-import net.hasor.db.lambda.query.LambdaQueryWrapper;
-import net.hasor.db.lambda.query.LambdaUpdateWrapper;
+import net.hasor.db.mapping.MappingHandler;
+import net.hasor.db.mapping.MappingRowMapper;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
 import net.hasor.utils.ResourcesUtils;
@@ -64,7 +59,7 @@ import java.util.stream.Collectors;
  * @see RowCallbackHandler
  * @see RowMapper
  */
-public class JdbcTemplate extends JdbcConnection implements JdbcOperations, LambdaOperations {
+public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     private static final Logger         logger                 = LoggerFactory.getLogger(JdbcTemplate.class);
     /*当JDBC 结果集中如出现相同的列名仅仅大小写不同时。是否保留大小写列名敏感。
      * 如果为 true 表示不敏感，并且结果集Map中保留两个记录。如果为 false 则表示敏感，如出现冲突列名后者将会覆盖前者。*/
@@ -534,6 +529,26 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
     }
 
     @Override
+    public String queryForString(final String sql) throws SQLException {
+        return this.queryForObject(sql, String.class);
+    }
+
+    @Override
+    public String queryForString(final String sql, final Object... args) throws SQLException {
+        return this.queryForObject(sql, String.class, args);
+    }
+
+    @Override
+    public String queryForString(final String sql, final SqlParameterSource paramSource) throws SQLException {
+        return this.queryForObject(sql, paramSource, String.class);
+    }
+
+    @Override
+    public String queryForString(final String sql, final Map<String, ?> paramMap) throws SQLException {
+        return this.queryForObject(sql, paramMap, String.class);
+    }
+
+    @Override
     public Map<String, Object> queryForMap(final String sql) throws SQLException {
         return this.queryForObject(sql, this.getColumnMapRowMapper());
     }
@@ -954,26 +969,6 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations, Lamb
             }
         }
         return null;
-    }
-
-    @Override
-    public <T> LambdaQuery<T> lambdaQuery(Class<T> exampleType) {
-        return new LambdaQueryWrapper<>(exampleType, this);
-    }
-
-    @Override
-    public <T> LambdaDelete<T> lambdaDelete(Class<T> exampleType) {
-        return new LambdaDeleteWrapper<>(exampleType, this);
-    }
-
-    @Override
-    public <T> LambdaUpdate<T> lambdaUpdate(Class<T> exampleType) {
-        return new LambdaUpdateWrapper<>(exampleType, this);
-    }
-
-    @Override
-    public <T> LambdaInsert<T> lambdaInsert(Class<T> exampleType) {
-        return new LambdaInsertWrapper<>(exampleType, this);
     }
 
     /** Create a new RowMapper for reading columns as key-value pairs. */

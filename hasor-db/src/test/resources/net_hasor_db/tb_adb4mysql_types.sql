@@ -1,4 +1,6 @@
-/* https://dev.mysql.com/doc/refman/5.7/en/data-types.html
+/* Aliyun ADB For MySQL 3.0
+ *
+ * https://dev.mysql.com/doc/refman/5.7/en/data-types.html
  * https://dev.mysql.com/doc/refman/8.0/en/data-types.html
  * https://help.aliyun.com/document_detail/123577.html
  * https://help.aliyun.com/document_detail/197325.html
@@ -86,6 +88,7 @@ create table tb_adbmysql_types
     c_char_n                 char(10),
 
     c_varchar                varchar,
+    c_string                 string,
     c_varchar_n              varchar(10),
 
     c_binary                 binary,
@@ -95,6 +98,7 @@ create table tb_adbmysql_types
     c_blob                   blob,
     c_blob_n                 blob(12),
 
+    c_clob                   clob,
     c_tinytext               tinytext,
     c_text                   text,
     c_text_n                 text(12),

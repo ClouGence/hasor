@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.db.lambda;
-import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.dialect.BatchBoundSql;
+import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.dialect.provider.MySqlDialect;
 import net.hasor.db.lambda.LambdaOperations.LambdaInsert;
-import net.hasor.db.lambda.dialect.BatchBoundSql;
-import net.hasor.db.lambda.dialect.BoundSql;
-import net.hasor.db.lambda.dialect.SqlDialect;
-import net.hasor.db.lambda.dialect.provider.MySqlDialect;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.dto.TB_User;
 import net.hasor.test.db.dto.TbUserShadow;
@@ -35,7 +34,7 @@ import static net.hasor.test.db.utils.TestUtils.mapForData2;
 public class BuilderInsertTest extends AbstractDbTest {
     @Test
     public void insertBuilder_1() {
-        LambdaInsert<TB_User> lambdaInsert = new JdbcTemplate().lambdaInsert(TB_User.class);
+        LambdaInsert<TB_User> lambdaInsert = new LambdaTemplate().lambdaInsert(TB_User.class);
         lambdaInsert.applyEntity(beanForData1());
         lambdaInsert.applyMap(mapForData2());
         //
@@ -51,7 +50,7 @@ public class BuilderInsertTest extends AbstractDbTest {
 
     @Test
     public void insertBuilder_2() {
-        LambdaInsert<TbUserShadow> lambdaInsert = new JdbcTemplate().lambdaInsert(TbUserShadow.class);
+        LambdaInsert<TbUserShadow> lambdaInsert = new LambdaTemplate().lambdaInsert(TbUserShadow.class);
         lambdaInsert.applyQueryAsInsert(TB_User.class, queryBuilder -> {
             queryBuilder.eq(TB_User::getIndex, 123);
         });

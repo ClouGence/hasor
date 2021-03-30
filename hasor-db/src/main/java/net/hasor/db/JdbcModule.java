@@ -24,6 +24,9 @@ import net.hasor.db.jdbc.core.JdbcAccessor;
 import net.hasor.db.jdbc.core.JdbcConnection;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.JdbcTemplateProvider;
+import net.hasor.db.lambda.LambdaOperations;
+import net.hasor.db.lambda.LambdaTemplate;
+import net.hasor.db.lambda.LambdaTemplateProvider;
 import net.hasor.db.transaction.*;
 import net.hasor.db.transaction.provider.TransactionManagerProvider;
 import net.hasor.db.transaction.provider.TransactionTemplateProvider;
@@ -102,16 +105,21 @@ public class JdbcModule implements Module {
         //
         if (loadJdbc) {
             JdbcTemplateProvider tempProvider = new JdbcTemplateProvider(this.dataSource);
+            LambdaTemplateProvider lambdaProvider = new LambdaTemplateProvider(this.dataSource);
             if (StringUtils.isBlank(this.dataSourceID)) {
                 apiBinder.bindType(JdbcAccessor.class).toProvider(tempProvider);
                 apiBinder.bindType(JdbcConnection.class).toProvider(tempProvider);
                 apiBinder.bindType(JdbcTemplate.class).toProvider(tempProvider);
                 apiBinder.bindType(JdbcOperations.class).toProvider(tempProvider);
+                apiBinder.bindType(LambdaTemplate.class).toProvider(lambdaProvider);
+                apiBinder.bindType(LambdaOperations.class).toProvider(lambdaProvider);
             } else {
                 apiBinder.bindType(JdbcAccessor.class).nameWith(this.dataSourceID).toProvider(tempProvider);
                 apiBinder.bindType(JdbcConnection.class).nameWith(this.dataSourceID).toProvider(tempProvider);
                 apiBinder.bindType(JdbcTemplate.class).nameWith(this.dataSourceID).toProvider(tempProvider);
                 apiBinder.bindType(JdbcOperations.class).nameWith(this.dataSourceID).toProvider(tempProvider);
+                apiBinder.bindType(LambdaTemplate.class).nameWith(this.dataSourceID).toProvider(lambdaProvider);
+                apiBinder.bindType(LambdaOperations.class).nameWith(this.dataSourceID).toProvider(lambdaProvider);
             }
         }
         //

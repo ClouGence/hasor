@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.lambda.query;
-import net.hasor.db.lambda.dialect.BoundSql;
-import net.hasor.db.lambda.dialect.SqlDialect;
+import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.jdbc.ResultSetExtractor;
 import net.hasor.db.jdbc.RowCallbackHandler;
 import net.hasor.db.jdbc.RowMapper;

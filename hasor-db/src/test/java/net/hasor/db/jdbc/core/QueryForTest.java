@@ -17,7 +17,7 @@ package net.hasor.db.jdbc.core;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.paramer.BeanSqlParameterSource;
-import net.hasor.db.lambda.mapping.MappingRowMapper;
+import net.hasor.db.mapping.MappingRowMapper;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TB_User;

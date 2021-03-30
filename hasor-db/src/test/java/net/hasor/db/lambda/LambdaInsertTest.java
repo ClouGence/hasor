@@ -16,9 +16,8 @@
 package net.hasor.db.lambda;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.dialect.BatchBoundSql;
 import net.hasor.db.lambda.LambdaOperations.LambdaInsert;
-import net.hasor.db.lambda.dialect.BatchBoundSql;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TB_User;
@@ -41,10 +40,10 @@ public class LambdaInsertTest extends AbstractDbTest {
     @Test
     public void lambda_insert_1() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            jdbcTemplate.execute("delete from tb_user");
+            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+            lambdaTemplate.getJdbcTemplate().execute("delete from tb_user");
             //
-            LambdaInsert<TB_User> lambdaInsert = jdbcTemplate.lambdaInsert(TB_User.class);
+            LambdaInsert<TB_User> lambdaInsert = lambdaTemplate.lambdaInsert(TB_User.class);
             lambdaInsert.applyEntity(beanForData1());
             lambdaInsert.applyMap(mapForData2());
             assert lambdaInsert.getBoundSql() instanceof BatchBoundSql;
@@ -52,7 +51,7 @@ public class LambdaInsertTest extends AbstractDbTest {
             int i = lambdaInsert.executeSumResult();
             assert i == 2;
             //
-            List<TB_User> tbUsers = jdbcTemplate.lambdaQuery(TB_User.class).queryForList();
+            List<TB_User> tbUsers = lambdaTemplate.lambdaQuery(TB_User.class).queryForList();
             assert tbUsers.size() == 2;
             List<String> ids = tbUsers.stream().map(TB_User::getUserUUID).collect(Collectors.toList());
             assert ids.contains(beanForData1().getUserUUID());
@@ -63,18 +62,18 @@ public class LambdaInsertTest extends AbstractDbTest {
     @Test
     public void lambda_insert_2() throws SQLException, IOException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            jdbcTemplate.loadSQL("net_hasor_db/tb_user_shadow_for_h2.sql");
+            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+            lambdaTemplate.getJdbcTemplate().loadSQL("net_hasor_db/tb_user_shadow_for_h2.sql");
             //
-            LambdaInsert<TbUserShadow> lambdaInsert = jdbcTemplate.lambdaInsert(TbUserShadow.class);
-            lambdaInsert.applyQueryAsInsert(jdbcTemplate.lambdaQuery(TB_User.class));
+            LambdaInsert<TbUserShadow> lambdaInsert = lambdaTemplate.lambdaInsert(TbUserShadow.class);
+            lambdaInsert.applyQueryAsInsert(lambdaTemplate.lambdaQuery(TB_User.class));
             //
             assert !(lambdaInsert.getBoundSql() instanceof BatchBoundSql);
             //
             int i = lambdaInsert.executeSumResult();
             assert i == 3;
             //
-            List<TbUserShadow> tbUsers = jdbcTemplate.lambdaQuery(TbUserShadow.class).queryForList();
+            List<TbUserShadow> tbUsers = lambdaTemplate.lambdaQuery(TbUserShadow.class).queryForList();
             assert tbUsers.size() == 3;
             List<String> ids = tbUsers.stream().map(TbUserShadow::getUserUUID).collect(Collectors.toList());
             assert ids.contains(beanForData1().getUserUUID());

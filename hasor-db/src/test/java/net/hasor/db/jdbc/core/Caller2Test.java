@@ -36,18 +36,18 @@ public class Caller2Test extends AbstractDbTest {
     public void mysqlCallCross_1() throws SQLException {
         try (Connection conn = DsUtils.localMySQL()) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
-            jdbcTemplate.execute("drop table if exists proc_table;");
-            jdbcTemplate.execute("create table proc_table( c_id int primary key, c_name varchar(200));");
-            jdbcTemplate.execute("insert into proc_table (c_id,c_name) values (1, 'aaa');");
-            jdbcTemplate.execute("insert into proc_table (c_id,c_name) values (2, 'bbb');");
-            jdbcTemplate.execute("insert into proc_table (c_id,c_name) values (3, 'ccc');");
+            jdbcTemplate.execute("drop table if exists proc_table_forcaller;");
+            jdbcTemplate.execute("create table proc_table_forcaller( c_id int primary key, c_name varchar(200));");
+            jdbcTemplate.execute("insert into proc_table_forcaller (c_id,c_name) values (1, 'aaa');");
+            jdbcTemplate.execute("insert into proc_table_forcaller (c_id,c_name) values (2, 'bbb');");
+            jdbcTemplate.execute("insert into proc_table_forcaller (c_id,c_name) values (3, 'ccc');");
             //
             jdbcTemplate.execute("drop procedure if exists proc_select_cross_table;");
             jdbcTemplate.execute(""//
                     + "create procedure proc_select_cross_table(in p_name varchar(200), out p_out varchar(200))" //
                     + " begin " //
-                    + "   select * from proc_table where c_name = p_name ;" //
-                    + "   select * from proc_table where c_name = p_name ;" //
+                    + "   select * from proc_table_forcaller where c_name = p_name ;" //
+                    + "   select * from proc_table_forcaller where c_name = p_name ;" //
                     + "   set p_out = p_name;"//
                     + " end;");
             //

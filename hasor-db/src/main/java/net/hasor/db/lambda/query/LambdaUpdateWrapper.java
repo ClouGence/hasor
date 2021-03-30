@@ -15,9 +15,9 @@
  */
 package net.hasor.db.lambda.query;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.lambda.mapping.FieldInfo;
 import net.hasor.db.lambda.LambdaOperations.LambdaUpdate;
 import net.hasor.db.lambda.UpdateExecute;
+import net.hasor.db.mapping.FieldInfo;
 import net.hasor.utils.reflect.SFunction;
 
 import java.sql.SQLException;
@@ -32,7 +32,6 @@ import java.util.function.Predicate;
 public class LambdaUpdateWrapper<T> extends AbstractQueryCompare<T, LambdaUpdate<T>> implements LambdaUpdate<T> {
     public LambdaUpdateWrapper(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
         super(exampleType, jdbcTemplate);
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -52,27 +51,27 @@ public class LambdaUpdateWrapper<T> extends AbstractQueryCompare<T, LambdaUpdate
     }
 
     @Override
-    public UpdateExecute<T> applyUpdateTo(T newValue) throws SQLException {
+    public UpdateExecute<T> applyNewValue(T newValue) throws SQLException {
         return null;
     }
 
     @Override
-    public UpdateExecute<T> applyUpdateTo(T newValue, String... columns) throws SQLException {
+    public UpdateExecute<T> applyNewValue(T newValue, String... columns) throws SQLException {
         return null;
     }
 
     @Override
-    public UpdateExecute<T> applyUpdateTo(T newValue, SFunction<T> property) throws SQLException {
+    public UpdateExecute<T> applyNewValue(T newValue, SFunction<T> property) throws SQLException {
         return null;
     }
 
     @Override
-    public UpdateExecute<T> applyUpdateTo(T newValue, List<SFunction<T>> propertyList) throws SQLException {
+    public UpdateExecute<T> applyNewValue(T newValue, List<SFunction<T>> propertyList) throws SQLException {
         return null;
     }
 
     @Override
-    public UpdateExecute<T> applyUpdateTo(T newValue, Predicate<FieldInfo> tester) throws SQLException {
+    public UpdateExecute<T> applyNewValue(T newValue, Predicate<FieldInfo> tester) throws SQLException {
         return null;
     }
 }

@@ -19,7 +19,7 @@ import net.hasor.core.Hasor;
 import net.hasor.db.datasource.ConnectionProxy;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.StatementCallback;
-import net.hasor.db.lambda.mapping.MappingHandler;
+import net.hasor.db.mapping.MappingHandler;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.SingleDsModule;
 import org.junit.Test;

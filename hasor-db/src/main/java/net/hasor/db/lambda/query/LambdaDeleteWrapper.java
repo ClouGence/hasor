@@ -17,9 +17,9 @@ package net.hasor.db.lambda.query;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.lambda.DeleteExecute;
 import net.hasor.db.lambda.LambdaOperations.LambdaDelete;
-import net.hasor.db.lambda.dialect.BoundSql;
-import net.hasor.db.lambda.dialect.SqlDialect;
-import net.hasor.db.lambda.mapping.TableInfo;
+import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.mapping.TableInfo;
 import net.hasor.db.lambda.segment.MergeSqlSegment;
 import net.hasor.db.lambda.segment.Segment;
 

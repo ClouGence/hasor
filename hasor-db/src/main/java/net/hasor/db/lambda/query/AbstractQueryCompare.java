@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.db.lambda.query;
-import net.hasor.db.lambda.dialect.BoundSql;
+import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.lambda.mapping.FieldInfo;
-import net.hasor.db.lambda.mapping.TableInfo;
+import net.hasor.db.mapping.FieldInfo;
+import net.hasor.db.mapping.TableInfo;
 import net.hasor.db.lambda.QueryCompare;
 import net.hasor.db.lambda.segment.MergeSqlSegment;
 import net.hasor.db.lambda.segment.Segment;

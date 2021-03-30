@@ -17,9 +17,9 @@ package net.hasor.db.lambda;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.JdbcUtils;
+import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.dialect.SqlDialectRegister;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.lambda.dialect.BoundSql;
-import net.hasor.db.lambda.dialect.SqlDialectRegister;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TB_User;
@@ -41,7 +41,7 @@ import static net.hasor.test.db.utils.TestUtils.INSERT_ARRAY;
 public class PageTest extends AbstractDbTest {
     @Test
     public void pageTest_1() {
-        BoundSql boundSql = new JdbcTemplate().lambdaQuery(TbUser.class).select(TbUser::getAccount)//
+        BoundSql boundSql = new LambdaTemplate().lambdaQuery(TbUser.class).select(TbUser::getAccount)//
                 .initPage(10, 2)//
                 .getBoundSql(SqlDialectRegister.findOrCreate(JdbcUtils.MYSQL));
         assert boundSql.getSqlString().equals("SELECT loginName FROM tb_user LIMIT ?, ?");
@@ -51,7 +51,7 @@ public class PageTest extends AbstractDbTest {
 
     @Test
     public void pageTest_2() {
-        BoundSql boundSql = new JdbcTemplate().lambdaQuery(TbUser.class).select(TbUser::getAccount)//
+        BoundSql boundSql = new LambdaTemplate().lambdaQuery(TbUser.class).select(TbUser::getAccount)//
                 .eq(TbUser::getIndex, 1)//
                 .between(TbUser::getAccount, 2, 3)//
                 .initPage(10, 2)//
@@ -66,12 +66,12 @@ public class PageTest extends AbstractDbTest {
 
     @Test
     public void pageTest_3() {
-        BoundSql boundSql1 = new JdbcTemplate().lambdaQuery(TbUser.class).select(TbUser::getAccount)//
+        BoundSql boundSql1 = new LambdaTemplate().lambdaQuery(TbUser.class).select(TbUser::getAccount)//
                 .orderBy(TbUser::getUid).initPage(5, 0).getBoundSql(SqlDialectRegister.findOrCreate(JdbcUtils.MYSQL));
         assert boundSql1.getSqlString().equals("SELECT loginName FROM tb_user ORDER BY userUUID LIMIT ?");
         assert boundSql1.getArgs()[0].equals(5);
         //
-        BoundSql boundSql2 = new JdbcTemplate().lambdaQuery(TbUser.class).select(TbUser::getAccount)//
+        BoundSql boundSql2 = new LambdaTemplate().lambdaQuery(TbUser.class).select(TbUser::getAccount)//
                 .orderBy(TbUser::getUid).initPage(5, 1).getBoundSql(SqlDialectRegister.findOrCreate(JdbcUtils.MYSQL));
         assert boundSql2.getSqlString().equals("SELECT loginName FROM tb_user ORDER BY userUUID LIMIT ?, ?");
         assert boundSql2.getArgs()[0].equals(5);
@@ -81,7 +81,8 @@ public class PageTest extends AbstractDbTest {
     @Test
     public void pageTest_4() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+            JdbcTemplate jdbcTemplate = lambdaTemplate.getJdbcTemplate();
             jdbcTemplate.execute("delete from tb_user");
             //
             int count = 13;
@@ -99,11 +100,11 @@ public class PageTest extends AbstractDbTest {
             jdbcTemplate.executeBatch(INSERT_ARRAY, batchValues);//批量执行执行插入语句
             assert jdbcTemplate.queryForInt("select count(1) from tb_user") == 13;
             //
-            List<TbUser> page0 = jdbcTemplate.lambdaQuery(TbUser.class).orderBy(TbUser::getIndex).initPage(5, 0).queryForList();
-            List<TbUser> page1 = jdbcTemplate.lambdaQuery(TbUser.class).orderBy(TbUser::getIndex).initPage(5, 1).queryForList();
-            List<TbUser> page2 = jdbcTemplate.lambdaQuery(TbUser.class).orderBy(TbUser::getIndex).initPage(5, 2).queryForList();
-            List<TbUser> page3 = jdbcTemplate.lambdaQuery(TbUser.class).orderBy(TbUser::getIndex).initPage(5, 3).queryForList();
-            List<TbUser> page4 = jdbcTemplate.lambdaQuery(TbUser.class).orderBy(TbUser::getIndex).initPage(5, 4).queryForList();
+            List<TbUser> page0 = lambdaTemplate.lambdaQuery(TbUser.class).orderBy(TbUser::getIndex).initPage(5, 0).queryForList();
+            List<TbUser> page1 = lambdaTemplate.lambdaQuery(TbUser.class).orderBy(TbUser::getIndex).initPage(5, 1).queryForList();
+            List<TbUser> page2 = lambdaTemplate.lambdaQuery(TbUser.class).orderBy(TbUser::getIndex).initPage(5, 2).queryForList();
+            List<TbUser> page3 = lambdaTemplate.lambdaQuery(TbUser.class).orderBy(TbUser::getIndex).initPage(5, 3).queryForList();
+            List<TbUser> page4 = lambdaTemplate.lambdaQuery(TbUser.class).orderBy(TbUser::getIndex).initPage(5, 4).queryForList();
             //
             assert page0.size() == 5;
             assert page1.size() == 5;
@@ -126,7 +127,8 @@ public class PageTest extends AbstractDbTest {
     @Test
     public void pageTest_5() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+            JdbcTemplate jdbcTemplate = lambdaTemplate.getJdbcTemplate();
             jdbcTemplate.execute("delete from tb_user");
             //
             int count = 13;
@@ -144,11 +146,11 @@ public class PageTest extends AbstractDbTest {
             jdbcTemplate.executeBatch(INSERT_ARRAY, batchValues);//批量执行执行插入语句
             assert jdbcTemplate.queryForInt("select count(1) from tb_user") == 13;
             //
-            List<TB_User> page0 = jdbcTemplate.lambdaQuery(TB_User.class).orderBy(TB_User::getIndex).initPage(5, 0).queryForList();
-            List<TB_User> page1 = jdbcTemplate.lambdaQuery(TB_User.class).orderBy(TB_User::getIndex).initPage(5, 1).queryForList();
-            List<TB_User> page2 = jdbcTemplate.lambdaQuery(TB_User.class).orderBy(TB_User::getIndex).initPage(5, 2).queryForList();
-            List<TB_User> page3 = jdbcTemplate.lambdaQuery(TB_User.class).orderBy(TB_User::getIndex).initPage(5, 3).queryForList();
-            List<TB_User> page4 = jdbcTemplate.lambdaQuery(TB_User.class).orderBy(TB_User::getIndex).initPage(5, 4).queryForList();
+            List<TB_User> page0 = lambdaTemplate.lambdaQuery(TB_User.class).orderBy(TB_User::getIndex).initPage(5, 0).queryForList();
+            List<TB_User> page1 = lambdaTemplate.lambdaQuery(TB_User.class).orderBy(TB_User::getIndex).initPage(5, 1).queryForList();
+            List<TB_User> page2 = lambdaTemplate.lambdaQuery(TB_User.class).orderBy(TB_User::getIndex).initPage(5, 2).queryForList();
+            List<TB_User> page3 = lambdaTemplate.lambdaQuery(TB_User.class).orderBy(TB_User::getIndex).initPage(5, 3).queryForList();
+            List<TB_User> page4 = lambdaTemplate.lambdaQuery(TB_User.class).orderBy(TB_User::getIndex).initPage(5, 4).queryForList();
             //
             assert page0.size() == 5;
             assert page1.size() == 5;

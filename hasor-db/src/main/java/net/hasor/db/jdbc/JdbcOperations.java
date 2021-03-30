@@ -313,6 +313,33 @@ public interface JdbcOperations {
      */
     public int queryForInt(String sql, Map<String, ?> paramMap) throws SQLException;
 
+    /**执行一个静态 SQL 语句，并取得 String 类型数据。
+     * 预计该方法只会处理一条数据，如果查询结果存在多条数据或者多列将会引发异常。
+     * @return the String value.
+     */
+    public String queryForString(String sql) throws SQLException;
+
+    /**
+     * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将转换成 String 类型。
+     * 所以需要保证查询的结果只有一行一列，否则执行会引发异常。
+     * @throws SQLException if the query fails
+     */
+    public String queryForString(String sql, Object... args) throws SQLException;
+
+    /**
+     * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将转换成 String 类型。
+     * 所以需要保证查询的结果只有一行一列，否则执行会引发异常。
+     * @throws SQLException if the query fails
+     */
+    public String queryForString(String sql, SqlParameterSource paramSource) throws SQLException;
+
+    /**
+     * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将转换成 String 类型。
+     * 所以需要保证查询的结果只有一行一列，否则执行会引发异常。
+     * @throws SQLException if the query fails
+     */
+    public String queryForString(String sql, Map<String, ?> paramMap) throws SQLException;
+
     /**执行一个静态 SQL 语句，结果将被映射到一个列表(一个条目为每一行)的对象，
      * 列表中每一条记录都是<code>Map</code>类型对象。*/
     public List<Map<String, Object>> queryForList(String sql) throws SQLException;

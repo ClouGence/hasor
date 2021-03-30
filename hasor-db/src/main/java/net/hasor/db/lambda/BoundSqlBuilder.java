@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.lambda;
-import net.hasor.db.lambda.dialect.BoundSql;
-import net.hasor.db.lambda.dialect.SqlDialect;
+import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.dialect.SqlDialect;
 
 /**
  * 提供 BoundSql 。

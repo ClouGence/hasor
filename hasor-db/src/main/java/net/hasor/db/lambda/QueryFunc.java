@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.lambda;
-import net.hasor.db.lambda.mapping.FieldInfo;
+import net.hasor.db.mapping.FieldInfo;
 import net.hasor.db.lambda.page.Page;
 import net.hasor.utils.reflect.SFunction;
 

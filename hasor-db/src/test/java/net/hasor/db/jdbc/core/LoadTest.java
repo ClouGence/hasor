@@ -38,6 +38,7 @@ import java.util.Map;
  */
 public class LoadTest extends AbstractDbTest {
     private boolean hasTable(JdbcTemplate jdbcTemplate) throws SQLException {
+
         List<Map<String, Object>> mapList = jdbcTemplate.execute((ConnectionCallback<List<Map<String, Object>>>) con -> {
             try (ResultSet tbUser = con.getMetaData().getTables(null, null, "tb_user", new String[] { "TABLE" })) {
                 return new ColumnMapResultSetExtractor().extractData(tbUser);

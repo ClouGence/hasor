@@ -16,7 +16,6 @@
 package net.hasor.db.lambda;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.lambda.LambdaOperations.LambdaDelete;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.SingleDsModule;
@@ -38,9 +37,9 @@ public class LambdaDeleteTest extends AbstractDbTest {
     @Test
     public void lambda_delete_1() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
             //
-            LambdaDelete<TB_User> lambdaDelete = jdbcTemplate.lambdaDelete(TB_User.class);
+            LambdaDelete<TB_User> lambdaDelete = lambdaTemplate.lambdaDelete(TB_User.class);
             int delete = lambdaDelete.allowEmptyWhere().doDelete();
             assert delete == 3;
         }
@@ -49,13 +48,13 @@ public class LambdaDeleteTest extends AbstractDbTest {
     @Test
     public void lambda_delete_2() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
             //
-            LambdaDelete<TB_User> lambdaDelete = jdbcTemplate.lambdaDelete(TB_User.class);
+            LambdaDelete<TB_User> lambdaDelete = lambdaTemplate.lambdaDelete(TB_User.class);
             int delete = lambdaDelete.eq(TB_User::getLoginName, beanForData1().getLoginName()).doDelete();
             assert delete == 1;
             //
-            List<TB_User> tbUsers = jdbcTemplate.lambdaQuery(TB_User.class).queryForList();
+            List<TB_User> tbUsers = lambdaTemplate.lambdaQuery(TB_User.class).queryForList();
             assert tbUsers.size() == 2;
             List<String> collect = tbUsers.stream().map(TB_User::getUserUUID).collect(Collectors.toList());
             assert collect.contains(beanForData2().getUserUUID());
