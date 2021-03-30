@@ -38,69 +38,69 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class TypeHandlerRegistry {
     private static final Map<Type, TypeHandler<?>>                  cachedSingleHandlers  = new ConcurrentHashMap<>();
+    private static final Map<String, JDBCType>                      javaTypeToJdbcTypeMap = new ConcurrentHashMap<>();
+    private static final Map<JDBCType, Class<?>>                    jdbcTypeToJavaTypeMap = new ConcurrentHashMap<>();
+    //
     public static final  TypeHandlerRegistry                        DEFAULT               = new TypeHandlerRegistry();
     private final        UnknownTypeHandler                         defaultTypeHandler    = new UnknownTypeHandler(this);
     // mappings
-    private static final Map<String, JDBCType>                      javaTypeToSqlTypeMap  = new ConcurrentHashMap<>();
     private final        Map<String, TypeHandler<?>>                javaTypeHandlerMap    = new ConcurrentHashMap<>();
-    private static final Map<JDBCType, Class<?>>                    jdbcTypeToJavaTypeMap = new ConcurrentHashMap<>();
     private final        Map<JDBCType, TypeHandler<?>>              jdbcTypeHandlerMap    = new ConcurrentHashMap<>();
-    //
     private final        Map<String, Map<JDBCType, TypeHandler<?>>> typeHandlerMap        = new ConcurrentHashMap<>();
 
     static {
         // primitive and wrapper
-        javaTypeToSqlTypeMap.put(Boolean.class.getName(), JDBCType.BIT);
-        javaTypeToSqlTypeMap.put(boolean.class.getName(), JDBCType.BIT);
-        javaTypeToSqlTypeMap.put(Byte.class.getName(), JDBCType.TINYINT);
-        javaTypeToSqlTypeMap.put(byte.class.getName(), JDBCType.TINYINT);
-        javaTypeToSqlTypeMap.put(Short.class.getName(), JDBCType.SMALLINT);
-        javaTypeToSqlTypeMap.put(short.class.getName(), JDBCType.SMALLINT);
-        javaTypeToSqlTypeMap.put(Integer.class.getName(), JDBCType.INTEGER);
-        javaTypeToSqlTypeMap.put(int.class.getName(), JDBCType.INTEGER);
-        javaTypeToSqlTypeMap.put(Long.class.getName(), JDBCType.BIGINT);
-        javaTypeToSqlTypeMap.put(long.class.getName(), JDBCType.BIGINT);
-        javaTypeToSqlTypeMap.put(Float.class.getName(), JDBCType.FLOAT);
-        javaTypeToSqlTypeMap.put(float.class.getName(), JDBCType.FLOAT);
-        javaTypeToSqlTypeMap.put(Double.class.getName(), JDBCType.DOUBLE);
-        javaTypeToSqlTypeMap.put(double.class.getName(), JDBCType.DOUBLE);
-        javaTypeToSqlTypeMap.put(Character.class.getName(), JDBCType.CHAR);
-        javaTypeToSqlTypeMap.put(char.class.getName(), JDBCType.CHAR);
+        javaTypeToJdbcTypeMap.put(Boolean.class.getName(), JDBCType.BIT);
+        javaTypeToJdbcTypeMap.put(boolean.class.getName(), JDBCType.BIT);
+        javaTypeToJdbcTypeMap.put(Byte.class.getName(), JDBCType.TINYINT);
+        javaTypeToJdbcTypeMap.put(byte.class.getName(), JDBCType.TINYINT);
+        javaTypeToJdbcTypeMap.put(Short.class.getName(), JDBCType.SMALLINT);
+        javaTypeToJdbcTypeMap.put(short.class.getName(), JDBCType.SMALLINT);
+        javaTypeToJdbcTypeMap.put(Integer.class.getName(), JDBCType.INTEGER);
+        javaTypeToJdbcTypeMap.put(int.class.getName(), JDBCType.INTEGER);
+        javaTypeToJdbcTypeMap.put(Long.class.getName(), JDBCType.BIGINT);
+        javaTypeToJdbcTypeMap.put(long.class.getName(), JDBCType.BIGINT);
+        javaTypeToJdbcTypeMap.put(Float.class.getName(), JDBCType.FLOAT);
+        javaTypeToJdbcTypeMap.put(float.class.getName(), JDBCType.FLOAT);
+        javaTypeToJdbcTypeMap.put(Double.class.getName(), JDBCType.DOUBLE);
+        javaTypeToJdbcTypeMap.put(double.class.getName(), JDBCType.DOUBLE);
+        javaTypeToJdbcTypeMap.put(Character.class.getName(), JDBCType.CHAR);
+        javaTypeToJdbcTypeMap.put(char.class.getName(), JDBCType.CHAR);
         // java time
-        javaTypeToSqlTypeMap.put(Date.class.getName(), JDBCType.TIMESTAMP);
-        javaTypeToSqlTypeMap.put(java.sql.Date.class.getName(), JDBCType.DATE);
-        javaTypeToSqlTypeMap.put(java.sql.Timestamp.class.getName(), JDBCType.TIMESTAMP);
-        javaTypeToSqlTypeMap.put(java.sql.Time.class.getName(), JDBCType.TIME);
-        javaTypeToSqlTypeMap.put(Instant.class.getName(), JDBCType.TIMESTAMP);
-        javaTypeToSqlTypeMap.put(LocalDateTime.class.getName(), JDBCType.TIMESTAMP);
-        javaTypeToSqlTypeMap.put(LocalDate.class.getName(), JDBCType.DATE);
-        javaTypeToSqlTypeMap.put(LocalTime.class.getName(), JDBCType.TIME);
-        javaTypeToSqlTypeMap.put(ZonedDateTime.class.getName(), JDBCType.TIMESTAMP);
-        javaTypeToSqlTypeMap.put(JapaneseDate.class.getName(), JDBCType.TIMESTAMP);
-        javaTypeToSqlTypeMap.put(YearMonth.class.getName(), JDBCType.VARCHAR);
-        javaTypeToSqlTypeMap.put(Year.class.getName(), JDBCType.SMALLINT);
-        javaTypeToSqlTypeMap.put(Month.class.getName(), JDBCType.SMALLINT);
-        javaTypeToSqlTypeMap.put(OffsetDateTime.class.getName(), JDBCType.TIMESTAMP);
-        javaTypeToSqlTypeMap.put(OffsetTime.class.getName(), JDBCType.TIMESTAMP);
+        javaTypeToJdbcTypeMap.put(Date.class.getName(), JDBCType.TIMESTAMP);
+        javaTypeToJdbcTypeMap.put(java.sql.Date.class.getName(), JDBCType.DATE);
+        javaTypeToJdbcTypeMap.put(java.sql.Timestamp.class.getName(), JDBCType.TIMESTAMP);
+        javaTypeToJdbcTypeMap.put(java.sql.Time.class.getName(), JDBCType.TIME);
+        javaTypeToJdbcTypeMap.put(Instant.class.getName(), JDBCType.TIMESTAMP);
+        javaTypeToJdbcTypeMap.put(LocalDateTime.class.getName(), JDBCType.TIMESTAMP);
+        javaTypeToJdbcTypeMap.put(LocalDate.class.getName(), JDBCType.DATE);
+        javaTypeToJdbcTypeMap.put(LocalTime.class.getName(), JDBCType.TIME);
+        javaTypeToJdbcTypeMap.put(ZonedDateTime.class.getName(), JDBCType.TIMESTAMP);
+        javaTypeToJdbcTypeMap.put(JapaneseDate.class.getName(), JDBCType.TIMESTAMP);
+        javaTypeToJdbcTypeMap.put(YearMonth.class.getName(), JDBCType.VARCHAR);
+        javaTypeToJdbcTypeMap.put(Year.class.getName(), JDBCType.SMALLINT);
+        javaTypeToJdbcTypeMap.put(Month.class.getName(), JDBCType.SMALLINT);
+        javaTypeToJdbcTypeMap.put(OffsetDateTime.class.getName(), JDBCType.TIMESTAMP);
+        javaTypeToJdbcTypeMap.put(OffsetTime.class.getName(), JDBCType.TIMESTAMP);
         // java extensions Types
-        javaTypeToSqlTypeMap.put(String.class.getName(), JDBCType.VARCHAR);
-        javaTypeToSqlTypeMap.put(BigInteger.class.getName(), JDBCType.BIGINT);
-        javaTypeToSqlTypeMap.put(BigDecimal.class.getName(), JDBCType.DECIMAL);
-        javaTypeToSqlTypeMap.put(Reader.class.getName(), JDBCType.CLOB);
-        javaTypeToSqlTypeMap.put(InputStream.class.getName(), JDBCType.BLOB);
-        javaTypeToSqlTypeMap.put(URL.class.getName(), JDBCType.DATALINK);
-        javaTypeToSqlTypeMap.put(Byte[].class.getName(), JDBCType.VARBINARY);
-        javaTypeToSqlTypeMap.put(byte[].class.getName(), JDBCType.VARBINARY);
-        javaTypeToSqlTypeMap.put(Object[].class.getName(), JDBCType.ARRAY);
-        javaTypeToSqlTypeMap.put(Object.class.getName(), JDBCType.JAVA_OBJECT);
+        javaTypeToJdbcTypeMap.put(String.class.getName(), JDBCType.VARCHAR);
+        javaTypeToJdbcTypeMap.put(BigInteger.class.getName(), JDBCType.BIGINT);
+        javaTypeToJdbcTypeMap.put(BigDecimal.class.getName(), JDBCType.DECIMAL);
+        javaTypeToJdbcTypeMap.put(Reader.class.getName(), JDBCType.CLOB);
+        javaTypeToJdbcTypeMap.put(InputStream.class.getName(), JDBCType.BLOB);
+        javaTypeToJdbcTypeMap.put(URL.class.getName(), JDBCType.DATALINK);
+        javaTypeToJdbcTypeMap.put(Byte[].class.getName(), JDBCType.VARBINARY);
+        javaTypeToJdbcTypeMap.put(byte[].class.getName(), JDBCType.VARBINARY);
+        javaTypeToJdbcTypeMap.put(Object[].class.getName(), JDBCType.ARRAY);
+        javaTypeToJdbcTypeMap.put(Object.class.getName(), JDBCType.JAVA_OBJECT);
         // oracle types
-        javaTypeToSqlTypeMap.put("oracle.jdbc.OracleBlob", JDBCType.VARBINARY);
-        javaTypeToSqlTypeMap.put("oracle.jdbc.OracleClob", JDBCType.CLOB);
-        javaTypeToSqlTypeMap.put("oracle.jdbc.OracleNClob", JDBCType.NCLOB);
-        javaTypeToSqlTypeMap.put("oracle.sql.DATE", JDBCType.DATE);
-        javaTypeToSqlTypeMap.put("oracle.sql.TIMESTAMP", JDBCType.TIMESTAMP);
-        javaTypeToSqlTypeMap.put("oracle.sql.TIMESTAMPTZ", JDBCType.TIMESTAMP);
-        javaTypeToSqlTypeMap.put("oracle.sql.TIMESTAMPLTZ", JDBCType.TIMESTAMP);
+        javaTypeToJdbcTypeMap.put("oracle.jdbc.OracleBlob", JDBCType.VARBINARY);
+        javaTypeToJdbcTypeMap.put("oracle.jdbc.OracleClob", JDBCType.CLOB);
+        javaTypeToJdbcTypeMap.put("oracle.jdbc.OracleNClob", JDBCType.NCLOB);
+        javaTypeToJdbcTypeMap.put("oracle.sql.DATE", JDBCType.DATE);
+        javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMP", JDBCType.TIMESTAMP);
+        javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMPTZ", JDBCType.TIMESTAMP);
+        javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMPLTZ", JDBCType.TIMESTAMP);
     }
 
     public TypeHandlerRegistry() {
@@ -211,8 +211,8 @@ public final class TypeHandlerRegistry {
         this.registerCross(JDBCType.NCLOB, String.class, createSingleTypeHandler(NClobTypeHandler.class));
         this.registerCrossChars(Reader.class, createSingleTypeHandler(StringReaderTypeHandler.class));
         this.registerCrossNChars(Reader.class, createSingleTypeHandler(NStringReaderTypeHandler.class));
-        this.registerCross(JDBCType.CLOB, String.class, createSingleTypeHandler(ClobReaderTypeHandler.class));
-        this.registerCross(JDBCType.NCLOB, String.class, createSingleTypeHandler(NClobReaderTypeHandler.class));
+        this.registerCross(JDBCType.CLOB, Reader.class, createSingleTypeHandler(ClobReaderTypeHandler.class));
+        this.registerCross(JDBCType.NCLOB, Reader.class, createSingleTypeHandler(NClobReaderTypeHandler.class));
         //
         this.registerCross(JDBCType.SQLXML, String.class, createSingleTypeHandler(SqlXmlTypeHandler.class));
         this.registerCross(JDBCType.SQLXML, Reader.class, createSingleTypeHandler(SqlXmlForReaderTypeHandler.class));
@@ -258,7 +258,7 @@ public final class TypeHandlerRegistry {
         this.javaTypeHandlerMap.put(javaType.getName(), typeHandler);
     }
 
-    private void registerCross(JDBCType jdbcType, Class<?> javaType, TypeHandler<?> typeHandler) {
+    public void registerCross(JDBCType jdbcType, Class<?> javaType, TypeHandler<?> typeHandler) {
         Map<JDBCType, TypeHandler<?>> typeClassMap = this.typeHandlerMap.computeIfAbsent(javaType.getName(), k -> {
             return new ConcurrentHashMap<>();
         });
@@ -325,7 +325,7 @@ public final class TypeHandlerRegistry {
 
     /** 根据 Java 类型Derive a default SQL type from the given Java type.*/
     public static JDBCType toSqlType(final Class<?> javaType) {
-        JDBCType jdbcType = javaTypeToSqlTypeMap.get(javaType.getName());
+        JDBCType jdbcType = javaTypeToJdbcTypeMap.get(javaType.getName());
         if (jdbcType != null) {
             return jdbcType;
         }

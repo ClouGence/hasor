@@ -25,18 +25,18 @@ import java.sql.Connection;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DataSourceManager {
-    /**申请连接*/
+    /** 申请连接 */
     public static Connection newConnection(DataSource dataSource) {
         ConnectionHolder holder = newConnectionHolder(dataSource);
         return newProxyConnection(holder);
     }
 
-    /**申请{@link ConnectionHolder}*/
+    /** 申请{@link ConnectionHolder} */
     protected static ConnectionHolder newConnectionHolder(DataSource dataSource) {
         return new ConnectionHolder(dataSource);
     }
 
-    /**获取与本地线程绑定的数据库连接，JDBC 框架会维护这个连接的事务。开发者不必关心该连接的事务管理，以及资源释放操作。*/
+    /** 获取与本地线程绑定的数据库连接，JDBC 框架会维护这个连接的事务。开发者不必关心该连接的事务管理，以及资源释放操作 */
     protected static ConnectionProxy newProxyConnection(ConnectionHolder holder) {
         CloseSuppressingInvocationHandler handler = new CloseSuppressingInvocationHandler(holder);
         return (ConnectionProxy) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class, Closeable.class }, handler);
