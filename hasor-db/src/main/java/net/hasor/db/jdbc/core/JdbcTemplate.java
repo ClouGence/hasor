@@ -64,7 +64,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     /*当JDBC 结果集中如出现相同的列名仅仅大小写不同时。是否保留大小写列名敏感。
      * 如果为 true 表示不敏感，并且结果集Map中保留两个记录。如果为 false 则表示敏感，如出现冲突列名后者将会覆盖前者。*/
     private              boolean        resultsCaseInsensitive = true;
-    private              MappingHandler mappingHandler         = MappingHandler.DEFAULT;
+    private final        MappingHandler mappingHandler;
 
     /**
      * Construct a new JdbcTemplate for bean usage.
@@ -73,6 +73,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
      */
     public JdbcTemplate() {
         super();
+        this.mappingHandler = MappingHandler.DEFAULT;
     }
 
     /**
@@ -81,7 +82,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
      * @param dataSource the JDBC DataSource to obtain connections from
      */
     public JdbcTemplate(final DataSource dataSource) {
-        super(dataSource);
+        this(dataSource, MappingHandler.DEFAULT);
     }
 
     /**
@@ -101,7 +102,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
      * @param conn the JDBC Connection
      */
     public JdbcTemplate(final Connection conn) {
-        super(conn);
+        this(conn, MappingHandler.DEFAULT);
     }
 
     /**
