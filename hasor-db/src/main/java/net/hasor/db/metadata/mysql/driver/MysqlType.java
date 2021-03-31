@@ -28,8 +28,7 @@
  */
 
 package net.hasor.db.metadata.mysql.driver;
-import com.mysql.cj.exceptions.FeatureNotAvailableException;
-import com.mysql.cj.util.StringUtils;
+import net.hasor.utils.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -600,11 +599,11 @@ public enum MysqlType implements SQLType {
             case Types.SQLXML: // TODO check that it's correct
                 return VARCHAR;
             case Types.REF_CURSOR:
-                throw new FeatureNotAvailableException("REF_CURSOR type is not supported");
+                throw new UnsupportedOperationException("REF_CURSOR type is not supported");
             case Types.TIME_WITH_TIMEZONE:
-                throw new FeatureNotAvailableException("TIME_WITH_TIMEZONE type is not supported");
+                throw new UnsupportedOperationException("TIME_WITH_TIMEZONE type is not supported");
             case Types.TIMESTAMP_WITH_TIMEZONE:
-                throw new FeatureNotAvailableException("TIMESTAMP_WITH_TIMEZONE type is not supported");
+                throw new UnsupportedOperationException("TIMESTAMP_WITH_TIMEZONE type is not supported");
                 // TODO check next types
             case Types.ARRAY:
             case Types.DISTINCT:
