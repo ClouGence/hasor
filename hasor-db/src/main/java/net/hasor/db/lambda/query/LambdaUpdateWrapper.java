@@ -32,6 +32,7 @@ import java.util.function.Predicate;
 public class LambdaUpdateWrapper<T> extends AbstractQueryCompare<T, LambdaUpdate<T>> implements LambdaUpdate<T> {
     public LambdaUpdateWrapper(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
         super(exampleType, jdbcTemplate);
+        throw new UnsupportedOperationException();
     }
 
     @Override
