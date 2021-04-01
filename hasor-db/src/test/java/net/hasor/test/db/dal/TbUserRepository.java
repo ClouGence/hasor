@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.mysql;
+package net.hasor.test.db.dal;
+import net.hasor.db.dal.Repository;
+import net.hasor.test.db.dto.TbUser;
+
 /**
- * MySQL 变量的作用域
- * @version : 2020-01-22
+ *
+ * @version : 2013-12-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum MySqlVariableScope {
-    /** 全局 */
-    Global,
-    /** 回话 */
-    Session,
-    /** 未指定 */
-    Default,
+public interface TbUserRepository extends Repository<TbUser> {
 }

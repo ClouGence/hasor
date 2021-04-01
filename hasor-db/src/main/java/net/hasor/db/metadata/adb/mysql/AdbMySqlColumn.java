@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.mysql;
+package net.hasor.db.metadata.adb.mysql;
 import net.hasor.db.metadata.SqlType;
 
 import java.sql.JDBCType;
@@ -23,7 +23,7 @@ import java.sql.JDBCType;
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MySqlColumn {
+public class AdbMySqlColumn {
     private String   name;
     private boolean  nullable;
     private String   dataType;
@@ -31,7 +31,6 @@ public class MySqlColumn {
     private SqlType  sqlType;
     private JDBCType jdbcType;
     private boolean  primaryKey;
-    private boolean  uniqueKey;//如若存在联合唯一索引需要借助getUniqueKey 来查询具体信息，这里只会表示该列存在至少一个唯一索引的引用。
     //
     private Integer  datetimePrecision;
     private Integer  numericPrecision;
@@ -96,14 +95,6 @@ public class MySqlColumn {
 
     public void setPrimaryKey(boolean primaryKey) {
         this.primaryKey = primaryKey;
-    }
-
-    public boolean isUniqueKey() {
-        return uniqueKey;
-    }
-
-    public void setUniqueKey(boolean uniqueKey) {
-        this.uniqueKey = uniqueKey;
     }
 
     public Integer getDatetimePrecision() {

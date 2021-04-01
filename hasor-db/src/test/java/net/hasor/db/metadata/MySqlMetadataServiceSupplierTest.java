@@ -48,7 +48,7 @@ public class MySqlMetadataServiceSupplierTest {
         if (devtester != null) {
             jdbcTemplate.execute("drop database devtester;");
         }
-        jdbcTemplate.loadSQL(StandardCharsets.UTF_8, "/net_hasor_db/mysql_metadata_script.sql");
+        jdbcTemplate.loadSQL(StandardCharsets.UTF_8, "/net_hasor_db/metadata/mysql_script.sql");
     }
 
     @After
@@ -75,34 +75,6 @@ public class MySqlMetadataServiceSupplierTest {
     }
 
     @Test
-    public void getVariables() throws SQLException {
-        List<MySqlVariable> globalVariableList = this.repository.getVariables(MySqlVariableScope.Global);
-        List<MySqlVariable> sessionVariableList = this.repository.getVariables(MySqlVariableScope.Session);
-        List<MySqlVariable> defaultVariableList = this.repository.getVariables(MySqlVariableScope.Default);
-        Map<String, String> globalVariableMap = globalVariableList.stream().collect(Collectors.toMap(MySqlVariable::getName, MySqlVariable::getValue));
-        Map<String, String> sessionVariableMap = sessionVariableList.stream().collect(Collectors.toMap(MySqlVariable::getName, MySqlVariable::getValue));
-        Map<String, String> defaultVariableMap = defaultVariableList.stream().collect(Collectors.toMap(MySqlVariable::getName, MySqlVariable::getValue));
-        MySqlSchema mysql = this.repository.getSchema("mysql");
-        assert mysql.getDefaultCollationName().equals(globalVariableMap.get("collation_database"));
-        assert mysql.getDefaultCollationName().equals(sessionVariableMap.get("collation_database"));
-        assert mysql.getDefaultCollationName().equals(defaultVariableMap.get("collation_database"));
-    }
-
-    @Test
-    public void getVariable() throws SQLException {
-        MySqlVariable globalVariable = this.repository.getVariable(MySqlVariableScope.Global, "collation_database");
-        MySqlVariable sessionVariable = this.repository.getVariable(MySqlVariableScope.Session, "collation_database");
-        MySqlVariable defaultVariable = this.repository.getVariable(MySqlVariableScope.Default, "collation_database");
-        MySqlSchema mysql = this.repository.getSchema("mysql");
-        assert globalVariable.getScope() == MySqlVariableScope.Global;
-        assert sessionVariable.getScope() == MySqlVariableScope.Session;
-        assert defaultVariable.getScope() == MySqlVariableScope.Default;
-        assert mysql.getDefaultCollationName().equals(globalVariable.getValue());
-        assert mysql.getDefaultCollationName().equals(sessionVariable.getValue());
-        assert mysql.getDefaultCollationName().equals(defaultVariable.getValue());
-    }
-
-    @Test
     public void getTables() throws SQLException {
         Map<String, List<MySqlTable>> tableList = this.repository.getTables("mysql", "information_schema");
         assert tableList.size() == 2;
@@ -121,15 +93,12 @@ public class MySqlMetadataServiceSupplierTest {
 
     @Test
     public void findTables() throws SQLException {
-        Map<String, List<MySqlTable>> tableList = this.repository.findTables("information_schema", "COLUMNS", "TABLES", "SCHEMATA", "ABC");
-        assert tableList.size() == 1;
-        assert !tableList.containsKey("mysql");
-        assert tableList.containsKey("information_schema");
-        List<String> tableForInformationSchema = tableList.get("information_schema").stream().map(MySqlTable::getTableName).collect(Collectors.toList());
-        assert tableForInformationSchema.contains("COLUMNS");
-        assert tableForInformationSchema.contains("TABLES");
-        assert tableForInformationSchema.contains("SCHEMATA");
-        assert tableForInformationSchema.size() == 3;
+        List<MySqlTable> tableList = this.repository.findTable("information_schema", "COLUMNS", "TABLES", "SCHEMATA", "ABC");
+        List<String> tableNames = tableList.stream().map(MySqlTable::getTableName).collect(Collectors.toList());
+        assert tableNames.size() == 3;
+        assert tableNames.contains("COLUMNS");
+        assert tableNames.contains("TABLES");
+        assert tableNames.contains("SCHEMATA");
     }
 
     @Test
@@ -145,7 +114,7 @@ public class MySqlMetadataServiceSupplierTest {
     }
 
     @Test
-    public void getColumns() throws SQLException {
+    public void getColumns_1() throws SQLException {
         List<MySqlColumn> columnList = this.repository.getColumns("information_schema", "COLUMNS");
         Map<String, MySqlColumn> columnMap = columnList.stream().collect(Collectors.toMap(MySqlColumn::getName, c -> c));
         assert columnMap.size() > 11;
@@ -164,14 +133,31 @@ public class MySqlMetadataServiceSupplierTest {
     }
 
     @Test
+    public void getColumns_2() throws SQLException {
+        List<MySqlColumn> columnList = this.repository.getColumns("devtester", "proc_table_ref");
+        Map<String, MySqlColumn> columnMap = columnList.stream().collect(Collectors.toMap(MySqlColumn::getName, c -> c));
+        assert columnMap.size() == 6;
+        assert columnMap.get("r_int").isPrimaryKey();
+        assert !columnMap.get("r_int").isUniqueKey();
+        assert !columnMap.get("r_k1").isPrimaryKey();
+        assert !columnMap.get("r_k1").isUniqueKey();
+        assert !columnMap.get("r_k2").isPrimaryKey();
+        assert !columnMap.get("r_k2").isUniqueKey();
+        assert !columnMap.get("r_name").isPrimaryKey();
+        assert columnMap.get("r_name").isUniqueKey();
+        assert !columnMap.get("r_index").isPrimaryKey();
+        assert !columnMap.get("r_index").isUniqueKey();
+        assert !columnMap.get("r_data").isPrimaryKey();
+        assert !columnMap.get("r_data").isUniqueKey();
+    }
+
+    @Test
     public void getConstraint1() throws SQLException {
         List<MySqlConstraint> columnList = this.repository.getConstraint("devtester", "proc_table_ref");
         Map<String, MySqlConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(MySqlConstraint::getName, MySqlConstraint::getConstraintType));
         assert typeMap.size() == 3;
         assert typeMap.containsKey("PRIMARY");
-        ;
         assert typeMap.containsKey("proc_table_ref_uk");
-        ;
         assert typeMap.containsKey("ptr");
         assert typeMap.get("PRIMARY") == MySqlConstraintType.PrimaryKey;
         assert typeMap.get("proc_table_ref_uk") == MySqlConstraintType.Unique;
@@ -184,9 +170,7 @@ public class MySqlMetadataServiceSupplierTest {
         Map<String, MySqlConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(MySqlConstraint::getName, MySqlConstraint::getConstraintType));
         assert typeMap.size() == 1;
         assert !typeMap.containsKey("PRIMARY");
-        ;
         assert typeMap.containsKey("proc_table_ref_uk");
-        ;
         assert !typeMap.containsKey("ptr");
         assert typeMap.get("proc_table_ref_uk") == MySqlConstraintType.Unique;
     }
@@ -250,14 +234,6 @@ public class MySqlMetadataServiceSupplierTest {
         assert foreignKey.getReferenceMapping().get("r_k2").equals("c_name");
     }
 
-    // List<MySqlConstraint> getConstraint(String schemaName, String tableName) throws SQLException;
-    // List<MySqlConstraint> getConstraint(String schemaName, String tableName, MySqlConstraintType... cType) throws SQLException;
-    // MySqlPrimaryKey getPrimaryKey(String schemaName, String tableName) throws SQLException;
-    // List<MySqlUniqueKey> getUniqueKey(String schemaName, String tableName) throws SQLException;
-    // List<MySqlForeignKey> getForeignKey(String schemaName, String tableName) throws SQLException;
-    // List<MySqlIndex> getIndexes(String schemaName, String tableName) throws SQLException;
-    // List<MySqlIndex> getIndexes(String schemaName, String tableName, MySqlIndexType... indexTypes) throws SQLException;
-    // MySqlIndex getIndexes(String schemaName, String tableName, String indexName) throws SQLException;
     @Test
     public void getIndexes1() throws SQLException {
         List<MySqlIndex> indexList = this.repository.getIndexes("devtester", "tb_user");

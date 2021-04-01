@@ -26,8 +26,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static net.hasor.db.metadata.SqlUtils.*;
-
 /**
  * 高效且完整的 MySQL 元信息获取，参考资料：https://dev.mysql.com/doc/refman/8.0/en/information-schema.html
  * @version : 2020-01-22
@@ -42,69 +40,9 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
         super(dataSource);
     }
 
-    public List<MySqlVariable> getVariables(MySqlVariableScope scope) throws SQLException {
-        String queryString = null;
-        switch (scope) {
-            case Global:
-                queryString = "show global variables";
-                break;
-            case Session:
-                queryString = "show session variables";
-                break;
-            case Default:
-                queryString = "show variables";
-                break;
-            default:
-                throw new IllegalArgumentException("arg scope error.");
-        }
+    public String getDbVersion() throws SQLException {
         try (Connection conn = this.connectSupplier.get()) {
-            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString);
-            if (mapList == null) {
-                return Collections.emptyList();
-            }
-            return mapList.stream().map(mysqlVar -> {
-                MySqlVariable variable = new MySqlVariable();
-                variable.setName(safeToString(mysqlVar.get("Variable_name")));
-                variable.setValue(safeToString(mysqlVar.get("Value")));
-                variable.setScope(scope);
-                return variable;
-            }).collect(Collectors.toList());
-        }
-    }
-
-    public MySqlVariable getVariable(MySqlVariableScope scope, String varName) throws SQLException {
-        if (StringUtils.isBlank(varName)) {
-            return null;
-        }
-        varName = "%" + varName + "%";
-        String queryString = null;
-        switch (scope) {
-            case Global: {
-                queryString = "show global variables like ?";
-                break;
-            }
-            case Session: {
-                queryString = "show session variables like ?";
-                break;
-            }
-            case Default:
-                queryString = "show variables like ?";
-                break;
-            default:
-                throw new IllegalArgumentException("arg scope error.");
-        }
-        try (Connection conn = this.connectSupplier.get()) {
-            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, varName);
-            if (mapList == null) {
-                return null;
-            }
-            return mapList.stream().map(mysqlVar -> {
-                MySqlVariable variable = new MySqlVariable();
-                variable.setName(safeToString(mysqlVar.get("Variable_name")));
-                variable.setValue(safeToString(mysqlVar.get("Value")));
-                variable.setScope(scope);
-                return variable;
-            }).findFirst().orElse(null);
+            return new JdbcTemplate(conn).queryForString("select version()");
         }
     }
 
@@ -115,11 +53,11 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
             if (mapList == null) {
                 return Collections.emptyList();
             }
-            return mapList.stream().map(mysqlSchema -> {
+            return mapList.stream().map(recordMap -> {
                 MySqlSchema schema = new MySqlSchema();
-                schema.setName(safeToString(mysqlSchema.get("SCHEMA_NAME")));
-                schema.setDefaultCharacterSetName(safeToString(mysqlSchema.get("DEFAULT_CHARACTER_SET_NAME")));
-                schema.setDefaultCollationName(safeToString(mysqlSchema.get("DEFAULT_COLLATION_NAME")));
+                schema.setName(safeToString(recordMap.get("SCHEMA_NAME")));
+                schema.setDefaultCharacterSetName(safeToString(recordMap.get("DEFAULT_CHARACTER_SET_NAME")));
+                schema.setDefaultCollationName(safeToString(recordMap.get("DEFAULT_COLLATION_NAME")));
                 return schema;
             }).collect(Collectors.toList());
         }
@@ -135,11 +73,11 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
             if (mapList == null) {
                 return null;
             }
-            return mapList.stream().map(mysqlSchema -> {
+            return mapList.stream().map(recordMap -> {
                 MySqlSchema schema = new MySqlSchema();
-                schema.setName(safeToString(mysqlSchema.get("SCHEMA_NAME")));
-                schema.setDefaultCharacterSetName(safeToString(mysqlSchema.get("DEFAULT_CHARACTER_SET_NAME")));
-                schema.setDefaultCollationName(safeToString(mysqlSchema.get("DEFAULT_COLLATION_NAME")));
+                schema.setName(safeToString(recordMap.get("SCHEMA_NAME")));
+                schema.setDefaultCharacterSetName(safeToString(recordMap.get("DEFAULT_CHARACTER_SET_NAME")));
+                schema.setDefaultCollationName(safeToString(recordMap.get("DEFAULT_COLLATION_NAME")));
                 return schema;
             }).findFirst().orElse(null);
         }
@@ -167,24 +105,47 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
                 return Collections.emptyMap();
             }
             Map<String, List<MySqlTable>> resultData = new HashMap<>();
-            mapList.forEach(mysqlTable -> {
-                String dbName = safeToString(mysqlTable.get("TABLE_SCHEMA"));
+            mapList.forEach(recordMap -> {
+                String dbName = safeToString(recordMap.get("TABLE_SCHEMA"));
                 List<MySqlTable> tableList = resultData.computeIfAbsent(dbName, k -> new ArrayList<>());
                 MySqlTable table = new MySqlTable();
-                table.setTableName(safeToString(mysqlTable.get("TABLE_NAME")));
-                table.setTableType(MySqlTableType.valueOfCode(safeToString(mysqlTable.get("TABLE_TYPE"))));
-                table.setCollation(safeToString(mysqlTable.get("TABLE_COLLATION")));
-                table.setCreateTime(safeToDate(mysqlTable.get("CREATE_TIME")));
-                table.setUpdateTime(safeToDate(mysqlTable.get("UPDATE_TIME")));
+                table.setTableName(safeToString(recordMap.get("TABLE_NAME")));
+                table.setTableType(MySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
+                table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
+                table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
+                table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
                 tableList.add(table);
             });
             return resultData;
         }
     }
 
-    public Map<String, List<MySqlTable>> findTables(String schemaName, String... tableName) throws SQLException {
+    public List<MySqlTable> getAllTables(String schemaName) throws SQLException {
         if (StringUtils.isBlank(schemaName)) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
+        }
+        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME from INFORMATION_SCHEMA.TABLES " //
+                + "where TABLE_SCHEMA = ?";
+        try (Connection conn = this.connectSupplier.get()) {
+            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName);
+            if (mapList == null) {
+                return Collections.emptyList();
+            }
+            return mapList.stream().map(recordMap -> {
+                MySqlTable table = new MySqlTable();
+                table.setTableName(safeToString(recordMap.get("TABLE_NAME")));
+                table.setTableType(MySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
+                table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
+                table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
+                table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
+                return table;
+            }).collect(Collectors.toList());
+        }
+    }
+
+    public List<MySqlTable> findTable(String schemaName, String... tableName) throws SQLException {
+        if (StringUtils.isBlank(schemaName)) {
+            return Collections.emptyList();
         }
         tableName = (tableName == null) ? new String[0] : tableName;
         ArrayList<String> tableNameList = new ArrayList<>();
@@ -194,7 +155,7 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
             }
         }
         if (tableNameList.isEmpty()) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
         if (tableNameList.size() > 1000) {
             throw new IndexOutOfBoundsException("Batch query table Batch size out of 1000");
@@ -205,21 +166,17 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, tableNameList.toArray());
             if (mapList == null) {
-                return Collections.emptyMap();
+                return Collections.emptyList();
             }
-            Map<String, List<MySqlTable>> resultData = new HashMap<>();
-            mapList.forEach(mysqlTable -> {
-                String dbName = safeToString(mysqlTable.get("TABLE_SCHEMA"));
-                List<MySqlTable> tableList = resultData.computeIfAbsent(dbName, k -> new ArrayList<>());
+            return mapList.stream().map(recordMap -> {
                 MySqlTable table = new MySqlTable();
-                table.setTableName(safeToString(mysqlTable.get("TABLE_NAME")));
-                table.setTableType(MySqlTableType.valueOfCode(safeToString(mysqlTable.get("TABLE_TYPE"))));
-                table.setCollation(safeToString(mysqlTable.get("TABLE_COLLATION")));
-                table.setCreateTime(safeToDate(mysqlTable.get("CREATE_TIME")));
-                table.setUpdateTime(safeToDate(mysqlTable.get("UPDATE_TIME")));
-                tableList.add(table);
-            });
-            return resultData;
+                table.setTableName(safeToString(recordMap.get("TABLE_NAME")));
+                table.setTableType(MySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
+                table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
+                table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
+                table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
+                return table;
+            }).collect(Collectors.toList());
         }
     }
 
@@ -234,13 +191,13 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
             if (mapList == null) {
                 return null;
             }
-            return mapList.stream().map(mysqlTable -> {
+            return mapList.stream().map(recordMap -> {
                 MySqlTable table = new MySqlTable();
-                table.setTableName(safeToString(mysqlTable.get("TABLE_NAME")));
-                table.setTableType(MySqlTableType.valueOfCode(safeToString(mysqlTable.get("TABLE_TYPE"))));
-                table.setCollation(safeToString(mysqlTable.get("TABLE_COLLATION")));
-                table.setCreateTime(safeToDate(mysqlTable.get("CREATE_TIME")));
-                table.setUpdateTime(safeToDate(mysqlTable.get("UPDATE_TIME")));
+                table.setTableName(safeToString(recordMap.get("TABLE_NAME")));
+                table.setTableType(MySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
+                table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
+                table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
+                table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
                 return table;
             }).findFirst().orElse(null);
         }
@@ -250,31 +207,51 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
         if (StringUtils.isBlank(schemaName) || StringUtils.isBlank(tableName)) {
             return Collections.emptyList();
         }
-        String queryString = "select TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,CHARACTER_OCTET_LENGTH,NUMERIC_SCALE,NUMERIC_PRECISION,DATETIME_PRECISION,CHARACTER_SET_NAME,COLLATION_NAME,COLUMN_TYPE from INFORMATION_SCHEMA.COLUMNS " //
-                + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
+        List<Map<String, Object>> primaryKeyList = null;
+        List<Map<String, Object>> columnList = null;
         try (Connection conn = this.connectSupplier.get()) {
-            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
-            if (mapList == null) {
+            String queryStringColumn = "select TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,CHARACTER_OCTET_LENGTH,NUMERIC_SCALE,NUMERIC_PRECISION,DATETIME_PRECISION,CHARACTER_SET_NAME,COLLATION_NAME,COLUMN_TYPE from INFORMATION_SCHEMA.COLUMNS " //
+                    + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
+            columnList = new JdbcTemplate(conn).queryForList(queryStringColumn, schemaName, tableName);
+            if (columnList == null) {
                 return Collections.emptyList();
             }
-            return mapList.stream().map(mysqlVar -> {
-                MySqlColumn column = new MySqlColumn();
-                column.setName(safeToString(mysqlVar.get("COLUMN_NAME")));
-                column.setNullable(safeToBoolean(mysqlVar.get("IS_NULLABLE")));
-                column.setDataType(safeToString(mysqlVar.get("DATA_TYPE")));
-                column.setColumnType(safeToString(mysqlVar.get("COLUMN_TYPE")));
-                column.setSqlType(safeToMySqlTypes(mysqlVar.get("DATA_TYPE")));
-                column.setJdbcType(columnTypeMappingToJdbcType(column.getColumnType()));
-                column.setDefaultCollationName(safeToString(mysqlVar.get("COLLATION_NAME")));
-                column.setDefaultCharacterSetName(safeToString(mysqlVar.get("CHARACTER_SET_NAME")));
-                column.setCharactersMaxLength(safeToLong(mysqlVar.get("CHARACTER_MAXIMUM_LENGTH")));
-                column.setBytesMaxLength(safeToInteger(mysqlVar.get("CHARACTER_OCTET_LENGTH")));
-                column.setDatetimePrecision(safeToInteger(mysqlVar.get("DATETIME_PRECISION")));
-                column.setNumericPrecision(safeToInteger(mysqlVar.get("NUMERIC_PRECISION")));
-                column.setNumericScale(safeToInteger(mysqlVar.get("NUMERIC_SCALE")));
-                return column;
-            }).collect(Collectors.toList());
+            String queryStringPrimaryAndUnique = "select INDEX_NAME,COLUMN_NAME,INDEX_TYPE FROM INFORMATION_SCHEMA.STATISTICS " //
+                    + "where TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME = 'PRIMARY' or INDEX_NAME in (select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where TABLE_SCHEMA = ? and TABLE_NAME = ? and CONSTRAINT_TYPE = 'UNIQUE') order by SEQ_IN_INDEX asc";
+            primaryKeyList = new JdbcTemplate(conn).queryForList(queryStringPrimaryAndUnique, schemaName, tableName, schemaName, tableName);
         }
+        List<String> primaryKeyColumnNameList = primaryKeyList.stream().filter(recordMap -> {
+            String indexName = safeToString(recordMap.get("INDEX_NAME"));
+            return "PRIMARY".equals(indexName);
+        }).map(recordMap -> {
+            return safeToString(recordMap.get("COLUMN_NAME"));
+        }).collect(Collectors.toList());
+        List<String> uniqueKeyColumnNameList = primaryKeyList.stream().filter(recordMap -> {
+            String indexName = safeToString(recordMap.get("INDEX_NAME"));
+            return !"PRIMARY".equals(indexName);
+        }).map(recordMap -> {
+            return safeToString(recordMap.get("COLUMN_NAME"));
+        }).collect(Collectors.toList());
+        //
+        return columnList.stream().map(recordMap -> {
+            MySqlColumn column = new MySqlColumn();
+            column.setName(safeToString(recordMap.get("COLUMN_NAME")));
+            column.setNullable(safeToBoolean(recordMap.get("IS_NULLABLE")));
+            column.setDataType(safeToString(recordMap.get("DATA_TYPE")));
+            column.setColumnType(safeToString(recordMap.get("COLUMN_TYPE")));
+            column.setSqlType(safeToMySqlTypes(recordMap.get("DATA_TYPE")));
+            column.setJdbcType(columnTypeMappingToJdbcType(column.getSqlType(), column.getColumnType()));
+            column.setDefaultCollationName(safeToString(recordMap.get("COLLATION_NAME")));
+            column.setDefaultCharacterSetName(safeToString(recordMap.get("CHARACTER_SET_NAME")));
+            column.setCharactersMaxLength(safeToLong(recordMap.get("CHARACTER_MAXIMUM_LENGTH")));
+            column.setBytesMaxLength(safeToInteger(recordMap.get("CHARACTER_OCTET_LENGTH")));
+            column.setDatetimePrecision(safeToInteger(recordMap.get("DATETIME_PRECISION")));
+            column.setNumericPrecision(safeToInteger(recordMap.get("NUMERIC_PRECISION")));
+            column.setNumericScale(safeToInteger(recordMap.get("NUMERIC_SCALE")));
+            column.setPrimaryKey(primaryKeyColumnNameList.contains(column.getName()));
+            column.setUniqueKey(uniqueKeyColumnNameList.contains(column.getName()));
+            return column;
+        }).collect(Collectors.toList());
     }
 
     public List<MySqlConstraint> getConstraint(String schemaName, String tableName) throws SQLException {
@@ -288,10 +265,10 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
             if (mapList == null) {
                 return Collections.emptyList();
             }
-            return mapList.stream().map(entry -> {
-                String constraintSchema = safeToString(entry.get("CONSTRAINT_SCHEMA"));
-                String constraintName = safeToString(entry.get("CONSTRAINT_NAME"));
-                String constraintTypeString = safeToString(entry.get("CONSTRAINT_TYPE"));
+            return mapList.stream().map(recordMap -> {
+                String constraintSchema = safeToString(recordMap.get("CONSTRAINT_SCHEMA"));
+                String constraintName = safeToString(recordMap.get("CONSTRAINT_NAME"));
+                String constraintTypeString = safeToString(recordMap.get("CONSTRAINT_TYPE"));
                 MySqlConstraint constraint = new MySqlConstraint();
                 constraint.setSchema(constraintSchema);
                 constraint.setName(constraintName);
@@ -539,8 +516,22 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
         }).findFirst().orElse(null);
     }
 
-    protected static JDBCType columnTypeMappingToJdbcType(String columnType) {
-        MysqlType mysqlType = MysqlType.getByName(columnType);
-        return JDBCType.valueOf(mysqlType.getJdbcType());
+    protected JDBCType columnTypeMappingToJdbcType(SqlType sqlType, String columnType) {
+        if (sqlType instanceof MySqlTypes && StringUtils.isNotBlank(columnType)) {
+            MysqlType mysqlType = MysqlType.getByName(columnType);
+            return JDBCType.valueOf(mysqlType.getJdbcType());
+        } else {
+            return sqlType.getJdbcType();
+        }
+    }
+
+    protected SqlType safeToMySqlTypes(Object obj) {
+        String dat = (obj == null) ? null : obj.toString();
+        for (MySqlTypes type : MySqlTypes.values()) {
+            if (type.getCodeKey().equalsIgnoreCase(dat)) {
+                return type;
+            }
+        }
+        return null;
     }
 }

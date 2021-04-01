@@ -13,38 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.mysql;
+package net.hasor.db.metadata.adb.mysql;
 /**
- * MySQL 变量
+ * MySQL 表类型
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MySqlVariable {
-    private String             name;
-    private String             value;
-    private MySqlVariableScope scope;
+public enum AdbMySqlTableType {
+    Table("BASE TABLE"),
+    View("VIEW"),
+    SystemView("SYSTEM VIEW");
+    private final String typeName;
 
-    public String getName() {
-        return name;
+    AdbMySqlTableType(String typeName) {
+        this.typeName = typeName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getTypeName() {
+        return this.typeName;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public MySqlVariableScope getScope() {
-        return scope;
-    }
-
-    public void setScope(MySqlVariableScope scope) {
-        this.scope = scope;
+    public static AdbMySqlTableType valueOfCode(String code) {
+        for (AdbMySqlTableType tableType : AdbMySqlTableType.values()) {
+            if (tableType.typeName.equals(code)) {
+                return tableType;
+            }
+        }
+        return null;
     }
 }

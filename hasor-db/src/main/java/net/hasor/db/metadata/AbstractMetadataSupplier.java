@@ -15,12 +15,19 @@
  */
 package net.hasor.db.metadata;
 import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.StringUtils;
+import net.hasor.utils.convert.ConverterUtils;
 
 import javax.sql.DataSource;
 import java.io.Closeable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Date;
 import java.util.function.Supplier;
 
 /**
@@ -51,5 +58,72 @@ public class AbstractMetadataSupplier {
     protected static Connection newProxyConnection(Connection connection) {
         CloseIsNothingInvocationHandler handler = new CloseIsNothingInvocationHandler(connection);
         return (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(), new Class[] { Connection.class, Closeable.class }, handler);
+    }
+
+    /** Connection 接口代理，目的是拦截 close 方法，使其失效。 */
+    private static class CloseIsNothingInvocationHandler implements InvocationHandler {
+        private final Connection connection;
+
+        CloseIsNothingInvocationHandler(Connection connection) {
+            this.connection = connection;
+        }
+
+        @Override
+        public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+            if (method.getName().equals("getTargetConnection")) {
+                return connection;
+            } else if (method.getName().equals("toString")) {
+                return this.connection.toString();
+            } else if (method.getName().equals("equals")) {
+                return proxy == args[0];
+            } else if (method.getName().equals("hashCode")) {
+                return System.identityHashCode(proxy);
+            } else if (method.getName().equals("close")) {
+                return null;
+            }
+            //
+            try {
+                return method.invoke(this.connection, args);
+            } catch (InvocationTargetException ex) {
+                throw ex.getTargetException();
+            }
+        }
+    }
+
+    protected static String safeToString(Object obj) {
+        return (obj == null) ? null : obj.toString();
+    }
+
+    protected static Integer safeToInteger(Object obj) {
+        return (obj == null) ? null : (Integer) ConverterUtils.convert(Integer.class, obj);
+    }
+
+    protected static Long safeToLong(Object obj) {
+        return (obj == null) ? null : (Long) ConverterUtils.convert(Long.class, obj);
+    }
+
+    protected static Boolean safeToBoolean(Object obj) {
+        return (obj == null) ? null : (Boolean) ConverterUtils.convert(Boolean.class, obj);
+    }
+
+    protected static Date safeToDate(Object obj) {
+        if (obj == null) {
+            return null;
+        } else if (obj instanceof Date) {
+            return (Date) obj;
+        } else if (obj instanceof Number) {
+            return new Date(((Number) obj).longValue());
+        } else {
+            throw new ClassCastException(obj.getClass() + " Type cannot be converted to Date");
+        }
+    }
+
+    protected static String buildWhereIn(Collection<?> paramMap) {
+        StringBuilder whereIn = new StringBuilder();
+        whereIn.append("(");
+        whereIn.append(StringUtils.repeat("?,", paramMap.size()));
+        whereIn.deleteCharAt(whereIn.length() - 1);
+        whereIn.append(")");
+        return whereIn.toString();
     }
 }
