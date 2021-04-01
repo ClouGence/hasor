@@ -14,6 +14,7 @@ module.exports = {
                     'quickCommand',         // F1指令提示框
                     'contextmenu',          // 右键菜单
                     'clipboard',            // 剪切板
+                    'folding',              // 代码折叠
                     'colorDetector',
                     'comment',              // 注释相关：多行注释、单行注释
                     'coreCommands',
