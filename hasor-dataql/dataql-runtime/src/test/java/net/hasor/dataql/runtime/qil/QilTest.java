@@ -12,7 +12,7 @@ public class QilTest extends AbstractTestResource implements HintValue {
             compilerQL.execute();
             assert false;
         } catch (Exception e) {
-            assert e.getMessage().equalsIgnoreCase("[line 1:7~1:12 ,QIL 0:16] assert test failed.");
+            assert e.getMessage().equalsIgnoreCase("[line 1:7~1:12 ,QIL 0:18] assert test failed.");
             assert e.getLocalizedMessage().equalsIgnoreCase("assert test failed.");
         }
     }

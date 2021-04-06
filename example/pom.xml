@@ -11,13 +11,13 @@
 
     <!-- Maven Info -->
     <groupId>net.hasor</groupId>
-    <artifactId>test-dataway</artifactId>
+    <artifactId>example</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
     <properties>
         <java.version>1.8</java.version>
-        <hasor.version>4.2.5-SNAPSHOT</hasor.version>
+        <hasor.version>4.2.6-SNAPSHOT</hasor.version>
         <swagger.version>2.7.0</swagger.version>
     </properties>
 

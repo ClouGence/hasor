@@ -5,7 +5,8 @@ bin
 .DS_Store
 _book
 dependency-reduced-pom.xml
-
+.gradle
+/.gradle/
 
 # nodejs
 package-lock.json

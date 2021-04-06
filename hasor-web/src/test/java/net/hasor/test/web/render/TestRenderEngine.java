@@ -26,8 +26,8 @@ import java.io.Writer;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class TestRenderEngine implements RenderEngine {//
-    private Set<String> templateSet = new HashSet<>(); //
+public class TestRenderEngine implements RenderEngine {
+    private final Set<String> templateSet = new HashSet<>();
 
     public TestRenderEngine(List<String> templateSet) {
         this.templateSet.addAll(templateSet.stream().filter(StringUtils::isNotBlank).collect(Collectors.toList()));
