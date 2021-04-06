@@ -22,12 +22,13 @@ import java.util.Date;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AdbMySqlTable {
-    private String         schemaName;
+    private String            schemaName;
     private String            tableName;
     private AdbMySqlTableType tableType;
     private String            collation;
-    private Date           createTime;
-    private Date           updateTime;
+    private Date              createTime;
+    private Date              updateTime;
+    private String            comment;
 
     public String getSchemaName() {
         return schemaName;
@@ -75,5 +76,13 @@ public class AdbMySqlTable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

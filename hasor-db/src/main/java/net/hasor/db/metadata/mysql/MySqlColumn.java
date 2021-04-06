@@ -32,6 +32,7 @@ public class MySqlColumn {
     private JDBCType jdbcType;
     private boolean  primaryKey;
     private boolean  uniqueKey;//如若存在联合唯一索引需要借助getUniqueKey 来查询具体信息，这里只会表示该列存在至少一个唯一索引的引用。
+    private String   comment;
     //
     private Integer  datetimePrecision;
     private Integer  numericPrecision;
@@ -160,5 +161,13 @@ public class MySqlColumn {
 
     public void setBytesMaxLength(Integer bytesMaxLength) {
         this.bytesMaxLength = bytesMaxLength;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

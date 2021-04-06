@@ -97,7 +97,7 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
         if (schemaList.size() > 1000) {
             throw new IndexOutOfBoundsException("Batch query schema Batch size out of 1000");
         }
-        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME from INFORMATION_SCHEMA.TABLES " //
+        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES " //
                 + "where TABLE_SCHEMA in " + buildWhereIn(schemaList);
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaList.toArray());
@@ -114,6 +114,7 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
                 table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
                 table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
                 table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
+                table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
                 tableList.add(table);
             });
             return resultData;
@@ -124,7 +125,7 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
         if (StringUtils.isBlank(schemaName)) {
             return Collections.emptyList();
         }
-        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME from INFORMATION_SCHEMA.TABLES " //
+        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES " //
                 + "where TABLE_SCHEMA = ?";
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName);
@@ -138,6 +139,7 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
                 table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
                 table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
                 table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
+                table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
                 return table;
             }).collect(Collectors.toList());
         }
@@ -160,7 +162,7 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
         if (tableNameList.size() > 1000) {
             throw new IndexOutOfBoundsException("Batch query table Batch size out of 1000");
         }
-        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME from INFORMATION_SCHEMA.TABLES " //
+        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES " //
                 + "where TABLE_SCHEMA = ? and TABLE_NAME in " + buildWhereIn(tableNameList);
         tableNameList.add(0, schemaName);
         try (Connection conn = this.connectSupplier.get()) {
@@ -175,6 +177,7 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
                 table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
                 table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
                 table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
+                table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
                 return table;
             }).collect(Collectors.toList());
         }
@@ -184,7 +187,7 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
         if (StringUtils.isBlank(schemaName) || StringUtils.isBlank(tableName)) {
             return null;
         }
-        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME from INFORMATION_SCHEMA.TABLES " //
+        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES " //
                 + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
@@ -198,6 +201,7 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
                 table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
                 table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
                 table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
+                table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
                 return table;
             }).findFirst().orElse(null);
         }
@@ -210,7 +214,7 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
         List<Map<String, Object>> primaryKeyList = null;
         List<Map<String, Object>> columnList = null;
         try (Connection conn = this.connectSupplier.get()) {
-            String queryStringColumn = "select TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,CHARACTER_OCTET_LENGTH,NUMERIC_SCALE,NUMERIC_PRECISION,DATETIME_PRECISION,CHARACTER_SET_NAME,COLLATION_NAME,COLUMN_TYPE from INFORMATION_SCHEMA.COLUMNS " //
+            String queryStringColumn = "select TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,CHARACTER_OCTET_LENGTH,NUMERIC_SCALE,NUMERIC_PRECISION,DATETIME_PRECISION,CHARACTER_SET_NAME,COLLATION_NAME,COLUMN_TYPE,COLUMN_COMMENT from INFORMATION_SCHEMA.COLUMNS " //
                     + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
             columnList = new JdbcTemplate(conn).queryForList(queryStringColumn, schemaName, tableName);
             if (columnList == null) {
@@ -250,6 +254,7 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
             column.setNumericScale(safeToInteger(recordMap.get("NUMERIC_SCALE")));
             column.setPrimaryKey(primaryKeyColumnNameList.contains(column.getName()));
             column.setUniqueKey(uniqueKeyColumnNameList.contains(column.getName()));
+            column.setComment(safeToString(recordMap.get("COLUMN_COMMENT")));
             return column;
         }).collect(Collectors.toList());
     }

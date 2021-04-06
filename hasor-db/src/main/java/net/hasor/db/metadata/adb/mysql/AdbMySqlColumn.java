@@ -31,6 +31,7 @@ public class AdbMySqlColumn {
     private SqlType  sqlType;
     private JDBCType jdbcType;
     private boolean  primaryKey;
+    private String   comment;
     //
     private Integer  datetimePrecision;
     private Integer  numericPrecision;
@@ -151,5 +152,13 @@ public class AdbMySqlColumn {
 
     public void setBytesMaxLength(Integer bytesMaxLength) {
         this.bytesMaxLength = bytesMaxLength;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

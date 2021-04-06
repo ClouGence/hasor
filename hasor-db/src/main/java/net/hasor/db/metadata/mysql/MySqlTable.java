@@ -28,6 +28,7 @@ public class MySqlTable {
     private String         collation;
     private Date           createTime;
     private Date           updateTime;
+    private String         comment;
 
     public String getSchemaName() {
         return schemaName;
@@ -75,5 +76,13 @@ public class MySqlTable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }
