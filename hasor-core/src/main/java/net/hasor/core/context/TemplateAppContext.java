@@ -106,6 +106,104 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         }
     }
 
+    /*------------------------------------------------------------------------------------BeanMap*/
+    private static abstract class AbstractMapEntry<T> implements Map.Entry<T, Object> {
+        protected final T targetKey;
+
+        public AbstractMapEntry(T targetKey) {
+            this.targetKey = targetKey;
+        }
+
+        public T getKey() {
+            return this.targetKey;
+        }
+
+        public Object setValue(Object value) {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    private class BeanMapEntry extends AbstractMapEntry<String> {
+        public BeanMapEntry(String name) {
+            super(name);
+        }
+
+        public Object getValue() {
+            return getInstance(this.targetKey);
+        }
+    }
+
+    private class TypeMapEntry extends AbstractMapEntry<Class<?>> {
+        public TypeMapEntry(Class<?> type) {
+            super(type);
+        }
+
+        public Object getValue() {
+            return getInstance(this.targetKey);
+        }
+    }
+
+    private class NameMapEntry extends AbstractMapEntry<String> {
+        private final Class<?> bindType;
+
+        public NameMapEntry(Class<?> bindType, String beanName) {
+            super(beanName);
+            this.bindType = bindType;
+        }
+
+        public Object getValue() {
+            return findBindingBean(this.targetKey, this.bindType);
+        }
+    }
+
+    @Override
+    public Map<String, Object> toBeanMap() {
+        final HashSet<Map.Entry<String, Object>> entrySet = new HashSet<>();
+        String[] beanIds = this.getBindIDs();
+        for (String beanId : beanIds) {
+            entrySet.add(new BeanMapEntry(beanId));
+        }
+        //
+        class BeanMap extends AbstractMap<String, Object> {
+            public Set<Entry<String, Object>> entrySet() {
+                return entrySet;
+            }
+        }
+        return new BeanMap();
+    }
+
+    @Override
+    public Map<Class<?>, Object> toTypeMap() {
+        final HashSet<Map.Entry<Class<?>, Object>> entrySet = new HashSet<>();
+        String[] beanIds = this.getBindIDs();
+        for (String beanId : beanIds) {
+            Class<?> beanType = getBeanType(beanId);
+            entrySet.add(new TypeMapEntry(beanType));
+        }
+        //
+        class BeanMap extends AbstractMap<Class<?>, Object> {
+            public Set<Entry<Class<?>, Object>> entrySet() {
+                return entrySet;
+            }
+        }
+        return new BeanMap();
+    }
+
+    @Override
+    public Map<String, Object> toNameMap(Class<?> bindType) {
+        final HashSet<Map.Entry<String, Object>> entrySet = new HashSet<>();
+        String[] beanNames = this.getNames(bindType);
+        for (String beanName : beanNames) {
+            entrySet.add(new NameMapEntry(bindType, beanName));
+        }
+        //
+        class BeanMap extends AbstractMap<String, Object> {
+            public Set<Entry<String, Object>> entrySet() {
+                return entrySet;
+            }
+        }
+        return new BeanMap();
+    }
     /*---------------------------------------------------------------------------------------Bean*/
 
     @Override

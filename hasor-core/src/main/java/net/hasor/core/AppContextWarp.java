@@ -16,6 +16,7 @@
 package net.hasor.core;
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -74,6 +75,21 @@ public class AppContextWarp implements AppContext {
     @Override
     public void waitSignal(Object signal, long timeout, TimeUnit unit) throws InterruptedException {
         this.getAppContext().waitSignal(signal, timeout, unit);
+    }
+
+    @Override
+    public Map<String, Object> toBeanMap() {
+        return this.getAppContext().toBeanMap();
+    }
+
+    @Override
+    public Map<Class<?>, Object> toTypeMap() {
+        return this.getAppContext().toTypeMap();
+    }
+
+    @Override
+    public Map<String, Object> toNameMap(Class<?> bindType) {
+        return this.getAppContext().toNameMap(bindType);
     }
 
     @Override

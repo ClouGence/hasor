@@ -20,6 +20,7 @@ import java.io.Closeable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -82,6 +83,17 @@ public interface AppContext extends MetaInfo, Closeable {
 
     /** 阻塞当前线程的继续执行，直到 signal 的 notify 或 notifyAll 被调用 */
     public void waitSignal(Object signal, long timeout, TimeUnit unit) throws InterruptedException;
+
+    /*--------------------------------------------------------------------------------------ToMap*/
+
+    /** 将 AppContext 转换为 Map，get 方法会通过 getInstance(String) 形式获取Bean */
+    public Map<String, Object> toBeanMap();
+
+    /** 将 AppContext 转换为 Map，get 方法会通过 getInstance(Class) 形式获取Bean */
+    public Map<Class<?>, Object> toTypeMap();
+
+    /** 将 AppContext 转换为 Map，get 方法会通过 findBindingBean(String,Class) 形式获取Bean */
+    public Map<String, Object> toNameMap(Class<?> bindType);
 
     /*---------------------------------------------------------------------------------------Bean*/
 
