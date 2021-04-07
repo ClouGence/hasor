@@ -18,6 +18,8 @@ import net.hasor.db.mapping.FieldInfo;
 import net.hasor.utils.reflect.SFunction;
 
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -30,14 +32,26 @@ public interface UpdateExecute<T> extends BoundSqlBuilder {
     /** 生成 select count() 查询语句并查询总数。*/
     public int doUpdate() throws SQLException;
 
+    /** 允许空 Where条件（注意：空 Where 条件会导致更新整个数据库） */
+    public UpdateExecute<T> allowEmptyWhere();
+
     /** 设置 update 的 set 中的值。 */
-    public UpdateExecute<T> applyNewValue(T newValue) throws SQLException;
+    public default UpdateExecute<T> applyNewValue(T newValue) throws SQLException {
+        return applyNewValue(newValue, (Predicate<FieldInfo>) fieldInfo -> true);
+    }
+
+    /** 设置 update 的 set 中的值。 */
+    public default UpdateExecute<T> applyNewValue(T newValue, SFunction<T> property) throws SQLException {
+        return applyNewValue(newValue, Collections.singletonList(property));
+    }
 
     /** 设置指定列 update 的 set 中的值 */
-    public UpdateExecute<T> applyNewValue(T newValue, String... columns) throws SQLException;
-
-    /** 设置指定列 update 的 set 中的值 */
-    public UpdateExecute<T> applyNewValue(T newValue, SFunction<T> property) throws SQLException;
+    public default UpdateExecute<T> applyNewValue(T newValue, String... propertyArrays) throws SQLException {
+        List<String> strings = Arrays.asList(propertyArrays);
+        return applyNewValue(newValue, (Predicate<FieldInfo>) fieldInfo -> {
+            return strings.contains(fieldInfo.getPropertyName());
+        });
+    }
 
     /** 设置指定列 update 的 set 中的值 */
     public UpdateExecute<T> applyNewValue(T newValue, List<SFunction<T>> propertyList) throws SQLException;

@@ -108,6 +108,9 @@ create table tb_adbmysql_types
     c_enum                   enum ('enum1','enum2','enum3','enum4','enum5','enum6','enum7','enum8'),
     c_set                    set ('set1','set2','set3','set4','set5','set6','set7','set8'),
     c_json                   json,
-
+    c_array_1                array< int >,
+    c_array_2                array<array< string >>,
+    c_map_1                  map<int, string>,
+    c_map_2                  map<int, map<int, string>>,
     c_point                  point
 )

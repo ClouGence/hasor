@@ -15,13 +15,15 @@
  */
 package net.hasor.db.lambda.query;
 import net.hasor.db.JdbcUtils;
-import net.hasor.db.jdbc.ConnectionCallback;
-import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.dialect.SqlDialectRegister;
+import net.hasor.db.jdbc.ConnectionCallback;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.mapping.MappingRowMapper;
 
 import java.sql.DatabaseMetaData;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 所有 SQL 执行器必要的公共属性
@@ -37,6 +39,9 @@ public abstract class AbstractExecute<T> {
     private         boolean             qualifier;
 
     public AbstractExecute(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
+        if (Objects.requireNonNull(exampleType, "exampleType is null.") == Map.class) {
+            throw new UnsupportedOperationException("Map cannot be used as lambda exampleType.");
+        }
         this.exampleType = exampleType;
         this.jdbcTemplate = jdbcTemplate;
         this.exampleRowMapper = jdbcTemplate.getMappingHandler().resolveMapper(exampleType);

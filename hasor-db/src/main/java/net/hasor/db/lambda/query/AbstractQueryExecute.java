@@ -20,9 +20,9 @@ import net.hasor.db.jdbc.ResultSetExtractor;
 import net.hasor.db.jdbc.RowCallbackHandler;
 import net.hasor.db.jdbc.RowMapper;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.lambda.QueryExecute;
 import net.hasor.db.lambda.page.Page;
 import net.hasor.db.lambda.page.PageObject;
-import net.hasor.db.lambda.QueryExecute;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -44,12 +44,18 @@ public abstract class AbstractQueryExecute<T> extends AbstractExecute<T> impleme
         super(exampleType, jdbcTemplate, dbType, dialect);
     }
 
+    /**
+     * 由于 pageInfo 是在高层 QueryExecute 实现中提供的能力，因此提供一个开关。让子类来决定是否有能力支持这个特性。
+     * 这样在 getBoundSql(SqlDialect) 方法中可以有依据的决定是否进行 sql 改写。
+     * 例如：update 和 delete 类别的实现中就不应该支持 page 的改写。 */
+    protected abstract boolean supportPage();
+
     public final BoundSql getBoundSql(SqlDialect dialect) {
         SqlDialect currentSqlDialect = this.dialect();
         try {
             setDialect(dialect);
             int pageSize = this.pageInfo.getPageSize();
-            if (pageSize > 0) {
+            if (supportPage() && pageSize > 0) {
                 int recordPosition = this.pageInfo.getFirstRecordPosition();
                 return dialect.pageSql(getOriginalBoundSql(), recordPosition, pageSize);
             } else {
@@ -76,6 +82,11 @@ public abstract class AbstractQueryExecute<T> extends AbstractExecute<T> impleme
     public <V> QueryExecute<V> wrapperType(Class<V> wrapperType) {
         AbstractQueryExecute<T> self = this;
         return new AbstractQueryExecute<V>(wrapperType, this.getJdbcTemplate(), this.dbType, this.dialect()) {
+            @Override
+            protected boolean supportPage() {
+                return AbstractQueryExecute.this.supportPage();
+            }
+
             @Override
             protected BoundSql getOriginalBoundSql() {
                 return self.getOriginalBoundSql();

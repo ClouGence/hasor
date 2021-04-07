@@ -40,6 +40,8 @@ public enum SqlKeyword implements Segment {
     ORDER_BY("ORDER BY"),       //
     //
     INSERT("INSERT"),           //
+    UPDATE("UPDATE"),           //
+    SET("SET"),                 //
     INTO("INTO"),               //
     VALUES("VALUES"),           //
     EXISTS("EXISTS"),           //

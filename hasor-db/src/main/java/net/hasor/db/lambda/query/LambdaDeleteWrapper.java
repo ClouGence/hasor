@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.db.lambda.query;
+import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.lambda.DeleteExecute;
 import net.hasor.db.lambda.LambdaOperations.LambdaDelete;
-import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.SqlDialect;
-import net.hasor.db.mapping.TableInfo;
 import net.hasor.db.lambda.segment.MergeSqlSegment;
 import net.hasor.db.lambda.segment.Segment;
+import net.hasor.db.mapping.TableInfo;
 
 import java.sql.SQLException;
 
@@ -37,6 +37,11 @@ public class LambdaDeleteWrapper<T> extends AbstractQueryCompare<T, LambdaDelete
 
     public LambdaDeleteWrapper(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
         super(exampleType, jdbcTemplate);
+    }
+
+    @Override
+    protected boolean supportPage() {
+        return false;// delete is disable Page;
     }
 
     @Override

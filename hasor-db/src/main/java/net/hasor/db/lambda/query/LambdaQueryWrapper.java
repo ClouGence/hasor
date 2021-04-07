@@ -53,16 +53,21 @@ public class LambdaQueryWrapper<T> extends AbstractQueryCompare<T, LambdaQuery<T
     }
 
     @Override
+    protected boolean supportPage() {
+        return true;// query is enable Page;
+    }
+
+    @Override
     public BoundSql getOriginalBoundSql() {
         // must be clean , The rebuildSQL will reinitialize.
         this.queryParam.clear();
         //
-        String sqlQuery = rebuildSql();
+        String sqlQuery = reBuildSql();
         Object[] args = this.queryParam.toArray().clone();
         return new BoundSql.BoundSqlObj(sqlQuery, args);
     }
 
-    private String rebuildSql() {
+    private String reBuildSql() {
         MergeSqlSegment sqlSegment = new MergeSqlSegment();
         sqlSegment.addSegment(SELECT);
         sqlSegment.addSegment(buildColumns((this.groupBySegments.isEmpty() ? this.customSelect : this.groupBySegments)));

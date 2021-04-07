@@ -16,12 +16,12 @@
 package net.hasor.db.lambda.query;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.mapping.FieldInfo;
-import net.hasor.db.mapping.TableInfo;
 import net.hasor.db.lambda.QueryCompare;
 import net.hasor.db.lambda.segment.MergeSqlSegment;
 import net.hasor.db.lambda.segment.Segment;
 import net.hasor.db.lambda.segment.SqlLike;
+import net.hasor.db.mapping.FieldInfo;
+import net.hasor.db.mapping.TableInfo;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.reflect.MethodUtils;
