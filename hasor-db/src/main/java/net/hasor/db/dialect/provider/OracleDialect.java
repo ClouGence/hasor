@@ -98,6 +98,16 @@ public class OracleDialect implements SqlDialect, InsertSqlDialect {
     }
 
     @Override
+    public boolean supportInsertIgnoreFromSelect(List<FieldInfo> pkFields) {
+        return false;
+    }
+
+    @Override
+    public String insertIgnoreFromSelect(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public boolean supportInsertReplace(List<FieldInfo> pkFields) {
         return !pkFields.isEmpty();
     }
@@ -124,6 +134,16 @@ public class OracleDialect implements SqlDialect, InsertSqlDialect {
         StringBuilder mergeBasic = buildMergeInfoBasic(useQualifier, category, tableName, insertFields, pkColumns);
         StringBuilder mergeWhenMatched = buildMergeInfoWhenMatched(useQualifier, insertFields);
         return mergeBasic.toString() + " " + mergeWhenMatched.toString();
+    }
+
+    @Override
+    public boolean supportInsertReplaceFromSelect(List<FieldInfo> pkFields) {
+        return false;
+    }
+
+    @Override
+    public String insertWithReplaceFromSelect(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields) {
+        throw new UnsupportedOperationException();
     }
 
     private static StringBuilder buildMergeInfoBasic(boolean useQualifier, String category, String tableName, List<FieldInfo> allColumns, List<FieldInfo> pkColumns) {

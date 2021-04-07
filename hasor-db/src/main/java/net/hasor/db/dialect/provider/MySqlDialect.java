@@ -78,6 +78,19 @@ public class MySqlDialect implements SqlDialect, InsertSqlDialect {
     }
 
     @Override
+    public boolean supportInsertIgnoreFromSelect(List<FieldInfo> pkFields) {
+        return true;
+    }
+
+    @Override
+    public String insertIgnoreFromSelect(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields) {
+        // insert ignore t(id, name) select ...
+        String allColumns = buildAllColumns(useQualifier, category, tableName, insertFields);
+        int fieldCount = insertFields.size();
+        return "INSERT IGNORE " + tableName(useQualifier, category, tableName) + " ( " + allColumns + " )";
+    }
+
+    @Override
     public boolean supportInsertReplace(List<FieldInfo> pkFields) {
         return true;
     }
@@ -88,6 +101,19 @@ public class MySqlDialect implements SqlDialect, InsertSqlDialect {
         String allColumns = buildAllColumns(useQualifier, category, tableName, insertFields);
         int fieldCount = insertFields.size();
         return "REPLACE INTO " + tableName(useQualifier, category, tableName) + " ( " + allColumns + " ) VALUES ( " + StringUtils.repeat(",?", fieldCount).substring(1) + " )";
+    }
+
+    @Override
+    public boolean supportInsertReplaceFromSelect(List<FieldInfo> pkFields) {
+        return true;
+    }
+
+    @Override
+    public String insertWithReplaceFromSelect(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields) {
+        // replace into t(id, name) values (?, ?);
+        String allColumns = buildAllColumns(useQualifier, category, tableName, insertFields);
+        int fieldCount = insertFields.size();
+        return "REPLACE INTO " + tableName(useQualifier, category, tableName) + " ( " + allColumns + " )";
     }
 
     private String buildAllColumns(boolean useQualifier, String category, String tableName, List<FieldInfo> insertFields) {

@@ -19,6 +19,9 @@ import org.junit.Test;
 import java.sql.SQLException;
 import java.util.Map;
 
+/**
+ * 分页器的功能测试。
+ */
 public class PageTest {
     @Test
     public void pageTest_1() throws SQLException {

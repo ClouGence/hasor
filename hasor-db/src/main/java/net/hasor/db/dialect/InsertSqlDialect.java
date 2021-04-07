@@ -29,8 +29,18 @@ public interface InsertSqlDialect extends SqlDialect {
 
     public String insertWithIgnore(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields);
 
+    /** 是否支持 insert ignore from select */
+    public boolean supportInsertIgnoreFromSelect(List<FieldInfo> pkFields);
+
+    public String insertIgnoreFromSelect(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields);
+
     /** 是否支持 insert replace */
     public boolean supportInsertReplace(List<FieldInfo> pkFields);
 
     public String insertWithReplace(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields);
+
+    /** 是否支持 insert replace from select */
+    public boolean supportInsertReplaceFromSelect(List<FieldInfo> pkFields);
+
+    public String insertWithReplaceFromSelect(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields);
 }

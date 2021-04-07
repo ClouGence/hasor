@@ -175,11 +175,34 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
     public BoundSql getBoundSql(SqlDialect dialect) {
         // insert ... select
         if (this.insertAsQuery != null) {
-            // insert into
             MergeSqlSegment insertTemplate = new MergeSqlSegment();
-            insertTemplate.addSegment(INSERT, INTO);
-            // columns
-            insertTemplate.addSegment(getTableNameAndColumn(dialect));
+            boolean isInsertSqlDialect = dialect instanceof InsertSqlDialect;
+            MappingRowMapper<T> rowMapper = this.getRowMapper();
+            String category = rowMapper.getCategory();
+            String tableName = rowMapper.getTableName();
+            //
+            switch (this.insertStrategy) {
+                case Ignore: {
+                    if (isInsertSqlDialect && ((InsertSqlDialect) dialect).supportInsertIgnoreFromSelect(this.primaryKeyColumns)) {
+                        String sqlString = ((InsertSqlDialect) dialect).insertIgnoreFromSelect(this.isQualifier(), category, tableName, this.primaryKeyColumns, this.insertColumns);
+                        insertTemplate.addSegment(() -> sqlString);
+                        break;
+                    }
+                }
+                case Replace: {
+                    if (isInsertSqlDialect && ((InsertSqlDialect) dialect).supportInsertReplaceFromSelect(this.primaryKeyColumns)) {
+                        String sqlString = ((InsertSqlDialect) dialect).insertWithReplaceFromSelect(this.isQualifier(), category, tableName, this.primaryKeyColumns, this.insertColumns);
+                        insertTemplate.addSegment(() -> sqlString);
+                        break;
+                    }
+                }
+                case Into:
+                default: {
+                    // insert into
+                    insertTemplate.addSegment(INSERT, INTO);
+                    insertTemplate.addSegment(getTableNameAndColumn(dialect));
+                }
+            }
             // select
             insertTemplate.addSegment(dialect::selectAsInsertConcatStr);
             //

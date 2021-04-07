@@ -33,7 +33,7 @@ import static net.hasor.test.db.utils.TestUtils.mapForData2;
  */
 public class BuilderInsertTest extends AbstractDbTest {
     @Test
-    public void insertBuilder_1() {
+    public void insert_1() {
         LambdaInsert<TB_User> lambdaInsert = new LambdaTemplate().lambdaInsert(TB_User.class);
         lambdaInsert.applyEntity(beanForData1());
         lambdaInsert.applyMap(mapForData2());
@@ -49,7 +49,7 @@ public class BuilderInsertTest extends AbstractDbTest {
     }
 
     @Test
-    public void insertBuilder_2() {
+    public void insert_2() {
         LambdaInsert<TbUserShadow> lambdaInsert = new LambdaTemplate().lambdaInsert(TbUserShadow.class);
         lambdaInsert.applyQueryAsInsert(TB_User.class, queryBuilder -> {
             queryBuilder.eq(TB_User::getIndex, 123);
@@ -63,5 +63,107 @@ public class BuilderInsertTest extends AbstractDbTest {
         BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
         assert !(boundSql2 instanceof BatchBoundSql);
         assert boundSql2.getSqlString().equals("INSERT INTO `tb_user_shadow` ( `userUUID` , `name` , `loginName` , `loginPassword` , `email` , `index` , `registerTime` )  SELECT * FROM `TB_User` WHERE `index` = ?");
+    }
+
+    @Test
+    public void insertDuplicateKeyBlock_1() {
+        LambdaInsert<TB_User> lambdaInsert = new LambdaTemplate().lambdaInsert(TB_User.class);
+        lambdaInsert.applyEntity(beanForData1());
+        lambdaInsert.applyMap(mapForData2());
+        lambdaInsert.onDuplicateKeyBlock();
+        //
+        SqlDialect dialect = new MySqlDialect();
+        BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
+        assert boundSql1 instanceof BatchBoundSql;
+        assert boundSql1.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
+        //
+        BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
+        assert boundSql2 instanceof BatchBoundSql;
+        assert boundSql2.getSqlString().equals("INSERT INTO `TB_User` ( `userUUID` , `name` , `loginName` , `loginPassword` , `email` , `index` , `registerTime` ) VALUES ( ?,?,?,?,?,?,? )");
+    }
+
+    @Test
+    public void insertDuplicateKeyBlock_2() {
+        LambdaInsert<TbUserShadow> lambdaInsert = new LambdaTemplate().lambdaInsert(TbUserShadow.class);
+        lambdaInsert.applyQueryAsInsert(TB_User.class, queryBuilder -> {
+            queryBuilder.eq(TB_User::getIndex, 123);
+        }).onDuplicateKeyBlock();
+        //
+        SqlDialect dialect = new MySqlDialect();
+        BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
+        assert !(boundSql1 instanceof BatchBoundSql);
+        assert boundSql1.getSqlString().equals("INSERT INTO tb_user_shadow ( userUUID , name , loginName , loginPassword , email , index , registerTime )  SELECT * FROM TB_User WHERE index = ?");
+        //
+        BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
+        assert !(boundSql2 instanceof BatchBoundSql);
+        assert boundSql2.getSqlString().equals("INSERT INTO `tb_user_shadow` ( `userUUID` , `name` , `loginName` , `loginPassword` , `email` , `index` , `registerTime` )  SELECT * FROM `TB_User` WHERE `index` = ?");
+    }
+
+    @Test
+    public void insertDuplicateKeyUpdate_1() {
+        LambdaInsert<TB_User> lambdaInsert = new LambdaTemplate().lambdaInsert(TB_User.class);
+        lambdaInsert.applyEntity(beanForData1());
+        lambdaInsert.applyMap(mapForData2());
+        lambdaInsert.onDuplicateKeyUpdate();
+        //
+        SqlDialect dialect = new MySqlDialect();
+        BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
+        assert boundSql1 instanceof BatchBoundSql;
+        assert boundSql1.getSqlString().equals("REPLACE INTO TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
+        //
+        BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
+        assert boundSql2 instanceof BatchBoundSql;
+        assert boundSql2.getSqlString().equals("REPLACE INTO `TB_User` ( `userUUID` , `name` , `loginName` , `loginPassword` , `email` , `index` , `registerTime` ) VALUES ( ?,?,?,?,?,?,? )");
+    }
+
+    @Test
+    public void insertDuplicateKeyUpdate_2() {
+        LambdaInsert<TbUserShadow> lambdaInsert = new LambdaTemplate().lambdaInsert(TbUserShadow.class);
+        lambdaInsert.applyQueryAsInsert(TB_User.class, queryBuilder -> {
+            queryBuilder.eq(TB_User::getIndex, 123);
+        }).onDuplicateKeyUpdate();
+        //
+        SqlDialect dialect = new MySqlDialect();
+        BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
+        assert !(boundSql1 instanceof BatchBoundSql);
+        assert boundSql1.getSqlString().equals("REPLACE INTO tb_user_shadow ( userUUID , name , loginName , loginPassword , email , index , registerTime )  SELECT * FROM TB_User WHERE index = ?");
+        //
+        BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
+        assert !(boundSql2 instanceof BatchBoundSql);
+        assert boundSql2.getSqlString().equals("REPLACE INTO `tb_user_shadow` ( `userUUID` , `name` , `loginName` , `loginPassword` , `email` , `index` , `registerTime` )  SELECT * FROM `TB_User` WHERE `index` = ?");
+    }
+
+    @Test
+    public void insertDuplicateKeyIgnore_1() {
+        LambdaInsert<TB_User> lambdaInsert = new LambdaTemplate().lambdaInsert(TB_User.class);
+        lambdaInsert.applyEntity(beanForData1());
+        lambdaInsert.applyMap(mapForData2());
+        lambdaInsert.onDuplicateKeyIgnore();
+        //
+        SqlDialect dialect = new MySqlDialect();
+        BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
+        assert boundSql1 instanceof BatchBoundSql;
+        assert boundSql1.getSqlString().equals("INSERT IGNORE TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
+        //
+        BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
+        assert boundSql2 instanceof BatchBoundSql;
+        assert boundSql2.getSqlString().equals("INSERT IGNORE `TB_User` ( `userUUID` , `name` , `loginName` , `loginPassword` , `email` , `index` , `registerTime` ) VALUES ( ?,?,?,?,?,?,? )");
+    }
+
+    @Test
+    public void insertDuplicateKeyIgnore_2() {
+        LambdaInsert<TbUserShadow> lambdaInsert = new LambdaTemplate().lambdaInsert(TbUserShadow.class);
+        lambdaInsert.applyQueryAsInsert(TB_User.class, queryBuilder -> {
+            queryBuilder.eq(TB_User::getIndex, 123);
+        }).onDuplicateKeyIgnore();
+        //
+        SqlDialect dialect = new MySqlDialect();
+        BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
+        assert !(boundSql1 instanceof BatchBoundSql);
+        assert boundSql1.getSqlString().equals("INSERT IGNORE tb_user_shadow ( userUUID , name , loginName , loginPassword , email , index , registerTime )  SELECT * FROM TB_User WHERE index = ?");
+        //
+        BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
+        assert !(boundSql2 instanceof BatchBoundSql);
+        assert boundSql2.getSqlString().equals("INSERT IGNORE `tb_user_shadow` ( `userUUID` , `name` , `loginName` , `loginPassword` , `email` , `index` , `registerTime` )  SELECT * FROM `TB_User` WHERE `index` = ?");
     }
 }
