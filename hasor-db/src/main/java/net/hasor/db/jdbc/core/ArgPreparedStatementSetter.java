@@ -37,6 +37,10 @@ public class ArgPreparedStatementSetter implements PreparedStatementSetter, Para
         this.args = args;
     }
 
+    public TypeHandlerRegistry getTypeHandlerRegistry() {
+        return this.typeHandlerRegistry;
+    }
+
     @Override
     public void setValues(final PreparedStatement ps) throws SQLException {
         if (this.args != null) {
