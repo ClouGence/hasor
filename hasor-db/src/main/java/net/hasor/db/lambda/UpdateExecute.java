@@ -15,12 +15,14 @@
  */
 package net.hasor.db.lambda;
 import net.hasor.db.mapping.FieldInfo;
+import net.hasor.utils.StringUtils;
 import net.hasor.utils.reflect.SFunction;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 /**
@@ -36,26 +38,64 @@ public interface UpdateExecute<T> extends BoundSqlBuilder {
     public UpdateExecute<T> allowEmptyWhere();
 
     /** 设置 update 的 set 中的值。 */
-    public default UpdateExecute<T> applyNewValue(T newValue) throws SQLException {
-        return applyNewValue(newValue, (Predicate<FieldInfo>) fieldInfo -> true);
+    public default UpdateExecute<T> updateTo(T newValue) {
+        return updateTo(newValue, fieldInfo -> true);
     }
 
     /** 设置 update 的 set 中的值。 */
-    public default UpdateExecute<T> applyNewValue(T newValue, SFunction<T> property) throws SQLException {
-        return applyNewValue(newValue, Collections.singletonList(property));
+    public default UpdateExecute<T> updateTo(T newValue, SFunction<T> property, SFunction<T>... propertyArrays) {
+        List<SFunction<T>> propertyList = new ArrayList<>(Arrays.asList(propertyArrays));
+        if (property != null) {
+            propertyList.add(0, property);
+        }
+        return updateTo(newValue, propertyList);
     }
 
     /** 设置指定列 update 的 set 中的值 */
-    public default UpdateExecute<T> applyNewValue(T newValue, String... propertyArrays) throws SQLException {
-        List<String> strings = Arrays.asList(propertyArrays);
-        return applyNewValue(newValue, (Predicate<FieldInfo>) fieldInfo -> {
-            return strings.contains(fieldInfo.getPropertyName());
+    public default UpdateExecute<T> updateTo(T newValue, String property, String... propertyArrays) {
+        List<String> propertyList = new ArrayList<>(Arrays.asList(propertyArrays));
+        if (StringUtils.isNotBlank(property)) {
+            propertyList.add(0, property);
+        }
+        return updateTo(newValue, fieldInfo -> {
+            return propertyList.contains(fieldInfo.getPropertyName());
         });
     }
 
     /** 设置指定列 update 的 set 中的值 */
-    public UpdateExecute<T> applyNewValue(T newValue, List<SFunction<T>> propertyList) throws SQLException;
+    public UpdateExecute<T> updateTo(T newValue, List<SFunction<T>> propertyList);
 
     /** 设置指定列 update 的 set 中的值 */
-    public UpdateExecute<T> applyNewValue(T newValue, Predicate<FieldInfo> tester) throws SQLException;
+    public UpdateExecute<T> updateTo(T newValue, Predicate<FieldInfo> tester);
+
+    /** 设置 update 的 set 中的值。 */
+    public default UpdateExecute<T> updateTo(Map<String, Object> propertyMap) {
+        return updateTo(propertyMap, fieldInfo -> true);
+    }
+
+    /** 设置 update 的 set 中的值。 */
+    public default UpdateExecute<T> updateTo(Map<String, Object> propertyMap, SFunction<T> property, SFunction<T>... propertyArrays) {
+        List<SFunction<T>> propertyList = new ArrayList<>(Arrays.asList(propertyArrays));
+        if (property != null) {
+            propertyList.add(0, property);
+        }
+        return updateTo(propertyMap, propertyList);
+    }
+
+    /** 设置指定列 update 的 set 中的值 */
+    public default UpdateExecute<T> updateTo(Map<String, Object> propertyMap, String property, String... propertyArrays) {
+        List<String> propertyList = new ArrayList<>(Arrays.asList(propertyArrays));
+        if (StringUtils.isNotBlank(property)) {
+            propertyList.add(0, property);
+        }
+        return updateTo(propertyMap, fieldInfo -> {
+            return propertyList.contains(fieldInfo.getPropertyName());
+        });
+    }
+
+    /** 设置指定列 update 的 set 中的值 */
+    public UpdateExecute<T> updateTo(Map<String, Object> propertyMap, List<SFunction<T>> propertyList);
+
+    /** 设置指定列 update 的 set 中的值 */
+    public UpdateExecute<T> updateTo(Map<String, Object> propertyMap, Predicate<FieldInfo> tester);
 }
