@@ -15,7 +15,7 @@
  */
 package net.hasor.db.metadata.adb.mysql;
 /**
- * MySQL Schema
+ * AdbMySql Schema
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */

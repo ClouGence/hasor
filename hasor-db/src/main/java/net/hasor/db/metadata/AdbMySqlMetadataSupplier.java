@@ -34,12 +34,39 @@ import java.util.stream.Collectors;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AdbMySqlMetadataSupplier extends AbstractMetadataSupplier {
+    private static final String TABLE = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,TABLES.CREATE_TIME,TABLES.UPDATE_TIME,TABLE_COMMENT, " //
+            + "MV_NAME,FIRST_REFRESH_TIME,NEXT_REFRESH_TIME_FUNC,OWNER,QUERY_REWRITE_ENABLED,REFRESH_CONDITION,REFRESH_STATE " //
+            + "from INFORMATION_SCHEMA.TABLES left join INFORMATION_SCHEMA.MV_INFO on TABLES.TABLE_NAME = MV_INFO.MV_NAME and TABLES.TABLE_SCHEMA = MV_INFO.MV_SCHEMA";
+
     public AdbMySqlMetadataSupplier(Connection connection) {
         super(connection);
     }
 
     public AdbMySqlMetadataSupplier(DataSource dataSource) {
         super(dataSource);
+    }
+
+    protected AdbMySqlTable convertTable(Map<String, Object> recordMap) {
+        AdbMySqlTable table = null;
+        if (recordMap.get("MV_NAME") != null) {
+            table = new AdbMySqlMaterialized();
+            ((AdbMySqlMaterialized) table).setFirstRefreshTime(safeToDate(recordMap.get("FIRST_REFRESH_TIME")));
+            ((AdbMySqlMaterialized) table).setNextRefreshTimeFunc(safeToString(recordMap.get("NEXT_REFRESH_TIME_FUNC")));
+            ((AdbMySqlMaterialized) table).setOwner(safeToString(recordMap.get("OWNER")));
+            ((AdbMySqlMaterialized) table).setQueryRewriteEnabled(safeToString(recordMap.get("QUERY_REWRITE_ENABLED")));
+            ((AdbMySqlMaterialized) table).setRefreshCondition(safeToString(recordMap.get("REFRESH_CONDITION")));
+            ((AdbMySqlMaterialized) table).setRefreshState(safeToString(recordMap.get("REFRESH_STATE")));
+            table.setTableType(AdbMySqlTableType.Materialized);
+        } else {
+            table = new AdbMySqlTable();
+            table.setTableType(AdbMySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
+        }
+        table.setTableName(safeToString(recordMap.get("TABLE_NAME")));
+        table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
+        table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
+        table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
+        table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
+        return table;
     }
 
     public String getDbVersion() throws SQLException {
@@ -104,8 +131,7 @@ public class AdbMySqlMetadataSupplier extends AbstractMetadataSupplier {
         if (schemaList.size() > 1000) {
             throw new IndexOutOfBoundsException("Batch query schema Batch size out of 1000");
         }
-        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES " //
-                + "where TABLE_SCHEMA in " + buildWhereIn(schemaList);
+        String queryString = TABLE + " where TABLE_SCHEMA in " + buildWhereIn(schemaList);
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaList.toArray());
             if (mapList == null) {
@@ -115,13 +141,7 @@ public class AdbMySqlMetadataSupplier extends AbstractMetadataSupplier {
             mapList.forEach(recordMap -> {
                 String dbName = safeToString(recordMap.get("TABLE_SCHEMA"));
                 List<AdbMySqlTable> tableList = resultData.computeIfAbsent(dbName, k -> new ArrayList<>());
-                AdbMySqlTable table = new AdbMySqlTable();
-                table.setTableName(safeToString(recordMap.get("TABLE_NAME")));
-                table.setTableType(AdbMySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
-                table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
-                table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
-                table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
-                table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
+                AdbMySqlTable table = convertTable(recordMap);
                 tableList.add(table);
             });
             return resultData;
@@ -140,23 +160,13 @@ public class AdbMySqlMetadataSupplier extends AbstractMetadataSupplier {
         if (StringUtils.isBlank(schemaName)) {
             return Collections.emptyList();
         }
-        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES " //
-                + "where TABLE_SCHEMA = ?";
+        String queryString = TABLE + " where TABLE_SCHEMA = ?";
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName);
             if (mapList == null) {
                 return Collections.emptyList();
             }
-            return mapList.stream().map(recordMap -> {
-                AdbMySqlTable table = new AdbMySqlTable();
-                table.setTableName(safeToString(recordMap.get("TABLE_NAME")));
-                table.setTableType(AdbMySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
-                table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
-                table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
-                table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
-                table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
-                return table;
-            }).collect(Collectors.toList());
+            return mapList.stream().map(this::convertTable).collect(Collectors.toList());
         }
     }
 
@@ -177,24 +187,14 @@ public class AdbMySqlMetadataSupplier extends AbstractMetadataSupplier {
         if (tableNameList.size() > 1000) {
             throw new IndexOutOfBoundsException("Batch query table Batch size out of 1000");
         }
-        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES " //
-                + "where TABLE_SCHEMA = ? and TABLE_NAME in " + buildWhereIn(tableNameList);
+        String queryString = TABLE + " where TABLE_SCHEMA = ? and TABLE_NAME in " + buildWhereIn(tableNameList);
         tableNameList.add(0, schemaName);
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, tableNameList.toArray());
             if (mapList == null) {
                 return Collections.emptyList();
             }
-            return mapList.stream().map(recordMap -> {
-                AdbMySqlTable table = new AdbMySqlTable();
-                table.setTableName(safeToString(recordMap.get("TABLE_NAME")));
-                table.setTableType(AdbMySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
-                table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
-                table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
-                table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
-                table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
-                return table;
-            }).collect(Collectors.toList());
+            return mapList.stream().map(this::convertTable).collect(Collectors.toList());
         }
     }
 
@@ -202,23 +202,13 @@ public class AdbMySqlMetadataSupplier extends AbstractMetadataSupplier {
         if (StringUtils.isBlank(schemaName) || StringUtils.isBlank(tableName)) {
             return null;
         }
-        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES " //
-                + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
+        String queryString = TABLE + " where TABLE_SCHEMA = ? and TABLE_NAME = ?";
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {
                 return null;
             }
-            return mapList.stream().map(recordMap -> {
-                AdbMySqlTable table = new AdbMySqlTable();
-                table.setTableName(safeToString(recordMap.get("TABLE_NAME")));
-                table.setTableType(AdbMySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
-                table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
-                table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
-                table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
-                table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
-                return table;
-            }).findFirst().orElse(null);
+            return mapList.stream().map(this::convertTable).findFirst().orElse(null);
         }
     }
 

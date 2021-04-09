@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * MySQL 主键
+ * AdbMySql 主键
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */

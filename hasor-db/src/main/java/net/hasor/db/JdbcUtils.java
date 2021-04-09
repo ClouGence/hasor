@@ -53,7 +53,7 @@ public class JdbcUtils {
     public static final String LOG4JDBC         = "log4jdbc";
     public static final String PHOENIX          = "phoenix";
     public static final String ENTERPRISEDB     = "edb";
-    public static final String KYLIN            = "kylin";
+    public static final String KYLIN            = "kylin";//org.apache.kylin.jdbc.Driver
     public static final String SQLITE           = "sqlite";
     public static final String ALIYUN_ADS       = "aliyun_ads";
     public static final String ALIYUN_DRDS      = "aliyun_drds";
@@ -102,6 +102,8 @@ public class JdbcUtils {
             return ODPS;
         } else if (rawUrl.startsWith("jdbc:db2:")) {
             return DB2;
+        } else if (rawUrl.startsWith("jdbc:kylin:")) {
+            return KYLIN;
         } else if (rawUrl.startsWith("jdbc:sqlite:")) {
             return SQLITE;
         } else if (rawUrl.startsWith("jdbc:impala:")) {

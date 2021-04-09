@@ -65,6 +65,9 @@ public class AdbMySqlMetadataServiceSupplierTest {
             if (collect.contains("tb_user")) {
                 jdbcTemplate.execute("drop table tb_user");
             }
+            if (collect.contains("m_tb_user")) {
+                jdbcTemplate.execute("drop materialized view m_tb_user");
+            }
         }
         jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/metadata/adbmysql_script.sql");
     }
@@ -92,7 +95,7 @@ public class AdbMySqlMetadataServiceSupplierTest {
 
     @Test
     public void getTables() throws SQLException {
-        Map<String, List<AdbMySqlTable>> tableList = this.repository.getTables("INFORMATION_SCHEMA");
+        Map<String, List<AdbMySqlTable>> tableList = this.repository.getTables(ADBMYSQL_SCHEMA_NAME);
         assert tableList.size() == 1;
         assert tableList.containsKey("INFORMATION_SCHEMA");
         List<String> tableForInformationSchema = tableList.get("INFORMATION_SCHEMA").stream().map(AdbMySqlTable::getTableName).collect(Collectors.toList());
@@ -100,6 +103,14 @@ public class AdbMySqlMetadataServiceSupplierTest {
         assert tableForInformationSchema.contains("TABLES");
         assert tableForInformationSchema.contains("SCHEMATA");
         assert tableForInformationSchema.size() > 3;
+    }
+
+    @Test
+    public void getMaterializedView() throws SQLException {
+        List<AdbMySqlTable> tableList = this.repository.findTable(ADBMYSQL_SCHEMA_NAME, "m_tb_user");
+        assert tableList.size() == 1;
+        assert tableList.get(0) instanceof AdbMySqlMaterialized;
+        assert tableList.get(0).getTableType() == AdbMySqlTableType.Materialized;
     }
 
     @Test

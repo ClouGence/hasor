@@ -7,12 +7,12 @@ create table proc_table
 
 create table proc_table_ref
 (
-    r_int   int not null primary key,
-    r_k1    int null,
-    r_k2    varchar(50) null,
+    r_int   int          not null primary key,
+    r_k1    int          null,
+    r_k2    varchar(50)  null,
     r_name  varchar(100) null,
-    r_index int null,
-    r_data  int null,
+    r_index int          null,
+    r_data  int          null,
     constraint proc_table_ref_uk
         unique (r_name),
     constraint ptr
@@ -37,15 +37,20 @@ create table t3
 
 create table tb_user
 (
-    userUUID      varchar(50) not null primary key,
-    name          varchar(100) null,
+    userUUID      varchar(50)                not null primary key,
+    name          varchar(100)               null,
     loginName     varchar(100) default 'abc' null,
-    loginPassword varchar(100) null,
-    email         varchar(50) null,
-    `index`       int null,
-    registerTime  timestamp null,
+    loginPassword varchar(100)               null,
+    email         varchar(50)                null,
+    `index`       int                        null,
+    registerTime  timestamp                  null,
     constraint tb_user_email_userUUID_uindex
         unique (email, userUUID),
     constraint tb_user_userUUID_uindex
         unique (userUUID)
 );
+
+CREATE MATERIALIZED VIEW m_tb_user
+REFRESH NEXT now() + interval 5 minute
+AS
+SELECT count(*) as cnt FROM tb_user;

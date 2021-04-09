@@ -15,11 +15,12 @@
  */
 package net.hasor.db.metadata.adb.mysql;
 /**
- * MySQL 表类型
+ * AdbMySql 表类型
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum AdbMySqlTableType {
+    Materialized("BASE TABLE"),
     Table("BASE TABLE"),
     View("VIEW"),
     SystemView("SYSTEM VIEW");
