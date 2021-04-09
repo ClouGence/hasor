@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
+public class MappingRowMapper<T> implements RowMapper<T>, TableMapping {
     private final Class<T>                    mapperClass;
     private       String                      category;
     private       String                      tableName;
@@ -45,7 +45,7 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
     //
     private final List<String>                propertyNames;
     private final Map<String, String>         propertyColumnMapping;
-    private final Map<String, FieldInfo>      propertyFieldInfoMap;
+    private final Map<String, ColumnMapping>  propertyFieldInfoMap;
     private final Map<String, TypeHandler<?>> propertyTypeHandlerMap;
     //
     private final List<String>                columnNames;
@@ -133,11 +133,11 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
         }
         //
         String useColumnName = columnName;
-        FieldInfo fieldInfo = new FieldInfoImpl(useColumnName, propertyName, jdbcType, property.getType(), defField.insert(), defField.update(), false);
+        ColumnMapping columnMapping = new InnerColumnMapping(useColumnName, propertyName, jdbcType, property.getType(), defField.insert(), defField.update(), false);
         //
         this.propertyNames.add(propertyName);
         this.propertyColumnMapping.put(propertyName, useColumnName);
-        this.propertyFieldInfoMap.put(propertyName, fieldInfo);
+        this.propertyFieldInfoMap.put(propertyName, columnMapping);
         this.propertyTypeHandlerMap.put(propertyName, toTypeHandler);
         //
         if (!this.columnNames.contains(useColumnName)) {
@@ -145,7 +145,7 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
         }
         List<String> stringList = this.columnPropertyMapping.computeIfAbsent(useColumnName, k -> new ArrayList<>());
         stringList.add(propertyName);
-        if (fieldInfo.isInsert() || fieldInfo.isUpdate()) {
+        if (columnMapping.isInsert() || columnMapping.isUpdate()) {
             if (this.columnPropertyMappingForWrite.containsKey(useColumnName)) {
                 String differentProperty = "'" + propertyName + "','" + this.columnPropertyMappingForWrite.get(useColumnName) + "'";
                 throw new IllegalStateException("mapping different property " + differentProperty + " write the same column '" + useColumnName + "'.");
@@ -176,7 +176,7 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
         this.caseInsensitive = caseInsensitive;
     }
 
-    public TableInfo getTableInfo() {
+    public TableMapping getTableInfo() {
         return this;
     }
 
@@ -188,11 +188,11 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
         return propertyNames;
     }
 
-    public FieldInfo findFieldByProperty(String propertyName) {
+    public ColumnMapping findFieldByProperty(String propertyName) {
         return this.propertyFieldInfoMap.get(propertyName);
     }
 
-    public List<FieldInfo> findFieldByColumn(String columnName) {
+    public List<ColumnMapping> findFieldByColumn(String columnName) {
         List<String> propertyNames = this.columnPropertyMapping.get(columnName);
         if (propertyNames == null) {
             return null;
@@ -203,7 +203,7 @@ public class MappingRowMapper<T> implements RowMapper<T>, TableInfo {
                 .collect(Collectors.toList());
     }
 
-    public FieldInfo findWriteFieldByColumn(String columnName) {
+    public ColumnMapping findWriteFieldByColumn(String columnName) {
         String propertyName = this.columnPropertyMappingForWrite.get(columnName);
         return this.propertyFieldInfoMap.get(propertyName);
     }

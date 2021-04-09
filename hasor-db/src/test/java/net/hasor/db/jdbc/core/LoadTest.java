@@ -29,6 +29,8 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import static net.hasor.test.db.utils.DsUtils.MYSQL_SCHEMA_NAME;
+
 /***
  * execute 系列方法测试
  * @version : 2014-1-13
@@ -37,7 +39,7 @@ import java.sql.SQLException;
 public class LoadTest extends AbstractDbTest {
     private boolean hasTable(JdbcTemplate jdbcTemplate) throws SQLException {
         return jdbcTemplate.execute((ConnectionCallback<Boolean>) con -> {
-            MySqlTable tables = new MySqlMetadataSupplier(con).getTable("devtester", "tb_user");
+            MySqlTable tables = new MySqlMetadataSupplier(con).getTable(MYSQL_SCHEMA_NAME, "tb_user");
             return tables != null;
         });
     }

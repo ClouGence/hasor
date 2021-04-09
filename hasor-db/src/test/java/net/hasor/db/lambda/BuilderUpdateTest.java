@@ -83,7 +83,7 @@ public class BuilderUpdateTest extends AbstractDbTest {
         SqlDialect dialect = new MySqlDialect();
         BoundSql boundSql1 = lambdaUpdate.getBoundSql(dialect);
         assert !(boundSql1 instanceof BatchBoundSql);
-        assert boundSql1.getSqlString().equals("UPDATE TB_User SET loginName = ? , loginPassword = ? WHERE ( index = ? )");
+        assert boundSql1.getSqlString().equals("UPDATE TB_User SET loginName = ? , loginPassword = ? WHERE ( `index` = ? )");
         assert boundSql1.getArgs()[0].equals("acc");
         assert boundSql1.getArgs()[1].equals("pwd");
         assert boundSql1.getArgs()[2].equals(123);
@@ -107,7 +107,7 @@ public class BuilderUpdateTest extends AbstractDbTest {
         //
         SqlDialect dialect = new MySqlDialect();
         BoundSql boundSql1 = lambdaUpdate.getBoundSql(dialect);
-        assert boundSql1.getSqlString().equals("UPDATE TB_User SET registerTime = ? , loginName = ? , name = ? , loginPassword = ? , index = ? , userUUID = ? , email = ? WHERE loginName = ? AND loginPassword = ?");
+        assert boundSql1.getSqlString().equals("UPDATE TB_User SET registerTime = ? , loginName = ? , name = ? , loginPassword = ? , `index` = ? , userUUID = ? , email = ? WHERE loginName = ? AND loginPassword = ?");
         //
         BoundSql boundSql2 = lambdaUpdate.useQualifier().getBoundSql(dialect);
         assert boundSql2.getSqlString().equals("UPDATE `TB_User` SET `registerTime` = ? , `loginName` = ? , `name` = ? , `loginPassword` = ? , `index` = ? , `userUUID` = ? , `email` = ? WHERE `loginName` = ? AND `loginPassword` = ?");

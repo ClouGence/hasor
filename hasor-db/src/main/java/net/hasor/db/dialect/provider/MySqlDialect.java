@@ -17,10 +17,10 @@ package net.hasor.db.dialect.provider;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.InsertSqlDialect;
 import net.hasor.db.dialect.SqlDialect;
-import net.hasor.db.mapping.FieldInfo;
+import net.hasor.db.metadata.ColumnDef;
+import net.hasor.db.metadata.TableDef;
 import net.hasor.utils.StringUtils;
 
-import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,21 +30,15 @@ import java.util.List;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MySqlDialect implements SqlDialect, InsertSqlDialect {
+public class MySqlDialect extends AbstractDialect implements SqlDialect, InsertSqlDialect {
     @Override
-    public String tableName(boolean useQualifier, String category, String tableName) {
-        String qualifier = useQualifier ? "`" : "";
-        if (StringUtils.isBlank(category)) {
-            return qualifier + tableName + qualifier;
-        } else {
-            return qualifier + category + qualifier + "." + qualifier + tableName + qualifier;
-        }
+    protected String keyWordsResource() {
+        return "/META-INF/hasor-framework/db-keywords/mysql.keywords";
     }
 
     @Override
-    public String columnName(boolean useQualifier, String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
-        String qualifier = useQualifier ? "`" : "";
-        return qualifier + columnName + qualifier;
+    protected String defaultQualifier() {
+        return "`";
     }
 
     @Override
@@ -65,60 +59,59 @@ public class MySqlDialect implements SqlDialect, InsertSqlDialect {
     }
 
     @Override
-    public boolean supportInsertIgnore(List<FieldInfo> pkFields) {
+    public boolean supportInsertIgnore(List<ColumnDef> primaryColumns) {
         return true;
     }
 
     @Override
-    public String insertWithIgnore(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields) {
+    public String insertWithIgnore(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns) {
         // insert ignore t(id, name) values (?, ?);
-        String allColumns = buildAllColumns(useQualifier, category, tableName, insertFields);
-        int fieldCount = insertFields.size();
-        return "INSERT IGNORE " + tableName(useQualifier, category, tableName) + " ( " + allColumns + " ) VALUES ( " + StringUtils.repeat(",?", fieldCount).substring(1) + " )";
+        String allColumns = buildAllColumns(useQualifier, tableDef, insertColumns);
+        int fieldCount = insertColumns.size();
+        return "INSERT IGNORE " + tableName(useQualifier, tableDef) + " ( " + allColumns + " ) VALUES ( " + StringUtils.repeat(",?", fieldCount).substring(1) + " )";
     }
 
     @Override
-    public boolean supportInsertIgnoreFromSelect(List<FieldInfo> pkFields) {
+    public boolean supportInsertIgnoreFromSelect(List<ColumnDef> primaryColumns) {
         return true;
     }
 
     @Override
-    public String insertIgnoreFromSelect(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields) {
+    public String insertIgnoreFromSelect(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns) {
         // insert ignore t(id, name) select ...
-        String allColumns = buildAllColumns(useQualifier, category, tableName, insertFields);
-        int fieldCount = insertFields.size();
-        return "INSERT IGNORE " + tableName(useQualifier, category, tableName) + " ( " + allColumns + " )";
+        String allColumns = buildAllColumns(useQualifier, tableDef, insertColumns);
+        return "INSERT IGNORE " + tableName(useQualifier, tableDef) + " ( " + allColumns + " )";
     }
 
     @Override
-    public boolean supportInsertReplace(List<FieldInfo> pkFields) {
+    public boolean supportInsertReplace(List<ColumnDef> primaryColumns) {
         return true;
     }
 
     @Override
-    public String insertWithReplace(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields) {
+    public String insertWithReplace(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns) {
         // replace into t(id, name) values (?, ?);
-        String allColumns = buildAllColumns(useQualifier, category, tableName, insertFields);
-        int fieldCount = insertFields.size();
-        return "REPLACE INTO " + tableName(useQualifier, category, tableName) + " ( " + allColumns + " ) VALUES ( " + StringUtils.repeat(",?", fieldCount).substring(1) + " )";
+        String allColumns = buildAllColumns(useQualifier, tableDef, insertColumns);
+        int fieldCount = insertColumns.size();
+        return "REPLACE INTO " + tableName(useQualifier, tableDef) + " ( " + allColumns + " ) VALUES ( " + StringUtils.repeat(",?", fieldCount).substring(1) + " )";
     }
 
     @Override
-    public boolean supportInsertReplaceFromSelect(List<FieldInfo> pkFields) {
+    public boolean supportInsertReplaceFromSelect(List<ColumnDef> primaryColumns) {
         return true;
     }
 
     @Override
-    public String insertWithReplaceFromSelect(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields) {
+    public String insertWithReplaceFromSelect(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns) {
         // replace into t(id, name) values (?, ?);
-        String allColumns = buildAllColumns(useQualifier, category, tableName, insertFields);
-        int fieldCount = insertFields.size();
-        return "REPLACE INTO " + tableName(useQualifier, category, tableName) + " ( " + allColumns + " )";
+        String allColumns = buildAllColumns(useQualifier, tableDef, insertColumns);
+        int fieldCount = insertColumns.size();
+        return "REPLACE INTO " + tableName(useQualifier, tableDef) + " ( " + allColumns + " )";
     }
 
-    private String buildAllColumns(boolean useQualifier, String category, String tableName, List<FieldInfo> insertFields) {
-        return insertFields.stream().map(fieldInfo -> {
-            return columnName(useQualifier, category, tableName, fieldInfo.getColumnName(), fieldInfo.getJdbcType(), fieldInfo.getJavaType());
+    private String buildAllColumns(boolean useQualifier, TableDef tableDef, List<ColumnDef> insertColumns) {
+        return insertColumns.stream().map(fieldInfo -> {
+            return columnName(useQualifier, tableDef, fieldInfo);
         }).reduce((s1, s2) -> {
             return s1 + " , " + s2;
         }).orElse("");

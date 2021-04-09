@@ -128,6 +128,14 @@ public class AdbMySqlMetadataSupplier extends AbstractMetadataSupplier {
         }
     }
 
+    public List<AdbMySqlTable> getAllTables() throws SQLException {
+        String currentSchema = "MYSQL";
+        try (Connection conn = this.connectSupplier.get()) {
+            currentSchema = new JdbcTemplate(conn).queryForString("select database()");
+        }
+        return getAllTables(currentSchema);
+    }
+
     public List<AdbMySqlTable> getAllTables(String schemaName) throws SQLException {
         if (StringUtils.isBlank(schemaName)) {
             return Collections.emptyList();

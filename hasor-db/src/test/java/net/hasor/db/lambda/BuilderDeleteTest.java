@@ -63,7 +63,7 @@ public class BuilderDeleteTest extends AbstractDbTest {
         SqlDialect dialect = new MySqlDialect();
         BoundSql boundSql1 = lambdaDelete.getBoundSql(dialect);
         assert !(boundSql1 instanceof BatchBoundSql);
-        assert boundSql1.getSqlString().equals("DELETE FROM TB_User WHERE ( index = ? )");
+        assert boundSql1.getSqlString().equals("DELETE FROM TB_User WHERE ( `index` = ? )");
         //
         BoundSql boundSql2 = lambdaDelete.useQualifier().getBoundSql(dialect);
         assert !(boundSql2 instanceof BatchBoundSql);

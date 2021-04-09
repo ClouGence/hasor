@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.dialect;
-import net.hasor.db.mapping.FieldInfo;
+import net.hasor.db.metadata.ColumnDef;
+import net.hasor.db.metadata.TableDef;
 
 import java.util.List;
 
@@ -25,22 +26,22 @@ import java.util.List;
  */
 public interface InsertSqlDialect extends SqlDialect {
     /** 是否支持 insert ignore */
-    public boolean supportInsertIgnore(List<FieldInfo> pkFields);
+    public boolean supportInsertIgnore(List<ColumnDef> primaryColumns);
 
-    public String insertWithIgnore(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields);
+    public String insertWithIgnore(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns);
 
     /** 是否支持 insert ignore from select */
-    public boolean supportInsertIgnoreFromSelect(List<FieldInfo> pkFields);
+    public boolean supportInsertIgnoreFromSelect(List<ColumnDef> primaryColumns);
 
-    public String insertIgnoreFromSelect(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields);
+    public String insertIgnoreFromSelect(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns);
 
     /** 是否支持 insert replace */
-    public boolean supportInsertReplace(List<FieldInfo> pkFields);
+    public boolean supportInsertReplace(List<ColumnDef> primaryColumns);
 
-    public String insertWithReplace(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields);
+    public String insertWithReplace(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns);
 
     /** 是否支持 insert replace from select */
-    public boolean supportInsertReplaceFromSelect(List<FieldInfo> pkFields);
+    public boolean supportInsertReplaceFromSelect(List<ColumnDef> primaryColumns);
 
-    public String insertWithReplaceFromSelect(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields);
+    public String insertWithReplaceFromSelect(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns);
 }

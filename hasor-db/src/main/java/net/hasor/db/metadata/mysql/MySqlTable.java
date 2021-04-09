@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.metadata.mysql;
+import net.hasor.db.metadata.TableDef;
+
 import java.util.Date;
 
 /**
@@ -21,7 +23,7 @@ import java.util.Date;
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MySqlTable {
+public class MySqlTable implements TableDef {
     private String         schemaName;
     private String         tableName;
     private MySqlTableType tableType;
@@ -84,5 +86,10 @@ public class MySqlTable {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    @Override
+    public final String getCategory() {
+        return this.getSchemaName();
     }
 }

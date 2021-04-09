@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.db.dialect;
+import net.hasor.db.metadata.ColumnDef;
+import net.hasor.db.metadata.TableDef;
 import net.hasor.utils.StringUtils;
 
-import java.sql.JDBCType;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * 默认 SqlDialect 实现
@@ -25,17 +28,22 @@ import java.sql.JDBCType;
  */
 public class DefaultSqlDialect implements SqlDialect {
     @Override
-    public String tableName(boolean useQualifier, String category, String tableName) {
-        if (StringUtils.isBlank(category)) {
-            return tableName;
+    public Set<String> keywords() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public String tableName(boolean useQualifier, TableDef tableDef) {
+        if (StringUtils.isBlank(tableDef.getCategory())) {
+            return tableDef.getTableName();
         } else {
-            return category + "." + tableName;
+            return tableDef.getCategory() + "." + tableDef.getTableName();
         }
     }
 
     @Override
-    public String columnName(boolean useQualifier, String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
-        return columnName;
+    public String columnName(boolean useQualifier, TableDef tableDef, ColumnDef columnDef) {
+        return columnDef.getName();
     }
 
     @Override

@@ -14,32 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.db.mapping;
-import java.sql.JDBCType;
+import net.hasor.db.metadata.TableDef;
 
 /**
- * 字段信息
+ * 查询的表
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface FieldInfo {
-    /** 列名 */
-    public String getColumnName();
-
-    /** 属性名 */
-    public String getPropertyName();
-
-    /** 使用的 jdbcType,如果没有配置那么会通过 javaType 来自动推断 */
-    public JDBCType getJdbcType();
-
-    /** 对应的 javaType */
-    public Class<?> getJavaType();
-
-    /** 参与更新 */
-    public boolean isUpdate();
-
-    /** 参与新增 */
-    public boolean isInsert();
-
-    /** 是否为主键 */
-    public boolean isPrimary();
+public interface TableMapping extends TableDef {
 }

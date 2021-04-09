@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.db.metadata.adb.mysql;
+import net.hasor.db.metadata.TableDef;
+
 import java.util.Date;
 
 /**
- * MySQL 表
+ * AdbMySql 表
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AdbMySqlTable {
+public class AdbMySqlTable implements TableDef {
     private String            schemaName;
     private String            tableName;
     private AdbMySqlTableType tableType;
@@ -84,5 +86,10 @@ public class AdbMySqlTable {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    @Override
+    public final String getCategory() {
+        return this.getSchemaName();
     }
 }

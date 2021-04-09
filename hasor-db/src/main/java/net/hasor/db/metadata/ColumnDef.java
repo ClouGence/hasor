@@ -13,28 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.dialect.provider;
-import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.SqlDialect;
+package net.hasor.db.metadata;
+import net.hasor.db.types.TypeHandlerRegistry;
+
+import java.sql.JDBCType;
 
 /**
- * Hive 的 SqlDialect 实现
+ * 列信息
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class HiveDialect extends AbstractDialect implements SqlDialect {
-    @Override
-    protected String defaultQualifier() {
-        return "\"";
+public interface ColumnDef {
+    /** 列名 */
+    public String getName();
+
+    /** 使用的 jdbcType,如果没有配置那么会通过 javaType 来自动推断 */
+    public JDBCType getJdbcType();
+
+    /** 对应的 javaType */
+    public default Class<?> getJavaType() {
+        return TypeHandlerRegistry.toJavaType(this.getJdbcType());
     }
 
-    @Override
-    public BoundSql countSql(BoundSql boundSql) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public BoundSql pageSql(BoundSql boundSql, int start, int limit) {
-        throw new UnsupportedOperationException();
-    }
+    /** 是否为主键 */
+    public boolean isPrimaryKey();
 }

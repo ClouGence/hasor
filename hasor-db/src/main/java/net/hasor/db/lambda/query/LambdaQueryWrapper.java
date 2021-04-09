@@ -23,9 +23,9 @@ import net.hasor.db.lambda.page.Page;
 import net.hasor.db.lambda.segment.MergeSqlSegment;
 import net.hasor.db.lambda.segment.OrderByKeyword;
 import net.hasor.db.lambda.segment.Segment;
-import net.hasor.db.mapping.FieldInfo;
 import net.hasor.db.mapping.MappingRowMapper;
-import net.hasor.db.mapping.TableInfo;
+import net.hasor.db.metadata.ColumnDef;
+import net.hasor.db.metadata.TableDef;
 import net.hasor.utils.reflect.SFunction;
 
 import java.util.*;
@@ -86,11 +86,11 @@ public class LambdaQueryWrapper<T> extends AbstractQueryCompare<T, LambdaQuery<T
     }
 
     private Segment buildTabName(SqlDialect dialect) {
-        TableInfo tableInfo = super.getRowMapper().getTableInfo();
-        if (tableInfo == null) {
-            throw new IllegalArgumentException("tableInfo not found.");
+        TableDef tableDef = super.getRowMapper().getTableInfo();
+        if (tableDef == null) {
+            throw new IllegalArgumentException("tableDef not found.");
         }
-        return () -> dialect.tableName(isQualifier(), tableInfo.getCategory(), tableInfo.getTableName());
+        return () -> dialect.tableName(isQualifier(), tableDef);
     }
 
     private static Segment buildColumns(Collection<Segment> columnSegments) {
@@ -152,23 +152,23 @@ public class LambdaQueryWrapper<T> extends AbstractQueryCompare<T, LambdaQuery<T
 
     @Override
     public final LambdaQuery<T> select(List<SFunction<T>> columns) {
-        List<FieldInfo> selectColumn = columns.stream()//
+        List<ColumnDef> selectColumn = columns.stream()//
                 .filter(Objects::nonNull).map(this::columnName).collect(Collectors.toList());
         return this.select0(selectColumn, fieldInfo -> true);
     }
 
     @Override
-    public final LambdaQuery<T> select(Predicate<FieldInfo> tester) {
+    public final LambdaQuery<T> select(Predicate<ColumnDef> tester) {
         MappingRowMapper<T> rowMapper = super.getRowMapper();
         List<String> allProperty = rowMapper.getPropertyNames();
-        List<FieldInfo> collect = allProperty.stream().map(rowMapper::findFieldByProperty).collect(Collectors.toList());
+        List<ColumnDef> collect = allProperty.stream().map(rowMapper::findFieldByProperty).collect(Collectors.toList());
         return this.select0(collect, tester);
     }
 
-    private LambdaQuery<T> select0(Collection<FieldInfo> allFiled, Predicate<FieldInfo> tester) {
-        TableInfo tableInfo = super.getRowMapper().getTableInfo();
-        allFiled.stream().filter(tester).forEach(fieldInfo -> {
-            String selectColumn = dialect().columnName(isQualifier(), tableInfo.getCategory(), tableInfo.getTableName(), fieldInfo.getColumnName(), fieldInfo.getJdbcType(), fieldInfo.getJavaType());
+    private LambdaQuery<T> select0(Collection<ColumnDef> allFiled, Predicate<ColumnDef> tester) {
+        TableDef tableDef = super.getRowMapper().getTableInfo();
+        allFiled.stream().filter(tester).forEach(columnDef -> {
+            String selectColumn = dialect().columnName(isQualifier(), tableDef, columnDef);
             customSelect.add(() -> selectColumn);
         });
         return this;

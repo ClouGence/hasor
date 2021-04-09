@@ -15,9 +15,11 @@
  */
 package net.hasor.db.dialect;
 import net.hasor.db.lambda.segment.SqlLike;
+import net.hasor.db.metadata.ColumnDef;
+import net.hasor.db.metadata.TableDef;
 import net.hasor.utils.StringUtils;
 
-import java.sql.JDBCType;
+import java.util.Set;
 
 /**
  * SQL 方言
@@ -27,16 +29,19 @@ import java.sql.JDBCType;
 public interface SqlDialect {
     public static final SqlDialect DEFAULT = new DefaultSqlDialect();
 
+    /** Cannot be used as a key for column names. when column name is key words, Generate SQL using Qualifier warp it. */
+    public Set<String> keywords();
+
     /** 用于链接 insert into .... 和 select ... */
     public default String selectAsInsertConcatStr() {
         return "";
     }
 
     /** 生成 form 后面的表名 */
-    public String tableName(boolean useQualifier, String category, String tableName);
+    public String tableName(boolean useQualifier, TableDef tableDef);
 
     /** 生成 where 中用到的条件名（包括 group by、order by） */
-    public String columnName(boolean useQualifier, String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType);
+    public String columnName(boolean useQualifier, TableDef tableDef, ColumnDef columnDef);
 
     public default String like(SqlLike likeType, Object value) {
         if (value == null || StringUtils.isBlank(value.toString())) {

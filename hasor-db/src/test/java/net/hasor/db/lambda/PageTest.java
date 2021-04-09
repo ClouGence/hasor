@@ -56,7 +56,7 @@ public class PageTest extends AbstractDbTest {
                 .between(TbUser::getAccount, 2, 3)//
                 .initPage(10, 2)//
                 .getBoundSql(SqlDialectRegister.findOrCreate(JdbcUtils.MYSQL));
-        assert boundSql.getSqlString().equals("SELECT loginName FROM tb_user WHERE index = ? AND loginName BETWEEN ? AND ? LIMIT ?, ?");
+        assert boundSql.getSqlString().equals("SELECT loginName FROM tb_user WHERE `index` = ? AND loginName BETWEEN ? AND ? LIMIT ?, ?");
         assert boundSql.getArgs()[0].equals(1);
         assert boundSql.getArgs()[1].equals(2);
         assert boundSql.getArgs()[2].equals(3);

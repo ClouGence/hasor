@@ -1,10 +1,10 @@
-create table TB_USER
+create table tb_user
 (
-    "USERUUID"      VARCHAR2(50) not null primary key,
-    "NAME"          VARCHAR2(100),
-    "LOGINNAME"     VARCHAR2(100),
-    "LOGINPASSWORD" VARCHAR2(100),
-    "EMAIL"         VARCHAR2(200),
-    "INDEX"         NUMBER,
-    "REGISTERTIME"  TIMESTAMP(6)
+    userUUID      varchar(50)  not null primary key,
+    name          varchar(100) null,
+    loginName     varchar(100) null,
+    loginPassword varchar(100) null,
+    email         varchar(200) null,
+    "index"       integer      null,
+    registerTime  timestamp    null
 )

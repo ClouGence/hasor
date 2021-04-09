@@ -17,10 +17,9 @@ package net.hasor.db.dialect.provider;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.InsertSqlDialect;
 import net.hasor.db.dialect.SqlDialect;
-import net.hasor.db.mapping.FieldInfo;
-import net.hasor.utils.StringUtils;
+import net.hasor.db.metadata.ColumnDef;
+import net.hasor.db.metadata.TableDef;
 
-import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,19 +30,15 @@ import java.util.stream.Collectors;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class OracleDialect implements SqlDialect, InsertSqlDialect {
+public class OracleDialect extends AbstractDialect implements SqlDialect, InsertSqlDialect {
     @Override
-    public String tableName(boolean useQualifier, String category, String tableName) {
-        if (StringUtils.isBlank(category)) {
-            return fmtQualifier(useQualifier, tableName);
-        } else {
-            return fmtQualifier(useQualifier, category) + "." + fmtQualifier(useQualifier, tableName);
-        }
+    protected String keyWordsResource() {
+        return "/META-INF/hasor-framework/db-keywords/oracle.keywords";
     }
 
     @Override
-    public String columnName(boolean useQualifier, String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
-        return fmtQualifier(useQualifier, columnName);
+    protected String defaultQualifier() {
+        return "\"";
     }
 
     @Override
@@ -67,18 +62,13 @@ public class OracleDialect implements SqlDialect, InsertSqlDialect {
         return new BoundSql.BoundSqlObj(sqlBuilder.toString(), paramArrays.toArray());
     }
 
-    private static String fmtQualifier(boolean useQualifier, String fmtString) {
-        String qualifier = useQualifier ? "\"" : "";
-        return qualifier + fmtString + qualifier;
+    @Override
+    public boolean supportInsertIgnore(List<ColumnDef> primaryColumns) {
+        return !primaryColumns.isEmpty();
     }
 
     @Override
-    public boolean supportInsertIgnore(List<FieldInfo> pkFields) {
-        return !pkFields.isEmpty();
-    }
-
-    @Override
-    public String insertWithIgnore(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields) {
+    public String insertWithIgnore(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns) {
         //        MERGE INTO DS_ENV TMP
         //        USING (SELECT 3            "ID",
         //                systimestamp GMT_CREATE,
@@ -91,29 +81,29 @@ public class OracleDialect implements SqlDialect, InsertSqlDialect {
         //        WHEN NOT MATCHED THEN
         //            INSERT ("ID", "GMT_CREATE", "GMT_MODIFIED", "OWNER_UID", "ENV_NAME", "DESCRIPTION")
         //            VALUES (SRC."ID", SRC."GMT_CREATE", SRC."GMT_MODIFIED", SRC."OWNER_UID", SRC."ENV_NAME", SRC."DESCRIPTION");
-        List<FieldInfo> pkColumns = insertFields.stream().filter(FieldInfo::isPrimary).collect(Collectors.toList());
-        StringBuilder mergeBasic = buildMergeInfoBasic(useQualifier, category, tableName, insertFields, pkColumns);
-        StringBuilder mergeWhenNotMatched = buildMergeInfoWhenNotMatched(useQualifier, insertFields);
+        List<ColumnDef> pkColumns = insertColumns.stream().filter(ColumnDef::isPrimaryKey).collect(Collectors.toList());
+        StringBuilder mergeBasic = buildMergeInfoBasic(useQualifier, tableDef, insertColumns, pkColumns);
+        StringBuilder mergeWhenNotMatched = buildMergeInfoWhenNotMatched(useQualifier, insertColumns);
         return mergeBasic.toString() + " " + mergeWhenNotMatched.toString();
     }
 
     @Override
-    public boolean supportInsertIgnoreFromSelect(List<FieldInfo> pkFields) {
+    public boolean supportInsertIgnoreFromSelect(List<ColumnDef> primaryColumns) {
         return false;
     }
 
     @Override
-    public String insertIgnoreFromSelect(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields) {
+    public String insertIgnoreFromSelect(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean supportInsertReplace(List<FieldInfo> pkFields) {
-        return !pkFields.isEmpty();
+    public boolean supportInsertReplace(List<ColumnDef> primaryColumns) {
+        return !primaryColumns.isEmpty();
     }
 
     @Override
-    public String insertWithReplace(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields) {
+    public String insertWithReplace(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns) {
         //        MERGE INTO DS_ENV TMP
         //        USING (SELECT 3            "ID",
         //                systimestamp GMT_CREATE,
@@ -130,51 +120,48 @@ public class OracleDialect implements SqlDialect, InsertSqlDialect {
         //                "OWNER_UID"    = SRC."OWNER_UID",
         //                "ENV_NAME"     = SRC."ENV_NAME",
         //                "DESCRIPTION"  = SRC."DESCRIPTION"
-        List<FieldInfo> pkColumns = insertFields.stream().filter(FieldInfo::isPrimary).collect(Collectors.toList());
-        StringBuilder mergeBasic = buildMergeInfoBasic(useQualifier, category, tableName, insertFields, pkColumns);
-        StringBuilder mergeWhenMatched = buildMergeInfoWhenMatched(useQualifier, insertFields);
+        List<ColumnDef> pkColumns = insertColumns.stream().filter(ColumnDef::isPrimaryKey).collect(Collectors.toList());
+        StringBuilder mergeBasic = buildMergeInfoBasic(useQualifier, tableDef, insertColumns, pkColumns);
+        StringBuilder mergeWhenMatched = buildMergeInfoWhenMatched(useQualifier, insertColumns);
         return mergeBasic.toString() + " " + mergeWhenMatched.toString();
     }
 
     @Override
-    public boolean supportInsertReplaceFromSelect(List<FieldInfo> pkFields) {
+    public boolean supportInsertReplaceFromSelect(List<ColumnDef> primaryColumns) {
         return false;
     }
 
     @Override
-    public String insertWithReplaceFromSelect(boolean useQualifier, String category, String tableName, List<FieldInfo> pkFields, List<FieldInfo> insertFields) {
+    public String insertWithReplaceFromSelect(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns) {
         throw new UnsupportedOperationException();
     }
 
-    private static StringBuilder buildMergeInfoBasic(boolean useQualifier, String category, String tableName, List<FieldInfo> allColumns, List<FieldInfo> pkColumns) {
+    private StringBuilder buildMergeInfoBasic(boolean useQualifier, TableDef tableDef, List<ColumnDef> allColumns, List<ColumnDef> primaryColumns) {
         StringBuilder mergeBuilder = new StringBuilder();
-        String finalTableName = fmtQualifier(useQualifier, tableName);
-        if (StringUtils.isNotBlank(category)) {
-            finalTableName = fmtQualifier(useQualifier, category) + "." + finalTableName;
-        }
+        String finalTableName = tableName(useQualifier, tableDef);
         mergeBuilder.append("MERGE INTO " + finalTableName + " TMP USING( SELECT ");
         for (int i = 0; i < allColumns.size(); i++) {
-            FieldInfo fieldInfo = allColumns.get(i);
+            ColumnDef columnDef = allColumns.get(i);
             if (i != 0) {
                 mergeBuilder.append(" , ");
             }
-            mergeBuilder.append("? " + fmtQualifier(useQualifier, fieldInfo.getColumnName()));
+            mergeBuilder.append("? " + columnName(useQualifier, tableDef, columnDef));
         }
         mergeBuilder.append(" FROM dual) SRC ON (");
-        for (int i = 0; i < pkColumns.size(); i++) {
+        for (int i = 0; i < primaryColumns.size(); i++) {
             if (i != 0) {
                 mergeBuilder.append(" AND ");
             }
-            String pkColumn = fmtQualifier(useQualifier, pkColumns.get(i).getColumnName());
+            String pkColumn = columnName(useQualifier, tableDef, primaryColumns.get(i));
             mergeBuilder.append("TMP." + pkColumn + " = SRC." + pkColumn);
         }
         mergeBuilder.append(")");
         return mergeBuilder;
     }
 
-    private static StringBuilder buildMergeInfoWhenNotMatched(boolean useQualifier, List<FieldInfo> allColumns) {
-        String allColumnString = allColumns.stream().map(fieldInfo -> {
-            return fmtQualifier(useQualifier, fieldInfo.getColumnName());
+    private StringBuilder buildMergeInfoWhenNotMatched(boolean useQualifier, List<ColumnDef> allColumns) {
+        String allColumnString = allColumns.stream().map(columnDef -> {
+            return fmtName(useQualifier, columnDef.getName());
         }).reduce((s1, s2) -> s1 + "," + s2).orElse("");
         //
         StringBuilder mergeBuilder = new StringBuilder();
@@ -182,27 +169,27 @@ public class OracleDialect implements SqlDialect, InsertSqlDialect {
         mergeBuilder.append("INSERT(" + allColumnString + ") ");
         mergeBuilder.append("VALUES( ");
         for (int i = 0; i < allColumns.size(); i++) {
-            FieldInfo column = allColumns.get(i);
+            ColumnDef columnDef = allColumns.get(i);
             if (i != 0) {
                 mergeBuilder.append(" , ");
             }
-            mergeBuilder.append("SRC." + fmtQualifier(useQualifier, column.getColumnName()));
+            mergeBuilder.append("SRC." + fmtName(useQualifier, columnDef.getName()));
         }
         mergeBuilder.append(")");
         //
         return mergeBuilder;
     }
 
-    private static StringBuilder buildMergeInfoWhenMatched(boolean useQualifier, List<FieldInfo> allColumns) {
+    private StringBuilder buildMergeInfoWhenMatched(boolean useQualifier, List<ColumnDef> allColumns) {
         StringBuilder mergeBuilder = new StringBuilder();
         mergeBuilder.append("WHEN MATCHED THEN ");
         mergeBuilder.append("UPDATE SET ");
         for (int i = 0; i < allColumns.size(); i++) {
-            FieldInfo column = allColumns.get(i);
+            ColumnDef columnDef = allColumns.get(i);
             if (i != 0) {
                 mergeBuilder.append(" , ");
             }
-            String columnName = fmtQualifier(useQualifier, column.getColumnName());
+            String columnName = fmtName(useQualifier, columnDef.getName());
             mergeBuilder.append(columnName + " = SRC." + columnName);
         }
         mergeBuilder.append(" ");

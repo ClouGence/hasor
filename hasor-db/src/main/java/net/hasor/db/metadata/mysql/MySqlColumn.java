@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.metadata.mysql;
+import net.hasor.db.metadata.ColumnDef;
 import net.hasor.db.metadata.SqlType;
 
 import java.sql.JDBCType;
@@ -23,7 +24,7 @@ import java.sql.JDBCType;
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MySqlColumn {
+public class MySqlColumn implements ColumnDef {
     private String   name;
     private boolean  nullable;
     private String   dataType;
@@ -84,7 +85,7 @@ public class MySqlColumn {
     }
 
     public JDBCType getJdbcType() {
-        return jdbcType;
+        return this.jdbcType;
     }
 
     public void setJdbcType(JDBCType jdbcType) {

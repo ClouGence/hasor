@@ -40,7 +40,7 @@ public class InsertSqlDialectTest extends AbstractDbTest {
         BoundSql boundSql = lambdaInsert.getBoundSql(dialect);
         //
         assert boundSql instanceof BatchBoundSql;
-        assert boundSql.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
+        assert boundSql.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , `index` , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
         assert boundSql.getArgs().length == 2;
         assert ((BatchBoundSql) boundSql).getArgs()[0].length == 7;
         assert ((BatchBoundSql) boundSql).getArgs()[1].length == 7;
@@ -70,13 +70,13 @@ public class InsertSqlDialectTest extends AbstractDbTest {
         //
         SqlDialect dialect = new MySqlDialect();
         BoundSql boundSql1 = lambdaInsert.onDuplicateKeyBlock().getBoundSql(dialect);
-        assert boundSql1.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
+        assert boundSql1.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , `index` , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
         //
         BoundSql boundSql2 = lambdaInsert.onDuplicateKeyIgnore().getBoundSql(dialect);
-        assert boundSql2.getSqlString().equals("INSERT IGNORE TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
+        assert boundSql2.getSqlString().equals("INSERT IGNORE TB_User ( userUUID , name , loginName , loginPassword , email , `index` , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
         //
         BoundSql boundSql3 = lambdaInsert.onDuplicateKeyUpdate().getBoundSql(dialect);
-        assert boundSql3.getSqlString().equals("REPLACE INTO TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
+        assert boundSql3.getSqlString().equals("REPLACE INTO TB_User ( userUUID , name , loginName , loginPassword , email , `index` , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
     }
 
     @Test
@@ -87,12 +87,12 @@ public class InsertSqlDialectTest extends AbstractDbTest {
         //
         SqlDialect dialect = new OracleDialect();
         BoundSql boundSql1 = lambdaInsert.onDuplicateKeyBlock().getBoundSql(dialect);
-        assert boundSql1.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
+        assert boundSql1.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , \"index\" , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
         //
         BoundSql boundSql2 = lambdaInsert.onDuplicateKeyIgnore().getBoundSql(dialect);
-        assert boundSql2.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
+        assert boundSql2.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , \"index\" , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
         //
         BoundSql boundSql3 = lambdaInsert.onDuplicateKeyUpdate().getBoundSql(dialect);
-        assert boundSql3.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
+        assert boundSql3.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , \"index\" , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
     }
 }

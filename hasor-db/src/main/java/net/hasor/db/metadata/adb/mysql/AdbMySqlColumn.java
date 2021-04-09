@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.db.metadata.adb.mysql;
+import net.hasor.db.metadata.ColumnDef;
 import net.hasor.db.metadata.SqlType;
 
 import java.sql.JDBCType;
 
 /**
- * MySQL 列
+ * AdbMySql 列
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AdbMySqlColumn {
+public class AdbMySqlColumn implements ColumnDef {
     private String   name;
     private boolean  nullable;
     private String   dataType;

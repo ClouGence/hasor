@@ -17,14 +17,12 @@ package net.hasor.db.dialect.provider;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.utils.ExceptionUtils;
-import net.hasor.utils.StringUtils;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.OrderByElement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 
-import java.sql.JDBCType;
 import java.util.*;
 
 /**
@@ -32,7 +30,7 @@ import java.util.*;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SqlServerDialect implements SqlDialect {
+public class SqlServerDialect extends AbstractDialect implements SqlDialect {
     private static final Map<String, Select> CACHE       = new WeakHashMap<>();
     private static final Object              LOCK_OBJECT = new Object();
 
@@ -56,22 +54,12 @@ public class SqlServerDialect implements SqlDialect {
         }
     }
 
-    @Override
-    public String tableName(boolean useQualifier, String category, String tableName) {
-        String leftQualifier = useQualifier ? "[" : "";
-        String rightQualifier = useQualifier ? "]" : "";
-        if (StringUtils.isBlank(category)) {
-            return leftQualifier + tableName + rightQualifier;
-        } else {
-            return leftQualifier + category + rightQualifier + "." + leftQualifier + tableName + rightQualifier;
-        }
+    protected String leftQualifier() {
+        return "[";
     }
 
-    @Override
-    public String columnName(boolean useQualifier, String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
-        String leftQualifier = useQualifier ? "[" : "";
-        String rightQualifier = useQualifier ? "]" : "";
-        return leftQualifier + columnName + rightQualifier;
+    protected String rightQualifier() {
+        return "]";
     }
 
     @Override

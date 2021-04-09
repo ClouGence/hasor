@@ -16,9 +16,7 @@
 package net.hasor.db.dialect.provider;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
-import net.hasor.utils.StringUtils;
 
-import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,21 +26,10 @@ import java.util.List;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ImpalaDialect implements SqlDialect {
+public class ImpalaDialect extends AbstractDialect implements SqlDialect {
     @Override
-    public String tableName(boolean useQualifier, String category, String tableName) {
-        String qualifier = useQualifier ? "\"" : "";
-        if (StringUtils.isBlank(category)) {
-            return qualifier + tableName + qualifier;
-        } else {
-            return qualifier + category + qualifier + "." + qualifier + tableName + qualifier;
-        }
-    }
-
-    @Override
-    public String columnName(boolean useQualifier, String category, String tableName, String columnName, JDBCType jdbcType, Class<?> javaType) {
-        String qualifier = useQualifier ? "\"" : "";
-        return qualifier + columnName + qualifier;
+    protected String defaultQualifier() {
+        return "\"";
     }
 
     @Override

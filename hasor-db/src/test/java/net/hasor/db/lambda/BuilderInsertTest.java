@@ -41,7 +41,7 @@ public class BuilderInsertTest extends AbstractDbTest {
         SqlDialect dialect = new MySqlDialect();
         BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
         assert boundSql1 instanceof BatchBoundSql;
-        assert boundSql1.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
+        assert boundSql1.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , `index` , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
         //
         BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
         assert boundSql2 instanceof BatchBoundSql;
@@ -58,7 +58,7 @@ public class BuilderInsertTest extends AbstractDbTest {
         SqlDialect dialect = new MySqlDialect();
         BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
         assert !(boundSql1 instanceof BatchBoundSql);
-        assert boundSql1.getSqlString().equals("INSERT INTO tb_user_shadow ( userUUID , name , loginName , loginPassword , email , index , registerTime )  SELECT * FROM TB_User WHERE index = ?");
+        assert boundSql1.getSqlString().equals("INSERT INTO tb_user_shadow ( userUUID , name , loginName , loginPassword , email , `index` , registerTime )  SELECT * FROM TB_User WHERE `index` = ?");
         //
         BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
         assert !(boundSql2 instanceof BatchBoundSql);
@@ -75,7 +75,7 @@ public class BuilderInsertTest extends AbstractDbTest {
         SqlDialect dialect = new MySqlDialect();
         BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
         assert boundSql1 instanceof BatchBoundSql;
-        assert boundSql1.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
+        assert boundSql1.getSqlString().equals("INSERT INTO TB_User ( userUUID , name , loginName , loginPassword , email , `index` , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
         //
         BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
         assert boundSql2 instanceof BatchBoundSql;
@@ -92,7 +92,7 @@ public class BuilderInsertTest extends AbstractDbTest {
         SqlDialect dialect = new MySqlDialect();
         BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
         assert !(boundSql1 instanceof BatchBoundSql);
-        assert boundSql1.getSqlString().equals("INSERT INTO tb_user_shadow ( userUUID , name , loginName , loginPassword , email , index , registerTime )  SELECT * FROM TB_User WHERE index = ?");
+        assert boundSql1.getSqlString().equals("INSERT INTO tb_user_shadow ( userUUID , name , loginName , loginPassword , email , `index` , registerTime )  SELECT * FROM TB_User WHERE `index` = ?");
         //
         BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
         assert !(boundSql2 instanceof BatchBoundSql);
@@ -109,7 +109,7 @@ public class BuilderInsertTest extends AbstractDbTest {
         SqlDialect dialect = new MySqlDialect();
         BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
         assert boundSql1 instanceof BatchBoundSql;
-        assert boundSql1.getSqlString().equals("REPLACE INTO TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
+        assert boundSql1.getSqlString().equals("REPLACE INTO TB_User ( userUUID , name , loginName , loginPassword , email , `index` , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
         //
         BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
         assert boundSql2 instanceof BatchBoundSql;
@@ -126,7 +126,7 @@ public class BuilderInsertTest extends AbstractDbTest {
         SqlDialect dialect = new MySqlDialect();
         BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
         assert !(boundSql1 instanceof BatchBoundSql);
-        assert boundSql1.getSqlString().equals("REPLACE INTO tb_user_shadow ( userUUID , name , loginName , loginPassword , email , index , registerTime )  SELECT * FROM TB_User WHERE index = ?");
+        assert boundSql1.getSqlString().equals("REPLACE INTO tb_user_shadow ( userUUID , name , loginName , loginPassword , email , `index` , registerTime )  SELECT * FROM TB_User WHERE `index` = ?");
         //
         BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
         assert !(boundSql2 instanceof BatchBoundSql);
@@ -143,7 +143,7 @@ public class BuilderInsertTest extends AbstractDbTest {
         SqlDialect dialect = new MySqlDialect();
         BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
         assert boundSql1 instanceof BatchBoundSql;
-        assert boundSql1.getSqlString().equals("INSERT IGNORE TB_User ( userUUID , name , loginName , loginPassword , email , index , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
+        assert boundSql1.getSqlString().equals("INSERT IGNORE TB_User ( userUUID , name , loginName , loginPassword , email , `index` , registerTime ) VALUES ( ?,?,?,?,?,?,? )");
         //
         BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
         assert boundSql2 instanceof BatchBoundSql;
@@ -160,7 +160,7 @@ public class BuilderInsertTest extends AbstractDbTest {
         SqlDialect dialect = new MySqlDialect();
         BoundSql boundSql1 = lambdaInsert.getBoundSql(dialect);
         assert !(boundSql1 instanceof BatchBoundSql);
-        assert boundSql1.getSqlString().equals("INSERT IGNORE tb_user_shadow ( userUUID , name , loginName , loginPassword , email , index , registerTime )  SELECT * FROM TB_User WHERE index = ?");
+        assert boundSql1.getSqlString().equals("INSERT IGNORE tb_user_shadow ( userUUID , name , loginName , loginPassword , email , `index` , registerTime )  SELECT * FROM TB_User WHERE `index` = ?");
         //
         BoundSql boundSql2 = lambdaInsert.useQualifier().getBoundSql(dialect);
         assert !(boundSql2 instanceof BatchBoundSql);

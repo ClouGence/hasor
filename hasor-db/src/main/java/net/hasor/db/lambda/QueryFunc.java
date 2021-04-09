@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.lambda;
-import net.hasor.db.mapping.FieldInfo;
 import net.hasor.db.lambda.page.Page;
+import net.hasor.db.metadata.ColumnDef;
 import net.hasor.utils.reflect.SFunction;
 
 import java.util.Collections;
@@ -53,7 +53,7 @@ public interface QueryFunc<T, R> {
     /**
      * 按条件过滤查询指定列。
      * 在分组查询下：设置参数中，只有 group by 列才会被查询。 */
-    public R select(Predicate<FieldInfo> tester);
+    public R select(Predicate<ColumnDef> tester);
 
     /**分组，类似：group by xxx */
     public default R groupBy(SFunction<T> column) {

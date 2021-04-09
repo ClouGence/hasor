@@ -21,7 +21,7 @@ import java.sql.JDBCType;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-class FieldInfoImpl implements FieldInfo {
+class InnerColumnMapping implements ColumnMapping {
     private final String   columnName;
     private final String   propertyName;
     private final JDBCType jdbcType;
@@ -30,7 +30,7 @@ class FieldInfoImpl implements FieldInfo {
     private final boolean  update;
     private final boolean  primary;
 
-    public FieldInfoImpl(String columnName, String propertyName, JDBCType jdbcType, Class<?> javaType, boolean insert, boolean update, boolean primary) {
+    public InnerColumnMapping(String columnName, String propertyName, JDBCType jdbcType, Class<?> javaType, boolean insert, boolean update, boolean primary) {
         this.columnName = columnName;
         this.propertyName = propertyName;
         this.jdbcType = jdbcType;
@@ -41,7 +41,7 @@ class FieldInfoImpl implements FieldInfo {
     }
 
     @Override
-    public String getColumnName() {
+    public String getName() {
         return this.columnName;
     }
 
@@ -71,7 +71,7 @@ class FieldInfoImpl implements FieldInfo {
     }
 
     @Override
-    public boolean isPrimary() {
+    public boolean isPrimaryKey() {
         return this.primary;
     }
 }

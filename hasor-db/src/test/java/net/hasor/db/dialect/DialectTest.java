@@ -17,6 +17,8 @@ package net.hasor.db.dialect;
 import net.hasor.db.JdbcUtils;
 import net.hasor.db.dialect.provider.Oracle12cDialect;
 import net.hasor.db.dialect.provider.SqlServer2005Dialect;
+import net.hasor.db.metadata.ColumnDef;
+import net.hasor.db.metadata.TableDef;
 import net.hasor.test.db.AbstractDbTest;
 import org.junit.Test;
 
@@ -51,12 +53,45 @@ public class DialectTest extends AbstractDbTest {
         }
     };
 
+    private TableDef tableDef(String category, String tableName) {
+        return new TableDef() {
+            @Override
+            public String getCategory() {
+                return category;
+            }
+
+            @Override
+            public String getTableName() {
+                return tableName;
+            }
+        };
+    }
+
+    private ColumnDef columnDef(String name, JDBCType jdbcType) {
+        return new ColumnDef() {
+            @Override
+            public String getName() {
+                return name;
+            }
+
+            @Override
+            public JDBCType getJdbcType() {
+                return jdbcType;
+            }
+
+            @Override
+            public boolean isPrimaryKey() {
+                return false;
+            }
+        };
+    }
+
     @Test
     public void dialect_default_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate("");
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("tb_user");
         assert buildTableName2.equals("abc.tb_user");
@@ -79,9 +114,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_mysql_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.MYSQL);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("`tb_user`");
         assert buildTableName2.equals("`abc`.`tb_user`");
@@ -108,9 +143,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_dm_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.DM);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
@@ -137,9 +172,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_postgresql_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.POSTGRESQL);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
@@ -160,9 +195,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_oracle_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.ORACLE);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
@@ -183,9 +218,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_h2_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.H2);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
@@ -206,9 +241,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_hive_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.HIVE);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
@@ -232,9 +267,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_sqllite_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.SQLITE);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("`tb_user`");
         assert buildTableName2.equals("`abc`.`tb_user`");
@@ -261,9 +296,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_herddb_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.HERDDB);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("`tb_user`");
         assert buildTableName2.equals("`abc`.`tb_user`");
@@ -290,9 +325,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_sqlserver2012_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate("sqlserver2012");
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("[tb_user]");
         assert buildTableName2.equals("[abc].[tb_user]");
@@ -323,9 +358,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_informix_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.INFORMIX);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
@@ -346,9 +381,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_db2_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.DB2);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
@@ -369,9 +404,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_hsql_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.HSQL);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
@@ -392,9 +427,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_phoenix_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.PHOENIX);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
@@ -415,9 +450,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_impala_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.IMPALA);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("\"tb_user\"");
         assert buildTableName2.equals("\"abc\".\"tb_user\"");
@@ -438,9 +473,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_mariadb_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.MARIADB);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("`tb_user`");
         assert buildTableName2.equals("`abc`.`tb_user`");
@@ -467,9 +502,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_aliyun_ads_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.ALIYUN_ADS);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("`tb_user`");
         assert buildTableName2.equals("`abc`.`tb_user`");
@@ -496,9 +531,9 @@ public class DialectTest extends AbstractDbTest {
     @Test
     public void dialect_aliyun_drds_1() {
         SqlDialect dialect = SqlDialectRegister.findOrCreate(JdbcUtils.ALIYUN_DRDS);
-        String buildTableName1 = dialect.tableName(true, "", "tb_user");
-        String buildTableName2 = dialect.tableName(true, "abc", "tb_user");
-        String buildCondition = dialect.columnName(true, "", "tb_user", "userUUID", JDBCType.VARCHAR, String.class);
+        String buildTableName1 = dialect.tableName(true, tableDef("", "tb_user"));
+        String buildTableName2 = dialect.tableName(true, tableDef("abc", "tb_user"));
+        String buildCondition = dialect.columnName(true, tableDef("", "tb_user"), columnDef("userUUID", JDBCType.VARCHAR));
         //
         assert buildTableName1.equals("`tb_user`");
         assert buildTableName2.equals("`abc`.`tb_user`");

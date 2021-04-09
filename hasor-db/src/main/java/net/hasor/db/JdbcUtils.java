@@ -30,7 +30,7 @@ public class JdbcUtils {
     public static final String SYBASE           = "sybase";
     public static final String SQL_SERVER       = "sqlserver";
     public static final String ORACLE           = "oracle";
-    public static final String ALI_ORACLE       = "AliOracle";
+    public static final String ALI_ORACLE       = "alioracle";
     public static final String MYSQL            = "mysql";
     public static final String MARIADB          = "mariadb";
     public static final String DERBY            = "derby";

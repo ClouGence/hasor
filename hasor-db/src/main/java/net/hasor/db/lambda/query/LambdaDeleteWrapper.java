@@ -21,7 +21,7 @@ import net.hasor.db.lambda.DeleteExecute;
 import net.hasor.db.lambda.LambdaOperations.LambdaDelete;
 import net.hasor.db.lambda.segment.MergeSqlSegment;
 import net.hasor.db.lambda.segment.Segment;
-import net.hasor.db.mapping.TableInfo;
+import net.hasor.db.metadata.TableDef;
 
 import java.sql.SQLException;
 
@@ -86,11 +86,11 @@ public class LambdaDeleteWrapper<T> extends AbstractQueryCompare<T, LambdaDelete
     }
 
     private Segment buildTabName(SqlDialect dialect) {
-        TableInfo tableInfo = super.getRowMapper().getTableInfo();
-        if (tableInfo == null) {
-            throw new IllegalArgumentException("tableInfo not found.");
+        TableDef tableDef = super.getRowMapper().getTableInfo();
+        if (tableDef == null) {
+            throw new IllegalArgumentException("tableDef not found.");
         }
-        return () -> dialect.tableName(isQualifier(), tableInfo.getCategory(), tableInfo.getTableName());
+        return () -> dialect.tableName(isQualifier(), tableDef);
     }
 
     @Override

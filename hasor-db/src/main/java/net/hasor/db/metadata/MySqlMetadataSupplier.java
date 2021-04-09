@@ -46,6 +46,14 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
         }
     }
 
+    public List<MySqlTable> getAllTables() throws SQLException {
+        String currentSchema = "MYSQL";
+        try (Connection conn = this.connectSupplier.get()) {
+            currentSchema = new JdbcTemplate(conn).queryForString("select database()");
+        }
+        return getAllTables(currentSchema);
+    }
+
     public List<MySqlSchema> getSchemas() throws SQLException {
         String queryString = "select SCHEMA_NAME,DEFAULT_CHARACTER_SET_NAME,DEFAULT_COLLATION_NAME from INFORMATION_SCHEMA.SCHEMATA";
         try (Connection conn = this.connectSupplier.get()) {
