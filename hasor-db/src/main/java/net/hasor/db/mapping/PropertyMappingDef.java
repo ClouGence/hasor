@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.db.mapping;
+import net.hasor.db.lambda.generation.GenerationType;
+
 import java.sql.JDBCType;
 
 /**
- * 字段 or 列 信息
+ * 字段 or 列信息
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-class InnerColumnMapping implements ColumnMapping {
+class PropertyMappingDef implements PropertyMapping {
     private final String   columnName;
     private final String   propertyName;
     private final JDBCType jdbcType;
@@ -30,7 +32,7 @@ class InnerColumnMapping implements ColumnMapping {
     private final boolean  update;
     private final boolean  primary;
 
-    public InnerColumnMapping(String columnName, String propertyName, JDBCType jdbcType, Class<?> javaType, boolean insert, boolean update, boolean primary) {
+    public PropertyMappingDef(String columnName, String propertyName, JDBCType jdbcType, Class<?> javaType, boolean insert, boolean update, boolean primary) {
         this.columnName = columnName;
         this.propertyName = propertyName;
         this.jdbcType = jdbcType;
@@ -48,6 +50,11 @@ class InnerColumnMapping implements ColumnMapping {
     @Override
     public String getPropertyName() {
         return this.propertyName;
+    }
+
+    @Override
+    public GenerationType generationStrategy() {
+        return null;
     }
 
     @Override

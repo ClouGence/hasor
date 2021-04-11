@@ -41,14 +41,14 @@ public interface QueryFunc<T, R> {
     /**
      * 查询指定列。
      * 在分组查询下：设置参数中，只有 group by 列才会被查询。 */
-    public default R select(SFunction<T> column) {
-        return select(Collections.singletonList(column));
+    public default R select(SFunction<T> property) {
+        return select(Collections.singletonList(property));
     }
 
     /**
      * 查询指定列。
      * 在分组查询下：设置参数中，只有 group by 列才会被查询。 */
-    public R select(List<SFunction<T>> columns);
+    public R select(List<SFunction<T>> properties);
 
     /**
      * 按条件过滤查询指定列。
@@ -56,36 +56,36 @@ public interface QueryFunc<T, R> {
     public R select(Predicate<ColumnDef> tester);
 
     /**分组，类似：group by xxx */
-    public default R groupBy(SFunction<T> column) {
-        return groupBy(Collections.singletonList(column));
+    public default R groupBy(SFunction<T> property) {
+        return groupBy(Collections.singletonList(property));
     }
 
     /**分组，类似：group by xxx */
-    public R groupBy(List<SFunction<T>> columns);
+    public R groupBy(List<SFunction<T>> properties);
 
     /** 排序，类似：order by xxx */
-    public default R orderBy(SFunction<T> column) {
-        return orderBy(Collections.singletonList(column));
+    public default R orderBy(SFunction<T> property) {
+        return orderBy(Collections.singletonList(property));
     }
 
     /** 排序，类似：order by xxx */
-    public R orderBy(List<SFunction<T>> columns);
+    public R orderBy(List<SFunction<T>> properties);
 
     /** 排序(升序)，类似：order by xxx desc */
-    public default R asc(SFunction<T> column) {
-        return asc(Collections.singletonList(column));
+    public default R asc(SFunction<T> property) {
+        return asc(Collections.singletonList(property));
     }
 
     /** 排序(升序)，类似：order by xxx desc */
-    public R asc(List<SFunction<T>> columns);
+    public R asc(List<SFunction<T>> properties);
 
     /** 排序(降序)，类似：order by xxx desc */
-    public default R desc(SFunction<T> column) {
-        return desc(Collections.singletonList(column));
+    public default R desc(SFunction<T> property) {
+        return desc(Collections.singletonList(property));
     }
 
     /** 排序(降序)，类似：order by xxx desc */
-    public R desc(List<SFunction<T>> columns);
+    public R desc(List<SFunction<T>> properties);
 
     /** 设置分页信息 */
     public R usePage(Page pageInfo);

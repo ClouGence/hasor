@@ -24,17 +24,15 @@ import net.hasor.db.lambda.LambdaOperations.LambdaInsert;
 import net.hasor.db.lambda.LambdaOperations.LambdaQuery;
 import net.hasor.db.lambda.segment.MergeSqlSegment;
 import net.hasor.db.lambda.segment.Segment;
-import net.hasor.db.mapping.ColumnMapping;
 import net.hasor.db.mapping.MappingRowMapper;
+import net.hasor.db.mapping.PropertyMapping;
 import net.hasor.db.metadata.ColumnDef;
 import net.hasor.db.metadata.TableDef;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -47,16 +45,16 @@ import static net.hasor.db.lambda.segment.SqlKeyword.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements LambdaInsert<T> {
-    private final List<ColumnMapping> insertColumns;
-    private final List<ColumnMapping> primaryKeyColumns;
-    private final List<Object[]>      insertValues;
-    private       InsertStrategy      insertStrategy;
-    private       LambdaQuery<?>      insertAsQuery;
+    private final List<PropertyMapping> insertProperties;
+    private final List<PropertyMapping> primaryKeyProperties;
+    private final List<Object[]>        insertValues;
+    private       InsertStrategy        insertStrategy;
+    private       LambdaQuery<?>        insertAsQuery;
 
     public LambdaInsertWrapper(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
         super(exampleType, jdbcTemplate);
-        this.insertColumns = getInsertColumns();
-        this.primaryKeyColumns = getPrimaryKeyColumns();
+        this.insertProperties = getInsertProperties();
+        this.primaryKeyProperties = getPrimaryKeyColumns();
         this.insertValues = new ArrayList<>();
         this.insertStrategy = InsertStrategy.Into;
     }
@@ -67,33 +65,54 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
         return this;
     }
 
-    protected List<ColumnMapping> getPrimaryKeyColumns() {
-        List<ColumnMapping> pkColumn = new ArrayList<>();
+    protected List<PropertyMapping> getInsertProperties() {
         MappingRowMapper<T> rowMapper = this.getRowMapper();
-        List<String> columnNames = rowMapper.getColumnNames();
-        for (String columnName : columnNames) {
-            ColumnMapping columnMapping = rowMapper.findWriteFieldByColumn(columnName);
-            if (columnMapping.isPrimaryKey()) {
-                pkColumn.add(columnMapping);
+        List<String> propertyNames = rowMapper.getPropertyNames();
+        //
+        List<PropertyMapping> toInsertProperties = new ArrayList<>();
+        Set<String> insertColumns = new HashSet<>();
+        for (String propertyName : propertyNames) {
+            PropertyMapping mapping = rowMapper.findFieldByProperty(propertyName);
+            String columnName = mapping.getName();
+            if (!mapping.isInsert()) {
+                continue;
+            }
+            //
+            if (insertColumns.contains(columnName)) {
+                throw new IllegalStateException("Multiple property mapping to '" + columnName + "' column");
+            } else {
+                insertColumns.add(columnName);
+                toInsertProperties.add(mapping);
             }
         }
-        return pkColumn;
-    }
-
-    protected List<ColumnMapping> getInsertColumns() {
-        List<ColumnMapping> toInsertColumns = new ArrayList<>();
-        MappingRowMapper<T> rowMapper = this.getRowMapper();
-        List<String> columnNames = rowMapper.getColumnNames();
-        for (String columnName : columnNames) {
-            ColumnMapping columnMapping = rowMapper.findWriteFieldByColumn(columnName);
-            if (columnMapping.isInsert()) {
-                toInsertColumns.add(columnMapping);
-            }
-        }
-        if (toInsertColumns.size() == 0) {
+        //
+        if (toInsertProperties.size() == 0) {
             throw new IllegalStateException("no column require INSERT.");
         }
-        return toInsertColumns;
+        return toInsertProperties;
+    }
+
+    protected List<PropertyMapping> getPrimaryKeyColumns() {
+        MappingRowMapper<T> rowMapper = this.getRowMapper();
+        List<String> propertyNames = rowMapper.getPropertyNames();
+        //
+        List<PropertyMapping> pkProperties = new ArrayList<>();
+        Set<String> pkColumns = new HashSet<>();
+        for (String propertyName : propertyNames) {
+            PropertyMapping mapping = rowMapper.findFieldByProperty(propertyName);
+            String columnName = mapping.getName();
+            if (!mapping.isPrimaryKey()) {
+                continue;
+            }
+            //
+            if (pkColumns.contains(columnName)) {
+                throw new IllegalStateException("Multiple property mapping to '" + columnName + "' column");
+            } else {
+                pkColumns.add(columnName);
+                pkProperties.add(mapping);
+            }
+        }
+        return pkProperties;
     }
 
     @Override
@@ -101,12 +120,12 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
         if (this.insertAsQuery != null) {
             throw new IllegalStateException("there is existing INSERT ... SELECT, cannot be use data");
         }
-        int fieldCount = this.insertColumns.size();
+        int propertyCount = this.insertProperties.size();
         for (Map<String, Object> map : dataMapList) {
-            Object[] args = new Object[fieldCount];
-            for (int i = 0; i < fieldCount; i++) {
-                ColumnMapping columnMapping = this.insertColumns.get(i);
-                args[i] = map.get(columnMapping.getPropertyName());
+            Object[] args = new Object[propertyCount];
+            for (int i = 0; i < propertyCount; i++) {
+                PropertyMapping mapping = this.insertProperties.get(i);
+                args[i] = map.get(mapping.getPropertyName());
             }
             this.insertValues.add(args);
         }
@@ -115,12 +134,15 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
 
     @Override
     public InsertExecute<T> applyEntity(List<T> entityList) {
-        int fieldCount = this.insertColumns.size();
-        for (T entity : entityList) {
-            Object[] args = new Object[fieldCount];
-            for (int i = 0; i < fieldCount; i++) {
-                ColumnMapping columnMapping = this.insertColumns.get(i);
-                args[i] = BeanUtils.readPropertyOrField(entity, columnMapping.getPropertyName());
+        if (this.insertAsQuery != null) {
+            throw new IllegalStateException("there is existing INSERT ... SELECT, cannot be use data");
+        }
+        int propertyCount = this.insertProperties.size();
+        for (Object entity : entityList) {
+            Object[] args = new Object[propertyCount];
+            for (int i = 0; i < propertyCount; i++) {
+                PropertyMapping mapping = this.insertProperties.get(i);
+                args[i] = BeanUtils.readPropertyOrField(entity, mapping.getPropertyName());
             }
             this.insertValues.add(args);
         }
@@ -154,15 +176,13 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
         tableNameAndColumn.addSegment(() -> tableName);
         //
         tableNameAndColumn.addSegment(LEFT);
-        List<String> columnNames = this.insertColumns.stream().map(ColumnDef::getName).collect(Collectors.toList());
-        for (int i = 0; i < columnNames.size(); i++) {
+        for (int i = 0; i < this.insertProperties.size(); i++) {
             if (i != 0) {
                 tableNameAndColumn.addSegment(() -> ",");
             }
-            String columnName = columnNames.get(i);
-            ColumnDef columnDef = rowMapper.findWriteFieldByColumn(columnName);
-            String selectColumn = dialect.columnName(isQualifier(), tableDef, columnDef);
-            tableNameAndColumn.addSegment(() -> selectColumn);
+            PropertyMapping mapping = this.insertProperties.get(i);
+            String columnName = dialect.columnName(isQualifier(), tableDef, mapping);
+            tableNameAndColumn.addSegment(() -> columnName);
         }
         tableNameAndColumn.addSegment(RIGHT);
         return tableNameAndColumn;
@@ -180,11 +200,11 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
             MergeSqlSegment insertTemplate = new MergeSqlSegment();
             boolean isInsertSqlDialect = dialect instanceof InsertSqlDialect;
             TableDef tableDef = this.getRowMapper().getTableInfo();
-            List<ColumnDef> primaryKeyDefList = this.primaryKeyColumns.stream().map((Function<ColumnMapping, ColumnDef>) columnMapping -> columnMapping).collect(Collectors.toList());
-            List<ColumnDef> insertColumnDefList = this.insertColumns.stream().map((Function<ColumnMapping, ColumnDef>) columnMapping -> columnMapping).collect(Collectors.toList());
             //
             switch (this.insertStrategy) {
                 case Ignore: {
+                    List<ColumnDef> primaryKeyDefList = this.primaryKeyProperties.parallelStream().map((Function<PropertyMapping, ColumnDef>) o -> o).collect(Collectors.toList());
+                    List<ColumnDef> insertColumnDefList = this.insertProperties.parallelStream().map((Function<PropertyMapping, ColumnDef>) o -> o).collect(Collectors.toList());
                     if (isInsertSqlDialect && ((InsertSqlDialect) dialect).supportInsertIgnoreFromSelect(primaryKeyDefList)) {
                         String sqlString = ((InsertSqlDialect) dialect).insertIgnoreFromSelect(this.isQualifier(), tableDef, primaryKeyDefList, insertColumnDefList);
                         insertTemplate.addSegment(() -> sqlString);
@@ -192,6 +212,8 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
                     }
                 }
                 case Replace: {
+                    List<ColumnDef> primaryKeyDefList = this.primaryKeyProperties.parallelStream().map((Function<PropertyMapping, ColumnDef>) o -> o).collect(Collectors.toList());
+                    List<ColumnDef> insertColumnDefList = this.insertProperties.parallelStream().map((Function<PropertyMapping, ColumnDef>) o -> o).collect(Collectors.toList());
                     if (isInsertSqlDialect && ((InsertSqlDialect) dialect).supportInsertReplaceFromSelect(primaryKeyDefList)) {
                         String sqlString = ((InsertSqlDialect) dialect).insertWithReplaceFromSelect(this.isQualifier(), tableDef, primaryKeyDefList, insertColumnDefList);
                         insertTemplate.addSegment(() -> sqlString);
@@ -279,7 +301,7 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
         insertTemplate.addSegment(getTableNameAndColumn(dialect));
         // values
         insertTemplate.addSegment(VALUES, LEFT);
-        insertTemplate.addSegment(() -> StringUtils.repeat(",?", this.insertColumns.size()).substring(1));
+        insertTemplate.addSegment(() -> StringUtils.repeat(",?", this.insertProperties.size()).substring(1));
         insertTemplate.addSegment(RIGHT);
         //
         String sqlString = insertTemplate.getSqlSegment();
@@ -292,11 +314,10 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
 
     protected BoundSql dialectInsert(InsertSqlDialect dialect) {
         TableDef tableDef = this.getRowMapper().getTableInfo();
-        List<ColumnDef> primaryKeyDefList = this.primaryKeyColumns.stream().map((Function<ColumnMapping, ColumnDef>) columnMapping -> columnMapping).collect(Collectors.toList());
-        List<ColumnDef> insertColumnDefList = this.insertColumns.stream().map((Function<ColumnMapping, ColumnDef>) columnMapping -> columnMapping).collect(Collectors.toList());
-        //
         switch (this.insertStrategy) {
             case Ignore: {
+                List<ColumnDef> primaryKeyDefList = this.primaryKeyProperties.parallelStream().map((Function<PropertyMapping, ColumnDef>) o -> o).collect(Collectors.toList());
+                List<ColumnDef> insertColumnDefList = this.insertProperties.parallelStream().map((Function<PropertyMapping, ColumnDef>) o -> o).collect(Collectors.toList());
                 if (dialect.supportInsertIgnore(primaryKeyDefList)) {
                     String sqlString = dialect.insertWithIgnore(this.isQualifier(), tableDef, primaryKeyDefList, insertColumnDefList);
                     return buildBatchBoundSql(sqlString);
@@ -304,6 +325,8 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
                 break;
             }
             case Replace: {
+                List<ColumnDef> primaryKeyDefList = this.primaryKeyProperties.parallelStream().map((Function<PropertyMapping, ColumnDef>) o -> o).collect(Collectors.toList());
+                List<ColumnDef> insertColumnDefList = this.insertProperties.parallelStream().map((Function<PropertyMapping, ColumnDef>) o -> o).collect(Collectors.toList());
                 if (dialect.supportInsertReplace(primaryKeyDefList)) {
                     String sqlString = dialect.insertWithReplace(this.isQualifier(), tableDef, primaryKeyDefList, insertColumnDefList);
                     return buildBatchBoundSql(sqlString);

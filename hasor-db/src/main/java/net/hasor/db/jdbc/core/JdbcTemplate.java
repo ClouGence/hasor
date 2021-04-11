@@ -24,7 +24,7 @@ import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
 import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
-import net.hasor.db.mapping.MappingHandler;
+import net.hasor.db.mapping.MappingRegistry;
 import net.hasor.db.mapping.MappingRowMapper;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
@@ -60,11 +60,11 @@ import java.util.stream.Collectors;
  * @see RowMapper
  */
 public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
-    private static final Logger         logger                 = LoggerFactory.getLogger(JdbcTemplate.class);
+    private static final Logger          logger                 = LoggerFactory.getLogger(JdbcTemplate.class);
     /*当JDBC 结果集中如出现相同的列名仅仅大小写不同时。是否保留大小写列名敏感。
      * 如果为 true 表示不敏感，并且结果集Map中保留两个记录。如果为 false 则表示敏感，如出现冲突列名后者将会覆盖前者。*/
-    private              boolean        resultsCaseInsensitive = true;
-    private final        MappingHandler mappingHandler;
+    private              boolean         resultsCaseInsensitive = true;
+    private final        MappingRegistry mappingHandler;
 
     /**
      * Construct a new JdbcTemplate for bean usage.
@@ -73,7 +73,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
      */
     public JdbcTemplate() {
         super();
-        this.mappingHandler = MappingHandler.DEFAULT;
+        this.mappingHandler = MappingRegistry.DEFAULT;
     }
 
     /**
@@ -82,7 +82,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
      * @param dataSource the JDBC DataSource to obtain connections from
      */
     public JdbcTemplate(final DataSource dataSource) {
-        this(dataSource, MappingHandler.DEFAULT);
+        this(dataSource, MappingRegistry.DEFAULT);
     }
 
     /**
@@ -91,7 +91,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
      * @param dataSource the JDBC DataSource to obtain connections from
      * @param mappingHandler the Types
      */
-    public JdbcTemplate(final DataSource dataSource, MappingHandler mappingHandler) {
+    public JdbcTemplate(final DataSource dataSource, MappingRegistry mappingHandler) {
         super(dataSource);
         this.mappingHandler = mappingHandler;
     }
@@ -102,7 +102,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
      * @param conn the JDBC Connection
      */
     public JdbcTemplate(final Connection conn) {
-        this(conn, MappingHandler.DEFAULT);
+        this(conn, MappingRegistry.DEFAULT);
     }
 
     /**
@@ -111,7 +111,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
      * @param conn the JDBC Connection
      * @param mappingHandler the Types
      */
-    public JdbcTemplate(final Connection conn, MappingHandler mappingHandler) {
+    public JdbcTemplate(final Connection conn, MappingRegistry mappingHandler) {
         super(conn);
         this.mappingHandler = mappingHandler;
     }
@@ -124,7 +124,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
         this.resultsCaseInsensitive = resultsCaseInsensitive;
     }
 
-    public MappingHandler getMappingHandler() {
+    public MappingRegistry getMappingHandler() {
         return this.mappingHandler;
     }
 

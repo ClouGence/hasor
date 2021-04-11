@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.test.db.dto;
-import net.hasor.db.mapping.Field;
+import net.hasor.db.mapping.Property;
 import net.hasor.db.mapping.Table;
 
 import java.util.Date;
@@ -26,19 +26,19 @@ import java.util.Date;
  */
 @Table("tb_user")
 public class TbUser {
-    @Field("userUUID")
+    @Property("userUUID")
     private String uid;
-    @Field()
+    @Property()
     private String name;
-    @Field("loginName")
+    @Property("loginName")
     private String account;
-    @Field("loginPassword")
+    @Property("loginPassword")
     private String password;
-    @Field("email")
+    @Property("email")
     private String mail;
-    @Field()
+    @Property()
     private int    index;
-    @Field("registerTime")
+    @Property("registerTime")
     private Date   createTime;
 
     public String getUid() {

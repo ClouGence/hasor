@@ -19,7 +19,7 @@ import net.hasor.core.Hasor;
 import net.hasor.db.datasource.ConnectionProxy;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.StatementCallback;
-import net.hasor.db.mapping.MappingHandler;
+import net.hasor.db.mapping.MappingRegistry;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.SingleDsModule;
 import org.junit.Test;
@@ -189,12 +189,12 @@ public class BaseClassTest extends AbstractDbTest {
     public void jdbcTemplateTest_6() {
         DataSource dataSource = PowerMockito.mock(DataSource.class);
         Connection connection = PowerMockito.mock(Connection.class);
-        MappingHandler mappingHandler = PowerMockito.mock(MappingHandler.class);
+        MappingRegistry mappingHandler = PowerMockito.mock(MappingRegistry.class);
         //
         assert new JdbcTemplate(dataSource, mappingHandler).getMappingHandler() == mappingHandler;
         assert new JdbcTemplate(connection, mappingHandler).getMappingHandler() == mappingHandler;
         //
-        assert new JdbcTemplate().getMappingHandler() == MappingHandler.DEFAULT;
+        assert new JdbcTemplate().getMappingHandler() == MappingRegistry.DEFAULT;
         //
         assert new JdbcTemplate().isResultsCaseInsensitive();
         JdbcTemplate jdbcTemplate = new JdbcTemplate();

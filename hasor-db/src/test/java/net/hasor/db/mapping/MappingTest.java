@@ -39,7 +39,7 @@ public class MappingTest extends AbstractDbTest {
     @Test
     public void testBigDecimalTypeHandler_1() {
         TypeHandlerRegistry registry = TypeHandlerRegistry.DEFAULT;
-        MappingHandler handler = new MappingHandler(registry);
+        MappingRegistry handler = new MappingRegistry(registry);
         MappingRowMapper<TbUser> resultMapper = handler.resolveMapper(TbUser.class);
         //
         assert resultMapper != null;
@@ -51,7 +51,7 @@ public class MappingTest extends AbstractDbTest {
     @Test
     public void testBeanRowMapper_1() throws SQLException {
         TypeHandlerRegistry registry = TypeHandlerRegistry.DEFAULT;
-        MappingHandler handler = new MappingHandler(registry);
+        MappingRegistry handler = new MappingRegistry(registry);
         MappingRowMapper<TbUser> resultMapper = handler.resolveMapper(TbUser.class);
         //
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {

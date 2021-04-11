@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.mapping;
+import net.hasor.db.lambda.generation.GenerationType;
 import net.hasor.db.metadata.ColumnDef;
 
 /**
@@ -21,9 +22,12 @@ import net.hasor.db.metadata.ColumnDef;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface ColumnMapping extends ColumnDef {
+public interface PropertyMapping extends ColumnDef {
     /** 属性名 */
     public String getPropertyName();
+
+    /** 生成策略 */
+    public GenerationType generationStrategy();
 
     /** 参与更新 */
     public boolean isUpdate();

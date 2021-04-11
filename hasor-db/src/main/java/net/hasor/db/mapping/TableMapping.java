@@ -22,4 +22,5 @@ import net.hasor.db.metadata.TableDef;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface TableMapping extends TableDef {
+    public Class<?> entityType();
 }

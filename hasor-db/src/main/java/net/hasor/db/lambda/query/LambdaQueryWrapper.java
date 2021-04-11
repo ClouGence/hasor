@@ -151,9 +151,9 @@ public class LambdaQueryWrapper<T> extends AbstractQueryCompare<T, LambdaQuery<T
     }
 
     @Override
-    public final LambdaQuery<T> select(List<SFunction<T>> columns) {
-        List<ColumnDef> selectColumn = columns.stream()//
-                .filter(Objects::nonNull).map(this::columnName).collect(Collectors.toList());
+    public final LambdaQuery<T> select(List<SFunction<T>> properties) {
+        List<ColumnDef> selectColumn = properties.stream()//
+                .filter(Objects::nonNull).map(this::propertyMapping).collect(Collectors.toList());
         return this.select0(selectColumn, fieldInfo -> true);
     }
 
@@ -174,17 +174,17 @@ public class LambdaQueryWrapper<T> extends AbstractQueryCompare<T, LambdaQuery<T
         return this;
     }
 
-    public final LambdaQuery<T> groupBy(List<SFunction<T>> columns) {
+    public final LambdaQuery<T> groupBy(List<SFunction<T>> properties) {
         if (this.lockGroupBy) {
             throw new IllegalStateException("group by is locked.");
         }
         this.lockCondition();
-        if (columns != null && !columns.isEmpty()) {
+        if (properties != null && !properties.isEmpty()) {
             if (this.groupBySegments.isEmpty()) {
                 this.queryTemplate.addSegment(GROUP_BY);
             }
             List<Segment> groupBySeg = new ArrayList<>();
-            for (SFunction<T> fun : columns) {
+            for (SFunction<T> fun : properties) {
                 groupBySeg.add(() -> conditionName(fun));
             }
             this.groupBySegments.addAll(groupBySeg);
@@ -193,16 +193,16 @@ public class LambdaQueryWrapper<T> extends AbstractQueryCompare<T, LambdaQuery<T
         return this.getSelf();
     }
 
-    public LambdaQuery<T> orderBy(List<SFunction<T>> columns) {
-        return this.addOrderBy(ORDER_DEFAULT, columns);
+    public LambdaQuery<T> orderBy(List<SFunction<T>> properties) {
+        return this.addOrderBy(ORDER_DEFAULT, properties);
     }
 
-    public LambdaQuery<T> asc(List<SFunction<T>> columns) {
-        return this.addOrderBy(ASC, columns);
+    public LambdaQuery<T> asc(List<SFunction<T>> properties) {
+        return this.addOrderBy(ASC, properties);
     }
 
-    public LambdaQuery<T> desc(List<SFunction<T>> columns) {
-        return this.addOrderBy(DESC, columns);
+    public LambdaQuery<T> desc(List<SFunction<T>> properties) {
+        return this.addOrderBy(DESC, properties);
     }
 
     private LambdaQuery<T> addOrderBy(OrderByKeyword keyword, List<SFunction<T>> orderBy) {

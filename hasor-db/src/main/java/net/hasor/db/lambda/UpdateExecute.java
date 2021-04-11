@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.lambda;
-import net.hasor.db.mapping.ColumnMapping;
+import net.hasor.db.mapping.PropertyMapping;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.reflect.SFunction;
 
@@ -43,8 +43,8 @@ public interface UpdateExecute<T> extends BoundSqlBuilder {
     }
 
     /** 设置 update 的 set 中的值。 */
-    public default UpdateExecute<T> updateTo(T newValue, SFunction<T> property, SFunction<T>... propertyArrays) {
-        List<SFunction<T>> propertyList = new ArrayList<>(Arrays.asList(propertyArrays));
+    public default UpdateExecute<T> updateTo(T newValue, SFunction<T> property, SFunction<T>... properties) {
+        List<SFunction<T>> propertyList = new ArrayList<>(Arrays.asList(properties));
         if (property != null) {
             propertyList.add(0, property);
         }
@@ -52,8 +52,8 @@ public interface UpdateExecute<T> extends BoundSqlBuilder {
     }
 
     /** 设置指定列 update 的 set 中的值 */
-    public default UpdateExecute<T> updateTo(T newValue, String property, String... propertyArrays) {
-        List<String> propertyList = new ArrayList<>(Arrays.asList(propertyArrays));
+    public default UpdateExecute<T> updateTo(T newValue, String property, String... properties) {
+        List<String> propertyList = new ArrayList<>(Arrays.asList(properties));
         if (StringUtils.isNotBlank(property)) {
             propertyList.add(0, property);
         }
@@ -63,10 +63,10 @@ public interface UpdateExecute<T> extends BoundSqlBuilder {
     }
 
     /** 设置指定列 update 的 set 中的值 */
-    public UpdateExecute<T> updateTo(T newValue, List<SFunction<T>> propertyList);
+    public UpdateExecute<T> updateTo(T newValue, List<SFunction<T>> properties);
 
     /** 设置指定列 update 的 set 中的值 */
-    public UpdateExecute<T> updateTo(T newValue, Predicate<ColumnMapping> tester);
+    public UpdateExecute<T> updateTo(T newValue, Predicate<PropertyMapping> tester);
 
     /** 设置 update 的 set 中的值。 */
     public default UpdateExecute<T> updateTo(Map<String, Object> propertyMap) {
@@ -74,8 +74,8 @@ public interface UpdateExecute<T> extends BoundSqlBuilder {
     }
 
     /** 设置 update 的 set 中的值。 */
-    public default UpdateExecute<T> updateTo(Map<String, Object> propertyMap, SFunction<T> property, SFunction<T>... propertyArrays) {
-        List<SFunction<T>> propertyList = new ArrayList<>(Arrays.asList(propertyArrays));
+    public default UpdateExecute<T> updateTo(Map<String, Object> propertyMap, SFunction<T> property, SFunction<T>... properties) {
+        List<SFunction<T>> propertyList = new ArrayList<>(Arrays.asList(properties));
         if (property != null) {
             propertyList.add(0, property);
         }
@@ -83,8 +83,8 @@ public interface UpdateExecute<T> extends BoundSqlBuilder {
     }
 
     /** 设置指定列 update 的 set 中的值 */
-    public default UpdateExecute<T> updateTo(Map<String, Object> propertyMap, String property, String... propertyArrays) {
-        List<String> propertyList = new ArrayList<>(Arrays.asList(propertyArrays));
+    public default UpdateExecute<T> updateTo(Map<String, Object> propertyMap, String property, String... properties) {
+        List<String> propertyList = new ArrayList<>(Arrays.asList(properties));
         if (StringUtils.isNotBlank(property)) {
             propertyList.add(0, property);
         }
@@ -94,8 +94,8 @@ public interface UpdateExecute<T> extends BoundSqlBuilder {
     }
 
     /** 设置指定列 update 的 set 中的值 */
-    public UpdateExecute<T> updateTo(Map<String, Object> propertyMap, List<SFunction<T>> propertyList);
+    public UpdateExecute<T> updateTo(Map<String, Object> propertyMap, List<SFunction<T>> properties);
 
     /** 设置指定列 update 的 set 中的值 */
-    public UpdateExecute<T> updateTo(Map<String, Object> propertyMap, Predicate<ColumnMapping> tester);
+    public UpdateExecute<T> updateTo(Map<String, Object> propertyMap, Predicate<PropertyMapping> tester);
 }

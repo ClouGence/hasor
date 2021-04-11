@@ -4,7 +4,7 @@ import net.hasor.db.lambda.query.LambdaDeleteWrapper;
 import net.hasor.db.lambda.query.LambdaInsertWrapper;
 import net.hasor.db.lambda.query.LambdaQueryWrapper;
 import net.hasor.db.lambda.query.LambdaUpdateWrapper;
-import net.hasor.db.mapping.MappingHandler;
+import net.hasor.db.mapping.MappingRegistry;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -40,7 +40,7 @@ public class LambdaTemplate implements LambdaOperations {
      * @param dataSource the JDBC DataSource to obtain connections from
      * @param mappingHandler the Types
      */
-    public LambdaTemplate(final DataSource dataSource, MappingHandler mappingHandler) {
+    public LambdaTemplate(final DataSource dataSource, MappingRegistry mappingHandler) {
         this.jdbcTemplate = new JdbcTemplate(dataSource, mappingHandler);
     }
 
@@ -59,7 +59,7 @@ public class LambdaTemplate implements LambdaOperations {
      * @param conn the JDBC Connection
      * @param mappingHandler the Types
      */
-    public LambdaTemplate(final Connection conn, MappingHandler mappingHandler) {
+    public LambdaTemplate(final Connection conn, MappingRegistry mappingHandler) {
         this.jdbcTemplate = new JdbcTemplate(conn, mappingHandler);
     }
 

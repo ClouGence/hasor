@@ -17,7 +17,7 @@ package net.hasor.db.lambda;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.mapping.MappingHandler;
+import net.hasor.db.mapping.MappingRegistry;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TbUser;
@@ -52,7 +52,7 @@ public class BaseLambdaTest extends AbstractDbTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             DataSource dataSource = appContext.getInstance(DataSource.class);
             try (Connection conn = dataSource.getConnection()) {
-                LambdaTemplate lambdaTemplate = new LambdaTemplate(conn, MappingHandler.DEFAULT);
+                LambdaTemplate lambdaTemplate = new LambdaTemplate(conn, MappingRegistry.DEFAULT);
                 Map<String, Object> tbUser = lambdaTemplate.lambdaQuery(TbUser.class)//
                         .eq(TbUser::getAccount, "muhammad").apply("limit 1")//
                         .queryForMap();
@@ -75,7 +75,7 @@ public class BaseLambdaTest extends AbstractDbTest {
     public void base_3() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             DataSource dataSource = appContext.getInstance(DataSource.class);
-            LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource, MappingHandler.DEFAULT);
+            LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource, MappingRegistry.DEFAULT);
             Map<String, Object> tbUser = lambdaTemplate.lambdaQuery(TbUser.class)//
                     .eq(TbUser::getAccount, "muhammad").apply("limit 1")//
                     .queryForMap();
