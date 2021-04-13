@@ -32,7 +32,7 @@ public static void main(String[] args) {
         TelnetBuilder telnetBuild = apiBinder.asTelnet("127.0.0.1", 2180);
         telnetBuild.addExecutor("hello").to(HelloWordExecutor.class);
     }
-    appContext.joinSignal();
+    appContext.join();
 }
 ```
 
