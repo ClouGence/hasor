@@ -20,7 +20,6 @@ import net.hasor.utils.reflect.TypeReference;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
@@ -37,16 +36,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 赵永春 (zyc@hasor.net)
  */
 public final class TypeHandlerRegistry {
-    private static final Map<Type, TypeHandler<?>>                  cachedSingleHandlers  = new ConcurrentHashMap<>();
-    private static final Map<String, JDBCType>                      javaTypeToJdbcTypeMap = new ConcurrentHashMap<>();
-    private static final Map<JDBCType, Class<?>>                    jdbcTypeToJavaTypeMap = new ConcurrentHashMap<>();
+    private static final Map<Class<? extends TypeHandler<?>>, TypeHandler<?>> cachedSingleHandlers  = new ConcurrentHashMap<>();
+    private static final Map<String, JDBCType>                                javaTypeToJdbcTypeMap = new ConcurrentHashMap<>();
+    private static final Map<JDBCType, Class<?>>                              jdbcTypeToJavaTypeMap = new ConcurrentHashMap<>();
     //
-    public static final  TypeHandlerRegistry                        DEFAULT               = new TypeHandlerRegistry();
-    private final        UnknownTypeHandler                         defaultTypeHandler    = new UnknownTypeHandler(this);
+    public static final  TypeHandlerRegistry                                  DEFAULT               = new TypeHandlerRegistry();
+    private final        UnknownTypeHandler                                   defaultTypeHandler    = new UnknownTypeHandler(this);
     // mappings
-    private final        Map<String, TypeHandler<?>>                javaTypeHandlerMap    = new ConcurrentHashMap<>();
-    private final        Map<JDBCType, TypeHandler<?>>              jdbcTypeHandlerMap    = new ConcurrentHashMap<>();
-    private final        Map<String, Map<JDBCType, TypeHandler<?>>> typeHandlerMap        = new ConcurrentHashMap<>();
+    private final        Map<String, TypeHandler<?>>                          javaTypeHandlerMap    = new ConcurrentHashMap<>();
+    private final        Map<JDBCType, TypeHandler<?>>                        jdbcTypeHandlerMap    = new ConcurrentHashMap<>();
+    private final        Map<String, Map<JDBCType, TypeHandler<?>>>           typeHandlerMap        = new ConcurrentHashMap<>();
 
     static {
         // primitive and wrapper
@@ -335,6 +334,15 @@ public final class TypeHandlerRegistry {
     /** 根据 jdbcType 获取默认的 Java Type.*/
     public static Class<?> toJavaType(JDBCType jdbcType) {
         return jdbcTypeToJavaTypeMap.get(jdbcType);
+    }
+
+    public static boolean hasTypeHandlerType(Class<? extends TypeHandler<?>> handlerType) {
+        Objects.requireNonNull(handlerType, "handlerType is null.");
+        return cachedSingleHandlers.containsKey(handlerType);
+    }
+
+    public static TypeHandler<?> getTypeHandlerByType(Class<? extends TypeHandler<?>> handlerType) {
+        return cachedSingleHandlers.get(handlerType);
     }
 
     public boolean hasTypeHandler(Class<?> typeClass) {

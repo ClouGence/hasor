@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.mapping;
-import net.hasor.db.metadata.ColumnDef;
-import net.hasor.db.types.TypeHandler;
+package net.hasor.db.metadata;
+import java.util.Map;
 
 /**
- * 字段映射信息
+ * 元信息服务
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface PropertyMapping extends ColumnDef {
-    /** 属性名 */
-    public String getPropertyName();
+public interface MetaDataService {
+    public CaseSensitivityType getPlain();
 
-    public TypeHandler<?> getTypeHandler();
+    public CaseSensitivityType getDelimited();
 
-    /** 参与更新 */
-    public boolean isUpdate();
+    /** 搜索表 */
+    public TableDef searchTable(String category, String tableName);
 
-    /** 参与新增 */
-    public boolean isInsert();
+    public Map<String, ColumnDef> getColumnMap(String category, String tableName);
 }

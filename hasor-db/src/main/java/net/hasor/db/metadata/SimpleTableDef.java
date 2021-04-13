@@ -13,24 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.mapping;
-import net.hasor.db.metadata.ColumnDef;
-import net.hasor.db.types.TypeHandler;
-
+package net.hasor.db.metadata;
 /**
- * 字段映射信息
+ * TableDef 实现
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface PropertyMapping extends ColumnDef {
-    /** 属性名 */
-    public String getPropertyName();
+public class SimpleTableDef implements TableDef {
+    private String category;
+    private String tableName;
 
-    public TypeHandler<?> getTypeHandler();
+    @Override
+    public String getCategory() {
+        return this.category;
+    }
 
-    /** 参与更新 */
-    public boolean isUpdate();
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-    /** 参与新增 */
-    public boolean isInsert();
+    @Override
+    public String getTableName() {
+        return this.tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 }

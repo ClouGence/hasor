@@ -21,6 +21,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.sql.JDBCType;
 
 /**
  * 标记在字段上表示映射到的列
@@ -36,20 +37,15 @@ public @interface Property {
     /** 列名，为空的话表示采用类名为表名 see: {@link #value()} */
     public String name() default "";
 
-    /** 使用的 typeHandler 功效和 Mybatis 的 TypeHandler 相同 */
+    /** 指定使用的 typeHandler（功效和 Mybatis 的 TypeHandler 相同） */
     public Class<? extends TypeHandler<?>> typeHandler() default UnknownTypeHandler.class;
+
+    /** 指定使用的 jdbcType */
+    public JDBCType jdbcType() default JDBCType.OTHER;
 
     /** 参与更新 */
     public boolean update() default true;
 
     /** 参与新增 */
     public boolean insert() default true;
-
-    /**
-     * 是否使用限定符(默认不使用)，通常无需配置 hasor-db 会自动识别。
-     * 如遇到如下两个情况，hasor-db 可能强制启用标识符限定(相当设置为 true)：
-     *  - 1.表名是关键字(强制启动)
-     *  - 2。 autoFiled 配置为 true 的情况下，根据元信息匹配如遇到名称无法匹配，例如 Oracle 的名称默认都是大写。
-     */
-    public boolean useQualifier() default false;
 }

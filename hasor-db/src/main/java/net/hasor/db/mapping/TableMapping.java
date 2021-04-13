@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.mapping;
+import net.hasor.db.lambda.generation.GenerationType;
 import net.hasor.db.metadata.TableDef;
 
 /**
@@ -23,4 +24,10 @@ import net.hasor.db.metadata.TableDef;
  */
 public interface TableMapping extends TableDef {
     public Class<?> entityType();
+
+    /** 主键生成策略 */
+    public GenerationType generationKey();
+
+    /** 是否将类型下的所有字段都自动和数据库中的列进行映射匹配，true 表示自动。false 表示必须通过 @Property 注解声明。 */
+    public boolean isAutoProperty();
 }

@@ -13,24 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.mapping;
-import net.hasor.db.metadata.ColumnDef;
-import net.hasor.db.types.TypeHandler;
-
+package net.hasor.db.metadata;
 /**
- * 字段映射信息
+ * 大小写敏感类别
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface PropertyMapping extends ColumnDef {
-    /** 属性名 */
-    public String getPropertyName();
-
-    public TypeHandler<?> getTypeHandler();
-
-    /** 参与更新 */
-    public boolean isUpdate();
-
-    /** 参与新增 */
-    public boolean isInsert();
+public enum CaseSensitivityType {
+    /** 大写 */
+    Upper,
+    /** 小写 */
+    Lower,
+    /** 精确的 */
+    Exact,
 }

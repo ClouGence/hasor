@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.mapping;
+import net.hasor.db.lambda.generation.GenerationType;
+import net.hasor.db.metadata.CaseSensitivityType;
 import net.hasor.db.metadata.ColumnDef;
 import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 
@@ -28,6 +30,9 @@ import java.util.Map;
 class TableMappingDef implements TableMapping {
     private       String                       category;
     private       String                       tableName;
+    private       boolean                      useDelimited;
+    private       boolean                      autoProperty;
+    private       CaseSensitivityType          caseSensitivity;
     private final Class<?>                     entityType;
     private final Map<String, ColumnDef>       columnMappingMap;
     private final Map<String, PropertyMapping> propertyMappingMap;
@@ -48,6 +53,20 @@ class TableMappingDef implements TableMapping {
     }
 
     @Override
+    public GenerationType generationKey() {
+        return null;
+    }
+
+    @Override
+    public boolean isAutoProperty() {
+        return this.autoProperty;
+    }
+
+    public void setAutoProperty(boolean autoProperty) {
+        this.autoProperty = autoProperty;
+    }
+
+    @Override
     public String getCategory() {
         return this.category;
     }
@@ -65,8 +84,28 @@ class TableMappingDef implements TableMapping {
         this.tableName = tableName;
     }
 
+    public boolean isUseDelimited() {
+        return this.useDelimited;
+    }
+
+    public void setUseDelimited(boolean useDelimited) {
+        this.useDelimited = useDelimited;
+    }
+
+    public CaseSensitivityType getCaseSensitivity() {
+        return this.caseSensitivity;
+    }
+
+    public void setCaseSensitivity(CaseSensitivityType caseSensitivity) {
+        this.caseSensitivity = caseSensitivity;
+    }
+
     public void addMapping(PropertyMapping mapping) {
         this.columnMappingMap.put(mapping.getName(), mapping);
         this.propertyMappingMap.put(mapping.getPropertyName(), mapping);
+    }
+
+    public boolean isEmpty() {
+        return this.columnMappingMap.isEmpty() || this.propertyMappingMap.isEmpty();
     }
 }

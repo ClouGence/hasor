@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.mapping;
-import net.hasor.db.lambda.generation.GenerationType;
+import net.hasor.db.types.TypeHandler;
+import net.hasor.db.types.TypeHandlerRegistry;
 
 import java.sql.JDBCType;
 
@@ -24,22 +25,27 @@ import java.sql.JDBCType;
  * @author 赵永春 (zyc@hasor.net)
  */
 class PropertyMappingDef implements PropertyMapping {
-    private final String   columnName;
-    private final String   propertyName;
-    private final JDBCType jdbcType;
-    private final Class<?> javaType;
-    private final boolean  insert;
-    private final boolean  update;
-    private final boolean  primary;
+    private final String         columnName;
+    private final String         propertyName;
+    private       JDBCType       jdbcType;
+    private       Class<?>       javaType;
+    private       TypeHandler<?> typeHandler;
+    private       boolean        insert;
+    private       boolean        update;
+    private       boolean        primary;
 
-    public PropertyMappingDef(String columnName, String propertyName, JDBCType jdbcType, Class<?> javaType, boolean insert, boolean update, boolean primary) {
+    public PropertyMappingDef(String propertyName, Class<?> javaType) {
+        this(propertyName, javaType, propertyName);
+    }
+
+    public PropertyMappingDef(String propertyName, Class<?> javaType, String columnName) {
         this.columnName = columnName;
         this.propertyName = propertyName;
-        this.jdbcType = jdbcType;
+        this.jdbcType = TypeHandlerRegistry.toSqlType(javaType);
         this.javaType = javaType;
-        this.insert = insert;
-        this.update = update;
-        this.primary = primary;
+        this.insert = true;
+        this.update = true;
+        this.primary = false;
     }
 
     @Override
@@ -52,9 +58,12 @@ class PropertyMappingDef implements PropertyMapping {
         return this.propertyName;
     }
 
-    @Override
-    public GenerationType generationStrategy() {
-        return null;
+    public TypeHandler<?> getTypeHandler() {
+        return typeHandler;
+    }
+
+    public void setTypeHandler(TypeHandler<?> typeHandler) {
+        this.typeHandler = typeHandler;
     }
 
     @Override
@@ -62,9 +71,17 @@ class PropertyMappingDef implements PropertyMapping {
         return this.jdbcType;
     }
 
+    public void setJdbcType(JDBCType jdbcType) {
+        this.jdbcType = jdbcType;
+    }
+
     @Override
     public Class<?> getJavaType() {
         return this.javaType;
+    }
+
+    public void setJavaType(Class<?> javaType) {
+        this.javaType = javaType;
     }
 
     @Override
@@ -72,13 +89,25 @@ class PropertyMappingDef implements PropertyMapping {
         return this.update;
     }
 
+    public void setUpdate(boolean update) {
+        this.update = update;
+    }
+
     @Override
     public boolean isInsert() {
         return this.insert;
     }
 
+    public void setInsert(boolean insert) {
+        this.insert = insert;
+    }
+
     @Override
     public boolean isPrimaryKey() {
         return this.primary;
+    }
+
+    public void setPrimary(boolean primary) {
+        this.primary = primary;
     }
 }
