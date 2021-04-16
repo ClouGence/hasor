@@ -191,10 +191,10 @@ public class BaseClassTest extends AbstractDbTest {
         Connection connection = PowerMockito.mock(Connection.class);
         MappingRegistry mappingHandler = PowerMockito.mock(MappingRegistry.class);
         //
-        assert new JdbcTemplate(dataSource, mappingHandler).getMappingHandler() == mappingHandler;
-        assert new JdbcTemplate(connection, mappingHandler).getMappingHandler() == mappingHandler;
+        assert new JdbcTemplate(dataSource, mappingHandler).getMappingRegistry() == mappingHandler;
+        assert new JdbcTemplate(connection, mappingHandler).getMappingRegistry() == mappingHandler;
         //
-        assert new JdbcTemplate().getMappingHandler() == MappingRegistry.DEFAULT;
+        assert new JdbcTemplate().getMappingRegistry() == MappingRegistry.DEFAULT;
         //
         assert new JdbcTemplate().isResultsCaseInsensitive();
         JdbcTemplate jdbcTemplate = new JdbcTemplate();

@@ -24,7 +24,7 @@ import java.sql.JDBCType;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-class PropertyMappingDef implements PropertyMapping {
+class ColumnMappingDef implements ColumnMapping {
     private final String         columnName;
     private final String         propertyName;
     private       JDBCType       jdbcType;
@@ -34,11 +34,11 @@ class PropertyMappingDef implements PropertyMapping {
     private       boolean        update;
     private       boolean        primary;
 
-    public PropertyMappingDef(String propertyName, Class<?> javaType) {
+    public ColumnMappingDef(String propertyName, Class<?> javaType) {
         this(propertyName, javaType, propertyName);
     }
 
-    public PropertyMappingDef(String propertyName, Class<?> javaType, String columnName) {
+    public ColumnMappingDef(String propertyName, Class<?> javaType, String columnName) {
         this.columnName = columnName;
         this.propertyName = propertyName;
         this.jdbcType = TypeHandlerRegistry.toSqlType(javaType);

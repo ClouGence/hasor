@@ -19,10 +19,10 @@ import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.lambda.LambdaOperations.LambdaUpdate;
 import net.hasor.db.lambda.UpdateExecute;
 import net.hasor.db.lambda.segment.MergeSqlSegment;
-import net.hasor.db.mapping.MappingRowMapper;
-import net.hasor.db.mapping.PropertyMapping;
+import net.hasor.db.mapping.ColumnMapping;
+import net.hasor.db.mapping.TableMapping;
+import net.hasor.db.mapping.TableReader;
 import net.hasor.db.metadata.ColumnDef;
-import net.hasor.db.metadata.TableDef;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.reflect.SFunction;
 
@@ -40,9 +40,9 @@ import static net.hasor.db.lambda.segment.SqlKeyword.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class LambdaUpdateWrapper<T> extends AbstractQueryCompare<T, LambdaUpdate<T>> implements LambdaUpdate<T> {
-    protected final Map<String, PropertyMapping> allowUpdateProperties;
-    protected final Map<String, Object>          updateValueMap;
-    private         boolean                      allowEmptyWhere = false;
+    protected final Map<String, ColumnMapping> allowUpdateProperties;
+    protected final Map<String, Object>        updateValueMap;
+    private         boolean                    allowEmptyWhere = false;
 
     public LambdaUpdateWrapper(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
         super(exampleType, jdbcTemplate);
@@ -50,12 +50,13 @@ public class LambdaUpdateWrapper<T> extends AbstractQueryCompare<T, LambdaUpdate
         this.updateValueMap = new HashMap<>();
     }
 
-    protected Map<String, PropertyMapping> getAllowUpdateProperties() {
-        Map<String, PropertyMapping> toUpdateProp = new LinkedHashMap<>();
-        MappingRowMapper<T> rowMapper = this.getRowMapper();
-        List<String> columnNames = rowMapper.getColumnNames();
+    protected Map<String, ColumnMapping> getAllowUpdateProperties() {
+        Map<String, ColumnMapping> toUpdateProp = new LinkedHashMap<>();
+        TableMapping tableDef = super.getTableMapping();
+        TableReader<T> tableReader = super.getTableReader();
+        List<String> columnNames = tableDef.getColumnNames();
         for (String columnName : columnNames) {
-            PropertyMapping mapping = rowMapper.findWriteFieldByColumn(columnName);
+            ColumnMapping mapping = tableReader.getPropertyForWriteByColumn(columnName);
             if (mapping.isUpdate()) {
                 toUpdateProp.put(mapping.getPropertyName(), mapping);
             }
@@ -93,8 +94,8 @@ public class LambdaUpdateWrapper<T> extends AbstractQueryCompare<T, LambdaUpdate
         if (properties == null || properties.isEmpty()) {
             throw new NullPointerException("properties not be null.");
         }
-        Map<String, PropertyMapping> updateProperties = properties.stream().map(this::propertyMapping)//
-                .collect(Collectors.toMap(PropertyMapping::getPropertyName, o -> o));
+        Map<String, ColumnMapping> updateProperties = properties.stream().map(this::propertyMapping)//
+                .collect(Collectors.toMap(ColumnMapping::getPropertyName, o -> o));
         //
         return this.updateTo(newValue, property -> {
             return updateProperties.containsKey(property.getPropertyName());
@@ -102,7 +103,7 @@ public class LambdaUpdateWrapper<T> extends AbstractQueryCompare<T, LambdaUpdate
     }
 
     @Override
-    public UpdateExecute<T> updateTo(T newValue, Predicate<PropertyMapping> tester) {
+    public UpdateExecute<T> updateTo(T newValue, Predicate<ColumnMapping> tester) {
         if (newValue == null) {
             throw new NullPointerException("newValue is null.");
         }
@@ -117,7 +118,7 @@ public class LambdaUpdateWrapper<T> extends AbstractQueryCompare<T, LambdaUpdate
             throw new NullPointerException("properties not be null.");
         }
         Map<String, ColumnDef> updateProperties = properties.stream().map(this::propertyMapping)//
-                .collect(Collectors.toMap(PropertyMapping::getPropertyName, o -> o));
+                .collect(Collectors.toMap(ColumnMapping::getPropertyName, o -> o));
         //
         return this.updateTo(propertyMap, property -> {
             return updateProperties.containsKey(property.getPropertyName());
@@ -125,22 +126,22 @@ public class LambdaUpdateWrapper<T> extends AbstractQueryCompare<T, LambdaUpdate
     }
 
     @Override
-    public UpdateExecute<T> updateTo(Map<String, Object> propertyMap, Predicate<PropertyMapping> tester) {
+    public UpdateExecute<T> updateTo(Map<String, Object> propertyMap, Predicate<ColumnMapping> tester) {
         if (propertyMap == null) {
             throw new NullPointerException("newValue is null.");
         }
         return this.updateTo(propertyMap::get, tester);
     }
 
-    protected <R> UpdateExecute<T> updateTo(Function<String, R> readValueFunction, Predicate<PropertyMapping> tester) {
+    protected <R> UpdateExecute<T> updateTo(Function<String, R> readValueFunction, Predicate<ColumnMapping> tester) {
         if (tester == null) {
             throw new NullPointerException("tester is null.");
         }
         //
         this.updateValueMap.clear();
         Set<String> updateColumns = new HashSet<>();
-        for (Map.Entry<String, PropertyMapping> allowFieldEntry : this.allowUpdateProperties.entrySet()) {
-            PropertyMapping allowProperty = allowFieldEntry.getValue();
+        for (Map.Entry<String, ColumnMapping> allowFieldEntry : this.allowUpdateProperties.entrySet()) {
+            ColumnMapping allowProperty = allowFieldEntry.getValue();
             if (!tester.test(allowProperty)) {
                 continue;
             }
@@ -169,8 +170,7 @@ public class LambdaUpdateWrapper<T> extends AbstractQueryCompare<T, LambdaUpdate
         MergeSqlSegment updateTemplate = new MergeSqlSegment();
         updateTemplate.addSegment(UPDATE);
         // tableName
-        MappingRowMapper<T> rowMapper = this.getRowMapper();
-        TableDef tableDef = rowMapper.getTableInfo();
+        TableMapping tableDef = super.getTableMapping();
         String tableName = dialect().tableName(isQualifier(), tableDef);
         updateTemplate.addSegment(() -> tableName);
         //
@@ -183,7 +183,7 @@ public class LambdaUpdateWrapper<T> extends AbstractQueryCompare<T, LambdaUpdate
                 updateTemplate.addSegment(() -> ",");
             }
             //
-            PropertyMapping mapping = allowUpdateProperties.get(propertyName);
+            ColumnMapping mapping = allowUpdateProperties.get(propertyName);
             String columnName = dialect().columnName(isQualifier(), tableDef, mapping);
             Object columnValue = updateValueMap.get(propertyName);
             updateTemplate.addSegment(() -> columnName, EQ, formatSegment(columnValue));

@@ -16,10 +16,10 @@
 package net.hasor.db.mapping;
 import net.hasor.db.lambda.generation.GenerationType;
 import net.hasor.db.metadata.CaseSensitivityType;
-import net.hasor.db.metadata.ColumnDef;
-import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,33 +28,26 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 class TableMappingDef implements TableMapping {
-    private       String                       category;
-    private       String                       tableName;
-    private       boolean                      useDelimited;
-    private       boolean                      autoProperty;
-    private       CaseSensitivityType          caseSensitivity;
-    private final Class<?>                     entityType;
-    private final Map<String, ColumnDef>       columnMappingMap;
-    private final Map<String, PropertyMapping> propertyMappingMap;
+    private       String                           category;
+    private       String                           tableName;
+    private       boolean                          useDelimited;
+    private       boolean                          autoProperty;
+    private       CaseSensitivityType              caseSensitivity;
+    private final Class<?>                         entityType;
+    //
+    private final List<String>                     propertyNames;
+    private final Map<String, ColumnMapping>       propertyMapping;
+    private final List<ColumnMapping>              mappingList;
+    private final List<String>                     columnNames;
+    private final Map<String, List<ColumnMapping>> columnNameMapping;
 
-    public TableMappingDef(Class<?> entityType, boolean caseInsensitive) {
+    public TableMappingDef(Class<?> entityType) {
         this.entityType = entityType;
-        if (caseInsensitive) {
-            this.columnMappingMap = new LinkedCaseInsensitiveMap<>();
-        } else {
-            this.columnMappingMap = new LinkedHashMap<>();
-        }
-        this.propertyMappingMap = new LinkedHashMap<>();
-    }
-
-    @Override
-    public Class<?> entityType() {
-        return this.entityType;
-    }
-
-    @Override
-    public GenerationType generationKey() {
-        return null;
+        this.propertyNames = new ArrayList<>();
+        this.propertyMapping = new HashMap<>();
+        this.mappingList = new ArrayList<>();
+        this.columnNames = new ArrayList<>();
+        this.columnNameMapping = new HashMap<>();
     }
 
     @Override
@@ -100,12 +93,53 @@ class TableMappingDef implements TableMapping {
         this.caseSensitivity = caseSensitivity;
     }
 
-    public void addMapping(PropertyMapping mapping) {
-        this.columnMappingMap.put(mapping.getName(), mapping);
-        this.propertyMappingMap.put(mapping.getPropertyName(), mapping);
+    @Override
+    public Class<?> entityType() {
+        return this.entityType;
+    }
+
+    @Override
+    public List<ColumnMapping> getProperties() {
+        return this.mappingList;
+    }
+
+    @Override
+    public List<String> getPropertyNames() {
+        return this.propertyNames;
+    }
+
+    @Override
+    public List<String> getColumnNames() {
+        return this.columnNames;
+    }
+
+    @Override
+    public ColumnMapping getMapping(String propertyName) {
+        return this.propertyMapping.get(propertyName);
+    }
+
+    @Override
+    public List<ColumnMapping> getMappingByColumnName(String columnName) {
+        return this.columnNameMapping.get(columnName);
     }
 
     public boolean isEmpty() {
-        return this.columnMappingMap.isEmpty() || this.propertyMappingMap.isEmpty();
+        return this.propertyNames.isEmpty();
+    }
+
+    @Override
+    public GenerationType generationKey() {
+        return null;
+    }
+
+    public void addMapping(ColumnMapping mapping) {
+        String columnName = mapping.getName();
+        String propertyName = mapping.getPropertyName();
+        this.propertyNames.add(propertyName);
+        this.propertyMapping.put(propertyName, mapping);
+        this.mappingList.add(mapping);
+        this.columnNames.add(columnName);
+        List<ColumnMapping> propertyNames = this.columnNameMapping.computeIfAbsent(columnName, k -> new ArrayList<>());
+        propertyNames.add(mapping);
     }
 }

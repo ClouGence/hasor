@@ -3,12 +3,11 @@ import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.UnknownTypeHandler;
 
 import java.lang.annotation.Annotation;
-import java.sql.JDBCType;
 
-class PropertyInfo implements Property {
+class ColumnInfo implements Column {
     private final String propertyName;
 
-    public PropertyInfo(String propertyName) {
+    public ColumnInfo(String propertyName) {
         this.propertyName = propertyName;
     }
 
@@ -28,11 +27,6 @@ class PropertyInfo implements Property {
     }
 
     @Override
-    public JDBCType jdbcType() {
-        return JDBCType.OTHER;
-    }
-
-    @Override
     public boolean update() {
         return true;
     }
@@ -44,6 +38,6 @@ class PropertyInfo implements Property {
 
     @Override
     public Class<? extends Annotation> annotationType() {
-        return Property.class;
+        return Column.class;
     }
 }

@@ -86,7 +86,7 @@ public class LambdaDeleteWrapper<T> extends AbstractQueryCompare<T, LambdaDelete
     }
 
     private Segment buildTabName(SqlDialect dialect) {
-        TableDef tableDef = super.getRowMapper().getTableInfo();
+        TableDef tableDef = super.getTableMapping();
         if (tableDef == null) {
             throw new IllegalArgumentException("tableDef not found.");
         }

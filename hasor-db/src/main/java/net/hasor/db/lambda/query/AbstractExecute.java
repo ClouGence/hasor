@@ -18,8 +18,10 @@ import net.hasor.db.JdbcUtils;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.dialect.SqlDialectRegister;
 import net.hasor.db.jdbc.ConnectionCallback;
+import net.hasor.db.jdbc.RowMapper;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.mapping.MappingRowMapper;
+import net.hasor.db.mapping.TableMapping;
+import net.hasor.db.mapping.TableReader;
 
 import java.sql.DatabaseMetaData;
 import java.util.Map;
@@ -31,12 +33,14 @@ import java.util.Objects;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractExecute<T> {
-    protected final String              dbType;
-    private         SqlDialect          dialect;
-    private final   Class<T>            exampleType;
-    private final   MappingRowMapper<T> exampleRowMapper;
-    private final   JdbcTemplate        jdbcTemplate;
-    private         boolean             qualifier;
+    protected final String         dbType;
+    private         SqlDialect     dialect;
+    private final   Class<T>       exampleType;
+    private final   JdbcTemplate   jdbcTemplate;
+    private final   TableReader<T> exampleTableReader;
+    private final   RowMapper<T>   exampleRowMapper;
+    private final   TableMapping   exampleTableMapping;
+    private         boolean        qualifier;
 
     public AbstractExecute(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
         if (Objects.requireNonNull(exampleType, "exampleType is null.") == Map.class) {
@@ -44,8 +48,9 @@ public abstract class AbstractExecute<T> {
         }
         this.exampleType = exampleType;
         this.jdbcTemplate = jdbcTemplate;
-        this.exampleRowMapper = jdbcTemplate.getMappingHandler().resolveMapper(exampleType);
-        this.exampleRowMapper.setCaseInsensitive(jdbcTemplate.isResultsCaseInsensitive());
+        this.exampleTableReader = jdbcTemplate.getMappingRegistry().resolveTableReader(exampleType);
+        this.exampleRowMapper = this.exampleTableReader::readRow;
+        this.exampleTableMapping = this.exampleTableReader.getTableMapping();
         //
         String tmpDbType = "";
         try {
@@ -65,8 +70,9 @@ public abstract class AbstractExecute<T> {
     AbstractExecute(Class<T> exampleType, JdbcTemplate jdbcTemplate, String dbType, SqlDialect dialect) {
         this.exampleType = exampleType;
         this.jdbcTemplate = jdbcTemplate;
-        this.exampleRowMapper = jdbcTemplate.getMappingHandler().resolveMapper(exampleType);
-        this.exampleRowMapper.setCaseInsensitive(jdbcTemplate.isResultsCaseInsensitive());
+        this.exampleTableReader = jdbcTemplate.getMappingRegistry().resolveTableReader(exampleType);
+        this.exampleRowMapper = this.exampleTableReader::readRow;
+        this.exampleTableMapping = this.exampleTableReader.getTableMapping();
         //
         this.dbType = dbType;
         this.dialect = (dialect == null) ? SqlDialect.DEFAULT : dialect;
@@ -80,7 +86,15 @@ public abstract class AbstractExecute<T> {
         return this.jdbcTemplate;
     }
 
-    protected final MappingRowMapper<T> getRowMapper() {
+    protected final TableMapping getTableMapping() {
+        return this.exampleTableMapping;
+    }
+
+    protected final TableReader<T> getTableReader() {
+        return this.exampleTableReader;
+    }
+
+    protected final RowMapper<T> getRowMapper() {
         return this.exampleRowMapper;
     }
 

@@ -20,7 +20,7 @@ import net.hasor.db.lambda.QueryCompare;
 import net.hasor.db.lambda.segment.MergeSqlSegment;
 import net.hasor.db.lambda.segment.Segment;
 import net.hasor.db.lambda.segment.SqlLike;
-import net.hasor.db.mapping.PropertyMapping;
+import net.hasor.db.mapping.ColumnMapping;
 import net.hasor.db.metadata.ColumnDef;
 import net.hasor.db.metadata.TableDef;
 import net.hasor.utils.ArrayUtils;
@@ -43,26 +43,26 @@ import static net.hasor.db.lambda.segment.SqlKeyword.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractQueryCompare<T, R> extends AbstractQueryExecute<T> implements QueryCompare<T, R> {
-    private static final Map<String, PropertyMapping> COLUMN_CACHE      = new WeakHashMap<>();
-    private static final ReadWriteLock                COLUMN_CACHE_LOCK = new ReentrantReadWriteLock();
-    protected            MergeSqlSegment              queryTemplate     = new MergeSqlSegment();
-    protected            List<Object>                 queryParam        = new ArrayList<>();
-    private              Segment                      nextSegmentPrefix = null;
-    private              boolean                      lookCondition     = false;
+    private static final Map<String, ColumnMapping> COLUMN_CACHE      = new WeakHashMap<>();
+    private static final ReadWriteLock              COLUMN_CACHE_LOCK = new ReentrantReadWriteLock();
+    protected            MergeSqlSegment            queryTemplate     = new MergeSqlSegment();
+    protected            List<Object>               queryParam        = new ArrayList<>();
+    private              Segment                    nextSegmentPrefix = null;
+    private              boolean                    lookCondition     = false;
 
     public AbstractQueryCompare(Class<T> exampleType, JdbcTemplate jdbcTemplate) {
         super(exampleType, jdbcTemplate);
     }
 
-    protected PropertyMapping propertyMapping(SFunction<T> property) {
+    protected ColumnMapping propertyMapping(SFunction<T> property) {
         Method targetMethod = MethodUtils.lambdaMethodName(property);
         String cacheKey = targetMethod.toGenericString();
         Lock readLock = COLUMN_CACHE_LOCK.readLock();
         try {
             readLock.lock();
-            PropertyMapping propertyMapping = COLUMN_CACHE.get(cacheKey);
-            if (propertyMapping != null) {
-                return propertyMapping;
+            ColumnMapping columnMapping = COLUMN_CACHE.get(cacheKey);
+            if (columnMapping != null) {
+                return columnMapping;
             }
         } finally {
             readLock.unlock();
@@ -71,9 +71,9 @@ public abstract class AbstractQueryCompare<T, R> extends AbstractQueryExecute<T>
         Lock writeLock = COLUMN_CACHE_LOCK.writeLock();
         try {
             writeLock.lock();
-            PropertyMapping propertyMapping = COLUMN_CACHE.get(cacheKey);
-            if (propertyMapping != null) {
-                return propertyMapping;
+            ColumnMapping columnMapping = COLUMN_CACHE.get(cacheKey);
+            if (columnMapping != null) {
+                return columnMapping;
             }
             String methodName = targetMethod.getName();
             String attr;
@@ -84,9 +84,9 @@ public abstract class AbstractQueryCompare<T, R> extends AbstractQueryExecute<T>
             }
             attr = StringUtils.firstCharToLowerCase(attr);
             //
-            propertyMapping = super.getRowMapper().findFieldByProperty(attr);
-            COLUMN_CACHE.put(cacheKey, propertyMapping);
-            return propertyMapping;
+            columnMapping = super.getTableMapping().getMapping(attr);
+            COLUMN_CACHE.put(cacheKey, columnMapping);
+            return columnMapping;
         } finally {
             writeLock.unlock();
         }
@@ -260,7 +260,7 @@ public abstract class AbstractQueryCompare<T, R> extends AbstractQueryExecute<T>
     }
 
     protected String conditionName(SFunction<T> property) {
-        TableDef tableDef = super.getRowMapper().getTableInfo();
+        TableDef tableDef = super.getTableMapping();
         ColumnDef columnDef = propertyMapping(property);
         return this.dialect().columnName(isQualifier(), tableDef, columnDef);
     }

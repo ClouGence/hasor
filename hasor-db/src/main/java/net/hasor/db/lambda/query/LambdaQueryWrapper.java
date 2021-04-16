@@ -23,7 +23,7 @@ import net.hasor.db.lambda.page.Page;
 import net.hasor.db.lambda.segment.MergeSqlSegment;
 import net.hasor.db.lambda.segment.OrderByKeyword;
 import net.hasor.db.lambda.segment.Segment;
-import net.hasor.db.mapping.MappingRowMapper;
+import net.hasor.db.mapping.TableMapping;
 import net.hasor.db.metadata.ColumnDef;
 import net.hasor.db.metadata.TableDef;
 import net.hasor.utils.reflect.SFunction;
@@ -86,7 +86,7 @@ public class LambdaQueryWrapper<T> extends AbstractQueryCompare<T, LambdaQuery<T
     }
 
     private Segment buildTabName(SqlDialect dialect) {
-        TableDef tableDef = super.getRowMapper().getTableInfo();
+        TableDef tableDef = super.getTableMapping();
         if (tableDef == null) {
             throw new IllegalArgumentException("tableDef not found.");
         }
@@ -159,14 +159,14 @@ public class LambdaQueryWrapper<T> extends AbstractQueryCompare<T, LambdaQuery<T
 
     @Override
     public final LambdaQuery<T> select(Predicate<ColumnDef> tester) {
-        MappingRowMapper<T> rowMapper = super.getRowMapper();
-        List<String> allProperty = rowMapper.getPropertyNames();
-        List<ColumnDef> collect = allProperty.stream().map(rowMapper::findFieldByProperty).collect(Collectors.toList());
+        TableMapping tableDef = super.getTableMapping();
+        List<String> allProperty = tableDef.getPropertyNames();
+        List<ColumnDef> collect = allProperty.stream().map(tableDef::getMapping).collect(Collectors.toList());
         return this.select0(collect, tester);
     }
 
     private LambdaQuery<T> select0(Collection<ColumnDef> allFiled, Predicate<ColumnDef> tester) {
-        TableDef tableDef = super.getRowMapper().getTableInfo();
+        TableMapping tableDef = super.getTableMapping();
         allFiled.stream().filter(tester).forEach(columnDef -> {
             String selectColumn = dialect().columnName(isQualifier(), tableDef, columnDef);
             customSelect.add(() -> selectColumn);

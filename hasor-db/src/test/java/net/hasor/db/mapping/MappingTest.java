@@ -17,18 +17,15 @@ package net.hasor.db.mapping;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.types.TypeHandlerRegistry;
+import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.SingleDsModule;
-import net.hasor.test.db.dto.TB_User;
 import net.hasor.test.db.dto.TbUser;
+import net.hasor.test.db.utils.TestUtils;
 import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static net.hasor.test.db.utils.TestUtils.*;
 
 /***
  *
@@ -37,70 +34,71 @@ import static net.hasor.test.db.utils.TestUtils.*;
  */
 public class MappingTest extends AbstractDbTest {
     @Test
-    public void testBigDecimalTypeHandler_1() {
-        TypeHandlerRegistry registry = TypeHandlerRegistry.DEFAULT;
-        MappingRegistry handler = new MappingRegistry(registry);
-        MappingRowMapper<TbUser> resultMapper = handler.resolveMapper(TbUser.class);
-        //
-        assert resultMapper != null;
-        assert resultMapper.getMapperClass() == TbUser.class;
-        assert resultMapper.getTableName().equals("tb_user");
-        assert resultMapper.isCaseInsensitive();
-    }
-
-    @Test
-    public void testBeanRowMapper_1() throws SQLException {
-        TypeHandlerRegistry registry = TypeHandlerRegistry.DEFAULT;
-        MappingRegistry handler = new MappingRegistry(registry);
-        MappingRowMapper<TbUser> resultMapper = handler.resolveMapper(TbUser.class);
-        //
+    public void testBigDecimalTypeHandler_1() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            List<TbUser> resultList = jdbcTemplate.query("select * from tb_user", resultMapper);
-            List<String> collect = resultList.stream().map(TbUser::getName).collect(Collectors.toList());
-            //
-            assert collect.size() == 3;
-            assert collect.contains(beanForData1().getName());
-            assert collect.contains(beanForData2().getName());
-            assert collect.contains(beanForData3().getName());
+            TableReader<TbUser> tableReader = MappingRegistry.DEFAULT.resolveTableReader(TbUser.class);
+            List<TbUser> tbUsers = jdbcTemplate.query("select * from tb_user", new RowMapperResultSetExtractor<>(tableReader::readRow));
+            assert tbUsers.size() == 3;
+            assert TestUtils.beanForData1().getUserUUID().equals(tbUsers.get(0).getUid());
+            assert TestUtils.beanForData2().getUserUUID().equals(tbUsers.get(1).getUid());
+            assert TestUtils.beanForData3().getUserUUID().equals(tbUsers.get(2).getUid());
         }
     }
-
-    @Test
-    public void testBeanRowMapper_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            List<TB_User> mapList = jdbcTemplate.queryForList("select * from tb_user", TB_User.class);
-            //
-            List<String> collect = mapList.stream().map(TB_User::getName).collect(Collectors.toList());
-            //
-            assert mapList.size() == 3;
-            assert collect.contains(beanForData1().getName());
-            assert collect.contains(beanForData2().getName());
-            assert collect.contains(beanForData3().getName());
-        }
-    }
-
-    @Test
-    public void testBeanRowMapper_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            List<TB_User> mapList1 = jdbcTemplate.query("select * from tb_user", MappingRowMapper.newInstance(TB_User.class));
-            List<TB_User> mapList2 = jdbcTemplate.query("select * from tb_user", MappingRowMapper.newInstance(TB_User.class));
-            //
-            List<String> collect1 = mapList1.stream().map(TB_User::getName).collect(Collectors.toList());
-            List<String> collect2 = mapList2.stream().map(TB_User::getName).collect(Collectors.toList());
-            //
-            assert mapList1.size() == 3;
-            assert collect1.contains(beanForData1().getName());
-            assert collect1.contains(beanForData2().getName());
-            assert collect1.contains(beanForData3().getName());
-            //
-            assert mapList2.size() == 3;
-            assert collect2.contains(beanForData1().getName());
-            assert collect2.contains(beanForData2().getName());
-            assert collect2.contains(beanForData3().getName());
-        }
-    }
+    //    @Test
+    //    public void testBeanRowMapper_1() throws SQLException {
+    //        TypeHandlerRegistry registry = TypeHandlerRegistry.DEFAULT;
+    //        MappingRegistry handler = new MappingRegistry(registry);
+    //        MappingRowMapper<TbUser> resultMapper = handler.resolveMapper(TbUser.class);
+    //        //
+    //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+    //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    //            //
+    //            List<TbUser> resultList = jdbcTemplate.query("select * from tb_user", resultMapper);
+    //            List<String> collect = resultList.stream().map(TbUser::getName).collect(Collectors.toList());
+    //            //
+    //            assert collect.size() == 3;
+    //            assert collect.contains(beanForData1().getName());
+    //            assert collect.contains(beanForData2().getName());
+    //            assert collect.contains(beanForData3().getName());
+    //        }
+    //    }
+    //
+    //    @Test
+    //    public void testBeanRowMapper_2() throws SQLException {
+    //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+    //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    //            List<TB_User> mapList = jdbcTemplate.queryForList("select * from tb_user", TB_User.class);
+    //            //
+    //            List<String> collect = mapList.stream().map(TB_User::getName).collect(Collectors.toList());
+    //            //
+    //            assert mapList.size() == 3;
+    //            assert collect.contains(beanForData1().getName());
+    //            assert collect.contains(beanForData2().getName());
+    //            assert collect.contains(beanForData3().getName());
+    //        }
+    //    }
+    //
+    //    @Test
+    //    public void testBeanRowMapper_3() throws SQLException {
+    //        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
+    //            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    //            List<TB_User> mapList1 = jdbcTemplate.query("select * from tb_user", MappingRowMapper.newInstance(TB_User.class));
+    //            List<TB_User> mapList2 = jdbcTemplate.query("select * from tb_user", MappingRowMapper.newInstance(TB_User.class));
+    //            //
+    //            List<String> collect1 = mapList1.stream().map(TB_User::getName).collect(Collectors.toList());
+    //            List<String> collect2 = mapList2.stream().map(TB_User::getName).collect(Collectors.toList());
+    //            //
+    //            assert mapList1.size() == 3;
+    //            assert collect1.contains(beanForData1().getName());
+    //            assert collect1.contains(beanForData2().getName());
+    //            assert collect1.contains(beanForData3().getName());
+    //            //
+    //            assert mapList2.size() == 3;
+    //            assert collect2.contains(beanForData1().getName());
+    //            assert collect2.contains(beanForData2().getName());
+    //            assert collect2.contains(beanForData3().getName());
+    //        }
+    //    }
 }

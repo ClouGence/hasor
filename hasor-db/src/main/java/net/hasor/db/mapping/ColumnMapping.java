@@ -22,7 +22,7 @@ import net.hasor.db.types.TypeHandler;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface PropertyMapping extends ColumnDef {
+public interface ColumnMapping extends ColumnDef {
     /** 属性名 */
     public String getPropertyName();
 

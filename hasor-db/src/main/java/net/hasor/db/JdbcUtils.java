@@ -84,6 +84,9 @@ public class JdbcUtils {
             return OCEANBASE_ORACLE;
         } else if (rawUrl.startsWith("jdbc:microsoft:") || rawUrl.startsWith("jdbc:log4jdbc:microsoft:")) {
             return SQL_SERVER;
+            //        } else if (jdbcUrl.contains(":sqlserver:") || jdbcUrl.contains(":microsoft:")) {
+            //            return DbType.SQL_SERVER2005;
+            //        } else if (jdbcUrl.contains(":sqlserver2012:")) {
         } else if (rawUrl.startsWith("jdbc:sqlserver:") || rawUrl.startsWith("jdbc:log4jdbc:sqlserver:")) {
             return SQL_SERVER;
         } else if (rawUrl.startsWith("jdbc:sybase:Tds:") || rawUrl.startsWith("jdbc:log4jdbc:sybase:")) {

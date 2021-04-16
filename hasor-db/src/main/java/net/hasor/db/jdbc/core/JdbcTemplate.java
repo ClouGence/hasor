@@ -22,10 +22,10 @@ import net.hasor.db.jdbc.extractor.ColumnMapResultSetExtractor;
 import net.hasor.db.jdbc.extractor.RowCallbackHandlerResultSetExtractor;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
+import net.hasor.db.jdbc.mapper.MappingRowMapper;
 import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
 import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
 import net.hasor.db.mapping.MappingRegistry;
-import net.hasor.db.mapping.MappingRowMapper;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
 import net.hasor.utils.ResourcesUtils;
@@ -64,7 +64,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     /*当JDBC 结果集中如出现相同的列名仅仅大小写不同时。是否保留大小写列名敏感。
      * 如果为 true 表示不敏感，并且结果集Map中保留两个记录。如果为 false 则表示敏感，如出现冲突列名后者将会覆盖前者。*/
     private              boolean         resultsCaseInsensitive = true;
-    private final        MappingRegistry mappingHandler;
+    private final        MappingRegistry mappingRegistry;
 
     /**
      * Construct a new JdbcTemplate for bean usage.
@@ -73,7 +73,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
      */
     public JdbcTemplate() {
         super();
-        this.mappingHandler = MappingRegistry.DEFAULT;
+        this.mappingRegistry = MappingRegistry.DEFAULT;
     }
 
     /**
@@ -89,11 +89,11 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
      * Construct a new JdbcTemplate, given a DataSource to obtain connections from.
      * <p>Note: This will not trigger initialization of the exception translator.
      * @param dataSource the JDBC DataSource to obtain connections from
-     * @param mappingHandler the Types
+     * @param mappingRegistry the MappingRegistry
      */
-    public JdbcTemplate(final DataSource dataSource, MappingRegistry mappingHandler) {
+    public JdbcTemplate(final DataSource dataSource, MappingRegistry mappingRegistry) {
         super(dataSource);
-        this.mappingHandler = mappingHandler;
+        this.mappingRegistry = mappingRegistry;
     }
 
     /**
@@ -109,11 +109,11 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
      * Construct a new JdbcTemplate, given a Connection to obtain connections from.
      * <p>Note: This will not trigger initialization of the exception translator.
      * @param conn the JDBC Connection
-     * @param mappingHandler the Types
+     * @param mappingRegistry the MappingRegistry
      */
-    public JdbcTemplate(final Connection conn, MappingRegistry mappingHandler) {
+    public JdbcTemplate(final Connection conn, MappingRegistry mappingRegistry) {
         super(conn);
-        this.mappingHandler = mappingHandler;
+        this.mappingRegistry = mappingRegistry;
     }
 
     public boolean isResultsCaseInsensitive() {
@@ -124,8 +124,8 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
         this.resultsCaseInsensitive = resultsCaseInsensitive;
     }
 
-    public MappingRegistry getMappingHandler() {
-        return this.mappingHandler;
+    public MappingRegistry getMappingRegistry() {
+        return this.mappingRegistry;
     }
 
     public void loadSQL(final String sqlResource) throws IOException, SQLException {
@@ -726,7 +726,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
 
     @Override
     public int[] executeBatch(String sql, Object[][] batchValues) throws SQLException {
-        final TypeHandlerRegistry typeRegistry = getMappingHandler().getTypeRegistry();
+        final TypeHandlerRegistry typeRegistry = getMappingRegistry().getTypeRegistry();
         return this.executeBatch(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -974,7 +974,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
 
     /** Create a new RowMapper for reading columns as key-value pairs. */
     protected RowMapper<Map<String, Object>> getColumnMapRowMapper() {
-        return new ColumnMapRowMapper(this.mappingHandler.getTypeRegistry()) {
+        return new ColumnMapRowMapper(this.mappingRegistry.getTypeRegistry()) {
             @Override
             protected Map<String, Object> createColumnMap(final int columnCount) {
                 return JdbcTemplate.this.createResultsMap();
@@ -993,14 +993,12 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
             return this.getSingleColumnRowMapper(requiredType);
         }
         //
-        MappingRowMapper<T> rowMapper = this.mappingHandler.resolveMapper(requiredType);
-        rowMapper.setCaseInsensitive(this.isResultsCaseInsensitive());
-        return rowMapper;
+        return MappingRowMapper.newInstance(requiredType, this.mappingRegistry);
     }
 
     /** Create a new RowMapper for reading result objects from a single column.*/
     protected <T> RowMapper<T> getSingleColumnRowMapper(Class<T> requiredType) {
-        TypeHandlerRegistry typeHandler = this.getMappingHandler().getTypeRegistry();
+        TypeHandlerRegistry typeHandler = this.getMappingRegistry().getTypeRegistry();
         return new SingleColumnRowMapper<>(requiredType, typeHandler);
     }
 
@@ -1015,7 +1013,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
 
     /** Create a new PreparedStatementSetter.*/
     protected PreparedStatementSetter newArgPreparedStatementSetter(final Object[] args) {
-        return new ArgPreparedStatementSetter(this.mappingHandler.getTypeRegistry(), args);
+        return new ArgPreparedStatementSetter(this.mappingRegistry.getTypeRegistry(), args);
     }
 
     /** Build a PreparedStatementCreator based on the given SQL and named parameters. */
@@ -1108,7 +1106,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     private class MultipleResultExtractor implements PreparedStatementCallback<List<Object>> {
         @Override
         public List<Object> doInPreparedStatement(PreparedStatement ps) throws SQLException {
-            ColumnMapRowMapper columnMapRowMapper = new ColumnMapRowMapper(getMappingHandler().getTypeRegistry());
+            ColumnMapRowMapper columnMapRowMapper = new ColumnMapRowMapper(getMappingRegistry().getTypeRegistry());
             ReturnSqlParameter result = SqlParameterUtils.withReturnResult("TMP", new RowMapperResultSetExtractor<>(columnMapRowMapper));
             boolean retVal = ps.execute();
             if (logger.isTraceEnabled()) {
@@ -1157,7 +1155,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
             //3.创建PreparedStatement对象，并设置参数
             PreparedStatement statement = con.prepareStatement(sqlToUse);
             for (int i = 0; i < paramArray.length; i++) {
-                getMappingHandler().getTypeRegistry().setParameterValue(statement, i + 1, paramArray[i]);
+                getMappingRegistry().getTypeRegistry().setParameterValue(statement, i + 1, paramArray[i]);
             }
             StatementSetterUtils.cleanupParameters(paramArray);
             return statement;
@@ -1194,7 +1192,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
             //2.设置参数
             int sqlColIndex = 1;
             for (Object element : sqlValue) {
-                getMappingHandler().getTypeRegistry().setParameterValue(ps, sqlColIndex++, element);
+                getMappingRegistry().getTypeRegistry().setParameterValue(ps, sqlColIndex++, element);
             }
         }
 

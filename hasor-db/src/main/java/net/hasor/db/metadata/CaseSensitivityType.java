@@ -26,4 +26,6 @@ public enum CaseSensitivityType {
     Lower,
     /** 精确的 */
     Exact,
+    /** 模糊的（即可大写也可小写） */
+    Fuzzy
 }

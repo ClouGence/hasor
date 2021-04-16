@@ -21,16 +21,15 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.sql.JDBCType;
 
 /**
- * 标记在字段上表示映射到的列
+ * （可选）标记在字段上表示映射到的列
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Property {
+public @interface Column {
     /** 列名，为空的话表示采用字段名为列名 see: {@link #name()} */
     public String value() default "";
 
@@ -39,9 +38,6 @@ public @interface Property {
 
     /** 指定使用的 typeHandler（功效和 Mybatis 的 TypeHandler 相同） */
     public Class<? extends TypeHandler<?>> typeHandler() default UnknownTypeHandler.class;
-
-    /** 指定使用的 jdbcType */
-    public JDBCType jdbcType() default JDBCType.OTHER;
 
     /** 参与更新 */
     public boolean update() default true;

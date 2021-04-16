@@ -39,11 +39,11 @@ public @interface Table {
     /**
      * 是否使用限定符(默认不使用)，通常无需配置 hasor-db 会自动识别。
      * 如遇到如下两个情况，hasor-db 可能强制启用标识符限定(相当设置为 true)：
-     *  - 1.表名是关键字(强制启动)
-     *  - 2。 autoFiled 配置为 true 的情况下，根据元信息匹配如遇到名称无法匹配，例如 Oracle 的名称默认都是大写。
+     *  - 1. 表/列名是关键字(强制启动)
+     *  - 2. autoFiled 配置为 true 的情况下，根据元信息匹配如遇到名称无法匹配，例如 Oracle 的名称默认都是大写。
      */
     public boolean useDelimited() default false;
 
-    /** 是否将类型下的所有字段都自动和数据库中的列进行映射匹配，true 表示自动。false 表示必须通过 @Property 注解声明。 */
-    public boolean autoProperty() default true;
+    /** 是否将类型下的所有字段都自动和数据库中的列进行映射匹配，true 表示自动。false 表示必须通过 @Column 注解声明。 */
+    public boolean autoMapping() default true;
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.lambda;
-import net.hasor.db.mapping.PropertyMapping;
+import net.hasor.db.mapping.ColumnMapping;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.reflect.SFunction;
 
@@ -66,7 +66,7 @@ public interface UpdateExecute<T> extends BoundSqlBuilder {
     public UpdateExecute<T> updateTo(T newValue, List<SFunction<T>> properties);
 
     /** 设置指定列 update 的 set 中的值 */
-    public UpdateExecute<T> updateTo(T newValue, Predicate<PropertyMapping> tester);
+    public UpdateExecute<T> updateTo(T newValue, Predicate<ColumnMapping> tester);
 
     /** 设置 update 的 set 中的值。 */
     public default UpdateExecute<T> updateTo(Map<String, Object> propertyMap) {
@@ -97,5 +97,5 @@ public interface UpdateExecute<T> extends BoundSqlBuilder {
     public UpdateExecute<T> updateTo(Map<String, Object> propertyMap, List<SFunction<T>> properties);
 
     /** 设置指定列 update 的 set 中的值 */
-    public UpdateExecute<T> updateTo(Map<String, Object> propertyMap, Predicate<PropertyMapping> tester);
+    public UpdateExecute<T> updateTo(Map<String, Object> propertyMap, Predicate<ColumnMapping> tester);
 }

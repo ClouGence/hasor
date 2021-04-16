@@ -24,10 +24,7 @@ import net.hasor.utils.StringUtils;
 
 import java.lang.reflect.Field;
 import java.sql.JDBCType;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -36,37 +33,74 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MappingRegistry {
-    public final static MappingRegistry             DEFAULT = new MappingRegistry(TypeHandlerRegistry.DEFAULT);
-    protected final     TypeHandlerRegistry         typeRegistry;
-    protected final     Map<Class<?>, TableMapping> entityMappingMap;
-
-    public MappingRegistry() {
-        this(TypeHandlerRegistry.DEFAULT);
-    }
+    public final static MappingRegistry               DEFAULT = new MappingRegistry(TypeHandlerRegistry.DEFAULT, null);
+    protected final     TypeHandlerRegistry           typeRegistry;
+    protected final     MetaDataService               metaService;
+    protected final     Map<Class<?>, TableMapping>   entityMappingMap;
+    protected final     Map<Class<?>, TableReader<?>> entityReaderMap;
 
     public MappingRegistry(TypeHandlerRegistry typeRegistry) {
+        this(typeRegistry, null);
+    }
+
+    public MappingRegistry(TypeHandlerRegistry typeRegistry, MetaDataService metaDataService) {
         this.typeRegistry = Objects.requireNonNull(typeRegistry, "typeRegistry not null.");
+        this.metaService = metaDataService;
         this.entityMappingMap = new ConcurrentHashMap<>();
+        this.entityReaderMap = new ConcurrentHashMap<>();
     }
 
     public TypeHandlerRegistry getTypeRegistry() {
         return this.typeRegistry;
     }
 
+    public <T> TableReader<T> resolveTableReader(Class<T> entityType) {
+        return resolveTableReader(entityType, null);
+    }
+
     public TableMapping resolveMapping(Class<?> entityType) {
         return resolveMapping(entityType, null);
     }
 
+    public <T> TableReader<T> resolveTableReader(Class<T> entityType, MetaDataService metaDataService) {
+        TableReader<T> resultMapper = (TableReader<T>) this.entityReaderMap.get(entityType);
+        if (resultMapper == null) {
+            synchronized (this) {
+                resultMapper = (TableReader<T>) this.entityReaderMap.get(entityType);
+                if (resultMapper != null) {
+                    return resultMapper;
+                }
+                TableMapping tableMapping = resolveMapping(entityType, metaDataService);
+                if (tableMapping == null) {
+                    return null;
+                }
+                resultMapper = new TableReaderImpl<>(entityType, tableMapping);
+                //
+                this.entityReaderMap.put(entityType, resultMapper);
+            }
+        }
+        return resultMapper;
+    }
+
     public TableMapping resolveMapping(Class<?> entityType, MetaDataService metaDataService) {
-        return this.entityMappingMap.computeIfAbsent(entityType, aClass -> {
-            return parserEntity(entityType, metaDataService);
-        });
+        TableMapping tableMapping = this.entityMappingMap.get(entityType);
+        if (tableMapping == null) {
+            synchronized (this) {
+                tableMapping = this.entityMappingMap.get(entityType);
+                if (tableMapping != null) {
+                    return tableMapping;
+                }
+                tableMapping = parserEntity(entityType, metaDataService);
+                this.entityMappingMap.put(entityType, tableMapping);
+            }
+        }
+        return tableMapping;
     }
 
     private TableMapping parserEntity(Class<?> entityType, MetaDataService metaDataService) {
         boolean useDelimited;
         CaseSensitivityType caseSensitivity;
-        TableMappingDef def = new TableMappingDef(entityType, false);
+        TableMappingDef def = new TableMappingDef(entityType);
         //
         // build MappingDef
         if (entityType.isAnnotationPresent(Table.class)) {
@@ -75,7 +109,7 @@ public class MappingRegistry {
             String tableName = StringUtils.isNotBlank(defTable.name()) ? defTable.name() : defTable.value();
             def.setCategory(category);
             def.setTableName(tableName);
-            def.setAutoProperty(defTable.autoProperty());
+            def.setAutoProperty(defTable.autoMapping());
             useDelimited = defTable.useDelimited();
         } else {
             def.setCategory("");
@@ -87,12 +121,13 @@ public class MappingRegistry {
         // make sure CaseSensitivity
         if (metaDataService != null) {
             if (useDelimited) {
-                caseSensitivity = caseSensitivity(metaDataService.getDelimited());
+                // in delimited CaseSensitivity can not be Fuzzy
+                caseSensitivity = caseSensitivity(metaDataService.getDelimited(), CaseSensitivityType.Exact);
             } else {
-                caseSensitivity = caseSensitivity(metaDataService.getPlain());
+                caseSensitivity = caseSensitivity(metaDataService.getPlain(), CaseSensitivityType.Fuzzy);
             }
         } else {
-            caseSensitivity = CaseSensitivityType.Exact;
+            caseSensitivity = CaseSensitivityType.Fuzzy;
         }
         def.setUseDelimited(useDelimited);
         def.setCaseSensitivity(caseSensitivity);
@@ -129,7 +164,7 @@ public class MappingRegistry {
             if (columnDefMap != null && columnDefMap.containsKey(columnName)) {
                 columnDef = columnDefMap.get(columnName);
             } else {
-                columnDef = convertColumnDef(wrapProperty, def.getCaseSensitivity());
+                columnDef = convertColumnDef(columnName, wrapProperty, def.getCaseSensitivity());
             }
             if (columnDef == null) {
                 continue;
@@ -137,11 +172,11 @@ public class MappingRegistry {
             //
             // build PropertyMapping
             Class<?> propertyType = wrapProperty.propertyField.getType();
-            PropertyMappingDef mappingDef = new PropertyMappingDef(propertyName, propertyType, columnDef.getName());
+            ColumnMappingDef mappingDef = new ColumnMappingDef(propertyName, propertyType, columnDef.getName());
             mappingDef.setJdbcType(columnDef.getJdbcType());
             mappingDef.setPrimary(columnDef.isPrimaryKey());
-            mappingDef.setInsert(wrapProperty.property.insert());
-            mappingDef.setUpdate(wrapProperty.property.update());
+            mappingDef.setInsert(wrapProperty.column.insert());
+            mappingDef.setUpdate(wrapProperty.column.update());
             mappingDef.setTypeHandler(wrapProperty.typeHandler);
             //
             // add to def
@@ -155,51 +190,77 @@ public class MappingRegistry {
     }
 
     private static class WrapProperty {
-        public final Property       property;
+        public final Column         column;
+        public final ColumnMeta     columnMeta;
         public final Field          propertyField;
         public final TypeHandler<?> typeHandler;
 
-        public WrapProperty(Property property, Field propertyField, TypeHandler<?> typeHandler) {
-            this.property = Objects.requireNonNull(property, "property is not null.");
+        public WrapProperty(Column column, ColumnMeta columnMeta, Field propertyField, TypeHandler<?> typeHandler) {
+            this.column = Objects.requireNonNull(column, "property is not null.");
+            this.columnMeta = columnMeta;
             this.propertyField = Objects.requireNonNull(propertyField, "propertyField is not null.");
             this.typeHandler = Objects.requireNonNull(typeHandler, "typeHandler is not null.");
         }
     }
 
-    private static ColumnDef convertColumnDef(WrapProperty wrapProperty, CaseSensitivityType caseSensitivity) {
+    private static ColumnDef convertColumnDef(String columnName, WrapProperty wrapProperty, CaseSensitivityType caseSensitivity) {
         Field propertyField = wrapProperty.propertyField;
+        ColumnMeta columnMeta = wrapProperty.columnMeta;
         Class<?> propertyType = propertyField.getType();
         //
         SimpleColumnDef columnDef = new SimpleColumnDef();
-        columnDef.setName(formatCaseSensitivity(propertyField.getName(), caseSensitivity));
+        columnDef.setName(formatCaseSensitivity(columnName, caseSensitivity));
         columnDef.setJavaType(propertyType);
         columnDef.setJdbcType(TypeHandlerRegistry.toSqlType(propertyType));
-        columnDef.setPrimary(false);
+        if (columnMeta != null) {
+            columnDef.setPrimary(columnMeta.primary());
+        } else {
+            columnDef.setPrimary(false);
+        }
         return columnDef;
     }
 
     private static Map<String, WrapProperty> matchProperty(TableMappingDef def, boolean includeAll, TypeHandlerRegistry typeRegistry) {
         Map<String, WrapProperty> propertyMap = new LinkedHashMap<>();
-        List<String> pojoProperty = BeanUtils.getPropertys(def.entityType());
-        for (String name : pojoProperty) {
+        //
+        // keep sort
+        List<String> targetProperties = new ArrayList<>();
+        List<String> sourceProperties = BeanUtils.getPropertys(def.entityType());
+        List<Field> sourceFields = BeanUtils.findALLFields(def.entityType());
+        for (Field source : sourceFields) {
+            if (!targetProperties.contains(source.getName())) {
+                targetProperties.add(source.getName());
+            }
+        }
+        for (String source : sourceProperties) {
+            if (!targetProperties.contains(source)) {
+                targetProperties.add(source);
+            }
+        }
+        //
+        for (String name : targetProperties) {
             Field propertyField = BeanUtils.getField(name, def.entityType());
             if (propertyField == null) {
                 continue;
             }
-            Property info = null;
-            if (propertyField.isAnnotationPresent(Property.class)) {
-                info = propertyField.getAnnotation(Property.class);
+            Column info = null;
+            if (propertyField.isAnnotationPresent(Column.class)) {
+                info = propertyField.getAnnotation(Column.class);
             } else if (includeAll) {
-                info = new PropertyInfo(name);
+                info = new ColumnInfo(name);
             } else {
                 continue;
+            }
+            ColumnMeta columnMeta = null;
+            if (propertyField.isAnnotationPresent(ColumnMeta.class)) {
+                columnMeta = propertyField.getAnnotation(ColumnMeta.class);
             }
             //
             Class<?> propertyType = propertyField.getType();
             Class<? extends TypeHandler<?>> typeHandlerClass = info.typeHandler();
             TypeHandler<?> typeHandler = null;
             if (typeHandlerClass == UnknownTypeHandler.class) {
-                JDBCType jdbcType = info.jdbcType();
+                JDBCType jdbcType = (columnMeta != null) ? columnMeta.jdbcType() : JDBCType.OTHER;
                 if (jdbcType == JDBCType.OTHER) {
                     jdbcType = TypeHandlerRegistry.toSqlType(propertyType);
                 }
@@ -214,7 +275,7 @@ public class MappingRegistry {
                 }
             }
             //typeRegistry
-            propertyMap.put(name, new WrapProperty(info, propertyField, typeHandler));
+            propertyMap.put(name, new WrapProperty(info, columnMeta, propertyField, typeHandler));
         }
         return propertyMap;
     }
@@ -222,12 +283,12 @@ public class MappingRegistry {
     private static String getColumnName(String propertyName, Map<String, WrapProperty> propertyInfoMap) {
         WrapProperty wrapProperty = propertyInfoMap.get(propertyName);
         if (wrapProperty != null) {
-            Property property = wrapProperty.property;
+            Column column = wrapProperty.column;
             String columnName = propertyName;
-            if (StringUtils.isNotBlank(property.name())) {
-                columnName = property.name();
+            if (StringUtils.isNotBlank(column.name())) {
+                columnName = column.name();
             } else {
-                columnName = property.value();
+                columnName = column.value();
             }
             if (StringUtils.isBlank(columnName)) {
                 columnName = propertyName;
@@ -238,8 +299,8 @@ public class MappingRegistry {
         }
     }
 
-    private static CaseSensitivityType caseSensitivity(CaseSensitivityType type) {
-        return (type == null) ? CaseSensitivityType.Exact : type;
+    private static CaseSensitivityType caseSensitivity(CaseSensitivityType check, CaseSensitivityType defaultType) {
+        return (check == null) ? defaultType : check;
     }
 
     private static String formatCaseSensitivity(String dataString, CaseSensitivityType sensitivityType) {
