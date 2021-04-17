@@ -13,32 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.mysql;
+package net.hasor.db.metadata.domain.mysql;
 /**
- * MySQL 表类型
+ * MySQL 索引类型
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum MySqlTableType {
-    Table("BASE TABLE"),
-    View("VIEW"),
-    SystemView("SYSTEM VIEW");
-    private final String typeName;
-
-    MySqlTableType(String typeName) {
-        this.typeName = typeName;
-    }
-
-    public String getTypeName() {
-        return this.typeName;
-    }
-
-    public static MySqlTableType valueOfCode(String code) {
-        for (MySqlTableType tableType : MySqlTableType.values()) {
-            if (tableType.typeName.equals(code)) {
-                return tableType;
-            }
-        }
-        return null;
-    }
+public enum MySqlIndexType {
+    /** 普通索引 */
+    Normal,
+    /** 唯一索引 */
+    Unique,
+    /** 主键索引 */
+    Primary,
+    /** 外建索引 */
+    Foreign
 }

@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata;
+package net.hasor.db.metadata.provider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.metadata.adb.mysql.*;
+import net.hasor.db.metadata.ColumnDef;
+import net.hasor.db.metadata.MetaDataService;
+import net.hasor.db.metadata.SqlType;
+import net.hasor.db.metadata.TableDef;
+import net.hasor.db.metadata.domain.adb.mysql.*;
 import net.hasor.utils.StringUtils;
 
 import javax.sql.DataSource;
@@ -33,16 +37,16 @@ import java.util.stream.Collectors;
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AdbMySqlMetadataSupplier extends AbstractMetadataSupplier {
+public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implements MetaDataService {
     private static final String TABLE = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,TABLES.CREATE_TIME,TABLES.UPDATE_TIME,TABLE_COMMENT, " //
             + "MV_NAME,FIRST_REFRESH_TIME,NEXT_REFRESH_TIME_FUNC,OWNER,QUERY_REWRITE_ENABLED,REFRESH_CONDITION,REFRESH_STATE " //
             + "from INFORMATION_SCHEMA.TABLES left join INFORMATION_SCHEMA.MV_INFO on TABLES.TABLE_NAME = MV_INFO.MV_NAME and TABLES.TABLE_SCHEMA = MV_INFO.MV_SCHEMA";
 
-    public AdbMySqlMetadataSupplier(Connection connection) {
+    public AdbMySqlMetadataProvider(Connection connection) {
         super(connection);
     }
 
-    public AdbMySqlMetadataSupplier(DataSource dataSource) {
+    public AdbMySqlMetadataProvider(DataSource dataSource) {
         super(dataSource);
     }
 
@@ -297,5 +301,20 @@ public class AdbMySqlMetadataSupplier extends AbstractMetadataSupplier {
             }
         }
         return null;
+    }
+
+    @Override
+    public Map<String, ColumnDef> getColumnMap(String category, String tableName) throws SQLException {
+        List<AdbMySqlColumn> columns = this.getColumns(category, tableName);
+        if (columns != null) {
+            return columns.stream().collect(Collectors.toMap(AdbMySqlColumn::getName, o -> o));
+        } else {
+            return Collections.emptyMap();
+        }
+    }
+
+    @Override
+    public TableDef searchTable(String category, String tableName) throws SQLException {
+        return getTable(category, tableName);
     }
 }

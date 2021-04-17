@@ -13,38 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.adb.mysql;
+package net.hasor.db.metadata.domain.mysql;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * AdbMySql 主键
+ * MySQL 唯一键
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AdbMySqlPrimaryKey {
-    private String              schema;
-    private String              name;
+public class MySqlUniqueKey extends MySqlConstraint {
     private List<String>        columns     = new ArrayList<>();
     private Map<String, String> storageType = new HashMap<>();
-
-    public String getSchema() {
-        return schema;
-    }
-
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public List<String> getColumns() {
         return columns;

@@ -15,8 +15,8 @@
  */
 package net.hasor.db.jdbc.core;
 import net.hasor.db.jdbc.ConnectionCallback;
-import net.hasor.db.metadata.MySqlMetadataSupplier;
-import net.hasor.db.metadata.mysql.MySqlTable;
+import net.hasor.db.metadata.provider.MySqlMetadataProvider;
+import net.hasor.db.metadata.domain.mysql.MySqlTable;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.utils.DsUtils;
 import net.hasor.utils.ResourcesUtils;
@@ -39,7 +39,7 @@ import static net.hasor.test.db.utils.DsUtils.MYSQL_SCHEMA_NAME;
 public class LoadTest extends AbstractDbTest {
     private boolean hasTable(JdbcTemplate jdbcTemplate) throws SQLException {
         return jdbcTemplate.execute((ConnectionCallback<Boolean>) con -> {
-            MySqlTable tables = new MySqlMetadataSupplier(con).getTable(MYSQL_SCHEMA_NAME, "tb_user");
+            MySqlTable tables = new MySqlMetadataProvider(con).getTable(MYSQL_SCHEMA_NAME, "tb_user");
             return tables != null;
         });
     }

@@ -93,7 +93,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
      */
     public JdbcTemplate(final DataSource dataSource, MappingRegistry mappingRegistry) {
         super(dataSource);
-        this.mappingRegistry = mappingRegistry;
+        this.mappingRegistry = Objects.requireNonNull(mappingRegistry, "mappingRegistry is null.");
     }
 
     /**
@@ -113,7 +113,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
      */
     public JdbcTemplate(final Connection conn, MappingRegistry mappingRegistry) {
         super(conn);
-        this.mappingRegistry = mappingRegistry;
+        this.mappingRegistry = Objects.requireNonNull(mappingRegistry, "mappingRegistry is null.");
     }
 
     public boolean isResultsCaseInsensitive() {

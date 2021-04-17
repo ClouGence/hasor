@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata;
+package net.hasor.db.metadata.provider;
+import net.hasor.db.metadata.CaseSensitivityType;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
@@ -25,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
@@ -35,17 +37,19 @@ import java.util.function.Supplier;
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AbstractMetadataSupplier {
+public class AbstractMetadataProvider {
     protected final Supplier<Connection> connectSupplier;
+    private         CaseSensitivityType  plainCaseSensitivityType;
+    private         CaseSensitivityType  delimitedCaseSensitivityType;
 
     /** Connection will be proxy, Calling the close method in an AbstractMetadatasupplier subclass will be invalid. */
-    public AbstractMetadataSupplier(Connection connection) {
+    public AbstractMetadataProvider(Connection connection) {
         Connection conn = newProxyConnection(connection);
         this.connectSupplier = () -> conn;
     }
 
     /** Each time data is requested in the AbstractMetadatasupplier subclass a new Connection is created and then closed. */
-    public AbstractMetadataSupplier(DataSource dataSource) {
+    public AbstractMetadataProvider(DataSource dataSource) {
         this.connectSupplier = () -> {
             try {
                 return dataSource.getConnection();
@@ -53,6 +57,46 @@ public class AbstractMetadataSupplier {
                 throw ExceptionUtils.toRuntimeException(e);
             }
         };
+    }
+
+    public CaseSensitivityType getPlain() throws SQLException {
+        if (this.plainCaseSensitivityType == null) {
+            try (Connection conn = this.connectSupplier.get()) {
+                DatabaseMetaData metaData = conn.getMetaData();
+                if (metaData.supportsMixedCaseIdentifiers()) {
+                    this.plainCaseSensitivityType = CaseSensitivityType.Exact;
+                } else if (metaData.storesUpperCaseIdentifiers()) {
+                    this.plainCaseSensitivityType = CaseSensitivityType.Upper;
+                } else if (metaData.storesLowerCaseIdentifiers()) {
+                    this.plainCaseSensitivityType = CaseSensitivityType.Lower;
+                } else if (metaData.storesMixedCaseIdentifiers()) {
+                    this.plainCaseSensitivityType = CaseSensitivityType.Fuzzy;
+                } else {
+                    throw new UnsupportedOperationException();
+                }
+            }
+        }
+        return this.plainCaseSensitivityType;
+    }
+
+    public CaseSensitivityType getDelimited() throws SQLException {
+        if (this.delimitedCaseSensitivityType == null) {
+            try (Connection conn = this.connectSupplier.get()) {
+                DatabaseMetaData metaData = conn.getMetaData();
+                if (metaData.supportsMixedCaseQuotedIdentifiers()) {
+                    this.delimitedCaseSensitivityType = CaseSensitivityType.Exact;
+                } else if (metaData.storesUpperCaseQuotedIdentifiers()) {
+                    this.delimitedCaseSensitivityType = CaseSensitivityType.Upper;
+                } else if (metaData.storesLowerCaseQuotedIdentifiers()) {
+                    this.delimitedCaseSensitivityType = CaseSensitivityType.Lower;
+                } else if (metaData.storesMixedCaseQuotedIdentifiers()) {
+                    this.delimitedCaseSensitivityType = CaseSensitivityType.Fuzzy;
+                } else {
+                    throw new UnsupportedOperationException();
+                }
+            }
+        }
+        return this.delimitedCaseSensitivityType;
     }
 
     protected static Connection newProxyConnection(Connection connection) {

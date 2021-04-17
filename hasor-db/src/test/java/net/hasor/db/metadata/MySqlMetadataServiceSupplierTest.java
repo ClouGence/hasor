@@ -15,7 +15,8 @@
  */
 package net.hasor.db.metadata;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.metadata.mysql.*;
+import net.hasor.db.metadata.domain.mysql.*;
+import net.hasor.db.metadata.provider.MySqlMetadataProvider;
 import net.hasor.test.db.utils.DsUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -38,12 +39,12 @@ import static net.hasor.test.db.utils.DsUtils.MYSQL_SCHEMA_NAME;
  */
 public class MySqlMetadataServiceSupplierTest {
     private Connection            connection;
-    private MySqlMetadataSupplier repository;
+    private MySqlMetadataProvider repository;
 
     @Before
     public void beforeTest() throws SQLException, IOException {
         this.connection = DsUtils.localMySQL();
-        this.repository = new MySqlMetadataSupplier(this.connection);
+        this.repository = new MySqlMetadataProvider(this.connection);
         JdbcTemplate jdbcTemplate = new JdbcTemplate(this.connection);
         //
         List<MySqlTable> allTables = this.repository.getAllTables();

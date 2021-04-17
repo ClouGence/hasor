@@ -24,6 +24,7 @@ import net.hasor.utils.StringUtils;
 
 import java.lang.reflect.Field;
 import java.sql.JDBCType;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -39,8 +40,19 @@ public class MappingRegistry {
     protected final     Map<Class<?>, TableMapping>   entityMappingMap;
     protected final     Map<Class<?>, TableReader<?>> entityReaderMap;
 
+    public MappingRegistry() {
+        this(TypeHandlerRegistry.DEFAULT);
+    }
+
     public MappingRegistry(TypeHandlerRegistry typeRegistry) {
         this(typeRegistry, null);
+    }
+
+    public MappingRegistry(MetaDataService metaDataService) {
+        this.typeRegistry = TypeHandlerRegistry.DEFAULT;
+        this.metaService = metaDataService;
+        this.entityMappingMap = new ConcurrentHashMap<>();
+        this.entityReaderMap = new ConcurrentHashMap<>();
     }
 
     public MappingRegistry(TypeHandlerRegistry typeRegistry, MetaDataService metaDataService) {
@@ -55,11 +67,11 @@ public class MappingRegistry {
     }
 
     public <T> TableReader<T> resolveTableReader(Class<T> entityType) {
-        return resolveTableReader(entityType, null);
+        return resolveTableReader(entityType, this.metaService);
     }
 
     public TableMapping resolveMapping(Class<?> entityType) {
-        return resolveMapping(entityType, null);
+        return resolveMapping(entityType, this.metaService);
     }
 
     public <T> TableReader<T> resolveTableReader(Class<T> entityType, MetaDataService metaDataService) {
@@ -90,14 +102,18 @@ public class MappingRegistry {
                 if (tableMapping != null) {
                     return tableMapping;
                 }
-                tableMapping = parserEntity(entityType, metaDataService);
-                this.entityMappingMap.put(entityType, tableMapping);
+                try {
+                    tableMapping = parserEntity(entityType, metaDataService);
+                    this.entityMappingMap.put(entityType, tableMapping);
+                } catch (SQLException e) {
+                    throw ExceptionUtils.toRuntimeException(e);
+                }
             }
         }
         return tableMapping;
     }
 
-    private TableMapping parserEntity(Class<?> entityType, MetaDataService metaDataService) {
+    private TableMapping parserEntity(Class<?> entityType, MetaDataService metaDataService) throws SQLException {
         boolean useDelimited;
         CaseSensitivityType caseSensitivity;
         TableMappingDef def = new TableMappingDef(entityType);
@@ -134,7 +150,9 @@ public class MappingRegistry {
         //
         // modify the names by referring to the metadata.
         if (metaDataService != null) {
-            TableDef tableDef = metaDataService.searchTable(def.getCategory(), def.getTableName());
+            String category = formatCaseSensitivity(def.getCategory(), def.getCaseSensitivity());
+            String tableName = formatCaseSensitivity(def.getTableName(), def.getCaseSensitivity());
+            TableDef tableDef = metaDataService.searchTable(category, tableName);
             if (tableDef != null) {
                 def.setCategory(tableDef.getCategory());
                 def.setTableName(tableDef.getTableName());
@@ -147,7 +165,7 @@ public class MappingRegistry {
         return parserProperty(def, metaDataService);
     }
 
-    private TableMapping parserProperty(TableMappingDef def, MetaDataService metaDataService) {
+    private TableMapping parserProperty(TableMappingDef def, MetaDataService metaDataService) throws SQLException {
         // collect @Property and ColumnDef
         Map<String, WrapProperty> propertyInfoMap = matchProperty(def, def.isAutoProperty(), this.typeRegistry);
         Map<String, ColumnDef> columnDefMap = null;

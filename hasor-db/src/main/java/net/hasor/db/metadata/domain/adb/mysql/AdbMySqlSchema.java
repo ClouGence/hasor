@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.adb.mysql;
+package net.hasor.db.metadata.domain.adb.mysql;
 /**
  * AdbMySql Schema
  * @version : 2020-01-22

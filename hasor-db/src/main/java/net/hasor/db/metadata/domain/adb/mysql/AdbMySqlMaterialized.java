@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.adb.mysql;
+package net.hasor.db.metadata.domain.adb.mysql;
 import java.util.Date;
 
 /**

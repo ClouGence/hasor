@@ -27,7 +27,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-package net.hasor.db.metadata.mysql.driver;
+package net.hasor.db.metadata.domain.mysql.driver;
 import net.hasor.utils.StringUtils;
 
 import java.math.BigDecimal;

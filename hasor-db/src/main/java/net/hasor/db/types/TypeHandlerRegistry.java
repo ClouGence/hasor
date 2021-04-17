@@ -249,10 +249,12 @@ public final class TypeHandlerRegistry {
         return cachedSingleHandlers.get(typeHandler);
     }
 
+    /** 注册 TypeHandler */
     public void register(JDBCType jdbcType, TypeHandler<?> typeHandler) {
         this.jdbcTypeHandlerMap.put(jdbcType, typeHandler);
     }
 
+    /** 注册 TypeHandler */
     public void register(Class<?> javaType, TypeHandler<?> typeHandler) {
         this.javaTypeHandlerMap.put(javaType.getName(), typeHandler);
     }
@@ -288,8 +290,8 @@ public final class TypeHandlerRegistry {
         registerCross(JDBCType.DECIMAL, jdbcType, typeHandler);
     }
 
-    public void register(TypeHandler<?> typeHandler) {
-        Class<? extends TypeHandler> handlerClass = typeHandler.getClass();
+    /** 根据 @MappedJavaTypes @MappedJdbcTypes @MappedCross 注解注册 TypeHandler */
+    public void registerHandler(Class<? extends TypeHandler<?>> handlerClass, TypeHandler<?> typeHandler) {
         MappedJavaTypes mappedTypes = handlerClass.getAnnotation(MappedJavaTypes.class);
         if (mappedTypes != null) {
             for (Class<?> handledType : mappedTypes.value()) {
@@ -377,6 +379,10 @@ public final class TypeHandlerRegistry {
         return (typeHandler != null) ? typeHandler : this.defaultTypeHandler;
     }
 
+    /**
+     * 根据 typeClass 和 jdbcType 的映射关系查找对应的 TypeHandler。
+     *  - 如果不存在对应的 TypeHandler，那么通过 typeClass 单独查找。
+     *  - 如果 typeClass 也没有注册那么返回 {@link #getDefaultTypeHandler()} */
     public TypeHandler<?> getTypeHandler(Class<?> typeClass, JDBCType jdbcType) {
         if (typeClass == null && jdbcType == null) {
             return this.defaultTypeHandler;
@@ -405,23 +411,16 @@ public final class TypeHandlerRegistry {
                     return enumOfStringTypeHandler;
                 }
             }
-            //
-            JDBCType sqlType = toSqlType(typeClass);
-            typeHandler = this.getTypeHandler(sqlType);
-            if (typeHandler != null) {
-                return typeHandler;
-            }
         }
         //
-        TypeHandler<?> typeHandler = this.getTypeHandler(jdbcType);
-        return typeHandler == null ? this.defaultTypeHandler : typeHandler;
+        return this.defaultTypeHandler;
     }
 
     public UnknownTypeHandler getDefaultTypeHandler() {
         return this.defaultTypeHandler;
     }
 
-    /***/
+    /** 一个工具方法，会根据 value Type 自动的选择对应的 TypeHandler */
     public void setParameterValue(final PreparedStatement ps, final int parameterPosition, final Object value) throws SQLException {
         if (value == null) {
             ps.setObject(parameterPosition, null);

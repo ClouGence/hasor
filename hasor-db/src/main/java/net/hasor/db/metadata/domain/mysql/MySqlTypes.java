@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.mysql;
+package net.hasor.db.metadata.domain.mysql;
 import net.hasor.db.metadata.SqlType;
 
 import java.sql.JDBCType;

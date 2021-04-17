@@ -15,7 +15,8 @@
  */
 package net.hasor.db.metadata;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.metadata.adb.mysql.*;
+import net.hasor.db.metadata.domain.adb.mysql.*;
+import net.hasor.db.metadata.provider.AdbMySqlMetadataProvider;
 import net.hasor.test.db.utils.DsUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -38,12 +39,12 @@ import static net.hasor.test.db.utils.DsUtils.ADBMYSQL_SCHEMA_NAME;
  */
 public class AdbMySqlMetadataServiceSupplierTest {
     private Connection               connection;
-    private AdbMySqlMetadataSupplier repository;
+    private AdbMySqlMetadataProvider repository;
 
     @Before
     public void beforeTest() throws SQLException, IOException {
         this.connection = DsUtils.aliyunAdbMySQL();
-        this.repository = new AdbMySqlMetadataSupplier(this.connection);
+        this.repository = new AdbMySqlMetadataProvider(this.connection);
         JdbcTemplate jdbcTemplate = new JdbcTemplate(this.connection);
         //
         List<AdbMySqlTable> allTables = this.repository.getAllTables();

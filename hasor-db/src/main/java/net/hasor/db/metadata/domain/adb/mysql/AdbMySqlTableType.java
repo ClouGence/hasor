@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.mysql;
+package net.hasor.db.metadata.domain.adb.mysql;
 /**
- * MySQL 约束类型
+ * AdbMySql 表类型
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum MySqlConstraintType {
-    /** 主键约束 */
-    PrimaryKey("PRIMARY KEY"),
-    /** 唯一约束 */
-    Unique("UNIQUE"),
-    /** 外建约束 */
-    ForeignKey("FOREIGN KEY"),
-    ;
+public enum AdbMySqlTableType {
+    Materialized("BASE TABLE"),
+    Table("BASE TABLE"),
+    View("VIEW"),
+    SystemView("SYSTEM VIEW");
     private final String typeName;
 
-    MySqlConstraintType(String typeName) {
+    AdbMySqlTableType(String typeName) {
         this.typeName = typeName;
     }
 
@@ -37,10 +34,10 @@ public enum MySqlConstraintType {
         return this.typeName;
     }
 
-    public static MySqlConstraintType valueOfCode(String code) {
-        for (MySqlConstraintType constraintType : MySqlConstraintType.values()) {
-            if (constraintType.typeName.equals(code)) {
-                return constraintType;
+    public static AdbMySqlTableType valueOfCode(String code) {
+        for (AdbMySqlTableType tableType : AdbMySqlTableType.values()) {
+            if (tableType.typeName.equals(code)) {
+                return tableType;
             }
         }
         return null;

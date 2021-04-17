@@ -44,13 +44,13 @@ public class TranManager extends DataSourceManager {
         return holder;
     }
 
-    /** 该方法会拿到一个当前 Connection 的引用，在使用完毕之后必须要 close 它。否则会产生引用泄漏。 */
+    /** 该方法会拿到一个当前 Connection 的引用，在使用完毕之后必须要 close 它。否则会产生引用泄漏 */
     public static Connection currentConnection(DataSource dataSource) {
         ConnectionHolder holder = currentConnectionHolder(dataSource);
         return newProxyConnection(holder);
     }
 
-    /**改变当前{@link ConnectionHolder}*/
+    /** 改变当前{@link ConnectionHolder} */
     protected static void currentConnection(DataSource dataSource, ConnectionHolder holder) {
         Map<DataSource, ConnectionHolder> localMap = currentMap.get();
         if (holder == null) {
@@ -60,7 +60,7 @@ public class TranManager extends DataSourceManager {
         }
     }
 
-    /**获取事务管理器*/
+    /** 获取事务管理器 */
     private static synchronized JdbcTransactionManager getTransactionManager(final DataSource dataSource) {
         Objects.requireNonNull(dataSource);
         Map<DataSource, JdbcTransactionManager> localMap = managerMap.get();
@@ -72,12 +72,12 @@ public class TranManager extends DataSourceManager {
         return manager;
     }
 
-    /**获取{@link TransactionManager}*/
+    /** 获取{@link TransactionManager} */
     public static synchronized TransactionManager getManager(DataSource dataSource) {
         return getTransactionManager(dataSource);
     }
 
-    /**获取{@link TransactionTemplate}*/
+    /** 获取{@link TransactionTemplate} */
     public static synchronized TransactionTemplate getTemplate(DataSource dataSource) {
         JdbcTransactionManager manager = getTransactionManager(dataSource);
         return manager.getTransactionTemplate();

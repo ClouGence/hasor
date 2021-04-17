@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.mysql;
+package net.hasor.db.metadata.domain.mysql;
 /**
- * MySQL 外建约束的及联更新策略
+ * MySQL 约束类型
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum MySqlForeignKeyRule {
-    NoAction("NO ACTION"),
-    Restrict("RESTRICT"),
-    Cascade("CASCADE"),
-    SetNull("SET NULL"),
-    SetDefault("SET DEFAULT");
+public enum MySqlConstraintType {
+    /** 主键约束 */
+    PrimaryKey("PRIMARY KEY"),
+    /** 唯一约束 */
+    Unique("UNIQUE"),
+    /** 外建约束 */
+    ForeignKey("FOREIGN KEY"),
+    ;
     private final String typeName;
 
-    MySqlForeignKeyRule(String typeName) {
+    MySqlConstraintType(String typeName) {
         this.typeName = typeName;
     }
 
@@ -35,10 +37,10 @@ public enum MySqlForeignKeyRule {
         return this.typeName;
     }
 
-    public static MySqlForeignKeyRule valueOfCode(String code) {
-        for (MySqlForeignKeyRule foreignKeyRule : MySqlForeignKeyRule.values()) {
-            if (foreignKeyRule.typeName.equals(code)) {
-                return foreignKeyRule;
+    public static MySqlConstraintType valueOfCode(String code) {
+        for (MySqlConstraintType constraintType : MySqlConstraintType.values()) {
+            if (constraintType.typeName.equals(code)) {
+                return constraintType;
             }
         }
         return null;

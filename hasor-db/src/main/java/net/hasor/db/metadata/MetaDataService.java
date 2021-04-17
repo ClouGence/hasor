@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.metadata;
+import java.sql.SQLException;
 import java.util.Map;
 
 /**
@@ -22,12 +23,12 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface MetaDataService {
-    public CaseSensitivityType getPlain();
+    public CaseSensitivityType getPlain() throws SQLException;
 
-    public CaseSensitivityType getDelimited();
+    public CaseSensitivityType getDelimited() throws SQLException;
 
     /** 搜索表 */
-    public TableDef searchTable(String category, String tableName);
+    public TableDef searchTable(String category, String tableName) throws SQLException;
 
-    public Map<String, ColumnDef> getColumnMap(String category, String tableName);
+    public Map<String, ColumnDef> getColumnMap(String category, String tableName) throws SQLException;
 }

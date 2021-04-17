@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.adb.mysql;
+package net.hasor.db.metadata.domain.mysql;
 /**
- * AdbMySql 表类型
+ * MySQL 外建约束的及联更新策略
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum AdbMySqlTableType {
-    Materialized("BASE TABLE"),
-    Table("BASE TABLE"),
-    View("VIEW"),
-    SystemView("SYSTEM VIEW");
+public enum MySqlForeignKeyRule {
+    NoAction("NO ACTION"),
+    Restrict("RESTRICT"),
+    Cascade("CASCADE"),
+    SetNull("SET NULL"),
+    SetDefault("SET DEFAULT");
     private final String typeName;
 
-    AdbMySqlTableType(String typeName) {
+    MySqlForeignKeyRule(String typeName) {
         this.typeName = typeName;
     }
 
@@ -34,10 +35,10 @@ public enum AdbMySqlTableType {
         return this.typeName;
     }
 
-    public static AdbMySqlTableType valueOfCode(String code) {
-        for (AdbMySqlTableType tableType : AdbMySqlTableType.values()) {
-            if (tableType.typeName.equals(code)) {
-                return tableType;
+    public static MySqlForeignKeyRule valueOfCode(String code) {
+        for (MySqlForeignKeyRule foreignKeyRule : MySqlForeignKeyRule.values()) {
+            if (foreignKeyRule.typeName.equals(code)) {
+                return foreignKeyRule;
             }
         }
         return null;

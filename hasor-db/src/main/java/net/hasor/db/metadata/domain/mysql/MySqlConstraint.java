@@ -13,34 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.mysql;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+package net.hasor.db.metadata.domain.mysql;
 /**
- * MySQL 主键
+ * MySQL 约束
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MySqlPrimaryKey extends MySqlConstraint {
-    private List<String>        columns     = new ArrayList<>();
-    private Map<String, String> storageType = new HashMap<>();
+public class MySqlConstraint {
+    private String              schema;
+    private String              name;
+    private MySqlConstraintType constraintType;
 
-    public List<String> getColumns() {
-        return columns;
+    public String getSchema() {
+        return schema;
     }
 
-    public void setColumns(List<String> columns) {
-        this.columns = columns;
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 
-    public Map<String, String> getStorageType() {
-        return storageType;
+    public String getName() {
+        return name;
     }
 
-    public void setStorageType(Map<String, String> storageType) {
-        this.storageType = storageType;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public MySqlConstraintType getConstraintType() {
+        return constraintType;
+    }
+
+    public void setConstraintType(MySqlConstraintType constraintType) {
+        this.constraintType = constraintType;
     }
 }

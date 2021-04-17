@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata;
+package net.hasor.db.metadata.provider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.metadata.mysql.*;
-import net.hasor.db.metadata.mysql.driver.MysqlType;
+import net.hasor.db.metadata.ColumnDef;
+import net.hasor.db.metadata.MetaDataService;
+import net.hasor.db.metadata.SqlType;
+import net.hasor.db.metadata.TableDef;
+import net.hasor.db.metadata.domain.mysql.*;
+import net.hasor.db.metadata.domain.mysql.driver.MysqlType;
 import net.hasor.utils.StringUtils;
 
 import javax.sql.DataSource;
@@ -31,12 +35,12 @@ import java.util.stream.Collectors;
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
-    public MySqlMetadataSupplier(Connection connection) {
+public class MySqlMetadataProvider extends AbstractMetadataProvider implements MetaDataService {
+    public MySqlMetadataProvider(Connection connection) {
         super(connection);
     }
 
-    public MySqlMetadataSupplier(DataSource dataSource) {
+    public MySqlMetadataProvider(DataSource dataSource) {
         super(dataSource);
     }
 
@@ -546,5 +550,20 @@ public class MySqlMetadataSupplier extends AbstractMetadataSupplier {
             }
         }
         return null;
+    }
+
+    @Override
+    public Map<String, ColumnDef> getColumnMap(String category, String tableName) throws SQLException {
+        List<MySqlColumn> columns = this.getColumns(category, tableName);
+        if (columns != null) {
+            return columns.stream().collect(Collectors.toMap(MySqlColumn::getName, o -> o));
+        } else {
+            return Collections.emptyMap();
+        }
+    }
+
+    @Override
+    public TableDef searchTable(String category, String tableName) throws SQLException {
+        return getTable(category, tableName);
     }
 }

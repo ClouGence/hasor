@@ -13,38 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.mysql;
+package net.hasor.db.metadata.domain.mysql;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * MySQL 索引
+ * MySQL 主键
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MySqlIndex {
-    private String              name;
-    private MySqlIndexType      indexEnum;
+public class MySqlPrimaryKey extends MySqlConstraint {
     private List<String>        columns     = new ArrayList<>();
     private Map<String, String> storageType = new HashMap<>();
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public MySqlIndexType getIndexEnum() {
-        return indexEnum;
-    }
-
-    public void setIndexEnum(MySqlIndexType indexEnum) {
-        this.indexEnum = indexEnum;
-    }
 
     public List<String> getColumns() {
         return columns;
