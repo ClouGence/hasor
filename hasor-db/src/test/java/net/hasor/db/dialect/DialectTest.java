@@ -56,12 +56,12 @@ public class DialectTest extends AbstractDbTest {
     private TableDef tableDef(String category, String tableName) {
         return new TableDef() {
             @Override
-            public String getCategory() {
+            public String getSchema() {
                 return category;
             }
 
             @Override
-            public String getTableName() {
+            public String getTable() {
                 return tableName;
             }
         };

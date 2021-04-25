@@ -43,7 +43,7 @@ public class QuitExecutor implements TelExecutorVoid {
         if (args.length > 0) {
             for (String arg : args) {
                 if (arg.startsWith("-next")) {
-                    nextCommand = telCommand.getSession().curentCounter() + 1;
+                    nextCommand = telCommand.getSession().currentCounter() + 1;
                     continue;
                 }
                 if (arg.startsWith("-t")) {
@@ -53,7 +53,7 @@ public class QuitExecutor implements TelExecutorVoid {
                 if (arg.startsWith("-n")) {
                     int nextInt = Integer.parseInt(arg.substring(2).trim());
                     if (nextInt > 0) {
-                        nextCommand = telCommand.getSession().curentCounter() + nextInt;
+                        nextCommand = telCommand.getSession().currentCounter() + nextInt;
                     }
                     continue;
                 }

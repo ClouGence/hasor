@@ -56,7 +56,7 @@ public abstract class AbstractDbTest {
     public static <T> String printObjectList(final List<T> dataList, final PrintStream out) {
         List<Map<String, Object>> newDataList = new ArrayList<>();
         for (T obj : dataList) {
-            List<String> keys = BeanUtils.getPropertysAndFields(obj.getClass());
+            List<String> keys = BeanUtils.getPropertiesAndFields(obj.getClass());
             Map<String, Object> newObj = new HashMap<>();
             for (String key : keys) {
                 newObj.put(key, BeanUtils.readPropertyOrField(obj, key));

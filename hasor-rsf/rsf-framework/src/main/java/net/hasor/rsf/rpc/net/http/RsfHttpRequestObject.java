@@ -19,7 +19,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.utils.IOUtils;
-import net.hasor.utils.Iterators;
+import net.hasor.utils.CollectionUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -101,7 +101,7 @@ class RsfHttpRequestObject extends HashMap<String, Object> implements RsfHttpReq
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return Iterators.asEnumeration(this.keySet().iterator());
+        return CollectionUtils.asEnumeration(this.keySet().iterator());
     }
 
     @Override
@@ -131,12 +131,12 @@ class RsfHttpRequestObject extends HashMap<String, Object> implements RsfHttpReq
 
     @Override
     public Enumeration<String> getHeaders(String name) {
-        return Iterators.asEnumeration(this.httpRequest.headers().getAll(name).iterator());
+        return CollectionUtils.asEnumeration(this.httpRequest.headers().getAll(name).iterator());
     }
 
     @Override
     public Enumeration<String> getHeaderNames() {
-        return Iterators.asEnumeration(this.httpRequest.headers().names().iterator());
+        return CollectionUtils.asEnumeration(this.httpRequest.headers().names().iterator());
     }
 
     @Override
@@ -147,7 +147,7 @@ class RsfHttpRequestObject extends HashMap<String, Object> implements RsfHttpReq
 
     @Override
     public Enumeration<String> getParameterNames() {
-        return Iterators.asEnumeration(this.parameterMap.keySet().iterator());
+        return CollectionUtils.asEnumeration(this.parameterMap.keySet().iterator());
     }
 
     @Override

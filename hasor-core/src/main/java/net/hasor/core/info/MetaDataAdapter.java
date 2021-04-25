@@ -42,7 +42,7 @@ public class MetaDataAdapter extends Observable {
     }
 
     public String toString() {
-        List<String> propertys = BeanUtils.getPropertys(this.getClass());
+        List<String> propertys = BeanUtils.getProperties(this.getClass());
         StringBuilder builder = new StringBuilder(this.getClass().getSimpleName()).append("{");
         for (String key : propertys) {
             Object var = BeanUtils.readPropertyOrField(this, key);

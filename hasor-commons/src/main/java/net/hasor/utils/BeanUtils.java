@@ -229,9 +229,9 @@ public class BeanUtils {
         }
     }
 
-    /**获取属性名集合，该方法是{@link #getPropertys(Class)}方法的升级版，通过该方法还可以同时返回可访问的字段作为属性。*/
-    public static List<String> getPropertysAndFields(final Class<?> target) {
-        List<String> mnames = BeanUtils.getPropertys(target);
+    /**获取属性名集合，该方法是{@link #getProperties(Class)}方法的升级版，通过该方法还可以同时返回可访问的字段作为属性。*/
+    public static List<String> getPropertiesAndFields(final Class<?> target) {
+        List<String> mnames = BeanUtils.getProperties(target);
         List<Field> fnames = BeanUtils.getFields(target);
         for (Field f : fnames) {
             String fName = f.getName();
@@ -243,10 +243,13 @@ public class BeanUtils {
     }
 
     /**获取属性名集合，被包含的属性可能有些只是只读属性，有些是只写属性。也有读写属性。*/
-    public static List<String> getPropertys(final Class<?> target) {
+    public static List<String> getProperties(final Class<?> target) {
         List<String> mnames = new ArrayList<>();
         List<Method> ms = BeanUtils.getMethods(target);
         for (Method m : ms) {
+            if (m.getDeclaringClass() == Object.class) {
+                continue;
+            }
             String name = m.getName();
             if (name.startsWith("get") || name.startsWith("set")) {
                 name = name.substring(3);
@@ -268,7 +271,7 @@ public class BeanUtils {
     /**获取属性名集合，被包含的属性可能有些只是只读属性，有些是只写属性。也有读写属性。*/
     public static PropertyDescriptor[] getPropertyDescriptors(final Class<?> defineType) {
         List<PropertyDescriptor> mnames = new ArrayList<>();
-        List<String> ms = BeanUtils.getPropertys(defineType);
+        List<String> ms = BeanUtils.getProperties(defineType);
         for (String m : ms) {
             try {
                 mnames.add(new PropertyDescriptor(m, defineType));
@@ -533,7 +536,7 @@ public class BeanUtils {
                 propNames.add(key.toString());
             }
         } else {
-            propNames = BeanUtils.getPropertys(orig.getClass());
+            propNames = BeanUtils.getProperties(orig.getClass());
         }
         for (String prop : propNames) {
             BeanUtils.copyProperty(dest, orig, prop);

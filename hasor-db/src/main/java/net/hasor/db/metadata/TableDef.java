@@ -21,8 +21,8 @@ package net.hasor.db.metadata;
  */
 public interface TableDef {
     /** 分类(对于mysql 是 db，对于 pg 是 schema，对于 oracle 是 schema) */
-    public String getCategory();
+    public String getSchema();
 
     /** 表名 */
-    public String getTableName();
+    public String getTable();
 }

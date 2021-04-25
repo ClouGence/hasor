@@ -158,7 +158,7 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
     private void doIoCopy() {
         while (isInit()) {
             try {
-                // .数据丢入缓冲区缓冲区，然后尝试执行一次。
+                // .数据丢入输入缓冲区，然后尝试执行一次。
                 dataReader.writeCharSequence(sourceReader.readLine() + "\n", StandardCharsets.UTF_8);
                 this.doWork();
             } catch (Exception e) {
@@ -215,11 +215,11 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
         return TelUtils.aBoolean(this, TelOptions.SILENT);//静默输出
     }
 
-    public void endcodeOfSilent(String endcode) {
-        this.setAttribute(TelOptions.ENDCODE_OF_SILENT, endcode);//结束符
+    public void encodedOfSilent(String encoded) {
+        this.setAttribute(TelOptions.ENDCODE_OF_SILENT, encoded);//结束符
     }
 
-    public String endcodeOfSilent() {
+    public String encodedOfSilent() {
         return TelUtils.aString(this, TelOptions.ENDCODE_OF_SILENT);//结束符
     }
 

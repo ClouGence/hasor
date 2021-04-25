@@ -44,7 +44,7 @@ public class AdbMySqlColumn implements ColumnDef {
     private Integer  bytesMaxLength;
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -52,7 +52,7 @@ public class AdbMySqlColumn implements ColumnDef {
     }
 
     public boolean isNullable() {
-        return nullable;
+        return this.nullable;
     }
 
     public void setNullable(boolean nullable) {
@@ -60,7 +60,7 @@ public class AdbMySqlColumn implements ColumnDef {
     }
 
     public String getDataType() {
-        return dataType;
+        return this.dataType;
     }
 
     public void setDataType(String dataType) {
@@ -68,7 +68,7 @@ public class AdbMySqlColumn implements ColumnDef {
     }
 
     public String getColumnType() {
-        return columnType;
+        return this.columnType;
     }
 
     public void setColumnType(String columnType) {
@@ -76,7 +76,7 @@ public class AdbMySqlColumn implements ColumnDef {
     }
 
     public SqlType getSqlType() {
-        return sqlType;
+        return this.sqlType;
     }
 
     public void setSqlType(SqlType sqlType) {
@@ -84,7 +84,7 @@ public class AdbMySqlColumn implements ColumnDef {
     }
 
     public JDBCType getJdbcType() {
-        return jdbcType;
+        return this.jdbcType;
     }
 
     public void setJdbcType(JDBCType jdbcType) {
@@ -92,7 +92,7 @@ public class AdbMySqlColumn implements ColumnDef {
     }
 
     public boolean isPrimaryKey() {
-        return primaryKey;
+        return this.primaryKey;
     }
 
     public void setPrimaryKey(boolean primaryKey) {
@@ -100,7 +100,7 @@ public class AdbMySqlColumn implements ColumnDef {
     }
 
     public Integer getDatetimePrecision() {
-        return datetimePrecision;
+        return this.datetimePrecision;
     }
 
     public void setDatetimePrecision(Integer datetimePrecision) {
@@ -108,7 +108,7 @@ public class AdbMySqlColumn implements ColumnDef {
     }
 
     public Integer getNumericPrecision() {
-        return numericPrecision;
+        return this.numericPrecision;
     }
 
     public void setNumericPrecision(Integer numericPrecision) {
@@ -116,7 +116,7 @@ public class AdbMySqlColumn implements ColumnDef {
     }
 
     public Integer getNumericScale() {
-        return numericScale;
+        return this.numericScale;
     }
 
     public void setNumericScale(Integer numericScale) {
@@ -124,7 +124,7 @@ public class AdbMySqlColumn implements ColumnDef {
     }
 
     public String getDefaultCollationName() {
-        return defaultCollationName;
+        return this.defaultCollationName;
     }
 
     public void setDefaultCollationName(String defaultCollationName) {
@@ -132,7 +132,7 @@ public class AdbMySqlColumn implements ColumnDef {
     }
 
     public String getDefaultCharacterSetName() {
-        return defaultCharacterSetName;
+        return this.defaultCharacterSetName;
     }
 
     public void setDefaultCharacterSetName(String defaultCharacterSetName) {
@@ -140,7 +140,7 @@ public class AdbMySqlColumn implements ColumnDef {
     }
 
     public Long getCharactersMaxLength() {
-        return charactersMaxLength;
+        return this.charactersMaxLength;
     }
 
     public void setCharactersMaxLength(Long charactersMaxLength) {
@@ -148,7 +148,7 @@ public class AdbMySqlColumn implements ColumnDef {
     }
 
     public Integer getBytesMaxLength() {
-        return bytesMaxLength;
+        return this.bytesMaxLength;
     }
 
     public void setBytesMaxLength(Integer bytesMaxLength) {
@@ -156,7 +156,7 @@ public class AdbMySqlColumn implements ColumnDef {
     }
 
     public String getComment() {
-        return comment;
+        return this.comment;
     }
 
     public void setComment(String comment) {

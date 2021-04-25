@@ -97,7 +97,7 @@ public class JdbcTransactionManager implements TransactionManager {
             }
             /*NESTED：嵌套事务*/
             if (behavior == NESTED) {
-                defStatus.markHeldSavepoint();/*设置保存点*/
+                defStatus.markSavepoint();/*设置保存点*/
             }
             /*NOT_SUPPORTED：非事务方式*/
             if (behavior == NOT_SUPPORTED) {
@@ -173,7 +173,7 @@ public class JdbcTransactionManager implements TransactionManager {
             this.prepareCommit(defStatus);
             /*如果包含保存点，在递交事务时只处理保存点*/
             if (defStatus.hasSavepoint()) {
-                defStatus.releaseHeldSavepoint();
+                defStatus.releaseSavepoint();
             } else if (defStatus.isNewConnection()) {
                 this.doCommit(defStatus);
             }
@@ -233,7 +233,7 @@ public class JdbcTransactionManager implements TransactionManager {
             this.prepareRollback(defStatus);
             /*如果包含保存点，在递交事务时只处理保存点*/
             if (defStatus.hasSavepoint()) {
-                defStatus.rollbackToHeldSavepoint();
+                defStatus.rollbackToSavepoint();
             } else if (defStatus.isNewConnection()) {
                 this.doRollback(defStatus);
             }

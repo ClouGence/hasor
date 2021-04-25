@@ -136,7 +136,7 @@ public class BasicTelTest extends AbstractTelTest {
         sessionObject.tryReceiveEvent();
         //
         assert dataWriter.toString().startsWith("java.lang.RuntimeException: error message form test");
-        assert sessionObject.curentCounter() == 1;
+        assert sessionObject.currentCounter() == 1;
     }
 
     @Test
@@ -170,6 +170,6 @@ public class BasicTelTest extends AbstractTelTest {
         assert toString.contains("exit after 2 seconds.");
         assert toString.contains("exit after 1 seconds.");
         assert toString.contains("bye.\r\n");
-        assert sessionObject.curentCounter() == 1;
+        assert sessionObject.currentCounter() == 1;
     }
 }

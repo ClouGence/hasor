@@ -29,7 +29,7 @@ public class MySqlForeignKey extends MySqlConstraint {
     private MySqlForeignKeyRule deleteRule;
 
     public List<String> getFkColumn() {
-        return fkColumn;
+        return this.fkColumn;
     }
 
     public void setFkColumn(List<String> fkColumn) {
@@ -37,7 +37,7 @@ public class MySqlForeignKey extends MySqlConstraint {
     }
 
     public Map<String, String> getStorageType() {
-        return storageType;
+        return this.storageType;
     }
 
     public void setStorageType(Map<String, String> storageType) {
@@ -45,7 +45,7 @@ public class MySqlForeignKey extends MySqlConstraint {
     }
 
     public String getReferenceSchema() {
-        return referenceSchema;
+        return this.referenceSchema;
     }
 
     public void setReferenceSchema(String referenceSchema) {
@@ -53,7 +53,7 @@ public class MySqlForeignKey extends MySqlConstraint {
     }
 
     public String getReferenceTable() {
-        return referenceTable;
+        return this.referenceTable;
     }
 
     public void setReferenceTable(String referenceTable) {
@@ -61,7 +61,7 @@ public class MySqlForeignKey extends MySqlConstraint {
     }
 
     public Map<String, String> getReferenceMapping() {
-        return referenceMapping;
+        return this.referenceMapping;
     }
 
     public void setReferenceMapping(Map<String, String> referenceMapping) {
@@ -69,7 +69,7 @@ public class MySqlForeignKey extends MySqlConstraint {
     }
 
     public MySqlForeignKeyRule getUpdateRule() {
-        return updateRule;
+        return this.updateRule;
     }
 
     public void setUpdateRule(MySqlForeignKeyRule updateRule) {
@@ -77,7 +77,7 @@ public class MySqlForeignKey extends MySqlConstraint {
     }
 
     public MySqlForeignKeyRule getDeleteRule() {
-        return deleteRule;
+        return this.deleteRule;
     }
 
     public void setDeleteRule(MySqlForeignKeyRule deleteRule) {

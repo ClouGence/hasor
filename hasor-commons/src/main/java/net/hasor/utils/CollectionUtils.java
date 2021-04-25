@@ -14,23 +14,51 @@
  * limitations under the License.
  */
 package net.hasor.utils;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
+import java.util.*;
+import java.util.function.Function;
 
 /**
  *
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
-public class Iterators {
-    /**用于迭代器类型转换*/
-    public static interface Converter<T, O> {
-        public O converter(T target);
+public class CollectionUtils {
+    // Empty utilities
+    //--------------------------------------------------------------------------
+    public static boolean isNotEmpty(List<?> tables) {
+        return tables != null && !tables.isEmpty();
     }
 
-    /**迭代器类型转换*/
-    public static <T, O> Iterator<O> converIterator(final Iterator<T> oriIterator, final Converter<T, O> converter) {
+    public static boolean isEmpty(List<?> tables) {
+        return tables == null || tables.isEmpty();
+    }
+    // split utilities
+    //--------------------------------------------------------------------------
+
+    /**
+     * 切分list
+     * @param sourceList
+     * @param groupSize 每组定长
+     */
+    public static <T> List<List<T>> splitList(List<T> sourceList, int groupSize) {
+        int length = sourceList.size();
+        // 计算可以分成多少组
+        int num = (length + groupSize - 1) / groupSize;
+        List<List<T>> newList = new ArrayList<>(num);
+        for (int i = 0; i < num; i++) {
+            // 开始位置
+            int fromIndex = i * groupSize;
+            // 结束位置
+            int toIndex = Math.min((i + 1) * groupSize, length);
+            newList.add(sourceList.subList(fromIndex, toIndex));
+        }
+        return newList;
+    }
+    // Iterator/Enumeration utilities
+    //--------------------------------------------------------------------------
+
+    /** 迭代器类型转换 */
+    public static <T, O> Iterator<O> convertIterator(final Iterator<T> oriIterator, final Function<T, O> converter) {
         return new Iterator<O>() {
             @Override
             public void remove() {
@@ -39,7 +67,7 @@ public class Iterators {
 
             @Override
             public O next() {
-                return converter.converter(oriIterator.next());
+                return converter.apply(oriIterator.next());
             }
 
             @Override
@@ -49,7 +77,7 @@ public class Iterators {
         };
     }
 
-    /**转换为 Enumeration*/
+    /** 转换为 Enumeration */
     public static <T> Enumeration<T> asEnumeration(final Iterator<T> iterator) {
         return new Enumeration<T>() {
             @Override
@@ -64,21 +92,21 @@ public class Iterators {
         };
     }
 
-    /**合并两个迭代器*/
+    /** 合并两个迭代器 */
     public static <T> Enumeration<T> mergeEnumeration(final Enumeration<T> enum1, final Enumeration<T> enum2) {
-        final Enumeration<T> i1 = enum1 != null ? enum1 : Iterators.asEnumeration(new ArrayList<T>(0).iterator());
-        final Enumeration<T> i2 = enum2 != null ? enum2 : Iterators.asEnumeration(new ArrayList<T>(0).iterator());
+        final Enumeration<T> i1 = enum1 != null ? enum1 : CollectionUtils.asEnumeration(Collections.emptyIterator());
+        final Enumeration<T> i2 = enum2 != null ? enum2 : CollectionUtils.asEnumeration(Collections.emptyIterator());
         return new Enumeration<T>() {
             private Enumeration<T> it = i1;
 
             @Override
             public boolean hasMoreElements() {
-                return i1.hasMoreElements() || i2.hasMoreElements() ? true : false;
+                return i1.hasMoreElements() || i2.hasMoreElements();
             }
 
             @Override
             public T nextElement() {
-                if (this.it.hasMoreElements() == false) {
+                if (!this.it.hasMoreElements()) {
                     this.it = i2;
                 }
                 return this.it.nextElement();
@@ -86,10 +114,10 @@ public class Iterators {
         };
     }
 
-    /**合并两个迭代器*/
+    /** 合并两个迭代器 */
     public static <T> Iterator<T> mergeIterator(final Iterator<T> iterator1, final Iterator<T> iterator2) {
-        final Iterator<T> i1 = iterator1 != null ? iterator1 : new ArrayList<T>(0).iterator();
-        final Iterator<T> i2 = iterator2 != null ? iterator2 : new ArrayList<T>(0).iterator();
+        final Iterator<T> i1 = iterator1 != null ? iterator1 : Collections.emptyIterator();
+        final Iterator<T> i2 = iterator2 != null ? iterator2 : Collections.emptyIterator();
         return new Iterator<T>() {
             private Iterator<T> it = i1;
 

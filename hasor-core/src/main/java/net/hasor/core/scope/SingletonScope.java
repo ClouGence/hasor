@@ -28,7 +28,7 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SingletonScope implements Scope {
-    private ConcurrentHashMap<Object, Supplier<?>> scopeMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Object, Supplier<?>> scopeMap = new ConcurrentHashMap<>();
 
     public <T> Supplier<T> scope(Object key, final Supplier<T> provider) {
         Supplier<?> returnData = this.scopeMap.get(key);

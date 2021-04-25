@@ -25,7 +25,7 @@ public class MySqlSchema {
     private String defaultCharacterSetName;
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -33,7 +33,7 @@ public class MySqlSchema {
     }
 
     public String getDefaultCollationName() {
-        return defaultCollationName;
+        return this.defaultCollationName;
     }
 
     public void setDefaultCollationName(String defaultCollationName) {
@@ -41,7 +41,7 @@ public class MySqlSchema {
     }
 
     public String getDefaultCharacterSetName() {
-        return defaultCharacterSetName;
+        return this.defaultCharacterSetName;
     }
 
     public void setDefaultCharacterSetName(String defaultCharacterSetName) {

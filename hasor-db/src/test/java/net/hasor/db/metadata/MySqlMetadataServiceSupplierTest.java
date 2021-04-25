@@ -49,7 +49,7 @@ public class MySqlMetadataServiceSupplierTest {
         //
         List<MySqlTable> allTables = this.repository.getAllTables();
         if (!allTables.isEmpty()) {
-            List<String> collect = allTables.stream().map(MySqlTable::getTableName).collect(Collectors.toList());
+            List<String> collect = allTables.stream().map(MySqlTable::getTable).collect(Collectors.toList());
             //
             if (collect.contains("tb_user")) {
                 jdbcTemplate.execute("drop table tb_user");
@@ -98,7 +98,7 @@ public class MySqlMetadataServiceSupplierTest {
         assert tableList.size() == 2;
         assert tableList.containsKey("mysql");
         assert tableList.containsKey("information_schema");
-        List<String> tableForInformationSchema = tableList.get("information_schema").stream().map(MySqlTable::getTableName).collect(Collectors.toList());
+        List<String> tableForInformationSchema = tableList.get("information_schema").stream().map(MySqlTable::getTable).collect(Collectors.toList());
         assert tableForInformationSchema.contains("COLUMNS");
         assert tableForInformationSchema.contains("TABLES");
         assert tableForInformationSchema.contains("SCHEMATA");
@@ -108,7 +108,7 @@ public class MySqlMetadataServiceSupplierTest {
     @Test
     public void findTables() throws SQLException {
         List<MySqlTable> tableList = this.repository.findTable("information_schema", "COLUMNS", "TABLES", "SCHEMATA", "ABC");
-        List<String> tableNames = tableList.stream().map(MySqlTable::getTableName).collect(Collectors.toList());
+        List<String> tableNames = tableList.stream().map(MySqlTable::getTable).collect(Collectors.toList());
         assert tableNames.size() == 3;
         assert tableNames.contains("COLUMNS");
         assert tableNames.contains("TABLES");

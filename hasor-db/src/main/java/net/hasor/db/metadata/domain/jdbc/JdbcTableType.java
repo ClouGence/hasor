@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.domain.adb.mysql;
+package net.hasor.db.metadata.domain.jdbc;
 /**
- * AdbMySql 表类型
+ * JDBC TABLE_TYPE String => table type. Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum AdbMySqlTableType {
-    /** 物化视图(Adb For MySql 3.0 特有) */
-    Materialized("BASE TABLE"),
-    /** 普通表 */
-    Table("BASE TABLE"),
-    /** 普通视图 */
+public enum JdbcTableType {
+    Table("TABLE"),
     View("VIEW"),
-    /** 系统视图 */
-    SystemView("SYSTEM VIEW");
+    SystemTable("SYSTEM TABLE"),
+    GlobalTemporary("GLOBAL TEMPORARY"),
+    LocalTemporary("LOCAL TEMPORARY"),
+    Alias("ALIAS"),
+    Synonym("SYNONYM");
     private final String typeName;
 
-    AdbMySqlTableType(String typeName) {
+    JdbcTableType(String typeName) {
         this.typeName = typeName;
     }
 
@@ -38,8 +37,8 @@ public enum AdbMySqlTableType {
         return this.typeName;
     }
 
-    public static AdbMySqlTableType valueOfCode(String code) {
-        for (AdbMySqlTableType tableType : AdbMySqlTableType.values()) {
+    public static JdbcTableType valueOfCode(String code) {
+        for (JdbcTableType tableType : JdbcTableType.values()) {
             if (tableType.typeName.equals(code)) {
                 return tableType;
             }

@@ -19,7 +19,7 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.setting.SettingNode;
 import net.hasor.core.setting.data.TreeNode;
-import net.hasor.utils.Iterators;
+import net.hasor.utils.CollectionUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.future.BasicFuture;
 import net.hasor.utils.io.output.WriterOutputStream;
@@ -86,7 +86,7 @@ public class AbstractTest {
         //
         final Map<String, Object> attrMap = new HashMap<>();
         PowerMockito.when(servletContext.getAttributeNames()).thenAnswer((Answer<Enumeration<String>>) invocation -> {
-            return Iterators.asEnumeration(attrMap.keySet().iterator());
+            return CollectionUtils.asEnumeration(attrMap.keySet().iterator());
         });
         PowerMockito.when(servletContext.getAttribute(anyString())).thenAnswer(invocation -> {
             return attrMap.get(invocation.getArguments()[0]);
@@ -103,7 +103,7 @@ public class AbstractTest {
 
     protected ServletContext servletInitParams(final ServletContext servletContext, Map<String, String> contextParams) {
         PowerMockito.when(servletContext.getInitParameterNames())//
-                .thenReturn(Iterators.asEnumeration(contextParams.keySet().iterator()));
+                .thenReturn(CollectionUtils.asEnumeration(contextParams.keySet().iterator()));
         PowerMockito.when(servletContext.getInitParameter(anyString())).then((Answer<String>) invocation -> {
             return contextParams.get(invocation.getArguments()[0].toString());
         });
@@ -254,14 +254,14 @@ public class AbstractTest {
                 return null;
             }
             Set<String> keySet = headerMap.keySet();
-            return Iterators.asEnumeration(keySet.iterator());
+            return CollectionUtils.asEnumeration(keySet.iterator());
         });
         PowerMockito.when(request.getHeaders(anyString())).thenAnswer((Answer<Enumeration<String>>) invocation -> {
             if (headerMap == null) {
                 return null;
             }
             String[] objects = multipleObjectFormMap(headerMap, (String) invocation.getArguments()[0]);
-            return Iterators.asEnumeration(Arrays.asList(objects).iterator());
+            return CollectionUtils.asEnumeration(Arrays.asList(objects).iterator());
         });
         //
         String query = requestURL.getQuery();
@@ -291,7 +291,7 @@ public class AbstractTest {
             return queryMap;//
         });
         PowerMockito.when(request.getParameterNames()).thenAnswer((Answer<Enumeration<String>>) invocation -> {
-            return Iterators.asEnumeration(queryMap.keySet().iterator());
+            return CollectionUtils.asEnumeration(queryMap.keySet().iterator());
         });
         PowerMockito.when(request.getParameterValues(anyString())).thenAnswer((Answer<String[]>) invocation -> {
             return multipleObjectFormMap(queryMap, (String) invocation.getArguments()[0]);
@@ -303,7 +303,7 @@ public class AbstractTest {
         //
         final Map<String, Object> attrMap = new HashMap<>();
         PowerMockito.when(request.getAttributeNames()).thenAnswer((Answer<Enumeration<String>>) invocation -> {
-            return Iterators.asEnumeration(attrMap.keySet().iterator());
+            return CollectionUtils.asEnumeration(attrMap.keySet().iterator());
         });
         PowerMockito.when(request.getAttribute(anyString())).thenAnswer(invocation -> {
             return attrMap.get(invocation.getArguments()[0]);

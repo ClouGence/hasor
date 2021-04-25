@@ -32,7 +32,7 @@ public class BeanSqlParameterSource implements SqlParameterSource, ParameterDisp
 
     public BeanSqlParameterSource(Object dataBean) {
         this.dataBean = Objects.requireNonNull(dataBean);
-        this.dataNames = BeanUtils.getPropertysAndFields(dataBean.getClass());
+        this.dataNames = BeanUtils.getPropertiesAndFields(dataBean.getClass());
     }
 
     @Override

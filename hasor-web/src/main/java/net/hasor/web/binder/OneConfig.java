@@ -15,7 +15,7 @@
  */
 package net.hasor.web.binder;
 import net.hasor.core.AppContext;
-import net.hasor.utils.Iterators;
+import net.hasor.utils.CollectionUtils;
 import net.hasor.web.InvokerConfig;
 
 import javax.servlet.FilterConfig;
@@ -130,7 +130,7 @@ public class OneConfig extends HashMap<String, String> implements FilterConfig, 
 
     @Override
     public Enumeration<String> getInitParameterNames() {
-        return Iterators.asEnumeration(OneConfig.this.keySet().iterator());
+        return CollectionUtils.asEnumeration(OneConfig.this.keySet().iterator());
     }
 
     @Override

@@ -62,7 +62,7 @@ public class QuitCmdTest extends AbstractTelTest {
         assert !toString.contains("exit after 2 seconds.");
         assert !toString.contains("exit after 1 seconds.");
         assert toString.contains("bye.\r\n");
-        assert sessionObject.curentCounter() == 1;
+        assert sessionObject.currentCounter() == 1;
     }
 
     @Test

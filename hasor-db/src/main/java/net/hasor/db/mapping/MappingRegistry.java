@@ -121,15 +121,15 @@ public class MappingRegistry {
         // build MappingDef
         if (entityType.isAnnotationPresent(Table.class)) {
             Table defTable = entityType.getAnnotation(Table.class);
-            String category = defTable.schema().trim();
+            String schema = defTable.schema().trim();
             String tableName = StringUtils.isNotBlank(defTable.name()) ? defTable.name() : defTable.value();
-            def.setCategory(category);
-            def.setTableName(tableName);
+            def.setSchema(schema);
+            def.setTable(tableName);
             def.setAutoProperty(defTable.autoMapping());
             useDelimited = defTable.useDelimited();
         } else {
-            def.setCategory("");
-            def.setTableName(entityType.getSimpleName());
+            def.setSchema("");
+            def.setTable(entityType.getSimpleName());
             def.setAutoProperty(true);
             useDelimited = false;
         }
@@ -150,16 +150,20 @@ public class MappingRegistry {
         //
         // modify the names by referring to the metadata.
         if (metaDataService != null) {
-            String category = formatCaseSensitivity(def.getCategory(), def.getCaseSensitivity());
-            String tableName = formatCaseSensitivity(def.getTableName(), def.getCaseSensitivity());
-            TableDef tableDef = metaDataService.searchTable(category, tableName);
+            String schema = def.getSchema();
+            if (StringUtils.isBlank(schema)) {
+                schema = metaDataService.getCurrentSchema();
+            }
+            schema = formatCaseSensitivity(schema, def.getCaseSensitivity());
+            String tableName = formatCaseSensitivity(def.getTable(), def.getCaseSensitivity());
+            TableDef tableDef = metaDataService.searchTable(schema, tableName);
             if (tableDef != null) {
-                def.setCategory(tableDef.getCategory());
-                def.setTableName(tableDef.getTableName());
+                def.setSchema(tableDef.getSchema());
+                def.setTable(tableDef.getTable());
             }
         } else {
-            def.setCategory(formatCaseSensitivity(def.getCategory(), def.getCaseSensitivity()));
-            def.setTableName(formatCaseSensitivity(def.getTableName(), def.getCaseSensitivity()));
+            def.setSchema(formatCaseSensitivity(def.getSchema(), def.getCaseSensitivity()));
+            def.setTable(formatCaseSensitivity(def.getTable(), def.getCaseSensitivity()));
         }
         //
         return parserProperty(def, metaDataService);
@@ -170,7 +174,7 @@ public class MappingRegistry {
         Map<String, WrapProperty> propertyInfoMap = matchProperty(def, def.isAutoProperty(), this.typeRegistry);
         Map<String, ColumnDef> columnDefMap = null;
         if (metaDataService != null) {
-            columnDefMap = metaDataService.getColumnMap(def.getCategory(), def.getTableName());
+            columnDefMap = metaDataService.getColumnMap(def.getSchema(), def.getTable());
         }
         //
         for (String propertyName : propertyInfoMap.keySet()) {
@@ -243,7 +247,7 @@ public class MappingRegistry {
         //
         // keep sort
         List<String> targetProperties = new ArrayList<>();
-        List<String> sourceProperties = BeanUtils.getPropertys(def.entityType());
+        List<String> sourceProperties = BeanUtils.getProperties(def.entityType());
         List<Field> sourceFields = BeanUtils.findALLFields(def.entityType());
         for (Field source : sourceFields) {
             if (!targetProperties.contains(source.getName())) {

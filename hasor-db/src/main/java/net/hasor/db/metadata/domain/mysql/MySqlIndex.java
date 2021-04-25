@@ -31,7 +31,7 @@ public class MySqlIndex {
     private Map<String, String> storageType = new HashMap<>();
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -39,7 +39,7 @@ public class MySqlIndex {
     }
 
     public MySqlIndexType getIndexEnum() {
-        return indexEnum;
+        return this.indexEnum;
     }
 
     public void setIndexEnum(MySqlIndexType indexEnum) {
@@ -47,7 +47,7 @@ public class MySqlIndex {
     }
 
     public List<String> getColumns() {
-        return columns;
+        return this.columns;
     }
 
     public void setColumns(List<String> columns) {
@@ -55,7 +55,7 @@ public class MySqlIndex {
     }
 
     public Map<String, String> getStorageType() {
-        return storageType;
+        return this.storageType;
     }
 
     public void setStorageType(Map<String, String> storageType) {

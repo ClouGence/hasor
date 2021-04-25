@@ -31,7 +31,7 @@ public class AdbMySqlMaterialized extends AdbMySqlTable {
     private String refreshState;
 
     public Date getFirstRefreshTime() {
-        return firstRefreshTime;
+        return this.firstRefreshTime;
     }
 
     public void setFirstRefreshTime(Date firstRefreshTime) {
@@ -39,7 +39,7 @@ public class AdbMySqlMaterialized extends AdbMySqlTable {
     }
 
     public String getNextRefreshTimeFunc() {
-        return nextRefreshTimeFunc;
+        return this.nextRefreshTimeFunc;
     }
 
     public void setNextRefreshTimeFunc(String nextRefreshTimeFunc) {
@@ -47,7 +47,7 @@ public class AdbMySqlMaterialized extends AdbMySqlTable {
     }
 
     public String getOwner() {
-        return owner;
+        return this.owner;
     }
 
     public void setOwner(String owner) {
@@ -55,7 +55,7 @@ public class AdbMySqlMaterialized extends AdbMySqlTable {
     }
 
     public String getQueryRewriteEnabled() {
-        return queryRewriteEnabled;
+        return this.queryRewriteEnabled;
     }
 
     public void setQueryRewriteEnabled(String queryRewriteEnabled) {
@@ -63,7 +63,7 @@ public class AdbMySqlMaterialized extends AdbMySqlTable {
     }
 
     public String getRefreshCondition() {
-        return refreshCondition;
+        return this.refreshCondition;
     }
 
     public void setRefreshCondition(String refreshCondition) {
@@ -71,7 +71,7 @@ public class AdbMySqlMaterialized extends AdbMySqlTable {
     }
 
     public String getRefreshState() {
-        return refreshState;
+        return this.refreshState;
     }
 
     public void setRefreshState(String refreshState) {

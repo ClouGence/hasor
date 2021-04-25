@@ -25,7 +25,7 @@ public interface TelSession extends TelAttribute {
     public String getSessionID();
 
     /** 获取当前计数（命令无论成功或失败当执行之后计数器就会+1） */
-    public int curentCounter();
+    public int currentCounter();
 
     /** 获取Telnet工具的上下文 */
     public TelContext getTelContext();

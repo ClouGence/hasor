@@ -13,16 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.domain.mysql;
+package net.hasor.db.metadata.domain.jdbc;
 /**
- * MySQL 约束
+ * Jdbc 约束
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MySqlConstraint {
-    private String              schema;
-    private String              name;
-    private MySqlConstraintType constraintType;
+public class JdbcConstraint {
+    private String             catalog;
+    private String             schema;
+    private String             table;
+    private String             name;
+    private JdbcConstraintType constraintType;
+
+    public String getCatalog() {
+        return this.catalog;
+    }
+
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
+    }
 
     public String getSchema() {
         return this.schema;
@@ -30,6 +40,14 @@ public class MySqlConstraint {
 
     public void setSchema(String schema) {
         this.schema = schema;
+    }
+
+    public String getTable() {
+        return this.table;
+    }
+
+    public void setTable(String table) {
+        this.table = table;
     }
 
     public String getName() {
@@ -40,11 +58,11 @@ public class MySqlConstraint {
         this.name = name;
     }
 
-    public MySqlConstraintType getConstraintType() {
+    public JdbcConstraintType getConstraintType() {
         return this.constraintType;
     }
 
-    public void setConstraintType(MySqlConstraintType constraintType) {
+    public void setConstraintType(JdbcConstraintType constraintType) {
         this.constraintType = constraintType;
     }
 }

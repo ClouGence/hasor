@@ -17,7 +17,6 @@ package net.hasor.web.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.core.Module;
 import net.hasor.test.web.filters.SimpleInvokerFilter;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.Invoker;
@@ -36,7 +35,7 @@ public class DefFilterTest extends AbstractTest {
     @Test
     public void defTest_1() throws Throwable {
         SimpleInvokerFilter filter = new SimpleInvokerFilter();
-        AppContext appContext = Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.bindType(SimpleInvokerFilter.class).toInstance(filter);
         });
         BindInfo<SimpleInvokerFilter> bindInfo = appContext.getBindInfo(SimpleInvokerFilter.class);
@@ -86,7 +85,7 @@ public class DefFilterTest extends AbstractTest {
 
     @Test
     public void defTest_2() throws Throwable {
-        AppContext appContext = Hasor.create().build((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.bindType(SimpleInvokerFilter.class).toInstance(null);
         });
         BindInfo<SimpleInvokerFilter> bindInfo = appContext.getBindInfo(SimpleInvokerFilter.class);

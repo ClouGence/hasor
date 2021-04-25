@@ -66,10 +66,10 @@ public abstract class AbstractDialect implements SqlDialect {
 
     @Override
     public String tableName(boolean useQualifier, TableDef tableDef) {
-        if (StringUtils.isBlank(tableDef.getCategory())) {
-            return fmtName(useQualifier, tableDef.getTableName());
+        if (StringUtils.isBlank(tableDef.getSchema())) {
+            return fmtName(useQualifier, tableDef.getTable());
         } else {
-            return fmtName(useQualifier, tableDef.getCategory()) + "." + fmtName(useQualifier, tableDef.getTableName());
+            return fmtName(useQualifier, tableDef.getSchema()) + "." + fmtName(useQualifier, tableDef.getTable());
         }
     }
 

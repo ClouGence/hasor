@@ -73,7 +73,7 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
         return table;
     }
 
-    public String getDbVersion() throws SQLException {
+    public String getVersion() throws SQLException {
         try (Connection conn = this.connectSupplier.get()) {
             Map<String, Object> mapObject = new JdbcTemplate(conn).queryForMap("select adb_version()");
             if (mapObject == null) {
@@ -81,6 +81,12 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
             } else {
                 return mapObject.get("source_version").toString();
             }
+        }
+    }
+
+    public String getCurrentSchema() throws SQLException {
+        try (Connection conn = this.connectSupplier.get()) {
+            return new JdbcTemplate(conn).queryForString("select database()");
         }
     }
 
@@ -304,8 +310,8 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
     }
 
     @Override
-    public Map<String, ColumnDef> getColumnMap(String category, String tableName) throws SQLException {
-        List<AdbMySqlColumn> columns = this.getColumns(category, tableName);
+    public Map<String, ColumnDef> getColumnMap(String schemaName, String tableName) throws SQLException {
+        List<AdbMySqlColumn> columns = this.getColumns(schemaName, tableName);
         if (columns != null) {
             return columns.stream().collect(Collectors.toMap(AdbMySqlColumn::getName, o -> o));
         } else {
@@ -314,7 +320,7 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
     }
 
     @Override
-    public TableDef searchTable(String category, String tableName) throws SQLException {
-        return getTable(category, tableName);
+    public TableDef searchTable(String schemaName, String tableName) throws SQLException {
+        return getTable(schemaName, tableName);
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.domain;
-import net.hasor.utils.Iterators;
+import net.hasor.utils.CollectionUtils;
 
 import java.util.*;
 
@@ -45,6 +45,6 @@ public class AttributeSet extends OptionInfo {
     /**获取所有属性名。*/
     public Enumeration<String> getAttributeNames() {
         Iterator<String> keys = new ArrayList<String>(this.attributeMap.keySet()).iterator();
-        return Iterators.asEnumeration(keys);
+        return CollectionUtils.asEnumeration(keys);
     }
 }

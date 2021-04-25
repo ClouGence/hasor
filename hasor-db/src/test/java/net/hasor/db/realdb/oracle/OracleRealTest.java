@@ -1,5 +1,6 @@
 package net.hasor.db.realdb.oracle;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.metadata.provider.JdbcMetadataProvider;
 import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
@@ -21,6 +22,10 @@ public class OracleRealTest {
     @Test
     public void queryForObject_String_1() throws Exception {
         try (Connection conn = DsUtils.localOracle();) {
+            //
+            JdbcMetadataProvider provider = new JdbcMetadataProvider(conn);
+            provider.getVersion();
+            //
             JdbcTemplate jdbcTemplate = new JdbcTemplate(conn);
             preTable(jdbcTemplate);
             //

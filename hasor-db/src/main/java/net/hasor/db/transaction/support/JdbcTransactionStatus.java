@@ -47,7 +47,7 @@ public class JdbcTransactionStatus implements TransactionStatus {
         return this.tranConn.getSavepointManager();
     }
 
-    public void markHeldSavepoint() throws SQLException {
+    public void markSavepoint() throws SQLException {
         if (this.hasSavepoint()) {
             throw new SQLException("TransactionStatus has Savepoint");
         }
@@ -57,7 +57,7 @@ public class JdbcTransactionStatus implements TransactionStatus {
         this.savepoint = this.getSavepointManager().createSavepoint();
     }
 
-    public void releaseHeldSavepoint() throws SQLException {
+    public void releaseSavepoint() throws SQLException {
         if (!this.hasSavepoint()) {
             throw new SQLException("TransactionStatus has not Savepoint");
         }
@@ -67,7 +67,7 @@ public class JdbcTransactionStatus implements TransactionStatus {
         this.getSavepointManager().releaseSavepoint(this.savepoint);
     }
 
-    public void rollbackToHeldSavepoint() throws SQLException {
+    public void rollbackToSavepoint() throws SQLException {
         if (!this.hasSavepoint()) {
             throw new SQLException("TransactionStatus has not Savepoint");
         }

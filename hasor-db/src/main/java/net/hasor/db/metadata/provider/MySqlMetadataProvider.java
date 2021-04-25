@@ -36,6 +36,8 @@ import java.util.stream.Collectors;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MySqlMetadataProvider extends AbstractMetadataProvider implements MetaDataService {
+    private static final String TABLE = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES";
+
     public MySqlMetadataProvider(Connection connection) {
         super(connection);
     }
@@ -44,9 +46,15 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         super(dataSource);
     }
 
-    public String getDbVersion() throws SQLException {
+    public String getVersion() throws SQLException {
         try (Connection conn = this.connectSupplier.get()) {
             return new JdbcTemplate(conn).queryForString("select version()");
+        }
+    }
+
+    public String getCurrentSchema() throws SQLException {
+        try (Connection conn = this.connectSupplier.get()) {
+            return new JdbcTemplate(conn).queryForString("select database()");
         }
     }
 
@@ -109,8 +117,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         if (schemaList.size() > 1000) {
             throw new IndexOutOfBoundsException("Batch query schema Batch size out of 1000");
         }
-        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES " //
-                + "where TABLE_SCHEMA in " + buildWhereIn(schemaList);
+        String queryString = TABLE + " where TABLE_SCHEMA in " + buildWhereIn(schemaList);
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaList.toArray());
             if (mapList == null) {
@@ -120,13 +127,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
             mapList.forEach(recordMap -> {
                 String dbName = safeToString(recordMap.get("TABLE_SCHEMA"));
                 List<MySqlTable> tableList = resultData.computeIfAbsent(dbName, k -> new ArrayList<>());
-                MySqlTable table = new MySqlTable();
-                table.setTableName(safeToString(recordMap.get("TABLE_NAME")));
-                table.setTableType(MySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
-                table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
-                table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
-                table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
-                table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
+                MySqlTable table = this.convertTable(recordMap);
                 tableList.add(table);
             });
             return resultData;
@@ -137,23 +138,13 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         if (StringUtils.isBlank(schemaName)) {
             return Collections.emptyList();
         }
-        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES " //
-                + "where TABLE_SCHEMA = ?";
+        String queryString = TABLE + " where TABLE_SCHEMA = ?";
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName);
             if (mapList == null) {
                 return Collections.emptyList();
             }
-            return mapList.stream().map(recordMap -> {
-                MySqlTable table = new MySqlTable();
-                table.setTableName(safeToString(recordMap.get("TABLE_NAME")));
-                table.setTableType(MySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
-                table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
-                table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
-                table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
-                table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
-                return table;
-            }).collect(Collectors.toList());
+            return mapList.stream().map(this::convertTable).collect(Collectors.toList());
         }
     }
 
@@ -174,24 +165,14 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         if (tableNameList.size() > 1000) {
             throw new IndexOutOfBoundsException("Batch query table Batch size out of 1000");
         }
-        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES " //
-                + "where TABLE_SCHEMA = ? and TABLE_NAME in " + buildWhereIn(tableNameList);
+        String queryString = TABLE + " where TABLE_SCHEMA = ? and TABLE_NAME in " + buildWhereIn(tableNameList);
         tableNameList.add(0, schemaName);
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, tableNameList.toArray());
             if (mapList == null) {
                 return Collections.emptyList();
             }
-            return mapList.stream().map(recordMap -> {
-                MySqlTable table = new MySqlTable();
-                table.setTableName(safeToString(recordMap.get("TABLE_NAME")));
-                table.setTableType(MySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
-                table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
-                table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
-                table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
-                table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
-                return table;
-            }).collect(Collectors.toList());
+            return mapList.stream().map(this::convertTable).collect(Collectors.toList());
         }
     }
 
@@ -199,24 +180,25 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         if (StringUtils.isBlank(schemaName) || StringUtils.isBlank(tableName)) {
             return null;
         }
-        String queryString = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES " //
-                + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
+        String queryString = TABLE + " where TABLE_SCHEMA = ? and TABLE_NAME = ?";
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {
                 return null;
             }
-            return mapList.stream().map(recordMap -> {
-                MySqlTable table = new MySqlTable();
-                table.setTableName(safeToString(recordMap.get("TABLE_NAME")));
-                table.setTableType(MySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
-                table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
-                table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
-                table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
-                table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
-                return table;
-            }).findFirst().orElse(null);
+            return mapList.stream().map(this::convertTable).findFirst().orElse(null);
         }
+    }
+
+    protected MySqlTable convertTable(Map<String, Object> recordMap) {
+        MySqlTable table = new MySqlTable();
+        table.setTableName(safeToString(recordMap.get("TABLE_NAME")));
+        table.setTableType(MySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
+        table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
+        table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
+        table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
+        table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
+        return table;
     }
 
     public List<MySqlColumn> getColumns(String schemaName, String tableName) throws SQLException {
@@ -553,8 +535,8 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
     }
 
     @Override
-    public Map<String, ColumnDef> getColumnMap(String category, String tableName) throws SQLException {
-        List<MySqlColumn> columns = this.getColumns(category, tableName);
+    public Map<String, ColumnDef> getColumnMap(String schemaName, String tableName) throws SQLException {
+        List<MySqlColumn> columns = this.getColumns(schemaName, tableName);
         if (columns != null) {
             return columns.stream().collect(Collectors.toMap(MySqlColumn::getName, o -> o));
         } else {
@@ -563,7 +545,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
     }
 
     @Override
-    public TableDef searchTable(String category, String tableName) throws SQLException {
-        return getTable(category, tableName);
+    public TableDef searchTable(String schemaName, String tableName) throws SQLException {
+        return getTable(schemaName, tableName);
     }
 }

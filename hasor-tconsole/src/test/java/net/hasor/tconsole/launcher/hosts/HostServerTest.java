@@ -133,7 +133,7 @@ public class HostServerTest extends AbstractTelTest {
         PipedHostTelService pipedHostTelService = new PipedHostTelService(stringWriter);
         pipedHostTelService.addCommand("test", new TestExecutor());
         pipedHostTelService.silent();
-        pipedHostTelService.endcodeOfSilent("-abcdefg-");
+        pipedHostTelService.encodedOfSilent("-abcdefg-");
         pipedHostTelService.init();
         //
         // .执行3条命令(每秒钟产生一条命令到 piped)
@@ -149,7 +149,7 @@ public class HostServerTest extends AbstractTelTest {
         assert strings[1].contains("{\"args\":\"\",\"name\":\"test\"}");// test 命令
         assert strings[2].trim().equals("");                            // 静默模式下退出不会输出 bye
         assert pipedHostTelService.isSilent();
-        assert pipedHostTelService.endcodeOfSilent().equals("-abcdefg-");
+        assert pipedHostTelService.encodedOfSilent().equals("-abcdefg-");
     }
 
     @Test

@@ -31,7 +31,7 @@ public class AdbMySqlPrimaryKey {
     private Map<String, String> storageType = new HashMap<>();
 
     public String getSchema() {
-        return schema;
+        return this.schema;
     }
 
     public void setSchema(String schema) {
@@ -39,7 +39,7 @@ public class AdbMySqlPrimaryKey {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -47,7 +47,7 @@ public class AdbMySqlPrimaryKey {
     }
 
     public List<String> getColumns() {
-        return columns;
+        return this.columns;
     }
 
     public void setColumns(List<String> columns) {
@@ -55,7 +55,7 @@ public class AdbMySqlPrimaryKey {
     }
 
     public Map<String, String> getStorageType() {
-        return storageType;
+        return this.storageType;
     }
 
     public void setStorageType(Map<String, String> storageType) {

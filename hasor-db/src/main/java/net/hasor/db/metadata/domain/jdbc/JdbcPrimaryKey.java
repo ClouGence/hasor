@@ -13,38 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.domain.mysql;
+package net.hasor.db.metadata.domain.jdbc;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * MySQL 约束
+ * 主键
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MySqlConstraint {
-    private String              schema;
-    private String              name;
-    private MySqlConstraintType constraintType;
+public class JdbcPrimaryKey extends JdbcConstraint {
+    private List<String> columns = new ArrayList<>();
 
-    public String getSchema() {
-        return this.schema;
+    public List<String> getColumns() {
+        return this.columns;
     }
 
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public MySqlConstraintType getConstraintType() {
-        return this.constraintType;
-    }
-
-    public void setConstraintType(MySqlConstraintType constraintType) {
-        this.constraintType = constraintType;
+    public void setColumns(List<String> columns) {
+        this.columns = columns;
     }
 }

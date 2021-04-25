@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 class InnerConsoleApiBinder extends ApiBinderWrap implements ConsoleApiBinder {
-    private InnerExecutorManager executorManager;
+    private final InnerExecutorManager executorManager;
 
     InnerConsoleApiBinder(InnerExecutorManager executorManager, ApiBinder apiBinder) {
         super(apiBinder);

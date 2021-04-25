@@ -19,7 +19,6 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.exts.aop.Matchers;
-import net.hasor.utils.CheckUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.supplier.InstanceProvider;
 import net.hasor.web.InvokerFilter;
@@ -56,6 +55,21 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         apiBinder.bindType(String.class).nameWith(RuntimeFilter.HTTP_RESPONSE_ENCODING_KEY).toProvider(this.responseEncoding);
         this.curVersion = Objects.requireNonNull(curVersion);
         this.mimeType = Objects.requireNonNull(mimeType);
+    }
+
+    private static List<String> checkEmpty(List<String> patternArrays, String npeMessage) {
+        boolean needThrow = true;
+        for (String pattern : patternArrays) {
+            if (StringUtils.isBlank(pattern)) {
+                continue;
+            }
+            needThrow = false;
+            break;
+        }
+        if (needThrow) {
+            throw new NullPointerException(npeMessage);
+        }
+        return patternArrays;
     }
     // ------------------------------------------------------------------------------------------------------
 
@@ -99,7 +113,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     // ------------------------------------------------------------------------------------------------------
     @Override
     public FilterBindingBuilder<InvokerFilter> filter(String[] morePatterns) {
-        List<String> uriPatterns = CheckUtils.checkEmpty(Arrays.asList(morePatterns), "Filter patterns is empty.");
+        List<String> uriPatterns = checkEmpty(Arrays.asList(morePatterns), "Filter patterns is empty.");
         return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.SERVLET, uriPatterns) {
             @Override
             protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
@@ -110,7 +124,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
 
     @Override
     public FilterBindingBuilder<InvokerFilter> filterRegex(String[] regexes) {
-        List<String> uriPatterns = CheckUtils.checkEmpty(Arrays.asList(regexes), "Filter patterns is empty.");
+        List<String> uriPatterns = checkEmpty(Arrays.asList(regexes), "Filter patterns is empty.");
         return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.REGEX, uriPatterns) {
             @Override
             protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
@@ -121,7 +135,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
 
     @Override
     public FilterBindingBuilder<Filter> jeeFilter(final String[] morePatterns) throws NullPointerException {
-        List<String> uriPatterns = CheckUtils.checkEmpty(Arrays.asList(morePatterns), "Filter patterns is empty.");
+        List<String> uriPatterns = checkEmpty(Arrays.asList(morePatterns), "Filter patterns is empty.");
         return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.SERVLET, uriPatterns) {
             @Override
             protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
@@ -132,7 +146,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
 
     @Override
     public FilterBindingBuilder<Filter> jeeFilterRegex(final String[] regexes) throws NullPointerException {
-        List<String> uriPatterns = CheckUtils.checkEmpty(Arrays.asList(regexes), "Filter patterns is empty.");
+        List<String> uriPatterns = checkEmpty(Arrays.asList(regexes), "Filter patterns is empty.");
         return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.REGEX, uriPatterns) {
             @Override
             protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
@@ -217,7 +231,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
 
     @Override
     public ServletBindingBuilder jeeServlet(final String[] morePatterns) {
-        return new ServletsModuleBuilder(CheckUtils.checkEmpty(Arrays.asList(morePatterns), "Servlet patterns is empty."));
+        return new ServletsModuleBuilder(checkEmpty(Arrays.asList(morePatterns), "Servlet patterns is empty."));
     }
 
     private class ServletsModuleBuilder implements ServletBindingBuilder {
@@ -260,7 +274,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
 
     @Override
     public <T> MappingToBindingBuilder<T> mappingTo(String[] morePatterns) {
-        CheckUtils.checkEmpty(Arrays.asList(morePatterns), "mappingTo patterns is empty.");
+        checkEmpty(Arrays.asList(morePatterns), "mappingTo patterns is empty.");
         return new MappingToBindingBuilder<T>() {
             @Override
             public void with(int index, Class<? extends T> targetKey) {

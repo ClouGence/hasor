@@ -34,10 +34,10 @@ public class DefaultSqlDialect implements SqlDialect {
 
     @Override
     public String tableName(boolean useQualifier, TableDef tableDef) {
-        if (StringUtils.isBlank(tableDef.getCategory())) {
-            return tableDef.getTableName();
+        if (StringUtils.isBlank(tableDef.getSchema())) {
+            return tableDef.getTable();
         } else {
-            return tableDef.getCategory() + "." + tableDef.getTableName();
+            return tableDef.getSchema() + "." + tableDef.getTable();
         }
     }
 

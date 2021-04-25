@@ -29,7 +29,7 @@ public class MySqlPrimaryKey extends MySqlConstraint {
     private Map<String, String> storageType = new HashMap<>();
 
     public List<String> getColumns() {
-        return columns;
+        return this.columns;
     }
 
     public void setColumns(List<String> columns) {
@@ -37,7 +37,7 @@ public class MySqlPrimaryKey extends MySqlConstraint {
     }
 
     public Map<String, String> getStorageType() {
-        return storageType;
+        return this.storageType;
     }
 
     public void setStorageType(Map<String, String> storageType) {

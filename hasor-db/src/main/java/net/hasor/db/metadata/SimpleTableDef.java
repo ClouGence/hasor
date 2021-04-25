@@ -24,7 +24,7 @@ public class SimpleTableDef implements TableDef {
     private String tableName;
 
     @Override
-    public String getCategory() {
+    public String getSchema() {
         return this.category;
     }
 
@@ -33,7 +33,7 @@ public class SimpleTableDef implements TableDef {
     }
 
     @Override
-    public String getTableName() {
+    public String getTable() {
         return this.tableName;
     }
 

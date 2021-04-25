@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.utils.ref;
-import net.hasor.utils.Iterators;
+import net.hasor.utils.CollectionUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -165,7 +165,7 @@ public class SpaceHashMap<K, T> {
     public Iterator<Map.Entry<K, T>> iterator() {
         Iterator<Map.Entry<K, T>> seqIter = null;
         for (Map<K, T> mapItem : this.spaceMap.values()) {
-            seqIter = Iterators.mergeIterator(seqIter, mapItem.entrySet().iterator());
+            seqIter = CollectionUtils.mergeIterator(seqIter, mapItem.entrySet().iterator());
         }
         return seqIter;
     }

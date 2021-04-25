@@ -23,12 +23,20 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface MetaDataService {
+    /** 获取版本信息 */
+    public String getVersion() throws SQLException;
+
+    /** 默认情况下不使用 SQL 标识符包裹 大小写策略。 */
     public CaseSensitivityType getPlain() throws SQLException;
 
+    /** 当使用 SQL 标识符包裹下 大小写策略。 */
     public CaseSensitivityType getDelimited() throws SQLException;
 
-    /** 搜索表 */
-    public TableDef searchTable(String category, String tableName) throws SQLException;
+    /** 获取当前 Schema */
+    public String getCurrentSchema() throws SQLException;
 
-    public Map<String, ColumnDef> getColumnMap(String category, String tableName) throws SQLException;
+    /** 搜索表 */
+    public TableDef searchTable(String schemaName, String tableName) throws SQLException;
+
+    public Map<String, ColumnDef> getColumnMap(String schemaName, String tableName) throws SQLException;
 }

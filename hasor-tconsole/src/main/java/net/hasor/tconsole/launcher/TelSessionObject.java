@@ -43,14 +43,14 @@ import static net.hasor.tconsole.launcher.TelUtils.aInteger;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class TelSessionObject extends AttributeObject implements TelSession {
-    private static Logger             logger = LoggerFactory.getLogger(TelSessionObject.class);
-    private        String             sessionID;     //
-    private        TelReaderObject    dataReader;    // 输入流
-    private        Writer             dataWriter;    // 输出流
+    private static final Logger             logger = LoggerFactory.getLogger(TelSessionObject.class);
+    private final        String             sessionID;      //
+    private final        TelReaderObject    dataReader;     // 输入流
+    private final        Writer             dataWriter;     // 输出流
     //
-    private        AbstractTelService telContext;    //
-    private        TelCommandObject   curentCommand; // 当前命令
-    private        AtomicInteger      atomicInteger; // 指令计数器
+    private final        AbstractTelService telContext;     //
+    private              TelCommandObject   currentCommand; // 当前命令
+    private final        AtomicInteger      atomicInteger;  // 指令计数器
 
     public TelSessionObject(AbstractTelService telContext, ByteBuf dataReader, Writer dataWriter) {
         this.sessionID = UUID.randomUUID().toString().replace("-", "");
@@ -66,7 +66,7 @@ public abstract class TelSessionObject extends AttributeObject implements TelSes
     }
 
     @Override
-    public int curentCounter() {
+    public int currentCounter() {
         return this.atomicInteger.get();
     }
 
@@ -107,53 +107,53 @@ public abstract class TelSessionObject extends AttributeObject implements TelSes
             this.dataReader.reset(); // 重置读取索引
         }
         // .创造命令
-        if (this.curentCommand == null) {
+        if (this.currentCommand == null) {
             boolean blankLine = this.dataReader.expectBlankLine();
             if (blankLine) {
                 String readData = this.dataReader.removeReadData();
                 try {
-                    this.curentCommand = createTelCommand(readData.trim());
-                    if (this.curentCommand == null) {
+                    this.currentCommand = createTelCommand(readData.trim());
+                    if (this.currentCommand == null) {
                         return !this.dataReader.isEof();
                     }
-                    this.curentCommand.curentPhase(TelPhase.Prepare);
+                    this.currentCommand.curentPhase(TelPhase.Prepare);
                 } catch (Exception e) {
                     this.dataReader.clear(); // 清掉缓冲区，重新接收
                     writeMessageLine(e.getMessage());
                     return true;
                 }
             }
-            if (this.curentCommand == null) {
+            if (this.currentCommand == null) {
                 return true;
             }
         }
         //
         // .命令如果还未结束那么继续等待输入
-        if (!this.curentCommand.testReadly(this.dataReader)) {
+        if (!this.currentCommand.testReadly(this.dataReader)) {
             return false;
         }
         // .设置Body
         String readData = this.dataReader.removeReadData();
-        this.curentCommand.setCommandBody(readData);
-        this.curentCommand.curentPhase(TelPhase.StandBy);
+        this.currentCommand.setCommandBody(readData);
+        this.currentCommand.curentPhase(TelPhase.StandBy);
         //
         // .执行命令
         try {
             this.telContext.getSpiTrigger().notifySpiWithoutResult(TelBeforeExecutorListener.class, listener -> {
-                listener.beforeExecCommand(this.curentCommand);
+                listener.beforeExecCommand(this.currentCommand);
             });
-            this.execCommand(this.curentCommand);
+            this.execCommand(this.currentCommand);
         } finally {
             this.telContext.getSpiTrigger().notifySpiWithoutResult(TelAfterExecutorListener.class, listener -> {
-                listener.afterExecCommand(this.curentCommand);
+                listener.afterExecCommand(this.currentCommand);
             });
         }
-        this.curentCommand = null;
+        this.currentCommand = null;
         return true;
     }
 
     private void execCommand(TelCommandObject curentCommand) {
-        logger.info("tConsole -> exec " + curentCommand.getCommandName() + " ,curentCounter =" + this.curentCounter());
+        logger.info("tConsole -> exec " + curentCommand.getCommandName() + " ,curentCounter =" + this.currentCounter());
         long doStartTime = System.currentTimeMillis();
         String result = null;
         try {

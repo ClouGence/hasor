@@ -33,15 +33,15 @@ public class MySqlTable implements TableDef {
     private String         comment;
 
     public String getSchemaName() {
-        return schemaName;
+        return this.schemaName;
     }
 
     public void setSchemaName(String schemaName) {
         this.schemaName = schemaName;
     }
 
-    public String getTableName() {
-        return tableName;
+    public String getTable() {
+        return this.tableName;
     }
 
     public void setTableName(String tableName) {
@@ -49,7 +49,7 @@ public class MySqlTable implements TableDef {
     }
 
     public MySqlTableType getTableType() {
-        return tableType;
+        return this.tableType;
     }
 
     public void setTableType(MySqlTableType tableType) {
@@ -57,7 +57,7 @@ public class MySqlTable implements TableDef {
     }
 
     public String getCollation() {
-        return collation;
+        return this.collation;
     }
 
     public void setCollation(String collation) {
@@ -65,7 +65,7 @@ public class MySqlTable implements TableDef {
     }
 
     public Date getCreateTime() {
-        return createTime;
+        return this.createTime;
     }
 
     public void setCreateTime(Date createTime) {
@@ -73,7 +73,7 @@ public class MySqlTable implements TableDef {
     }
 
     public Date getUpdateTime() {
-        return updateTime;
+        return this.updateTime;
     }
 
     public void setUpdateTime(Date updateTime) {
@@ -81,7 +81,7 @@ public class MySqlTable implements TableDef {
     }
 
     public String getComment() {
-        return comment;
+        return this.comment;
     }
 
     public void setComment(String comment) {
@@ -89,7 +89,7 @@ public class MySqlTable implements TableDef {
     }
 
     @Override
-    public final String getCategory() {
+    public final String getSchema() {
         return this.getSchemaName();
     }
 }

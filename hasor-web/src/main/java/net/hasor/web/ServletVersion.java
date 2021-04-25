@@ -26,7 +26,7 @@ public enum ServletVersion {
     V3_0(30),   //
     V3_1(31),   //
     ;
-    private int version;
+    private final int version;
 
     ServletVersion(int version) {
         this.version = version;

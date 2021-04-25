@@ -28,7 +28,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 class TableMappingDef implements TableMapping {
-    private       String                           category;
+    private       String                           schemaName;
     private       String                           tableName;
     private       boolean                          useDelimited;
     private       boolean                          autoProperty;
@@ -60,20 +60,20 @@ class TableMappingDef implements TableMapping {
     }
 
     @Override
-    public String getCategory() {
-        return this.category;
+    public String getSchema() {
+        return this.schemaName;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setSchema(String schemaName) {
+        this.schemaName = schemaName;
     }
 
     @Override
-    public String getTableName() {
+    public String getTable() {
         return this.tableName;
     }
 
-    public void setTableName(String tableName) {
+    public void setTable(String tableName) {
         this.tableName = tableName;
     }
 

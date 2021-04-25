@@ -26,9 +26,9 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春 (zyc@hasor.net)
  */
 class TriggerOnStopToContext implements TelStopContextListener {
-    private static Logger     logger = LoggerFactory.getLogger(TriggerOnStopToContext.class);
-    private        AppContext appContext;
-    private        boolean    enable = true;
+    private static final Logger     logger = LoggerFactory.getLogger(TriggerOnStopToContext.class);
+    private final        AppContext appContext;
+    private              boolean    enable = true;
 
     public TriggerOnStopToContext(AppContext appContext) {
         this.appContext = appContext;

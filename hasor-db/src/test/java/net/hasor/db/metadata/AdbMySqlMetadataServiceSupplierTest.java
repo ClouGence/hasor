@@ -49,7 +49,7 @@ public class AdbMySqlMetadataServiceSupplierTest {
         //
         List<AdbMySqlTable> allTables = this.repository.getAllTables();
         if (!allTables.isEmpty()) {
-            List<String> collect = allTables.stream().map(AdbMySqlTable::getTableName).collect(Collectors.toList());
+            List<String> collect = allTables.stream().map(AdbMySqlTable::getTable).collect(Collectors.toList());
             //
             if (collect.contains("proc_table")) {
                 jdbcTemplate.execute("drop table proc_table");
@@ -99,7 +99,7 @@ public class AdbMySqlMetadataServiceSupplierTest {
         Map<String, List<AdbMySqlTable>> tableList = this.repository.getTables(ADBMYSQL_SCHEMA_NAME);
         assert tableList.size() == 1;
         assert tableList.containsKey("INFORMATION_SCHEMA");
-        List<String> tableForInformationSchema = tableList.get("INFORMATION_SCHEMA").stream().map(AdbMySqlTable::getTableName).collect(Collectors.toList());
+        List<String> tableForInformationSchema = tableList.get("INFORMATION_SCHEMA").stream().map(AdbMySqlTable::getTable).collect(Collectors.toList());
         assert tableForInformationSchema.contains("COLUMNS");
         assert tableForInformationSchema.contains("TABLES");
         assert tableForInformationSchema.contains("SCHEMATA");
@@ -117,7 +117,7 @@ public class AdbMySqlMetadataServiceSupplierTest {
     @Test
     public void findTables() throws SQLException {
         List<AdbMySqlTable> tableList = this.repository.findTable("INFORMATION_SCHEMA", "COLUMNS", "TABLES", "SCHEMATA", "ABC");
-        List<String> tableNames = tableList.stream().map(AdbMySqlTable::getTableName).collect(Collectors.toList());
+        List<String> tableNames = tableList.stream().map(AdbMySqlTable::getTable).collect(Collectors.toList());
         assert tableNames.size() == 3;
         assert tableNames.contains("COLUMNS");
         assert tableNames.contains("TABLES");
