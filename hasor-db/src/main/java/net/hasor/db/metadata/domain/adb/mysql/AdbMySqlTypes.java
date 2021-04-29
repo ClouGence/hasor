@@ -19,10 +19,10 @@ import net.hasor.db.metadata.SqlType;
 import java.sql.JDBCType;
 
 /**
- * https://dev.mysql.com/doc/refman/5.7/en/data-types.html
- * https://dev.mysql.com/doc/refman/8.0/en/data-types.html
- * https://help.aliyun.com/document_detail/123577.html
- * @version : 2020-01-22
+ * <li>https://dev.mysql.com/doc/refman/5.7/en/data-types.html</li>
+ * <li>https://dev.mysql.com/doc/refman/8.0/en/data-types.html</li>
+ * <li>https://help.aliyun.com/document_detail/123577.html</li>
+ * @version : 2021-04-01
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum AdbMySqlTypes implements SqlType {

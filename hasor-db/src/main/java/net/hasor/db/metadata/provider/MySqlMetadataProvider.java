@@ -31,12 +31,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 高效且完整的 MySQL 元信息获取，参考资料：https://dev.mysql.com/doc/refman/8.0/en/information-schema.html
+ * MySQL 元信息获取，参考资料：
+ *   <li>https://dev.mysql.com/doc/refman/8.0/en/information-schema.html</li>
  * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MySqlMetadataProvider extends AbstractMetadataProvider implements MetaDataService {
-    private static final String TABLE = "select TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES";
+    private static final String TABLE = "select TABLE_CATALOG,TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES";
 
     public MySqlMetadataProvider(Connection connection) {
         super(connection);
@@ -47,28 +48,25 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
     }
 
     public String getVersion() throws SQLException {
-        try (Connection conn = this.connectSupplier.get()) {
+        try (Connection conn = this.connectSupplier.eGet()) {
             return new JdbcTemplate(conn).queryForString("select version()");
         }
     }
 
-    public String getCurrentSchema() throws SQLException {
-        try (Connection conn = this.connectSupplier.get()) {
+    @Override
+    public String getCurrentCatalog() throws SQLException {
+        try (Connection conn = this.connectSupplier.eGet()) {
             return new JdbcTemplate(conn).queryForString("select database()");
         }
     }
 
-    public List<MySqlTable> getAllTables() throws SQLException {
-        String currentSchema = "MYSQL";
-        try (Connection conn = this.connectSupplier.get()) {
-            currentSchema = new JdbcTemplate(conn).queryForString("select database()");
-        }
-        return getAllTables(currentSchema);
+    public String getCurrentSchema() throws SQLException {
+        return null;
     }
 
     public List<MySqlSchema> getSchemas() throws SQLException {
         String queryString = "select SCHEMA_NAME,DEFAULT_CHARACTER_SET_NAME,DEFAULT_COLLATION_NAME from INFORMATION_SCHEMA.SCHEMATA";
-        try (Connection conn = this.connectSupplier.get()) {
+        try (Connection conn = this.connectSupplier.eGet()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString);
             if (mapList == null) {
                 return Collections.emptyList();
@@ -87,7 +85,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         if (StringUtils.isBlank(schemaName)) {
             return null;
         }
-        try (Connection conn = this.connectSupplier.get()) {
+        try (Connection conn = this.connectSupplier.eGet()) {
             String queryString = "select SCHEMA_NAME,DEFAULT_CHARACTER_SET_NAME,DEFAULT_COLLATION_NAME from INFORMATION_SCHEMA.SCHEMATA where SCHEMA_NAME = ?";
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName);
             if (mapList == null) {
@@ -103,23 +101,20 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         }
     }
 
-    public Map<String, List<MySqlTable>> getTables(String... schemaName) throws SQLException {
-        schemaName = (schemaName == null) ? new String[0] : schemaName;
-        ArrayList<String> schemaList = new ArrayList<>();
-        for (String schema : schemaName) {
-            if (StringUtils.isNotBlank(schema)) {
-                schemaList.add(schema);
-            }
-        }
+    public Map<String, List<MySqlTable>> getTables(String[] schemaName) throws SQLException {
+        List<String> schemaList = stringArray2List(schemaName);
+        //
+        String queryString;
+        Object[] queryArgs;
         if (schemaList.isEmpty()) {
-            return Collections.emptyMap();
+            queryString = TABLE;
+            queryArgs = new Object[] {};
+        } else {
+            queryString = TABLE + " where TABLE_SCHEMA in " + buildWhereIn(schemaList);
+            queryArgs = schemaList.toArray();
         }
-        if (schemaList.size() > 1000) {
-            throw new IndexOutOfBoundsException("Batch query schema Batch size out of 1000");
-        }
-        String queryString = TABLE + " where TABLE_SCHEMA in " + buildWhereIn(schemaList);
-        try (Connection conn = this.connectSupplier.get()) {
-            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaList.toArray());
+        try (Connection conn = this.connectSupplier.eGet()) {
+            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, queryArgs);
             if (mapList == null) {
                 return Collections.emptyMap();
             }
@@ -134,13 +129,33 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         }
     }
 
+    public List<MySqlTable> getAllTables() throws SQLException {
+        String currentSchema = "MYSQL";
+        try (Connection conn = this.connectSupplier.eGet()) {
+            currentSchema = new JdbcTemplate(conn).queryForString("select database()");
+        }
+        return getAllTables(currentSchema);
+    }
+
     public List<MySqlTable> getAllTables(String schemaName) throws SQLException {
         if (StringUtils.isBlank(schemaName)) {
             return Collections.emptyList();
         }
-        String queryString = TABLE + " where TABLE_SCHEMA = ?";
-        try (Connection conn = this.connectSupplier.get()) {
-            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName);
+        if (StringUtils.isBlank(schemaName)) {
+            schemaName = getCurrentCatalog();
+        }
+        //
+        String queryString;
+        Object[] queryArgs;
+        if (StringUtils.isNotBlank(schemaName)) {
+            queryString = TABLE + " where TABLE_SCHEMA = ?";
+            queryArgs = new Object[] { schemaName };
+        } else {
+            queryString = TABLE;
+            queryArgs = new Object[0];
+        }
+        try (Connection conn = this.connectSupplier.eGet()) {
+            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, queryArgs);
             if (mapList == null) {
                 return Collections.emptyList();
             }
@@ -148,27 +163,25 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         }
     }
 
-    public List<MySqlTable> findTable(String schemaName, String... tableName) throws SQLException {
+    public List<MySqlTable> findTable(String schemaName, String[] tableName) throws SQLException {
+        List<String> tableList = stringArray2List(tableName);
+        if (tableList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        //
+        String queryString;
+        Object[] queryArgs;
         if (StringUtils.isBlank(schemaName)) {
-            return Collections.emptyList();
+            queryString = TABLE + " where TABLE_NAME in " + buildWhereIn(tableList);
+            queryArgs = tableList.toArray();
+        } else {
+            queryString = TABLE + " where TABLE_SCHEMA = ? and TABLE_NAME in " + buildWhereIn(tableList);
+            ArrayList<String> args = new ArrayList<>(tableList);
+            args.add(0, schemaName);
+            queryArgs = args.toArray();
         }
-        tableName = (tableName == null) ? new String[0] : tableName;
-        ArrayList<String> tableNameList = new ArrayList<>();
-        for (String table : tableName) {
-            if (StringUtils.isNotBlank(table)) {
-                tableNameList.add(table);
-            }
-        }
-        if (tableNameList.isEmpty()) {
-            return Collections.emptyList();
-        }
-        if (tableNameList.size() > 1000) {
-            throw new IndexOutOfBoundsException("Batch query table Batch size out of 1000");
-        }
-        String queryString = TABLE + " where TABLE_SCHEMA = ? and TABLE_NAME in " + buildWhereIn(tableNameList);
-        tableNameList.add(0, schemaName);
-        try (Connection conn = this.connectSupplier.get()) {
-            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, tableNameList.toArray());
+        try (Connection conn = this.connectSupplier.eGet()) {
+            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, queryArgs);
             if (mapList == null) {
                 return Collections.emptyList();
             }
@@ -177,12 +190,20 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
     }
 
     public MySqlTable getTable(String schemaName, String tableName) throws SQLException {
-        if (StringUtils.isBlank(schemaName) || StringUtils.isBlank(tableName)) {
+        if (StringUtils.isBlank(tableName)) {
             return null;
         }
+        if (StringUtils.isBlank(schemaName)) {
+            schemaName = getCurrentCatalog();
+            if (StringUtils.isBlank(schemaName)) {
+                throw new SQLException("no schema is specified and the current database is not set");
+            }
+        }
+        //
         String queryString = TABLE + " where TABLE_SCHEMA = ? and TABLE_NAME = ?";
-        try (Connection conn = this.connectSupplier.get()) {
-            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
+        Object[] queryArgs = new Object[] { schemaName, tableName };
+        try (Connection conn = this.connectSupplier.eGet()) {
+            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, queryArgs);
             if (mapList == null) {
                 return null;
             }
@@ -192,7 +213,9 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
 
     protected MySqlTable convertTable(Map<String, Object> recordMap) {
         MySqlTable table = new MySqlTable();
-        table.setTableName(safeToString(recordMap.get("TABLE_NAME")));
+        table.setCatalog(safeToString(recordMap.get("TABLE_CATALOG")));
+        table.setSchema(safeToString(recordMap.get("TABLE_SCHEMA")));
+        table.setTable(safeToString(recordMap.get("TABLE_NAME")));
         table.setTableType(MySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
         table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
         table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
@@ -202,12 +225,19 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
     }
 
     public List<MySqlColumn> getColumns(String schemaName, String tableName) throws SQLException {
-        if (StringUtils.isBlank(schemaName) || StringUtils.isBlank(tableName)) {
+        if (StringUtils.isBlank(tableName)) {
             return Collections.emptyList();
         }
+        if (StringUtils.isBlank(schemaName)) {
+            schemaName = getCurrentCatalog();
+            if (StringUtils.isBlank(schemaName)) {
+                throw new SQLException("no schema is specified and the current database is not set");
+            }
+        }
+        //
         List<Map<String, Object>> primaryKeyList = null;
         List<Map<String, Object>> columnList = null;
-        try (Connection conn = this.connectSupplier.get()) {
+        try (Connection conn = this.connectSupplier.eGet()) {
             String queryStringColumn = "select TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,CHARACTER_OCTET_LENGTH,NUMERIC_SCALE,NUMERIC_PRECISION,DATETIME_PRECISION,CHARACTER_SET_NAME,COLLATION_NAME,COLUMN_TYPE,COLUMN_COMMENT from INFORMATION_SCHEMA.COLUMNS " //
                     + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
             columnList = new JdbcTemplate(conn).queryForList(queryStringColumn, schemaName, tableName);
@@ -254,12 +284,19 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
     }
 
     public List<MySqlConstraint> getConstraint(String schemaName, String tableName) throws SQLException {
-        if (StringUtils.isBlank(schemaName) || StringUtils.isBlank(tableName)) {
+        if (StringUtils.isBlank(tableName)) {
             return Collections.emptyList();
         }
+        if (StringUtils.isBlank(schemaName)) {
+            schemaName = getCurrentCatalog();
+            if (StringUtils.isBlank(schemaName)) {
+                throw new SQLException("no schema is specified and the current database is not set");
+            }
+        }
+        //
         String queryString = "select CONSTRAINT_SCHEMA,CONSTRAINT_NAME,TABLE_SCHEMA,TABLE_NAME,CONSTRAINT_TYPE from INFORMATION_SCHEMA.TABLE_CONSTRAINTS " //
                 + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
-        try (Connection conn = this.connectSupplier.get()) {
+        try (Connection conn = this.connectSupplier.eGet()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {
                 return Collections.emptyList();
@@ -293,9 +330,16 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
     }
 
     public MySqlPrimaryKey getPrimaryKey(String schemaName, String tableName) throws SQLException {
-        if (StringUtils.isBlank(schemaName) || StringUtils.isBlank(tableName)) {
+        if (StringUtils.isBlank(tableName)) {
             return null;
         }
+        if (StringUtils.isBlank(schemaName)) {
+            schemaName = getCurrentCatalog();
+            if (StringUtils.isBlank(schemaName)) {
+                throw new SQLException("no schema is specified and the current database is not set");
+            }
+        }
+        //
         List<MySqlConstraint> constraintList = getConstraint(schemaName, tableName, MySqlConstraintType.PrimaryKey);
         if (constraintList == null || constraintList.isEmpty()) {
             return null;
@@ -304,7 +348,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         String pkConstraintName = constraintPrimaryKey.getName();
         String queryString = "select COLUMN_NAME,INDEX_TYPE FROM INFORMATION_SCHEMA.STATISTICS " //
                 + "where TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME = ? order by SEQ_IN_INDEX asc";
-        try (Connection conn = this.connectSupplier.get()) {
+        try (Connection conn = this.connectSupplier.eGet()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName, pkConstraintName);
             if (mapList == null) {
                 return null;
@@ -323,9 +367,16 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
     }
 
     public List<MySqlUniqueKey> getUniqueKey(String schemaName, String tableName) throws SQLException {
-        if (StringUtils.isBlank(schemaName) || StringUtils.isBlank(tableName)) {
+        if (StringUtils.isBlank(tableName)) {
             return Collections.emptyList();
         }
+        if (StringUtils.isBlank(schemaName)) {
+            schemaName = getCurrentCatalog();
+            if (StringUtils.isBlank(schemaName)) {
+                throw new SQLException("no schema is specified and the current database is not set");
+            }
+        }
+        //
         List<MySqlConstraint> constraintList = getConstraint(schemaName, tableName, MySqlConstraintType.Unique);
         if (constraintList == null || constraintList.isEmpty()) {
             return Collections.emptyList();
@@ -336,7 +387,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         queryParam.addAll(constraintList.stream().map(MySqlConstraint::getName).collect(Collectors.toList()));
         String queryString = "select INDEX_NAME,COLUMN_NAME,INDEX_TYPE FROM INFORMATION_SCHEMA.STATISTICS " //
                 + "where TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME in " + buildWhereIn(constraintList) + " order by SEQ_IN_INDEX asc";
-        try (Connection conn = this.connectSupplier.get()) {
+        try (Connection conn = this.connectSupplier.eGet()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, queryParam.toArray());
             if (mapList == null) {
                 return Collections.emptyList();
@@ -360,9 +411,16 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
     }
 
     public List<MySqlForeignKey> getForeignKey(String schemaName, String tableName) throws SQLException {
-        if (StringUtils.isBlank(schemaName) || StringUtils.isBlank(tableName)) {
+        if (StringUtils.isBlank(tableName)) {
             return Collections.emptyList();
         }
+        if (StringUtils.isBlank(schemaName)) {
+            schemaName = getCurrentCatalog();
+            if (StringUtils.isBlank(schemaName)) {
+                throw new SQLException("no schema is specified and the current database is not set");
+            }
+        }
+        //
         List<MySqlConstraint> constraintList = getConstraint(schemaName, tableName, MySqlConstraintType.ForeignKey);
         if (constraintList == null || constraintList.isEmpty()) {
             return Collections.emptyList();
@@ -378,7 +436,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         queryAttrsParam.addAll(constraintNameList);
         queryAttrsParam.add(tableName);
         //
-        try (Connection conn = this.connectSupplier.get()) {
+        try (Connection conn = this.connectSupplier.eGet()) {
             Map<String, MySqlForeignKey> fkMap = new LinkedHashMap<>();
             List<Map<String, Object>> fkAttrsMapList = new JdbcTemplate(conn).queryForList(queryFkAttrs, queryAttrsParam.toArray());
             if (fkAttrsMapList == null || fkAttrsMapList.isEmpty()) {
@@ -433,12 +491,19 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
     }
 
     public List<MySqlIndex> getIndexes(String schemaName, String tableName) throws SQLException {
-        if (StringUtils.isBlank(schemaName) || StringUtils.isBlank(tableName)) {
+        if (StringUtils.isBlank(tableName)) {
             return Collections.emptyList();
         }
+        if (StringUtils.isBlank(schemaName)) {
+            schemaName = getCurrentCatalog();
+            if (StringUtils.isBlank(schemaName)) {
+                throw new SQLException("no schema is specified and the current database is not set");
+            }
+        }
+        //
         String queryString = "select TABLE_CATALOG,TABLE_SCHEMA,TABLE_NAME,INDEX_NAME,INDEX_TYPE,NON_UNIQUE,COLUMN_NAME FROM INFORMATION_SCHEMA.STATISTICS "//
                 + "where TABLE_SCHEMA = ? and TABLE_NAME = ? order by SEQ_IN_INDEX asc";
-        try (Connection conn = this.connectSupplier.get()) {
+        try (Connection conn = this.connectSupplier.eGet()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {
                 return Collections.emptyList();
@@ -468,7 +533,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
                     }
                     MySqlIndex mySqlIndex = new MySqlIndex();
                     mySqlIndex.setName(k);
-                    mySqlIndex.setIndexEnum(indexType);
+                    mySqlIndex.setIndexType(indexType);
                     return mySqlIndex;
                 });
                 String columnName = safeToString(indexColumn.get("COLUMN_NAME"));
@@ -481,9 +546,6 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
     }
 
     public List<MySqlIndex> getIndexes(String schemaName, String tableName, MySqlIndexType... indexTypes) throws SQLException {
-        if (StringUtils.isBlank(schemaName) || StringUtils.isBlank(tableName)) {
-            return Collections.emptyList();
-        }
         if (indexTypes == null || indexTypes.length == 0) {
             return Collections.emptyList();
         }
@@ -492,7 +554,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
             return Collections.emptyList();
         }
         return indexList.stream().filter(indexItem -> {
-            MySqlIndexType indexTypeForItem = indexItem.getIndexEnum();
+            MySqlIndexType indexTypeForItem = indexItem.getIndexType();
             for (MySqlIndexType matchType : indexTypes) {
                 if (indexTypeForItem == matchType) {
                     return true;
@@ -503,9 +565,6 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
     }
 
     public MySqlIndex getIndexes(String schemaName, String tableName, String indexName) throws SQLException {
-        if (StringUtils.isBlank(schemaName) || StringUtils.isBlank(tableName) || StringUtils.isBlank(indexName)) {
-            return null;
-        }
         List<MySqlIndex> indexList = getIndexes(schemaName, tableName);
         if (indexList == null || indexList.isEmpty()) {
             return null;
@@ -535,8 +594,9 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
     }
 
     @Override
-    public Map<String, ColumnDef> getColumnMap(String schemaName, String tableName) throws SQLException {
-        List<MySqlColumn> columns = this.getColumns(schemaName, tableName);
+    public Map<String, ColumnDef> getColumnMap(String catalog, String schema, String table) throws SQLException {
+        String dbName = StringUtils.isNotBlank(catalog) ? catalog : schema;
+        List<MySqlColumn> columns = this.getColumns(dbName, table);
         if (columns != null) {
             return columns.stream().collect(Collectors.toMap(MySqlColumn::getName, o -> o));
         } else {
@@ -545,7 +605,8 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
     }
 
     @Override
-    public TableDef searchTable(String schemaName, String tableName) throws SQLException {
-        return getTable(schemaName, tableName);
+    public TableDef searchTable(String catalog, String schema, String table) throws SQLException {
+        String dbName = StringUtils.isNotBlank(catalog) ? catalog : schema;
+        return getTable(dbName, table);
     }
 }

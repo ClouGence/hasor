@@ -21,7 +21,7 @@ import java.sql.JDBCType;
 
 /**
  * MySQL 列
- * @version : 2020-01-22
+ * @version : 2021-03-30
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MySqlColumn implements ColumnDef {

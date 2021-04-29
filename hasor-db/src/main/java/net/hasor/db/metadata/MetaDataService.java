@@ -35,8 +35,11 @@ public interface MetaDataService {
     /** 获取当前 Schema */
     public String getCurrentSchema() throws SQLException;
 
-    /** 搜索表 */
-    public TableDef searchTable(String schemaName, String tableName) throws SQLException;
+    /** 获取当前 Catalog */
+    public String getCurrentCatalog() throws SQLException;
 
-    public Map<String, ColumnDef> getColumnMap(String schemaName, String tableName) throws SQLException;
+    /** 搜索表 */
+    public TableDef searchTable(String catalog, String schema, String table) throws SQLException;
+
+    public Map<String, ColumnDef> getColumnMap(String catalog, String schema, String table) throws SQLException;
 }

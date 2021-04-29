@@ -15,9 +15,9 @@
  */
 package net.hasor.db.metadata.provider;
 import net.hasor.db.metadata.CaseSensitivityType;
-import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
+import net.hasor.utils.function.ESupplier;
 
 import javax.sql.DataSource;
 import java.io.Closeable;
@@ -28,9 +28,7 @@ import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.function.Supplier;
+import java.util.*;
 
 /**
  * MetadataSupplier 系列的公共类。
@@ -38,9 +36,9 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AbstractMetadataProvider {
-    protected final Supplier<Connection> connectSupplier;
-    private         CaseSensitivityType  plainCaseSensitivityType;
-    private         CaseSensitivityType  delimitedCaseSensitivityType;
+    protected final ESupplier<Connection, SQLException> connectSupplier;
+    private         CaseSensitivityType                 plainCaseSensitivityType;
+    private         CaseSensitivityType                 delimitedCaseSensitivityType;
 
     /** Connection will be proxy, Calling the close method in an AbstractMetadatasupplier subclass will be invalid. */
     public AbstractMetadataProvider(Connection connection) {
@@ -50,18 +48,12 @@ public class AbstractMetadataProvider {
 
     /** Each time data is requested in the AbstractMetadatasupplier subclass a new Connection is created and then closed. */
     public AbstractMetadataProvider(DataSource dataSource) {
-        this.connectSupplier = () -> {
-            try {
-                return dataSource.getConnection();
-            } catch (SQLException e) {
-                throw ExceptionUtils.toRuntimeException(e);
-            }
-        };
+        this.connectSupplier = dataSource::getConnection;
     }
 
     public CaseSensitivityType getPlain() throws SQLException {
         if (this.plainCaseSensitivityType == null) {
-            try (Connection conn = this.connectSupplier.get()) {
+            try (Connection conn = this.connectSupplier.eGet()) {
                 DatabaseMetaData metaData = conn.getMetaData();
                 if (metaData.supportsMixedCaseIdentifiers()) {
                     this.plainCaseSensitivityType = CaseSensitivityType.Exact;
@@ -81,7 +73,7 @@ public class AbstractMetadataProvider {
 
     public CaseSensitivityType getDelimited() throws SQLException {
         if (this.delimitedCaseSensitivityType == null) {
-            try (Connection conn = this.connectSupplier.get()) {
+            try (Connection conn = this.connectSupplier.eGet()) {
                 DatabaseMetaData metaData = conn.getMetaData();
                 if (metaData.supportsMixedCaseQuotedIdentifiers()) {
                     this.delimitedCaseSensitivityType = CaseSensitivityType.Exact;
@@ -169,5 +161,18 @@ public class AbstractMetadataProvider {
         whereIn.deleteCharAt(whereIn.length() - 1);
         whereIn.append(")");
         return whereIn.toString();
+    }
+
+    protected static List<String> stringArray2List(String[] stringArray) {
+        if (stringArray == null || stringArray.length == 0) {
+            return Collections.emptyList();
+        }
+        ArrayList<String> stringList = new ArrayList<>();
+        for (String string : stringArray) {
+            if (StringUtils.isNotBlank(string)) {
+                stringList.add(string);
+            }
+        }
+        return stringList;
     }
 }

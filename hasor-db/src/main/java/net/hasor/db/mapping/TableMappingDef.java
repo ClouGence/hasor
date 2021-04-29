@@ -28,6 +28,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 class TableMappingDef implements TableMapping {
+    private       String                           catalogName;
     private       String                           schemaName;
     private       String                           tableName;
     private       boolean                          useDelimited;
@@ -57,6 +58,15 @@ class TableMappingDef implements TableMapping {
 
     public void setAutoProperty(boolean autoProperty) {
         this.autoProperty = autoProperty;
+    }
+
+    @Override
+    public String getCatalog() {
+        return this.catalogName;
+    }
+
+    public void setCatalog(String catalog) {
+        this.catalogName = catalog;
     }
 
     @Override

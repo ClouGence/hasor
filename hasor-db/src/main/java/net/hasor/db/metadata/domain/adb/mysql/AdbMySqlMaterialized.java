@@ -19,7 +19,7 @@ import java.util.Date;
 /**
  * https://help.aliyun.com/document_detail/200653.html
  * AdbMySql Materialized View
- * @version : 2020-01-22
+ * @version : 2021-04-09
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AdbMySqlMaterialized extends AdbMySqlTable {

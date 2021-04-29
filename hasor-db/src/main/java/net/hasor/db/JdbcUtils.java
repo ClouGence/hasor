@@ -55,8 +55,6 @@ public class JdbcUtils {
     public static final String ENTERPRISEDB     = "edb";
     public static final String KYLIN            = "kylin";//org.apache.kylin.jdbc.Driver
     public static final String SQLITE           = "sqlite";
-    public static final String ALIYUN_ADS       = "aliyun_ads";
-    public static final String ALIYUN_DRDS      = "aliyun_drds";
     public static final String PRESTO           = "presto";
     public static final String ELASTIC_SEARCH   = "elastic_search";
     public static final String CLICKHOUSE       = "clickhouse";

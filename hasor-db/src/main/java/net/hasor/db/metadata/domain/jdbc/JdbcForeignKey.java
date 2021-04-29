@@ -13,40 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.domain.mysql;
+package net.hasor.db.metadata.domain.jdbc;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * MySQL 外键
- * @version : 2021-03-30
+ * Jdbc 外键
+ * @version : 2020-04-29
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MySqlForeignKey extends MySqlConstraint {
+public class JdbcForeignKey extends JdbcConstraint {
     private List<String>        fkColumn         = new ArrayList<>();
-    private Map<String, String> storageType      = new HashMap<>();
+    private String              referenceCatalog;
     private String              referenceSchema;
     private String              referenceTable;
     private Map<String, String> referenceMapping = new HashMap<>();
-    private MySqlForeignKeyRule updateRule;
-    private MySqlForeignKeyRule deleteRule;
+    private JdbcForeignKeyRule  updateRule;
+    private JdbcForeignKeyRule  deleteRule;
+    private JdbcDeferrability   deferrability;
 
     public List<String> getFkColumn() {
-        return this.fkColumn;
+        return fkColumn;
     }
 
     public void setFkColumn(List<String> fkColumn) {
         this.fkColumn = fkColumn;
     }
 
-    public Map<String, String> getStorageType() {
-        return this.storageType;
+    public String getReferenceCatalog() {
+        return this.referenceCatalog;
     }
 
-    public void setStorageType(Map<String, String> storageType) {
-        this.storageType = storageType;
+    public void setReferenceCatalog(String referenceCatalog) {
+        this.referenceCatalog = referenceCatalog;
     }
 
     public String getReferenceSchema() {
@@ -73,19 +74,27 @@ public class MySqlForeignKey extends MySqlConstraint {
         this.referenceMapping = referenceMapping;
     }
 
-    public MySqlForeignKeyRule getUpdateRule() {
+    public JdbcForeignKeyRule getUpdateRule() {
         return this.updateRule;
     }
 
-    public void setUpdateRule(MySqlForeignKeyRule updateRule) {
+    public void setUpdateRule(JdbcForeignKeyRule updateRule) {
         this.updateRule = updateRule;
     }
 
-    public MySqlForeignKeyRule getDeleteRule() {
+    public JdbcForeignKeyRule getDeleteRule() {
         return this.deleteRule;
     }
 
-    public void setDeleteRule(MySqlForeignKeyRule deleteRule) {
+    public void setDeleteRule(JdbcForeignKeyRule deleteRule) {
         this.deleteRule = deleteRule;
+    }
+
+    public JdbcDeferrability getDeferrability() {
+        return this.deferrability;
+    }
+
+    public void setDeferrability(JdbcDeferrability deferrability) {
+        this.deferrability = deferrability;
     }
 }

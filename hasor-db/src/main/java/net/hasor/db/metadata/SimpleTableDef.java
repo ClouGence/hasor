@@ -20,24 +20,34 @@ package net.hasor.db.metadata;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SimpleTableDef implements TableDef {
-    private String category;
-    private String tableName;
+    private String catalog;
+    private String schema;
+    private String table;
+
+    @Override
+    public String getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
+    }
 
     @Override
     public String getSchema() {
-        return this.category;
+        return schema;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 
     @Override
     public String getTable() {
-        return this.tableName;
+        return table;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
+    public void setTable(String table) {
+        this.table = table;
     }
 }

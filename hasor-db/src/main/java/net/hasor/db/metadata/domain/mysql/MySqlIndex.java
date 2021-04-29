@@ -21,12 +21,12 @@ import java.util.Map;
 
 /**
  * MySQL 索引
- * @version : 2020-01-22
+ * @version : 2021-03-30
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MySqlIndex {
     private String              name;
-    private MySqlIndexType      indexEnum;
+    private MySqlIndexType      indexType;
     private List<String>        columns     = new ArrayList<>();
     private Map<String, String> storageType = new HashMap<>();
 
@@ -38,12 +38,12 @@ public class MySqlIndex {
         this.name = name;
     }
 
-    public MySqlIndexType getIndexEnum() {
-        return this.indexEnum;
+    public MySqlIndexType getIndexType() {
+        return this.indexType;
     }
 
-    public void setIndexEnum(MySqlIndexType indexEnum) {
-        this.indexEnum = indexEnum;
+    public void setIndexType(MySqlIndexType indexType) {
+        this.indexType = indexType;
     }
 
     public List<String> getColumns() {

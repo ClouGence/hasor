@@ -17,52 +17,55 @@ package net.hasor.db.metadata.domain.jdbc;
 import net.hasor.db.metadata.TableDef;
 
 /**
- * Table
- * @version : 2020-01-22
+ * Jdbc Table
+ * @version : 2020-04-25
  * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcTable implements TableDef {
-    private String        tableCatalog;
-    private String        tableSchema;
-    private String        tableName;
-    private JdbcTableType tableType;
-    private String        remarks;
+    private String catalog;
+    private String schema;
+    private String table;
+    private String tableType;
+    private String remarks;
     //
-    private String        typeCatalog;
-    private String        typeSchema;
-    private String        typeName;
-    private String        selfReferencingColName;
-    private String        refGeneration;
+    private String typeCatalog;
+    private String typeSchema;
+    private String typeName;
+    private String selfReferencingColName;
+    private String refGeneration;
 
-    public String getTableCatalog() {
-        return this.tableCatalog;
+    @Override
+    public String getCatalog() {
+        return this.catalog;
     }
 
-    public void setTableCatalog(String tableCatalog) {
-        this.tableCatalog = tableCatalog;
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
     }
 
-    public String getTableSchema() {
-        return this.tableSchema;
+    @Override
+    public String getSchema() {
+        return this.schema;
     }
 
-    public void setTableSchema(String tableSchema) {
-        this.tableSchema = tableSchema;
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 
+    @Override
     public String getTable() {
-        return this.tableName;
+        return this.table;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
+    public void setTable(String table) {
+        this.table = table;
     }
 
-    public JdbcTableType getTableType() {
+    public String getTableType() {
         return this.tableType;
     }
 
-    public void setTableType(JdbcTableType tableType) {
+    public void setTableType(String tableType) {
         this.tableType = tableType;
     }
 
@@ -112,10 +115,5 @@ public class JdbcTable implements TableDef {
 
     public void setRefGeneration(String refGeneration) {
         this.refGeneration = refGeneration;
-    }
-
-    @Override
-    public String getSchema() {
-        return this.tableSchema;
     }
 }

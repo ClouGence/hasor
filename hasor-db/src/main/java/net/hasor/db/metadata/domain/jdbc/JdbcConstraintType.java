@@ -16,14 +16,12 @@
 package net.hasor.db.metadata.domain.jdbc;
 /**
  * Jdbc 约束类型
- * @version : 2020-01-22
+ * @version : 2020-04-25
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum JdbcConstraintType {
     /** 主键约束 */
     PrimaryKey("PRIMARY KEY"),
-    /** 唯一约束 */
-    Unique("UNIQUE"),
     /** 外建约束 */
     ForeignKey("FOREIGN KEY"),
     ;

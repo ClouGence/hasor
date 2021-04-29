@@ -34,8 +34,6 @@ public class SqlDialectRegister {
     private static final Map<String, SqlDialect> dialectCache    = new LinkedCaseInsensitiveMap<>();
 
     static {
-        registerDialectAlias(JdbcUtils.ALIYUN_ADS, AliyunAdsForMySqlDialect.class);
-        registerDialectAlias(JdbcUtils.ALIYUN_DRDS, AliyunDRDSDialect.class);
         registerDialectAlias(JdbcUtils.ALI_ORACLE, OracleDialect.class);
         registerDialectAlias(JdbcUtils.DB2, Db2Dialect.class);
         registerDialectAlias(JdbcUtils.DERBY, SqlServerDialect.class);// Apache Derby

@@ -21,7 +21,7 @@ import java.sql.JDBCType;
 
 /**
  * AdbMySql 列
- * @version : 2020-01-22
+ * @version : 2021-04-01
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AdbMySqlColumn implements ColumnDef {

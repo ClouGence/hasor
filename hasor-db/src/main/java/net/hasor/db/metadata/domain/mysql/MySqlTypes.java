@@ -19,9 +19,9 @@ import net.hasor.db.metadata.SqlType;
 import java.sql.JDBCType;
 
 /**
- * https://dev.mysql.com/doc/refman/5.7/en/data-types.html
- * https://dev.mysql.com/doc/refman/8.0/en/data-types.html
- * @version : 2020-01-22
+ * <li>https://dev.mysql.com/doc/refman/5.7/en/data-types.html</li>
+ * <li>https://dev.mysql.com/doc/refman/8.0/en/data-types.html</li>
+ * @version : 2021-03-30
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum MySqlTypes implements SqlType {

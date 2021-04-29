@@ -29,6 +29,11 @@ public interface BoundSql {
         private final String   sqlString;
         private final Object[] paramArray;
 
+        public BoundSqlObj(String sqlString) {
+            this.sqlString = sqlString;
+            this.paramArray = new Object[0];
+        }
+
         public BoundSqlObj(String sqlString, Object[] paramArray) {
             this.sqlString = sqlString;
             this.paramArray = paramArray;

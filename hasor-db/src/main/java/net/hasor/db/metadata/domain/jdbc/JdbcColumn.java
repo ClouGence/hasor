@@ -19,8 +19,8 @@ import net.hasor.db.metadata.ColumnDef;
 import java.sql.JDBCType;
 
 /**
- * Column
- * @version : 2020-01-22
+ * Jdbc Column
+ * @version : 2020-04-25
  * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcColumn implements ColumnDef {
@@ -38,6 +38,7 @@ public class JdbcColumn implements ColumnDef {
     private boolean          uniqueKey;//如若存在联合唯一索引需要借助getUniqueKey 来查询具体信息，这里只会表示该列存在至少一个唯一索引的引用。
     private String           comment;
     //
+    private String           typeName;
     private String           scopeCatalog;
     private String           scopeSchema;
     private String           scopeTable;
@@ -152,6 +153,14 @@ public class JdbcColumn implements ColumnDef {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getTypeName() {
+        return this.typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public String getScopeCatalog() {

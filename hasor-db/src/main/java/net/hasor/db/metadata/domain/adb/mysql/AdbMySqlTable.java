@@ -20,32 +20,41 @@ import java.util.Date;
 
 /**
  * AdbMySql 表
- * @version : 2020-01-22
+ * @version : 2021-04-01
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AdbMySqlTable implements TableDef {
-    private String            schemaName;
-    private String            tableName;
+    private String            catalog;
+    private String            schema;
+    private String            table;
     private AdbMySqlTableType tableType;
     private String            collation;
     private Date              createTime;
     private Date              updateTime;
     private String            comment;
 
-    public String getSchemaName() {
-        return this.schemaName;
+    public String getCatalog() {
+        return this.catalog;
     }
 
-    public void setSchemaName(String schemaName) {
-        this.schemaName = schemaName;
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
+    }
+
+    public String getSchema() {
+        return this.schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 
     public String getTable() {
-        return this.tableName;
+        return this.table;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
+    public void setTable(String table) {
+        this.table = table;
     }
 
     public AdbMySqlTableType getTableType() {
@@ -86,10 +95,5 @@ public class AdbMySqlTable implements TableDef {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    @Override
-    public final String getSchema() {
-        return this.getSchemaName();
     }
 }

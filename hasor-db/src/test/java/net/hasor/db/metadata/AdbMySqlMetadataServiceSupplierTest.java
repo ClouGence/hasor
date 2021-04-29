@@ -96,7 +96,7 @@ public class AdbMySqlMetadataServiceSupplierTest {
 
     @Test
     public void getTables() throws SQLException {
-        Map<String, List<AdbMySqlTable>> tableList = this.repository.getTables(ADBMYSQL_SCHEMA_NAME);
+        Map<String, List<AdbMySqlTable>> tableList = this.repository.getTables(new String[] { "INFORMATION_SCHEMA" });
         assert tableList.size() == 1;
         assert tableList.containsKey("INFORMATION_SCHEMA");
         List<String> tableForInformationSchema = tableList.get("INFORMATION_SCHEMA").stream().map(AdbMySqlTable::getTable).collect(Collectors.toList());
@@ -108,7 +108,7 @@ public class AdbMySqlMetadataServiceSupplierTest {
 
     @Test
     public void getMaterializedView() throws SQLException {
-        List<AdbMySqlTable> tableList = this.repository.findTable(ADBMYSQL_SCHEMA_NAME, "m_tb_user");
+        List<AdbMySqlTable> tableList = this.repository.findTable(ADBMYSQL_SCHEMA_NAME, new String[] { "m_tb_user" });
         assert tableList.size() == 1;
         assert tableList.get(0) instanceof AdbMySqlMaterialized;
         assert tableList.get(0).getTableType() == AdbMySqlTableType.Materialized;
@@ -116,7 +116,7 @@ public class AdbMySqlMetadataServiceSupplierTest {
 
     @Test
     public void findTables() throws SQLException {
-        List<AdbMySqlTable> tableList = this.repository.findTable("INFORMATION_SCHEMA", "COLUMNS", "TABLES", "SCHEMATA", "ABC");
+        List<AdbMySqlTable> tableList = this.repository.findTable("INFORMATION_SCHEMA", new String[] { "COLUMNS", "TABLES", "SCHEMATA", "ABC" });
         List<String> tableNames = tableList.stream().map(AdbMySqlTable::getTable).collect(Collectors.toList());
         assert tableNames.size() == 3;
         assert tableNames.contains("COLUMNS");

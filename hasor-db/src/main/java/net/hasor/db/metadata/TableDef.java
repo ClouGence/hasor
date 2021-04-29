@@ -20,7 +20,10 @@ package net.hasor.db.metadata;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface TableDef {
-    /** 分类(对于mysql 是 db，对于 pg 是 schema，对于 oracle 是 schema) */
+    /** 分类 */
+    public String getCatalog();
+
+    /** Schema */
     public String getSchema();
 
     /** 表名 */

@@ -16,7 +16,7 @@
 package net.hasor.db.metadata.domain.jdbc;
 /**
  * Jdbc 约束
- * @version : 2020-01-22
+ * @version : 2020-04-25
  * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcConstraint {

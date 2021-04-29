@@ -19,7 +19,7 @@ import net.hasor.utils.ExceptionUtils;
 import java.util.function.Supplier;
 
 /**
- * Consumer 允许异常抛出。
+ * Supplier 允许异常抛出。
  * @version 2021-01-23
  * @author 赵永春 (zyc@hasor.net)
  */

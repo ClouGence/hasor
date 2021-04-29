@@ -1,6 +1,11 @@
 package net.hasor.db.metadata.domain.jdbc;
 import java.sql.DatabaseMetaData;
 
+/**
+ * Jdbc 规定的空值类型
+ * @version : 2020-04-25
+ * @author 赵永春 (zyc@hasor.net)
+ */
 public enum JdbcNullableType {
     /** might not allow NULL values */
     ColumnNoNull(DatabaseMetaData.columnNoNulls),

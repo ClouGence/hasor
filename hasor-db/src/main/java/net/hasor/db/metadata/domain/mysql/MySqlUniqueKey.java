@@ -21,7 +21,7 @@ import java.util.Map;
 
 /**
  * MySQL 唯一键
- * @version : 2020-01-22
+ * @version : 2021-03-30
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MySqlUniqueKey extends MySqlConstraint {
