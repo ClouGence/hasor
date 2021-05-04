@@ -28,6 +28,8 @@ import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.*;
 import java.util.*;
 
 /**
@@ -147,6 +149,20 @@ public class AbstractMetadataProvider {
             return null;
         } else if (obj instanceof Date) {
             return (Date) obj;
+        } else if (obj instanceof ZonedDateTime) {
+            ZonedDateTime zonedDateTime = ((ZonedDateTime) obj);
+            return Timestamp.from(zonedDateTime.toInstant());
+        } else if (obj instanceof OffsetDateTime) {
+            ZonedDateTime zonedDateTime = ((OffsetDateTime) obj).atZoneSameInstant(ZoneOffset.systemDefault());
+            return Timestamp.from(zonedDateTime.toInstant());
+        } else if (obj instanceof OffsetTime) {
+            ZonedDateTime zonedDateTime = ((OffsetTime) obj).atDate(LocalDate.ofEpochDay(0)).atZoneSameInstant(ZoneOffset.UTC);
+            return Timestamp.from(zonedDateTime.toInstant());
+        } else if (obj instanceof LocalDateTime) {
+            return Timestamp.valueOf((LocalDateTime) obj);
+        } else if (obj instanceof LocalDate) {
+            LocalDateTime dateTime = LocalDateTime.of((LocalDate) obj, LocalTime.of(0, 0, 0, 0));
+            return Timestamp.valueOf(dateTime);
         } else if (obj instanceof Number) {
             return new Date(((Number) obj).longValue());
         } else {

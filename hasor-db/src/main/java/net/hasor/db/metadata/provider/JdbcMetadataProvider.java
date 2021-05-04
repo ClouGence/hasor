@@ -66,15 +66,30 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         }
     }
 
+    public String getCurrentCatalog() throws SQLException {
+        try (Connection conn = this.connectSupplier.eGet()) {
+            return conn.getCatalog();
+        }
+    }
+
     public String getCurrentSchema() throws SQLException {
         try (Connection conn = this.connectSupplier.eGet()) {
             return conn.getSchema();
         }
     }
 
-    public String getCurrentCatalog() throws SQLException {
-        try (Connection conn = this.connectSupplier.eGet()) {
-            return conn.getCatalog();
+    @Override
+    public TableDef searchTable(String catalog, String schema, String table) throws SQLException {
+        return getTable(catalog, schema, table);
+    }
+
+    @Override
+    public Map<String, ColumnDef> getColumnMap(String catalog, String schema, String table) throws SQLException {
+        List<JdbcColumn> columns = this.getColumns(catalog, schema, table);
+        if (columns != null) {
+            return columns.stream().collect(Collectors.toMap(JdbcColumn::getName, o -> o));
+        } else {
+            return Collections.emptyMap();
         }
     }
 
@@ -201,81 +216,6 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
                 }
             }
         }
-    }
-
-    protected JdbcTable convertTable(ResultSet rs) throws SQLException {
-        JdbcTable jdbcSchema = new JdbcTable();
-        jdbcSchema.setCatalog(rs.getString("TABLE_CAT"));
-        jdbcSchema.setSchema(rs.getString("TABLE_SCHEM"));
-        jdbcSchema.setTable(rs.getString("TABLE_NAME"));
-        jdbcSchema.setTableType(rs.getString("TABLE_TYPE"));
-        jdbcSchema.setRemarks(rs.getString("REMARKS"));
-        //
-        jdbcSchema.setTypeCatalog(rs.getString("TYPE_CAT"));
-        jdbcSchema.setTypeSchema(rs.getString("TYPE_SCHEM"));
-        jdbcSchema.setTypeName(rs.getString("TYPE_NAME"));
-        jdbcSchema.setSelfReferencingColName(rs.getString("SELF_REFERENCING_COL_NAME"));
-        jdbcSchema.setRefGeneration(rs.getString("REF_GENERATION"));
-        return jdbcSchema;
-    }
-
-    protected JdbcColumn convertColumn(ResultSet rs, JdbcPrimaryKey primaryKey, Set<String> uniqueKey) throws SQLException {
-        JdbcColumn jdbcColumn = new JdbcColumn();
-        jdbcColumn.setTableCatalog(rs.getString("TABLE_CAT"));
-        jdbcColumn.setTableSchema(rs.getString("TABLE_SCHEM"));
-        jdbcColumn.setTableName(rs.getString("TABLE_NAME"));
-        jdbcColumn.setColumnName(rs.getString("COLUMN_NAME"));
-        //
-        String isNullable = rs.getString("IS_NULLABLE");
-        if ("YES".equals(isNullable)) {
-            jdbcColumn.setNullable(true);
-        } else if ("NO".equals(isNullable)) {
-            jdbcColumn.setNullable(false);
-        } else {
-            jdbcColumn.setNullable(null);
-        }
-        jdbcColumn.setNullableType(JdbcNullableType.valueOfCode(rs.getInt("NULLABLE")));
-        jdbcColumn.setTypeName(rs.getString("TYPE_NAME"));
-        //
-        jdbcColumn.setJdbcType(JDBCType.valueOf(rs.getInt("DATA_TYPE")));
-        jdbcColumn.setColumnSize(rs.getInt("COLUMN_SIZE"));
-        jdbcColumn.setComment(rs.getString("REMARKS"));
-        jdbcColumn.setScopeCatalog(rs.getString("SCOPE_CATALOG"));
-        jdbcColumn.setScopeSchema(rs.getString("SCOPE_SCHEMA"));
-        jdbcColumn.setScopeTable(rs.getString("SCOPE_TABLE"));
-        //
-        String isAutoincrement = rs.getString("IS_AUTOINCREMENT");
-        if ("YES".equals(isAutoincrement)) {
-            jdbcColumn.setAutoincrement(true);
-        } else if ("NO".equals(isAutoincrement)) {
-            jdbcColumn.setAutoincrement(false);
-        } else {
-            jdbcColumn.setAutoincrement(null);
-        }
-        String isGeneratedColumn = rs.getString("IS_GENERATEDCOLUMN");
-        if ("YES".equals(isGeneratedColumn)) {
-            jdbcColumn.setGeneratedColumn(true);
-        } else if ("NO".equals(isGeneratedColumn)) {
-            jdbcColumn.setGeneratedColumn(false);
-        } else {
-            jdbcColumn.setGeneratedColumn(null);
-        }
-        //
-        jdbcColumn.setDecimalDigits(rs.getInt("DECIMAL_DIGITS"));
-        jdbcColumn.setNumberPrecRadix(rs.getInt("NUM_PREC_RADIX"));
-        jdbcColumn.setColumnDef(rs.getString("COLUMN_DEF"));
-        jdbcColumn.setCharOctetLength(rs.getInt("CHAR_OCTET_LENGTH"));
-        jdbcColumn.setOrdinalPosition(rs.getInt("ORDINAL_POSITION"));
-        jdbcColumn.setSourceDataType(rs.getShort("SOURCE_DATA_TYPE"));
-        //
-        if (primaryKey != null) {
-            List<String> pkColumns = primaryKey.getColumns();
-            if (pkColumns.contains(jdbcColumn.getColumnName())) {
-                jdbcColumn.setPrimaryKey(true);
-            }
-        }
-        jdbcColumn.setUniqueKey(uniqueKey.contains(jdbcColumn.getColumnName()));
-        return jdbcColumn;
     }
 
     /**
@@ -565,18 +505,78 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         }).collect(Collectors.toList());
     }
 
-    @Override
-    public Map<String, ColumnDef> getColumnMap(String catalog, String schema, String table) throws SQLException {
-        List<JdbcColumn> columns = this.getColumns(catalog, schema, table);
-        if (columns != null) {
-            return columns.stream().collect(Collectors.toMap(JdbcColumn::getName, o -> o));
-        } else {
-            return Collections.emptyMap();
-        }
+    protected JdbcTable convertTable(ResultSet rs) throws SQLException {
+        JdbcTable jdbcSchema = new JdbcTable();
+        jdbcSchema.setCatalog(rs.getString("TABLE_CAT"));
+        jdbcSchema.setSchema(rs.getString("TABLE_SCHEM"));
+        jdbcSchema.setTable(rs.getString("TABLE_NAME"));
+        jdbcSchema.setTableType(rs.getString("TABLE_TYPE"));
+        jdbcSchema.setRemarks(rs.getString("REMARKS"));
+        //
+        jdbcSchema.setTypeCatalog(rs.getString("TYPE_CAT"));
+        jdbcSchema.setTypeSchema(rs.getString("TYPE_SCHEM"));
+        jdbcSchema.setTypeName(rs.getString("TYPE_NAME"));
+        jdbcSchema.setSelfReferencingColName(rs.getString("SELF_REFERENCING_COL_NAME"));
+        jdbcSchema.setRefGeneration(rs.getString("REF_GENERATION"));
+        return jdbcSchema;
     }
 
-    @Override
-    public TableDef searchTable(String catalog, String schema, String table) throws SQLException {
-        return getTable(catalog, schema, table);
+    protected JdbcColumn convertColumn(ResultSet rs, JdbcPrimaryKey primaryKey, Set<String> uniqueKey) throws SQLException {
+        JdbcColumn jdbcColumn = new JdbcColumn();
+        jdbcColumn.setTableCatalog(rs.getString("TABLE_CAT"));
+        jdbcColumn.setTableSchema(rs.getString("TABLE_SCHEM"));
+        jdbcColumn.setTableName(rs.getString("TABLE_NAME"));
+        jdbcColumn.setColumnName(rs.getString("COLUMN_NAME"));
+        //
+        String isNullable = rs.getString("IS_NULLABLE");
+        if ("YES".equals(isNullable)) {
+            jdbcColumn.setNullable(true);
+        } else if ("NO".equals(isNullable)) {
+            jdbcColumn.setNullable(false);
+        } else {
+            jdbcColumn.setNullable(null);
+        }
+        jdbcColumn.setNullableType(JdbcNullableType.valueOfCode(rs.getInt("NULLABLE")));
+        jdbcColumn.setTypeName(rs.getString("TYPE_NAME"));
+        //
+        jdbcColumn.setJdbcType(JDBCType.valueOf(rs.getInt("DATA_TYPE")));
+        jdbcColumn.setColumnSize(rs.getInt("COLUMN_SIZE"));
+        jdbcColumn.setComment(rs.getString("REMARKS"));
+        jdbcColumn.setScopeCatalog(rs.getString("SCOPE_CATALOG"));
+        jdbcColumn.setScopeSchema(rs.getString("SCOPE_SCHEMA"));
+        jdbcColumn.setScopeTable(rs.getString("SCOPE_TABLE"));
+        //
+        String isAutoincrement = rs.getString("IS_AUTOINCREMENT");
+        if ("YES".equals(isAutoincrement)) {
+            jdbcColumn.setAutoincrement(true);
+        } else if ("NO".equals(isAutoincrement)) {
+            jdbcColumn.setAutoincrement(false);
+        } else {
+            jdbcColumn.setAutoincrement(null);
+        }
+        String isGeneratedColumn = rs.getString("IS_GENERATEDCOLUMN");
+        if ("YES".equals(isGeneratedColumn)) {
+            jdbcColumn.setGeneratedColumn(true);
+        } else if ("NO".equals(isGeneratedColumn)) {
+            jdbcColumn.setGeneratedColumn(false);
+        } else {
+            jdbcColumn.setGeneratedColumn(null);
+        }
+        //
+        jdbcColumn.setDecimalDigits(rs.getInt("DECIMAL_DIGITS"));
+        jdbcColumn.setNumberPrecRadix(rs.getInt("NUM_PREC_RADIX"));
+        jdbcColumn.setColumnDef(rs.getString("COLUMN_DEF"));
+        jdbcColumn.setCharOctetLength(rs.getInt("CHAR_OCTET_LENGTH"));
+        jdbcColumn.setOrdinalPosition(rs.getInt("ORDINAL_POSITION"));
+        jdbcColumn.setSourceDataType(rs.getShort("SOURCE_DATA_TYPE"));
+        //
+        if (primaryKey != null) {
+            List<String> pkColumns = primaryKey.getColumns();
+            if (pkColumns.contains(jdbcColumn.getColumnName())) {
+                jdbcColumn.setPrimaryKey(true);
+            }
+        }
+        jdbcColumn.setUniqueKey(uniqueKey.contains(jdbcColumn.getColumnName()));
+        return jdbcColumn;
     }
 }

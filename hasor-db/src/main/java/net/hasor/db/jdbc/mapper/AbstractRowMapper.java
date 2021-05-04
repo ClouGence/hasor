@@ -18,6 +18,7 @@ import net.hasor.db.jdbc.RowMapper;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
 import net.hasor.utils.ResourcesUtils;
+import net.hasor.utils.StringUtils;
 
 import java.sql.JDBCType;
 import java.sql.ResultSet;
@@ -43,12 +44,12 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
         return this.handlerRegistry;
     }
 
-    /**获取列的值*/
+    /** 获取列的值 */
     protected Object getResultSetValue(ResultSet rs, int columnIndex) throws SQLException {
         return getResultSetTypeHandler(rs, columnIndex, null).getResult(rs, columnIndex);
     }
 
-    /**获取列的值*/
+    /** 获取列的值 */
     protected Object getResultSetValue(ResultSet rs, int columnIndex, Class<?> targetType) throws SQLException {
         TypeHandler<?> typeHandler = getResultSetTypeHandler(rs, columnIndex, targetType);
         return typeHandler.getResult(rs, columnIndex);
@@ -60,9 +61,17 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
         String columnTypeName = rs.getMetaData().getColumnTypeName(columnIndex);
         String columnClassName = rs.getMetaData().getColumnClassName(columnIndex);
         //
-        // TODO with mysql `YEAR` type , columnType is DATE . but getDate() throw  Long cast Date failed.
         if ("YEAR".equalsIgnoreCase(columnTypeName)) {
+            // TODO with mysql `YEAR` type, columnType is DATE. but getDate() throw Long cast Date failed.
             columnType = JDBCType.INTEGER.getVendorTypeNumber();
+        } else if (StringUtils.isNotBlank(columnClassName) && columnClassName.startsWith("oracle.")) {
+            // TODO with oracle columnClassName is specifically customizes standard types, it specializes process.
+            JDBCType jdbcType = TypeHandlerRegistry.toSqlType(columnClassName);
+            if (targetType != null) {
+                return this.handlerRegistry.getTypeHandler(targetType, jdbcType);
+            } else {
+                return this.handlerRegistry.getTypeHandler(jdbcType);
+            }
         }
         //
         JDBCType jdbcType = JDBCType.valueOf(columnType);

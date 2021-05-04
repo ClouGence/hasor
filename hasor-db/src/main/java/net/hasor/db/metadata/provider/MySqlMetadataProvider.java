@@ -15,10 +15,7 @@
  */
 package net.hasor.db.metadata.provider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.metadata.ColumnDef;
-import net.hasor.db.metadata.MetaDataService;
-import net.hasor.db.metadata.SqlType;
-import net.hasor.db.metadata.TableDef;
+import net.hasor.db.metadata.*;
 import net.hasor.db.metadata.domain.mysql.*;
 import net.hasor.db.metadata.domain.mysql.driver.MysqlType;
 import net.hasor.utils.StringUtils;
@@ -53,6 +50,30 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         }
     }
 
+    public CaseSensitivityType getPlain() throws SQLException {
+        try (Connection conn = this.connectSupplier.eGet()) {
+            //https://dev.mysql.com/doc/refman/5.7/en/identifier-case-sensitivity.html
+            Map<String, Object> objectMap = new JdbcTemplate(conn).queryForMap("show global variables like 'lower_case_table_names'");
+            if (objectMap == null || !objectMap.containsKey("Variable_name")) {
+                return super.getPlain();
+            }
+            //
+            Integer mode = safeToInteger(objectMap.get("Variable_name"));
+            if (mode == null) {
+                return super.getPlain();
+            }
+            switch (mode) {
+                case 0://表名按你写的SQL大小写存储，大写就大写小写就小写，比较时大小写敏感。
+                    return CaseSensitivityType.Exact;
+                case 1://表名转小写后存储到硬盘，比较时大小写不敏感。
+                case 2://表名按你写的SQL大小写存储，大写就大写小写就小写，比较时统一转小写比较。
+                    return CaseSensitivityType.Lower;
+                default:
+                    return super.getPlain();
+            }
+        }
+    }
+
     @Override
     public String getCurrentCatalog() throws SQLException {
         try (Connection conn = this.connectSupplier.eGet()) {
@@ -62,6 +83,23 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
 
     public String getCurrentSchema() throws SQLException {
         return null;
+    }
+
+    @Override
+    public TableDef searchTable(String catalog, String schema, String table) throws SQLException {
+        String dbName = StringUtils.isNotBlank(catalog) ? catalog : schema;
+        return getTable(dbName, table);
+    }
+
+    @Override
+    public Map<String, ColumnDef> getColumnMap(String catalog, String schema, String table) throws SQLException {
+        String dbName = StringUtils.isNotBlank(catalog) ? catalog : schema;
+        List<MySqlColumn> columns = this.getColumns(dbName, table);
+        if (columns != null) {
+            return columns.stream().collect(Collectors.toMap(MySqlColumn::getName, o -> o));
+        } else {
+            return Collections.emptyMap();
+        }
     }
 
     public List<MySqlSchema> getSchemas() throws SQLException {
@@ -209,19 +247,6 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
             }
             return mapList.stream().map(this::convertTable).findFirst().orElse(null);
         }
-    }
-
-    protected MySqlTable convertTable(Map<String, Object> recordMap) {
-        MySqlTable table = new MySqlTable();
-        table.setCatalog(safeToString(recordMap.get("TABLE_CATALOG")));
-        table.setSchema(safeToString(recordMap.get("TABLE_SCHEMA")));
-        table.setTable(safeToString(recordMap.get("TABLE_NAME")));
-        table.setTableType(MySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
-        table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
-        table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
-        table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
-        table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
-        return table;
     }
 
     public List<MySqlColumn> getColumns(String schemaName, String tableName) throws SQLException {
@@ -574,6 +599,19 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         }).findFirst().orElse(null);
     }
 
+    protected MySqlTable convertTable(Map<String, Object> recordMap) {
+        MySqlTable table = new MySqlTable();
+        table.setCatalog(safeToString(recordMap.get("TABLE_CATALOG")));
+        table.setSchema(safeToString(recordMap.get("TABLE_SCHEMA")));
+        table.setTable(safeToString(recordMap.get("TABLE_NAME")));
+        table.setTableType(MySqlTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
+        table.setCollation(safeToString(recordMap.get("TABLE_COLLATION")));
+        table.setCreateTime(safeToDate(recordMap.get("CREATE_TIME")));
+        table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
+        table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
+        return table;
+    }
+
     protected JDBCType columnTypeMappingToJdbcType(SqlType sqlType, String columnType) {
         if (sqlType instanceof MySqlTypes && StringUtils.isNotBlank(columnType)) {
             MysqlType mysqlType = MysqlType.getByName(columnType);
@@ -591,22 +629,5 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
             }
         }
         return null;
-    }
-
-    @Override
-    public Map<String, ColumnDef> getColumnMap(String catalog, String schema, String table) throws SQLException {
-        String dbName = StringUtils.isNotBlank(catalog) ? catalog : schema;
-        List<MySqlColumn> columns = this.getColumns(dbName, table);
-        if (columns != null) {
-            return columns.stream().collect(Collectors.toMap(MySqlColumn::getName, o -> o));
-        } else {
-            return Collections.emptyMap();
-        }
-    }
-
-    @Override
-    public TableDef searchTable(String catalog, String schema, String table) throws SQLException {
-        String dbName = StringUtils.isNotBlank(catalog) ? catalog : schema;
-        return getTable(dbName, table);
     }
 }
