@@ -615,9 +615,15 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
     protected JDBCType columnTypeMappingToJdbcType(SqlType sqlType, String columnType) {
         if (sqlType instanceof MySqlTypes && StringUtils.isNotBlank(columnType)) {
             MysqlType mysqlType = MysqlType.getByName(columnType);
-            return JDBCType.valueOf(mysqlType.getJdbcType());
+            try {
+                return JDBCType.valueOf(mysqlType.getJdbcType());
+            } catch (Exception e) {
+                return null;
+            }
+        } else if (sqlType != null) {
+            return sqlType.toJDBCType();
         } else {
-            return sqlType.getJdbcType();
+            return null;
         }
     }
 

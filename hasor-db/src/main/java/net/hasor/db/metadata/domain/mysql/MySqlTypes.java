@@ -292,12 +292,18 @@ public enum MySqlTypes implements SqlType {
         this.jdbcType = jdbcType;
     }
 
+    @Override
     public String getCodeKey() {
         return this.codeKey;
     }
 
     @Override
-    public JDBCType getJdbcType() {
+    public Integer getJdbcType() {
+        return this.jdbcType.getVendorTypeNumber();
+    }
+
+    @Override
+    public JDBCType toJDBCType() {
         return this.jdbcType;
     }
 }

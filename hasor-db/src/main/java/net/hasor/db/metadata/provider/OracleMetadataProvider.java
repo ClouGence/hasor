@@ -46,7 +46,7 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             + ") TAB\n"//
             + "left join DBA_TAB_COMMENTS on TAB.OWNER = DBA_TAB_COMMENTS.OWNER and TAB.TABLE_NAME = DBA_TAB_COMMENTS.TABLE_NAME and TAB.TABLE_TYPE = DBA_TAB_COMMENTS.TABLE_TYPE";
     private static final String COLUMNS = ""//
-            + "select COLS.COLUMN_NAME,DATA_TYPE,DATA_LENGTH,CHAR_LENGTH,DATA_PRECISION,DATA_SCALE,NULLABLE,DATA_DEFAULT,CHARACTER_SET_NAME,HIDDEN_COLUMN,VIRTUAL_COLUMN,IDENTITY_COLUMN,SENSITIVE_COLUMN,COMM.COMMENTS from DBA_TAB_COLS COLS\n"//
+            + "select COLS.COLUMN_NAME,DATA_TYPE,DATA_TYPE_OWNER,DATA_LENGTH,CHAR_LENGTH,DATA_PRECISION,DATA_SCALE,NULLABLE,DATA_DEFAULT,CHARACTER_SET_NAME,HIDDEN_COLUMN,VIRTUAL_COLUMN,IDENTITY_COLUMN,SENSITIVE_COLUMN,COMM.COMMENTS from DBA_TAB_COLS COLS\n"//
             + "left join DBA_COL_COMMENTS COMM on COLS.OWNER = COMM.OWNER and COLS.TABLE_NAME = COMM.TABLE_NAME and COLS.COLUMN_NAME = COMM.COLUMN_NAME\n";
 
     public OracleMetadataProvider(Connection connection) {
@@ -241,7 +241,7 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
         List<Map<String, Object>> columnList = null;
         try (Connection conn = this.connectSupplier.get()) {
             //COLUMNS
-            String queryStringColumn = COLUMNS + "where COLS.OWNER = ? and COLS.TABLE_NAME = ?";
+            String queryStringColumn = COLUMNS + "where COLS.DATA_TYPE_OWNER is NULL and COLS.OWNER = ? and COLS.TABLE_NAME = ?";
             columnList = new JdbcTemplate(conn).queryForList(queryStringColumn, schemaName, tableName);
             if (columnList == null) {
                 return Collections.emptyList();
@@ -273,6 +273,7 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             column.setNullable("Y".equals(safeToString(recordMap.get("NULLABLE"))));
             column.setDataType(safeToString(recordMap.get("DATA_TYPE")));
             column.setSqlType(safeToOracleTypes(recordMap.get("DATA_TYPE")));
+            column.setDataTypeOwner(safeToString(recordMap.get("DATA_TYPE_OWNER")));
             column.setJdbcType(columnTypeMappingToJdbcType(column.getSqlType(), column.getDataType()));
             //
             column.setDataBytesLength(safeToLong(recordMap.get("DATA_LENGTH")));
@@ -636,9 +637,9 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             return null;
         }
         if (sqlType instanceof OracleSqlTypes) {
-            return sqlType.getJdbcType();
+            return sqlType.toJDBCType();
         } else {
-            return sqlType.getJdbcType();
+            return sqlType.toJDBCType();
         }
     }
 

@@ -1,89 +1,113 @@
 package net.hasor.db.metadata.domain.oracle;
 import net.hasor.db.metadata.SqlType;
+import net.hasor.db.metadata.domain.oracle.driver.OracleType;
 
 import java.sql.JDBCType;
-import java.sql.SQLType;
-import java.sql.Types;
 
 /**
  * 参考 ojdbc8-19.8.0.0.jar
  * @version : 2021-03-30
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum OracleSqlTypes implements SQLType, SqlType {
-    VARCHAR2("VARCHAR2", Types.VARCHAR),
-    NVARCHAR("NVARCHAR", Types.NVARCHAR, true),
-    NVARCHAR2("NVARCHAR2", Types.NVARCHAR, true),
-    NUMBER("NUMBER", Types.NUMERIC),
-    FLOAT("FLOAT", Types.FLOAT),
-    LONG("LONG", Types.LONGVARCHAR),
-    DATE("DATE", Types.DATE),
-    BINARY_FLOAT("BINARY FLOAT", 100),
-    BINARY_DOUBLE("BINARY DOUBLE", 101),
-    TIMESTAMP("TIMESTAMP", Types.TIMESTAMP),
-    TIMESTAMP_WITH_TIME_ZONE("TIMESTAMP WITH TIME ZONE", -101),
-    TIMESTAMP_WITH_LOCAL_TIME_ZONE("TIMESTAMP WITH LOCAL TIME ZONE", -102),
-    INTERVAL_YEAR_TO_MONTH("INTERVAL YEAR TO MONTH", -103),
-    INTERVAL_DAY_TO_SECOND("INTERVAL DAY TO SECOND", -104),
-    PLSQL_BOOLEAN("PLSQL_BOOLEAN", 252),
-    RAW("RAW", Types.BINARY),
-    LONG_RAW("LONG RAW", Types.LONGVARBINARY),
-    ROWID("ROWID", Types.ROWID),
-    UROWID("UROWID"),
-    CHAR("CHAR", Types.CHAR),
-    NCHAR("NCHAR", Types.NCHAR, true),
-    CLOB("CLOB", Types.CLOB),
-    NCLOB("NCLOB", Types.NCLOB, true),
-    BLOB("BLOB", Types.BLOB),
-    BFILE("BFILE", -13),
-    OBJECT("OBJECT", Types.STRUCT),
-    REF("REF", Types.REF),
-    VARRAY("VARRAY", Types.ARRAY),
-    NESTED_TABLE("NESTED_TABLE", Types.ARRAY),
-    ANYTYPE("ANYTYPE", 2007),
-    ANYDATA("ANYDATA", 2007),
-    ANYDATASET("ANYDATASET"),
-    XMLTYPE("XMLTYPE", Types.SQLXML),
-    HTTPURITYPE("HTTPURITYPE"),
-    XDBURITYPE("XDBURITYPE"),
-    DBURITYPE("DBURITYPE"),
-    SDO_GEOMETRY("SDO_GEOMETRY"),
-    SDO_TOPO_GEOMETRY("SDO_TOPO_GEOMETRY"),
-    SDO_GEORASTER("SDO_GEORASTER"),
-    ORDAUDIO("ORDAUDIO"),
-    ORDDICOM("ORDDICOM"),
-    ORDDOC("ORDDOC"),
-    ORDIMAGE("ORDIMAGE"),
-    ORDVIDEO("ORDVIDEO"),
-    SI_AVERAGE_COLOR("SI_AVERAGE_COLOR"),
-    SI_COLOR("SI_COLOR"),
-    SI_COLOR_HISTOGRAM("SI_COLOR_HISTOGRAM"),
-    SI_FEATURE_LIST("SI_FEATURE_LIST"),
-    SI_POSITIONAL_COLOR("SI_POSITIONAL_COLOR"),
-    SI_STILL_IMAGE("SI_STILL_IMAGE"),
-    SI_TEXTURE("SI_TEXTURE"),
+public enum OracleSqlTypes implements SqlType {
+    CHAR("CHAR", OracleType.CHAR),
+    NCHAR("NCHAR", OracleType.NCHAR),
+    VARCHAR2("VARCHAR2", OracleType.VARCHAR2),
+    NVARCHAR("NVARCHAR", OracleType.NVARCHAR),
+    NVARCHAR2("NVARCHAR2", OracleType.NVARCHAR),
+    LONG("LONG", OracleType.LONG),
+    //
+    NUMBER("NUMBER", OracleType.NUMBER),
+    FLOAT("FLOAT", OracleType.FLOAT),
+    BINARY_FLOAT("BINARY FLOAT", OracleType.BINARY_FLOAT),
+    BINARY_DOUBLE("BINARY DOUBLE", OracleType.BINARY_DOUBLE),
+    //
+    CLOB("CLOB", OracleType.CLOB),
+    NCLOB("NCLOB", OracleType.NCLOB),
+    BLOB("BLOB", OracleType.BLOB),
+    BFILE("BFILE", OracleType.BFILE),
+    //
+    DATE("DATE", OracleType.DATE),
+    TIMESTAMP("TIMESTAMP", OracleType.TIMESTAMP),
+    TIMESTAMP_WITH_TIME_ZONE("TIMESTAMP WITH TIME ZONE", OracleType.TIMESTAMP_WITH_TIME_ZONE),
+    TIMESTAMP_WITH_LOCAL_TIME_ZONE("TIMESTAMP WITH LOCAL TIME ZONE", OracleType.TIMESTAMP_WITH_LOCAL_TIME_ZONE),
+    INTERVAL_YEAR_TO_MONTH("INTERVAL YEAR TO MONTH", OracleType.INTERVAL_YEAR_TO_MONTH),
+    INTERVAL_DAY_TO_SECOND("INTERVAL DAY TO SECOND", OracleType.INTERVAL_DAY_TO_SECOND),
+    //
+    RAW("RAW", OracleType.RAW),
+    LONG_RAW("LONG RAW", OracleType.LONG_RAW),
+    //
+    ROWID("ROWID", OracleType.ROWID),
+    UROWID("UROWID", OracleType.UROWID),
+    //
+    OBJECT("OBJECT", OracleType.OBJECT),
+    REF("REF", OracleType.REF),
+    VARRAY("VARRAY", OracleType.VARRAY),
+    NESTED_TABLE("NESTED_TABLE", OracleType.NESTED_TABLE),
+    //
+    PLSQL_BOOLEAN("PLSQL_BOOLEAN", OracleType.PLSQL_BOOLEAN),
+    ANYTYPE("ANYTYPE", OracleType.ANYTYPE),
+    ANYDATA("ANYDATA", OracleType.ANYDATA),
+    ANYDATASET("ANYDATASET", OracleType.ANYDATASET),
+    //
+    XMLTYPE("XMLTYPE", OracleType.XMLTYPE),
+    HTTPURITYPE("HTTPURITYPE", OracleType.HTTPURITYPE),
+    XDBURITYPE("XDBURITYPE", OracleType.XDBURITYPE),
+    DBURITYPE("DBURITYPE", OracleType.DBURITYPE),
+    //
+    SDO_GEOMETRY("SDO_GEOMETRY", OracleType.SDO_GEOMETRY),
+    SDO_TOPO_GEOMETRY("SDO_TOPO_GEOMETRY", OracleType.SDO_TOPO_GEOMETRY),
+    SDO_GEORASTER("SDO_GEORASTER", OracleType.SDO_GEORASTER),
+    //
+    ORDAUDIO("ORDAUDIO", OracleType.ORDAUDIO),
+    ORDDICOM("ORDDICOM", OracleType.ORDDICOM),
+    ORDDOC("ORDDOC", OracleType.ORDDOC),
+    ORDIMAGE("ORDIMAGE", OracleType.ORDIMAGE),
+    ORDVIDEO("ORDVIDEO", OracleType.ORDVIDEO),
+    SI_AVERAGE_COLOR("SI_AVERAGE_COLOR", OracleType.SI_AVERAGE_COLOR),
+    SI_COLOR("SI_COLOR", OracleType.SI_COLOR),
+    SI_COLOR_HISTOGRAM("SI_COLOR_HISTOGRAM", OracleType.SI_COLOR_HISTOGRAM),
+    SI_FEATURE_LIST("SI_FEATURE_LIST", OracleType.SI_FEATURE_LIST),
+    SI_POSITIONAL_COLOR("SI_POSITIONAL_COLOR", OracleType.SI_POSITIONAL_COLOR),
+    SI_STILL_IMAGE("SI_STILL_IMAGE", OracleType.SI_STILL_IMAGE),
+    SI_TEXTURE("SI_TEXTURE", OracleType.SI_TEXTURE),
     ;
+    private final String   codeKey;
     private final JDBCType jdbcType;
-    private final boolean  isSupported;
-    private final String   typeName;
-    private final int      code;
-    private final boolean  isNationalCharacterSet;
+    private final Integer  jdbcTypeNum;
 
-    public static OracleSqlTypes toOracleType(SQLType sqlType) {
-        return sqlType instanceof OracleSqlTypes ? (OracleSqlTypes) sqlType : null;
+    OracleSqlTypes(String codeKey, OracleType oracleType) {
+        this.codeKey = codeKey;
+        this.jdbcType = toJdbcType(oracleType);
+        this.jdbcTypeNum = (this.jdbcType != null) ? this.jdbcType.getVendorTypeNumber() : null;
     }
 
-    public static OracleSqlTypes toOracleType(int jdbcType) {
-        Object[] var1 = values();
-        OracleSqlTypes var2 = null;
-        for (Object o : var1) {
-            OracleSqlTypes var4 = (OracleSqlTypes) o;
-            if (var4.getVendorTypeNumber() == jdbcType) {
-                var2 = var4;
-                break;
+    @Override
+    public String getCodeKey() {
+        return this.codeKey;
+    }
+
+    @Override
+    public Integer getJdbcType() {
+        return this.jdbcTypeNum;
+    }
+
+    @Override
+    public JDBCType toJDBCType() {
+        return this.jdbcType;
+    }
+
+    public static JDBCType toJdbcType(OracleType oracleType) {
+        try {
+            Integer typeNumber = oracleType.getVendorTypeNumber();
+            if (typeNumber != null) {
+                return JDBCType.valueOf(typeNumber);
+            } else {
+                return null;
             }
+        } catch (Exception e) {
+            return null; // 只有 typeNumber 不存在这一种情况，因此吃掉 error。
         }
-        return var2;
     }
 
     public static SqlType toOracleType(String dataType) {
@@ -114,67 +138,5 @@ public enum OracleSqlTypes implements SQLType, SqlType {
             }
         }
         return null;
-    }
-
-    private static JDBCType jdbcType(int jdbcType) {
-        try {
-            return JDBCType.valueOf(jdbcType);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    OracleSqlTypes(String oracleType) {
-        this.isSupported = false;
-        this.typeName = oracleType;
-        this.code = -2147483648;
-        this.jdbcType = null;
-        this.isNationalCharacterSet = false;
-    }
-
-    OracleSqlTypes(String oracleType, int jdbcType) {
-        this.isSupported = true;
-        this.typeName = oracleType;
-        this.code = jdbcType;
-        this.jdbcType = jdbcType(jdbcType);
-        this.isNationalCharacterSet = false;
-    }
-
-    OracleSqlTypes(String oracleType, int jdbcType, boolean var5) {
-        this.isSupported = true;
-        this.typeName = oracleType;
-        this.code = jdbcType;
-        this.jdbcType = jdbcType(jdbcType);
-        this.isNationalCharacterSet = var5;
-    }
-
-    public String getName() {
-        return this.typeName;
-    }
-
-    public String getVendor() {
-        return "Oracle Database";
-    }
-
-    public Integer getVendorTypeNumber() {
-        return this.code;
-    }
-
-    public boolean isNationalCharacterSet() {
-        return this.isNationalCharacterSet;
-    }
-
-    public boolean isSupported() {
-        return this.isSupported;
-    }
-
-    @Override
-    public String getCodeKey() {
-        return this.getName();
-    }
-
-    @Override
-    public JDBCType getJdbcType() {
-        return this.jdbcType;
     }
 }

@@ -364,9 +364,9 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
 
     protected JDBCType columnTypeMappingToJdbcType(SqlType sqlType, String columnType) {
         if (sqlType != null) {
-            return sqlType.getJdbcType();
+            return sqlType.toJDBCType();
         } else {
-            throw new UnsupportedOperationException("passer type failed. sqlType is null ,and columnType = " + columnType);
+            return null;
         }
     }
 

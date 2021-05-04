@@ -98,8 +98,8 @@ public final class TypeHandlerRegistry {
         javaTypeToJdbcTypeMap.put("oracle.jdbc.OracleNClob", JDBCType.NCLOB);
         javaTypeToJdbcTypeMap.put("oracle.sql.DATE", JDBCType.DATE);
         javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMP", JDBCType.TIMESTAMP);
-        javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMPTZ", JDBCType.TIMESTAMP);
-        javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMPLTZ", JDBCType.TIMESTAMP);
+        javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMPTZ", JDBCType.TIMESTAMP_WITH_TIMEZONE);
+        javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMPLTZ", JDBCType.TIMESTAMP_WITH_TIMEZONE);
     }
 
     public TypeHandlerRegistry() {
@@ -232,6 +232,14 @@ public final class TypeHandlerRegistry {
         this.registerCross(JDBCType.LONGVARBINARY, InputStream.class, createSingleTypeHandler(BytesInputStreamTypeHandler.class));
         //
         this.registerCross(JDBCType.ARRAY, Object.class, createSingleTypeHandler(ArrayTypeHandler.class));
+        //
+        javaTypeToJdbcTypeMap.put("oracle.jdbc.OracleBlob", JDBCType.VARBINARY);
+        javaTypeToJdbcTypeMap.put("oracle.jdbc.OracleClob", JDBCType.CLOB);
+        javaTypeToJdbcTypeMap.put("oracle.jdbc.OracleNClob", JDBCType.NCLOB);
+        javaTypeToJdbcTypeMap.put("oracle.sql.DATE", JDBCType.DATE);
+        javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMP", JDBCType.TIMESTAMP);
+        javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMPTZ", JDBCType.TIMESTAMP_WITH_TIMEZONE);
+        javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMPLTZ", JDBCType.TIMESTAMP_WITH_TIMEZONE);
     }
 
     private TypeHandler<?> createSingleTypeHandler(Class<? extends TypeHandler<?>> typeHandler) {
@@ -322,6 +330,15 @@ public final class TypeHandlerRegistry {
 
     public Collection<TypeHandler<?>> getTypeHandlers() {
         return Collections.unmodifiableCollection(this.javaTypeHandlerMap.values());
+    }
+
+    /** 根据 Java 类型Derive a default SQL type from the given Java type.*/
+    public static JDBCType toSqlType(final String javaType) {
+        JDBCType jdbcType = javaTypeToJdbcTypeMap.get(javaType);
+        if (jdbcType != null) {
+            return jdbcType;
+        }
+        return JDBCType.OTHER;
     }
 
     /** 根据 Java 类型Derive a default SQL type from the given Java type.*/

@@ -24,5 +24,7 @@ import java.sql.JDBCType;
 public interface SqlType {
     public String getCodeKey();
 
-    public JDBCType getJdbcType();
+    public Integer getJdbcType();
+
+    public JDBCType toJDBCType();
 }

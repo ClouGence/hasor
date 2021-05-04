@@ -28,7 +28,7 @@ public enum OracleType implements SQLType {
     CLOB("CLOB", OracleTypes.CLOB),
     NCLOB("NCLOB", OracleTypes.NCLOB, true),
     BLOB("BLOB", OracleTypes.BLOB),
-    BFILE("BFILE", -13),
+    BFILE("BFILE", OracleTypes.BFILE),
     OBJECT("OBJECT", OracleTypes.STRUCT),
     REF("REF", OracleTypes.REF),
     VARRAY("VARRAY", OracleTypes.ARRAY),

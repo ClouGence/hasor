@@ -13,6 +13,7 @@ public class OracleColumn implements ColumnDef {
     private String   name;
     private boolean  nullable;
     private String   dataType;
+    private String   dataTypeOwner;
     private SqlType  sqlType;
     private JDBCType jdbcType;
     private boolean  primaryKey;
@@ -55,6 +56,14 @@ public class OracleColumn implements ColumnDef {
         this.dataType = dataType;
     }
 
+    public String getDataTypeOwner() {
+        return this.dataTypeOwner;
+    }
+
+    public void setDataTypeOwner(String dataTypeOwner) {
+        this.dataTypeOwner = dataTypeOwner;
+    }
+
     public SqlType getSqlType() {
         return this.sqlType;
     }
@@ -71,7 +80,7 @@ public class OracleColumn implements ColumnDef {
     public void setJdbcType(JDBCType jdbcType) {
         this.jdbcType = jdbcType;
     }
-
+ 
     @Override
     public boolean isPrimaryKey() {
         return this.primaryKey;
