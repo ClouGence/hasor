@@ -29,6 +29,8 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static net.hasor.db.metadata.domain.oracle.OracleSqlTypes.TIMESTAMP;
+
 /**
  * Oracle 元信息获取，参考资料：
  *   <li>https://docs.oracle.com/en/database/oracle/oracle-database/21/drdag/all_synonyms-drda-gateway.html#GUID-E814A6AC-5E00-4DB6-8170-DC147F7879F8</li>
@@ -275,6 +277,9 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             column.setSqlType(safeToOracleTypes(recordMap.get("DATA_TYPE")));
             column.setDataTypeOwner(safeToString(recordMap.get("DATA_TYPE_OWNER")));
             column.setJdbcType(columnTypeMappingToJdbcType(column.getSqlType(), column.getDataType()));
+            if (column.getJdbcType() == null && StringUtils.isNotBlank(column.getDataTypeOwner())) {
+                column.setJdbcType(JDBCType.STRUCT); // 有 Type Name 表示一定是用户创建的类型。
+            }
             //
             column.setDataBytesLength(safeToLong(recordMap.get("DATA_LENGTH")));
             column.setDataCharLength(safeToLong(recordMap.get("CHAR_LENGTH")));
@@ -637,7 +642,16 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             return null;
         }
         if (sqlType instanceof OracleSqlTypes) {
-            return sqlType.toJDBCType();
+            switch ((OracleSqlTypes) sqlType) {
+                case TIMESTAMP:
+                case TIMESTAMP_WITH_TIME_ZONE:
+                case TIMESTAMP_WITH_LOCAL_TIME_ZONE:
+                case INTERVAL_YEAR_TO_MONTH:
+                case INTERVAL_DAY_TO_SECOND:
+                    return TIMESTAMP.toJDBCType();
+                default:
+                    return sqlType.toJDBCType();
+            }
         } else {
             return sqlType.toJDBCType();
         }

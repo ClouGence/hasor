@@ -98,8 +98,8 @@ public final class TypeHandlerRegistry {
         javaTypeToJdbcTypeMap.put("oracle.jdbc.OracleNClob", JDBCType.NCLOB);
         javaTypeToJdbcTypeMap.put("oracle.sql.DATE", JDBCType.DATE);
         javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMP", JDBCType.TIMESTAMP);
-        javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMPTZ", JDBCType.TIMESTAMP_WITH_TIMEZONE);
-        javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMPLTZ", JDBCType.TIMESTAMP_WITH_TIMEZONE);
+        javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMPTZ", JDBCType.TIMESTAMP);
+        javaTypeToJdbcTypeMap.put("oracle.sql.TIMESTAMPLTZ", JDBCType.TIMESTAMP);
     }
 
     public TypeHandlerRegistry() {
