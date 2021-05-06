@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata;
+package net.hasor.db.metadata.provider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.metadata.domain.adb.mysql.*;
 import net.hasor.db.metadata.provider.AdbMySqlMetadataProvider;
