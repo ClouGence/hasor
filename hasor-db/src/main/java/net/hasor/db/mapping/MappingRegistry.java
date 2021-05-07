@@ -208,7 +208,7 @@ public class MappingRegistry {
             //
             // build PropertyMapping
             Class<?> propertyType = wrapProperty.propertyField.getType();
-            ColumnMappingDef mappingDef = new ColumnMappingDef(propertyName, propertyType, columnDef.getName());
+            ColumnMappingDef mappingDef = new ColumnMappingDef(propertyName, propertyType, columnDef);
             mappingDef.setJdbcType(columnDef.getJdbcType());
             mappingDef.setPrimary(columnDef.isPrimaryKey());
             mappingDef.setInsert(wrapProperty.column.insert());
@@ -249,9 +249,9 @@ public class MappingRegistry {
         columnDef.setJavaType(propertyType);
         columnDef.setJdbcType(TypeHandlerRegistry.toSqlType(propertyType));
         if (columnMeta != null) {
-            columnDef.setPrimary(columnMeta.primary());
+            columnDef.setPrimaryKey(columnMeta.primary());
         } else {
-            columnDef.setPrimary(false);
+            columnDef.setPrimaryKey(false);
         }
         return columnDef;
     }

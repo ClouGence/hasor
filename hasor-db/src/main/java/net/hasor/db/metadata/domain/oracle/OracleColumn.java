@@ -27,8 +27,8 @@ import java.sql.JDBCType;
 public class OracleColumn implements ColumnDef {
     private String   name;
     private boolean  nullable;
-    private String   dataType;
-    private String   dataTypeOwner;
+    private String   columnType;
+    private String   columnTypeOwner;
     private SqlType  sqlType;
     private JDBCType jdbcType;
     private boolean  primaryKey;
@@ -63,20 +63,21 @@ public class OracleColumn implements ColumnDef {
         this.nullable = nullable;
     }
 
-    public String getDataType() {
-        return this.dataType;
+    @Override
+    public String getColumnType() {
+        return this.columnType;
     }
 
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
+    public void setColumnType(String columnType) {
+        this.columnType = columnType;
     }
 
-    public String getDataTypeOwner() {
-        return this.dataTypeOwner;
+    public String getColumnTypeOwner() {
+        return this.columnTypeOwner;
     }
 
-    public void setDataTypeOwner(String dataTypeOwner) {
-        this.dataTypeOwner = dataTypeOwner;
+    public void setColumnTypeOwner(String columnTypeOwner) {
+        this.columnTypeOwner = columnTypeOwner;
     }
 
     public SqlType getSqlType() {

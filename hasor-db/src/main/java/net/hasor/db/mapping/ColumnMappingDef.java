@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.mapping;
+import net.hasor.db.metadata.ColumnDef;
 import net.hasor.db.types.TypeHandler;
-import net.hasor.db.types.TypeHandlerRegistry;
 
 import java.sql.JDBCType;
 
@@ -26,6 +26,7 @@ import java.sql.JDBCType;
  */
 class ColumnMappingDef implements ColumnMapping {
     private final String         columnName;
+    private final String         columnType;
     private final String         propertyName;
     private       JDBCType       jdbcType;
     private       Class<?>       javaType;
@@ -34,14 +35,11 @@ class ColumnMappingDef implements ColumnMapping {
     private       boolean        update;
     private       boolean        primary;
 
-    public ColumnMappingDef(String propertyName, Class<?> javaType) {
-        this(propertyName, javaType, propertyName);
-    }
-
-    public ColumnMappingDef(String propertyName, Class<?> javaType, String columnName) {
-        this.columnName = columnName;
+    public ColumnMappingDef(String propertyName, Class<?> javaType, ColumnDef columnDef) {
+        this.columnName = columnDef.getName();
+        this.columnType = columnDef.getColumnType();
         this.propertyName = propertyName;
-        this.jdbcType = TypeHandlerRegistry.toSqlType(javaType);
+        this.jdbcType = columnDef.getJdbcType();
         this.javaType = javaType;
         this.insert = true;
         this.update = true;
@@ -51,6 +49,11 @@ class ColumnMappingDef implements ColumnMapping {
     @Override
     public String getName() {
         return this.columnName;
+    }
+
+    @Override
+    public String getColumnType() {
+        return this.columnType;
     }
 
     @Override

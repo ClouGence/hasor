@@ -16,6 +16,7 @@
 package net.hasor.db.metadata.provider;
 import net.hasor.db.jdbc.extractor.ColumnMapResultSetExtractor;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
+import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.db.metadata.ColumnDef;
 import net.hasor.db.metadata.MetaDataService;
 import net.hasor.db.metadata.TableDef;
@@ -137,6 +138,41 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         }
     }
 
+    /**
+     * @param schemaName a schema name; must match the schema name as it is stored in the database;
+     *        "" retrieves those without a schema;
+     *        <code>null</code> means that the schema name should not be used to narrow the search
+     */
+    public JdbcSchema getSchemaByName(String catalog, String schemaName) throws SQLException {
+        if (StringUtils.isBlank(schemaName)) {
+            return null;
+        }
+        if (StringUtils.isBlank(catalog)) {
+            catalog = getCurrentCatalog();
+        }
+        try (Connection conn = this.connectSupplier.eGet()) {
+            DatabaseMetaData metaData = conn.getMetaData();
+            try (ResultSet resultSet = metaData.getSchemas(schemaName, null)) {
+                List<JdbcSchema> jdbcSchemaSet = new RowMapperResultSetExtractor<>((rs, rowNum) -> {
+                    JdbcSchema jdbcSchema = new JdbcSchema();
+                    jdbcSchema.setSchema(rs.getString("TABLE_SCHEM"));
+                    jdbcSchema.setCatalog(rs.getString("TABLE_CATALOG"));
+                    return jdbcSchema;
+                }).extractData(resultSet);
+                //
+                if (jdbcSchemaSet.isEmpty()) {
+                    return null;
+                }
+                for (JdbcSchema jdbcSchema : jdbcSchemaSet) {
+                    if (StringUtils.equals(jdbcSchema.getSchema(), schemaName) && StringUtils.equals(jdbcSchema.getCatalog(), catalog)) {
+                        return jdbcSchema;
+                    }
+                }
+                return null;
+            }
+        }
+    }
+
     public List<JdbcTable> getAllTables() throws SQLException {
         String catalog = null;
         String schema = null;
@@ -159,8 +195,9 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         try (Connection conn = this.connectSupplier.eGet()) {
             DatabaseMetaData metaData = conn.getMetaData();
             try (ResultSet resultSet = metaData.getTables(catalog, schemaName, null, null)) {
+                final ColumnMapRowMapper rowMapper = new ColumnMapRowMapper();
                 return new RowMapperResultSetExtractor<>((rs, rowNum) -> {
-                    return convertTable(rs);
+                    return convertTable(rowMapper.mapRow(rs, rowNum));
                 }).extractData(resultSet);
             }
         }
@@ -178,8 +215,9 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         try (Connection conn = this.connectSupplier.eGet()) {
             DatabaseMetaData metaData = conn.getMetaData();
             try (ResultSet resultSet = metaData.getTables(catalog, schemaName, null, null)) {
+                final ColumnMapRowMapper rowMapper = new ColumnMapRowMapper();
                 List<JdbcTable> jdbcTables = new RowMapperResultSetExtractor<>((rs, rowNum) -> {
-                    return convertTable(rs);
+                    return convertTable(rowMapper.mapRow(rs, rowNum));
                 }).extractData(resultSet);
                 if (jdbcTables == null) {
                     return Collections.emptyList();
@@ -206,8 +244,9 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         try (Connection conn = this.connectSupplier.eGet()) {
             DatabaseMetaData metaData = conn.getMetaData();
             try (ResultSet resultSet = metaData.getTables(catalog, schemaName, table, null)) {
+                final ColumnMapRowMapper rowMapper = new ColumnMapRowMapper();
                 List<JdbcTable> jdbcTables = new RowMapperResultSetExtractor<>((rs, rowNum) -> {
-                    return convertTable(rs);
+                    return convertTable(rowMapper.mapRow(rs, rowNum));
                 }).extractData(resultSet);
                 if (jdbcTables.isEmpty()) {
                     return null;
@@ -242,8 +281,9 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
             //
             List<JdbcColumn> jdbcColumns = null;
             try (ResultSet resultSet = metaData.getColumns(catalog, schemaName, table, null)) {
+                final ColumnMapRowMapper rowMapper = new ColumnMapRowMapper();
                 jdbcColumns = new RowMapperResultSetExtractor<>((rs, rowNum) -> {
-                    return convertColumn(rs, primaryKey, uniqueColumns);
+                    return convertColumn(rowMapper.mapRow(rs, rowNum), primaryKey, uniqueColumns);
                 }).extractData(resultSet);
             }
             if (jdbcColumns == null) {
@@ -505,30 +545,31 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         }).collect(Collectors.toList());
     }
 
-    protected JdbcTable convertTable(ResultSet rs) throws SQLException {
+    protected JdbcTable convertTable(Map<String, Object> rs) throws SQLException {
         JdbcTable jdbcSchema = new JdbcTable();
-        jdbcSchema.setCatalog(rs.getString("TABLE_CAT"));
-        jdbcSchema.setSchema(rs.getString("TABLE_SCHEM"));
-        jdbcSchema.setTable(rs.getString("TABLE_NAME"));
-        jdbcSchema.setTableType(rs.getString("TABLE_TYPE"));
-        jdbcSchema.setRemarks(rs.getString("REMARKS"));
+        jdbcSchema.setCatalog(safeToString(rs.get("TABLE_CAT")));
+        jdbcSchema.setSchema(safeToString(rs.get("TABLE_SCHEM")));
+        jdbcSchema.setTable(safeToString(rs.get("TABLE_NAME")));
+        jdbcSchema.setTableTypeString(safeToString(rs.get("TABLE_TYPE")));
+        jdbcSchema.setTableType(JdbcTableType.valueOfCode(jdbcSchema.getTableTypeString()));
+        jdbcSchema.setRemarks(safeToString(rs.get("REMARKS")));
         //
-        jdbcSchema.setTypeCatalog(rs.getString("TYPE_CAT"));
-        jdbcSchema.setTypeSchema(rs.getString("TYPE_SCHEM"));
-        jdbcSchema.setTypeName(rs.getString("TYPE_NAME"));
-        jdbcSchema.setSelfReferencingColName(rs.getString("SELF_REFERENCING_COL_NAME"));
-        jdbcSchema.setRefGeneration(rs.getString("REF_GENERATION"));
+        jdbcSchema.setTypeCatalog(safeToString(rs.get("TYPE_CAT")));
+        jdbcSchema.setTypeSchema(safeToString(rs.get("TYPE_SCHEM")));
+        jdbcSchema.setTypeName(safeToString(rs.get("TYPE_NAME")));
+        jdbcSchema.setSelfReferencingColName(safeToString(rs.get("SELF_REFERENCING_COL_NAME")));
+        jdbcSchema.setRefGeneration(safeToString(rs.get("REF_GENERATION")));
         return jdbcSchema;
     }
 
-    protected JdbcColumn convertColumn(ResultSet rs, JdbcPrimaryKey primaryKey, Set<String> uniqueKey) throws SQLException {
+    protected JdbcColumn convertColumn(Map<String, Object> rs, JdbcPrimaryKey primaryKey, Set<String> uniqueKey) throws SQLException {
         JdbcColumn jdbcColumn = new JdbcColumn();
-        jdbcColumn.setTableCatalog(rs.getString("TABLE_CAT"));
-        jdbcColumn.setTableSchema(rs.getString("TABLE_SCHEM"));
-        jdbcColumn.setTableName(rs.getString("TABLE_NAME"));
-        jdbcColumn.setColumnName(rs.getString("COLUMN_NAME"));
+        jdbcColumn.setTableCatalog(safeToString(rs.get("TABLE_CAT")));
+        jdbcColumn.setTableSchema(safeToString(rs.get("TABLE_SCHEM")));
+        jdbcColumn.setTableName(safeToString(rs.get("TABLE_NAME")));
+        jdbcColumn.setColumnName(safeToString(rs.get("COLUMN_NAME")));
         //
-        String isNullable = rs.getString("IS_NULLABLE");
+        String isNullable = safeToString(rs.get("IS_NULLABLE"));
         if ("YES".equals(isNullable)) {
             jdbcColumn.setNullable(true);
         } else if ("NO".equals(isNullable)) {
@@ -536,17 +577,21 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         } else {
             jdbcColumn.setNullable(null);
         }
-        jdbcColumn.setNullableType(JdbcNullableType.valueOfCode(rs.getInt("NULLABLE")));
-        jdbcColumn.setTypeName(rs.getString("TYPE_NAME"));
+        jdbcColumn.setNullableType(JdbcNullableType.valueOfCode(safeToInteger(rs.get("NULLABLE"))));
+        jdbcColumn.setColumnType(safeToString(rs.get("TYPE_NAME")));
         //
-        jdbcColumn.setJdbcType(JDBCType.valueOf(rs.getInt("DATA_TYPE")));
-        jdbcColumn.setColumnSize(rs.getInt("COLUMN_SIZE"));
-        jdbcColumn.setComment(rs.getString("REMARKS"));
-        jdbcColumn.setScopeCatalog(rs.getString("SCOPE_CATALOG"));
-        jdbcColumn.setScopeSchema(rs.getString("SCOPE_SCHEMA"));
-        jdbcColumn.setScopeTable(rs.getString("SCOPE_TABLE"));
+        JDBCType jdbcType = null;
+        try {
+            jdbcType = JDBCType.valueOf(safeToInteger(rs.get("DATA_TYPE")));
+        } catch (Exception e) { /**/ }
+        jdbcColumn.setJdbcType(jdbcType);
+        jdbcColumn.setColumnSize(safeToInteger(rs.get("COLUMN_SIZE")));
+        jdbcColumn.setComment(safeToString(rs.get("REMARKS")));
+        jdbcColumn.setScopeCatalog(safeToString(rs.get("SCOPE_CATALOG")));
+        jdbcColumn.setScopeSchema(safeToString(rs.get("SCOPE_SCHEMA")));
+        jdbcColumn.setScopeTable(safeToString(rs.get("SCOPE_TABLE")));
         //
-        String isAutoincrement = rs.getString("IS_AUTOINCREMENT");
+        String isAutoincrement = safeToString(rs.get("IS_AUTOINCREMENT"));
         if ("YES".equals(isAutoincrement)) {
             jdbcColumn.setAutoincrement(true);
         } else if ("NO".equals(isAutoincrement)) {
@@ -554,7 +599,7 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         } else {
             jdbcColumn.setAutoincrement(null);
         }
-        String isGeneratedColumn = rs.getString("IS_GENERATEDCOLUMN");
+        String isGeneratedColumn = safeToString(rs.get("IS_GENERATEDCOLUMN"));
         if ("YES".equals(isGeneratedColumn)) {
             jdbcColumn.setGeneratedColumn(true);
         } else if ("NO".equals(isGeneratedColumn)) {
@@ -563,12 +608,12 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
             jdbcColumn.setGeneratedColumn(null);
         }
         //
-        jdbcColumn.setDecimalDigits(rs.getInt("DECIMAL_DIGITS"));
-        jdbcColumn.setNumberPrecRadix(rs.getInt("NUM_PREC_RADIX"));
-        jdbcColumn.setColumnDef(rs.getString("COLUMN_DEF"));
-        jdbcColumn.setCharOctetLength(rs.getInt("CHAR_OCTET_LENGTH"));
-        jdbcColumn.setOrdinalPosition(rs.getInt("ORDINAL_POSITION"));
-        jdbcColumn.setSourceDataType(rs.getShort("SOURCE_DATA_TYPE"));
+        jdbcColumn.setDecimalDigits(safeToInteger(rs.get("DECIMAL_DIGITS")));
+        jdbcColumn.setNumberPrecRadix(safeToInteger(rs.get("NUM_PREC_RADIX")));
+        jdbcColumn.setColumnDef(safeToString(rs.get("COLUMN_DEF")));
+        jdbcColumn.setCharOctetLength(safeToInteger(rs.get("CHAR_OCTET_LENGTH")));
+        jdbcColumn.setOrdinalPosition(safeToInteger(rs.get("ORDINAL_POSITION")));
+        jdbcColumn.setSourceDataType(safeToInteger(rs.get("SOURCE_DATA_TYPE")));
         //
         if (primaryKey != null) {
             List<String> pkColumns = primaryKey.getColumns();

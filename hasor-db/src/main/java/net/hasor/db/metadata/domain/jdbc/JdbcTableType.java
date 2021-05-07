@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.domain.adb.mysql;
+package net.hasor.db.metadata.domain.jdbc;
 import net.hasor.db.metadata.TableType;
 
 /**
- * AdbMySql 表类型
- * @version : 2021-04-01
+ * Jdbc Table Type
+ * @version : 2020-04-25
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum AdbMySqlTableType implements TableType {
-    /** 物化视图(Adb For MySql 3.0 特有) */
-    Materialized("BASE TABLE"),
-    /** 普通表 */
-    Table("BASE TABLE"),
-    /** 普通视图 */
+public enum JdbcTableType implements TableType {
+    Table("TABLE"),
+    SystemTable("SYSTEM TABLE"),
     View("VIEW"),
-    /** 系统视图 */
-    SystemView("SYSTEM VIEW");
+    GlobalTemporary("GLOBAL TEMPORARY"),
+    LocalTemporary("LOCAL TEMPORARY"),
+    Alias("ALIAS"),
+    Synonym("SYNONYM"),
+    Other(null),
+    ;
     private final String typeName;
 
-    AdbMySqlTableType(String typeName) {
+    JdbcTableType(String typeName) {
         this.typeName = typeName;
     }
 
@@ -40,12 +41,12 @@ public enum AdbMySqlTableType implements TableType {
         return this.typeName;
     }
 
-    public static AdbMySqlTableType valueOfCode(String code) {
-        for (AdbMySqlTableType tableType : AdbMySqlTableType.values()) {
-            if (tableType.typeName.equals(code)) {
-                return tableType;
+    public static JdbcTableType valueOfCode(String code) {
+        for (JdbcTableType constraintType : JdbcTableType.values()) {
+            if (constraintType.typeName.equals(code)) {
+                return constraintType;
             }
         }
-        return null;
+        return Other;
     }
 }

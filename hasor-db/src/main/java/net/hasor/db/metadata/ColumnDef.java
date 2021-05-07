@@ -27,6 +27,9 @@ public interface ColumnDef {
     /** 列名 */
     public String getName();
 
+    /** 数据库上的列类型（数据库原始类型信息） */
+    public String getColumnType();
+
     /** 使用的 jdbcType,如果没有配置那么会通过 javaType 来自动推断 */
     public JDBCType getJdbcType();
 

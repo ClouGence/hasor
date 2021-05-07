@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.db.metadata.domain.mysql;
+import net.hasor.db.metadata.TableType;
+
 /**
  * MySQL 表类型
  * @version : 2021-03-30
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum MySqlTableType {
+public enum MySqlTableType implements TableType {
     Table("BASE TABLE"),
     View("VIEW"),
     SystemView("SYSTEM VIEW");

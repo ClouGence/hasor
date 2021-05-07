@@ -273,11 +273,11 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             OracleColumn column = new OracleColumn();
             column.setName(safeToString(recordMap.get("COLUMN_NAME")));
             column.setNullable("Y".equals(safeToString(recordMap.get("NULLABLE"))));
-            column.setDataType(safeToString(recordMap.get("DATA_TYPE")));
+            column.setColumnType(safeToString(recordMap.get("DATA_TYPE")));
             column.setSqlType(safeToOracleTypes(recordMap.get("DATA_TYPE")));
-            column.setDataTypeOwner(safeToString(recordMap.get("DATA_TYPE_OWNER")));
-            column.setJdbcType(columnTypeMappingToJdbcType(column.getSqlType(), column.getDataType()));
-            if (column.getJdbcType() == null && StringUtils.isNotBlank(column.getDataTypeOwner())) {
+            column.setColumnTypeOwner(safeToString(recordMap.get("DATA_TYPE_OWNER")));
+            column.setJdbcType(columnTypeMappingToJdbcType(column.getSqlType(), column.getColumnType()));
+            if (column.getJdbcType() == null && StringUtils.isNotBlank(column.getColumnTypeOwner())) {
                 column.setJdbcType(JDBCType.STRUCT); // 有 Type Name 表示一定是用户创建的类型。
             }
             //
@@ -298,52 +298,53 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             return column;
         }).collect(Collectors.toList());
     }
-    //
-    //    public List<MySqlConstraint> getConstraint(String schemaName, String tableName) throws SQLException {
-    //        if (StringUtils.isBlank(tableName)) {
-    //            return Collections.emptyList();
-    //        }
-    //        if (StringUtils.isBlank(schemaName)) {
-    //            schemaName = getCurrentSchema();
-    //            if (StringUtils.isBlank(schemaName)) {
-    //                throw new SQLException("no schema is specified and the current database is not set");
-    //            }
-    //        }
-    //        //
-    //        String queryString = "select CONSTRAINT_SCHEMA,CONSTRAINT_NAME,TABLE_SCHEMA,TABLE_NAME,CONSTRAINT_TYPE from INFORMATION_SCHEMA.TABLE_CONSTRAINTS " //
-    //                + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
-    //        try (Connection conn = this.connectSupplier.get()) {
-    //            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
-    //            if (mapList == null) {
-    //                return Collections.emptyList();
-    //            }
-    //            return mapList.stream().map(recordMap -> {
-    //                String constraintSchema = safeToString(recordMap.get("CONSTRAINT_SCHEMA"));
-    //                String constraintName = safeToString(recordMap.get("CONSTRAINT_NAME"));
-    //                String constraintTypeString = safeToString(recordMap.get("CONSTRAINT_TYPE"));
-    //                MySqlConstraint constraint = new MySqlConstraint();
-    //                constraint.setSchema(constraintSchema);
-    //                constraint.setName(constraintName);
-    //                constraint.setConstraintType(MySqlConstraintType.valueOfCode(constraintTypeString));
-    //                return constraint;
-    //            }).collect(Collectors.toList());
-    //        }
-    //    }
-    //
-    //    public List<MySqlConstraint> getConstraint(String schemaName, String tableName, MySqlConstraintType... cType) throws SQLException {
-    //        List<MySqlConstraint> constraintList = getConstraint(schemaName, tableName);
-    //        if (constraintList == null || constraintList.isEmpty()) {
-    //            return constraintList;
-    //        }
-    //        return constraintList.stream().filter(mySqlConstraint -> {
-    //            for (MySqlConstraintType constraintType : cType) {
-    //                if (constraintType == mySqlConstraint.getConstraintType()) {
-    //                    return true;
-    //                }
-    //            }
-    //            return false;
-    //        }).collect(Collectors.toList());
-    //    }
+
+    public List<OracleConstraint> getConstraint(String schemaName, String tableName) throws SQLException {
+        if (StringUtils.isBlank(tableName)) {
+            return Collections.emptyList();
+        }
+        if (StringUtils.isBlank(schemaName)) {
+            schemaName = getCurrentSchema();
+            if (StringUtils.isBlank(schemaName)) {
+                throw new SQLException("no schema is specified and the current database is not set");
+            }
+        }
+        //
+        String queryString = "select OWNER,CONSTRAINT_NAME,CONSTRAINT_TYPE,STATUS,VALIDATED,GENERATED from DBA_CONSTRAINTS " //
+                + "where OWNER = ? and TABLE_NAME = ?";
+        try (Connection conn = this.connectSupplier.get()) {
+            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
+            if (mapList == null) {
+                return Collections.emptyList();
+            }
+            return mapList.stream().map(recordMap -> {
+                OracleConstraint constraint = new OracleConstraint();
+                constraint.setSchema(safeToString(recordMap.get("OWNER")));
+                constraint.setName(safeToString(recordMap.get("CONSTRAINT_NAME")));
+                String constraintTypeString = safeToString(recordMap.get("CONSTRAINT_TYPE"));
+                constraint.setConstraintType(OracleConstraintType.valueOfCode(constraintTypeString));
+                constraint.setEnabled("ENABLED".equalsIgnoreCase(safeToString(recordMap.get("STATUS"))));
+                constraint.setValidated("VALIDATED".equalsIgnoreCase(safeToString(recordMap.get("VALIDATED"))));
+                constraint.setSystem("GENERATED NAME".equalsIgnoreCase(safeToString(recordMap.get("GENERATED"))));
+                return constraint;
+            }).collect(Collectors.toList());
+        }
+    }
+
+    public List<OracleConstraint> getConstraint(String schemaName, String tableName, OracleConstraintType... cType) throws SQLException {
+        List<OracleConstraint> constraintList = getConstraint(schemaName, tableName);
+        if (constraintList == null || constraintList.isEmpty()) {
+            return constraintList;
+        }
+        return constraintList.stream().filter(mySqlConstraint -> {
+            for (OracleConstraintType constraintType : cType) {
+                if (constraintType == mySqlConstraint.getConstraintType()) {
+                    return true;
+                }
+            }
+            return false;
+        }).collect(Collectors.toList());
+    }
     //
     //    public MySqlPrimaryKey getPrimaryKey(String schemaName, String tableName) throws SQLException {
     //        if (StringUtils.isBlank(tableName)) {

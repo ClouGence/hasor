@@ -14,19 +14,34 @@
  * limitations under the License.
  */
 package net.hasor.db.metadata.domain.oracle;
-import net.hasor.db.metadata.TableType;
-
 /**
- * Oracle 表类型
- * @version : 2021-04-29
+ * Oracle 约束类型
+ * @version : 2021-05-07
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum OracleTableType implements TableType {
-    Table("TABLE"),
-    View("VIEW");
+public enum OracleConstraintType {
+    /** Primary key */
+    PrimaryKey("P"),
+    /** Unique key */
+    Unique("U"),
+    /** With check option, on a view */
+    CheckView("V"),
+    /** With read only, on a view */
+    ReadOnly("O"),
+    /** Hash expression */
+    Hash("H"),
+    /** Check constraint on a table */
+    Check("C"),
+    /** Supplemental logging */
+    Supplemental("S"),
+    /** 外建约束 */
+    ForeignKey("R"),
+    /** Constraint that involves a REF column */
+    RefColumn("F"),
+    ;
     private final String typeName;
 
-    OracleTableType(String typeName) {
+    OracleConstraintType(String typeName) {
         this.typeName = typeName;
     }
 
@@ -34,10 +49,10 @@ public enum OracleTableType implements TableType {
         return this.typeName;
     }
 
-    public static OracleTableType valueOfCode(String code) {
-        for (OracleTableType tableType : OracleTableType.values()) {
-            if (tableType.typeName.equals(code)) {
-                return tableType;
+    public static OracleConstraintType valueOfCode(String code) {
+        for (OracleConstraintType constraintType : OracleConstraintType.values()) {
+            if (constraintType.typeName.equals(code)) {
+                return constraintType;
             }
         }
         return null;

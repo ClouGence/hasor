@@ -28,26 +28,26 @@ public class JdbcColumn implements ColumnDef {
     private String           tableSchema;
     private String           tableName;
     private String           columnName;
+    private String           columnType;
     private JdbcNullableType nullableType;
     private Boolean          nullable;
     private Boolean          autoincrement;
     private Boolean          generatedColumn;
     private JDBCType         jdbcType;
-    private int              columnSize;
+    private Integer          columnSize;
     private boolean          primaryKey;
     private boolean          uniqueKey;//如若存在联合唯一索引需要借助getUniqueKey 来查询具体信息，这里只会表示该列存在至少一个唯一索引的引用。
     private String           comment;
     //
-    private String           typeName;
     private String           scopeCatalog;
     private String           scopeSchema;
     private String           scopeTable;
-    private int              decimalDigits;
-    private int              numberPrecRadix;
+    private Integer          decimalDigits;
+    private Integer          numberPrecRadix;
     private String           columnDef;
-    private int              charOctetLength;
-    private int              ordinalPosition;
-    private short            sourceDataType;
+    private Integer          charOctetLength;
+    private Integer          ordinalPosition;
+    private Integer          sourceDataType;
 
     public String getTableCatalog() {
         return this.tableCatalog;
@@ -79,6 +79,15 @@ public class JdbcColumn implements ColumnDef {
 
     public void setColumnName(String columnName) {
         this.columnName = columnName;
+    }
+
+    @Override
+    public String getColumnType() {
+        return this.columnType;
+    }
+
+    public void setColumnType(String columnType) {
+        this.columnType = columnType;
     }
 
     public JdbcNullableType getNullableType() {
@@ -122,11 +131,11 @@ public class JdbcColumn implements ColumnDef {
         this.jdbcType = jdbcType;
     }
 
-    public int getColumnSize() {
+    public Integer getColumnSize() {
         return this.columnSize;
     }
 
-    public void setColumnSize(int columnSize) {
+    public void setColumnSize(Integer columnSize) {
         this.columnSize = columnSize;
     }
 
@@ -155,14 +164,6 @@ public class JdbcColumn implements ColumnDef {
         this.comment = comment;
     }
 
-    public String getTypeName() {
-        return this.typeName;
-    }
-
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
     public String getScopeCatalog() {
         return this.scopeCatalog;
     }
@@ -187,19 +188,19 @@ public class JdbcColumn implements ColumnDef {
         this.scopeTable = scopeTable;
     }
 
-    public int getDecimalDigits() {
+    public Integer getDecimalDigits() {
         return this.decimalDigits;
     }
 
-    public void setDecimalDigits(int decimalDigits) {
+    public void setDecimalDigits(Integer decimalDigits) {
         this.decimalDigits = decimalDigits;
     }
 
-    public int getNumberPrecRadix() {
+    public Integer getNumberPrecRadix() {
         return this.numberPrecRadix;
     }
 
-    public void setNumberPrecRadix(int numberPrecRadix) {
+    public void setNumberPrecRadix(Integer numberPrecRadix) {
         this.numberPrecRadix = numberPrecRadix;
     }
 
@@ -211,27 +212,27 @@ public class JdbcColumn implements ColumnDef {
         this.columnDef = columnDef;
     }
 
-    public int getCharOctetLength() {
+    public Integer getCharOctetLength() {
         return this.charOctetLength;
     }
 
-    public void setCharOctetLength(int charOctetLength) {
+    public void setCharOctetLength(Integer charOctetLength) {
         this.charOctetLength = charOctetLength;
     }
 
-    public int getOrdinalPosition() {
+    public Integer getOrdinalPosition() {
         return this.ordinalPosition;
     }
 
-    public void setOrdinalPosition(int ordinalPosition) {
+    public void setOrdinalPosition(Integer ordinalPosition) {
         this.ordinalPosition = ordinalPosition;
     }
 
-    public short getSourceDataType() {
+    public Integer getSourceDataType() {
         return this.sourceDataType;
     }
 
-    public void setSourceDataType(short sourceDataType) {
+    public void setSourceDataType(Integer sourceDataType) {
         this.sourceDataType = sourceDataType;
     }
 

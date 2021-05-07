@@ -23,9 +23,10 @@ import java.sql.JDBCType;
  */
 public class SimpleColumnDef implements ColumnDef {
     private String   name;
+    private String   columnType;
     private JDBCType jdbcType;
     private Class<?> javaType;
-    private boolean  primary;
+    private boolean  primaryKey;
 
     @Override
     public String getName() {
@@ -34,6 +35,15 @@ public class SimpleColumnDef implements ColumnDef {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String getColumnType() {
+        return this.columnType;
+    }
+
+    public void setColumnType(String columnType) {
+        this.columnType = columnType;
     }
 
     @Override
@@ -56,10 +66,10 @@ public class SimpleColumnDef implements ColumnDef {
 
     @Override
     public boolean isPrimaryKey() {
-        return this.primary;
+        return this.primaryKey;
     }
 
-    public void setPrimary(boolean primary) {
-        this.primary = primary;
+    public void setPrimaryKey(boolean primaryKey) {
+        this.primaryKey = primaryKey;
     }
 }

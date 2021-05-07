@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2010 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,10 @@
  */
 package net.hasor.db.metadata;
 /**
- * 查询的表
- * @version : 2020-10-31
+ * Table types
+ * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface TableDef {
-    /** 分类 */
-    public String getCatalog();
-
-    /** Schema */
-    public String getSchema();
-
-    /** 表名 */
-    public String getTable();
-
-    /** 表类型 */
-    public TableType getTableType();
+public interface TableType {
+    public String getTypeName();
 }

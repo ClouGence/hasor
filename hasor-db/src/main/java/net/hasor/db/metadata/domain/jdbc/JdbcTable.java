@@ -22,17 +22,18 @@ import net.hasor.db.metadata.TableDef;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcTable implements TableDef {
-    private String catalog;
-    private String schema;
-    private String table;
-    private String tableType;
-    private String remarks;
+    private String        catalog;
+    private String        schema;
+    private String        table;
+    private JdbcTableType tableType;
+    private String        tableTypeString;
+    private String        remarks;
     //
-    private String typeCatalog;
-    private String typeSchema;
-    private String typeName;
-    private String selfReferencingColName;
-    private String refGeneration;
+    private String        typeCatalog;
+    private String        typeSchema;
+    private String        typeName;
+    private String        selfReferencingColName;
+    private String        refGeneration;
 
     @Override
     public String getCatalog() {
@@ -61,12 +62,21 @@ public class JdbcTable implements TableDef {
         this.table = table;
     }
 
-    public String getTableType() {
+    @Override
+    public JdbcTableType getTableType() {
         return this.tableType;
     }
 
-    public void setTableType(String tableType) {
+    public void setTableType(JdbcTableType tableType) {
         this.tableType = tableType;
+    }
+
+    public String getTableTypeString() {
+        return this.tableTypeString;
+    }
+
+    public void setTableTypeString(String tableTypeString) {
+        this.tableTypeString = tableTypeString;
     }
 
     public String getRemarks() {

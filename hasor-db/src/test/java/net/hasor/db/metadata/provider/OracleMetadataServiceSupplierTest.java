@@ -16,11 +16,7 @@
 package net.hasor.db.metadata.provider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.metadata.SqlType;
-import net.hasor.db.metadata.domain.oracle.OracleColumn;
-import net.hasor.db.metadata.domain.oracle.OracleSchema;
-import net.hasor.db.metadata.domain.oracle.OracleTable;
-import net.hasor.db.metadata.domain.oracle.OracleTableType;
-import net.hasor.db.metadata.provider.OracleMetadataProvider;
+import net.hasor.db.metadata.domain.oracle.*;
 import net.hasor.test.db.utils.DsUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -34,6 +30,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /***
@@ -208,30 +205,36 @@ public class OracleMetadataServiceSupplierTest {
         assert !columnMap.get("R_DATA").isPrimaryKey();
         assert !columnMap.get("R_DATA").isUniqueKey();
     }
-    //    @Test
-    //    public void getConstraint1() throws SQLException {
-    //        List<MySqlConstraint> columnList = this.repository.getConstraint(MYSQL_SCHEMA_NAME, "proc_table_ref");
-    //        Map<String, MySqlConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(MySqlConstraint::getName, MySqlConstraint::getConstraintType));
-    //        assert typeMap.size() == 3;
-    //        assert typeMap.containsKey("PRIMARY");
-    //        assert typeMap.containsKey("proc_table_ref_uk");
-    //        assert typeMap.containsKey("ptr");
-    //        assert typeMap.get("PRIMARY") == MySqlConstraintType.PrimaryKey;
-    //        assert typeMap.get("proc_table_ref_uk") == MySqlConstraintType.Unique;
-    //        assert typeMap.get("ptr") == MySqlConstraintType.ForeignKey;
-    //    }
-    //
-    //    @Test
-    //    public void getConstraint2() throws SQLException {
-    //        List<MySqlConstraint> columnList = this.repository.getConstraint(MYSQL_SCHEMA_NAME, "proc_table_ref", MySqlConstraintType.Unique);
-    //        Map<String, MySqlConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(MySqlConstraint::getName, MySqlConstraint::getConstraintType));
-    //        assert typeMap.size() == 1;
-    //        assert !typeMap.containsKey("PRIMARY");
-    //        assert typeMap.containsKey("proc_table_ref_uk");
-    //        assert !typeMap.containsKey("ptr");
-    //        assert typeMap.get("proc_table_ref_uk") == MySqlConstraintType.Unique;
-    //    }
-    //
+
+    @Test
+    public void getConstraint1() throws SQLException {
+        List<OracleConstraint> columnList = this.repository.getConstraint("SCOTT", "PROC_TABLE_REF");
+        Map<String, OracleConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(OracleConstraint::getName, OracleConstraint::getConstraintType));
+        Set<String> typeNameSet = columnList.stream().map(OracleConstraint::getName).collect(Collectors.toSet());
+        Set<OracleConstraintType> typeEnumSet = columnList.stream().map(OracleConstraint::getConstraintType).collect(Collectors.toSet());
+        //
+        assert typeMap.size() == 4;
+        assert typeNameSet.contains("PROC_TABLE_REF_UK");
+        assert typeNameSet.contains("PTR");
+        assert typeNameSet.stream().anyMatch(s -> s.startsWith("SYS_"));
+        //
+        assert typeMap.get("PROC_TABLE_REF_UK") == OracleConstraintType.Unique;
+        assert typeMap.get("PTR") == OracleConstraintType.ForeignKey;
+        assert typeEnumSet.contains(OracleConstraintType.PrimaryKey);
+    }
+
+    @Test
+    public void getConstraint2() throws SQLException {
+        List<OracleConstraint> columnList = this.repository.getConstraint("SCOTT", "PROC_TABLE_REF", OracleConstraintType.Unique);
+        Map<String, OracleConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(OracleConstraint::getName, OracleConstraint::getConstraintType));
+        Set<OracleConstraintType> typeEnumSet = columnList.stream().map(OracleConstraint::getConstraintType).collect(Collectors.toSet());
+        //
+        assert typeMap.size() == 1;
+        assert !typeEnumSet.contains(OracleConstraintType.PrimaryKey);
+        assert typeMap.containsKey("PROC_TABLE_REF_UK");
+        assert !typeMap.containsKey("PTR");
+        assert typeMap.get("PROC_TABLE_REF_UK") == OracleConstraintType.Unique;
+    }
     //    @Test
     //    public void getPrimaryKey1() throws SQLException {
     //        MySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, "proc_table_ref");
