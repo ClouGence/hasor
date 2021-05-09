@@ -18,6 +18,8 @@ import net.hasor.db.JdbcUtils;
 import net.hasor.db.dialect.provider.Oracle12cDialect;
 import net.hasor.db.dialect.provider.SqlServer2005Dialect;
 import net.hasor.db.metadata.ColumnDef;
+import net.hasor.db.metadata.SimpleColumnDef;
+import net.hasor.db.metadata.SimpleTableDef;
 import net.hasor.db.metadata.TableDef;
 import net.hasor.test.db.AbstractDbTest;
 import org.junit.Test;
@@ -53,42 +55,19 @@ public class DialectTest extends AbstractDbTest {
         }
     };
 
-    private TableDef tableDef(String category, String schema, String table) {
-        return new TableDef() {
-            @Override
-            public String getCatalog() {
-                return category;
-            }
-
-            @Override
-            public String getSchema() {
-                return schema;
-            }
-
-            @Override
-            public String getTable() {
-                return table;
-            }
-        };
+    private TableDef tableDef(String catalog, String schema, String table) {
+        SimpleTableDef tableDef = new SimpleTableDef();
+        tableDef.setCatalog(catalog);
+        tableDef.setSchema(schema);
+        tableDef.setTable(table);
+        return tableDef;
     }
 
     private ColumnDef columnDef(String name, JDBCType jdbcType) {
-        return new ColumnDef() {
-            @Override
-            public String getName() {
-                return name;
-            }
-
-            @Override
-            public JDBCType getJdbcType() {
-                return jdbcType;
-            }
-
-            @Override
-            public boolean isPrimaryKey() {
-                return false;
-            }
-        };
+        SimpleColumnDef def = new SimpleColumnDef();
+        def.setName(name);
+        def.setJdbcType(jdbcType);
+        return def;
     }
 
     @Test
@@ -503,7 +482,7 @@ public class DialectTest extends AbstractDbTest {
         assert pageSql2.getArgs()[0].equals('F');
         assert pageSql2.getArgs()[1].equals(3);
     }
- 
+
     @Test
     public void dialect_oracle12c_1() {
         SqlDialect dialect = new Oracle12cDialect();

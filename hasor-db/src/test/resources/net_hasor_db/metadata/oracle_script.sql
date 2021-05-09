@@ -49,13 +49,18 @@ create table tb_user
     loginName     varchar(100) default 'abc' null,
     loginPassword varchar(100)               null,
     email         varchar(50)                null,
-    `index`       int                        null,
+    "index"       int                        null,
     registerTime  timestamp                  null,
     constraint tb_user_email_userUUID_uindex
-        unique (email, userUUID),
-    constraint tb_user_userUUID_uindex
-        unique (userUUID)
+        unique (email, userUUID)
 );
 
 create index normal_index_tb_user
     on tb_user (loginPassword, loginName);
+
+create view tb_user_view as
+    select * from tb_user
+    with check option;
+
+create materialized view log on tb_user;
+

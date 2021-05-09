@@ -20,9 +20,10 @@ package net.hasor.db.metadata;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SimpleTableDef implements TableDef {
-    private String catalog;
-    private String schema;
-    private String table;
+    private String    catalog;
+    private String    schema;
+    private String    table;
+    private TableType tableType;
 
     @Override
     public String getCatalog() {
@@ -49,5 +50,14 @@ public class SimpleTableDef implements TableDef {
 
     public void setTable(String table) {
         this.table = table;
+    }
+
+    @Override
+    public TableType getTableType() {
+        return this.tableType;
+    }
+
+    public void setTableType(TableType tableType) {
+        this.tableType = tableType;
     }
 }

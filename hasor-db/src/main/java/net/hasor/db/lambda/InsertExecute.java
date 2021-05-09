@@ -58,12 +58,6 @@ public interface InsertExecute<T> extends BoundSqlBuilder {
     /** 批量插入记录。 */
     public InsertExecute<T> applyEntity(List<T> entity);
 
-    /** insert form select */
-    public <V> InsertExecute<T> applyQueryAsInsert(LambdaQuery<V> lambdaQuery);
-
-    /** insert form select */
-    public <V> InsertExecute<T> applyQueryAsInsert(Class<V> exampleType, Consumer<LambdaQuery<V>> queryBuilderConsumer);
-
     /** 批量插入记录。 */
     public default InsertExecute<T> applyMap(Map<String, Object> dataMap) {
         return applyMap(Collections.singletonList(dataMap));
@@ -71,4 +65,10 @@ public interface InsertExecute<T> extends BoundSqlBuilder {
 
     /** 批量插入记录。 */
     public InsertExecute<T> applyMap(List<Map<String, Object>> dataMapList);
+
+    /** insert form select */
+    public <V> InsertExecute<T> applyQueryAsInsert(LambdaQuery<V> lambdaQuery);
+
+    /** insert form select */
+    public <V> InsertExecute<T> applyQueryAsInsert(Class<V> exampleType, Consumer<LambdaQuery<V>> queryBuilderConsumer);
 }

@@ -235,64 +235,62 @@ public class OracleMetadataServiceSupplierTest {
         assert !typeMap.containsKey("PTR");
         assert typeMap.get("PROC_TABLE_REF_UK") == OracleConstraintType.Unique;
     }
-    //    @Test
-    //    public void getPrimaryKey1() throws SQLException {
-    //        MySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, "proc_table_ref");
-    //        assert primaryKey.getConstraintType() == MySqlConstraintType.PrimaryKey;
-    //        assert primaryKey.getName().equals("PRIMARY");
-    //        assert primaryKey.getColumns().size() == 1;
-    //        assert primaryKey.getColumns().contains("r_int");
-    //    }
-    //
-    //    @Test
-    //    public void getPrimaryKey2() throws SQLException {
-    //        MySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, "proc_table");
-    //        assert primaryKey.getConstraintType() == MySqlConstraintType.PrimaryKey;
-    //        assert primaryKey.getName().equals("PRIMARY");
-    //        assert primaryKey.getColumns().size() == 2;
-    //        assert primaryKey.getColumns().contains("c_id");
-    //        assert primaryKey.getColumns().contains("c_name");
-    //    }
-    //
-    //    @Test
-    //    public void getPrimaryKey3() throws SQLException {
-    //        MySqlTable table = this.repository.getTable(MYSQL_SCHEMA_NAME, "t3");
-    //        MySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, "t3");
-    //        assert table != null;
-    //        assert primaryKey == null;
-    //    }
-    //
-    //    @Test
-    //    public void getUniqueKey() throws SQLException {
-    //        List<MySqlUniqueKey> uniqueKeyList = this.repository.getUniqueKey(MYSQL_SCHEMA_NAME, "tb_user");
-    //        Map<String, MySqlUniqueKey> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(MySqlUniqueKey::getName, u -> u));
-    //        assert uniqueKeyMap.size() == 2;
-    //        assert uniqueKeyMap.containsKey("tb_user_userUUID_uindex");
-    //        assert uniqueKeyMap.containsKey("tb_user_email_userUUID_uindex");
-    //        assert uniqueKeyMap.get("tb_user_userUUID_uindex").getColumns().size() == 1;
-    //        assert uniqueKeyMap.get("tb_user_userUUID_uindex").getColumns().contains("userUUID");
-    //        assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().size() == 2;
-    //        assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().contains("userUUID");
-    //        assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().contains("email");
-    //    }
-    //
-    //    @Test
-    //    public void getForeignKey() throws SQLException {
-    //        List<MySqlForeignKey> foreignKeyList1 = this.repository.getForeignKey(MYSQL_SCHEMA_NAME, "tb_user");
-    //        assert foreignKeyList1.size() == 0;
-    //        List<MySqlForeignKey> foreignKeyList2 = this.repository.getForeignKey(MYSQL_SCHEMA_NAME, "proc_table_ref");
-    //        assert foreignKeyList2.size() == 1;
-    //        MySqlForeignKey foreignKey = foreignKeyList2.get(0);
-    //        assert foreignKey.getConstraintType() == MySqlConstraintType.ForeignKey;
-    //        assert foreignKey.getFkColumn().size() == 2;
-    //        assert foreignKey.getFkColumn().get(0).equals("r_k1");
-    //        assert foreignKey.getFkColumn().get(1).equals("r_k2");
-    //        assert foreignKey.getName().equals("ptr");
-    //        assert foreignKey.getReferenceSchema().equals(MYSQL_SCHEMA_NAME);
-    //        assert foreignKey.getReferenceTable().equals("proc_table");
-    //        assert foreignKey.getReferenceMapping().get("r_k1").equals("c_id");
-    //        assert foreignKey.getReferenceMapping().get("r_k2").equals("c_name");
-    //    }
+
+    @Test
+    public void getPrimaryKey1() throws SQLException {
+        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "PROC_TABLE_REF");
+        assert primaryKey.getConstraintType() == OracleConstraintType.PrimaryKey;
+        assert primaryKey.getName().startsWith("SYS_");
+        assert primaryKey.getColumns().size() == 1;
+        assert primaryKey.getColumns().contains("R_INT");
+    }
+
+    @Test
+    public void getPrimaryKey2() throws SQLException {
+        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "PROC_TABLE");
+        assert primaryKey.getConstraintType() == OracleConstraintType.PrimaryKey;
+        assert primaryKey.getName().startsWith("SYS_");
+        assert primaryKey.getColumns().size() == 2;
+        assert primaryKey.getColumns().contains("C_ID");
+        assert primaryKey.getColumns().contains("C_NAME");
+    }
+
+    @Test
+    public void getPrimaryKey3() throws SQLException {
+        OracleTable table = this.repository.getTable("SCOTT", "T3");
+        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "T3");
+        assert table != null;
+        assert primaryKey == null;
+    }
+
+    @Test
+    public void getUniqueKey() throws SQLException {
+        List<OracleUniqueKey> uniqueKeyList = this.repository.getUniqueKey("SCOTT", "TB_USER");
+        Map<String, OracleUniqueKey> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(OracleUniqueKey::getName, u -> u));
+        assert uniqueKeyMap.size() == 1;
+        assert uniqueKeyMap.containsKey("TB_USER_EMAIL_USERUUID_UINDEX");
+        assert uniqueKeyMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().size() == 2;
+        assert uniqueKeyMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().contains("USERUUID");
+        assert uniqueKeyMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().contains("EMAIL");
+    }
+
+    @Test
+    public void getForeignKey() throws SQLException {
+        List<OracleForeignKey> foreignKeyList1 = this.repository.getForeignKey("SCOTT", "TB_USER");
+        assert foreignKeyList1.size() == 0;
+        List<OracleForeignKey> foreignKeyList2 = this.repository.getForeignKey("SCOTT", "PROC_TABLE_REF");
+        assert foreignKeyList2.size() == 1;
+        OracleForeignKey foreignKey = foreignKeyList2.get(0);
+        assert foreignKey.getConstraintType() == OracleConstraintType.ForeignKey;
+        assert foreignKey.getColumns().size() == 2;
+        assert foreignKey.getColumns().get(0).equals("R_K1");
+        assert foreignKey.getColumns().get(1).equals("R_K2");
+        assert foreignKey.getName().equals("PTR");
+        assert foreignKey.getReferenceSchema().equals("SCOTT");
+        assert foreignKey.getReferenceTable().equals("PROC_TABLE");
+        assert foreignKey.getReferenceMapping().get("R_K1").equals("C_ID");
+        assert foreignKey.getReferenceMapping().get("R_K2").equals("C_NAME");
+    }
     //
     //    @Test
     //    public void getIndexes1() throws SQLException {

@@ -16,6 +16,7 @@
 package net.hasor.db.mapping;
 import net.hasor.db.lambda.generation.GenerationType;
 import net.hasor.db.metadata.CaseSensitivityType;
+import net.hasor.db.metadata.TableType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ class TableMappingDef implements TableMapping {
     private       String                           catalogName;
     private       String                           schemaName;
     private       String                           tableName;
+    private       TableType                        tableType;
     private       boolean                          useDelimited;
     private       boolean                          autoProperty;
     private       CaseSensitivityType              caseSensitivity;
@@ -81,6 +83,15 @@ class TableMappingDef implements TableMapping {
     @Override
     public String getTable() {
         return this.tableName;
+    }
+
+    @Override
+    public TableType getTableType() {
+        return this.tableType;
+    }
+
+    public void setTableType(TableType tableType) {
+        this.tableType = tableType;
     }
 
     public void setTable(String tableName) {

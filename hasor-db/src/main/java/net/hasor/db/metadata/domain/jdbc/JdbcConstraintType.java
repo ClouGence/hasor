@@ -20,9 +20,9 @@ package net.hasor.db.metadata.domain.jdbc;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum JdbcConstraintType {
-    /** 主键约束 */
+    /** 主键 */
     PrimaryKey("PRIMARY KEY"),
-    /** 外建约束 */
+    /** 外建 */
     ForeignKey("FOREIGN KEY"),
     ;
     private final String typeName;

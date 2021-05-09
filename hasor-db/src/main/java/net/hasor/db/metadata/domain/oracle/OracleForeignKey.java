@@ -13,26 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.domain.jdbc;
+package net.hasor.db.metadata.domain.oracle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Jdbc 外键
- * @version : 2020-04-29
+ * Oracle 外键
+ * @version : 2021-05-08
  * @author 赵永春 (zyc@hasor.net)
  */
-public class JdbcForeignKey extends JdbcConstraint {
-    private List<String>        columns          = new ArrayList<>();
-    private String              referenceCatalog;
-    private String              referenceSchema;
-    private String              referenceTable;
-    private Map<String, String> referenceMapping = new HashMap<>();
-    private JdbcForeignKeyRule  updateRule;
-    private JdbcForeignKeyRule  deleteRule;
-    private JdbcDeferrability   deferrability;
+public class OracleForeignKey extends OracleConstraint {
+    private List<String>         columns          = new ArrayList<>();
+    private String               referenceSchema;
+    private String               referenceTable;
+    private Map<String, String>  referenceMapping = new HashMap<>();
+    private OracleForeignKeyRule deleteRule;
 
     public List<String> getColumns() {
         return this.columns;
@@ -40,14 +37,6 @@ public class JdbcForeignKey extends JdbcConstraint {
 
     public void setColumns(List<String> columns) {
         this.columns = columns;
-    }
-
-    public String getReferenceCatalog() {
-        return this.referenceCatalog;
-    }
-
-    public void setReferenceCatalog(String referenceCatalog) {
-        this.referenceCatalog = referenceCatalog;
     }
 
     public String getReferenceSchema() {
@@ -74,27 +63,11 @@ public class JdbcForeignKey extends JdbcConstraint {
         this.referenceMapping = referenceMapping;
     }
 
-    public JdbcForeignKeyRule getUpdateRule() {
-        return this.updateRule;
-    }
-
-    public void setUpdateRule(JdbcForeignKeyRule updateRule) {
-        this.updateRule = updateRule;
-    }
-
-    public JdbcForeignKeyRule getDeleteRule() {
+    public OracleForeignKeyRule getDeleteRule() {
         return this.deleteRule;
     }
 
-    public void setDeleteRule(JdbcForeignKeyRule deleteRule) {
+    public void setDeleteRule(OracleForeignKeyRule deleteRule) {
         this.deleteRule = deleteRule;
-    }
-
-    public JdbcDeferrability getDeferrability() {
-        return this.deferrability;
-    }
-
-    public void setDeferrability(JdbcDeferrability deferrability) {
-        this.deferrability = deferrability;
     }
 }

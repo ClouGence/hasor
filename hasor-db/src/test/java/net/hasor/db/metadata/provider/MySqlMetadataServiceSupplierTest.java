@@ -238,9 +238,9 @@ public class MySqlMetadataServiceSupplierTest {
         assert foreignKeyList2.size() == 1;
         MySqlForeignKey foreignKey = foreignKeyList2.get(0);
         assert foreignKey.getConstraintType() == MySqlConstraintType.ForeignKey;
-        assert foreignKey.getFkColumn().size() == 2;
-        assert foreignKey.getFkColumn().get(0).equals("r_k1");
-        assert foreignKey.getFkColumn().get(1).equals("r_k2");
+        assert foreignKey.getColumns().size() == 2;
+        assert foreignKey.getColumns().get(0).equals("r_k1");
+        assert foreignKey.getColumns().get(1).equals("r_k2");
         assert foreignKey.getName().equals("ptr");
         assert foreignKey.getReferenceSchema().equals(MYSQL_SCHEMA_NAME);
         assert foreignKey.getReferenceTable().equals("proc_table");

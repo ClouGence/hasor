@@ -493,7 +493,7 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
                     //
                     String pkColumnName = safeToString(fkColumn.get("PKCOLUMN_NAME"));
                     String fkColumnName = safeToString(fkColumn.get("FKCOLUMN_NAME"));
-                    foreignKey.getFkColumn().add(fkColumnName);
+                    foreignKey.getColumns().add(fkColumnName);
                     foreignKey.getReferenceMapping().put(fkColumnName, pkColumnName);
                 }
                 return new ArrayList<>(groupByName.values());

@@ -15,6 +15,7 @@
  */
 package net.hasor.db.mapping;
 import net.hasor.db.metadata.*;
+import net.hasor.db.metadata.domain.jdbc.JdbcTableType;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
 import net.hasor.db.types.UnknownTypeHandler;
@@ -128,12 +129,14 @@ public class MappingRegistry {
             def.setCatalog(StringUtils.isNotBlank(catalog) ? catalog : null);
             def.setSchema(StringUtils.isNotBlank(schema) ? schema : null);
             def.setTable(table);
+            def.setTableType(JdbcTableType.Table);
             def.setAutoProperty(defTable.autoMapping());
             useDelimited = defTable.useDelimited();
         } else {
             def.setCatalog(null);
             def.setSchema(null);
             def.setTable(entityType.getSimpleName());
+            def.setTableType(null);
             def.setAutoProperty(true);
             useDelimited = false;
         }
@@ -173,6 +176,7 @@ public class MappingRegistry {
                 def.setCatalog(tableDef.getCatalog());
                 def.setSchema(tableDef.getSchema());
                 def.setTable(tableDef.getTable());
+                def.setTableType(tableDef.getTableType());
             }
         } else {
             def.setCatalog(formatCaseSensitivity(def.getCatalog(), def.getCaseSensitivity()));

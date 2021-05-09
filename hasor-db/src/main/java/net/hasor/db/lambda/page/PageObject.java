@@ -53,11 +53,7 @@ public class PageObject implements Page {
 
     /** 设置分页的页大小 */
     public void setPageSize(int pageSize) {
-        if (pageSize <= 0) {
-            this.pageSize = 0;
-        } else {
-            this.pageSize = pageSize;
-        }
+        this.pageSize = Math.max(pageSize, 0);
     }
 
     /**取当前页号 */

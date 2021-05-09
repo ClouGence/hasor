@@ -421,6 +421,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
             for (Map<String, Object> indexColumn : mapList) {
                 String indexName = safeToString(indexColumn.get("INDEX_NAME"));
                 String indexType = safeToString(indexColumn.get("INDEX_TYPE"));
+                //
                 MySqlUniqueKey uniqueKey = groupByName.computeIfAbsent(indexName, k -> {
                     MySqlUniqueKey sqlUniqueKey = new MySqlUniqueKey();
                     sqlUniqueKey.setName(k);
@@ -505,7 +506,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
                 String columnName = safeToString(columnData.get("COLUMN_NAME"));
                 String columnIndexType = safeToString(columnData.get("INDEX_TYPE"));
                 String refColumn = safeToString(columnData.get("REFERENCED_COLUMN_NAME"));
-                foreignKey.getFkColumn().add(columnName);
+                foreignKey.getColumns().add(columnName);
                 foreignKey.getStorageType().put(columnName, columnIndexType);
                 foreignKey.setReferenceSchema(safeToString(columnData.get("REFERENCED_TABLE_SCHEMA")));
                 foreignKey.setReferenceTable(safeToString(columnData.get("REFERENCED_TABLE_NAME")));

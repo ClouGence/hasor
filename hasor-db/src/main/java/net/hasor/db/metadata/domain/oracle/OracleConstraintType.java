@@ -20,22 +20,23 @@ package net.hasor.db.metadata.domain.oracle;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum OracleConstraintType {
-    /** Primary key */
+    /** 主键 */
     PrimaryKey("P"),
-    /** Unique key */
+    /** 唯一 */
     Unique("U"),
-    /** With check option, on a view */
+    /** 外建 */
+    ForeignKey("R"),
+    /** 检查 */
+    Check("C"),
+    /** 视图检查 */
     CheckView("V"),
+    //
     /** With read only, on a view */
     ReadOnly("O"),
     /** Hash expression */
     Hash("H"),
-    /** Check constraint on a table */
-    Check("C"),
     /** Supplemental logging */
     Supplemental("S"),
-    /** 外建约束 */
-    ForeignKey("R"),
     /** Constraint that involves a REF column */
     RefColumn("F"),
     ;

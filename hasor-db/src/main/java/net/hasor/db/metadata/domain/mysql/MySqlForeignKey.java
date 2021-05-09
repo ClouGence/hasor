@@ -25,7 +25,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MySqlForeignKey extends MySqlConstraint {
-    private List<String>        fkColumn         = new ArrayList<>();
+    private List<String>        columns          = new ArrayList<>();
     private Map<String, String> storageType      = new HashMap<>();
     private String              referenceSchema;
     private String              referenceTable;
@@ -33,12 +33,12 @@ public class MySqlForeignKey extends MySqlConstraint {
     private MySqlForeignKeyRule updateRule;
     private MySqlForeignKeyRule deleteRule;
 
-    public List<String> getFkColumn() {
-        return this.fkColumn;
+    public List<String> getColumns() {
+        return this.columns;
     }
 
-    public void setFkColumn(List<String> fkColumn) {
-        this.fkColumn = fkColumn;
+    public void setColumns(List<String> columns) {
+        this.columns = columns;
     }
 
     public Map<String, String> getStorageType() {

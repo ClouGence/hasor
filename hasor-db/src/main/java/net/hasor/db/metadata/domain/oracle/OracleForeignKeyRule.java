@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.domain.mysql;
+package net.hasor.db.metadata.domain.oracle;
 /**
- * MySQL 约束类型
- * @version : 2021-03-30
+ * Oracle 外建约束的及联更新策略
+ * @version : 2021-05-08
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum MySqlConstraintType {
-    /** 主键 */
-    PrimaryKey("PRIMARY KEY"),
-    /** 唯一 */
-    Unique("UNIQUE"),
-    /** 外建 */
-    ForeignKey("FOREIGN KEY"),
-    ;
+public enum OracleForeignKeyRule {
+    NoAction("NO ACTION"),
+    Cascade("CASCADE"),
+    SetNull("SET NULL");
     private final String typeName;
 
-    MySqlConstraintType(String typeName) {
+    OracleForeignKeyRule(String typeName) {
         this.typeName = typeName;
     }
 
@@ -37,10 +33,10 @@ public enum MySqlConstraintType {
         return this.typeName;
     }
 
-    public static MySqlConstraintType valueOfCode(String code) {
-        for (MySqlConstraintType constraintType : MySqlConstraintType.values()) {
-            if (constraintType.typeName.equals(code)) {
-                return constraintType;
+    public static OracleForeignKeyRule valueOfCode(String code) {
+        for (OracleForeignKeyRule foreignKeyRule : OracleForeignKeyRule.values()) {
+            if (foreignKeyRule.typeName.equals(code)) {
+                return foreignKeyRule;
             }
         }
         return null;
