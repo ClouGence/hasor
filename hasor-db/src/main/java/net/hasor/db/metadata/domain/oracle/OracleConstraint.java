@@ -25,7 +25,7 @@ public class OracleConstraint {
     private OracleConstraintType constraintType;
     private boolean              enabled;
     private boolean              validated;
-    private boolean              system;
+    private boolean              generated;
 
     public String getSchema() {
         return this.schema;
@@ -67,11 +67,11 @@ public class OracleConstraint {
         this.validated = validated;
     }
 
-    public boolean isSystem() {
-        return this.system;
+    public boolean isGenerated() {
+        return this.generated;
     }
 
-    public void setSystem(boolean system) {
-        this.system = system;
+    public void setGenerated(boolean generated) {
+        this.generated = generated;
     }
 }

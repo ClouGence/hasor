@@ -265,13 +265,17 @@ public class OracleMetadataServiceSupplierTest {
 
     @Test
     public void getUniqueKey() throws SQLException {
+        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "TB_USER");
         List<OracleUniqueKey> uniqueKeyList = this.repository.getUniqueKey("SCOTT", "TB_USER");
         Map<String, OracleUniqueKey> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(OracleUniqueKey::getName, u -> u));
-        assert uniqueKeyMap.size() == 1;
+        assert uniqueKeyMap.size() == 2;
+        assert uniqueKeyMap.containsKey(primaryKey.getName());
         assert uniqueKeyMap.containsKey("TB_USER_EMAIL_USERUUID_UINDEX");
         assert uniqueKeyMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().size() == 2;
         assert uniqueKeyMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().contains("USERUUID");
         assert uniqueKeyMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().contains("EMAIL");
+        assert uniqueKeyMap.get(primaryKey.getName()).getColumns().size() == 1;
+        assert uniqueKeyMap.get(primaryKey.getName()).getColumns().contains("USERUUID");
     }
 
     @Test
@@ -291,78 +295,77 @@ public class OracleMetadataServiceSupplierTest {
         assert foreignKey.getReferenceMapping().get("R_K1").equals("C_ID");
         assert foreignKey.getReferenceMapping().get("R_K2").equals("C_NAME");
     }
-    //
-    //    @Test
-    //    public void getIndexes1() throws SQLException {
-    //        List<MySqlIndex> indexList = this.repository.getIndexes(MYSQL_SCHEMA_NAME, "tb_user");
-    //        Map<String, MySqlIndex> indexMap = indexList.stream().collect(Collectors.toMap(MySqlIndex::getName, i -> i));
-    //        assert indexMap.size() == 4;
-    //        assert indexMap.containsKey("PRIMARY");
-    //        assert indexMap.containsKey("tb_user_userUUID_uindex");
-    //        assert indexMap.containsKey("tb_user_email_userUUID_uindex");
-    //        assert indexMap.containsKey("normal_index_tb_user");
-    //        assert indexMap.get("PRIMARY").getColumns().size() == 1;
-    //        assert indexMap.get("PRIMARY").getColumns().get(0).equals("userUUID");
-    //        assert indexMap.get("PRIMARY").getIndexType() == MySqlIndexType.Primary;
-    //        assert indexMap.get("tb_user_userUUID_uindex").getColumns().size() == 1;
-    //        assert indexMap.get("tb_user_userUUID_uindex").getColumns().get(0).equals("userUUID");
-    //        assert indexMap.get("tb_user_userUUID_uindex").getIndexType() == MySqlIndexType.Unique;
-    //        assert indexMap.get("tb_user_email_userUUID_uindex").getColumns().size() == 2;
-    //        assert indexMap.get("tb_user_email_userUUID_uindex").getColumns().get(0).equals("email");
-    //        assert indexMap.get("tb_user_email_userUUID_uindex").getColumns().get(1).equals("userUUID");
-    //        assert indexMap.get("tb_user_email_userUUID_uindex").getIndexType() == MySqlIndexType.Unique;
-    //        assert indexMap.get("normal_index_tb_user").getColumns().size() == 2;
-    //        assert indexMap.get("normal_index_tb_user").getColumns().get(0).equals("loginPassword");
-    //        assert indexMap.get("normal_index_tb_user").getColumns().get(1).equals("loginName");
-    //        assert indexMap.get("normal_index_tb_user").getIndexType() == MySqlIndexType.Normal;
-    //    }
-    //
-    //    @Test
-    //    public void getIndexes2() throws SQLException {
-    //        List<MySqlIndex> indexList = this.repository.getIndexes(MYSQL_SCHEMA_NAME, "proc_table_ref");
-    //        Map<String, MySqlIndex> indexMap = indexList.stream().collect(Collectors.toMap(MySqlIndex::getName, i -> i));
-    //        assert indexMap.size() == 4;
-    //        assert indexMap.containsKey("PRIMARY");
-    //        assert indexMap.containsKey("proc_table_ref_uk");
-    //        assert indexMap.containsKey("proc_table_ref_index");
-    //        assert indexMap.containsKey("ptr");
-    //        assert indexMap.get("PRIMARY").getColumns().size() == 1;
-    //        assert indexMap.get("PRIMARY").getColumns().get(0).equals("r_int");
-    //        assert indexMap.get("PRIMARY").getIndexType() == MySqlIndexType.Primary;
-    //        assert indexMap.get("proc_table_ref_uk").getColumns().size() == 1;
-    //        assert indexMap.get("proc_table_ref_uk").getColumns().get(0).equals("r_name");
-    //        assert indexMap.get("proc_table_ref_uk").getIndexType() == MySqlIndexType.Unique;
-    //        assert indexMap.get("proc_table_ref_index").getColumns().size() == 1;
-    //        assert indexMap.get("proc_table_ref_index").getColumns().get(0).equals("r_index");
-    //        assert indexMap.get("proc_table_ref_index").getIndexType() == MySqlIndexType.Normal;
-    //        assert indexMap.get("ptr").getColumns().size() == 2;
-    //        assert indexMap.get("ptr").getColumns().get(0).equals("r_k1");
-    //        assert indexMap.get("ptr").getColumns().get(1).equals("r_k2");
-    //        assert indexMap.get("ptr").getIndexType() == MySqlIndexType.Foreign;
-    //    }
-    //
-    //    @Test
-    //    public void getIndexes3() throws SQLException {
-    //        List<MySqlIndex> indexList = this.repository.getIndexes(MYSQL_SCHEMA_NAME, "proc_table_ref", MySqlIndexType.Normal, MySqlIndexType.Unique);
-    //        Map<String, MySqlIndex> indexMap = indexList.stream().collect(Collectors.toMap(MySqlIndex::getName, i -> i));
-    //        assert indexMap.size() == 2;
-    //        assert indexMap.containsKey("proc_table_ref_uk");
-    //        assert indexMap.containsKey("proc_table_ref_index");
-    //        assert indexMap.get("proc_table_ref_uk").getColumns().size() == 1;
-    //        assert indexMap.get("proc_table_ref_uk").getColumns().get(0).equals("r_name");
-    //        assert indexMap.get("proc_table_ref_uk").getIndexType() == MySqlIndexType.Unique;
-    //        assert indexMap.get("proc_table_ref_index").getColumns().size() == 1;
-    //        assert indexMap.get("proc_table_ref_index").getColumns().get(0).equals("r_index");
-    //        assert indexMap.get("proc_table_ref_index").getIndexType() == MySqlIndexType.Normal;
-    //    }
-    //
-    //    @Test
-    //    public void getIndexes4() throws SQLException {
-    //        MySqlIndex index = this.repository.getIndexes(MYSQL_SCHEMA_NAME, "proc_table_ref", "ptr");
-    //        assert index.getName().equals("ptr");
-    //        assert index.getColumns().size() == 2;
-    //        assert index.getColumns().get(0).equals("r_k1");
-    //        assert index.getColumns().get(1).equals("r_k2");
-    //        assert index.getIndexType() == MySqlIndexType.Foreign;
-    //    }
+
+    @Test
+    public void getIndexes1() throws SQLException {
+        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "TB_USER");
+        List<OracleIndex> indexList = this.repository.getIndexes("SCOTT", "TB_USER");
+        Map<String, OracleIndex> indexMap = indexList.stream().collect(Collectors.toMap(OracleIndex::getName, i -> i));
+        assert indexMap.size() == 3;
+        //
+        Set<String> indexNameSet = indexList.stream().map(OracleIndex::getName).collect(Collectors.toSet());
+        assert indexNameSet.contains(primaryKey.getName());
+        assert indexNameSet.contains("TB_USER_EMAIL_USERUUID_UINDEX");
+        assert indexNameSet.contains("NORMAL_INDEX_TB_USER");
+        assert indexMap.get(primaryKey.getName()).getColumns().size() == 1;
+        assert indexMap.get(primaryKey.getName()).getColumns().get(0).equals("USERUUID");
+        assert indexMap.get(primaryKey.getName()).isUnique();
+        assert indexMap.get(primaryKey.getName()).isPrimaryKey();
+        assert indexMap.get(primaryKey.getName()).getIndexType() == OracleIndexType.Normal;
+        assert indexMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().size() == 2;
+        assert indexMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().get(0).equals("EMAIL");
+        assert indexMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().get(1).equals("USERUUID");
+        assert indexMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getIndexType() == OracleIndexType.Normal;
+        assert indexMap.get("TB_USER_EMAIL_USERUUID_UINDEX").isUnique();
+        assert !indexMap.get("TB_USER_EMAIL_USERUUID_UINDEX").isPrimaryKey();
+        assert indexMap.get("NORMAL_INDEX_TB_USER").getColumns().size() == 2;
+        assert indexMap.get("NORMAL_INDEX_TB_USER").getColumns().get(0).equals("LOGINPASSWORD");
+        assert indexMap.get("NORMAL_INDEX_TB_USER").getColumns().get(1).equals("LOGINNAME");
+        assert indexMap.get("NORMAL_INDEX_TB_USER").getIndexType() == OracleIndexType.Normal;
+        assert !indexMap.get("NORMAL_INDEX_TB_USER").isUnique();
+        assert !indexMap.get("NORMAL_INDEX_TB_USER").isPrimaryKey();
+    }
+
+    @Test
+    public void getIndexes2() throws SQLException {
+        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "PROC_TABLE_REF");
+        List<OracleIndex> indexList = this.repository.getIndexes("SCOTT", "PROC_TABLE_REF");
+        Map<String, OracleIndex> indexMap = indexList.stream().collect(Collectors.toMap(OracleIndex::getName, i -> i));
+        assert indexMap.size() == 3;
+        assert indexMap.containsKey(primaryKey.getName());
+        assert indexMap.containsKey("PROC_TABLE_REF_UK");
+        assert indexMap.containsKey("PROC_TABLE_REF_INDEX");
+        assert indexMap.get(primaryKey.getName()).getColumns().size() == 1;
+        assert indexMap.get(primaryKey.getName()).getColumns().get(0).equals("R_INT");
+        assert indexMap.get(primaryKey.getName()).getIndexType() == OracleIndexType.Normal;
+        assert indexMap.get(primaryKey.getName()).isPrimaryKey();
+        assert indexMap.get(primaryKey.getName()).isUnique();
+        assert indexMap.get("PROC_TABLE_REF_UK").getColumns().size() == 1;
+        assert indexMap.get("PROC_TABLE_REF_UK").getColumns().get(0).equals("R_NAME");
+        assert indexMap.get("PROC_TABLE_REF_UK").getIndexType() == OracleIndexType.Normal;
+        assert !indexMap.get("PROC_TABLE_REF_UK").isPrimaryKey();
+        assert indexMap.get("PROC_TABLE_REF_UK").isUnique();
+        assert indexMap.get("PROC_TABLE_REF_INDEX").getColumns().size() == 1;
+        assert indexMap.get("PROC_TABLE_REF_INDEX").getColumns().get(0).equals("R_INDEX");
+        assert indexMap.get("PROC_TABLE_REF_INDEX").getIndexType() == OracleIndexType.Normal;
+        assert !indexMap.get("PROC_TABLE_REF_INDEX").isPrimaryKey();
+        assert !indexMap.get("PROC_TABLE_REF_INDEX").isUnique();
+    }
+
+    @Test
+    public void getIndexes3() throws SQLException {
+        List<OracleIndex> indexList = this.repository.getIndexes("SCOTT", "PROC_TABLE_REF", OracleIndexType.Bitmap);
+        Map<String, OracleIndex> indexMap = indexList.stream().collect(Collectors.toMap(OracleIndex::getName, i -> i));
+        assert indexMap.size() == 0;
+    }
+
+    @Test
+    public void getIndexes4() throws SQLException {
+        OracleIndex index = this.repository.getIndexes("SCOTT", "PROC_TABLE_REF", "PROC_TABLE_REF_UK");
+        assert index.getName().equals("PROC_TABLE_REF_UK");
+        assert index.getColumns().size() == 1;
+        assert index.getColumns().get(0).equals("R_NAME");
+        assert index.isUnique();
+        assert index.getIndexType() == OracleIndexType.Normal;
+    }
 }

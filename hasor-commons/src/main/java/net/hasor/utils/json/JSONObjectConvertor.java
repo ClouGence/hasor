@@ -58,13 +58,12 @@ public class JSONObjectConvertor implements JSON.Convertor {
 
     public void toJSON(Object obj, Output out) {
         try {
-            Class c = obj.getClass();
-            if (_fromJSON)
+            if (_fromJSON) {
                 out.addClass(obj.getClass());
+            }
             Method[] methods = obj.getClass().getMethods();
-            for (int i = 0; i < methods.length; i++) {
-                Method m = methods[i];
-                if (!Modifier.isStatic(m.getModifiers()) && m.getParameterTypes().length == 0 && m.getReturnType() != null && m.getDeclaringClass() != Object.class) {
+            for (Method m : methods) {
+                if (!Modifier.isStatic(m.getModifiers()) && m.getParameterTypes().length == 0 && m.getDeclaringClass() != Object.class) {
                     String name = m.getName();
                     if (name.startsWith("is"))
                         name = name.substring(2, 3).toLowerCase() + name.substring(3);

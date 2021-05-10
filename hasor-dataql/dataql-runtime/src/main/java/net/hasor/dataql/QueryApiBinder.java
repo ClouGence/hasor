@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-import net.hasor.core.*;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.BindInfo;
+import net.hasor.core.TypeSupplier;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.dataql.DataQL.ConfigOption;
@@ -171,7 +173,7 @@ public interface QueryApiBinder extends ApiBinder, Hints {
         }
         //
         Class<? extends UdfSource> udfSourceType = (Class<? extends UdfSource>) sourceType;
-        HasorUtils.pushStartListener(getEnvironment(), (EventListener<AppContext>) (event, appContext) -> {
+        this.lazyLoad(appContext -> {
             DataQL dataQL = appContext.getInstance(DataQL.class);
             Finder qlFinder = dataQL.getFinder();
             if (typeSupplier == null) {

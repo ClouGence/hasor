@@ -325,7 +325,7 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
                 constraint.setConstraintType(OracleConstraintType.valueOfCode(constraintTypeString));
                 constraint.setEnabled("ENABLED".equalsIgnoreCase(safeToString(recordMap.get("STATUS"))));
                 constraint.setValidated("VALIDATED".equalsIgnoreCase(safeToString(recordMap.get("VALIDATED"))));
-                constraint.setSystem("GENERATED NAME".equalsIgnoreCase(safeToString(recordMap.get("GENERATED"))));
+                constraint.setGenerated("GENERATED NAME".equalsIgnoreCase(safeToString(recordMap.get("GENERATED"))));
                 return constraint;
             }).collect(Collectors.toList());
         }
@@ -374,7 +374,7 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
                     primaryKey.setConstraintType(OracleConstraintType.PrimaryKey);
                     primaryKey.setEnabled("ENABLED".equalsIgnoreCase(safeToString(ent.get("STATUS"))));
                     primaryKey.setValidated("VALIDATED".equalsIgnoreCase(safeToString(ent.get("VALIDATED"))));
-                    primaryKey.setSystem("GENERATED NAME".equalsIgnoreCase(safeToString(ent.get("GENERATED"))));
+                    primaryKey.setGenerated("GENERATED NAME".equalsIgnoreCase(safeToString(ent.get("GENERATED"))));
                 }
                 primaryKey.setSchema(safeToString(ent.get("OWNER")));
                 primaryKey.setName(safeToString(ent.get("CONSTRAINT_NAME")));
@@ -403,7 +403,7 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
         String queryString = "" //
                 + "select CON.OWNER,CON.CONSTRAINT_NAME,CONSTRAINT_TYPE,STATUS,VALIDATED,GENERATED,COLUMN_NAME from DBA_CONS_COLUMNS CC\n" //
                 + "left join DBA_CONSTRAINTS CON on CC.CONSTRAINT_NAME = CON.CONSTRAINT_NAME\n" //
-                + "where CONSTRAINT_TYPE = 'U' and CC.OWNER = ? and CC.TABLE_NAME = ? order by POSITION asc"; //
+                + "where CONSTRAINT_TYPE in ('U','P') and CC.OWNER = ? and CC.TABLE_NAME = ? order by POSITION asc"; //
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {
@@ -416,10 +416,18 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
                     OracleUniqueKey sqlUniqueKey = new OracleUniqueKey();
                     sqlUniqueKey.setSchema(safeToString(ent.get("OWNER")));
                     sqlUniqueKey.setName(constraintName);
-                    sqlUniqueKey.setConstraintType(OracleConstraintType.Unique);
                     sqlUniqueKey.setEnabled("ENABLED".equalsIgnoreCase(safeToString(ent.get("STATUS"))));
                     sqlUniqueKey.setValidated("VALIDATED".equalsIgnoreCase(safeToString(ent.get("VALIDATED"))));
-                    sqlUniqueKey.setSystem("GENERATED NAME".equalsIgnoreCase(safeToString(ent.get("GENERATED"))));
+                    sqlUniqueKey.setGenerated("GENERATED NAME".equalsIgnoreCase(safeToString(ent.get("GENERATED"))));
+                    //
+                    String constraintType = safeToString(ent.get("CONSTRAINT_TYPE"));
+                    if ("U".equalsIgnoreCase(constraintType)) {
+                        sqlUniqueKey.setConstraintType(OracleConstraintType.Unique);
+                    } else if ("P".equalsIgnoreCase(constraintType)) {
+                        sqlUniqueKey.setConstraintType(OracleConstraintType.PrimaryKey);
+                    } else {
+                        throw new UnsupportedOperationException("It's not gonna happen.");
+                    }
                     return sqlUniqueKey;
                 });
                 uniqueKey.getColumns().add(safeToString(ent.get("COLUMN_NAME")));
@@ -430,7 +438,7 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
 
     public List<OracleForeignKey> getForeignKey(String schemaName, String tableName) throws SQLException {
         if (StringUtils.isBlank(tableName)) {
-            return null;
+            return Collections.emptyList();
         }
         if (StringUtils.isBlank(schemaName)) {
             schemaName = getCurrentSchema();
@@ -452,7 +460,7 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {
-                return null;
+                return Collections.emptyList();
             }
             Map<String, OracleForeignKey> groupByName = new LinkedHashMap<>();
             for (Map<String, Object> ent : mapList) {
@@ -464,7 +472,7 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
                     sqlForeignKey.setConstraintType(OracleConstraintType.ForeignKey);
                     sqlForeignKey.setEnabled("ENABLED".equalsIgnoreCase(safeToString(ent.get("STATUS"))));
                     sqlForeignKey.setValidated("VALIDATED".equalsIgnoreCase(safeToString(ent.get("VALIDATED"))));
-                    sqlForeignKey.setSystem("GENERATED NAME".equalsIgnoreCase(safeToString(ent.get("GENERATED"))));
+                    sqlForeignKey.setGenerated("GENERATED NAME".equalsIgnoreCase(safeToString(ent.get("GENERATED"))));
                     //
                     sqlForeignKey.setReferenceSchema(safeToString(ent.get("TARGET_OWNER")));
                     sqlForeignKey.setReferenceTable(safeToString(ent.get("TARGET_TABLE")));
@@ -477,110 +485,86 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             return new ArrayList<>(groupByName.values());
         }
     }
-    //
-    //    public List<MySqlIndex> getIndexes(String schemaName, String tableName) throws SQLException {
-    //        if (StringUtils.isBlank(tableName)) {
-    //            return Collections.emptyList();
-    //        }
-    //        if (StringUtils.isBlank(schemaName)) {
-    //            schemaName = getCurrentSchema();
-    //            if (StringUtils.isBlank(schemaName)) {
-    //                throw new SQLException("no schema is specified and the current database is not set");
-    //            }
-    //        }
-    //        //
-    //        String queryString = "select TABLE_CATALOG,TABLE_SCHEMA,TABLE_NAME,INDEX_NAME,INDEX_TYPE,NON_UNIQUE,COLUMN_NAME FROM INFORMATION_SCHEMA.STATISTICS "//
-    //                + "where TABLE_SCHEMA = ? and TABLE_NAME = ? order by SEQ_IN_INDEX asc";
-    //        try (Connection conn = this.connectSupplier.get()) {
-    //            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
-    //            if (mapList == null) {
-    //                return Collections.emptyList();
-    //            }
-    //            List<MySqlConstraint> constraints = getConstraint(schemaName, tableName);
-    //            Map<String, MySqlConstraint> constraintMap = constraints.stream().collect(Collectors.toMap(MySqlConstraint::getName, constraint -> constraint));
-    //            Map<String, MySqlIndex> groupByName = new LinkedHashMap<>(); // indexName -> MySqlIndex
-    //            // group by table
-    //            for (Map<String, Object> indexColumn : mapList) {
-    //                String indexName = safeToString(indexColumn.get("INDEX_NAME"));
-    //                MySqlIndex indexMap = groupByName.computeIfAbsent(indexName, k -> {
-    //                    MySqlIndexType indexType = null;
-    //                    if (constraintMap.containsKey(indexName)) {
-    //                        switch (constraintMap.get(indexName).getConstraintType()) {
-    //                            case PrimaryKey:
-    //                                indexType = MySqlIndexType.Primary;
-    //                                break;
-    //                            case Unique:
-    //                                indexType = MySqlIndexType.Unique;
-    //                                break;
-    //                            case ForeignKey:
-    //                                indexType = MySqlIndexType.Foreign;
-    //                                break;
-    //                        }
-    //                    } else {
-    //                        indexType = MySqlIndexType.Normal;
-    //                    }
-    //                    MySqlIndex mySqlIndex = new MySqlIndex();
-    //                    mySqlIndex.setName(k);
-    //                    mySqlIndex.setIndexType(indexType);
-    //                    return mySqlIndex;
-    //                });
-    //                String columnName = safeToString(indexColumn.get("COLUMN_NAME"));
-    //                String indexType = safeToString(indexColumn.get("INDEX_TYPE"));
-    //                indexMap.getColumns().add(columnName);
-    //                indexMap.getStorageType().put(columnName, indexType);
-    //            }
-    //            return new ArrayList<>(groupByName.values());
-    //        }
-    //    }
-    //
-    //    public List<MySqlIndex> getIndexes(String schemaName, String tableName, MySqlIndexType... indexTypes) throws SQLException {
-    //        if (indexTypes == null || indexTypes.length == 0) {
-    //            return Collections.emptyList();
-    //        }
-    //        List<MySqlIndex> indexList = getIndexes(schemaName, tableName);
-    //        if (indexList == null || indexList.isEmpty()) {
-    //            return Collections.emptyList();
-    //        }
-    //        return indexList.stream().filter(indexItem -> {
-    //            MySqlIndexType indexTypeForItem = indexItem.getIndexType();
-    //            for (MySqlIndexType matchType : indexTypes) {
-    //                if (indexTypeForItem == matchType) {
-    //                    return true;
-    //                }
-    //            }
-    //            return false;
-    //        }).collect(Collectors.toList());
-    //    }
-    //
-    //    public MySqlIndex getIndexes(String schemaName, String tableName, String indexName) throws SQLException {
-    //        List<MySqlIndex> indexList = getIndexes(schemaName, tableName);
-    //        if (indexList == null || indexList.isEmpty()) {
-    //            return null;
-    //        }
-    //        return indexList.stream().filter(indexItem -> {
-    //            return StringUtils.equals(indexItem.getName(), indexName);
-    //        }).findFirst().orElse(null);
-    //    }
-    //
-    //    protected JDBCType columnTypeMappingToJdbcType(SqlType sqlType, String columnType) {
-    //        if (sqlType instanceof MySqlTypes && StringUtils.isNotBlank(columnType)) {
-    //            MysqlType mysqlType = MysqlType.getByName(columnType);
-    //            return JDBCType.valueOf(mysqlType.getJdbcType());
-    //        } else {
-    //            return sqlType.getJdbcType();
-    //        }
-    //    }
-    //
-    //    protected SqlType safeToMySqlTypes(Object obj) {
-    //        String dat = (obj == null) ? null : obj.toString();
-    //        for (MySqlTypes type : MySqlTypes.values()) {
-    //            if (type.getCodeKey().equalsIgnoreCase(dat)) {
-    //                return type;
-    //            }
-    //        }
-    //        return null;
-    //    }
-    //
+
+    public List<OracleIndex> getIndexes(String schemaName, String tableName) throws SQLException {
+        if (StringUtils.isBlank(tableName)) {
+            return Collections.emptyList();
+        }
+        if (StringUtils.isBlank(schemaName)) {
+            schemaName = getCurrentSchema();
+            if (StringUtils.isBlank(schemaName)) {
+                throw new SQLException("no schema is specified and the current database is not set");
+            }
+        }
+        //
+        String queryString = ""//
+                + "select IDX.OWNER,IDX.INDEX_NAME,IDX.INDEX_TYPE,CON.CONSTRAINT_TYPE,IDX.UNIQUENESS,IDX.GENERATED,DESCEND,PARTITIONED,TEMPORARY,COL.COLUMN_NAME,COL.DESCEND\n" //
+                + "from DBA_INDEXES IDX\n" //
+                + "left join DBA_IND_COLUMNS COL on IDX.OWNER = COL.INDEX_OWNER and IDX.INDEX_NAME = COL.INDEX_NAME\n" //
+                + "left join DBA_CONSTRAINTS CON on IDX.OWNER = CON.INDEX_OWNER and IDX.INDEX_NAME = CON.INDEX_NAME\n" //
+                + "where IDX.TABLE_OWNER = ? and IDX.TABLE_NAME = ?\n" //
+                + "order by COL.COLUMN_POSITION asc";
+        try (Connection conn = this.connectSupplier.get()) {
+            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
+            if (mapList == null) {
+                return Collections.emptyList();
+            }
+            //CONSTRAINT_TYPE
+            Map<String, OracleIndex> groupByName = new LinkedHashMap<>();
+            for (Map<String, Object> ent : mapList) {
+                final String indexOwner = safeToString(ent.get("OWNER"));
+                final String indexName = safeToString(ent.get("INDEX_NAME"));
+                String indexKey = indexOwner + ":" + indexName;
+                OracleIndex oracleIndex = groupByName.computeIfAbsent(indexKey, k -> {
+                    OracleIndex oracleIndexEnt = new OracleIndex();
+                    oracleIndexEnt.setSchema(indexOwner);
+                    oracleIndexEnt.setName(indexName);
+                    oracleIndexEnt.setIndexType(OracleIndexType.valueOfCode(safeToString(ent.get("INDEX_TYPE"))));
+                    oracleIndexEnt.setPrimaryKey("P".equalsIgnoreCase(safeToString(ent.get("CONSTRAINT_TYPE"))));
+                    oracleIndexEnt.setUnique("UNIQUE".equalsIgnoreCase(safeToString(ent.get("UNIQUENESS"))));
+                    oracleIndexEnt.setGenerated("Y".equalsIgnoreCase(safeToString(ent.get("GENERATED"))));
+                    oracleIndexEnt.setPartitioned("YES".equalsIgnoreCase(safeToString(ent.get("PARTITIONED"))));
+                    oracleIndexEnt.setTemporary("Y".equalsIgnoreCase(safeToString(ent.get("TEMPORARY"))));
+                    return oracleIndexEnt;
+                });
+                //
+                String columnName = safeToString(ent.get("COLUMN_NAME"));
+                String columnDescend = safeToString(ent.get("DESCEND"));
+                oracleIndex.getColumns().add(columnName);
+                oracleIndex.getStorageType().put(columnName, columnDescend);
+            }
+            return new ArrayList<>(groupByName.values());
+        }
+    }
+
+    public List<OracleIndex> getIndexes(String schemaName, String tableName, OracleIndexType... indexTypes) throws SQLException {
+        if (indexTypes == null || indexTypes.length == 0) {
+            return Collections.emptyList();
+        }
+        List<OracleIndex> indexList = getIndexes(schemaName, tableName);
+        if (indexList == null || indexList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return indexList.stream().filter(indexItem -> {
+            OracleIndexType indexTypeForItem = indexItem.getIndexType();
+            for (OracleIndexType matchType : indexTypes) {
+                if (indexTypeForItem == matchType) {
+                    return true;
+                }
+            }
+            return false;
+        }).collect(Collectors.toList());
+    }
+
+    public OracleIndex getIndexes(String schemaName, String tableName, String indexName) throws SQLException {
+        List<OracleIndex> indexList = getIndexes(schemaName, tableName);
+        if (indexList == null || indexList.isEmpty()) {
+            return null;
+        }
+        return indexList.stream().filter(indexItem -> {
+            return StringUtils.equals(indexItem.getName(), indexName);
+        }).findFirst().orElse(null);
+    }
 
     protected OracleSchema convertSchema(Map<String, Object> recordMap) {
         OracleSchema schema = new OracleSchema();

@@ -76,7 +76,7 @@ import java.util.logging.Logger;
 public class JSON {
     protected final static Logger                 logger            = Logger.getLogger(JSON.class.getName());
     public final static    JSON                   DEFAULT           = new JSON();
-    private                Map<String, Convertor> _convertors       = new ConcurrentHashMap<String, Convertor>();
+    private final          Map<String, Convertor> _convertors       = new ConcurrentHashMap<>();
     private                int                    _stringBufferSize = 1024;
 
     public JSON() {
@@ -254,7 +254,7 @@ public class JSON {
 
     /* ------------------------------------------------------------ */
     public void appendJSON(final Appendable buffer, Convertible converter) {
-        ConvertableOutput out = new ConvertableOutput(buffer);
+        ConvertibleOutput out = new ConvertibleOutput(buffer);
         converter.toJSON(out);
         out.complete();
     }
@@ -495,43 +495,43 @@ public class JSON {
             // handle // or /* comment
             if (comment_state == 1) {
                 switch (c) {
-                case '/':
-                    comment_state = -1;
-                    break;
-                case '*':
-                    comment_state = 2;
-                    if (strip_state == 1) {
-                        comment_state = 0;
-                        strip_state = 2;
-                    }
+                    case '/':
+                        comment_state = -1;
+                        break;
+                    case '*':
+                        comment_state = 2;
+                        if (strip_state == 1) {
+                            comment_state = 0;
+                            strip_state = 2;
+                        }
                 }
             }
             // handle /* */ comment
             else if (comment_state > 1) {
                 switch (c) {
-                case '*':
-                    comment_state = 3;
-                    break;
-                case '/':
-                    if (comment_state == 3) {
-                        comment_state = 0;
-                        if (strip_state == 2)
-                            return o;
-                    } else
+                    case '*':
+                        comment_state = 3;
+                        break;
+                    case '/':
+                        if (comment_state == 3) {
+                            comment_state = 0;
+                            if (strip_state == 2)
+                                return o;
+                        } else
+                            comment_state = 2;
+                        break;
+                    default:
                         comment_state = 2;
-                    break;
-                default:
-                    comment_state = 2;
                 }
             }
             // handle // comment
             else if (comment_state < 0) {
                 switch (c) {
-                case '\r':
-                case '\n':
-                    comment_state = 0;
-                default:
-                    break;
+                    case '\r':
+                    case '\n':
+                        comment_state = 0;
+                    default:
+                        break;
                 }
             }
             // handle unknown
@@ -560,75 +560,75 @@ public class JSON {
             // handle // or /* comment
             if (comment_state == 1) {
                 switch (c) {
-                case '/':
-                    comment_state = -1;
-                    break;
-                case '*':
-                    comment_state = 2;
+                    case '/':
+                        comment_state = -1;
+                        break;
+                    case '*':
+                        comment_state = 2;
                 }
             }
             // handle /* */ comment
             else if (comment_state > 1) {
                 switch (c) {
-                case '*':
-                    comment_state = 3;
-                    break;
-                case '/':
-                    if (comment_state == 3)
-                        comment_state = 0;
-                    else
+                    case '*':
+                        comment_state = 3;
+                        break;
+                    case '/':
+                        if (comment_state == 3)
+                            comment_state = 0;
+                        else
+                            comment_state = 2;
+                        break;
+                    default:
                         comment_state = 2;
-                    break;
-                default:
-                    comment_state = 2;
                 }
             }
             // handle // comment
             else if (comment_state < 0) {
                 switch (c) {
-                case '\r':
-                case '\n':
-                    comment_state = 0;
-                    break;
-                default:
-                    break;
+                    case '\r':
+                    case '\n':
+                        comment_state = 0;
+                        break;
+                    default:
+                        break;
                 }
             }
             // handle unknown
             else {
                 switch (c) {
-                case '{':
-                    return parseObject(source);
-                case '[':
-                    return parseArray(source);
-                case '"':
-                    return parseString(source);
-                case '-':
-                    return parseNumber(source);
-                case 'n':
-                    complete("null", source);
-                    return null;
-                case 't':
-                    complete("true", source);
-                    return Boolean.TRUE;
-                case 'f':
-                    complete("false", source);
-                    return Boolean.FALSE;
-                case 'u':
-                    complete("undefined", source);
-                    return null;
-                case 'N':
-                    complete("NaN", source);
-                    return null;
-                case '/':
-                    comment_state = 1;
-                    break;
-                default:
-                    if (Character.isDigit(c))
+                    case '{':
+                        return parseObject(source);
+                    case '[':
+                        return parseArray(source);
+                    case '"':
+                        return parseString(source);
+                    case '-':
                         return parseNumber(source);
-                    else if (Character.isWhitespace(c))
+                    case 'n':
+                        complete("null", source);
+                        return null;
+                    case 't':
+                        complete("true", source);
+                        return Boolean.TRUE;
+                    case 'f':
+                        complete("false", source);
+                        return Boolean.FALSE;
+                    case 'u':
+                        complete("undefined", source);
+                        return null;
+                    case 'N':
+                        complete("NaN", source);
+                        return null;
+                    case '/':
+                        comment_state = 1;
                         break;
-                    return handleUnknown(source, c);
+                    default:
+                        if (Character.isDigit(c))
+                            return parseNumber(source);
+                        else if (Character.isWhitespace(c))
+                            break;
+                        return handleUnknown(source, c);
                 }
             }
             source.next();
@@ -687,43 +687,43 @@ public class JSON {
         while (source.hasNext()) {
             char c = source.peek();
             switch (c) {
-            case ']':
-                source.next();
-                switch (size) {
-                case 0:
-                    return newArray(0);
-                case 1:
-                    Object array = newArray(1);
-                    Array.set(array, 0, item);
-                    return array;
-                default:
-                    return list.toArray(newArray(list.size()));
-                }
-            case ',':
-                if (coma)
-                    throw new IllegalStateException();
-                coma = true;
-                source.next();
-                break;
-            default:
-                if (Character.isWhitespace(c))
+                case ']':
                     source.next();
-                else {
-                    coma = false;
-                    if (size++ == 0)
-                        item = contextForArray().parse(source);
-                    else if (list == null) {
-                        list = new ArrayList();
-                        list.add(item);
-                        item = contextForArray().parse(source);
-                        list.add(item);
-                        item = null;
-                    } else {
-                        item = contextForArray().parse(source);
-                        list.add(item);
-                        item = null;
+                    switch (size) {
+                        case 0:
+                            return newArray(0);
+                        case 1:
+                            Object array = newArray(1);
+                            Array.set(array, 0, item);
+                            return array;
+                        default:
+                            return list.toArray(newArray(list.size()));
                     }
-                }
+                case ',':
+                    if (coma)
+                        throw new IllegalStateException();
+                    coma = true;
+                    source.next();
+                    break;
+                default:
+                    if (Character.isWhitespace(c))
+                        source.next();
+                    else {
+                        coma = false;
+                        if (size++ == 0)
+                            item = contextForArray().parse(source);
+                        else if (list == null) {
+                            list = new ArrayList();
+                            list.add(item);
+                            item = contextForArray().parse(source);
+                            list.add(item);
+                            item = null;
+                        } else {
+                            item = contextForArray().parse(source);
+                            list.add(item);
+                            item = null;
+                        }
+                    }
             }
         }
         throw new IllegalStateException("unexpected end of array");
@@ -750,36 +750,36 @@ public class JSON {
                 if (escape) {
                     escape = false;
                     switch (c) {
-                    case '"':
-                        scratch[i++] = '"';
-                        break;
-                    case '\\':
-                        scratch[i++] = '\\';
-                        break;
-                    case '/':
-                        scratch[i++] = '/';
-                        break;
-                    case 'b':
-                        scratch[i++] = '\b';
-                        break;
-                    case 'f':
-                        scratch[i++] = '\f';
-                        break;
-                    case 'n':
-                        scratch[i++] = '\n';
-                        break;
-                    case 'r':
-                        scratch[i++] = '\r';
-                        break;
-                    case 't':
-                        scratch[i++] = '\t';
-                        break;
-                    case 'u':
-                        char uc = (char) ((TypeUtil.convertHexDigit((byte) source.next()) << 12) + (TypeUtil.convertHexDigit((byte) source.next()) << 8) + (TypeUtil.convertHexDigit((byte) source.next()) << 4) + (TypeUtil.convertHexDigit((byte) source.next())));
-                        scratch[i++] = uc;
-                        break;
-                    default:
-                        scratch[i++] = c;
+                        case '"':
+                            scratch[i++] = '"';
+                            break;
+                        case '\\':
+                            scratch[i++] = '\\';
+                            break;
+                        case '/':
+                            scratch[i++] = '/';
+                            break;
+                        case 'b':
+                            scratch[i++] = '\b';
+                            break;
+                        case 'f':
+                            scratch[i++] = '\f';
+                            break;
+                        case 'n':
+                            scratch[i++] = '\n';
+                            break;
+                        case 'r':
+                            scratch[i++] = '\r';
+                            break;
+                        case 't':
+                            scratch[i++] = '\t';
+                            break;
+                        case 'u':
+                            char uc = (char) ((TypeUtil.convertHexDigit((byte) source.next()) << 12) + (TypeUtil.convertHexDigit((byte) source.next()) << 8) + (TypeUtil.convertHexDigit((byte) source.next()) << 4) + (TypeUtil.convertHexDigit((byte) source.next())));
+                            scratch[i++] = uc;
+                            break;
+                        default:
+                            scratch[i++] = c;
                     }
                 } else if (c == '\\') {
                     escape = true;
@@ -802,36 +802,36 @@ public class JSON {
             if (escape) {
                 escape = false;
                 switch (c) {
-                case '"':
-                    builder.append('"');
-                    break;
-                case '\\':
-                    builder.append('\\');
-                    break;
-                case '/':
-                    builder.append('/');
-                    break;
-                case 'b':
-                    builder.append('\b');
-                    break;
-                case 'f':
-                    builder.append('\f');
-                    break;
-                case 'n':
-                    builder.append('\n');
-                    break;
-                case 'r':
-                    builder.append('\r');
-                    break;
-                case 't':
-                    builder.append('\t');
-                    break;
-                case 'u':
-                    char uc = (char) ((TypeUtil.convertHexDigit((byte) source.next()) << 12) + (TypeUtil.convertHexDigit((byte) source.next()) << 8) + (TypeUtil.convertHexDigit((byte) source.next()) << 4) + (TypeUtil.convertHexDigit((byte) source.next())));
-                    builder.append(uc);
-                    break;
-                default:
-                    builder.append(c);
+                    case '"':
+                        builder.append('"');
+                        break;
+                    case '\\':
+                        builder.append('\\');
+                        break;
+                    case '/':
+                        builder.append('/');
+                        break;
+                    case 'b':
+                        builder.append('\b');
+                        break;
+                    case 'f':
+                        builder.append('\f');
+                        break;
+                    case 'n':
+                        builder.append('\n');
+                        break;
+                    case 'r':
+                        builder.append('\r');
+                        break;
+                    case 't':
+                        builder.append('\t');
+                        break;
+                    case 'u':
+                        char uc = (char) ((TypeUtil.convertHexDigit((byte) source.next()) << 12) + (TypeUtil.convertHexDigit((byte) source.next()) << 8) + (TypeUtil.convertHexDigit((byte) source.next()) << 4) + (TypeUtil.convertHexDigit((byte) source.next())));
+                        builder.append(uc);
+                        break;
+                    default:
+                        builder.append(c);
                 }
             } else if (c == '\\') {
                 escape = true;
@@ -853,38 +853,38 @@ public class JSON {
         while (source.hasNext()) {
             char c = source.peek();
             switch (c) {
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-                number = number * 10 + (c - '0');
-                source.next();
-                break;
-            case '-':
-            case '+':
-                if (number != 0)
-                    throw new IllegalStateException("bad number");
-                minus = true;
-                source.next();
-                break;
-            case '.':
-            case 'e':
-            case 'E':
-                buffer = new StringBuilder(16);
-                if (minus)
-                    buffer.append('-');
-                buffer.append(number);
-                buffer.append(c);
-                source.next();
-                break longLoop;
-            default:
-                break longLoop;
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    number = number * 10 + (c - '0');
+                    source.next();
+                    break;
+                case '-':
+                case '+':
+                    if (number != 0)
+                        throw new IllegalStateException("bad number");
+                    minus = true;
+                    source.next();
+                    break;
+                case '.':
+                case 'e':
+                case 'E':
+                    buffer = new StringBuilder(16);
+                    if (minus)
+                        buffer.append('-');
+                    buffer.append(number);
+                    buffer.append(c);
+                    source.next();
+                    break longLoop;
+                default:
+                    break longLoop;
             }
         }
         if (buffer == null)
@@ -893,26 +893,26 @@ public class JSON {
         while (source.hasNext()) {
             char c = source.peek();
             switch (c) {
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-            case '-':
-            case '.':
-            case '+':
-            case 'e':
-            case 'E':
-                buffer.append(c);
-                source.next();
-                break;
-            default:
-                break doubleLoop;
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                case '-':
+                case '.':
+                case '+':
+                case 'e':
+                case 'E':
+                    buffer.append(c);
+                    source.next();
+                    break;
+                default:
+                    break doubleLoop;
             }
         }
         return new Double(buffer.toString());
@@ -957,11 +957,11 @@ public class JSON {
             throw new IllegalStateException("Expected \"" + seek + "\"");
     }
 
-    private final class ConvertableOutput implements Output {
+    private final class ConvertibleOutput implements Output {
         private final Appendable _buffer;
         char c = '{';
 
-        private ConvertableOutput(Appendable buffer) {
+        private ConvertibleOutput(Appendable buffer) {
             _buffer = buffer;
         }
 
@@ -1017,7 +1017,7 @@ public class JSON {
                 _buffer.append(c);
                 StringUtils.quote(_buffer, name);
                 _buffer.append(':');
-                appendNumber(_buffer, new Double(value));
+                appendNumber(_buffer, value);
                 c = ',';
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -1225,7 +1225,7 @@ public class JSON {
      * that holds a pre-generated string on JSON text.
      */
     public static class Literal implements Generator {
-        private String _json;
+        private final String _json;
         /* ------------------------------------------------------------ */
 
         /**

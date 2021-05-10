@@ -15,9 +15,6 @@
  */
 package net.hasor.dataql.binder;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.EventListener;
-import net.hasor.core.HasorUtils;
 import net.hasor.core.binder.ApiBinderCreator;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.dataql.DataQL;
@@ -46,10 +43,7 @@ public class QueryApiBinderCreator implements ApiBinderCreator<QueryApiBinder> {
             super(apiBinder);
             apiBinder.bindType(InnerDataQLImpl.class).toInstance(this.innerDqlConfig);
             apiBinder.bindType(DataQL.class).toInstance(this.innerDqlConfig);
-            //
-            HasorUtils.pushStartListener(getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
-                innerDqlConfig.initConfig(eventData);
-            });
+            apiBinder.lazyLoad(innerDqlConfig::initConfig);
         }
 
         @Override
