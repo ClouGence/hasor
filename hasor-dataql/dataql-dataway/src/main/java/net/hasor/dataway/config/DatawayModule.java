@@ -72,7 +72,7 @@ public class DatawayModule implements WebModule, UiConfig {
             adminBaseUri = adminBaseUri + "/";
         }
         apiBinder.getEnvironment().getSettings().setSetting("hasor.dataway.baseApiUrl", apiBaseUri);//必须要设置回去，否则后面依赖注入会不准确
-        apiBinder.getEnvironment().getSettings().setSetting("hasor.dataway.baseAdminUrl", apiBaseUri);//必须要设置回去，否则后面依赖注入会不准确
+        apiBinder.getEnvironment().getSettings().setSetting("hasor.dataway.baseAdminUrl", adminBaseUri);//必须要设置回去，否则后面依赖注入会不准确
         //
         logger.info("dataway '/api/docs/swagger2.json' is " + (datawaySwagger ? "enable." : "disable."));
         if (datawaySwagger) {

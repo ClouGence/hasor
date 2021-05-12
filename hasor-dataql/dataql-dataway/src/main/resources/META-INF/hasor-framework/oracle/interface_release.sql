@@ -1,18 +1,19 @@
 create table interface_release (
-  pub_id           varchar(64)    NOT NULL constraint pk_interface_release primary key,
-  pub_api_id       varchar(64)    NOT NULL,
-  pub_method       varchar(12)    NOT NULL,
-  pub_path         varchar(512)   NOT NULL,
-  pub_status       varchar(4)     NOT NULL,
-  pub_comment      varchar(255)   NOT NULL,
-  pub_type         varchar(24)    NOT NULL,
+  pub_id           varchar2(64)    NOT NULL constraint pk_interface_release primary key,
+  pub_api_id       varchar2(64)    NOT NULL,
+  pub_method       varchar2(12)    NOT NULL,
+  pub_path         varchar2(512)   NOT NULL,
+  pub_status       varchar2(4)     NOT NULL,
+  pub_comment      varchar2(255)   NOT NULL,
+  pub_type         varchar2(24)    NOT NULL,
   pub_script       clob           NOT NULL,
   pub_script_ori   clob           NOT NULL,
   pub_schema       clob           NOT NULL,
   pub_sample       clob           NOT NULL,
   pub_option       clob           NOT NULL,
-  pub_release_time varchar(32)    NOT NULL
-)
+  pub_release_time varchar2(32)    NOT NULL
+);
+
 /comment on table interface_release is 'Dataway API 发布记录'
 /comment on column interface_release.pub_id is 'Publish ID'
 /comment on column interface_release.pub_api_id is '所属API ID'
@@ -28,7 +29,6 @@ create table interface_release (
 /comment on column interface_release.pub_option is '扩展配置信息'
 /comment on column interface_release.pub_release_time is '发布时间（下线不更新）'
 /
-create index idx_interface_release_api on interface_release (pub_api_id)
-/
-create index idx_interface_release_path on interface_release (pub_path)
+/create index idx_interface_release_api on interface_release (pub_api_id)
+/create index idx_interface_release_path on interface_release (pub_path)
 /

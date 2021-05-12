@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web.objects;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import net.hasor.core.Singleton;
+import net.hasor.utils.json.JSON;
 import net.hasor.web.Invoker;
 import net.hasor.web.render.RenderEngine;
 import net.hasor.web.render.RenderInvoker;
@@ -32,6 +31,6 @@ import java.io.Writer;
 public class JsonRenderEngine implements RenderEngine {
     @Override
     public void process(RenderInvoker invoker, Writer writer) throws Throwable {
-        writer.write(JSON.toJSONString(invoker.get(Invoker.RETURN_DATA_KEY), SerializerFeature.WriteMapNullValue));
+        writer.write(JSON.toString(invoker.get(Invoker.RETURN_DATA_KEY)));
     }
 }
