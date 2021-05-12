@@ -15,11 +15,9 @@
  */
 package net.hasor.db.metadata.provider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.metadata.AbstractMetadataServiceSupplierTest;
 import net.hasor.db.metadata.domain.adb.mysql.*;
-import net.hasor.db.metadata.provider.AdbMySqlMetadataProvider;
 import net.hasor.test.db.utils.DsUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -37,45 +35,28 @@ import static net.hasor.test.db.utils.DsUtils.ADBMYSQL_SCHEMA_NAME;
  * @version : 2021-3-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AdbMySqlMetadataServiceSupplierTest {
-    private Connection               connection;
-    private AdbMySqlMetadataProvider repository;
-
-    @Before
-    public void beforeTest() throws SQLException, IOException {
-        this.connection = DsUtils.aliyunAdbMySQL();
-        this.repository = new AdbMySqlMetadataProvider(this.connection);
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(this.connection);
-        //
-        List<AdbMySqlTable> allTables = this.repository.getAllTables();
-        if (!allTables.isEmpty()) {
-            List<String> collect = allTables.stream().map(AdbMySqlTable::getTable).collect(Collectors.toList());
-            //
-            if (collect.contains("proc_table")) {
-                jdbcTemplate.execute("drop table proc_table");
-            }
-            if (collect.contains("proc_table_ref")) {
-                jdbcTemplate.execute("drop table proc_table_ref");
-            }
-            if (collect.contains("t1")) {
-                jdbcTemplate.execute("drop table t1");
-            }
-            if (collect.contains("t3")) {
-                jdbcTemplate.execute("drop table t3");
-            }
-            if (collect.contains("tb_user")) {
-                jdbcTemplate.execute("drop table tb_user");
-            }
-            if (collect.contains("m_tb_user")) {
-                jdbcTemplate.execute("drop materialized view m_tb_user");
-            }
-        }
-        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/metadata/adbmysql_script.sql");
+public class AdbMySqlMetadataServiceSupplierTest extends AbstractMetadataServiceSupplierTest<AdbMySqlMetadataProvider> {
+    @Override
+    protected Connection initConnection() throws SQLException {
+        return DsUtils.aliyunAdbMySQL();
     }
 
-    @After
-    public void afterTest() throws SQLException {
-        this.connection.close();
+    @Override
+    protected AdbMySqlMetadataProvider initRepository(Connection con) {
+        return new AdbMySqlMetadataProvider(con);
+    }
+
+    @Override
+    protected void beforeTest(JdbcTemplate jdbcTemplate, AdbMySqlMetadataProvider repository) throws SQLException, IOException {
+        applySql("drop materialized view m_tb_user");
+        //
+        applySql("drop table proc_table");
+        applySql("drop table proc_table_ref");
+        applySql("drop table t1");
+        applySql("drop table t3");
+        applySql("drop table tb_user");
+        //
+        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/metadata/adbmysql_script.sql");
     }
 
     @Test

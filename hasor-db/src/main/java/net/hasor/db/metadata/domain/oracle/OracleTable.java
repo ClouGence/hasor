@@ -13,7 +13,7 @@ public class OracleTable implements TableDef {
     private Boolean         readOnly;
     private OracleTableType tableType;
     private String          materializedLog;
-    private String          comments;
+    private String          comment;
 
     @Override
     public String getCatalog() {
@@ -70,11 +70,11 @@ public class OracleTable implements TableDef {
         this.materializedLog = materializedLog;
     }
 
-    public String getComments() {
-        return this.comments;
+    public String getComment() {
+        return this.comment;
     }
 
-    public void setComments(String comments) {
-        this.comments = comments;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

@@ -267,7 +267,7 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
         List<Map<String, Object>> primaryKeyList = null;
         List<Map<String, Object>> columnList = null;
         try (Connection conn = this.connectSupplier.eGet()) {
-            String queryStringColumn = "select TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,CHARACTER_OCTET_LENGTH,NUMERIC_SCALE,NUMERIC_PRECISION,DATETIME_PRECISION,CHARACTER_SET_NAME,COLLATION_NAME,COLUMN_TYPE,COLUMN_COMMENT from INFORMATION_SCHEMA.COLUMNS " //
+            String queryStringColumn = "select TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,CHARACTER_OCTET_LENGTH,NUMERIC_SCALE,NUMERIC_PRECISION,DATETIME_PRECISION,CHARACTER_SET_NAME,COLLATION_NAME,COLUMN_TYPE,COLUMN_DEFAULT,COLUMN_COMMENT from INFORMATION_SCHEMA.COLUMNS " //
                     + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
             columnList = new JdbcTemplate(conn).queryForList(queryStringColumn, schemaName, tableName);
             if (columnList == null) {
@@ -299,8 +299,10 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
             column.setDatetimePrecision(safeToInteger(recordMap.get("DATETIME_PRECISION")));
             column.setNumericPrecision(safeToInteger(recordMap.get("NUMERIC_PRECISION")));
             column.setNumericScale(safeToInteger(recordMap.get("NUMERIC_SCALE")));
-            column.setComment(safeToString(recordMap.get("COLUMN_COMMENT")));
+            column.setDefaultValue(safeToString(recordMap.get("COLUMN_DEFAULT")));
+            //
             column.setPrimaryKey(primaryKeyColumnNameList.contains(column.getName()));
+            column.setComment(safeToString(recordMap.get("COLUMN_COMMENT")));
             return column;
         }).collect(Collectors.toList());
     }

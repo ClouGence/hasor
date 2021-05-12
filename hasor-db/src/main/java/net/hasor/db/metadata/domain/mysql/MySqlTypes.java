@@ -292,6 +292,15 @@ public enum MySqlTypes implements SqlType {
         this.jdbcType = jdbcType;
     }
 
+    public static MySqlTypes valueOfCode(String code) {
+        for (MySqlTypes tableType : MySqlTypes.values()) {
+            if (tableType.codeKey.equals(code)) {
+                return tableType;
+            }
+        }
+        return null;
+    }
+
     @Override
     public String getCodeKey() {
         return this.codeKey;

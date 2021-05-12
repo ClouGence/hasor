@@ -15,11 +15,10 @@
  */
 package net.hasor.db.metadata.provider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.metadata.AbstractMetadataServiceSupplierTest;
 import net.hasor.db.metadata.SqlType;
 import net.hasor.db.metadata.domain.oracle.*;
 import net.hasor.test.db.utils.DsUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -38,52 +37,31 @@ import java.util.stream.Collectors;
  * @version : 2021-3-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class OracleMetadataServiceSupplierTest {
-    private Connection             connection;
-    private OracleMetadataProvider repository;
-
-    @Before
-    public void beforeTest() throws SQLException, IOException {
-        this.connection = DsUtils.localOracle();
-        this.repository = new OracleMetadataProvider(this.connection);
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(this.connection);
-        //
-        List<OracleTable> allTables = this.repository.getAllTables();
-        if (!allTables.isEmpty()) {
-            Map<String, OracleTable> collect = allTables.stream().collect(Collectors.toMap(OracleTable::getTable, o -> o));
-            //
-            if (collect.containsKey("TB_USER_VIEW")) {
-                jdbcTemplate.execute("drop view tb_user_view");
-            }
-            if (collect.containsKey("TB_USER")) {
-                if (collect.get("TB_USER").getMaterializedLog() != null) {
-                    jdbcTemplate.execute("drop materialized view log on tb_user");
-                }
-                jdbcTemplate.execute("drop table tb_user");
-            }
-            if (collect.containsKey("PROC_TABLE_REF")) {
-                jdbcTemplate.execute("drop table proc_table_ref");
-            }
-            if (collect.containsKey("PROC_TABLE")) {
-                jdbcTemplate.execute("drop table proc_table");
-            }
-            if (collect.containsKey("T3")) {
-                jdbcTemplate.execute("drop table t3");
-            }
-            if (collect.containsKey("T1")) {
-                jdbcTemplate.execute("drop table t1");
-            }
-            if (collect.containsKey("TB_ORACLE_TYPES")) {
-                jdbcTemplate.execute("drop table tb_oracle_types");
-            }
-        }
-        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/metadata/oracle_script.sql");
-        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/tb_oracle_types.sql");
+public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSupplierTest<OracleMetadataProvider> {
+    @Override
+    protected Connection initConnection() throws SQLException {
+        return DsUtils.localOracle();
     }
 
-    @After
-    public void afterTest() throws SQLException {
-        this.connection.close();
+    @Override
+    protected OracleMetadataProvider initRepository(Connection con) {
+        return new OracleMetadataProvider(con);
+    }
+
+    @Override
+    protected void beforeTest(JdbcTemplate jdbcTemplate, OracleMetadataProvider repository) throws SQLException, IOException {
+        applySql("drop view tb_user_view");
+        applySql("drop materialized view log on tb_user");
+        //
+        applySql("drop table tb_user");
+        applySql("drop table proc_table_ref");
+        applySql("drop table proc_table");
+        applySql("drop table t3");
+        applySql("drop table t1");
+        applySql("drop table tb_oracle_types");
+        //
+        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/metadata/oracle_script.sql");
+        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/tb_oracle_types.sql");
     }
 
     @Test

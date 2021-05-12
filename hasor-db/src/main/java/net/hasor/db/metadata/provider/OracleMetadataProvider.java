@@ -285,12 +285,12 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             column.setDataCharLength(safeToLong(recordMap.get("CHAR_LENGTH")));
             column.setDataPrecision(safeToInteger(recordMap.get("DATA_PRECISION")));
             column.setDataScale(safeToInteger(recordMap.get("DATA_SCALE")));
-            column.setDataDefault(safeToString(recordMap.get("DATA_DEFAULT")));
             column.setCharacterSetName(safeToString(recordMap.get("CHARACTER_SET_NAME")));
             column.setHidden("YES".equals(safeToString(recordMap.get("HIDDEN_COLUMN"))));
             column.setVirtual("YES".equals(safeToString(recordMap.get("VIRTUAL_COLUMN"))));
             column.setIdentity("YES".equals(safeToString(recordMap.get("IDENTITY_COLUMN"))));
             column.setSensitive("YES".equals(safeToString(recordMap.get("SENSITIVE_COLUMN"))));
+            column.setDefaultValue(safeToString(recordMap.get("DATA_DEFAULT")));
             //
             column.setPrimaryKey(primaryKeyColumnNameList.contains(column.getName()));
             column.setUniqueKey(uniqueKeyColumnNameList.contains(column.getName()));
@@ -589,7 +589,7 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
         table.setReadOnly(safeToBoolean(recordMap.get("READ_ONLY")));
         table.setTableType(OracleTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
         table.setMaterializedLog(safeToString(recordMap.get("LOG_TABLE")));
-        table.setComments(safeToString(recordMap.get("COMMENTS")));
+        table.setComment(safeToString(recordMap.get("COMMENTS")));
         return table;
     }
 

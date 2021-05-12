@@ -39,7 +39,7 @@ public class OracleColumn implements ColumnDef {
     private Long     dataCharLength;
     private Integer  dataPrecision;
     private Integer  dataScale;
-    private String   dataDefault;
+    private String   defaultValue;
     private String   characterSetName;
     private boolean  hidden;
     private boolean  virtual;
@@ -154,12 +154,12 @@ public class OracleColumn implements ColumnDef {
         this.dataScale = dataScale;
     }
 
-    public String getDataDefault() {
-        return this.dataDefault;
+    public String getDefaultValue() {
+        return this.defaultValue;
     }
 
-    public void setDataDefault(String dataDefault) {
-        this.dataDefault = dataDefault;
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 
     public String getCharacterSetName() {

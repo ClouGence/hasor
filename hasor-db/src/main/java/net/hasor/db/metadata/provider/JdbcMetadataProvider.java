@@ -552,7 +552,7 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         jdbcSchema.setTable(safeToString(rs.get("TABLE_NAME")));
         jdbcSchema.setTableTypeString(safeToString(rs.get("TABLE_TYPE")));
         jdbcSchema.setTableType(JdbcTableType.valueOfCode(jdbcSchema.getTableTypeString()));
-        jdbcSchema.setRemarks(safeToString(rs.get("REMARKS")));
+        jdbcSchema.setComment(safeToString(rs.get("REMARKS")));
         //
         jdbcSchema.setTypeCatalog(safeToString(rs.get("TYPE_CAT")));
         jdbcSchema.setTypeSchema(safeToString(rs.get("TYPE_SCHEM")));
@@ -610,7 +610,7 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         //
         jdbcColumn.setDecimalDigits(safeToInteger(rs.get("DECIMAL_DIGITS")));
         jdbcColumn.setNumberPrecRadix(safeToInteger(rs.get("NUM_PREC_RADIX")));
-        jdbcColumn.setColumnDef(safeToString(rs.get("COLUMN_DEF")));
+        jdbcColumn.setDefaultValue(safeToString(rs.get("COLUMN_DEF")));
         jdbcColumn.setCharOctetLength(safeToInteger(rs.get("CHAR_OCTET_LENGTH")));
         jdbcColumn.setOrdinalPosition(safeToInteger(rs.get("ORDINAL_POSITION")));
         jdbcColumn.setSourceDataType(safeToInteger(rs.get("SOURCE_DATA_TYPE")));

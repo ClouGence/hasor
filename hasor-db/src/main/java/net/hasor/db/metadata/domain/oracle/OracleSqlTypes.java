@@ -82,6 +82,15 @@ public enum OracleSqlTypes implements SqlType {
         this.jdbcTypeNum = (this.jdbcType != null) ? this.jdbcType.getVendorTypeNumber() : null;
     }
 
+    public static OracleSqlTypes valueOfCode(String code) {
+        for (OracleSqlTypes tableType : OracleSqlTypes.values()) {
+            if (tableType.codeKey.equals(code)) {
+                return tableType;
+            }
+        }
+        return null;
+    }
+
     @Override
     public String getCodeKey() {
         return this.codeKey;

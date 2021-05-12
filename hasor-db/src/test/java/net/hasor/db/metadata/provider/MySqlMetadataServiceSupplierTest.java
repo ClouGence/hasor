@@ -15,11 +15,9 @@
  */
 package net.hasor.db.metadata.provider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.metadata.AbstractMetadataServiceSupplierTest;
 import net.hasor.db.metadata.domain.mysql.*;
-import net.hasor.db.metadata.provider.MySqlMetadataProvider;
 import net.hasor.test.db.utils.DsUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -37,42 +35,26 @@ import static net.hasor.test.db.utils.DsUtils.MYSQL_SCHEMA_NAME;
  * @version : 2021-3-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MySqlMetadataServiceSupplierTest {
-    private Connection            connection;
-    private MySqlMetadataProvider repository;
-
-    @Before
-    public void beforeTest() throws SQLException, IOException {
-        this.connection = DsUtils.localMySQL();
-        this.repository = new MySqlMetadataProvider(this.connection);
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(this.connection);
-        //
-        List<MySqlTable> allTables = this.repository.getAllTables();
-        if (!allTables.isEmpty()) {
-            List<String> collect = allTables.stream().map(MySqlTable::getTable).collect(Collectors.toList());
-            //
-            if (collect.contains("tb_user")) {
-                jdbcTemplate.execute("drop table tb_user");
-            }
-            if (collect.contains("proc_table_ref")) {
-                jdbcTemplate.execute("drop table proc_table_ref");
-            }
-            if (collect.contains("proc_table")) {
-                jdbcTemplate.execute("drop table proc_table");
-            }
-            if (collect.contains("t3")) {
-                jdbcTemplate.execute("drop table t3");
-            }
-            if (collect.contains("t1")) {
-                jdbcTemplate.execute("drop table t1");
-            }
-        }
-        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/metadata/mysql_script.sql");
+public class MySqlMetadataServiceSupplierTest extends AbstractMetadataServiceSupplierTest<MySqlMetadataProvider> {
+    @Override
+    protected Connection initConnection() throws SQLException {
+        return DsUtils.localMySQL();
     }
 
-    @After
-    public void afterTest() throws SQLException {
-        this.connection.close();
+    @Override
+    protected MySqlMetadataProvider initRepository(Connection con) {
+        return new MySqlMetadataProvider(con);
+    }
+
+    @Override
+    protected void beforeTest(JdbcTemplate jdbcTemplate, MySqlMetadataProvider repository) throws SQLException, IOException {
+        applySql("drop table tb_user");
+        applySql("drop table proc_table_ref");
+        applySql("drop table proc_table");
+        applySql("drop table t3");
+        applySql("drop table t1");
+        //
+        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/metadata/mysql_script.sql");
     }
 
     @Test

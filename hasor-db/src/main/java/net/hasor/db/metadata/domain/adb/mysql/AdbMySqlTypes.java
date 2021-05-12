@@ -123,6 +123,15 @@ public enum AdbMySqlTypes implements SqlType {
         this.jdbcType = jdbcType;
     }
 
+    public static AdbMySqlTypes valueOfCode(String code) {
+        for (AdbMySqlTypes tableType : AdbMySqlTypes.values()) {
+            if (tableType.codeKey.equals(code)) {
+                return tableType;
+            }
+        }
+        return null;
+    }
+
     @Override
     public String getCodeKey() {
         return this.codeKey;

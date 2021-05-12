@@ -38,6 +38,7 @@ public class MySqlColumn implements ColumnDef {
     private Integer  datetimePrecision;
     private Integer  numericPrecision;
     private Integer  numericScale;
+    private String   defaultValue;
     //
     private String   defaultCollationName;
     private String   defaultCharacterSetName;
@@ -130,6 +131,14 @@ public class MySqlColumn implements ColumnDef {
 
     public void setNumericScale(Integer numericScale) {
         this.numericScale = numericScale;
+    }
+
+    public String getDefaultValue() {
+        return this.defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 
     public String getDefaultCollationName() {

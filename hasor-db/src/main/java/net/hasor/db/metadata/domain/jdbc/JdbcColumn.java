@@ -44,7 +44,7 @@ public class JdbcColumn implements ColumnDef {
     private String           scopeTable;
     private Integer          decimalDigits;
     private Integer          numberPrecRadix;
-    private String           columnDef;
+    private String           defaultValue;
     private Integer          charOctetLength;
     private Integer          ordinalPosition;
     private Integer          sourceDataType;
@@ -204,12 +204,12 @@ public class JdbcColumn implements ColumnDef {
         this.numberPrecRadix = numberPrecRadix;
     }
 
-    public String getColumnDef() {
-        return this.columnDef;
+    public String getDefaultValue() {
+        return this.defaultValue;
     }
 
-    public void setColumnDef(String columnDef) {
-        this.columnDef = columnDef;
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 
     public Integer getCharOctetLength() {

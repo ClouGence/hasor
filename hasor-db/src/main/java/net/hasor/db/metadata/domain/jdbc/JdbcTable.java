@@ -27,7 +27,7 @@ public class JdbcTable implements TableDef {
     private String        table;
     private JdbcTableType tableType;
     private String        tableTypeString;
-    private String        remarks;
+    private String        comment;
     //
     private String        typeCatalog;
     private String        typeSchema;
@@ -79,12 +79,12 @@ public class JdbcTable implements TableDef {
         this.tableTypeString = tableTypeString;
     }
 
-    public String getRemarks() {
-        return this.remarks;
+    public String getComment() {
+        return this.comment;
     }
 
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public String getTypeCatalog() {
