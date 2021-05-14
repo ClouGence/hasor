@@ -84,9 +84,12 @@ create table tb_postgre_types
     c_macaddr8                  macaddr8,
     --
     c_bit                       bit,
-    c_bit_n                     bit(12),
+    c_bit_12                    bit(12),
+    c_bit_1024                  bit(1024),
     c_bit_varying               bit varying,
-    c_bit_varying_n             bit varying(12),
+    c_bit_varying_12            bit varying(12),
+    c_bit_varying_1024          bit varying(1024),
+    c_bytea                     bytea,
     --
     c_tsvector                  tsvector,
     c_tsquery                   tsquery,
