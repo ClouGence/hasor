@@ -15,7 +15,6 @@
  */
 package net.hasor.db.metadata.domain.mysql;
 import net.hasor.db.metadata.ColumnDef;
-import net.hasor.db.metadata.SqlType;
 
 import java.sql.JDBCType;
 
@@ -25,25 +24,25 @@ import java.sql.JDBCType;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MySqlColumn implements ColumnDef {
-    private String   name;
-    private boolean  nullable;
-    private String   dataType;
-    private String   columnType;
-    private SqlType  sqlType;
-    private JDBCType jdbcType;
-    private boolean  primaryKey;
-    private boolean  uniqueKey;//如若存在联合唯一索引需要借助getUniqueKey 来查询具体信息，这里只会表示该列存在至少一个唯一索引的引用。
-    private String   comment;
+    private String     name;
+    private boolean    nullable;
+    private String     dataType;
+    private String     columnType;
+    private MySqlTypes sqlType;
+    private JDBCType   jdbcType;
+    private boolean    primaryKey;
+    private boolean    uniqueKey;//如若存在联合唯一索引需要借助getUniqueKey 来查询具体信息，这里只会表示该列存在至少一个唯一索引的引用。
+    private String     comment;
     //
-    private Integer  datetimePrecision;
-    private Integer  numericPrecision;
-    private Integer  numericScale;
-    private String   defaultValue;
+    private Integer    datetimePrecision;
+    private Integer    numericPrecision;
+    private Integer    numericScale;
+    private String     defaultValue;
     //
-    private String   defaultCollationName;
-    private String   defaultCharacterSetName;
-    private Long     charactersMaxLength;
-    private Integer  bytesMaxLength;
+    private String     defaultCollationName;
+    private String     defaultCharacterSetName;
+    private Long       charactersMaxLength;
+    private Integer    bytesMaxLength;
 
     public String getName() {
         return this.name;
@@ -77,11 +76,11 @@ public class MySqlColumn implements ColumnDef {
         this.columnType = columnType;
     }
 
-    public SqlType getSqlType() {
+    public MySqlTypes getSqlType() {
         return this.sqlType;
     }
 
-    public void setSqlType(SqlType sqlType) {
+    public void setSqlType(MySqlTypes sqlType) {
         this.sqlType = sqlType;
     }
 

@@ -137,7 +137,13 @@ public class AbstractMetadataProvider {
     }
 
     protected static Long safeToLong(Object obj) {
-        return (obj == null) ? null : (Long) ConverterUtils.convert(Long.class, obj);
+        if (obj == null) {
+            return null;
+        }
+        if (obj instanceof Number) {
+            return ((Number) obj).longValue();
+        }
+        return (Long) ConverterUtils.convert(Long.class, obj);
     }
 
     protected static Boolean safeToBoolean(Object obj) {

@@ -38,7 +38,10 @@ public enum JdbcDeferrability {
         return this.typeNumber;
     }
 
-    public static JdbcDeferrability valueOfCode(int typeNumber) {
+    public static JdbcDeferrability valueOfCode(Integer typeNumber) {
+        if (typeNumber == null) {
+            return null;
+        }
         for (JdbcDeferrability tableType : JdbcDeferrability.values()) {
             if (tableType.typeNumber == typeNumber) {
                 return tableType;

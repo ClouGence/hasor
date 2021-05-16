@@ -40,7 +40,10 @@ public enum JdbcIndexType {
         return this.typeNumber;
     }
 
-    public static JdbcIndexType valueOfCode(int typeNumber) {
+    public static JdbcIndexType valueOfCode(Integer typeNumber) {
+        if (typeNumber == null) {
+            return null;
+        }
         for (JdbcIndexType tableType : JdbcIndexType.values()) {
             if (tableType.typeNumber == typeNumber) {
                 return tableType;

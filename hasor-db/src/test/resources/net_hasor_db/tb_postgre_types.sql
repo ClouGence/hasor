@@ -190,9 +190,12 @@ create table tb_postgre_types
     a_macaddr8                  macaddr8[],
     --
     a_bit                       bit[],
-    a_bit_n                     bit(12)[],
+    a_bit_12                    bit(12)[],
+    a_bit_1024                  bit(1024)[],
     a_bit_varying               bit varying[],
-    a_bit_varying_n             bit varying(12)[],
+    a_bit_varying_12            bit varying(12)[],
+    a_bit_varying_1024          bit varying(1024)[],
+    a_bytea                     bytea[],
     --
     a_tsvector                  tsvector[],
     a_tsquery                   tsquery[],

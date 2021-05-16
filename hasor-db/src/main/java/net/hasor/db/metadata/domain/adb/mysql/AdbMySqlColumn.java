@@ -15,7 +15,6 @@
  */
 package net.hasor.db.metadata.domain.adb.mysql;
 import net.hasor.db.metadata.ColumnDef;
-import net.hasor.db.metadata.SqlType;
 
 import java.sql.JDBCType;
 
@@ -25,24 +24,24 @@ import java.sql.JDBCType;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AdbMySqlColumn implements ColumnDef {
-    private String   name;
-    private boolean  nullable;
-    private String   dataType;
-    private String   columnType;
-    private SqlType  sqlType;
-    private JDBCType jdbcType;
-    private boolean  primaryKey;
-    private String   comment;
+    private String        name;
+    private boolean       nullable;
+    private String        dataType;
+    private String        columnType;
+    private AdbMySqlTypes sqlType;
+    private JDBCType      jdbcType;
+    private boolean       primaryKey;
+    private String        comment;
     //
-    private Integer  datetimePrecision;
-    private Integer  numericPrecision;
-    private Integer  numericScale;
-    private String   defaultValue;
+    private Integer       datetimePrecision;
+    private Integer       numericPrecision;
+    private Integer       numericScale;
+    private String        defaultValue;
     //
-    private String   defaultCollationName;
-    private String   defaultCharacterSetName;
-    private Long     charactersMaxLength;
-    private Integer  bytesMaxLength;
+    private String        defaultCollationName;
+    private String        defaultCharacterSetName;
+    private Long          charactersMaxLength;
+    private Integer       bytesMaxLength;
 
     public String getName() {
         return this.name;
@@ -76,11 +75,11 @@ public class AdbMySqlColumn implements ColumnDef {
         this.columnType = columnType;
     }
 
-    public SqlType getSqlType() {
+    public AdbMySqlTypes getSqlType() {
         return this.sqlType;
     }
 
-    public void setSqlType(SqlType sqlType) {
+    public void setSqlType(AdbMySqlTypes sqlType) {
         this.sqlType = sqlType;
     }
 

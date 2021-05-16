@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2010 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata;
+package net.hasor.db.metadata.domain.postgres;
+import net.hasor.db.metadata.TableDef;
+
 /**
- * TableDef 实现
- * @version : 2020-10-31
+ * Postgres 的表
+ * @version : 2021-05-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SimpleTableDef implements TableDef {
-    private String    catalog;
-    private String    schema;
-    private String    table;
-    private TableType tableType;
+public class PostgresTable implements TableDef {
+    private String            schema;
+    private String            table;
+    private PostgresTableType tableType;
+    private boolean           typed;
+    private String            comment;
 
     @Override
     public String getCatalog() {
-        return catalog;
-    }
-
-    public void setCatalog(String catalog) {
-        this.catalog = catalog;
+        return null;
     }
 
     @Override
     public String getSchema() {
-        return schema;
+        return this.schema;
     }
 
     public void setSchema(String schema) {
@@ -45,19 +44,34 @@ public class SimpleTableDef implements TableDef {
 
     @Override
     public String getTable() {
-        return table;
+        return this.table;
     }
 
     public void setTable(String table) {
         this.table = table;
     }
 
-    @Override
-    public TableType getTableType() {
+    public PostgresTableType getTableType() {
         return this.tableType;
     }
 
-    public void setTableType(TableType tableType) {
+    public void setTableType(PostgresTableType tableType) {
         this.tableType = tableType;
+    }
+
+    public boolean isTyped() {
+        return this.typed;
+    }
+
+    public void setTyped(boolean typed) {
+        this.typed = typed;
+    }
+
+    public String getComment() {
+        return this.comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

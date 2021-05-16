@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata.domain.jdbc;
-import net.hasor.db.metadata.TableType;
-
+package net.hasor.db.metadata.domain.postgres;
 /**
- * Jdbc Table Type
- * @version : 2020-04-25
+ * PostgresSQL 约束类型
+ * @version : 2021-03-30
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum JdbcTableType implements TableType {
-    Table("TABLE"),
-    SystemTable("SYSTEM TABLE"),
-    View("VIEW"),
-    SystemView("SYSTEM VIEW"),
-    Materialized("MATERIALIZED VIEW"),
-    GlobalTemporary("GLOBAL TEMPORARY"),
-    LocalTemporary("LOCAL TEMPORARY"),
-    Alias("ALIAS"),
-    Synonym("SYNONYM"),
-    Other(null),
+public enum PostgresConstraintType {
+    /** 主键 */
+    PrimaryKey("PRIMARY KEY"),
+    /** 唯一 */
+    Unique("UNIQUE"),
+    /** 外建 */
+    ForeignKey("FOREIGN KEY"),
+    /** 检查 */
+    Check("CHECK"),
     ;
     private final String typeName;
 
-    JdbcTableType(String typeName) {
+    PostgresConstraintType(String typeName) {
         this.typeName = typeName;
     }
 
@@ -43,12 +39,12 @@ public enum JdbcTableType implements TableType {
         return this.typeName;
     }
 
-    public static JdbcTableType valueOfCode(String code) {
-        for (JdbcTableType constraintType : JdbcTableType.values()) {
-            if (constraintType.typeName != null && constraintType.typeName.equals(code)) {
+    public static PostgresConstraintType valueOfCode(String code) {
+        for (PostgresConstraintType constraintType : PostgresConstraintType.values()) {
+            if (constraintType.typeName.equals(code)) {
                 return constraintType;
             }
         }
-        return Other;
+        return null;
     }
 }

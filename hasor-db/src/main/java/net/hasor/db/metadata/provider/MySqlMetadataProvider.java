@@ -630,7 +630,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         }
     }
 
-    protected SqlType safeToMySqlTypes(Object obj) {
+    protected MySqlTypes safeToMySqlTypes(Object obj) {
         String dat = (obj == null) ? null : obj.toString();
         for (MySqlTypes type : MySqlTypes.values()) {
             if (type.getCodeKey().equalsIgnoreCase(dat)) {

@@ -147,12 +147,9 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         if (StringUtils.isBlank(schemaName)) {
             return null;
         }
-        if (StringUtils.isBlank(catalog)) {
-            catalog = getCurrentCatalog();
-        }
         try (Connection conn = this.connectSupplier.eGet()) {
             DatabaseMetaData metaData = conn.getMetaData();
-            try (ResultSet resultSet = metaData.getSchemas(schemaName, null)) {
+            try (ResultSet resultSet = metaData.getSchemas(catalog, schemaName)) {
                 List<JdbcSchema> jdbcSchemaSet = new RowMapperResultSetExtractor<>((rs, rowNum) -> {
                     JdbcSchema jdbcSchema = new JdbcSchema();
                     jdbcSchema.setSchema(rs.getString("TABLE_SCHEM"));
@@ -164,7 +161,7 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
                     return null;
                 }
                 for (JdbcSchema jdbcSchema : jdbcSchemaSet) {
-                    if (StringUtils.equals(jdbcSchema.getSchema(), schemaName) && StringUtils.equals(jdbcSchema.getCatalog(), catalog)) {
+                    if (StringUtils.equals(jdbcSchema.getSchema(), schemaName)) {
                         return jdbcSchema;
                     }
                 }
@@ -372,6 +369,9 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
                 Map<String, JdbcIndex> groupByName = new LinkedHashMap<>();
                 for (Map<String, Object> indexColumn : mapList) {
                     String indexName = safeToString(indexColumn.get("INDEX_NAME"));
+                    if (StringUtils.isBlank(indexName)) {
+                        continue;// Oracle 数据库使用 JDBC，可能出现一个 null 名字的索引。
+                    }
                     JdbcIndex indexMap = groupByName.computeIfAbsent(indexName, k -> {
                         JdbcIndex jdbcIndex = new JdbcIndex();
                         jdbcIndex.setTableCatalog(safeToString(indexColumn.get("TABLE_CAT")));

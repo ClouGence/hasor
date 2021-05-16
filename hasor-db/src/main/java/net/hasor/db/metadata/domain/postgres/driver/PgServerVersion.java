@@ -1,0 +1,162 @@
+/*
+ * Copyright (c) 2004, PostgreSQL Global Development Group
+ * See the LICENSE file in the project root for more information.
+ */
+package net.hasor.db.metadata.domain.postgres.driver;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
+
+/**
+ * Enumeration for PostgreSQL versions.
+ */
+public enum PgServerVersion implements PgVersion {
+    INVALID("0.0.0"),
+    v8_2("8.2.0"),
+    v8_3("8.3.0"),
+    v8_4("8.4.0"),
+    v9_0("9.0.0"),
+    v9_1("9.1.0"),
+    v9_2("9.2.0"),
+    v9_3("9.3.0"),
+    v9_4("9.4.0"),
+    v9_5("9.5.0"),
+    v9_6("9.6.0"),
+    v10("10"),
+    v11("11"),
+    v12("12");
+    private final int version;
+
+    PgServerVersion(String version) {
+        this.version = parseServerVersionStr(version);
+    }
+
+    /**
+     * Get a machine-readable version number.
+     *
+     * @return the version in numeric XXYYZZ form, e.g. 90401 for 9.4.1
+     */
+    @Override
+    public int getVersionNum() {
+        return version;
+    }
+
+    /**
+     * <p>Attempt to parse the server version string into an XXYYZZ form version number into a
+     * {@link PgVersion}.</p>
+     *
+     * <p>If the specified version cannot be parsed, the {@link PgVersion#getVersionNum()} will return 0.</p>
+     *
+     * @param version version in numeric XXYYZZ form, e.g. "090401" for 9.4.1
+     * @return a {@link PgVersion} representing the specified version string.
+     */
+    public static PgVersion from(String version) {
+        final int versionNum = parseServerVersionStr(version);
+        return new PgVersion() {
+            @Override
+            public int getVersionNum() {
+                return versionNum;
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (obj instanceof PgVersion) {
+                    return this.getVersionNum() == ((PgVersion) obj).getVersionNum();
+                }
+                return false;
+            }
+
+            @Override
+            public int hashCode() {
+                return getVersionNum();
+            }
+
+            @Override
+            public String toString() {
+                return Integer.toString(versionNum);
+            }
+        };
+    }
+
+    /**
+     * <p>Attempt to parse the server version string into an XXYYZZ form version number.</p>
+     *
+     * <p>Returns 0 if the version could not be parsed.</p>
+     *
+     * <p>Returns minor version 0 if the minor version could not be determined, e.g. devel or beta
+     * releases.</p>
+     *
+     * <p>If a single major part like 90400 is passed, it's assumed to be a pre-parsed version and
+     * returned verbatim. (Anything equal to or greater than 10000 is presumed to be this form).</p>
+     *
+     * <p>The yy or zz version parts may be larger than 99. A NumberFormatException is thrown if a
+     * version part is out of range.</p>
+     *
+     * @param serverVersion server vertion in a XXYYZZ form
+     * @return server version in number form
+     */
+    public static int parseServerVersionStr(String serverVersion) throws NumberFormatException {
+        if (serverVersion == null) {
+            return 0;
+        }
+        NumberFormat numformat = NumberFormat.getIntegerInstance();
+        numformat.setGroupingUsed(false);
+        ParsePosition parsepos = new ParsePosition(0);
+        int[] parts = new int[3];
+        int versionParts;
+        for (versionParts = 0; versionParts < 3; versionParts++) {
+            Number part = (Number) numformat.parseObject(serverVersion, parsepos);
+            if (part == null) {
+                break;
+            }
+            parts[versionParts] = part.intValue();
+            if (parsepos.getIndex() == serverVersion.length() || serverVersion.charAt(parsepos.getIndex()) != '.') {
+                break;
+            }
+            // Skip .
+            parsepos.setIndex(parsepos.getIndex() + 1);
+        }
+        versionParts++;
+        if (parts[0] >= 10000) {
+            /*
+             * PostgreSQL version 1000? I don't think so. We're seeing a version like 90401; return it
+             * verbatim, but only if there's nothing else in the version. If there is, treat it as a parse
+             * error.
+             */
+            if (parsepos.getIndex() == serverVersion.length() && versionParts == 1) {
+                return parts[0];
+            } else {
+                throw new NumberFormatException("First major-version part equal to or greater than 10000 in invalid version string: " + serverVersion);
+            }
+        }
+
+    /* #667 - Allow for versions with greater than 3 parts.
+      For versions with more than 3 parts, still return 3 parts (4th part ignored for now
+      as no functionality is dependent on the 4th part .
+      Allows for future versions of the server to utilize more than 3 part version numbers
+      without upgrading the jdbc driver */
+        if (versionParts >= 3) {
+            if (parts[1] > 99) {
+                throw new NumberFormatException("Unsupported second part of major version > 99 in invalid version string: " + serverVersion);
+            }
+            if (parts[2] > 99) {
+                throw new NumberFormatException("Unsupported second part of minor version > 99 in invalid version string: " + serverVersion);
+            }
+            return (parts[0] * 100 + parts[1]) * 100 + parts[2];
+        }
+        if (versionParts == 2) {
+            if (parts[0] >= 10) {
+                return parts[0] * 100 * 100 + parts[1];
+            }
+            if (parts[1] > 99) {
+                throw new NumberFormatException("Unsupported second part of major version > 99 in invalid version string: " + serverVersion);
+            }
+            return (parts[0] * 100 + parts[1]) * 100;
+        }
+        if (versionParts == 1) {
+            if (parts[0] >= 10) {
+                return parts[0] * 100 * 100;
+            }
+        }
+        return 0; /* unknown */
+    }
+}

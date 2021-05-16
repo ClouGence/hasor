@@ -372,7 +372,7 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
         }
     }
 
-    protected SqlType safeToAdbMySqlTypes(Object obj) {
+    protected AdbMySqlTypes safeToAdbMySqlTypes(Object obj) {
         String dat = (obj == null) ? null : obj.toString();
         for (AdbMySqlTypes type : AdbMySqlTypes.values()) {
             if (type.getCodeKey().equalsIgnoreCase(dat)) {

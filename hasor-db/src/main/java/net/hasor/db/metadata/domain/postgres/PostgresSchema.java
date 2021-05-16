@@ -13,18 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.metadata;
-import java.sql.JDBCType;
-
+package net.hasor.db.metadata.domain.postgres;
 /**
- * 数据库实际类型。
- * @version : 2020-01-22
+ * Postgres 的 Schema
+ * @version : 2021-05-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface SqlType {
-    public String getCodeKey();
+public class PostgresSchema {
+    private String schema;
+    private String owner;
 
-    public Integer getJdbcType();
+    public String getSchema() {
+        return this.schema;
+    }
 
-    public JDBCType toJDBCType();
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
+
+    public String getOwner() {
+        return this.owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 }

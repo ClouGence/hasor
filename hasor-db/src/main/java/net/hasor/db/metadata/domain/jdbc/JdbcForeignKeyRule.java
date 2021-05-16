@@ -42,7 +42,10 @@ public enum JdbcForeignKeyRule {
         return this.typeNumber;
     }
 
-    public static JdbcForeignKeyRule valueOfCode(int typeNumber) {
+    public static JdbcForeignKeyRule valueOfCode(Integer typeNumber) {
+        if (typeNumber == null) {
+            return null;
+        }
         for (JdbcForeignKeyRule tableType : JdbcForeignKeyRule.values()) {
             if (tableType.typeNumber == typeNumber) {
                 return tableType;

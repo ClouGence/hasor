@@ -613,7 +613,7 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
         }
     }
 
-    protected SqlType safeToOracleTypes(Object obj) {
+    protected OracleSqlTypes safeToOracleTypes(Object obj) {
         if (obj == null) {
             return null;
         }

@@ -107,6 +107,16 @@ public enum OracleSqlTypes implements SqlType {
     }
 
     public static JDBCType toJdbcType(OracleType oracleType) {
+        if (oracleType == null) {
+            return null;
+        }
+        switch (oracleType) {
+            case UROWID:
+            case ROWID:
+                return JDBCType.ROWID;
+            default:
+                break;
+        }
         try {
             Integer typeNumber = oracleType.getVendorTypeNumber();
             if (typeNumber != null) {
@@ -119,7 +129,7 @@ public enum OracleSqlTypes implements SqlType {
         }
     }
 
-    public static SqlType toOracleType(String dataType) {
+    public static OracleSqlTypes toOracleType(String dataType) {
         if (dataType.startsWith("TIMESTAMP")) {
             if (dataType.contains("ZONE")) {
                 if (dataType.contains("LOCAL")) {

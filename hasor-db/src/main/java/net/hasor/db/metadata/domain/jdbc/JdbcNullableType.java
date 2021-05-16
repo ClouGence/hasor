@@ -38,7 +38,10 @@ public enum JdbcNullableType {
         return this.typeNumber;
     }
 
-    public static JdbcNullableType valueOfCode(int typeNumber) {
+    public static JdbcNullableType valueOfCode(Integer typeNumber) {
+        if (typeNumber == null) {
+            return null;
+        }
         for (JdbcNullableType tableType : JdbcNullableType.values()) {
             if (tableType.typeNumber == typeNumber) {
                 return tableType;

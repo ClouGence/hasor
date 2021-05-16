@@ -15,7 +15,6 @@
  */
 package net.hasor.db.metadata.domain.oracle;
 import net.hasor.db.metadata.ColumnDef;
-import net.hasor.db.metadata.SqlType;
 
 import java.sql.JDBCType;
 
@@ -25,26 +24,26 @@ import java.sql.JDBCType;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class OracleColumn implements ColumnDef {
-    private String   name;
-    private boolean  nullable;
-    private String   columnType;
-    private String   columnTypeOwner;
-    private SqlType  sqlType;
-    private JDBCType jdbcType;
-    private boolean  primaryKey;
-    private boolean  uniqueKey;//如若存在联合唯一索引需要借助getUniqueKey 来查询具体信息，这里只会表示该列存在至少一个唯一索引的引用。
-    private String   comment;
+    private String         name;
+    private boolean        nullable;
+    private String         columnType;
+    private String         columnTypeOwner;
+    private OracleSqlTypes sqlType;
+    private JDBCType       jdbcType;
+    private boolean        primaryKey;
+    private boolean        uniqueKey;//如若存在联合唯一索引需要借助getUniqueKey 来查询具体信息，这里只会表示该列存在至少一个唯一索引的引用。
+    private String         comment;
     //
-    private Long     dataBytesLength;
-    private Long     dataCharLength;
-    private Integer  dataPrecision;
-    private Integer  dataScale;
-    private String   defaultValue;
-    private String   characterSetName;
-    private boolean  hidden;
-    private boolean  virtual;
-    private boolean  identity;
-    private boolean  sensitive;
+    private Long           dataBytesLength;
+    private Long           dataCharLength;
+    private Integer        dataPrecision;
+    private Integer        dataScale;
+    private String         defaultValue;
+    private String         characterSetName;
+    private boolean        hidden;
+    private boolean        virtual;
+    private boolean        identity;
+    private boolean        sensitive;
 
     @Override
     public String getName() {
@@ -80,11 +79,11 @@ public class OracleColumn implements ColumnDef {
         this.columnTypeOwner = columnTypeOwner;
     }
 
-    public SqlType getSqlType() {
+    public OracleSqlTypes getSqlType() {
         return this.sqlType;
     }
 
-    public void setSqlType(SqlType sqlType) {
+    public void setSqlType(OracleSqlTypes sqlType) {
         this.sqlType = sqlType;
     }
 

@@ -157,7 +157,7 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
         assert columnMap.get("C_NCLOB").getJdbcType() == JDBCType.NCLOB;
         assert columnMap.get("C_VARCHAR2").getJdbcType() == JDBCType.VARCHAR;
         assert columnMap.get("C_NVARCHAR2").getJdbcType() == JDBCType.NVARCHAR;
-        assert columnMap.get("C_UROWID").getJdbcType() == null;
+        assert columnMap.get("C_UROWID").getJdbcType() == JDBCType.ROWID;
         assert columnMap.get("C_INT").getJdbcType() == JDBCType.NUMERIC;
         assert columnMap.get("C_NUMBER").getJdbcType() == JDBCType.NUMERIC;
         assert columnMap.get("C_CHAR_NB").getJdbcType() == JDBCType.CHAR;
