@@ -50,5 +50,5 @@ create table tb_user
         unique (userUUID)
 );
 
-CREATE MATERIALIZED VIEW m_tb_user REFRESH NEXT now() + interval 5 minute
-AS SELECT count(*) as cnt FROM tb_user;
+create materialized view m_tb_user refresh next now() + interval 5 minute
+as select count(*) as cnt from tb_user;

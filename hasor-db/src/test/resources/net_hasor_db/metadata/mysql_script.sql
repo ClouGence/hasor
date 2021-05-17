@@ -1,6 +1,6 @@
 create table proc_table
 (
-    c_id   int         not null,
+    c_id   varchar(50) not null,
     c_name varchar(50) not null,
     primary key (c_id, c_name)
 );
@@ -8,7 +8,7 @@ create table proc_table
 create table proc_table_ref
 (
     r_int   int          not null primary key,
-    r_k1    int          null,
+    r_k1    varchar(50)  null,
     r_k2    varchar(50)  null,
     r_name  varchar(100) null,
     r_index int          null,
@@ -16,7 +16,7 @@ create table proc_table_ref
     constraint proc_table_ref_uk
         unique (r_name),
     constraint ptr
-        foreign key (r_k1, r_k2) references proc_table (c_id, c_name)
+        foreign key (r_k1, r_k2) references proc_table (c_name,c_id)
 );
 
 create index proc_table_ref_index

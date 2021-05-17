@@ -78,7 +78,7 @@ public class DsUtils {
         });
         //
         jdbcTemplate.loadSQL("net_hasor_db/tb_user_for_h2.sql");
-        jdbcTemplate.loadSQL("net_hasor_db/tb_h2_types.sql");
+        jdbcTemplate.loadSQL("net_hasor_db/all_types/tb_h2_types.sql");
     }
 
     public static Connection localMySQL() throws SQLException {

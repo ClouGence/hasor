@@ -33,7 +33,7 @@ public class MySqlTypesTest {
         } catch (Exception e) {
             /**/
         }
-        jdbcTemplate.loadSQL("/net_hasor_db/tb_mysql_types.sql");
+        jdbcTemplate.loadSQL("/net_hasor_db/all_types/tb_mysql_types.sql");
     }
 
     @Test

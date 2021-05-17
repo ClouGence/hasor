@@ -32,7 +32,7 @@ public class OracleTypesTest {
         } catch (Exception e) {
             /**/
         }
-        jdbcTemplate.loadSQL("/net_hasor_db/tb_oracle_types.sql");
+        jdbcTemplate.loadSQL("/net_hasor_db/all_types/tb_oracle_types.sql");
     }
 
     @Test

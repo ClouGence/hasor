@@ -68,7 +68,7 @@ public class Jdbc4PostgresMetadataServiceSupplierTest extends AbstractMetadataSe
         applySql("drop table tb_postgre_types");
         //
         jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/metadata/postgre_script.sql");
-        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/tb_postgre_types.sql");
+        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/all_types/tb_postgre_types.sql");
     }
 
     @Test

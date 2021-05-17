@@ -405,145 +405,146 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
         }).collect(Collectors.toList());
     }
 
-//    public OraclePrimaryKey getPrimaryKey(String schemaName, String tableName) throws SQLException {
-//        if (StringUtils.isBlank(tableName)) {
-//            return null;
-//        }
-//        if (StringUtils.isBlank(schemaName)) {
-//            schemaName = getCurrentSchema();
-//            if (StringUtils.isBlank(schemaName)) {
-//                throw new SQLException("no schema is specified and the current database is not set");
-//            }
-//        }
-//        //
-//        String queryString = "" //
-//                + "select CON.OWNER,CON.CONSTRAINT_NAME,CONSTRAINT_TYPE,STATUS,VALIDATED,GENERATED,COLUMN_NAME from DBA_CONS_COLUMNS CC\n" //
-//                + "left join DBA_CONSTRAINTS CON on CC.CONSTRAINT_NAME = CON.CONSTRAINT_NAME\n" //
-//                + "where CONSTRAINT_TYPE = 'P' and CC.OWNER = ? and CC.TABLE_NAME = ? order by POSITION asc"; //
-//        try (Connection conn = this.connectSupplier.get()) {
-//            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
-//            if (mapList == null) {
-//                return null;
-//            }
-//            Set<String> check = new HashSet<>();
-//            OraclePrimaryKey primaryKey = null;
-//            for (Map<String, Object> ent : mapList) {
-//                if (primaryKey == null) {
-//                    primaryKey = new OraclePrimaryKey();
-//                    primaryKey.setConstraintType(OracleConstraintType.PrimaryKey);
-//                    primaryKey.setEnabled("ENABLED".equalsIgnoreCase(safeToString(ent.get("STATUS"))));
-//                    primaryKey.setValidated("VALIDATED".equalsIgnoreCase(safeToString(ent.get("VALIDATED"))));
-//                    primaryKey.setGenerated("GENERATED NAME".equalsIgnoreCase(safeToString(ent.get("GENERATED"))));
-//                }
-//                primaryKey.setSchema(safeToString(ent.get("OWNER")));
-//                primaryKey.setName(safeToString(ent.get("CONSTRAINT_NAME")));
-//                primaryKey.getColumns().add(safeToString(ent.get("COLUMN_NAME")));
-//                //+ "
-//                check.add(primaryKey.getSchema() + "," + primaryKey.getName());
-//                if (check.size() > 1) {
-//                    throw new SQLException("Data error encountered multiple primary keys " + StringUtils.join(check.toArray(), " -- "));
-//                }
-//            }
-//            return primaryKey;
-//        }
-//    }
-    //    public List<OracleUniqueKey> getUniqueKey(String schemaName, String tableName) throws SQLException {
-    //        if (StringUtils.isBlank(tableName)) {
-    //            return null;
-    //        }
-    //        if (StringUtils.isBlank(schemaName)) {
-    //            schemaName = getCurrentSchema();
-    //            if (StringUtils.isBlank(schemaName)) {
-    //                throw new SQLException("no schema is specified and the current database is not set");
-    //            }
-    //        }
-    //        //
-    //        String queryString = "" //
-    //                + "select CON.OWNER,CON.CONSTRAINT_NAME,CONSTRAINT_TYPE,STATUS,VALIDATED,GENERATED,COLUMN_NAME from DBA_CONS_COLUMNS CC\n" //
-    //                + "left join DBA_CONSTRAINTS CON on CC.CONSTRAINT_NAME = CON.CONSTRAINT_NAME\n" //
-    //                + "where CONSTRAINT_TYPE in ('U','P') and CC.OWNER = ? and CC.TABLE_NAME = ? order by POSITION asc"; //
-    //        try (Connection conn = this.connectSupplier.get()) {
-    //            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
-    //            if (mapList == null) {
-    //                return null;
-    //            }
-    //            Map<String, OracleUniqueKey> groupByName = new LinkedHashMap<>();
-    //            for (Map<String, Object> ent : mapList) {
-    //                String constraintName = safeToString(ent.get("CONSTRAINT_NAME"));
-    //                OracleUniqueKey uniqueKey = groupByName.computeIfAbsent(constraintName, k -> {
-    //                    OracleUniqueKey sqlUniqueKey = new OracleUniqueKey();
-    //                    sqlUniqueKey.setSchema(safeToString(ent.get("OWNER")));
-    //                    sqlUniqueKey.setName(constraintName);
-    //                    sqlUniqueKey.setEnabled("ENABLED".equalsIgnoreCase(safeToString(ent.get("STATUS"))));
-    //                    sqlUniqueKey.setValidated("VALIDATED".equalsIgnoreCase(safeToString(ent.get("VALIDATED"))));
-    //                    sqlUniqueKey.setGenerated("GENERATED NAME".equalsIgnoreCase(safeToString(ent.get("GENERATED"))));
-    //                    //+ "
-    //                    String constraintType = safeToString(ent.get("CONSTRAINT_TYPE"));
-    //                    if ("U".equalsIgnoreCase(constraintType)) {
-    //                        sqlUniqueKey.setConstraintType(OracleConstraintType.Unique);
-    //                    } else if ("P".equalsIgnoreCase(constraintType)) {
-    //                        sqlUniqueKey.setConstraintType(OracleConstraintType.PrimaryKey);
-    //                    } else {
-    //                        throw new UnsupportedOperationException("It's not gonna happen.");
-    //                    }
-    //                    return sqlUniqueKey;
-    //                });
-    //                uniqueKey.getColumns().add(safeToString(ent.get("COLUMN_NAME")));
-    //            }
-    //            return new ArrayList<>(groupByName.values());
-    //        }
-    //    }
-    //
-    //    public List<OracleForeignKey> getForeignKey(String schemaName, String tableName) throws SQLException {
-    //        if (StringUtils.isBlank(tableName)) {
-    //            return Collections.emptyList();
-    //        }
-    //        if (StringUtils.isBlank(schemaName)) {
-    //            schemaName = getCurrentSchema();
-    //            if (StringUtils.isBlank(schemaName)) {
-    //                throw new SQLException("no schema is specified and the current database is not set");
-    //            }
-    //        }
-    //        //
-    //        String queryString = "" //
-    //                + "select CON.OWNER,CON.CONSTRAINT_NAME,STATUS,VALIDATED,GENERATED,DELETE_RULE,\n" //
-    //                + "  C2.OWNER TARGET_OWNER,C2.TABLE_NAME TARGET_TABLE,\n" //
-    //                + "  C1.COLUMN_NAME SOURCE_COLUMN,C2.COLUMN_NAME TARGET_COLUMN\n" //
-    //                + "from DBA_CONSTRAINTS CON,DBA_CONS_COLUMNS C1,DBA_CONS_COLUMNS C2\n" //
-    //                + "where\n" //
-    //                + "    CON.R_OWNER = C1.OWNER and CON.CONSTRAINT_NAME = C1.CONSTRAINT_NAME and\n" //
-    //                + "    CON.R_OWNER = C2.OWNER and CON.R_CONSTRAINT_NAME = C2.CONSTRAINT_NAME and\n" //
-    //                + "    C1.POSITION = C2.POSITION and\n" //
-    //                + "    CONSTRAINT_TYPE = 'R' and CON.OWNER = ? and CON.TABLE_NAME = ? order by C1.POSITION";
-    //        try (Connection conn = this.connectSupplier.get()) {
-    //            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
-    //            if (mapList == null) {
-    //                return Collections.emptyList();
-    //            }
-    //            Map<String, OracleForeignKey> groupByName = new LinkedHashMap<>();
-    //            for (Map<String, Object> ent : mapList) {
-    //                String constraintName = safeToString(ent.get("CONSTRAINT_NAME"));
-    //                OracleForeignKey uniqueKey = groupByName.computeIfAbsent(constraintName, k -> {
-    //                    OracleForeignKey sqlForeignKey = new OracleForeignKey();
-    //                    sqlForeignKey.setSchema(safeToString(ent.get("OWNER")));
-    //                    sqlForeignKey.setName(constraintName);
-    //                    sqlForeignKey.setConstraintType(OracleConstraintType.ForeignKey);
-    //                    sqlForeignKey.setEnabled("ENABLED".equalsIgnoreCase(safeToString(ent.get("STATUS"))));
-    //                    sqlForeignKey.setValidated("VALIDATED".equalsIgnoreCase(safeToString(ent.get("VALIDATED"))));
-    //                    sqlForeignKey.setGenerated("GENERATED NAME".equalsIgnoreCase(safeToString(ent.get("GENERATED"))));
-    //                    //+ "
-    //                    sqlForeignKey.setReferenceSchema(safeToString(ent.get("TARGET_OWNER")));
-    //                    sqlForeignKey.setReferenceTable(safeToString(ent.get("TARGET_TABLE")));
-    //                    sqlForeignKey.setDeleteRule(OracleForeignKeyRule.valueOfCode(safeToString(ent.get("DELETE_RULE"))));
-    //                    return sqlForeignKey;
-    //                });
-    //                uniqueKey.getColumns().add(safeToString(ent.get("SOURCE_COLUMN")));
-    //                uniqueKey.getReferenceMapping().put(safeToString(ent.get("SOURCE_COLUMN")), safeToString(ent.get("TARGET_COLUMN")));
-    //            }
-    //            return new ArrayList<>(groupByName.values());
-    //        }
-    //    }
-    //
+    public PostgresPrimaryKey getPrimaryKey(String schemaName, String tableName) throws SQLException {
+        if (StringUtils.isBlank(tableName)) {
+            return null;
+        }
+        if (StringUtils.isBlank(schemaName)) {
+            schemaName = getCurrentSchema();
+            if (StringUtils.isBlank(schemaName)) {
+                throw new SQLException("no schema is specified and the current database is not set");
+            }
+        }
+        //
+        String queryString = "" //
+                + "select tc.constraint_schema,tc.constraint_name,tc.constraint_type,kcu.column_name\n" //
+                + "from information_schema.table_constraints as tc\n" //
+                + "   join information_schema.key_column_usage as kcu on tc.constraint_name = kcu.constraint_name\n" //
+                + "where constraint_type = 'PRIMARY KEY' and tc.table_schema = ? and tc.table_name = ?" //
+                + "order by kcu.ordinal_position asc";
+        try (Connection conn = this.connectSupplier.get()) {
+            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
+            if (mapList == null) {
+                return null;
+            }
+            Set<String> check = new HashSet<>();
+            PostgresPrimaryKey primaryKey = null;
+            for (Map<String, Object> ent : mapList) {
+                if (primaryKey == null) {
+                    primaryKey = new PostgresPrimaryKey();
+                    primaryKey.setConstraintType(PostgresConstraintType.PrimaryKey);
+                }
+                primaryKey.setSchema(safeToString(ent.get("constraint_schema")));
+                primaryKey.setName(safeToString(ent.get("constraint_name")));
+                primaryKey.getColumns().add(safeToString(ent.get("column_name")));
+                check.add(primaryKey.getSchema() + "," + primaryKey.getName());
+                if (check.size() > 1) {
+                    throw new SQLException("Data error encountered multiple primary keys " + StringUtils.join(check.toArray(), " -- "));
+                }
+            }
+            return primaryKey;
+        }
+    }
+
+    public List<PostgresUniqueKey> getUniqueKey(String schemaName, String tableName) throws SQLException {
+        if (StringUtils.isBlank(tableName)) {
+            return null;
+        }
+        if (StringUtils.isBlank(schemaName)) {
+            schemaName = getCurrentSchema();
+            if (StringUtils.isBlank(schemaName)) {
+                throw new SQLException("no schema is specified and the current database is not set");
+            }
+        }
+        //
+        String queryString = "" //
+                + "select tc.constraint_schema,tc.constraint_name,tc.constraint_type,kcu.column_name\n" //
+                + "from information_schema.table_constraints as tc\n" //
+                + "   join information_schema.key_column_usage as kcu on tc.constraint_name = kcu.constraint_name\n" //
+                + "where constraint_type in ('PRIMARY KEY', 'UNIQUE') and tc.table_schema = ? and tc.table_name = ?" //
+                + "order by kcu.ordinal_position asc";
+        try (Connection conn = this.connectSupplier.get()) {
+            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
+            if (mapList == null) {
+                return null;
+            }
+            Map<String, PostgresUniqueKey> groupByName = new LinkedHashMap<>();
+            for (Map<String, Object> ent : mapList) {
+                final String constraintSchema = safeToString(ent.get("constraint_schema"));
+                final String constraintName = safeToString(ent.get("constraint_name"));
+                String constraintKey = constraintSchema + "," + constraintName;
+                PostgresUniqueKey uniqueKey = groupByName.computeIfAbsent(constraintKey, k -> {
+                    PostgresUniqueKey sqlUniqueKey = new PostgresUniqueKey();
+                    sqlUniqueKey.setSchema(constraintSchema);
+                    sqlUniqueKey.setName(constraintName);
+                    //+ "
+                    String constraintType = safeToString(ent.get("constraint_type"));
+                    if ("PRIMARY KEY".equalsIgnoreCase(constraintType)) {
+                        sqlUniqueKey.setConstraintType(PostgresConstraintType.PrimaryKey);
+                    } else if ("UNIQUE".equalsIgnoreCase(constraintType)) {
+                        sqlUniqueKey.setConstraintType(PostgresConstraintType.Unique);
+                    } else {
+                        throw new UnsupportedOperationException("It's not gonna happen.");
+                    }
+                    return sqlUniqueKey;
+                });
+                uniqueKey.getColumns().add(safeToString(ent.get("column_name")));
+            }
+            return new ArrayList<>(groupByName.values());
+        }
+    }
+
+    public List<PostgresForeignKey> getForeignKey(String schemaName, String tableName) throws SQLException {
+        if (StringUtils.isBlank(tableName)) {
+            return Collections.emptyList();
+        }
+        if (StringUtils.isBlank(schemaName)) {
+            schemaName = getCurrentSchema();
+            if (StringUtils.isBlank(schemaName)) {
+                throw new SQLException("no schema is specified and the current database is not set.");
+            }
+        }
+        //
+        String queryString = "" //
+                + "select tc.constraint_schema,tc.constraint_name,tc.constraint_type,tc.table_schema,tc.table_name,kcu.column_name,\n" //
+                + "   ccu.table_schema as foreign_table_schema,ccu.table_name as foreign_table_name,ccu.column_name as foreign_column_name,\n" //
+                + "   rc.delete_rule,rc.update_rule,rc.match_option\n" //
+                + "from (information_schema.table_constraints tc left join information_schema.referential_constraints rc on tc.constraint_schema = rc.constraint_schema and tc.constraint_name = rc.constraint_name)\n" //
+                + "   join information_schema.key_column_usage as kcu on tc.constraint_name = kcu.constraint_name\n" //
+                + "   join information_schema.constraint_column_usage as ccu on ccu.constraint_name = tc.constraint_name\n" //
+                + "where constraint_type = 'FOREIGN KEY' and tc.table_schema = ? and tc.table_name = ?\n" //
+                + "order by kcu.ordinal_position asc";
+        try (Connection conn = this.connectSupplier.get()) {
+            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
+            if (mapList == null) {
+                return Collections.emptyList();
+            }
+            Map<String, PostgresForeignKey> groupByName = new LinkedHashMap<>();
+            for (Map<String, Object> ent : mapList) {
+                final String constraintSchema = safeToString(ent.get("constraint_schema"));
+                final String constraintName = safeToString(ent.get("constraint_name"));
+                String constraintKey = constraintSchema + "," + constraintName;
+                //
+                PostgresForeignKey foreignKey = groupByName.computeIfAbsent(constraintKey, k -> {
+                    PostgresForeignKey sqlForeignKey = new PostgresForeignKey();
+                    sqlForeignKey.setSchema(constraintSchema);
+                    sqlForeignKey.setName(constraintName);
+                    sqlForeignKey.setConstraintType(PostgresConstraintType.ForeignKey);
+                    sqlForeignKey.setReferenceSchema(safeToString(ent.get("foreign_table_schema")));
+                    sqlForeignKey.setReferenceTable(safeToString(ent.get("foreign_table_name")));
+                    //
+                    sqlForeignKey.setUpdateRule(PostgresForeignKeyRule.valueOfCode(safeToString(ent.get("update_rule"))));
+                    sqlForeignKey.setDeleteRule(PostgresForeignKeyRule.valueOfCode(safeToString(ent.get("delete_rule"))));
+                    sqlForeignKey.setMatchOption(PostgresForeignMatchOption.valueOfCode(safeToString(ent.get("match_option"))));
+                    return sqlForeignKey;
+                });
+                //
+                foreignKey.getColumns().add(safeToString(ent.get("column_name")));
+                foreignKey.getReferenceMapping().put(safeToString(ent.get("column_name")), safeToString(ent.get("foreign_column_name")));
+            }
+            return new ArrayList<>(groupByName.values());
+        }
+    }
     //    public List<OracleIndex> getIndexes(String schemaName, String tableName) throws SQLException {
     //        if (StringUtils.isBlank(tableName)) {
     //            return Collections.emptyList();

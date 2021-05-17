@@ -206,8 +206,10 @@ public class MySqlMetadataServiceSupplierTest extends AbstractMetadataServiceSup
         assert uniqueKeyMap.containsKey("tb_user_userUUID_uindex");
         assert uniqueKeyMap.containsKey("tb_user_email_userUUID_uindex");
         assert uniqueKeyMap.get("tb_user_userUUID_uindex").getColumns().size() == 1;
+        assert uniqueKeyMap.get("tb_user_userUUID_uindex").getConstraintType() == MySqlConstraintType.Unique;
         assert uniqueKeyMap.get("tb_user_userUUID_uindex").getColumns().contains("userUUID");
         assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().size() == 2;
+        assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getConstraintType() == MySqlConstraintType.Unique;
         assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().contains("userUUID");
         assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().contains("email");
     }

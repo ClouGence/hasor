@@ -15,7 +15,7 @@ public class OracleRealTest {
         } catch (Exception e) {
             /**/
         }
-        jdbcTemplate.loadSQL("/net_hasor_db/tb_oracle_types.sql");
+        jdbcTemplate.loadSQL("/net_hasor_db/all_types/tb_oracle_types.sql");
     }
 
     // oracle  dbms_metadata.get_ddl result is CLOB

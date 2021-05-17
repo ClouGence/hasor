@@ -61,7 +61,7 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
         applySql("drop table tb_oracle_types");
         //
         jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/metadata/oracle_script.sql");
-        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/tb_oracle_types.sql");
+        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/all_types/tb_oracle_types.sql");
     }
 
     @Test
@@ -248,6 +248,7 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
         Map<String, OracleUniqueKey> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(OracleUniqueKey::getName, u -> u));
         assert uniqueKeyMap.size() == 2;
         assert uniqueKeyMap.containsKey(primaryKey.getName());
+        assert uniqueKeyMap.get(primaryKey.getName()).getConstraintType() == OracleConstraintType.PrimaryKey;
         assert uniqueKeyMap.containsKey("TB_USER_EMAIL_USERUUID_UINDEX");
         assert uniqueKeyMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().size() == 2;
         assert uniqueKeyMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().contains("USERUUID");

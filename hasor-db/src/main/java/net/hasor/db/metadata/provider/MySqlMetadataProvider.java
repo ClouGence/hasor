@@ -413,7 +413,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         queryParam.add(tableName);
         queryParam.addAll(constraintList.stream().map(MySqlConstraint::getName).collect(Collectors.toList()));
         String queryString = "select INDEX_NAME,COLUMN_NAME,INDEX_TYPE FROM INFORMATION_SCHEMA.STATISTICS " //
-                + "where TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME in " + buildWhereIn(constraintList) + " order by SEQ_IN_INDEX asc";
+                + "where NON_UNIQUE = 0 and TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME in " + buildWhereIn(constraintList) + " order by SEQ_IN_INDEX asc";
         try (Connection conn = this.connectSupplier.eGet()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, queryParam.toArray());
             if (mapList == null) {
@@ -427,7 +427,11 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
                 MySqlUniqueKey uniqueKey = groupByName.computeIfAbsent(indexName, k -> {
                     MySqlUniqueKey sqlUniqueKey = new MySqlUniqueKey();
                     sqlUniqueKey.setName(k);
-                    sqlUniqueKey.setConstraintType(MySqlConstraintType.Unique);
+                    if ("PRIMARY".equals(indexName)) {
+                        sqlUniqueKey.setConstraintType(MySqlConstraintType.PrimaryKey);
+                    } else {
+                        sqlUniqueKey.setConstraintType(MySqlConstraintType.Unique);
+                    }
                     return sqlUniqueKey;
                 });
                 String columnName = safeToString(indexColumn.get("COLUMN_NAME"));

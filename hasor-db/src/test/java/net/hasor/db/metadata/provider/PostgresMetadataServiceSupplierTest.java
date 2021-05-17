@@ -65,7 +65,7 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
         applySql("drop table tb_postgre_types");
         //
         jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/metadata/postgre_script.sql");
-        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/tb_postgre_types.sql");
+        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/all_types/tb_postgre_types.sql");
     }
 
     @Test
@@ -223,66 +223,69 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
         assert !typeMap.containsKey("ptr");
         assert typeMap.get("proc_table_ref_uk") == PostgresConstraintType.Unique;
     }
-    //    @Test
-    //    public void getPrimaryKey1() throws SQLException {
-    //        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "PROC_TABLE_REF");
-    //        assert primaryKey.getConstraintType() == OracleConstraintType.PrimaryKey;
-    //        assert primaryKey.getName().startsWith("SYS_");
-    //        assert primaryKey.getColumns().size() == 1;
-    //        assert primaryKey.getColumns().contains("R_INT");
-    //    }
-    //
-    //    @Test
-    //    public void getPrimaryKey2() throws SQLException {
-    //        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "PROC_TABLE");
-    //        assert primaryKey.getConstraintType() == OracleConstraintType.PrimaryKey;
-    //        assert primaryKey.getName().startsWith("SYS_");
-    //        assert primaryKey.getColumns().size() == 2;
-    //        assert primaryKey.getColumns().contains("C_ID");
-    //        assert primaryKey.getColumns().contains("C_NAME");
-    //    }
-    //
-    //    @Test
-    //    public void getPrimaryKey3() throws SQLException {
-    //        OracleTable table = this.repository.getTable("SCOTT", "T3");
-    //        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "T3");
-    //        assert table != null;
-    //        assert primaryKey == null;
-    //    }
-    //
-    //    @Test
-    //    public void getUniqueKey() throws SQLException {
-    //        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "TB_USER");
-    //        List<OracleUniqueKey> uniqueKeyList = this.repository.getUniqueKey("SCOTT", "TB_USER");
-    //        Map<String, OracleUniqueKey> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(OracleUniqueKey::getName, u -> u));
-    //        assert uniqueKeyMap.size() == 2;
-    //        assert uniqueKeyMap.containsKey(primaryKey.getName());
-    //        assert uniqueKeyMap.containsKey("TB_USER_EMAIL_USERUUID_UINDEX");
-    //        assert uniqueKeyMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().size() == 2;
-    //        assert uniqueKeyMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().contains("USERUUID");
-    //        assert uniqueKeyMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().contains("EMAIL");
-    //        assert uniqueKeyMap.get(primaryKey.getName()).getColumns().size() == 1;
-    //        assert uniqueKeyMap.get(primaryKey.getName()).getColumns().contains("USERUUID");
-    //    }
-    //
-    //    @Test
-    //    public void getForeignKey() throws SQLException {
-    //        List<OracleForeignKey> foreignKeyList1 = this.repository.getForeignKey("SCOTT", "TB_USER");
-    //        assert foreignKeyList1.size() == 0;
-    //        List<OracleForeignKey> foreignKeyList2 = this.repository.getForeignKey("SCOTT", "PROC_TABLE_REF");
-    //        assert foreignKeyList2.size() == 1;
-    //        OracleForeignKey foreignKey = foreignKeyList2.get(0);
-    //        assert foreignKey.getConstraintType() == OracleConstraintType.ForeignKey;
-    //        assert foreignKey.getColumns().size() == 2;
-    //        assert foreignKey.getColumns().get(0).equals("R_K1");
-    //        assert foreignKey.getColumns().get(1).equals("R_K2");
-    //        assert foreignKey.getName().equals("PTR");
-    //        assert foreignKey.getReferenceSchema().equals("SCOTT");
-    //        assert foreignKey.getReferenceTable().equals("PROC_TABLE");
-    //        assert foreignKey.getReferenceMapping().get("R_K1").equals("C_ID");
-    //        assert foreignKey.getReferenceMapping().get("R_K2").equals("C_NAME");
-    //    }
-    //
+
+    @Test
+    public void getPrimaryKey1() throws SQLException {
+        PostgresPrimaryKey primaryKey = this.repository.getPrimaryKey("tester", "proc_table_ref");
+        assert primaryKey.getConstraintType() == PostgresConstraintType.PrimaryKey;
+        assert primaryKey.getName().startsWith("proc_table_ref_pkey");
+        assert primaryKey.getColumns().size() == 1;
+        assert primaryKey.getColumns().contains("r_int");
+    }
+
+    @Test
+    public void getPrimaryKey2() throws SQLException {
+        PostgresPrimaryKey primaryKey = this.repository.getPrimaryKey("tester", "proc_table");
+        assert primaryKey.getConstraintType() == PostgresConstraintType.PrimaryKey;
+        assert primaryKey.getName().startsWith("proc_table_pkey");
+        assert primaryKey.getColumns().size() == 2;
+        assert primaryKey.getColumns().contains("c_id");
+        assert primaryKey.getColumns().contains("c_name");
+    }
+
+    @Test
+    public void getPrimaryKey3() throws SQLException {
+        PostgresTable table = this.repository.getTable("tester", "t3");
+        PostgresPrimaryKey primaryKey = this.repository.getPrimaryKey("tester", "t3");
+        assert table != null;
+        assert primaryKey == null;
+    }
+
+    @Test
+    public void getUniqueKey() throws SQLException {
+        PostgresPrimaryKey primaryKey = this.repository.getPrimaryKey("tester", "tb_user");
+        List<PostgresUniqueKey> uniqueKeyList = this.repository.getUniqueKey("tester", "tb_user");
+        Map<String, PostgresUniqueKey> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(PostgresUniqueKey::getName, u -> u));
+        assert uniqueKeyMap.size() == 2;
+        assert uniqueKeyMap.containsKey(primaryKey.getName());
+        assert uniqueKeyMap.get(primaryKey.getName()).getConstraintType() == PostgresConstraintType.PrimaryKey;
+        assert uniqueKeyMap.get(primaryKey.getName()).getColumns().size() == 1;
+        assert uniqueKeyMap.get(primaryKey.getName()).getColumns().contains("useruuid");
+        //
+        assert uniqueKeyMap.containsKey("tb_user_email_useruuid_uindex");
+        assert uniqueKeyMap.get("tb_user_email_useruuid_uindex").getConstraintType() == PostgresConstraintType.Unique;
+        assert uniqueKeyMap.get("tb_user_email_useruuid_uindex").getColumns().size() == 2;
+        assert uniqueKeyMap.get("tb_user_email_useruuid_uindex").getColumns().contains("useruuid");
+        assert uniqueKeyMap.get("tb_user_email_useruuid_uindex").getColumns().contains("email");
+    }
+
+    @Test
+    public void getForeignKey() throws SQLException {
+        List<PostgresForeignKey> foreignKeyList1 = this.repository.getForeignKey("tester", "tb_user");
+        assert foreignKeyList1.size() == 0;
+        List<PostgresForeignKey> foreignKeyList2 = this.repository.getForeignKey("tester", "proc_table_ref");
+        assert foreignKeyList2.size() == 1;
+        PostgresForeignKey foreignKey = foreignKeyList2.get(0);
+        assert foreignKey.getConstraintType() == PostgresConstraintType.ForeignKey;
+        assert foreignKey.getColumns().size() == 2;
+        assert foreignKey.getColumns().get(0).equals("r_k1");
+        assert foreignKey.getColumns().get(1).equals("r_k2");
+        assert foreignKey.getName().equals("ptr");
+        assert foreignKey.getReferenceSchema().equals("scott");
+        assert foreignKey.getReferenceTable().equals("proc_table");
+        assert foreignKey.getReferenceMapping().get("r_k1").equals("c_id");
+        assert foreignKey.getReferenceMapping().get("r_k2").equals("c_name");
+    }
     //    @Test
     //    public void getIndexes1() throws SQLException {
     //        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "TB_USER");
@@ -356,8 +359,3 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
     //        assert index.getIndexType() == OracleIndexType.Normal;
     //    }
 }
-//
-//
-//
-//
-//

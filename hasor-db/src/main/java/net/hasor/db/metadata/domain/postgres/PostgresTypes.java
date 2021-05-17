@@ -26,147 +26,149 @@ import java.sql.JDBCType;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum PostgresTypes implements SqlType {
-    SMALLSERIAL("smallserial", JDBCType.SMALLINT, Oid.INT2, true),  // smallserial、serial2
-    SERIAL("serial", JDBCType.INTEGER, Oid.INT4, true),             // serial、serial4
-    BIGSERIAL("bigserial", JDBCType.BIGINT, Oid.INT8, true),        // bigserial、serial8
-    SMALLINT("smallint", JDBCType.SMALLINT, Oid.INT2, true),        // smallint、int2
-    INTEGER("integer", JDBCType.INTEGER, Oid.INT4),                       // integer、int、int4
-    BIGINT("bigint", JDBCType.BIGINT, Oid.INT8),                          // bigint、int8
-    OID("oid", JDBCType.BIGINT, Oid.OID),
-    NUMERIC("numeric", JDBCType.NUMERIC, Oid.NUMERIC),                    // numeric、decimal
-    REAL("real", JDBCType.REAL, Oid.FLOAT4),                              // real、float4
-    DOUBLE_PRECISION("double precision", JDBCType.DOUBLE, Oid.FLOAT8),    // double precision、float、float8
+    SMALLSERIAL("smallserial", JDBCType.SMALLINT, Oid.INT2, true, false),  // smallserial、serial2
+    SERIAL("serial", JDBCType.INTEGER, Oid.INT4, true, false),             // serial、serial4
+    BIGSERIAL("bigserial", JDBCType.BIGINT, Oid.INT8, true, false),        // bigserial、serial8
+    SMALLINT("smallint", JDBCType.SMALLINT, Oid.INT2, true, false),        // smallint、int2
+    INTEGER("integer", JDBCType.INTEGER, Oid.INT4, false),                       // integer、int、int4
+    BIGINT("bigint", JDBCType.BIGINT, Oid.INT8, false),                          // bigint、int8
+    OID("oid", JDBCType.BIGINT, Oid.OID, false),
+    NUMERIC("numeric", JDBCType.NUMERIC, Oid.NUMERIC, false),                    // numeric、decimal
+    REAL("real", JDBCType.REAL, Oid.FLOAT4, false),                              // real、float4
+    DOUBLE_PRECISION("double precision", JDBCType.DOUBLE, Oid.FLOAT8, false),    // double precision、float、float8
     //
-    MONEY("money", JDBCType.DOUBLE, Oid.MONEY),
+    MONEY("money", JDBCType.DOUBLE, Oid.MONEY, false),
     //
-    CHARACTER("character", JDBCType.CHAR, Oid.CHAR),                      // char、character
-    BPCHAR("bpchar", JDBCType.CHAR, Oid.BPCHAR),
-    CHARACTER_VARYING("character varying", JDBCType.VARCHAR, Oid.VARCHAR),// character varying、varchar
-    TEXT("text", JDBCType.VARCHAR, Oid.TEXT),
-    NAME("name", JDBCType.VARCHAR, Oid.NAME),
+    CHARACTER("character", JDBCType.CHAR, Oid.CHAR, false),                      // char、character
+    BPCHAR("bpchar", JDBCType.CHAR, Oid.BPCHAR, false),
+    CHARACTER_VARYING("character varying", JDBCType.VARCHAR, Oid.VARCHAR, false),// character varying、varchar
+    TEXT("text", JDBCType.VARCHAR, Oid.TEXT, false),
+    NAME("name", JDBCType.VARCHAR, Oid.NAME, false),
     //
-    TIMESTAMP_WITHOUT_TIME_ZONE("timestamp without time zone", JDBCType.TIMESTAMP, Oid.TIMESTAMP),// timestamp、timestamp without time zone
-    TIMESTAMP_WITH_TIME_ZONE("timestamp with time zone", JDBCType.TIMESTAMP, Oid.TIMESTAMPTZ),    // timestamptz、timestamp with time zone
-    TIME_WITHOUT_TIME_ZONE("time without time zone", JDBCType.TIME, Oid.TIME),                    // time、time without time zone
-    TIME_WITH_TIME_ZONE("time with time zone", JDBCType.TIME, Oid.TIMETZ),                        // timetz、time with time zone
-    DATE("date", JDBCType.DATE, Oid.DATE),
-    INTERVAL("interval", JDBCType.OTHER, Oid.INTERVAL),
+    TIMESTAMP_WITHOUT_TIME_ZONE("timestamp without time zone", JDBCType.TIMESTAMP, Oid.TIMESTAMP, false),// timestamp、timestamp without time zone
+    TIMESTAMP_WITH_TIME_ZONE("timestamp with time zone", JDBCType.TIMESTAMP, Oid.TIMESTAMPTZ, false),    // timestamptz、timestamp with time zone
+    TIME_WITHOUT_TIME_ZONE("time without time zone", JDBCType.TIME, Oid.TIME, false),                    // time、time without time zone
+    TIME_WITH_TIME_ZONE("time with time zone", JDBCType.TIME, Oid.TIMETZ, false),                        // timetz、time with time zone
+    DATE("date", JDBCType.DATE, Oid.DATE, false),
+    INTERVAL("interval", JDBCType.OTHER, Oid.INTERVAL, false),
     //
-    BIT("bit", JDBCType.BIT, Oid.BIT),
-    BIT_VARYING("bit varying", JDBCType.OTHER, Oid.VARBIT),   // varbit、bit varying
-    BOOLEAN("boolean", JDBCType.BIT, Oid.BOOL),               // bool、boolean
+    BIT("bit", JDBCType.BIT, Oid.BIT, false),
+    BIT_VARYING("bit varying", JDBCType.OTHER, Oid.VARBIT, false),   // varbit、bit varying
+    BOOLEAN("boolean", JDBCType.BIT, Oid.BOOL, false),               // bool、boolean
     //
-    XML("xml", JDBCType.SQLXML, Oid.XML),
-    BYTEA("bytea", JDBCType.BINARY, Oid.BYTEA),
-    REF_CURSOR("refcursor", JDBCType.REF_CURSOR, Oid.REF_CURSOR),// refcursor
+    XML("xml", JDBCType.SQLXML, Oid.XML, false),
+    BYTEA("bytea", JDBCType.BINARY, Oid.BYTEA, false),
+    REF_CURSOR("refcursor", JDBCType.REF_CURSOR, Oid.REF_CURSOR, false),// refcursor
     //
-    POINT("point", JDBCType.OTHER, Oid.POINT),
-    LINE("line", JDBCType.OTHER, null),
-    LSEG("lseg", JDBCType.OTHER, null),
-    BOX("box", JDBCType.OTHER, Oid.BOX),
-    PATH("path", JDBCType.OTHER, null),
-    POLYGON("polygon", JDBCType.OTHER, null),
-    CIRCLE("circle", JDBCType.OTHER, null),
+    POINT("point", JDBCType.OTHER, Oid.POINT, false),
+    LINE("line", JDBCType.OTHER, null, false),
+    LSEG("lseg", JDBCType.OTHER, null, false),
+    BOX("box", JDBCType.OTHER, Oid.BOX, false),
+    PATH("path", JDBCType.OTHER, null, false),
+    POLYGON("polygon", JDBCType.OTHER, null, false),
+    CIRCLE("circle", JDBCType.OTHER, null, false),
     //
-    CIDR("cidr", JDBCType.OTHER, null),
-    INET("inet", JDBCType.OTHER, null),
-    MACADDR("macaddr", JDBCType.OTHER, null),
-    MACADDR8("macaddr8", JDBCType.OTHER, null),
+    CIDR("cidr", JDBCType.OTHER, null, false),
+    INET("inet", JDBCType.OTHER, null, false),
+    MACADDR("macaddr", JDBCType.OTHER, null, false),
+    MACADDR8("macaddr8", JDBCType.OTHER, null, false),
     //
-    TSVECTOR("tsvector", JDBCType.OTHER, null),
-    TSQUERY("tsquery", JDBCType.OTHER, null),
+    TSVECTOR("tsvector", JDBCType.OTHER, null, false),
+    TSQUERY("tsquery", JDBCType.OTHER, null, false),
     //
-    UUID("uuid", JDBCType.OTHER, Oid.UUID),
+    UUID("uuid", JDBCType.OTHER, Oid.UUID, false),
     //
-    JSON("json", JDBCType.OTHER, Oid.JSON),
-    JSONB("jsonb", JDBCType.OTHER, null),
+    JSON("json", JDBCType.OTHER, Oid.JSON, false),
+    JSONB("jsonb", JDBCType.OTHER, null, false),
     //
-    INT4RANGE("int4range", JDBCType.OTHER, null),
-    INT8RANGE("int8range", JDBCType.OTHER, null),
-    NUMRANGE("numrange", JDBCType.OTHER, null),
-    TSRANGE("tsrange", JDBCType.OTHER, null),
-    TSTZRANGE("tstzrange", JDBCType.OTHER, null),
-    DATERANGE("daterange", JDBCType.OTHER, null),
+    INT4RANGE("int4range", JDBCType.OTHER, null, false),
+    INT8RANGE("int8range", JDBCType.OTHER, null, false),
+    NUMRANGE("numrange", JDBCType.OTHER, null, false),
+    TSRANGE("tsrange", JDBCType.OTHER, null, false),
+    TSTZRANGE("tstzrange", JDBCType.OTHER, null, false),
+    DATERANGE("daterange", JDBCType.OTHER, null, false),
     //
-    PG_LSN("pg_lsn", JDBCType.OTHER, null),
-    TXID_SNAPSHOT("txid_snapshot", JDBCType.OTHER, null),
+    PG_LSN("pg_lsn", JDBCType.OTHER, null, false),
+    TXID_SNAPSHOT("txid_snapshot", JDBCType.OTHER, null, false),
     //
     // --------------------------------------------------------------------------------------------------------------------------
-    SMALLINT_ARRAY("smallint[]", JDBCType.ARRAY, Oid.INT2_ARRAY),                     // smallint、int2
-    INTEGER_ARRAY("integer[]", JDBCType.ARRAY, Oid.INT4_ARRAY),                       // integer、int、int4
-    BIGINT_ARRAY("bigint[]", JDBCType.ARRAY, Oid.INT8_ARRAY),                         // bigint、int8、
-    OID_ARRAY("oid[]", JDBCType.ARRAY, Oid.OID_ARRAY),
-    NUMERIC_ARRAY("numeric[]", JDBCType.ARRAY, Oid.NUMERIC_ARRAY),                    // numeric、decimal
-    REAL_ARRAY("real[]", JDBCType.ARRAY, Oid.FLOAT4_ARRAY),                           // real、float4
-    DOUBLE_PRECISION_ARRAY("double precision[]", JDBCType.ARRAY, Oid.FLOAT8_ARRAY),   // double precision、float、float8
+    SMALLINT_ARRAY("smallint[]", JDBCType.ARRAY, Oid.INT2_ARRAY, true),                     // smallint、int2
+    INTEGER_ARRAY("integer[]", JDBCType.ARRAY, Oid.INT4_ARRAY, true),                       // integer、int、int4
+    BIGINT_ARRAY("bigint[]", JDBCType.ARRAY, Oid.INT8_ARRAY, true),                         // bigint、int8、
+    OID_ARRAY("oid[]", JDBCType.ARRAY, Oid.OID_ARRAY, true),
+    NUMERIC_ARRAY("numeric[]", JDBCType.ARRAY, Oid.NUMERIC_ARRAY, true),                    // numeric、decimal
+    REAL_ARRAY("real[]", JDBCType.ARRAY, Oid.FLOAT4_ARRAY, true),                           // real、float4
+    DOUBLE_PRECISION_ARRAY("double precision[]", JDBCType.ARRAY, Oid.FLOAT8_ARRAY, true),   // double precision、float、float8
     //
-    MONEY_ARRAY("money[]", JDBCType.ARRAY, Oid.MONEY_ARRAY),
+    MONEY_ARRAY("money[]", JDBCType.ARRAY, Oid.MONEY_ARRAY, true),
     //
-    CHARACTER_ARRAY("character[]", JDBCType.ARRAY, Oid.CHAR_ARRAY),                   // char、character
-    BPCHAR_ARRAY("bpchar[]", JDBCType.ARRAY, Oid.BPCHAR_ARRAY),
-    CHARACTER_VARYING_ARRAY("character varying[]", JDBCType.ARRAY, Oid.VARCHAR_ARRAY),// character varying、varchar
-    TEXT_ARRAY("text[]", JDBCType.ARRAY, Oid.TEXT_ARRAY),
-    NAME_ARRAY("name[]", JDBCType.ARRAY, Oid.NAME_ARRAY),
+    CHARACTER_ARRAY("character[]", JDBCType.ARRAY, Oid.CHAR_ARRAY, true),                   // char、character
+    BPCHAR_ARRAY("bpchar[]", JDBCType.ARRAY, Oid.BPCHAR_ARRAY, true),
+    CHARACTER_VARYING_ARRAY("character varying[]", JDBCType.ARRAY, Oid.VARCHAR_ARRAY, true),// character varying、varchar
+    TEXT_ARRAY("text[]", JDBCType.ARRAY, Oid.TEXT_ARRAY, true),
+    NAME_ARRAY("name[]", JDBCType.ARRAY, Oid.NAME_ARRAY, true),
     //
-    TIMESTAMP_WITHOUT_TIME_ZONE_ARRAY("timestamp without time zone[]", JDBCType.ARRAY, Oid.TIMESTAMP_ARRAY),// timestamp、timestamp without time zone
-    TIMESTAMP_WITH_TIME_ZONE_ARRAY("timestamp with time zone[]", JDBCType.ARRAY, Oid.TIMESTAMPTZ_ARRAY),    // timestamptz、timestamp with time zone
-    TIME_WITHOUT_TIME_ZONE_ARRAY("time without time zone[]", JDBCType.ARRAY, Oid.TIME_ARRAY),               // time、time without time zone
-    TIME_WITH_TIME_ZONE_ARRAY("time with time zone[]", JDBCType.ARRAY, Oid.TIMETZ_ARRAY),                   // timetz、time with time zone
-    DATE_ARRAY("date[]", JDBCType.ARRAY, Oid.DATE_ARRAY),
-    INTERVAL_ARRAY("interval[]", JDBCType.ARRAY, Oid.INTERVAL_ARRAY),
+    TIMESTAMP_WITHOUT_TIME_ZONE_ARRAY("timestamp without time zone[]", JDBCType.ARRAY, Oid.TIMESTAMP_ARRAY, true),// timestamp、timestamp without time zone
+    TIMESTAMP_WITH_TIME_ZONE_ARRAY("timestamp with time zone[]", JDBCType.ARRAY, Oid.TIMESTAMPTZ_ARRAY, true),    // timestamptz、timestamp with time zone
+    TIME_WITHOUT_TIME_ZONE_ARRAY("time without time zone[]", JDBCType.ARRAY, Oid.TIME_ARRAY, true),               // time、time without time zone
+    TIME_WITH_TIME_ZONE_ARRAY("time with time zone[]", JDBCType.ARRAY, Oid.TIMETZ_ARRAY, true),                   // timetz、time with time zone
+    DATE_ARRAY("date[]", JDBCType.ARRAY, Oid.DATE_ARRAY, true),
+    INTERVAL_ARRAY("interval[]", JDBCType.ARRAY, Oid.INTERVAL_ARRAY, true),
     //
-    BIT_ARRAY("bit[]", JDBCType.ARRAY, Oid.BIT_ARRAY),
-    BIT_VARYING_ARRAY("bit varying[]", JDBCType.ARRAY, Oid.VARBIT_ARRAY),   // varbit、bit varying
-    BOOLEAN_ARRAY("boolean[]", JDBCType.ARRAY, Oid.BOOL_ARRAY),             // bool、boolean
+    BIT_ARRAY("bit[]", JDBCType.ARRAY, Oid.BIT_ARRAY, true),
+    BIT_VARYING_ARRAY("bit varying[]", JDBCType.ARRAY, Oid.VARBIT_ARRAY, true),   // varbit、bit varying
+    BOOLEAN_ARRAY("boolean[]", JDBCType.ARRAY, Oid.BOOL_ARRAY, true),             // bool、boolean
     //
-    XML_ARRAY("xml", JDBCType.ARRAY, Oid.XML_ARRAY),
-    BYTEA_ARRAY("bytea[]", JDBCType.ARRAY, Oid.BYTEA_ARRAY),
-    REF_CURSOR_ARRAY("refcursor", JDBCType.ARRAY, Oid.REF_CURSOR_ARRAY),    // refcursor
+    XML_ARRAY("xml", JDBCType.ARRAY, Oid.XML_ARRAY, true),
+    BYTEA_ARRAY("bytea[]", JDBCType.ARRAY, Oid.BYTEA_ARRAY, true),
+    REF_CURSOR_ARRAY("refcursor", JDBCType.ARRAY, Oid.REF_CURSOR_ARRAY, true),    // refcursor
     //
-    POINT_ARRAY("point[]", JDBCType.ARRAY, Oid.POINT_ARRAY),
-    LINE_ARRAY("line[]", JDBCType.ARRAY, null),             // 629
-    LSEG_ARRAY("lseg[]", JDBCType.ARRAY, null),             // 1018
-    BOX_ARRAY("box[]", JDBCType.ARRAY, null),               // 1020
-    PATH_ARRAY("path[]", JDBCType.ARRAY, null),             // 1019
-    POLYGON_ARRAY("polygon[]", JDBCType.ARRAY, null),       // 1027
-    CIRCLE_ARRAY("circle[]", JDBCType.ARRAY, null),         // 719
-    CIDR_ARRAY("cidr[]", JDBCType.ARRAY, null),             // 651
-    INET_ARRAY("inet[]", JDBCType.ARRAY, null),             // 1041
-    MACADDR_ARRAY("macaddr[]", JDBCType.ARRAY, null),       // 1040
-    MACADDR8_ARRAY("macaddr8[]", JDBCType.ARRAY, null),     // 775
+    POINT_ARRAY("point[]", JDBCType.ARRAY, Oid.POINT_ARRAY, true),
+    LINE_ARRAY("line[]", JDBCType.ARRAY, null, true),             // 629
+    LSEG_ARRAY("lseg[]", JDBCType.ARRAY, null, true),             // 1018
+    BOX_ARRAY("box[]", JDBCType.ARRAY, null, true),               // 1020
+    PATH_ARRAY("path[]", JDBCType.ARRAY, null, true),             // 1019
+    POLYGON_ARRAY("polygon[]", JDBCType.ARRAY, null, true),       // 1027
+    CIRCLE_ARRAY("circle[]", JDBCType.ARRAY, null, true),         // 719
+    CIDR_ARRAY("cidr[]", JDBCType.ARRAY, null, true),             // 651
+    INET_ARRAY("inet[]", JDBCType.ARRAY, null, true),             // 1041
+    MACADDR_ARRAY("macaddr[]", JDBCType.ARRAY, null, true),       // 1040
+    MACADDR8_ARRAY("macaddr8[]", JDBCType.ARRAY, null, true),     // 775
     //
-    TSVECTOR_ARRAY("tsvector[]", JDBCType.ARRAY, null),     // 3643
-    TSQUERY_ARRAY("tsquery[]", JDBCType.ARRAY, null),       // 3645
+    TSVECTOR_ARRAY("tsvector[]", JDBCType.ARRAY, null, true),     // 3643
+    TSQUERY_ARRAY("tsquery[]", JDBCType.ARRAY, null, true),       // 3645
     //
-    UUID_ARRAY("uuid[]", JDBCType.ARRAY, Oid.UUID_ARRAY),         // 2951
+    UUID_ARRAY("uuid[]", JDBCType.ARRAY, Oid.UUID_ARRAY, true),         // 2951
     //
-    JSON_ARRAY("json[]", JDBCType.ARRAY, Oid.JSON_ARRAY),
-    JSONB_ARRAY("jsonb[]", JDBCType.ARRAY, Oid.JSONB_ARRAY),
+    JSON_ARRAY("json[]", JDBCType.ARRAY, Oid.JSON_ARRAY, true),
+    JSONB_ARRAY("jsonb[]", JDBCType.ARRAY, Oid.JSONB_ARRAY, true),
     //
-    INT4RANGE_ARRAY("int4range[]", JDBCType.ARRAY, null),   // 3905
-    INT8RANGE_ARRAY("int8range[]", JDBCType.ARRAY, null),   // 3927
-    NUMRANGE_ARRAY("numrange[]", JDBCType.ARRAY, null),     // 3907
-    TSRANGE_ARRAY("tsrange[]", JDBCType.ARRAY, null),       // 3909
-    TSTZRANGE_ARRAY("tstzrange[]", JDBCType.ARRAY, null),   // 3911
-    DATERANGE_ARRAY("daterange[]", JDBCType.ARRAY, null),   // 3913
+    INT4RANGE_ARRAY("int4range[]", JDBCType.ARRAY, null, true),   // 3905
+    INT8RANGE_ARRAY("int8range[]", JDBCType.ARRAY, null, true),   // 3927
+    NUMRANGE_ARRAY("numrange[]", JDBCType.ARRAY, null, true),     // 3907
+    TSRANGE_ARRAY("tsrange[]", JDBCType.ARRAY, null, true),       // 3909
+    TSTZRANGE_ARRAY("tstzrange[]", JDBCType.ARRAY, null, true),   // 3911
+    DATERANGE_ARRAY("daterange[]", JDBCType.ARRAY, null, true),   // 3913
     //
-    PG_LSN_ARRAY("pg_lsn[]", JDBCType.ARRAY, null),         // 3221
-    TXID_SNAPSHOT_ARRAY("txid_snapshot[]", JDBCType.ARRAY, null), //2949
+    PG_LSN_ARRAY("pg_lsn[]", JDBCType.ARRAY, null, true),         // 3221
+    TXID_SNAPSHOT_ARRAY("txid_snapshot[]", JDBCType.ARRAY, null, true), //2949
     ;
     private final boolean  serial;
+    private final boolean  array;
     private final String   codeKey;
     private final JDBCType jdbcType;
     private final Integer  pgOid;
 
-    PostgresTypes(String codeKey, JDBCType jdbcType, Integer pgOid) {
-        this(codeKey, jdbcType, pgOid, false);
+    PostgresTypes(String codeKey, JDBCType jdbcType, Integer pgOid, boolean array) {
+        this(codeKey, jdbcType, pgOid, false, array);
     }
 
-    PostgresTypes(String codeKey, JDBCType jdbcType, Integer pgOid, boolean serial) {
+    PostgresTypes(String codeKey, JDBCType jdbcType, Integer pgOid, boolean serial, boolean array) {
         this.codeKey = codeKey;
         this.jdbcType = jdbcType;
         this.pgOid = pgOid;
         this.serial = serial;
+        this.array = array;
     }
 
     public static PostgresTypes valueOfCode(String code) {
@@ -192,6 +194,10 @@ public enum PostgresTypes implements SqlType {
 
     public boolean isSerial() {
         return this.serial;
+    }
+
+    public boolean isArray() {
+        return this.array;
     }
 
     @Override

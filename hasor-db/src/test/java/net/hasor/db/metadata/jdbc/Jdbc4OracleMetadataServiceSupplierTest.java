@@ -61,7 +61,7 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
         applySql("drop table tb_oracle_types");
         //
         jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/metadata/oracle_script.sql");
-        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/tb_oracle_types.sql");
+        jdbcTemplate.loadSplitSQL(";", StandardCharsets.UTF_8, "/net_hasor_db/all_types/tb_oracle_types.sql");
     }
 
     @Test
