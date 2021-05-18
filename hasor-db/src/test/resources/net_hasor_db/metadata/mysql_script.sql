@@ -8,15 +8,15 @@ create table proc_table
 create table proc_table_ref
 (
     r_int   int          not null primary key,
-    r_k1    varchar(50)  null,
-    r_k2    varchar(50)  null,
+    r_k1    varchar(50)  not null,
+    r_k2    varchar(50)  not null,
     r_name  varchar(100) null,
     r_index int          null,
     r_data  int          null,
     constraint proc_table_ref_uk
         unique (r_name),
     constraint ptr
-        foreign key (r_k1, r_k2) references proc_table (c_name,c_id)
+        foreign key (r_k1, r_k2) references proc_table (c_id,c_name) -- 顺序无法颠倒会引发错误
 );
 
 create index proc_table_ref_index

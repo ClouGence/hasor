@@ -143,14 +143,8 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             if (mapList == null) {
                 return Collections.emptyMap();
             }
-            Map<String, List<OracleTable>> resultData = new HashMap<>();
-            mapList.forEach(recordMap -> {
-                String owner = safeToString(recordMap.get("OWNER"));
-                List<OracleTable> tableList = resultData.computeIfAbsent(owner, k -> new ArrayList<>());
-                OracleTable table = this.convertTable(recordMap);
-                tableList.add(table);
-            });
-            return resultData;
+            // group by schema
+            return mapList.stream().map(this::convertTable).collect(Collectors.groupingBy(OracleTable::getSchema));
         }
     }
 
@@ -270,32 +264,7 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
         }).collect(Collectors.toList());
         //
         return columnList.stream().map(recordMap -> {
-            OracleColumn column = new OracleColumn();
-            column.setName(safeToString(recordMap.get("COLUMN_NAME")));
-            column.setNullable("Y".equals(safeToString(recordMap.get("NULLABLE"))));
-            column.setColumnType(safeToString(recordMap.get("DATA_TYPE")));
-            column.setSqlType(safeToOracleTypes(recordMap.get("DATA_TYPE")));
-            column.setColumnTypeOwner(safeToString(recordMap.get("DATA_TYPE_OWNER")));
-            column.setJdbcType(columnTypeMappingToJdbcType(column.getSqlType(), column.getColumnType()));
-            if (column.getJdbcType() == null && StringUtils.isNotBlank(column.getColumnTypeOwner())) {
-                column.setJdbcType(JDBCType.STRUCT); // 有 Type Name 表示一定是用户创建的类型。
-            }
-            //
-            column.setDataBytesLength(safeToLong(recordMap.get("DATA_LENGTH")));
-            column.setDataCharLength(safeToLong(recordMap.get("CHAR_LENGTH")));
-            column.setDataPrecision(safeToInteger(recordMap.get("DATA_PRECISION")));
-            column.setDataScale(safeToInteger(recordMap.get("DATA_SCALE")));
-            column.setCharacterSetName(safeToString(recordMap.get("CHARACTER_SET_NAME")));
-            column.setHidden("YES".equals(safeToString(recordMap.get("HIDDEN_COLUMN"))));
-            column.setVirtual("YES".equals(safeToString(recordMap.get("VIRTUAL_COLUMN"))));
-            column.setIdentity("YES".equals(safeToString(recordMap.get("IDENTITY_COLUMN"))));
-            column.setSensitive("YES".equals(safeToString(recordMap.get("SENSITIVE_COLUMN"))));
-            column.setDefaultValue(safeToString(recordMap.get("DATA_DEFAULT")));
-            //
-            column.setPrimaryKey(primaryKeyColumnNameList.contains(column.getName()));
-            column.setUniqueKey(uniqueKeyColumnNameList.contains(column.getName()));
-            column.setComment(safeToString(recordMap.get("COMMENTS")));
-            return column;
+            return convertColumn(recordMap, primaryKeyColumnNameList, uniqueKeyColumnNameList);
         }).collect(Collectors.toList());
     }
 
@@ -317,17 +286,7 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             if (mapList == null) {
                 return Collections.emptyList();
             }
-            return mapList.stream().map(recordMap -> {
-                OracleConstraint constraint = new OracleConstraint();
-                constraint.setSchema(safeToString(recordMap.get("OWNER")));
-                constraint.setName(safeToString(recordMap.get("CONSTRAINT_NAME")));
-                String constraintTypeString = safeToString(recordMap.get("CONSTRAINT_TYPE"));
-                constraint.setConstraintType(OracleConstraintType.valueOfCode(constraintTypeString));
-                constraint.setEnabled("ENABLED".equalsIgnoreCase(safeToString(recordMap.get("STATUS"))));
-                constraint.setValidated("VALIDATED".equalsIgnoreCase(safeToString(recordMap.get("VALIDATED"))));
-                constraint.setGenerated("GENERATED NAME".equalsIgnoreCase(safeToString(recordMap.get("GENERATED"))));
-                return constraint;
-            }).collect(Collectors.toList());
+            return mapList.stream().map(this::convertConstraint).collect(Collectors.toList());
         }
     }
 
@@ -366,26 +325,22 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             if (mapList == null) {
                 return null;
             }
-            Set<String> check = new HashSet<>();
-            OraclePrimaryKey primaryKey = null;
-            for (Map<String, Object> ent : mapList) {
-                if (primaryKey == null) {
-                    primaryKey = new OraclePrimaryKey();
-                    primaryKey.setConstraintType(OracleConstraintType.PrimaryKey);
-                    primaryKey.setEnabled("ENABLED".equalsIgnoreCase(safeToString(ent.get("STATUS"))));
-                    primaryKey.setValidated("VALIDATED".equalsIgnoreCase(safeToString(ent.get("VALIDATED"))));
-                    primaryKey.setGenerated("GENERATED NAME".equalsIgnoreCase(safeToString(ent.get("GENERATED"))));
-                }
-                primaryKey.setSchema(safeToString(ent.get("OWNER")));
-                primaryKey.setName(safeToString(ent.get("CONSTRAINT_NAME")));
-                primaryKey.getColumns().add(safeToString(ent.get("COLUMN_NAME")));
-                //
-                check.add(primaryKey.getSchema() + "," + primaryKey.getName());
-                if (check.size() > 1) {
-                    throw new SQLException("Data error encountered multiple primary keys " + StringUtils.join(check.toArray(), " -- "));
-                }
+            //
+            Map<String, Optional<OraclePrimaryKey>> pkMap = mapList.stream().map(this::convertPrimaryKey).collect(Collectors.groupingBy(o -> {
+                // group by ( + name)
+                return o.getSchema() + "," + o.getName();
+            }, Collectors.reducing((pk1, pk2) -> {
+                // reducing group by data in to one.
+                pk1.getColumns().addAll(pk2.getColumns());
+                return pk1;
+            })));
+            //
+            if (pkMap.size() > 1) {
+                throw new SQLException("Data error encountered multiple primary keys '" + StringUtils.join(pkMap.keySet().toArray(), "','") + "'");
             }
-            return primaryKey;
+            //
+            Optional<OraclePrimaryKey> primaryKeyOptional = pkMap.values().stream().findFirst().orElse(Optional.empty());
+            return primaryKeyOptional.orElse(null);
         }
     }
 
@@ -409,30 +364,17 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             if (mapList == null) {
                 return null;
             }
-            Map<String, OracleUniqueKey> groupByName = new LinkedHashMap<>();
-            for (Map<String, Object> ent : mapList) {
-                String constraintName = safeToString(ent.get("CONSTRAINT_NAME"));
-                OracleUniqueKey uniqueKey = groupByName.computeIfAbsent(constraintName, k -> {
-                    OracleUniqueKey sqlUniqueKey = new OracleUniqueKey();
-                    sqlUniqueKey.setSchema(safeToString(ent.get("OWNER")));
-                    sqlUniqueKey.setName(constraintName);
-                    sqlUniqueKey.setEnabled("ENABLED".equalsIgnoreCase(safeToString(ent.get("STATUS"))));
-                    sqlUniqueKey.setValidated("VALIDATED".equalsIgnoreCase(safeToString(ent.get("VALIDATED"))));
-                    sqlUniqueKey.setGenerated("GENERATED NAME".equalsIgnoreCase(safeToString(ent.get("GENERATED"))));
-                    //
-                    String constraintType = safeToString(ent.get("CONSTRAINT_TYPE"));
-                    if ("U".equalsIgnoreCase(constraintType)) {
-                        sqlUniqueKey.setConstraintType(OracleConstraintType.Unique);
-                    } else if ("P".equalsIgnoreCase(constraintType)) {
-                        sqlUniqueKey.setConstraintType(OracleConstraintType.PrimaryKey);
-                    } else {
-                        throw new UnsupportedOperationException("It's not gonna happen.");
-                    }
-                    return sqlUniqueKey;
-                });
-                uniqueKey.getColumns().add(safeToString(ent.get("COLUMN_NAME")));
-            }
-            return new ArrayList<>(groupByName.values());
+            //
+            return mapList.stream().map(this::convertUniqueKey).collect(Collectors.groupingBy(o -> {
+                // group by (schema + name)
+                return o.getSchema() + "," + o.getName();
+            }, Collectors.reducing((uk1, uk2) -> {
+                // reducing group by data in to one.
+                uk1.getColumns().addAll(uk2.getColumns());
+                return uk1;
+            }))).values().stream().map(o -> {
+                return o.orElse(null);
+            }).filter(Objects::nonNull).collect(Collectors.toList());
         }
     }
 
@@ -462,27 +404,18 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             if (mapList == null) {
                 return Collections.emptyList();
             }
-            Map<String, OracleForeignKey> groupByName = new LinkedHashMap<>();
-            for (Map<String, Object> ent : mapList) {
-                String constraintName = safeToString(ent.get("CONSTRAINT_NAME"));
-                OracleForeignKey uniqueKey = groupByName.computeIfAbsent(constraintName, k -> {
-                    OracleForeignKey sqlForeignKey = new OracleForeignKey();
-                    sqlForeignKey.setSchema(safeToString(ent.get("OWNER")));
-                    sqlForeignKey.setName(constraintName);
-                    sqlForeignKey.setConstraintType(OracleConstraintType.ForeignKey);
-                    sqlForeignKey.setEnabled("ENABLED".equalsIgnoreCase(safeToString(ent.get("STATUS"))));
-                    sqlForeignKey.setValidated("VALIDATED".equalsIgnoreCase(safeToString(ent.get("VALIDATED"))));
-                    sqlForeignKey.setGenerated("GENERATED NAME".equalsIgnoreCase(safeToString(ent.get("GENERATED"))));
-                    //
-                    sqlForeignKey.setReferenceSchema(safeToString(ent.get("TARGET_OWNER")));
-                    sqlForeignKey.setReferenceTable(safeToString(ent.get("TARGET_TABLE")));
-                    sqlForeignKey.setDeleteRule(OracleForeignKeyRule.valueOfCode(safeToString(ent.get("DELETE_RULE"))));
-                    return sqlForeignKey;
-                });
-                uniqueKey.getColumns().add(safeToString(ent.get("SOURCE_COLUMN")));
-                uniqueKey.getReferenceMapping().put(safeToString(ent.get("SOURCE_COLUMN")), safeToString(ent.get("TARGET_COLUMN")));
-            }
-            return new ArrayList<>(groupByName.values());
+            //
+            return mapList.stream().map(this::convertForeignKey).collect(Collectors.groupingBy(o -> {
+                // group by (schema + name)
+                return o.getSchema() + "," + o.getName();
+            }, Collectors.reducing((fk1, fk2) -> {
+                // reducing group by data in to one.
+                fk1.getColumns().addAll(fk2.getColumns());
+                fk1.getReferenceMapping().putAll(fk2.getReferenceMapping());
+                return fk1;
+            }))).values().stream().map(o -> {
+                return o.orElse(null);
+            }).filter(Objects::nonNull).collect(Collectors.toList());
         }
     }
 
@@ -509,31 +442,18 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             if (mapList == null) {
                 return Collections.emptyList();
             }
-            //CONSTRAINT_TYPE
-            Map<String, OracleIndex> groupByName = new LinkedHashMap<>();
-            for (Map<String, Object> ent : mapList) {
-                final String indexOwner = safeToString(ent.get("OWNER"));
-                final String indexName = safeToString(ent.get("INDEX_NAME"));
-                String indexKey = indexOwner + ":" + indexName;
-                OracleIndex oracleIndex = groupByName.computeIfAbsent(indexKey, k -> {
-                    OracleIndex oracleIndexEnt = new OracleIndex();
-                    oracleIndexEnt.setSchema(indexOwner);
-                    oracleIndexEnt.setName(indexName);
-                    oracleIndexEnt.setIndexType(OracleIndexType.valueOfCode(safeToString(ent.get("INDEX_TYPE"))));
-                    oracleIndexEnt.setPrimaryKey("P".equalsIgnoreCase(safeToString(ent.get("CONSTRAINT_TYPE"))));
-                    oracleIndexEnt.setUnique("UNIQUE".equalsIgnoreCase(safeToString(ent.get("UNIQUENESS"))));
-                    oracleIndexEnt.setGenerated("Y".equalsIgnoreCase(safeToString(ent.get("GENERATED"))));
-                    oracleIndexEnt.setPartitioned("YES".equalsIgnoreCase(safeToString(ent.get("PARTITIONED"))));
-                    oracleIndexEnt.setTemporary("Y".equalsIgnoreCase(safeToString(ent.get("TEMPORARY"))));
-                    return oracleIndexEnt;
-                });
-                //
-                String columnName = safeToString(ent.get("COLUMN_NAME"));
-                String columnDescend = safeToString(ent.get("DESCEND"));
-                oracleIndex.getColumns().add(columnName);
-                oracleIndex.getStorageType().put(columnName, columnDescend);
-            }
-            return new ArrayList<>(groupByName.values());
+            //
+            return mapList.stream().map(this::convertIndex).collect(Collectors.groupingBy(o -> {
+                // group by (schema + name)
+                return o.getSchema() + "," + o.getName();
+            }, Collectors.reducing((idx1, idx2) -> {
+                // reducing group by data in to one.
+                idx1.getColumns().addAll(idx2.getColumns());
+                idx1.getStorageType().putAll(idx2.getStorageType());
+                return idx1;
+            }))).values().stream().map(o -> {
+                return o.orElse(null);
+            }).filter(Objects::nonNull).collect(Collectors.toList());
         }
     }
 
@@ -591,6 +511,117 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
         table.setMaterializedLog(safeToString(recordMap.get("LOG_TABLE")));
         table.setComment(safeToString(recordMap.get("COMMENTS")));
         return table;
+    }
+
+    protected OracleColumn convertColumn(Map<String, Object> recordMap, List<String> primaryKeyColumnList, List<String> uniqueKeyColumnList) {
+        OracleColumn column = new OracleColumn();
+        column.setName(safeToString(recordMap.get("COLUMN_NAME")));
+        column.setNullable("Y".equals(safeToString(recordMap.get("NULLABLE"))));
+        column.setColumnType(safeToString(recordMap.get("DATA_TYPE")));
+        column.setSqlType(safeToOracleTypes(recordMap.get("DATA_TYPE")));
+        column.setColumnTypeOwner(safeToString(recordMap.get("DATA_TYPE_OWNER")));
+        column.setJdbcType(columnTypeMappingToJdbcType(column.getSqlType(), column.getColumnType()));
+        if (column.getJdbcType() == null && StringUtils.isNotBlank(column.getColumnTypeOwner())) {
+            column.setJdbcType(JDBCType.STRUCT); // 有 Type Name 表示一定是用户创建的类型。
+        }
+        //
+        column.setDataBytesLength(safeToLong(recordMap.get("DATA_LENGTH")));
+        column.setDataCharLength(safeToLong(recordMap.get("CHAR_LENGTH")));
+        column.setDataPrecision(safeToInteger(recordMap.get("DATA_PRECISION")));
+        column.setDataScale(safeToInteger(recordMap.get("DATA_SCALE")));
+        column.setCharacterSetName(safeToString(recordMap.get("CHARACTER_SET_NAME")));
+        column.setHidden("YES".equals(safeToString(recordMap.get("HIDDEN_COLUMN"))));
+        column.setVirtual("YES".equals(safeToString(recordMap.get("VIRTUAL_COLUMN"))));
+        column.setIdentity("YES".equals(safeToString(recordMap.get("IDENTITY_COLUMN"))));
+        column.setSensitive("YES".equals(safeToString(recordMap.get("SENSITIVE_COLUMN"))));
+        column.setDefaultValue(safeToString(recordMap.get("DATA_DEFAULT")));
+        //
+        column.setPrimaryKey(primaryKeyColumnList.contains(column.getName()));
+        column.setUniqueKey(uniqueKeyColumnList.contains(column.getName()));
+        column.setComment(safeToString(recordMap.get("COMMENTS")));
+        return column;
+    }
+
+    protected OracleConstraint convertConstraint(Map<String, Object> recordMap) {
+        OracleConstraint constraint = new OracleConstraint();
+        constraint.setSchema(safeToString(recordMap.get("OWNER")));
+        constraint.setName(safeToString(recordMap.get("CONSTRAINT_NAME")));
+        String constraintTypeString = safeToString(recordMap.get("CONSTRAINT_TYPE"));
+        constraint.setConstraintType(OracleConstraintType.valueOfCode(constraintTypeString));
+        constraint.setEnabled("ENABLED".equalsIgnoreCase(safeToString(recordMap.get("STATUS"))));
+        constraint.setValidated("VALIDATED".equalsIgnoreCase(safeToString(recordMap.get("VALIDATED"))));
+        constraint.setGenerated("GENERATED NAME".equalsIgnoreCase(safeToString(recordMap.get("GENERATED"))));
+        return constraint;
+    }
+
+    protected OraclePrimaryKey convertPrimaryKey(Map<String, Object> recordMap) {
+        OraclePrimaryKey primaryKey = new OraclePrimaryKey();
+        primaryKey.setSchema(safeToString(recordMap.get("OWNER")));
+        primaryKey.setName(safeToString(recordMap.get("CONSTRAINT_NAME")));
+        primaryKey.setConstraintType(OracleConstraintType.PrimaryKey);
+        primaryKey.setEnabled("ENABLED".equalsIgnoreCase(safeToString(recordMap.get("STATUS"))));
+        primaryKey.setValidated("VALIDATED".equalsIgnoreCase(safeToString(recordMap.get("VALIDATED"))));
+        primaryKey.setGenerated("GENERATED NAME".equalsIgnoreCase(safeToString(recordMap.get("GENERATED"))));
+        //
+        primaryKey.getColumns().add(safeToString(recordMap.get("COLUMN_NAME")));
+        return primaryKey;
+    }
+
+    protected OracleUniqueKey convertUniqueKey(Map<String, Object> recordMap) {
+        OracleUniqueKey uniqueKey = new OracleUniqueKey();
+        uniqueKey.setSchema(safeToString(recordMap.get("OWNER")));
+        uniqueKey.setName(safeToString(recordMap.get("CONSTRAINT_NAME")));
+        uniqueKey.setEnabled("ENABLED".equalsIgnoreCase(safeToString(recordMap.get("STATUS"))));
+        uniqueKey.setValidated("VALIDATED".equalsIgnoreCase(safeToString(recordMap.get("VALIDATED"))));
+        uniqueKey.setGenerated("GENERATED NAME".equalsIgnoreCase(safeToString(recordMap.get("GENERATED"))));
+        //
+        String constraintType = safeToString(recordMap.get("CONSTRAINT_TYPE"));
+        if ("U".equalsIgnoreCase(constraintType)) {
+            uniqueKey.setConstraintType(OracleConstraintType.Unique);
+        } else if ("P".equalsIgnoreCase(constraintType)) {
+            uniqueKey.setConstraintType(OracleConstraintType.PrimaryKey);
+        } else {
+            throw new UnsupportedOperationException("It's not gonna happen.");
+        }
+        //
+        uniqueKey.getColumns().add(safeToString(recordMap.get("COLUMN_NAME")));
+        return uniqueKey;
+    }
+
+    protected OracleForeignKey convertForeignKey(Map<String, Object> recordMap) {
+        OracleForeignKey foreignKey = new OracleForeignKey();
+        foreignKey.setSchema(safeToString(recordMap.get("OWNER")));
+        foreignKey.setName(safeToString(recordMap.get("CONSTRAINT_NAME")));
+        foreignKey.setConstraintType(OracleConstraintType.ForeignKey);
+        foreignKey.setEnabled("ENABLED".equalsIgnoreCase(safeToString(recordMap.get("STATUS"))));
+        foreignKey.setValidated("VALIDATED".equalsIgnoreCase(safeToString(recordMap.get("VALIDATED"))));
+        foreignKey.setGenerated("GENERATED NAME".equalsIgnoreCase(safeToString(recordMap.get("GENERATED"))));
+        //
+        foreignKey.setReferenceSchema(safeToString(recordMap.get("TARGET_OWNER")));
+        foreignKey.setReferenceTable(safeToString(recordMap.get("TARGET_TABLE")));
+        foreignKey.setDeleteRule(OracleForeignKeyRule.valueOfCode(safeToString(recordMap.get("DELETE_RULE"))));
+        //
+        foreignKey.getColumns().add(safeToString(recordMap.get("SOURCE_COLUMN")));
+        foreignKey.getReferenceMapping().put(safeToString(recordMap.get("SOURCE_COLUMN")), safeToString(recordMap.get("TARGET_COLUMN")));
+        return foreignKey;
+    }
+
+    protected OracleIndex convertIndex(Map<String, Object> recordMap) {
+        OracleIndex index = new OracleIndex();
+        index.setSchema(safeToString(recordMap.get("OWNER")));
+        index.setName(safeToString(recordMap.get("INDEX_NAME")));
+        index.setIndexType(OracleIndexType.valueOfCode(safeToString(recordMap.get("INDEX_TYPE"))));
+        index.setPrimaryKey("P".equalsIgnoreCase(safeToString(recordMap.get("CONSTRAINT_TYPE"))));
+        index.setUnique("UNIQUE".equalsIgnoreCase(safeToString(recordMap.get("UNIQUENESS"))));
+        index.setGenerated("Y".equalsIgnoreCase(safeToString(recordMap.get("GENERATED"))));
+        index.setPartitioned("YES".equalsIgnoreCase(safeToString(recordMap.get("PARTITIONED"))));
+        index.setTemporary("Y".equalsIgnoreCase(safeToString(recordMap.get("TEMPORARY"))));
+        //
+        String columnName = safeToString(recordMap.get("COLUMN_NAME"));
+        String columnDescend = safeToString(recordMap.get("DESCEND"));
+        index.getColumns().add(columnName);
+        index.getStorageType().put(columnName, columnDescend);
+        return index;
     }
 
     protected JDBCType columnTypeMappingToJdbcType(SqlType sqlType, String columnType) {

@@ -247,14 +247,22 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
         List<OracleUniqueKey> uniqueKeyList = this.repository.getUniqueKey("SCOTT", "TB_USER");
         Map<String, OracleUniqueKey> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(OracleUniqueKey::getName, u -> u));
         assert uniqueKeyMap.size() == 2;
+        //
         assert uniqueKeyMap.containsKey(primaryKey.getName());
         assert uniqueKeyMap.get(primaryKey.getName()).getConstraintType() == OracleConstraintType.PrimaryKey;
+        assert uniqueKeyMap.get(primaryKey.getName()).getColumns().size() == 1;
+        assert uniqueKeyMap.get(primaryKey.getName()).getColumns().contains("USERUUID");
+        //
+        //        assert uniqueKeyMap.containsKey("TB_USER_USERUUID_UINDEX");
+        //        assert uniqueKeyMap.get("TB_USER_USERUUID_UINDEX").getConstraintType() == OracleConstraintType.Unique;
+        //        assert uniqueKeyMap.get("TB_USER_USERUUID_UINDEX").getColumns().size() == 1;
+        //        assert uniqueKeyMap.get("TB_USER_USERUUID_UINDEX").getColumns().contains("USERUUID");
+        //
         assert uniqueKeyMap.containsKey("TB_USER_EMAIL_USERUUID_UINDEX");
+        assert uniqueKeyMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getConstraintType() == OracleConstraintType.Unique;
         assert uniqueKeyMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().size() == 2;
         assert uniqueKeyMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().contains("USERUUID");
         assert uniqueKeyMap.get("TB_USER_EMAIL_USERUUID_UINDEX").getColumns().contains("EMAIL");
-        assert uniqueKeyMap.get(primaryKey.getName()).getColumns().size() == 1;
-        assert uniqueKeyMap.get(primaryKey.getName()).getColumns().contains("USERUUID");
     }
 
     @Test
@@ -266,13 +274,13 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
         OracleForeignKey foreignKey = foreignKeyList2.get(0);
         assert foreignKey.getConstraintType() == OracleConstraintType.ForeignKey;
         assert foreignKey.getColumns().size() == 2;
-        assert foreignKey.getColumns().get(0).equals("R_K1");
-        assert foreignKey.getColumns().get(1).equals("R_K2");
+        assert foreignKey.getColumns().get(0).equals("R_K2");
+        assert foreignKey.getColumns().get(1).equals("R_K1");
         assert foreignKey.getName().equals("PTR");
         assert foreignKey.getReferenceSchema().equals("SCOTT");
         assert foreignKey.getReferenceTable().equals("PROC_TABLE");
-        assert foreignKey.getReferenceMapping().get("R_K1").equals("C_ID");
-        assert foreignKey.getReferenceMapping().get("R_K2").equals("C_NAME");
+        assert foreignKey.getReferenceMapping().get("R_K1").equals("C_NAME");
+        assert foreignKey.getReferenceMapping().get("R_K2").equals("C_ID");
     }
 
     @Test

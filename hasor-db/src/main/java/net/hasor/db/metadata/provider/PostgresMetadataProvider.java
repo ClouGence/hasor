@@ -510,11 +510,11 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
             }).map(this::convertUniqueKey).collect(Collectors.groupingBy(o -> {
                 // group by (schema + name)
                 return o.getSchema() + "," + o.getName();
-            }, Collectors.reducing((fk1, fk2) -> {
+            }, Collectors.reducing((uk1, uk2) -> {
                 // reducing group by data in to one.
-                fk1.getColumns().addAll(fk2.getColumns());
-                fk1.getStorageType().putAll(fk2.getStorageType());
-                return fk1;
+                uk1.getColumns().addAll(uk2.getColumns());
+                uk1.getStorageType().putAll(uk2.getStorageType());
+                return uk1;
             }))).values().stream().map(o -> {
                 return o.orElse(null);
             }).filter(Objects::nonNull).collect(Collectors.toList());
@@ -627,6 +627,23 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
         }
     }
 
+    protected PostgresSchema convertSchema(Map<String, Object> recordMap) {
+        PostgresSchema schema = new PostgresSchema();
+        schema.setSchema(safeToString(recordMap.get("schema_name")));
+        schema.setOwner(safeToString(recordMap.get("schema_owner")));
+        return schema;
+    }
+
+    protected PostgresTable convertTable(Map<String, Object> recordMap) {
+        PostgresTable table = new PostgresTable();
+        table.setSchema(safeToString(recordMap.get("table_schema")));
+        table.setTable(safeToString(recordMap.get("table_name")));
+        table.setTableType(PostgresTableType.valueOfCode(safeToString(recordMap.get("table_type"))));
+        table.setTyped("YES".equalsIgnoreCase(safeToString(recordMap.get("is_typed"))));
+        table.setComment(safeToString(recordMap.get("comment")));
+        return table;
+    }
+
     protected PostgresColumn convertColumn(Map<String, Object> recordMap, List<String> primaryKeyColumnList, List<String> uniqueKeyColumnList, long serverVersionNumber) {
         PostgresColumn column = new PostgresColumn();
         column.setName(safeToString(recordMap.get("column_name")));
@@ -679,23 +696,6 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
         return primaryKey;
     }
 
-    protected PostgresIndex convertIndex(Map<String, Object> recordMap) {
-        PostgresIndex pgIndex = new PostgresIndex();
-        pgIndex.setSchema(safeToString(recordMap.get("table_schema")));
-        pgIndex.setName(safeToString(recordMap.get("index_name")));
-        if (safeToBoolean(recordMap.get("non_unique"))) {
-            pgIndex.setIndexType(PostgresIndexType.Normal);
-        } else {
-            pgIndex.setIndexType(PostgresIndexType.Unique);
-        }
-        //
-        String columnName = safeToString(recordMap.get("column_name"));
-        String ascOrDesc = safeToString(recordMap.get("asc_or_desc"));
-        pgIndex.getColumns().add(columnName);
-        pgIndex.getStorageType().put(columnName, ascOrDesc);
-        return pgIndex;
-    }
-
     protected PostgresUniqueKey convertUniqueKey(Map<String, Object> recordMap) {
         PostgresUniqueKey uniqueKey = new PostgresUniqueKey();
         uniqueKey.setSchema(safeToString(recordMap.get("table_schema")));
@@ -728,21 +728,21 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
         return foreignKey;
     }
 
-    protected PostgresSchema convertSchema(Map<String, Object> recordMap) {
-        PostgresSchema schema = new PostgresSchema();
-        schema.setSchema(safeToString(recordMap.get("schema_name")));
-        schema.setOwner(safeToString(recordMap.get("schema_owner")));
-        return schema;
-    }
-
-    protected PostgresTable convertTable(Map<String, Object> recordMap) {
-        PostgresTable table = new PostgresTable();
-        table.setSchema(safeToString(recordMap.get("table_schema")));
-        table.setTable(safeToString(recordMap.get("table_name")));
-        table.setTableType(PostgresTableType.valueOfCode(safeToString(recordMap.get("table_type"))));
-        table.setTyped("YES".equalsIgnoreCase(safeToString(recordMap.get("is_typed"))));
-        table.setComment(safeToString(recordMap.get("comment")));
-        return table;
+    protected PostgresIndex convertIndex(Map<String, Object> recordMap) {
+        PostgresIndex pgIndex = new PostgresIndex();
+        pgIndex.setSchema(safeToString(recordMap.get("table_schema")));
+        pgIndex.setName(safeToString(recordMap.get("index_name")));
+        if (safeToBoolean(recordMap.get("non_unique"))) {
+            pgIndex.setIndexType(PostgresIndexType.Normal);
+        } else {
+            pgIndex.setIndexType(PostgresIndexType.Unique);
+        }
+        //
+        String columnName = safeToString(recordMap.get("column_name"));
+        String ascOrDesc = safeToString(recordMap.get("asc_or_desc"));
+        pgIndex.getColumns().add(columnName);
+        pgIndex.getStorageType().put(columnName, ascOrDesc);
+        return pgIndex;
     }
 
     private static final Map<String, String> aliasMap = new HashMap<>();

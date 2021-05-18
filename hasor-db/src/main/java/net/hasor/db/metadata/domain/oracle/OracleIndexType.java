@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.db.metadata.domain.oracle;
-import net.hasor.db.metadata.TableType;
-
 /**
  * Oracle 索引类型
  * @version : 2021-04-29
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum OracleIndexType implements TableType {
+public enum OracleIndexType {
     Lob("LOB"),
     Normal("NORMAL"),
     NormalRev("NORMAL/REV"),

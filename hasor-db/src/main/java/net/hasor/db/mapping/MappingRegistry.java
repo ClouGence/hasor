@@ -15,6 +15,7 @@
  */
 package net.hasor.db.mapping;
 import net.hasor.db.metadata.*;
+import net.hasor.db.metadata.domain.SimpleColumnDef;
 import net.hasor.db.metadata.domain.jdbc.JdbcTableType;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;

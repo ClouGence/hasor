@@ -246,13 +246,13 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
         JdbcForeignKey foreignKey = foreignKeyList2.get(0);
         assert foreignKey.getConstraintType() == JdbcConstraintType.ForeignKey;
         assert foreignKey.getColumns().size() == 2;
-        assert foreignKey.getColumns().get(0).equals("R_K1");
-        assert foreignKey.getColumns().get(1).equals("R_K2");
+        assert foreignKey.getColumns().get(0).equals("R_K2");
+        assert foreignKey.getColumns().get(1).equals("R_K1");
         assert foreignKey.getName().equals("PTR");
         assert foreignKey.getReferenceCatalog() == null;
         assert foreignKey.getReferenceTable().equals("PROC_TABLE");
-        assert foreignKey.getReferenceMapping().get("R_K1").equals("C_ID");
-        assert foreignKey.getReferenceMapping().get("R_K2").equals("C_NAME");
+        assert foreignKey.getReferenceMapping().get("R_K1").equals("C_NAME");
+        assert foreignKey.getReferenceMapping().get("R_K2").equals("C_ID");
     }
 
     @Test

@@ -16,10 +16,7 @@
 package net.hasor.db.metadata.jdbc;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.metadata.AbstractMetadataServiceSupplierTest;
-import net.hasor.db.metadata.domain.jdbc.JdbcColumn;
-import net.hasor.db.metadata.domain.jdbc.JdbcSchema;
-import net.hasor.db.metadata.domain.jdbc.JdbcTable;
-import net.hasor.db.metadata.domain.jdbc.JdbcTableType;
+import net.hasor.db.metadata.domain.jdbc.*;
 import net.hasor.db.metadata.provider.JdbcMetadataProvider;
 import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
@@ -31,7 +28,6 @@ import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /***
@@ -122,134 +118,122 @@ public class Jdbc4PostgresMetadataServiceSupplierTest extends AbstractMetadataSe
     @Test
     public void getColumns_1() throws SQLException {
         List<JdbcColumn> columnList = this.repository.getColumns(null, "tester", "tb_postgre_types");
+        //
         Map<String, JdbcColumn> columnMap = columnList.stream().collect(Collectors.toMap(JdbcColumn::getName, c -> c));
-        Map<String, String> columnMap2 = columnList.stream().collect(Collectors.toMap(JdbcColumn::getColumnName, jdbcColumn -> {
-            return jdbcColumn.getColumnType() + " - " + jdbcColumn.getJdbcType().getName();
-        }));
-        //
-        List<JDBCType> collect2 = columnList.stream().map(JdbcColumn::getJdbcType).filter(Objects::nonNull).collect(Collectors.toList());
-        assert collect2.size() < columnList.size();
-        //
         assert columnMap.containsKey("c_decimal");
         assert columnMap.containsKey("c_date");
         assert columnMap.containsKey("c_timestamp");
-        assert columnMap.containsKey("c_number_n");
-        assert columnMap.containsKey("c_nclob");
-        assert columnMap.containsKey("c_varchar2");
-        assert columnMap.containsKey("c_nvarchar2");
-        assert columnMap.containsKey("c_urowid");
-        assert columnMap.containsKey("c_int");
-        assert columnMap.containsKey("c_number");
-        assert columnMap.containsKey("c_char_nb");
-        assert columnMap.containsKey("c_timestamp_n_z");
-        assert columnMap.containsKey("c_national_character_varying");
+        assert columnMap.containsKey("c_numeric_p");
+        assert columnMap.containsKey("c_text");
+        assert columnMap.containsKey("c_char_n");
+        assert columnMap.containsKey("c_character_varying");
+        assert columnMap.containsKey("c_uuid");
+        assert columnMap.containsKey("c_int4range");
+        assert columnMap.containsKey("c_timestamp_n");
         //
-        assert columnMap.get("C_DECIMAL").getJdbcType() == JDBCType.NUMERIC;
-        assert columnMap.get("C_DATE").getJdbcType() == JDBCType.TIMESTAMP;
-        assert columnMap.get("C_TIMESTAMP").getJdbcType() == JDBCType.TIMESTAMP;
-        assert columnMap.get("C_NUMBER_N").getJdbcType() == JDBCType.NUMERIC;
-        assert columnMap.get("C_NCLOB").getJdbcType() == JDBCType.NCLOB;
-        assert columnMap.get("C_VARCHAR2").getJdbcType() == JDBCType.VARCHAR;
-        assert columnMap.get("C_NVARCHAR2").getJdbcType() == JDBCType.NVARCHAR;
-        assert columnMap.get("C_UROWID").getJdbcType() == JDBCType.ROWID;
-        assert columnMap.get("C_INT").getJdbcType() == JDBCType.NUMERIC;
-        assert columnMap.get("C_NUMBER").getJdbcType() == JDBCType.NUMERIC;
-        assert columnMap.get("C_CHAR_NB").getJdbcType() == JDBCType.CHAR;
-        assert columnMap.get("C_TIMESTAMP_N_Z").getJdbcType() == null;
-        assert columnMap.get("C_NATIONAL_CHARACTER_VARYING").getJdbcType() == JDBCType.NVARCHAR;
+        assert columnMap.get("c_decimal").getJdbcType() == JDBCType.NUMERIC;
+        assert columnMap.get("c_date").getJdbcType() == JDBCType.DATE;
+        assert columnMap.get("c_timestamp").getJdbcType() == JDBCType.TIMESTAMP;
+        assert columnMap.get("c_numeric_p").getJdbcType() == JDBCType.NUMERIC;
+        assert columnMap.get("c_text").getJdbcType() == JDBCType.VARCHAR;
+        assert columnMap.get("c_char_n").getJdbcType() == JDBCType.CHAR;
+        assert columnMap.get("c_character_varying").getJdbcType() == JDBCType.VARCHAR;
+        assert columnMap.get("c_uuid").getJdbcType() == JDBCType.OTHER;
+        assert columnMap.get("c_int4range").getJdbcType() == JDBCType.OTHER;
+        assert columnMap.get("c_timestamp_n").getJdbcType() == JDBCType.TIMESTAMP;
     }
-    //
-    //    @Test
-    //    public void getColumns_2() throws SQLException {
-    //        List<JdbcColumn> columnList = this.repository.getColumns(MYSQL_SCHEMA_NAME, null, "proc_table_ref");
-    //        Map<String, JdbcColumn> columnMap = columnList.stream().collect(Collectors.toMap(JdbcColumn::getName, c -> c));
-    //        assert columnMap.size() == 6;
-    //        assert columnMap.get("r_int").isPrimaryKey();
-    //        assert columnMap.get("r_int").isUniqueKey();
-    //        assert !columnMap.get("r_k1").isPrimaryKey();
-    //        assert !columnMap.get("r_k1").isUniqueKey(); // JDBC 驱动无法识别 FK 的联合唯一特性
-    //        assert !columnMap.get("r_k2").isPrimaryKey();
-    //        assert !columnMap.get("r_k2").isUniqueKey(); // JDBC 驱动无法识别 FK 的联合唯一特性
-    //        assert !columnMap.get("r_name").isPrimaryKey();
-    //        assert columnMap.get("r_name").isUniqueKey();
-    //        assert !columnMap.get("r_index").isPrimaryKey();
-    //        assert !columnMap.get("r_index").isUniqueKey();
-    //        assert !columnMap.get("r_data").isPrimaryKey();
-    //        assert !columnMap.get("r_data").isUniqueKey();
-    //    }
-    //
-    //    @Test
-    //    public void getColumns_3() throws SQLException {
-    //        List<JdbcColumn> columnList = this.repository.getColumns(MYSQL_SCHEMA_NAME, null, "tb_user");
-    //        Map<String, JdbcColumn> columnMap = columnList.stream().collect(Collectors.toMap(JdbcColumn::getName, c -> c));
-    //        assert columnMap.size() == 7;
-    //        assert columnMap.get("userUUID").isPrimaryKey();
-    //        assert columnMap.get("userUUID").isUniqueKey();
-    //        assert !columnMap.get("email").isPrimaryKey();
-    //        assert columnMap.get("email").isUniqueKey();
-    //    }
-    //
-    //    @Test
-    //    public void getConstraint1() throws SQLException {
-    //        List<JdbcConstraint> columnList = this.repository.getConstraint(MYSQL_SCHEMA_NAME, null, "proc_table_ref");
-    //        Map<String, JdbcConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(JdbcConstraint::getName, JdbcConstraint::getConstraintType));
-    //        assert typeMap.size() == 2;
-    //        assert typeMap.containsKey("PRIMARY");
-    //        assert typeMap.containsKey("ptr");
-    //        assert typeMap.get("PRIMARY") == JdbcConstraintType.PrimaryKey;
-    //        assert typeMap.get("ptr") == JdbcConstraintType.ForeignKey;
-    //    }
-    //
-    //    @Test
-    //    public void getConstraint2() throws SQLException {
-    //        List<JdbcConstraint> columnList = this.repository.getConstraint(MYSQL_SCHEMA_NAME, null, "proc_table_ref", JdbcConstraintType.ForeignKey);
-    //        Map<String, JdbcConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(JdbcConstraint::getName, JdbcConstraint::getConstraintType));
-    //        assert typeMap.size() == 1;
-    //        assert typeMap.containsKey("ptr");
-    //        assert typeMap.get("ptr") == JdbcConstraintType.ForeignKey;
-    //    }
-    //
-    //    @Test
-    //    public void getPrimaryKey1() throws SQLException {
-    //        JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, null, "proc_table_ref");
-    //        assert primaryKey.getConstraintType() == JdbcConstraintType.PrimaryKey;
-    //        assert primaryKey.getName().equals("PRIMARY");
-    //        assert primaryKey.getColumns().size() == 1;
-    //        assert primaryKey.getColumns().contains("r_int");
-    //    }
-    //
-    //    @Test
-    //    public void getPrimaryKey2() throws SQLException {
-    //        JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, null, "proc_table");
-    //        assert primaryKey.getConstraintType() == JdbcConstraintType.PrimaryKey;
-    //        assert primaryKey.getName().equals("PRIMARY");
-    //        assert primaryKey.getColumns().size() == 2;
-    //        assert primaryKey.getColumns().contains("c_id");
-    //        assert primaryKey.getColumns().contains("c_name");
-    //    }
-    //
-    //    @Test
-    //    public void getPrimaryKey3() throws SQLException {
-    //        JdbcTable table = this.repository.getTable(MYSQL_SCHEMA_NAME, null, "t3");
-    //        JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, null, "t3");
-    //        assert table != null;
-    //        assert primaryKey == null;
-    //    }
-    //
-    //    @Test
-    //    public void getUniqueKey() throws SQLException {
-    //        List<JdbcIndex> uniqueKeyList = this.repository.getUniqueKey(MYSQL_SCHEMA_NAME, null, "tb_user");
-    //        Map<String, JdbcIndex> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(JdbcIndex::getName, u -> u));
-    //        assert uniqueKeyMap.size() == 3;
-    //        assert uniqueKeyMap.containsKey("PRIMARY");
-    //        assert uniqueKeyMap.containsKey("tb_user_userUUID_uindex");
-    //        assert uniqueKeyMap.containsKey("tb_user_email_userUUID_uindex");
-    //        assert uniqueKeyMap.get("tb_user_userUUID_uindex").getColumns().size() == 1;
-    //        assert uniqueKeyMap.get("tb_user_userUUID_uindex").getColumns().contains("userUUID");
-    //        assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().size() == 2;
-    //        assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().contains("userUUID");
-    //        assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().contains("email");
-    //    }
+
+    @Test
+    public void getColumns_2() throws SQLException {
+        List<JdbcColumn> columnList = this.repository.getColumns(null, "tester", "proc_table_ref");
+        Map<String, JdbcColumn> columnMap = columnList.stream().collect(Collectors.toMap(JdbcColumn::getName, c -> c));
+        assert columnMap.size() == 6;
+        assert columnMap.get("r_int").isPrimaryKey();
+        assert columnMap.get("r_int").isUniqueKey();
+        assert !columnMap.get("r_k1").isPrimaryKey();
+        assert !columnMap.get("r_k1").isUniqueKey(); // JDBC 驱动无法识别 FK 的联合唯一特性
+        assert !columnMap.get("r_k2").isPrimaryKey();
+        assert !columnMap.get("r_k2").isUniqueKey(); // JDBC 驱动无法识别 FK 的联合唯一特性
+        assert !columnMap.get("r_name").isPrimaryKey();
+        assert columnMap.get("r_name").isUniqueKey();
+        assert !columnMap.get("r_index").isPrimaryKey();
+        assert !columnMap.get("r_index").isUniqueKey();
+        assert !columnMap.get("r_data").isPrimaryKey();
+        assert !columnMap.get("r_data").isUniqueKey();
+    }
+
+    @Test
+    public void getColumns_3() throws SQLException {
+        List<JdbcColumn> columnList = this.repository.getColumns(null, "tester", "tb_user");
+        Map<String, JdbcColumn> columnMap = columnList.stream().collect(Collectors.toMap(JdbcColumn::getName, c -> c));
+        assert columnMap.size() == 7;
+        assert columnMap.get("useruuid").isPrimaryKey();
+        assert columnMap.get("useruuid").isUniqueKey();
+        assert !columnMap.get("email").isPrimaryKey();
+        assert columnMap.get("email").isUniqueKey();
+    }
+
+    @Test
+    public void getConstraint1() throws SQLException {
+        List<JdbcConstraint> columnList = this.repository.getConstraint(null, "tester", "proc_table_ref");
+        Map<String, JdbcConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(JdbcConstraint::getName, JdbcConstraint::getConstraintType));
+        assert typeMap.size() == 2;
+        assert typeMap.containsKey("PRIMARY");
+        assert typeMap.containsKey("ptr");
+        assert typeMap.get("PRIMARY") == JdbcConstraintType.PrimaryKey;
+        assert typeMap.get("ptr") == JdbcConstraintType.ForeignKey;
+    }
+
+    @Test
+    public void getConstraint2() throws SQLException {
+        List<JdbcConstraint> columnList = this.repository.getConstraint(null, "tester", "proc_table_ref", JdbcConstraintType.ForeignKey);
+        Map<String, JdbcConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(JdbcConstraint::getName, JdbcConstraint::getConstraintType));
+        assert typeMap.size() == 1;
+        assert typeMap.containsKey("ptr");
+        assert typeMap.get("ptr") == JdbcConstraintType.ForeignKey;
+    }
+
+    @Test
+    public void getPrimaryKey1() throws SQLException {
+        JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(null, "tester", "proc_table_ref");
+        assert primaryKey.getConstraintType() == JdbcConstraintType.PrimaryKey;
+        assert primaryKey.getName().equals("PRIMARY");
+        assert primaryKey.getColumns().size() == 1;
+        assert primaryKey.getColumns().contains("r_int");
+    }
+
+    @Test
+    public void getPrimaryKey2() throws SQLException {
+        JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(null, "tester", "proc_table");
+        assert primaryKey.getConstraintType() == JdbcConstraintType.PrimaryKey;
+        assert primaryKey.getName().equals("PRIMARY");
+        assert primaryKey.getColumns().size() == 2;
+        assert primaryKey.getColumns().contains("c_id");
+        assert primaryKey.getColumns().contains("c_name");
+    }
+
+    @Test
+    public void getPrimaryKey3() throws SQLException {
+        JdbcTable table = this.repository.getTable(null, "tester", "t3");
+        JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(null, "tester", "t3");
+        assert table != null;
+        assert primaryKey == null;
+    }
+
+    @Test
+    public void getUniqueKey() throws SQLException {
+        List<JdbcIndex> uniqueKeyList = this.repository.getUniqueKey(null, "tester", "tb_user");
+        Map<String, JdbcIndex> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(JdbcIndex::getName, u -> u));
+        assert uniqueKeyMap.size() == 3;
+        assert uniqueKeyMap.containsKey("PRIMARY");
+        assert uniqueKeyMap.containsKey("tb_user_userUUID_uindex");
+        assert uniqueKeyMap.containsKey("tb_user_email_userUUID_uindex");
+        assert uniqueKeyMap.get("tb_user_userUUID_uindex").getColumns().size() == 1;
+        assert uniqueKeyMap.get("tb_user_userUUID_uindex").getColumns().contains("userUUID");
+        assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().size() == 2;
+        assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().contains("userUUID");
+        assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().contains("email");
+    }
     //
     //    @Test
     //    public void getForeignKey() throws SQLException {
