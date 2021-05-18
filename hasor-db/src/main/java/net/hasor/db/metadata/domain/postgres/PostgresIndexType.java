@@ -14,33 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.db.metadata.domain.postgres;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
- * Postgres 唯一键
+ * Postgres 索引类型
  * @version : 2021-05-17
  * @author 赵永春 (zyc@hasor.net)
  */
-public class PostgresUniqueKey extends PostgresConstraint {
-    private List<String>        columns     = new ArrayList<>();
-    private Map<String, String> storageType = new HashMap<>();
-
-    public List<String> getColumns() {
-        return this.columns;
-    }
-
-    public void setColumns(List<String> columns) {
-        this.columns = columns;
-    }
-
-    public Map<String, String> getStorageType() {
-        return this.storageType;
-    }
-
-    public void setStorageType(Map<String, String> storageType) {
-        this.storageType = storageType;
-    }
+public enum PostgresIndexType {
+    /** 普通索引 */
+    Normal,
+    /** 唯一索引 */
+    Unique,
 }

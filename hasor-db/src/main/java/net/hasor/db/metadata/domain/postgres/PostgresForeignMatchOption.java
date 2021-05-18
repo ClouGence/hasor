@@ -14,33 +14,32 @@
  * limitations under the License.
  */
 package net.hasor.db.metadata.domain.postgres;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
- * Postgres 唯一键
+ * Postgres "match_option"
  * @version : 2021-05-17
  * @author 赵永春 (zyc@hasor.net)
  */
-public class PostgresUniqueKey extends PostgresConstraint {
-    private List<String>        columns     = new ArrayList<>();
-    private Map<String, String> storageType = new HashMap<>();
+public enum PostgresForeignMatchOption {
+    None("NONE"),
+    Full("FULL"),
+    Partial("PARTIAL"),
+    ;
+    private final String typeName;
 
-    public List<String> getColumns() {
-        return this.columns;
+    PostgresForeignMatchOption(String typeName) {
+        this.typeName = typeName;
     }
 
-    public void setColumns(List<String> columns) {
-        this.columns = columns;
+    public String getTypeName() {
+        return this.typeName;
     }
 
-    public Map<String, String> getStorageType() {
-        return this.storageType;
-    }
-
-    public void setStorageType(Map<String, String> storageType) {
-        this.storageType = storageType;
+    public static PostgresForeignMatchOption valueOfCode(String code) {
+        for (PostgresForeignMatchOption foreignKeyRule : PostgresForeignMatchOption.values()) {
+            if (foreignKeyRule.typeName.equals(code)) {
+                return foreignKeyRule;
+            }
+        }
+        return null;
     }
 }

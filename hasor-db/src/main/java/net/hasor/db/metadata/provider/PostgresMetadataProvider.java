@@ -92,6 +92,80 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
             + "      and c.relname =?\n"//
             + ") c where true\n"//
             + "order by schema_name, c.table_name, attnum";//
+    private static final String       PK          = ""//
+            + "select result.table_schema, result.table_name, result.column_name, result.key_seq, result.pk_name\n"//
+            + "from (select n.nspname                                        as table_schema,\n"//
+            + "             ct.relname                                       as table_name,\n"//
+            + "             a.attname                                        as column_name,\n"//
+            + "             (information_schema._pg_expandarray(i.indkey)).n as key_seq,\n"//
+            + "             ci.relname                                       as pk_name,\n"//
+            + "             information_schema._pg_expandarray(i.indkey)     as keys,\n"//
+            + "             a.attnum                                         as a_attnum\n"//
+            + "      from pg_catalog.pg_class ct\n"//
+            + "               join pg_catalog.pg_attribute a on (ct.oid = a.attrelid)\n"//
+            + "               join pg_catalog.pg_namespace n on (ct.relnamespace = n.oid)\n"//
+            + "               join pg_catalog.pg_index i on (a.attrelid = i.indrelid)\n"//
+            + "               join pg_catalog.pg_class ci on (ci.oid = i.indexrelid)\n"//
+            + "      where true\n"//
+            + "        and n.nspname = ? and ct.relname = ? and i.indisprimary) result\n"//
+            + "where result.a_attnum = (result.keys).x\n"//
+            + "order by result.table_name, result.pk_name, result.key_seq";
+    private static final String       FK          = ""//
+            + "select pkic.relname as pk_name, pkn.nspname as pk_table_schema, pkc.relname as pk_table_name, pka.attname as pk_column_name,\n"//
+            + "       con.conname  as fk_name, fkn.nspname as fk_table_schema, fkc.relname as fk_table_name, fka.attname as fk_column_name,\n"//
+            + "       pos.n        as key_seq,\n"//
+            + "       case con.confmatchtype when 'f' then 'FULL' when 'p' then 'PARTIAL' when 's' then 'NONE' else null end as match_option,\n"//
+            + "       case con.confupdtype   when 'c' then 'CASCADE' when 'n' then 'SET NULL' when 'd' then 'SET DEFAULT' when 'r' then 'RESTRICT' when 'a' then 'NO ACTION' else null end as update_rule,\n"//
+            + "       case con.confdeltype   when 'c' then 'CASCADE' when 'n' then 'SET NULL' when 'd' then 'SET DEFAULT' when 'r' then 'RESTRICT' when 'a' then 'NO ACTION' else null end as delete_rule\n"//
+            + "from pg_catalog.pg_namespace pkn, pg_catalog.pg_class pkc, pg_catalog.pg_attribute pka,\n"//
+            + "     pg_catalog.pg_namespace fkn, pg_catalog.pg_class fkc, pg_catalog.pg_attribute fka,\n"//
+            + "     pg_catalog.pg_constraint con,\n"//
+            + "     pg_catalog.generate_series(1, 32) pos(n),\n"//
+            + "     pg_catalog.pg_class pkic\n"//
+            + "where pkn.oid = pkc.relnamespace\n"//
+            + "  and pkc.oid = pka.attrelid\n"//
+            + "  and pka.attnum = con.confkey[pos.n]\n"//
+            + "  and con.confrelid = pkc.oid\n"//
+            + "  and fkn.oid = fkc.relnamespace\n"//
+            + "  and fkc.oid = fka.attrelid\n"//
+            + "  and fka.attnum = con.conkey[pos.n]\n"//
+            + "  and con.conrelid = fkc.oid\n"//
+            + "  and con.contype = 'f'\n"//
+            + "  and (pkic.relkind = 'i' or pkic.relkind = 'i')\n"//
+            + "  and pkic.oid = con.conindid\n"//
+            + "  and fkn.nspname = ? and fkc.relname = ?\n"//
+            + "order by pkn.nspname, pkc.relname, con.conname, pos.n";
+    private static final String       UK_INDEX    = ""//
+            + "select tmp.table_schema,\n"//
+            + "       tmp.table_name,\n"//
+            + "       tmp.non_unique,\n"//
+            + "       tmp.index_name,\n"//
+            + "       tmp.type,\n"//
+            + "       tmp.ordinal_position,\n"//
+            + "       trim(both '\"' from pg_catalog.pg_get_indexdef(tmp.ci_oid, tmp.ordinal_position, false)) as column_name,\n"//
+            + "       case tmp.am_name when 'btree' then case tmp.i_indoption[tmp.ordinal_position - 1] & 1 when 1 then 'D' else 'A' end else null end as asc_or_desc,\n"//
+            + "       tmp.cardinality,\n"//
+            + "       tmp.pages,\n"//
+            + "       tmp.filter_condition\n"//
+            + "from (select n.nspname                                                                                    as table_schema,\n"//
+            + "             ct.relname                                                                                   as table_name,\n"//
+            + "             not i.indisunique                                                                            as non_unique,\n"//
+            + "             ci.relname                                                                                   as index_name,\n"//
+            + "             case i.indisclustered when true then 1 else case am.amname when 'hash' then 2 else 3 end end as type,\n"//
+            + "             (information_schema._pg_expandarray(i.indkey)).n                                             as ordinal_position,\n"//
+            + "             ci.reltuples                                                                                 as cardinality,\n"//
+            + "             ci.relpages                                                                                  as pages,\n"//
+            + "             pg_catalog.pg_get_expr(i.indpred, i.indrelid)                                                as filter_condition,\n"//
+            + "             ci.oid                                                                                       as ci_oid,\n"//
+            + "             i.indoption                                                                                  as i_indoption,\n"//
+            + "             am.amname                                                                                    as am_name\n"//
+            + "      from pg_catalog.pg_class ct\n"//
+            + "               join pg_catalog.pg_namespace n on (ct.relnamespace = n.oid)\n"//
+            + "               join pg_catalog.pg_index i on (ct.oid = i.indrelid)\n"//
+            + "               join pg_catalog.pg_class ci on (ci.oid = i.indexrelid)\n"//
+            + "               join pg_catalog.pg_am am on (ci.relam = am.oid)\n"//
+            + "      where true and n.nspname = ? and ct.relname = ?) as tmp\n"//
+            + "order by non_unique, type, index_name, ordinal_position";
     private              Long         serverVersionNumber;
 
     public PostgresMetadataProvider(Connection connection) {
@@ -201,14 +275,7 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
             if (mapList == null) {
                 return Collections.emptyMap();
             }
-            Map<String, List<PostgresTable>> resultData = new HashMap<>();
-            mapList.forEach(recordMap -> {
-                String owner = safeToString(recordMap.get("table_schema"));
-                List<PostgresTable> tableList = resultData.computeIfAbsent(owner, k -> new ArrayList<>());
-                PostgresTable table = this.convertTable(recordMap);
-                tableList.add(table);
-            });
-            return resultData;
+            return mapList.stream().map(this::convertTable).collect(Collectors.groupingBy(PostgresTable::getSchema));
         }
     }
 
@@ -328,36 +395,7 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
         //
         long serverVersionNumber = getServerVersionNumber();
         return columnList.stream().map(recordMap -> {
-            PostgresColumn column = new PostgresColumn();
-            column.setName(safeToString(recordMap.get("column_name")));
-            column.setNullable(safeToBoolean(recordMap.get("not_null")));
-            column.setColumnType(safeToString(recordMap.get("type_name")));
-            column.setTypeOid(safeToLong(recordMap.get("type_oid")));
-            column.setDataType(safeToString(recordMap.get("type_name")));
-            if (safeToBoolean(recordMap.get("type_is_array"))) {
-                String dataType = column.getDataType();
-                if (dataType.endsWith("[]")) {
-                    column.setElementType(dataType.substring(0, dataType.length() - 2));
-                }
-            }
-            column.setSqlType(safeToPostgresTypes(serverVersionNumber, recordMap));
-            column.setJdbcType(columnTypeMappingToJdbcType(column, recordMap));
-            //
-            column.setCharacterMaximumLength(safeToInteger(recordMap.get("character_maximum_length")));
-            column.setCharacterOctetLength(safeToInteger(recordMap.get("character_octet_length")));
-            column.setDefaultValue(safeToString(recordMap.get("column_default")));
-            //
-            column.setNumericPrecision(safeToInteger(recordMap.get("numeric_precision")));
-            column.setNumericPrecisionRadix(safeToInteger(recordMap.get("numeric_precision_radix")));
-            column.setNumericScale(safeToInteger(recordMap.get("numeric_scale")));
-            column.setDatetimePrecision(safeToInteger(recordMap.get("datetime_precision")));
-            //
-            column.setIdentity(safeToBoolean(recordMap.get("is_identity")));
-            //
-            column.setPrimaryKey(primaryKeyColumnNameList.contains(column.getName()));
-            column.setUniqueKey(uniqueKeyColumnNameList.contains(column.getName()));
-            column.setComment(safeToString(recordMap.get("comments")));
-            return column;
+            return convertColumn(recordMap, primaryKeyColumnNameList, uniqueKeyColumnNameList, serverVersionNumber);
         }).collect(Collectors.toList());
     }
 
@@ -379,14 +417,7 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
             if (mapList == null) {
                 return Collections.emptyList();
             }
-            return mapList.stream().map(recordMap -> {
-                PostgresConstraint constraint = new PostgresConstraint();
-                constraint.setSchema(safeToString(recordMap.get("constraint_schema")));
-                constraint.setName(safeToString(recordMap.get("constraint_name")));
-                String constraintTypeString = safeToString(recordMap.get("constraint_type"));
-                constraint.setConstraintType(PostgresConstraintType.valueOfCode(constraintTypeString));
-                return constraint;
-            }).collect(Collectors.toList());
+            return mapList.stream().map(this::convertConstraint).collect(Collectors.toList());
         }
     }
 
@@ -416,39 +447,41 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
             }
         }
         //
-        String queryString = "" //
-                + "select tc.constraint_schema,tc.constraint_name,tc.constraint_type,kcu.column_name\n" //
-                + "from information_schema.table_constraints as tc\n" //
-                + "   join information_schema.key_column_usage as kcu on tc.constraint_name = kcu.constraint_name\n" //
-                + "where constraint_type = 'PRIMARY KEY' and tc.table_schema = ? and tc.table_name = ?" //
-                + "order by kcu.ordinal_position asc";
-        try (Connection conn = this.connectSupplier.get()) {
-            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
-            if (mapList == null) {
+        try (Connection conn = this.connectSupplier.eGet()) {
+            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(PK, schemaName, tableName);
+            if (mapList == null || mapList.isEmpty()) {
                 return null;
             }
-            Set<String> check = new HashSet<>();
-            PostgresPrimaryKey primaryKey = null;
-            for (Map<String, Object> ent : mapList) {
-                if (primaryKey == null) {
-                    primaryKey = new PostgresPrimaryKey();
-                    primaryKey.setConstraintType(PostgresConstraintType.PrimaryKey);
+            //
+            Map<String, Optional<PostgresPrimaryKey>> pkMap = mapList.stream().sorted((o1, o2) -> {
+                // sort by key_seq
+                Integer o1Index = safeToInteger(o1.get("key_seq"));
+                Integer o2Index = safeToInteger(o2.get("key_seq"));
+                if (o1Index != null && o2Index != null) {
+                    return Integer.compare(o1Index, o2Index);
                 }
-                primaryKey.setSchema(safeToString(ent.get("constraint_schema")));
-                primaryKey.setName(safeToString(ent.get("constraint_name")));
-                primaryKey.getColumns().add(safeToString(ent.get("column_name")));
-                check.add(primaryKey.getSchema() + "," + primaryKey.getName());
-                if (check.size() > 1) {
-                    throw new SQLException("Data error encountered multiple primary keys " + StringUtils.join(check.toArray(), " -- "));
-                }
+                return 0;
+            }).map(this::convertPrimaryKey).collect(Collectors.groupingBy(o -> {
+                // group by (schema + name)
+                return o.getSchema() + "," + o.getName();
+            }, Collectors.reducing((pk1, pk2) -> {
+                // reducing group by data in to one.
+                pk1.getColumns().addAll(pk2.getColumns());
+                return pk1;
+            })));
+            //
+            if (pkMap.size() > 1) {
+                throw new SQLException("Data error encountered multiple primary keys '" + StringUtils.join(pkMap.keySet().toArray(), "','") + "'");
             }
-            return primaryKey;
+            //
+            Optional<PostgresPrimaryKey> primaryKeyOptional = pkMap.values().stream().findFirst().orElse(Optional.empty());
+            return primaryKeyOptional.orElse(null);
         }
     }
 
     public List<PostgresUniqueKey> getUniqueKey(String schemaName, String tableName) throws SQLException {
         if (StringUtils.isBlank(tableName)) {
-            return null;
+            return Collections.emptyList();
         }
         if (StringUtils.isBlank(schemaName)) {
             schemaName = getCurrentSchema();
@@ -457,40 +490,34 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
             }
         }
         //
-        String queryString = "" //
-                + "select tc.constraint_schema,tc.constraint_name,tc.constraint_type,kcu.column_name\n" //
-                + "from information_schema.table_constraints as tc\n" //
-                + "   join information_schema.key_column_usage as kcu on tc.constraint_name = kcu.constraint_name\n" //
-                + "where constraint_type in ('PRIMARY KEY', 'UNIQUE') and tc.table_schema = ? and tc.table_name = ?" //
-                + "order by kcu.ordinal_position asc";
         try (Connection conn = this.connectSupplier.get()) {
-            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
+            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(UK_INDEX, schemaName, tableName);
             if (mapList == null) {
-                return null;
+                return Collections.emptyList();
             }
-            Map<String, PostgresUniqueKey> groupByName = new LinkedHashMap<>();
-            for (Map<String, Object> ent : mapList) {
-                final String constraintSchema = safeToString(ent.get("constraint_schema"));
-                final String constraintName = safeToString(ent.get("constraint_name"));
-                String constraintKey = constraintSchema + "," + constraintName;
-                PostgresUniqueKey uniqueKey = groupByName.computeIfAbsent(constraintKey, k -> {
-                    PostgresUniqueKey sqlUniqueKey = new PostgresUniqueKey();
-                    sqlUniqueKey.setSchema(constraintSchema);
-                    sqlUniqueKey.setName(constraintName);
-                    //+ "
-                    String constraintType = safeToString(ent.get("constraint_type"));
-                    if ("PRIMARY KEY".equalsIgnoreCase(constraintType)) {
-                        sqlUniqueKey.setConstraintType(PostgresConstraintType.PrimaryKey);
-                    } else if ("UNIQUE".equalsIgnoreCase(constraintType)) {
-                        sqlUniqueKey.setConstraintType(PostgresConstraintType.Unique);
-                    } else {
-                        throw new UnsupportedOperationException("It's not gonna happen.");
-                    }
-                    return sqlUniqueKey;
-                });
-                uniqueKey.getColumns().add(safeToString(ent.get("column_name")));
-            }
-            return new ArrayList<>(groupByName.values());
+            //
+            return mapList.stream().sorted((o1, o2) -> {
+                // sort by ordinal_position
+                Integer o1Index = safeToInteger(o1.get("ordinal_position"));
+                Integer o2Index = safeToInteger(o2.get("ordinal_position"));
+                if (o1Index != null && o2Index != null) {
+                    return Integer.compare(o1Index, o2Index);
+                }
+                return 0;
+            }).filter(recordMap -> {
+                // ignore nonUnique
+                return Boolean.TRUE.equals(!safeToBoolean(recordMap.get("non_unique")));
+            }).map(this::convertUniqueKey).collect(Collectors.groupingBy(o -> {
+                // group by (schema + name)
+                return o.getSchema() + "," + o.getName();
+            }, Collectors.reducing((fk1, fk2) -> {
+                // reducing group by data in to one.
+                fk1.getColumns().addAll(fk2.getColumns());
+                fk1.getStorageType().putAll(fk2.getStorageType());
+                return fk1;
+            }))).values().stream().map(o -> {
+                return o.orElse(null);
+            }).filter(Objects::nonNull).collect(Collectors.toList());
         }
     }
 
@@ -505,125 +532,201 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
             }
         }
         //
-        String queryString = "" //
-                + "select tc.constraint_schema,tc.constraint_name,tc.constraint_type,tc.table_schema,tc.table_name,kcu.column_name,\n" //
-                + "   ccu.table_schema as foreign_table_schema,ccu.table_name as foreign_table_name,ccu.column_name as foreign_column_name,\n" //
-                + "   rc.delete_rule,rc.update_rule,rc.match_option\n" //
-                + "from (information_schema.table_constraints tc left join information_schema.referential_constraints rc on tc.constraint_schema = rc.constraint_schema and tc.constraint_name = rc.constraint_name)\n" //
-                + "   join information_schema.key_column_usage as kcu on tc.constraint_name = kcu.constraint_name\n" //
-                + "   join information_schema.constraint_column_usage as ccu on ccu.constraint_name = tc.constraint_name\n" //
-                + "where constraint_type = 'FOREIGN KEY' and tc.table_schema = ? and tc.table_name = ?\n" //
-                + "order by kcu.ordinal_position asc";
         try (Connection conn = this.connectSupplier.get()) {
-            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
+            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(FK, schemaName, tableName);
             if (mapList == null) {
                 return Collections.emptyList();
             }
-            Map<String, PostgresForeignKey> groupByName = new LinkedHashMap<>();
-            for (Map<String, Object> ent : mapList) {
-                final String constraintSchema = safeToString(ent.get("constraint_schema"));
-                final String constraintName = safeToString(ent.get("constraint_name"));
-                String constraintKey = constraintSchema + "," + constraintName;
-                //
-                PostgresForeignKey foreignKey = groupByName.computeIfAbsent(constraintKey, k -> {
-                    PostgresForeignKey sqlForeignKey = new PostgresForeignKey();
-                    sqlForeignKey.setSchema(constraintSchema);
-                    sqlForeignKey.setName(constraintName);
-                    sqlForeignKey.setConstraintType(PostgresConstraintType.ForeignKey);
-                    sqlForeignKey.setReferenceSchema(safeToString(ent.get("foreign_table_schema")));
-                    sqlForeignKey.setReferenceTable(safeToString(ent.get("foreign_table_name")));
-                    //
-                    sqlForeignKey.setUpdateRule(PostgresForeignKeyRule.valueOfCode(safeToString(ent.get("update_rule"))));
-                    sqlForeignKey.setDeleteRule(PostgresForeignKeyRule.valueOfCode(safeToString(ent.get("delete_rule"))));
-                    sqlForeignKey.setMatchOption(PostgresForeignMatchOption.valueOfCode(safeToString(ent.get("match_option"))));
-                    return sqlForeignKey;
-                });
-                //
-                foreignKey.getColumns().add(safeToString(ent.get("column_name")));
-                foreignKey.getReferenceMapping().put(safeToString(ent.get("column_name")), safeToString(ent.get("foreign_column_name")));
-            }
-            return new ArrayList<>(groupByName.values());
+            //
+            return mapList.stream().sorted((o1, o2) -> {
+                // sort by key_seq
+                Integer o1Index = safeToInteger(o1.get("key_seq"));
+                Integer o2Index = safeToInteger(o2.get("key_seq"));
+                if (o1Index != null && o2Index != null) {
+                    return Integer.compare(o1Index, o2Index);
+                }
+                return 0;
+            }).map(this::convertForeignKey).collect(Collectors.groupingBy(o -> {
+                // group by (schema + name)
+                return o.getSchema() + "," + o.getName();
+            }, Collectors.reducing((fk1, fk2) -> {
+                // reducing group by data in to one.
+                fk1.getColumns().addAll(fk2.getColumns());
+                fk1.getReferenceMapping().putAll(fk2.getReferenceMapping());
+                return fk1;
+            }))).values().stream().map(o -> {
+                return o.orElse(null);
+            }).filter(Objects::nonNull).collect(Collectors.toList());
         }
     }
-    //    public List<OracleIndex> getIndexes(String schemaName, String tableName) throws SQLException {
-    //        if (StringUtils.isBlank(tableName)) {
-    //            return Collections.emptyList();
-    //        }
-    //        if (StringUtils.isBlank(schemaName)) {
-    //            schemaName = getCurrentSchema();
-    //            if (StringUtils.isBlank(schemaName)) {
-    //                throw new SQLException("no schema is specified and the current database is not set");
-    //            }
-    //        }
-    //        //
-    //        String queryString = ""//
-    //                + "select IDX.OWNER,IDX.INDEX_NAME,IDX.INDEX_TYPE,CON.CONSTRAINT_TYPE,IDX.UNIQUENESS,IDX.GENERATED,DESCEND,PARTITIONED,TEMPORARY,COL.COLUMN_NAME,COL.DESCEND\n" //
-    //                + "from DBA_INDEXES IDX\n" //
-    //                + "left join DBA_IND_COLUMNS COL on IDX.OWNER = COL.INDEX_OWNER and IDX.INDEX_NAME = COL.INDEX_NAME\n" //
-    //                + "left join DBA_CONSTRAINTS CON on IDX.OWNER = CON.INDEX_OWNER and IDX.INDEX_NAME = CON.INDEX_NAME\n" //
-    //                + "where IDX.TABLE_OWNER = ? and IDX.TABLE_NAME = ?\n" //
-    //                + "order by COL.COLUMN_POSITION asc";
-    //        try (Connection conn = this.connectSupplier.get()) {
-    //            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
-    //            if (mapList == null) {
-    //                return Collections.emptyList();
-    //            }
-    //            //+ "CONSTRAINT_TYPE
-    //            Map<String, OracleIndex> groupByName = new LinkedHashMap<>();
-    //            for (Map<String, Object> ent : mapList) {
-    //                final String indexOwner = safeToString(ent.get("OWNER"));
-    //                final String indexName = safeToString(ent.get("INDEX_NAME"));
-    //                String indexKey = indexOwner + ":" + indexName;
-    //                OracleIndex oracleIndex = groupByName.computeIfAbsent(indexKey, k -> {
-    //                    OracleIndex oracleIndexEnt = new OracleIndex();
-    //                    oracleIndexEnt.setSchema(indexOwner);
-    //                    oracleIndexEnt.setName(indexName);
-    //                    oracleIndexEnt.setIndexType(OracleIndexType.valueOfCode(safeToString(ent.get("INDEX_TYPE"))));
-    //                    oracleIndexEnt.setPrimaryKey("P".equalsIgnoreCase(safeToString(ent.get("CONSTRAINT_TYPE"))));
-    //                    oracleIndexEnt.setUnique("UNIQUE".equalsIgnoreCase(safeToString(ent.get("UNIQUENESS"))));
-    //                    oracleIndexEnt.setGenerated("Y".equalsIgnoreCase(safeToString(ent.get("GENERATED"))));
-    //                    oracleIndexEnt.setPartitioned("YES".equalsIgnoreCase(safeToString(ent.get("PARTITIONED"))));
-    //                    oracleIndexEnt.setTemporary("Y".equalsIgnoreCase(safeToString(ent.get("TEMPORARY"))));
-    //                    return oracleIndexEnt;
-    //                });
-    //                //+ "
-    //                String columnName = safeToString(ent.get("COLUMN_NAME"));
-    //                String columnDescend = safeToString(ent.get("DESCEND"));
-    //                oracleIndex.getColumns().add(columnName);
-    //                oracleIndex.getStorageType().put(columnName, columnDescend);
-    //            }
-    //            return new ArrayList<>(groupByName.values());
-    //        }
-    //    }
-    //
-    //    public List<OracleIndex> getIndexes(String schemaName, String tableName, OracleIndexType... indexTypes) throws SQLException {
-    //        if (indexTypes == null || indexTypes.length == 0) {
-    //            return Collections.emptyList();
-    //        }
-    //        List<OracleIndex> indexList = getIndexes(schemaName, tableName);
-    //        if (indexList == null || indexList.isEmpty()) {
-    //            return Collections.emptyList();
-    //        }
-    //        return indexList.stream().filter(indexItem -> {
-    //            OracleIndexType indexTypeForItem = indexItem.getIndexType();
-    //            for (OracleIndexType matchType : indexTypes) {
-    //                if (indexTypeForItem == matchType) {
-    //                    return true;
-    //                }
-    //            }
-    //            return false;
-    //        }).collect(Collectors.toList());
-    //    }
-    //
-    //    public OracleIndex getIndexes(String schemaName, String tableName, String indexName) throws SQLException {
-    //        List<OracleIndex> indexList = getIndexes(schemaName, tableName);
-    //        if (indexList == null || indexList.isEmpty()) {
-    //            return null;
-    //        }
-    //        return indexList.stream().filter(indexItem -> {
-    //            return StringUtils.equals(indexItem.getName(), indexName);
-    //        }).findFirst().orElse(null);
-    //    }
+
+    public List<PostgresIndex> getIndexes(String schemaName, String tableName, PostgresIndexType[] indexTypes) throws SQLException {
+        if (indexTypes == null || indexTypes.length == 0) {
+            return Collections.emptyList();
+        }
+        List<PostgresIndex> indexList = getIndexes(schemaName, tableName);
+        if (indexList == null || indexList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return indexList.stream().filter(indexItem -> {
+            for (PostgresIndexType matchType : indexTypes) {
+                if (indexItem.getIndexType() == matchType) {
+                    return true;
+                }
+            }
+            return false;
+        }).collect(Collectors.toList());
+    }
+
+    public PostgresIndex getIndexes(String schemaName, String tableName, String indexName) throws SQLException {
+        List<PostgresIndex> indexList = getIndexes(schemaName, tableName);
+        if (indexList == null || indexList.isEmpty()) {
+            return null;
+        }
+        return indexList.stream().filter(indexItem -> {
+            return StringUtils.equals(indexItem.getName(), indexName);
+        }).findFirst().orElse(null);
+    }
+
+    public List<PostgresIndex> getIndexes(String schemaName, String tableName) throws SQLException {
+        if (StringUtils.isBlank(tableName)) {
+            return Collections.emptyList();
+        }
+        if (StringUtils.isBlank(schemaName)) {
+            schemaName = getCurrentSchema();
+            if (StringUtils.isBlank(schemaName)) {
+                throw new SQLException("no schema is specified and the current database is not set");
+            }
+        }
+        //
+        try (Connection conn = this.connectSupplier.get()) {
+            List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(UK_INDEX, schemaName, tableName);
+            if (mapList == null) {
+                return Collections.emptyList();
+            }
+            //
+            return mapList.stream().sorted((o1, o2) -> {
+                // sort by ordinal_position
+                Integer o1Index = safeToInteger(o1.get("ordinal_position"));
+                Integer o2Index = safeToInteger(o2.get("ordinal_position"));
+                if (o1Index != null && o2Index != null) {
+                    return Integer.compare(o1Index, o2Index);
+                }
+                return 0;
+            }).map(this::convertIndex).collect(Collectors.groupingBy(o -> {
+                // group by (schema + name)
+                return o.getSchema() + "," + o.getName();
+            }, Collectors.reducing((idx1, idx2) -> {
+                // reducing group by data in to one.
+                idx1.getColumns().addAll(idx2.getColumns());
+                idx1.getStorageType().putAll(idx2.getStorageType());
+                return idx1;
+            }))).values().stream().map(o -> {
+                return o.orElse(null);
+            }).filter(Objects::nonNull).collect(Collectors.toList());
+        }
+    }
+
+    protected PostgresColumn convertColumn(Map<String, Object> recordMap, List<String> primaryKeyColumnList, List<String> uniqueKeyColumnList, long serverVersionNumber) {
+        PostgresColumn column = new PostgresColumn();
+        column.setName(safeToString(recordMap.get("column_name")));
+        column.setNullable(safeToBoolean(recordMap.get("not_null")));
+        column.setColumnType(safeToString(recordMap.get("type_name")));
+        column.setTypeOid(safeToLong(recordMap.get("type_oid")));
+        column.setDataType(safeToString(recordMap.get("type_name")));
+        if (safeToBoolean(recordMap.get("type_is_array"))) {
+            String dataType = column.getDataType();
+            if (dataType.endsWith("[]")) {
+                column.setElementType(dataType.substring(0, dataType.length() - 2));
+            }
+        }
+        column.setSqlType(safeToPostgresTypes(serverVersionNumber, recordMap));
+        column.setJdbcType(columnTypeMappingToJdbcType(column, recordMap));
+        //
+        column.setCharacterMaximumLength(safeToInteger(recordMap.get("character_maximum_length")));
+        column.setCharacterOctetLength(safeToInteger(recordMap.get("character_octet_length")));
+        column.setDefaultValue(safeToString(recordMap.get("column_default")));
+        //
+        column.setNumericPrecision(safeToInteger(recordMap.get("numeric_precision")));
+        column.setNumericPrecisionRadix(safeToInteger(recordMap.get("numeric_precision_radix")));
+        column.setNumericScale(safeToInteger(recordMap.get("numeric_scale")));
+        column.setDatetimePrecision(safeToInteger(recordMap.get("datetime_precision")));
+        //
+        column.setIdentity(safeToBoolean(recordMap.get("is_identity")));
+        //
+        column.setPrimaryKey(primaryKeyColumnList.contains(column.getName()));
+        column.setUniqueKey(uniqueKeyColumnList.contains(column.getName()));
+        column.setComment(safeToString(recordMap.get("comments")));
+        return column;
+    }
+
+    protected PostgresConstraint convertConstraint(Map<String, Object> recordMap) {
+        PostgresConstraint constraint = new PostgresConstraint();
+        constraint.setSchema(safeToString(recordMap.get("constraint_schema")));
+        constraint.setName(safeToString(recordMap.get("constraint_name")));
+        String constraintTypeString = safeToString(recordMap.get("constraint_type"));
+        constraint.setConstraintType(PostgresConstraintType.valueOfCode(constraintTypeString));
+        return constraint;
+    }
+
+    protected PostgresPrimaryKey convertPrimaryKey(Map<String, Object> recordMap) {
+        PostgresPrimaryKey primaryKey = new PostgresPrimaryKey();
+        primaryKey.setConstraintType(PostgresConstraintType.PrimaryKey);
+        primaryKey.setSchema(safeToString(recordMap.get("table_schema")));
+        primaryKey.setName(safeToString(recordMap.get("pk_name")));
+        //
+        primaryKey.getColumns().add(safeToString(recordMap.get("column_name")));
+        return primaryKey;
+    }
+
+    protected PostgresIndex convertIndex(Map<String, Object> recordMap) {
+        PostgresIndex pgIndex = new PostgresIndex();
+        pgIndex.setSchema(safeToString(recordMap.get("table_schema")));
+        pgIndex.setName(safeToString(recordMap.get("index_name")));
+        if (safeToBoolean(recordMap.get("non_unique"))) {
+            pgIndex.setIndexType(PostgresIndexType.Normal);
+        } else {
+            pgIndex.setIndexType(PostgresIndexType.Unique);
+        }
+        //
+        String columnName = safeToString(recordMap.get("column_name"));
+        String ascOrDesc = safeToString(recordMap.get("asc_or_desc"));
+        pgIndex.getColumns().add(columnName);
+        pgIndex.getStorageType().put(columnName, ascOrDesc);
+        return pgIndex;
+    }
+
+    protected PostgresUniqueKey convertUniqueKey(Map<String, Object> recordMap) {
+        PostgresUniqueKey uniqueKey = new PostgresUniqueKey();
+        uniqueKey.setSchema(safeToString(recordMap.get("table_schema")));
+        uniqueKey.setName(safeToString(recordMap.get("index_name")));
+        uniqueKey.setConstraintType(PostgresConstraintType.Unique);
+        //
+        String columnName = safeToString(recordMap.get("column_name"));
+        String ascOrDesc = safeToString(recordMap.get("asc_or_desc"));
+        uniqueKey.getColumns().add(columnName);
+        uniqueKey.getStorageType().put(columnName, ascOrDesc);
+        return uniqueKey;
+    }
+
+    protected PostgresForeignKey convertForeignKey(Map<String, Object> recordMap) {
+        PostgresForeignKey foreignKey = new PostgresForeignKey();
+        foreignKey.setSchema(safeToString(recordMap.get("fk_table_schema")));
+        foreignKey.setName(safeToString(recordMap.get("fk_name")));
+        foreignKey.setReferenceSchema(safeToString(recordMap.get("pk_table_schema")));
+        foreignKey.setReferenceTable(safeToString(recordMap.get("pk_table_name")));
+        foreignKey.setConstraintType(PostgresConstraintType.ForeignKey);
+        //
+        foreignKey.setUpdateRule(PostgresForeignKeyRule.valueOfCode(safeToString(recordMap.get("update_rule"))));
+        foreignKey.setDeleteRule(PostgresForeignKeyRule.valueOfCode(safeToString(recordMap.get("delete_rule"))));
+        foreignKey.setMatchOption(PostgresForeignMatchOption.valueOfCode(safeToString(recordMap.get("match_option"))));
+        //
+        String pkColumnName = safeToString(recordMap.get("pk_column_name"));
+        String fkColumnName = safeToString(recordMap.get("fk_column_name"));
+        foreignKey.getColumns().add(fkColumnName);
+        foreignKey.getReferenceMapping().put(fkColumnName, pkColumnName);
+        return foreignKey;
+    }
 
     protected PostgresSchema convertSchema(Map<String, Object> recordMap) {
         PostgresSchema schema = new PostgresSchema();
@@ -640,31 +743,6 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
         table.setTyped("YES".equalsIgnoreCase(safeToString(recordMap.get("is_typed"))));
         table.setComment(safeToString(recordMap.get("comment")));
         return table;
-    }
-
-    private JDBCType columnTypeMappingToJdbcType(PostgresColumn column, Map<String, Object> recordMap) {
-        if (recordMap == null) {
-            return null;
-        }
-        String typType = safeToString(recordMap.get("typtype"));
-        String typeName = safeToString(recordMap.get("type_name"));
-        //
-        if ("c".equals(typType)) {
-            return JDBCType.STRUCT;
-        } else if ("d".equals(typType)) {
-            return JDBCType.DISTINCT;
-        } else if ("e".equals(typType)) {
-            return JDBCType.VARCHAR;
-        }
-        if (typeName.endsWith("[]")) {
-            return JDBCType.ARRAY;
-        }
-        //
-        PostgresTypes sqlType = column.getSqlType();
-        if (sqlType != null && sqlType.toJDBCType() != null) {
-            return sqlType.toJDBCType();
-        }
-        return JDBCType.OTHER;
     }
 
     private static final Map<String, String> aliasMap = new HashMap<>();
@@ -706,6 +784,31 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
         aliasMap.put("timetz[]", "time with time zone[]");
         aliasMap.put("varbit[]", "bit varying[]");
         aliasMap.put("bool[]", "boolean[]");
+    }
+
+    protected JDBCType columnTypeMappingToJdbcType(PostgresColumn column, Map<String, Object> recordMap) {
+        if (recordMap == null) {
+            return null;
+        }
+        String typType = safeToString(recordMap.get("typtype"));
+        String typeName = safeToString(recordMap.get("type_name"));
+        //
+        if ("c".equals(typType)) {
+            return JDBCType.STRUCT;
+        } else if ("d".equals(typType)) {
+            return JDBCType.DISTINCT;
+        } else if ("e".equals(typType)) {
+            return JDBCType.VARCHAR;
+        }
+        if (typeName.endsWith("[]")) {
+            return JDBCType.ARRAY;
+        }
+        //
+        PostgresTypes sqlType = column.getSqlType();
+        if (sqlType != null && sqlType.toJDBCType() != null) {
+            return sqlType.toJDBCType();
+        }
+        return JDBCType.OTHER;
     }
 
     protected PostgresTypes safeToPostgresTypes(long serverVersionNumber, Map<String, Object> record) {

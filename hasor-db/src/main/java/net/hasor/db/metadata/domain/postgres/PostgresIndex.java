@@ -20,14 +20,41 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Postgres 唯一键
+ * Postgres 索引
  * @version : 2021-05-17
  * @author 赵永春 (zyc@hasor.net)
  */
-public class PostgresUniqueKey extends PostgresConstraint {
+public class PostgresIndex {
+    private String              schema;
+    private String              name;
+    private PostgresIndexType   indexType;
     private List<String>        columns     = new ArrayList<>();
     private Map<String, String> storageType = new HashMap<>();
 
+    public String getSchema() {
+        return this.schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public PostgresIndexType getIndexType() {
+        return this.indexType;
+    }
+
+    public void setIndexType(PostgresIndexType indexType) {
+        this.indexType = indexType;
+    }
+ 
     public List<String> getColumns() {
         return this.columns;
     }

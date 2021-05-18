@@ -53,6 +53,8 @@ create table tb_user
     registerTime  timestamp                  null,
     constraint tb_user_email_userUUID_uindex
         unique (email, userUUID)
+    -- constraint tb_user_userUUID_uindex
+    --    unique (userUUID) -- Oracle 同一个列不能做两个索引
 );
 
 create index normal_index_tb_user
