@@ -197,7 +197,7 @@ public class Jdbc4PostgresMetadataServiceSupplierTest extends AbstractMetadataSe
     public void getPrimaryKey1() throws SQLException {
         JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(null, "tester", "proc_table_ref");
         assert primaryKey.getConstraintType() == JdbcConstraintType.PrimaryKey;
-        assert primaryKey.getName().equals("PRIMARY");
+        assert primaryKey.getName().equals("proc_table_ref_pkey");
         assert primaryKey.getColumns().size() == 1;
         assert primaryKey.getColumns().contains("r_int");
     }
@@ -206,7 +206,7 @@ public class Jdbc4PostgresMetadataServiceSupplierTest extends AbstractMetadataSe
     public void getPrimaryKey2() throws SQLException {
         JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(null, "tester", "proc_table");
         assert primaryKey.getConstraintType() == JdbcConstraintType.PrimaryKey;
-        assert primaryKey.getName().equals("PRIMARY");
+        assert primaryKey.getName().equals("proc_table_pkey");
         assert primaryKey.getColumns().size() == 2;
         assert primaryKey.getColumns().contains("c_id");
         assert primaryKey.getColumns().contains("c_name");
@@ -224,91 +224,86 @@ public class Jdbc4PostgresMetadataServiceSupplierTest extends AbstractMetadataSe
     public void getUniqueKey() throws SQLException {
         List<JdbcIndex> uniqueKeyList = this.repository.getUniqueKey(null, "tester", "tb_user");
         Map<String, JdbcIndex> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(JdbcIndex::getName, u -> u));
-        assert uniqueKeyMap.size() == 3;
-        assert uniqueKeyMap.containsKey("PRIMARY");
-        assert uniqueKeyMap.containsKey("tb_user_userUUID_uindex");
-        assert uniqueKeyMap.containsKey("tb_user_email_userUUID_uindex");
-        assert uniqueKeyMap.get("tb_user_userUUID_uindex").getColumns().size() == 1;
-        assert uniqueKeyMap.get("tb_user_userUUID_uindex").getColumns().contains("userUUID");
-        assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().size() == 2;
-        assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().contains("userUUID");
-        assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().contains("email");
+        assert uniqueKeyMap.size() == 2;
+        assert uniqueKeyMap.containsKey("tb_user_useruuid_uindex");
+        assert uniqueKeyMap.get("tb_user_useruuid_uindex").getColumns().size() == 1;
+        assert uniqueKeyMap.get("tb_user_useruuid_uindex").getColumns().contains("useruuid");
+        //
+        assert uniqueKeyMap.containsKey("tb_user_email_useruuid_uindex");
+        assert uniqueKeyMap.get("tb_user_email_useruuid_uindex").getColumns().size() == 2;
+        assert uniqueKeyMap.get("tb_user_email_useruuid_uindex").getColumns().contains("useruuid");
+        assert uniqueKeyMap.get("tb_user_email_useruuid_uindex").getColumns().contains("email");
     }
-    //
-    //    @Test
-    //    public void getForeignKey() throws SQLException {
-    //        List<JdbcForeignKey> foreignKeyList1 = this.repository.getForeignKey(MYSQL_SCHEMA_NAME, null, "tb_user");
-    //        assert foreignKeyList1.size() == 0;
-    //        List<JdbcForeignKey> foreignKeyList2 = this.repository.getForeignKey(MYSQL_SCHEMA_NAME, null, "proc_table_ref");
-    //        assert foreignKeyList2.size() == 1;
-    //        JdbcForeignKey foreignKey = foreignKeyList2.get(0);
-    //        assert foreignKey.getConstraintType() == JdbcConstraintType.ForeignKey;
-    //        assert foreignKey.getColumns().size() == 2;
-    //        assert foreignKey.getColumns().get(0).equals("r_k1");
-    //        assert foreignKey.getColumns().get(1).equals("r_k2");
-    //        assert foreignKey.getName().equals("ptr");
-    //        assert foreignKey.getReferenceCatalog().equals(MYSQL_SCHEMA_NAME);
-    //        assert foreignKey.getReferenceTable().equals("proc_table");
-    //        assert foreignKey.getReferenceMapping().get("r_k1").equals("c_id");
-    //        assert foreignKey.getReferenceMapping().get("r_k2").equals("c_name");
-    //    }
-    //
-    //    @Test
-    //    public void getIndexes1() throws SQLException {
-    //        List<JdbcIndex> indexList = this.repository.getIndexes(MYSQL_SCHEMA_NAME, null, "tb_user");
-    //        Map<String, JdbcIndex> indexMap = indexList.stream().collect(Collectors.toMap(JdbcIndex::getName, i -> i));
-    //        assert indexMap.size() == 4;
-    //        assert indexMap.containsKey("PRIMARY");
-    //        assert indexMap.containsKey("tb_user_userUUID_uindex");
-    //        assert indexMap.containsKey("tb_user_email_userUUID_uindex");
-    //        assert indexMap.containsKey("normal_index_tb_user");
-    //        assert indexMap.get("PRIMARY").getColumns().size() == 1;
-    //        assert indexMap.get("PRIMARY").getColumns().get(0).equals("userUUID");
-    //        assert indexMap.get("PRIMARY").isUnique();
-    //        assert indexMap.get("tb_user_userUUID_uindex").getColumns().size() == 1;
-    //        assert indexMap.get("tb_user_userUUID_uindex").getColumns().get(0).equals("userUUID");
-    //        assert indexMap.get("tb_user_userUUID_uindex").isUnique();
-    //        assert indexMap.get("tb_user_email_userUUID_uindex").getColumns().size() == 2;
-    //        assert indexMap.get("tb_user_email_userUUID_uindex").getColumns().get(0).equals("email");
-    //        assert indexMap.get("tb_user_email_userUUID_uindex").getColumns().get(1).equals("userUUID");
-    //        assert indexMap.get("tb_user_email_userUUID_uindex").isUnique();
-    //        assert indexMap.get("normal_index_tb_user").getColumns().size() == 2;
-    //        assert indexMap.get("normal_index_tb_user").getColumns().get(0).equals("loginPassword");
-    //        assert indexMap.get("normal_index_tb_user").getColumns().get(1).equals("loginName");
-    //        assert !indexMap.get("normal_index_tb_user").isUnique();
-    //    }
-    //
-    //    @Test
-    //    public void getIndexes2() throws SQLException {
-    //        List<JdbcIndex> indexList = this.repository.getIndexes(MYSQL_SCHEMA_NAME, null, "proc_table_ref");
-    //        Map<String, JdbcIndex> indexMap = indexList.stream().collect(Collectors.toMap(JdbcIndex::getName, i -> i));
-    //        assert indexMap.size() == 4;
-    //        assert indexMap.containsKey("PRIMARY");
-    //        assert indexMap.containsKey("proc_table_ref_uk");
-    //        assert indexMap.containsKey("proc_table_ref_index");
-    //        assert indexMap.containsKey("ptr");
-    //        assert indexMap.get("PRIMARY").getColumns().size() == 1;
-    //        assert indexMap.get("PRIMARY").getColumns().get(0).equals("r_int");
-    //        assert indexMap.get("PRIMARY").isUnique();
-    //        assert indexMap.get("proc_table_ref_uk").getColumns().size() == 1;
-    //        assert indexMap.get("proc_table_ref_uk").getColumns().get(0).equals("r_name");
-    //        assert indexMap.get("proc_table_ref_uk").isUnique();
-    //        assert indexMap.get("proc_table_ref_index").getColumns().size() == 1;
-    //        assert indexMap.get("proc_table_ref_index").getColumns().get(0).equals("r_index");
-    //        assert !indexMap.get("proc_table_ref_index").isUnique();
-    //        assert indexMap.get("ptr").getColumns().size() == 2;
-    //        assert indexMap.get("ptr").getColumns().get(0).equals("r_k1");
-    //        assert indexMap.get("ptr").getColumns().get(1).equals("r_k2");
-    //        assert !indexMap.get("ptr").isUnique();//MySQL JDBC 驱动无法识别联合索引的唯一特性
-    //    }
-    //
-    //    @Test
-    //    public void getIndexes4() throws SQLException {
-    //        JdbcIndex index = this.repository.getIndexes(MYSQL_SCHEMA_NAME, null, "proc_table_ref", "ptr");
-    //        assert index.getName().equals("ptr");
-    //        assert index.getColumns().size() == 2;
-    //        assert index.getColumns().get(0).equals("r_k1");
-    //        assert index.getColumns().get(1).equals("r_k2");
-    //        assert !index.isUnique();
-    //    }
+
+    @Test
+    public void getForeignKey() throws SQLException {
+        List<JdbcForeignKey> foreignKeyList1 = this.repository.getForeignKey(null, "tester", "tb_user");
+        assert foreignKeyList1.size() == 0;
+        List<JdbcForeignKey> foreignKeyList2 = this.repository.getForeignKey(null, "tester", "proc_table_ref");
+        assert foreignKeyList2.size() == 1;
+        JdbcForeignKey foreignKey = foreignKeyList2.get(0);
+        assert foreignKey.getConstraintType() == JdbcConstraintType.ForeignKey;
+        assert foreignKey.getColumns().size() == 2;
+        assert foreignKey.getColumns().get(0).equals("r_k1");
+        assert foreignKey.getColumns().get(1).equals("r_k2");
+        assert foreignKey.getName().equals("ptr");
+        assert foreignKey.getReferenceSchema().equals("tester");
+        assert foreignKey.getReferenceTable().equals("proc_table");
+        assert foreignKey.getReferenceMapping().get("r_k1").equals("c_name");
+        assert foreignKey.getReferenceMapping().get("r_k2").equals("c_id");
+    }
+
+    @Test
+    public void getIndexes1() throws SQLException {
+        List<JdbcIndex> indexList = this.repository.getIndexes(null, "tester", "tb_user");
+        Map<String, JdbcIndex> indexMap = indexList.stream().collect(Collectors.toMap(JdbcIndex::getName, i -> i));
+        assert indexMap.size() == 3;
+        //
+        assert indexMap.containsKey("tb_user_useruuid_uindex");
+        assert indexMap.get("tb_user_useruuid_uindex").getColumns().size() == 1;
+        assert indexMap.get("tb_user_useruuid_uindex").getColumns().get(0).equals("useruuid");
+        assert indexMap.get("tb_user_useruuid_uindex").isUnique();
+        //
+        assert indexMap.containsKey("normal_index_tb_user");
+        assert indexMap.get("normal_index_tb_user").getColumns().size() == 2;
+        assert indexMap.get("normal_index_tb_user").getColumns().get(0).equals("loginpassword");
+        assert indexMap.get("normal_index_tb_user").getColumns().get(1).equals("loginname");
+        assert !indexMap.get("normal_index_tb_user").isUnique();
+        //
+        assert indexMap.containsKey("tb_user_email_useruuid_uindex");
+        assert indexMap.get("tb_user_email_useruuid_uindex").getColumns().size() == 2;
+        assert indexMap.get("tb_user_email_useruuid_uindex").getColumns().get(0).equals("email");
+        assert indexMap.get("tb_user_email_useruuid_uindex").getColumns().get(1).equals("useruuid");
+        assert indexMap.get("tb_user_email_useruuid_uindex").isUnique();
+    }
+
+    @Test
+    public void getIndexes2() throws SQLException {
+        List<JdbcIndex> indexList = this.repository.getIndexes(null, "tester", "proc_table_ref");
+        Map<String, JdbcIndex> indexMap = indexList.stream().collect(Collectors.toMap(JdbcIndex::getName, i -> i));
+        //
+        assert indexMap.containsKey("proc_table_ref_pkey");
+        assert indexMap.get("proc_table_ref_pkey").getColumns().size() == 1;
+        assert indexMap.get("proc_table_ref_pkey").getColumns().get(0).equals("r_int");
+        assert indexMap.get("proc_table_ref_pkey").isUnique();
+        //
+        assert indexMap.containsKey("proc_table_ref_uk");
+        assert indexMap.get("proc_table_ref_uk").getColumns().size() == 1;
+        assert indexMap.get("proc_table_ref_uk").getColumns().get(0).equals("r_name");
+        assert indexMap.get("proc_table_ref_uk").isUnique();
+        //
+        assert indexMap.containsKey("proc_table_ref_index");
+        assert indexMap.get("proc_table_ref_index").getColumns().size() == 1;
+        assert indexMap.get("proc_table_ref_index").getColumns().get(0).equals("r_index");
+        assert !indexMap.get("proc_table_ref_index").isUnique();
+    }
+
+    @Test
+    public void getIndexes4() throws SQLException {
+        JdbcIndex index = this.repository.getIndexes(null, "tester", "proc_table_ref", "proc_table_ref_uk");
+        assert index.getName().equals("proc_table_ref_uk");
+        assert index.getColumns().size() == 1;
+        assert index.getColumns().get(0).equals("r_name");
+        assert index.isUnique();
+    }
 }

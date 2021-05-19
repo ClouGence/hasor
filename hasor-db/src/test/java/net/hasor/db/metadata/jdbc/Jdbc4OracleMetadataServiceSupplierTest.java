@@ -175,13 +175,14 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
         List<JdbcConstraint> columnList = this.repository.getConstraint(null, "SCOTT", "PROC_TABLE_REF");
         Map<String, JdbcConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(JdbcConstraint::getName, JdbcConstraint::getConstraintType));
         Set<String> typeNameSet = columnList.stream().map(JdbcConstraint::getName).collect(Collectors.toSet());
+        Set<JdbcConstraintType> typeEnumSet = columnList.stream().map(JdbcConstraint::getConstraintType).collect(Collectors.toSet());
         //
         assert typeMap.size() == 2;
-        assert typeNameSet.contains("PRIMARY");
+        assert typeNameSet.stream().anyMatch(s -> s.startsWith("SYS_"));
         assert typeNameSet.contains("PTR");
         //
-        assert typeMap.get("PRIMARY") == JdbcConstraintType.PrimaryKey;
         assert typeMap.get("PTR") == JdbcConstraintType.ForeignKey;
+        assert typeEnumSet.contains(JdbcConstraintType.PrimaryKey);
     }
 
     @Test
@@ -197,7 +198,7 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
     public void getPrimaryKey1() throws SQLException {
         JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(null, "SCOTT", "PROC_TABLE_REF");
         assert primaryKey.getConstraintType() == JdbcConstraintType.PrimaryKey;
-        assert primaryKey.getName().equals("PRIMARY");
+        assert primaryKey.getName().startsWith("SYS_");
         assert primaryKey.getColumns().size() == 1;
         assert primaryKey.getColumns().contains("R_INT");
     }
@@ -206,7 +207,7 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
     public void getPrimaryKey2() throws SQLException {
         JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(null, "SCOTT", "PROC_TABLE");
         assert primaryKey.getConstraintType() == JdbcConstraintType.PrimaryKey;
-        assert primaryKey.getName().equals("PRIMARY");
+        assert primaryKey.getName().startsWith("SYS_");
         assert primaryKey.getColumns().size() == 2;
         assert primaryKey.getColumns().contains("C_ID");
         assert primaryKey.getColumns().contains("C_NAME");

@@ -109,11 +109,9 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         try (Connection conn = this.connectSupplier.eGet()) {
             DatabaseMetaData metaData = conn.getMetaData();
             try (ResultSet resultSet = metaData.getSchemas()) {
+                final ColumnMapRowMapper rowMapper = new ColumnMapRowMapper();
                 return new RowMapperResultSetExtractor<>((rs, rowNum) -> {
-                    JdbcSchema jdbcSchema = new JdbcSchema();
-                    jdbcSchema.setSchema(rs.getString("TABLE_SCHEM"));
-                    jdbcSchema.setCatalog(rs.getString("TABLE_CATALOG"));
-                    return jdbcSchema;
+                    return convertSchema(rowMapper.mapRow(rs, rowNum));
                 }).extractData(resultSet);
             }
         }
@@ -128,11 +126,9 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         try (Connection conn = this.connectSupplier.eGet()) {
             DatabaseMetaData metaData = conn.getMetaData();
             try (ResultSet resultSet = metaData.getSchemas(catalog, null)) {
+                final ColumnMapRowMapper rowMapper = new ColumnMapRowMapper();
                 return new RowMapperResultSetExtractor<>((rs, rowNum) -> {
-                    JdbcSchema jdbcSchema = new JdbcSchema();
-                    jdbcSchema.setSchema(rs.getString("TABLE_SCHEM"));
-                    jdbcSchema.setCatalog(rs.getString("TABLE_CATALOG"));
-                    return jdbcSchema;
+                    return convertSchema(rowMapper.mapRow(rs, rowNum));
                 }).extractData(resultSet);
             }
         }
@@ -150,22 +146,14 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         try (Connection conn = this.connectSupplier.eGet()) {
             DatabaseMetaData metaData = conn.getMetaData();
             try (ResultSet resultSet = metaData.getSchemas(catalog, schemaName)) {
-                List<JdbcSchema> jdbcSchemaSet = new RowMapperResultSetExtractor<>((rs, rowNum) -> {
-                    JdbcSchema jdbcSchema = new JdbcSchema();
-                    jdbcSchema.setSchema(rs.getString("TABLE_SCHEM"));
-                    jdbcSchema.setCatalog(rs.getString("TABLE_CATALOG"));
-                    return jdbcSchema;
+                final ColumnMapRowMapper rowMapper = new ColumnMapRowMapper();
+                List<JdbcSchema> jdbcSchemas = new RowMapperResultSetExtractor<>((rs, rowNum) -> {
+                    return convertSchema(rowMapper.mapRow(rs, rowNum));
                 }).extractData(resultSet);
                 //
-                if (jdbcSchemaSet.isEmpty()) {
-                    return null;
-                }
-                for (JdbcSchema jdbcSchema : jdbcSchemaSet) {
-                    if (StringUtils.equals(jdbcSchema.getSchema(), schemaName)) {
-                        return jdbcSchema;
-                    }
-                }
-                return null;
+                return jdbcSchemas.stream().filter(jdbcSchema -> {
+                    return StringUtils.equals(jdbcSchema.getSchema(), schemaName);
+                }).findFirst().orElse(null);
             }
         }
     }
@@ -292,11 +280,9 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
     }
 
     /**
-     * @param catalog a catalog name; must match the catalog name as it
-     *        is stored in the database; "" retrieves those without a catalog;
+     * @param catalog a catalog name; must match the catalog name as it is stored in the database; "" retrieves those without a catalog;
      *        <code>null</code> means that the catalog name should not be used to narrow the search
-     * @param schemaName a schema name; must match the schema name as it is stored in the database;
-     *        "" retrieves those without a schema;
+     * @param schemaName a schema name; must match the schema name as it is stored in the database; "" retrieves those without a schema;
      *        <code>null</code> means that the schema name should not be used to narrow the search
      * @param table a table name; must match the table name as it is stored in the database
      */
@@ -312,11 +298,7 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
                     return null;
                 }
                 //
-                JdbcPrimaryKey primaryKey = new JdbcPrimaryKey();
-                primaryKey.setName("PRIMARY");
-                primaryKey.setConstraintType(JdbcConstraintType.PrimaryKey);
-                //
-                mapList.sort((o1, o2) -> {
+                Map<String, Optional<JdbcPrimaryKey>> pkMap = mapList.stream().sorted((o1, o2) -> {
                     Integer o1KeySeq = safeToInteger(o1.get("KEY_SEQ"));
                     Integer o2KeySeq = safeToInteger(o2.get("KEY_SEQ"));
                     if (o1KeySeq != null && o2KeySeq != null) {
@@ -324,14 +306,20 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
                     } else {
                         return 0;
                     }
-                });
-                for (Map<String, Object> recordMap : mapList) {
-                    primaryKey.setCatalog(safeToString(recordMap.get("TABLE_CAT")));
-                    primaryKey.setSchema(safeToString(recordMap.get("TABLE_SCHEM")));
-                    primaryKey.setTable(safeToString(recordMap.get("TABLE_NAME")));
-                    primaryKey.getColumns().add(safeToString(recordMap.get("COLUMN_NAME")));
+                }).map(this::convertPrimaryKey).collect(Collectors.groupingBy(o -> {
+                    // group by (schema + name)
+                    return o.getSchema() + "," + o.getName();
+                }, Collectors.reducing((pk1, pk2) -> {
+                    // reducing group by data in to one.
+                    pk1.getColumns().addAll(pk2.getColumns());
+                    return pk1;
+                })));
+                if (pkMap.size() > 1) {
+                    throw new SQLException("Data error encountered multiple primary keys '" + StringUtils.join(pkMap.keySet().toArray(), "','") + "'");
                 }
-                return primaryKey;
+                //
+                Optional<JdbcPrimaryKey> primaryKeyOptional = pkMap.values().stream().findFirst().orElse(Optional.empty());
+                return primaryKeyOptional.orElse(null);
             }
         }
     }
@@ -356,44 +344,29 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
                 if (mapList == null || mapList.isEmpty()) {
                     return Collections.emptyList();
                 }
-                // sorted
-                mapList.sort((o1, o2) -> {
+                //
+                return mapList.stream().filter(recordMap -> {
+                    // Oracle 数据库使用 JDBC，可能出现一个 null 名字的索引。
+                    return StringUtils.isNotBlank(safeToString(recordMap.get("INDEX_NAME")));
+                }).sorted((o1, o2) -> {
+                    // sort by ORDINAL_POSITION
                     Integer o1Index = safeToInteger(o1.get("ORDINAL_POSITION"));
                     Integer o2Index = safeToInteger(o2.get("ORDINAL_POSITION"));
                     if (o1Index != null && o2Index != null) {
                         return Integer.compare(o1Index, o2Index);
                     }
                     return 0;
-                });
-                // group by table
-                Map<String, JdbcIndex> groupByName = new LinkedHashMap<>();
-                for (Map<String, Object> indexColumn : mapList) {
-                    String indexName = safeToString(indexColumn.get("INDEX_NAME"));
-                    if (StringUtils.isBlank(indexName)) {
-                        continue;// Oracle 数据库使用 JDBC，可能出现一个 null 名字的索引。
-                    }
-                    JdbcIndex indexMap = groupByName.computeIfAbsent(indexName, k -> {
-                        JdbcIndex jdbcIndex = new JdbcIndex();
-                        jdbcIndex.setTableCatalog(safeToString(indexColumn.get("TABLE_CAT")));
-                        jdbcIndex.setTableSchema(safeToString(indexColumn.get("TABLE_SCHEM")));
-                        jdbcIndex.setTableName(safeToString(indexColumn.get("TABLE_NAME")));
-                        jdbcIndex.setName(indexName);
-                        jdbcIndex.setUnique(!safeToBoolean(indexColumn.get("NON_UNIQUE")));
-                        //
-                        jdbcIndex.setIndexType(JdbcIndexType.valueOfCode(safeToInteger(indexColumn.get("TYPE"))));
-                        jdbcIndex.setIndexQualifier(safeToString(indexColumn.get("INDEX_QUALIFIER")));
-                        jdbcIndex.setCardinality(safeToLong(indexColumn.get("CARDINALITY")));
-                        jdbcIndex.setPages(safeToLong(indexColumn.get("PAGES")));
-                        jdbcIndex.setFilterCondition(safeToString(indexColumn.get("FILTER_CONDITION")));
-                        return jdbcIndex;
-                    });
-                    //
-                    String columnName = safeToString(indexColumn.get("COLUMN_NAME"));
-                    String ascOrDesc = safeToString(indexColumn.get("ASC_OR_DESC"));
-                    indexMap.getColumns().add(columnName);
-                    indexMap.getStorageType().put(columnName, ascOrDesc);
-                }
-                return new ArrayList<>(groupByName.values());
+                }).map(this::convertIndex).collect(Collectors.groupingBy(o -> {
+                    // group by (tableName + indexName)
+                    return o.getTableName() + "," + o.getName();
+                }, Collectors.reducing((idx1, idx2) -> {
+                    // reducing group by data in to one.
+                    idx1.getColumns().addAll(idx2.getColumns());
+                    idx1.getStorageType().putAll(idx2.getStorageType());
+                    return idx1;
+                }))).values().stream().map(o -> {
+                    return o.orElse(null);
+                }).filter(Objects::nonNull).collect(Collectors.toList());
             }
         }
     }
@@ -461,42 +434,26 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
                 if (mapList == null || mapList.isEmpty()) {
                     return Collections.emptyList();
                 }
-                // sorted
-                mapList.sort((o1, o2) -> {
-                    Integer o1Index = safeToInteger(o1.get("KEY_SEQ"));
-                    Integer o2Index = safeToInteger(o2.get("KEY_SEQ"));
-                    if (o1Index != null && o2Index != null) {
-                        return Integer.compare(o1Index, o2Index);
+                //
+                return mapList.stream().sorted((o1, o2) -> {
+                    Integer o1KeySeq = safeToInteger(o1.get("KEY_SEQ"));
+                    Integer o2KeySeq = safeToInteger(o2.get("KEY_SEQ"));
+                    if (o1KeySeq != null && o2KeySeq != null) {
+                        return Integer.compare(o1KeySeq, o2KeySeq);
+                    } else {
+                        return 0;
                     }
-                    return 0;
-                });
-                // group by table
-                Map<String, JdbcForeignKey> groupByName = new LinkedHashMap<>();
-                for (Map<String, Object> fkColumn : mapList) {
-                    String fkName = safeToString(fkColumn.get("FK_NAME"));
-                    JdbcForeignKey foreignKey = groupByName.computeIfAbsent(fkName, k -> {
-                        JdbcForeignKey jdbcForeignKey = new JdbcForeignKey();
-                        jdbcForeignKey.setCatalog(safeToString(fkColumn.get("FKTABLE_CAT")));
-                        jdbcForeignKey.setSchema(safeToString(fkColumn.get("FKTABLE_SCHEM")));
-                        jdbcForeignKey.setTable(safeToString(fkColumn.get("FKTABLE_NAME")));
-                        jdbcForeignKey.setReferenceCatalog(safeToString(fkColumn.get("PKTABLE_CAT")));
-                        jdbcForeignKey.setReferenceSchema(safeToString(fkColumn.get("PKTABLE_SCHEM")));
-                        jdbcForeignKey.setReferenceTable(safeToString(fkColumn.get("PKTABLE_NAME")));
-                        jdbcForeignKey.setName(safeToString(fkColumn.get("FK_NAME")));
-                        jdbcForeignKey.setConstraintType(JdbcConstraintType.ForeignKey);
-                        //
-                        jdbcForeignKey.setUpdateRule(JdbcForeignKeyRule.valueOfCode(safeToInteger(fkColumn.get("UPDATE_RULE"))));
-                        jdbcForeignKey.setDeleteRule(JdbcForeignKeyRule.valueOfCode(safeToInteger(fkColumn.get("DELETE_RULE"))));
-                        jdbcForeignKey.setDeferrability(JdbcDeferrability.valueOfCode(safeToInteger(fkColumn.get("DEFERRABILITY"))));
-                        return jdbcForeignKey;
-                    });
-                    //
-                    String pkColumnName = safeToString(fkColumn.get("PKCOLUMN_NAME"));
-                    String fkColumnName = safeToString(fkColumn.get("FKCOLUMN_NAME"));
-                    foreignKey.getColumns().add(fkColumnName);
-                    foreignKey.getReferenceMapping().put(fkColumnName, pkColumnName);
-                }
-                return new ArrayList<>(groupByName.values());
+                }).map(this::convertForeignKey).collect(Collectors.groupingBy(o -> {
+                    // group by (schema + name)
+                    return o.getSchema() + "," + o.getName();
+                }, Collectors.reducing((fk1, fk2) -> {
+                    // reducing group by data in to one.
+                    fk1.getColumns().addAll(fk2.getColumns());
+                    fk1.getReferenceMapping().putAll(fk2.getReferenceMapping());
+                    return fk1;
+                }))).values().stream().map(o -> {
+                    return o.orElse(null);
+                }).filter(Objects::nonNull).collect(Collectors.toList());
             }
         }
     }
@@ -545,6 +502,13 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         }).collect(Collectors.toList());
     }
 
+    protected JdbcSchema convertSchema(Map<String, Object> recordMap) {
+        JdbcSchema jdbcSchema = new JdbcSchema();
+        jdbcSchema.setSchema(safeToString(recordMap.get("TABLE_SCHEM")));
+        jdbcSchema.setCatalog(safeToString(recordMap.get("TABLE_CATALOG")));
+        return jdbcSchema;
+    }
+
     protected JdbcTable convertTable(Map<String, Object> rs) throws SQLException {
         JdbcTable jdbcSchema = new JdbcTable();
         jdbcSchema.setCatalog(safeToString(rs.get("TABLE_CAT")));
@@ -562,7 +526,7 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         return jdbcSchema;
     }
 
-    protected JdbcColumn convertColumn(Map<String, Object> rs, JdbcPrimaryKey primaryKey, Set<String> uniqueKey) throws SQLException {
+    protected JdbcColumn convertColumn(Map<String, Object> rs, JdbcPrimaryKey primaryKey, Set<String> uniqueKey) {
         JdbcColumn jdbcColumn = new JdbcColumn();
         jdbcColumn.setTableCatalog(safeToString(rs.get("TABLE_CAT")));
         jdbcColumn.setTableSchema(safeToString(rs.get("TABLE_SCHEM")));
@@ -623,5 +587,60 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Me
         }
         jdbcColumn.setUniqueKey(uniqueKey.contains(jdbcColumn.getColumnName()));
         return jdbcColumn;
+    }
+
+    protected JdbcPrimaryKey convertPrimaryKey(Map<String, Object> recordMap) {
+        JdbcPrimaryKey primaryKey = new JdbcPrimaryKey();
+        primaryKey.setCatalog(safeToString(recordMap.get("TABLE_CAT")));
+        primaryKey.setSchema(safeToString(recordMap.get("TABLE_SCHEM")));
+        primaryKey.setTable(safeToString(recordMap.get("TABLE_NAME")));
+        primaryKey.setName(safeToString(recordMap.get("PK_NAME")));
+        primaryKey.setConstraintType(JdbcConstraintType.PrimaryKey);
+        //
+        primaryKey.getColumns().add(safeToString(recordMap.get("COLUMN_NAME")));
+        return primaryKey;
+    }
+
+    protected JdbcIndex convertIndex(Map<String, Object> recordMap) {
+        JdbcIndex jdbcIndex = new JdbcIndex();
+        jdbcIndex.setTableCatalog(safeToString(recordMap.get("TABLE_CAT")));
+        jdbcIndex.setTableSchema(safeToString(recordMap.get("TABLE_SCHEM")));
+        jdbcIndex.setTableName(safeToString(recordMap.get("TABLE_NAME")));
+        jdbcIndex.setName(safeToString(recordMap.get("INDEX_NAME")));
+        jdbcIndex.setUnique(!safeToBoolean(recordMap.get("NON_UNIQUE")));
+        //
+        jdbcIndex.setIndexType(JdbcIndexType.valueOfCode(safeToInteger(recordMap.get("TYPE"))));
+        jdbcIndex.setIndexQualifier(safeToString(recordMap.get("INDEX_QUALIFIER")));
+        jdbcIndex.setCardinality(safeToLong(recordMap.get("CARDINALITY")));
+        jdbcIndex.setPages(safeToLong(recordMap.get("PAGES")));
+        jdbcIndex.setFilterCondition(safeToString(recordMap.get("FILTER_CONDITION")));
+        //
+        String columnName = safeToString(recordMap.get("COLUMN_NAME"));
+        String ascOrDesc = safeToString(recordMap.get("ASC_OR_DESC"));
+        jdbcIndex.getColumns().add(columnName);
+        jdbcIndex.getStorageType().put(columnName, ascOrDesc);
+        return jdbcIndex;
+    }
+
+    protected JdbcForeignKey convertForeignKey(Map<String, Object> recordMap) {
+        JdbcForeignKey foreignKey = new JdbcForeignKey();
+        foreignKey.setCatalog(safeToString(recordMap.get("FKTABLE_CAT")));
+        foreignKey.setSchema(safeToString(recordMap.get("FKTABLE_SCHEM")));
+        foreignKey.setTable(safeToString(recordMap.get("FKTABLE_NAME")));
+        foreignKey.setName(safeToString(recordMap.get("FK_NAME")));
+        foreignKey.setConstraintType(JdbcConstraintType.ForeignKey);
+        foreignKey.setReferenceCatalog(safeToString(recordMap.get("PKTABLE_CAT")));
+        foreignKey.setReferenceSchema(safeToString(recordMap.get("PKTABLE_SCHEM")));
+        foreignKey.setReferenceTable(safeToString(recordMap.get("PKTABLE_NAME")));
+        //
+        foreignKey.setUpdateRule(JdbcForeignKeyRule.valueOfCode(safeToInteger(recordMap.get("UPDATE_RULE"))));
+        foreignKey.setDeleteRule(JdbcForeignKeyRule.valueOfCode(safeToInteger(recordMap.get("DELETE_RULE"))));
+        foreignKey.setDeferrability(JdbcDeferrability.valueOfCode(safeToInteger(recordMap.get("DEFERRABILITY"))));
+        //
+        String pkColumnName = safeToString(recordMap.get("PKCOLUMN_NAME"));
+        String fkColumnName = safeToString(recordMap.get("FKCOLUMN_NAME"));
+        foreignKey.getColumns().add(fkColumnName);
+        foreignKey.getReferenceMapping().put(fkColumnName, pkColumnName);
+        return foreignKey;
     }
 }

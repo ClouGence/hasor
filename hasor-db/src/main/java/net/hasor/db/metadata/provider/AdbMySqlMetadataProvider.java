@@ -17,6 +17,8 @@ package net.hasor.db.metadata.provider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.metadata.*;
 import net.hasor.db.metadata.domain.adb.mysql.*;
+import net.hasor.db.metadata.domain.mysql.MySqlConstraint;
+import net.hasor.db.metadata.domain.mysql.MySqlConstraintType;
 import net.hasor.utils.StringUtils;
 
 import javax.sql.DataSource;
@@ -116,13 +118,7 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
             if (mapList == null) {
                 return Collections.emptyList();
             }
-            return mapList.stream().map(recordMap -> {
-                AdbMySqlSchema schema = new AdbMySqlSchema();
-                schema.setName(safeToString(recordMap.get("SCHEMA_NAME")));
-                schema.setDefaultCharacterSetName(safeToString(recordMap.get("DEFAULT_CHARACTER_SET_NAME")));
-                schema.setDefaultCollationName(safeToString(recordMap.get("DEFAULT_COLLATION_NAME")));
-                return schema;
-            }).collect(Collectors.toList());
+            return mapList.stream().map(this::convertSchema).collect(Collectors.toList());
         }
     }
 
@@ -136,13 +132,7 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
             if (mapList == null) {
                 return null;
             }
-            return mapList.stream().map(recordMap -> {
-                AdbMySqlSchema schema = new AdbMySqlSchema();
-                schema.setName(safeToString(recordMap.get("SCHEMA_NAME")));
-                schema.setDefaultCharacterSetName(safeToString(recordMap.get("DEFAULT_CHARACTER_SET_NAME")));
-                schema.setDefaultCollationName(safeToString(recordMap.get("DEFAULT_COLLATION_NAME")));
-                return schema;
-            }).findFirst().orElse(null);
+            return mapList.stream().map(this::convertSchema).findFirst().orElse(null);
         }
     }
 
@@ -163,14 +153,7 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
             if (mapList == null) {
                 return Collections.emptyMap();
             }
-            Map<String, List<AdbMySqlTable>> resultData = new HashMap<>();
-            mapList.forEach(recordMap -> {
-                String dbName = safeToString(recordMap.get("TABLE_SCHEMA"));
-                List<AdbMySqlTable> tableList = resultData.computeIfAbsent(dbName, k -> new ArrayList<>());
-                AdbMySqlTable table = convertTable(recordMap);
-                tableList.add(table);
-            });
-            return resultData;
+            return mapList.stream().map(this::convertTable).collect(Collectors.groupingBy(AdbMySqlTable::getSchema));
         }
     }
 
@@ -285,25 +268,7 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
         }).collect(Collectors.toList());
         //
         return columnList.stream().map(recordMap -> {
-            AdbMySqlColumn column = new AdbMySqlColumn();
-            column.setName(safeToString(recordMap.get("COLUMN_NAME")));
-            column.setNullable(safeToBoolean(recordMap.get("IS_NULLABLE")));
-            column.setDataType(safeToString(recordMap.get("DATA_TYPE")));
-            column.setColumnType(safeToString(recordMap.get("COLUMN_TYPE")));
-            column.setSqlType(safeToAdbMySqlTypes(recordMap.get("DATA_TYPE")));
-            column.setJdbcType(columnTypeMappingToJdbcType(column.getSqlType(), column.getColumnType()));
-            column.setDefaultCollationName(safeToString(recordMap.get("COLLATION_NAME")));
-            column.setDefaultCharacterSetName(safeToString(recordMap.get("CHARACTER_SET_NAME")));
-            column.setCharactersMaxLength(safeToLong(recordMap.get("CHARACTER_MAXIMUM_LENGTH")));
-            column.setBytesMaxLength(safeToInteger(recordMap.get("CHARACTER_OCTET_LENGTH")));
-            column.setDatetimePrecision(safeToInteger(recordMap.get("DATETIME_PRECISION")));
-            column.setNumericPrecision(safeToInteger(recordMap.get("NUMERIC_PRECISION")));
-            column.setNumericScale(safeToInteger(recordMap.get("NUMERIC_SCALE")));
-            column.setDefaultValue(safeToString(recordMap.get("COLUMN_DEFAULT")));
-            //
-            column.setPrimaryKey(primaryKeyColumnNameList.contains(column.getName()));
-            column.setComment(safeToString(recordMap.get("COLUMN_COMMENT")));
-            return column;
+            return convertColumn(recordMap, primaryKeyColumnNameList);
         }).collect(Collectors.toList());
     }
 
@@ -318,24 +283,37 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
             }
         }
         //
-        String queryString = "select COLUMN_NAME,INDEX_TYPE FROM INFORMATION_SCHEMA.STATISTICS " //
+        String queryString = "select INDEX_SCHEMA,INDEX_NAME,COLUMN_NAME,INDEX_TYPE FROM INFORMATION_SCHEMA.STATISTICS " //
                 + "where TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME = 'PRIMARY' order by SEQ_IN_INDEX asc";
         try (Connection conn = this.connectSupplier.eGet()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {
                 return null;
             }
-            AdbMySqlPrimaryKey primaryKey = new AdbMySqlPrimaryKey();
-            primaryKey.setSchema(schemaName);
-            primaryKey.setName("PRIMARY");
-            for (Map<String, Object> ent : mapList) {
-                String cName = safeToString(ent.get("COLUMN_NAME"));
-                String cType = safeToString(ent.get("INDEX_TYPE"));
-                primaryKey.getColumns().add(cName);
-                primaryKey.getStorageType().put(cName, cType);
+            //
+            Map<String, Optional<AdbMySqlPrimaryKey>> pkMap = mapList.stream().map(this::convertPrimaryKey).collect(Collectors.groupingBy(o -> {
+                // group by (schema + name)
+                return o.getSchema() + "," + o.getName();
+            }, Collectors.reducing((pk1, pk2) -> {
+                // reducing group by data in to one.
+                pk1.getColumns().addAll(pk2.getColumns());
+                return pk1;
+            })));
+            if (pkMap.size() > 1) {
+                throw new SQLException("Data error encountered multiple primary keys '" + StringUtils.join(pkMap.keySet().toArray(), "','") + "'");
             }
-            return primaryKey;
+            //
+            Optional<AdbMySqlPrimaryKey> primaryKeyOptional = pkMap.values().stream().findFirst().orElse(Optional.empty());
+            return primaryKeyOptional.orElse(null);
         }
+    }
+
+    protected AdbMySqlSchema convertSchema(Map<String, Object> recordMap) {
+        AdbMySqlSchema schema = new AdbMySqlSchema();
+        schema.setName(safeToString(recordMap.get("SCHEMA_NAME")));
+        schema.setDefaultCharacterSetName(safeToString(recordMap.get("DEFAULT_CHARACTER_SET_NAME")));
+        schema.setDefaultCollationName(safeToString(recordMap.get("DEFAULT_COLLATION_NAME")));
+        return schema;
     }
 
     protected AdbMySqlTable convertTable(Map<String, Object> recordMap) {
@@ -362,6 +340,51 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
         table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
         table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
         return table;
+    }
+
+    protected AdbMySqlColumn convertColumn(Map<String, Object> recordMap, List<String> primaryKeyColumnList) {
+        AdbMySqlColumn column = new AdbMySqlColumn();
+        column.setName(safeToString(recordMap.get("COLUMN_NAME")));
+        column.setNullable(safeToBoolean(recordMap.get("IS_NULLABLE")));
+        column.setDataType(safeToString(recordMap.get("DATA_TYPE")));
+        column.setColumnType(safeToString(recordMap.get("COLUMN_TYPE")));
+        column.setSqlType(safeToAdbMySqlTypes(recordMap.get("DATA_TYPE")));
+        column.setJdbcType(columnTypeMappingToJdbcType(column.getSqlType(), column.getColumnType()));
+        column.setDefaultCollationName(safeToString(recordMap.get("COLLATION_NAME")));
+        column.setDefaultCharacterSetName(safeToString(recordMap.get("CHARACTER_SET_NAME")));
+        column.setCharactersMaxLength(safeToLong(recordMap.get("CHARACTER_MAXIMUM_LENGTH")));
+        column.setBytesMaxLength(safeToInteger(recordMap.get("CHARACTER_OCTET_LENGTH")));
+        column.setDatetimePrecision(safeToInteger(recordMap.get("DATETIME_PRECISION")));
+        column.setNumericPrecision(safeToInteger(recordMap.get("NUMERIC_PRECISION")));
+        column.setNumericScale(safeToInteger(recordMap.get("NUMERIC_SCALE")));
+        column.setDefaultValue(safeToString(recordMap.get("COLUMN_DEFAULT")));
+        //
+        column.setPrimaryKey(primaryKeyColumnList.contains(column.getName()));
+        column.setComment(safeToString(recordMap.get("COLUMN_COMMENT")));
+        return column;
+    }
+
+    protected MySqlConstraint convertConstraint(Map<String, Object> recordMap) {
+        String constraintSchema = safeToString(recordMap.get("CONSTRAINT_SCHEMA"));
+        String constraintName = safeToString(recordMap.get("CONSTRAINT_NAME"));
+        String constraintTypeString = safeToString(recordMap.get("CONSTRAINT_TYPE"));
+        MySqlConstraint constraint = new MySqlConstraint();
+        constraint.setSchema(constraintSchema);
+        constraint.setName(constraintName);
+        constraint.setConstraintType(MySqlConstraintType.valueOfCode(constraintTypeString));
+        return constraint;
+    }
+
+    protected AdbMySqlPrimaryKey convertPrimaryKey(Map<String, Object> recordMap) {
+        AdbMySqlPrimaryKey primaryKey = new AdbMySqlPrimaryKey();
+        primaryKey.setSchema(safeToString(recordMap.get("INDEX_SCHEMA")));
+        primaryKey.setName(safeToString(recordMap.get("INDEX_NAME")));
+        //
+        String cName = safeToString(recordMap.get("COLUMN_NAME"));
+        String cType = safeToString(recordMap.get("INDEX_TYPE"));
+        primaryKey.getColumns().add(cName);
+        primaryKey.getStorageType().put(cName, cType);
+        return primaryKey;
     }
 
     protected JDBCType columnTypeMappingToJdbcType(SqlType sqlType, String columnType) {

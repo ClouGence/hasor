@@ -17,6 +17,7 @@ package net.hasor.db.metadata.provider;
 import net.hasor.db.metadata.CaseSensitivityType;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
+import net.hasor.utils.function.EFunction;
 import net.hasor.utils.function.ESupplier;
 
 import javax.sql.DataSource;
@@ -91,6 +92,12 @@ public class AbstractMetadataProvider {
             }
         }
         return this.delimitedCaseSensitivityType;
+    }
+
+    public <R> R applySql(EFunction<Connection, R, SQLException> applySql) throws SQLException {
+        try (Connection conn = this.connectSupplier.eGet()) {
+            return applySql.eApply(conn);
+        }
     }
 
     protected static Connection newProxyConnection(Connection connection) {

@@ -327,14 +327,13 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             }
             //
             Map<String, Optional<OraclePrimaryKey>> pkMap = mapList.stream().map(this::convertPrimaryKey).collect(Collectors.groupingBy(o -> {
-                // group by ( + name)
+                // group by (schema + name)
                 return o.getSchema() + "," + o.getName();
             }, Collectors.reducing((pk1, pk2) -> {
                 // reducing group by data in to one.
                 pk1.getColumns().addAll(pk2.getColumns());
                 return pk1;
             })));
-            //
             if (pkMap.size() > 1) {
                 throw new SQLException("Data error encountered multiple primary keys '" + StringUtils.join(pkMap.keySet().toArray(), "','") + "'");
             }

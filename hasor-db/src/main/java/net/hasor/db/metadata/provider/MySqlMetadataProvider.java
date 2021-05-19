@@ -109,13 +109,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
             if (mapList == null) {
                 return Collections.emptyList();
             }
-            return mapList.stream().map(recordMap -> {
-                MySqlSchema schema = new MySqlSchema();
-                schema.setName(safeToString(recordMap.get("SCHEMA_NAME")));
-                schema.setDefaultCharacterSetName(safeToString(recordMap.get("DEFAULT_CHARACTER_SET_NAME")));
-                schema.setDefaultCollationName(safeToString(recordMap.get("DEFAULT_COLLATION_NAME")));
-                return schema;
-            }).collect(Collectors.toList());
+            return mapList.stream().map(this::convertSchema).collect(Collectors.toList());
         }
     }
 
@@ -129,13 +123,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
             if (mapList == null) {
                 return null;
             }
-            return mapList.stream().map(recordMap -> {
-                MySqlSchema schema = new MySqlSchema();
-                schema.setName(safeToString(recordMap.get("SCHEMA_NAME")));
-                schema.setDefaultCharacterSetName(safeToString(recordMap.get("DEFAULT_CHARACTER_SET_NAME")));
-                schema.setDefaultCollationName(safeToString(recordMap.get("DEFAULT_COLLATION_NAME")));
-                return schema;
-            }).findFirst().orElse(null);
+            return mapList.stream().map(this::convertSchema).findFirst().orElse(null);
         }
     }
 
@@ -156,14 +144,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
             if (mapList == null) {
                 return Collections.emptyMap();
             }
-            Map<String, List<MySqlTable>> resultData = new HashMap<>();
-            mapList.forEach(recordMap -> {
-                String dbName = safeToString(recordMap.get("TABLE_SCHEMA"));
-                List<MySqlTable> tableList = resultData.computeIfAbsent(dbName, k -> new ArrayList<>());
-                MySqlTable table = this.convertTable(recordMap);
-                tableList.add(table);
-            });
-            return resultData;
+            return mapList.stream().map(this::convertTable).collect(Collectors.groupingBy(MySqlTable::getSchema));
         }
     }
 
@@ -287,26 +268,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         }).collect(Collectors.toList());
         //
         return columnList.stream().map(recordMap -> {
-            MySqlColumn column = new MySqlColumn();
-            column.setName(safeToString(recordMap.get("COLUMN_NAME")));
-            column.setNullable(safeToBoolean(recordMap.get("IS_NULLABLE")));
-            column.setDataType(safeToString(recordMap.get("DATA_TYPE")));
-            column.setColumnType(safeToString(recordMap.get("COLUMN_TYPE")));
-            column.setSqlType(safeToMySqlTypes(recordMap.get("DATA_TYPE")));
-            column.setJdbcType(columnTypeMappingToJdbcType(column.getSqlType(), column.getColumnType()));
-            column.setDefaultCollationName(safeToString(recordMap.get("COLLATION_NAME")));
-            column.setDefaultCharacterSetName(safeToString(recordMap.get("CHARACTER_SET_NAME")));
-            column.setCharactersMaxLength(safeToLong(recordMap.get("CHARACTER_MAXIMUM_LENGTH")));
-            column.setBytesMaxLength(safeToInteger(recordMap.get("CHARACTER_OCTET_LENGTH")));
-            column.setDatetimePrecision(safeToInteger(recordMap.get("DATETIME_PRECISION")));
-            column.setNumericPrecision(safeToInteger(recordMap.get("NUMERIC_PRECISION")));
-            column.setNumericScale(safeToInteger(recordMap.get("NUMERIC_SCALE")));
-            column.setDefaultValue(safeToString(recordMap.get("COLUMN_DEFAULT")));
-            //
-            column.setPrimaryKey(primaryKeyColumnNameList.contains(column.getName()));
-            column.setUniqueKey(uniqueKeyColumnNameList.contains(column.getName()));
-            column.setComment(safeToString(recordMap.get("COLUMN_COMMENT")));
-            return column;
+            return convertColumn(recordMap, primaryKeyColumnNameList, uniqueKeyColumnNameList);
         }).collect(Collectors.toList());
     }
 
@@ -328,16 +290,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
             if (mapList == null) {
                 return Collections.emptyList();
             }
-            return mapList.stream().map(recordMap -> {
-                String constraintSchema = safeToString(recordMap.get("CONSTRAINT_SCHEMA"));
-                String constraintName = safeToString(recordMap.get("CONSTRAINT_NAME"));
-                String constraintTypeString = safeToString(recordMap.get("CONSTRAINT_TYPE"));
-                MySqlConstraint constraint = new MySqlConstraint();
-                constraint.setSchema(constraintSchema);
-                constraint.setName(constraintName);
-                constraint.setConstraintType(MySqlConstraintType.valueOfCode(constraintTypeString));
-                return constraint;
-            }).collect(Collectors.toList());
+            return mapList.stream().map(this::convertConstraint).collect(Collectors.toList());
         }
     }
 
@@ -373,23 +326,29 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         }
         MySqlConstraint constraintPrimaryKey = constraintList.get(0);// pk have only ones
         String pkConstraintName = constraintPrimaryKey.getName();
-        String queryString = "select COLUMN_NAME,INDEX_TYPE FROM INFORMATION_SCHEMA.STATISTICS " //
+        String queryString = "select INDEX_SCHEMA,INDEX_NAME,COLUMN_NAME,INDEX_TYPE FROM INFORMATION_SCHEMA.STATISTICS " //
                 + "where TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME = ? order by SEQ_IN_INDEX asc";
         try (Connection conn = this.connectSupplier.eGet()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName, pkConstraintName);
             if (mapList == null) {
                 return null;
             }
-            MySqlPrimaryKey primaryKey = new MySqlPrimaryKey();
-            primaryKey.setName("PRIMARY");
-            primaryKey.setConstraintType(MySqlConstraintType.PrimaryKey);
-            for (Map<String, Object> ent : mapList) {
-                String cName = safeToString(ent.get("COLUMN_NAME"));
-                String cType = safeToString(ent.get("INDEX_TYPE"));
-                primaryKey.getColumns().add(cName);
-                primaryKey.getStorageType().put(cName, cType);
+            //
+            Map<String, Optional<MySqlPrimaryKey>> pkMap = mapList.stream().map(this::convertPrimaryKey).collect(Collectors.groupingBy(o -> {
+                // group by (schema + name)
+                return o.getSchema() + "," + o.getName();
+            }, Collectors.reducing((pk1, pk2) -> {
+                // reducing group by data in to one.
+                pk1.getColumns().addAll(pk2.getColumns());
+                pk1.getStorageType().putAll(pk2.getStorageType());
+                return pk1;
+            })));
+            if (pkMap.size() > 1) {
+                throw new SQLException("Data error encountered multiple primary keys '" + StringUtils.join(pkMap.keySet().toArray(), "','") + "'");
             }
-            return primaryKey;
+            //
+            Optional<MySqlPrimaryKey> primaryKeyOptional = pkMap.values().stream().findFirst().orElse(Optional.empty());
+            return primaryKeyOptional.orElse(null);
         }
     }
 
@@ -419,26 +378,18 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
             if (mapList == null) {
                 return Collections.emptyList();
             }
-            Map<String, MySqlUniqueKey> groupByName = new LinkedHashMap<>();
-            for (Map<String, Object> indexColumn : mapList) {
-                String indexName = safeToString(indexColumn.get("INDEX_NAME"));
-                String indexType = safeToString(indexColumn.get("INDEX_TYPE"));
-                //
-                MySqlUniqueKey uniqueKey = groupByName.computeIfAbsent(indexName, k -> {
-                    MySqlUniqueKey sqlUniqueKey = new MySqlUniqueKey();
-                    sqlUniqueKey.setName(k);
-                    if ("PRIMARY".equals(indexName)) {
-                        sqlUniqueKey.setConstraintType(MySqlConstraintType.PrimaryKey);
-                    } else {
-                        sqlUniqueKey.setConstraintType(MySqlConstraintType.Unique);
-                    }
-                    return sqlUniqueKey;
-                });
-                String columnName = safeToString(indexColumn.get("COLUMN_NAME"));
-                uniqueKey.getColumns().add(columnName);
-                uniqueKey.getStorageType().put(columnName, indexType);
-            }
-            return new ArrayList<>(groupByName.values());
+            //
+            return mapList.stream().map(this::convertUniqueKey).collect(Collectors.groupingBy(o -> {
+                // group by (schema + name)
+                return o.getSchema() + "," + o.getName();
+            }, Collectors.reducing((uk1, uk2) -> {
+                // reducing group by data in to one.
+                uk1.getColumns().addAll(uk2.getColumns());
+                uk1.getStorageType().putAll(uk2.getStorageType());
+                return uk1;
+            }))).values().stream().map(o -> {
+                return o.orElse(null);
+            }).filter(Objects::nonNull).collect(Collectors.toList());
         }
     }
 
@@ -606,6 +557,14 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         }).findFirst().orElse(null);
     }
 
+    protected MySqlSchema convertSchema(Map<String, Object> recordMap) {
+        MySqlSchema schema = new MySqlSchema();
+        schema.setName(safeToString(recordMap.get("SCHEMA_NAME")));
+        schema.setDefaultCharacterSetName(safeToString(recordMap.get("DEFAULT_CHARACTER_SET_NAME")));
+        schema.setDefaultCollationName(safeToString(recordMap.get("DEFAULT_COLLATION_NAME")));
+        return schema;
+    }
+
     protected MySqlTable convertTable(Map<String, Object> recordMap) {
         MySqlTable table = new MySqlTable();
         table.setCatalog(safeToString(recordMap.get("TABLE_CATALOG")));
@@ -617,6 +576,69 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
         table.setUpdateTime(safeToDate(recordMap.get("UPDATE_TIME")));
         table.setComment(safeToString(recordMap.get("TABLE_COMMENT")));
         return table;
+    }
+
+    protected MySqlColumn convertColumn(Map<String, Object> recordMap, List<String> primaryKeyColumnList, List<String> uniqueKeyColumnList) {
+        MySqlColumn column = new MySqlColumn();
+        column.setName(safeToString(recordMap.get("COLUMN_NAME")));
+        column.setNullable(safeToBoolean(recordMap.get("IS_NULLABLE")));
+        column.setDataType(safeToString(recordMap.get("DATA_TYPE")));
+        column.setColumnType(safeToString(recordMap.get("COLUMN_TYPE")));
+        column.setSqlType(safeToMySqlTypes(recordMap.get("DATA_TYPE")));
+        column.setJdbcType(columnTypeMappingToJdbcType(column.getSqlType(), column.getColumnType()));
+        column.setDefaultCollationName(safeToString(recordMap.get("COLLATION_NAME")));
+        column.setDefaultCharacterSetName(safeToString(recordMap.get("CHARACTER_SET_NAME")));
+        column.setCharactersMaxLength(safeToLong(recordMap.get("CHARACTER_MAXIMUM_LENGTH")));
+        column.setBytesMaxLength(safeToInteger(recordMap.get("CHARACTER_OCTET_LENGTH")));
+        column.setDatetimePrecision(safeToInteger(recordMap.get("DATETIME_PRECISION")));
+        column.setNumericPrecision(safeToInteger(recordMap.get("NUMERIC_PRECISION")));
+        column.setNumericScale(safeToInteger(recordMap.get("NUMERIC_SCALE")));
+        column.setDefaultValue(safeToString(recordMap.get("COLUMN_DEFAULT")));
+        //
+        column.setPrimaryKey(primaryKeyColumnList.contains(column.getName()));
+        column.setUniqueKey(uniqueKeyColumnList.contains(column.getName()));
+        column.setComment(safeToString(recordMap.get("COLUMN_COMMENT")));
+        return column;
+    }
+
+    protected MySqlConstraint convertConstraint(Map<String, Object> recordMap) {
+        String constraintSchema = safeToString(recordMap.get("CONSTRAINT_SCHEMA"));
+        String constraintName = safeToString(recordMap.get("CONSTRAINT_NAME"));
+        String constraintTypeString = safeToString(recordMap.get("CONSTRAINT_TYPE"));
+        MySqlConstraint constraint = new MySqlConstraint();
+        constraint.setSchema(constraintSchema);
+        constraint.setName(constraintName);
+        constraint.setConstraintType(MySqlConstraintType.valueOfCode(constraintTypeString));
+        return constraint;
+    }
+
+    protected MySqlPrimaryKey convertPrimaryKey(Map<String, Object> recordMap) {
+        MySqlPrimaryKey primaryKey = new MySqlPrimaryKey();
+        primaryKey.setSchema(safeToString(recordMap.get("INDEX_SCHEMA")));
+        primaryKey.setName(safeToString(recordMap.get("INDEX_NAME")));
+        primaryKey.setConstraintType(MySqlConstraintType.PrimaryKey);
+        //
+        String cName = safeToString(recordMap.get("COLUMN_NAME"));
+        String cType = safeToString(recordMap.get("INDEX_TYPE"));
+        primaryKey.getColumns().add(cName);
+        primaryKey.getStorageType().put(cName, cType);
+        return primaryKey;
+    }
+
+    protected MySqlUniqueKey convertUniqueKey(Map<String, Object> recordMap) {
+        MySqlUniqueKey uniqueKey = new MySqlUniqueKey();
+        uniqueKey.setName(safeToString(recordMap.get("INDEX_NAME")));
+        if ("PRIMARY".equals(safeToString(recordMap.get("INDEX_TYPE")))) {
+            uniqueKey.setConstraintType(MySqlConstraintType.PrimaryKey);
+        } else {
+            uniqueKey.setConstraintType(MySqlConstraintType.Unique);
+        }
+        //
+        String cName = safeToString(recordMap.get("COLUMN_NAME"));
+        String cType = safeToString(recordMap.get("INDEX_TYPE"));
+        uniqueKey.getColumns().add(cName);
+        uniqueKey.getStorageType().put(cName, cType);
+        return uniqueKey;
     }
 
     protected JDBCType columnTypeMappingToJdbcType(SqlType sqlType, String columnType) {
