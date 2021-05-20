@@ -29,11 +29,13 @@ public class JdbcColumn implements ColumnDef {
     private String           tableName;
     private String           columnName;
     private String           columnType;
+    private JdbcSqlTypes     sqlType;
+    private JDBCType         jdbcType;
+    private Integer          jdbcNumber;
     private JdbcNullableType nullableType;
     private Boolean          nullable;
     private Boolean          autoincrement;
     private Boolean          generatedColumn;
-    private JDBCType         jdbcType;
     private Integer          columnSize;
     private boolean          primaryKey;
     private boolean          uniqueKey;//如若存在联合唯一索引需要借助getUniqueKey 来查询具体信息，这里只会表示该列存在至少一个唯一索引的引用。
@@ -122,6 +124,14 @@ public class JdbcColumn implements ColumnDef {
         this.generatedColumn = generatedColumn;
     }
 
+    public JdbcSqlTypes getSqlType() {
+        return this.sqlType;
+    }
+
+    public void setSqlType(JdbcSqlTypes sqlType) {
+        this.sqlType = sqlType;
+    }
+
     @Override
     public JDBCType getJdbcType() {
         return this.jdbcType;
@@ -129,6 +139,14 @@ public class JdbcColumn implements ColumnDef {
 
     public void setJdbcType(JDBCType jdbcType) {
         this.jdbcType = jdbcType;
+    }
+
+    public Integer getJdbcNumber() {
+        return this.jdbcNumber;
+    }
+
+    public void setJdbcNumber(Integer jdbcNumber) {
+        this.jdbcNumber = jdbcNumber;
     }
 
     public Integer getColumnSize() {
