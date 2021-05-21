@@ -15,6 +15,7 @@
  */
 package net.hasor.dataway.service;
 import com.alibaba.fastjson.JSON;
+import net.hasor.core.Environment;
 import net.hasor.dataway.config.DatawayUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
@@ -47,8 +48,10 @@ public class InterfaceUiFilter implements InvokerFilter {
     private final       String               uiBaseUri;
     private final       String               uiAdminBaseUri;
     private final       Map<String, Integer> resourceSize;
+    private final       Boolean enableCross;
 
-    public InterfaceUiFilter(String uiBaseUri) {
+    public InterfaceUiFilter(Environment environment, String uiBaseUri) {
+        this.enableCross = environment.getSettings().getBoolean("hasor.dataway.interfaceUICross", false);
         this.uiBaseUri = uiBaseUri;
         this.uiAdminBaseUri = fixUrl(uiBaseUri + "/api/");
         this.resourceIndexUri = fixUrl(uiBaseUri + "/index.html");
@@ -64,7 +67,9 @@ public class InterfaceUiFilter implements InvokerFilter {
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         HttpServletResponse httpResponse = invoker.getHttpResponse();
         String requestURI = invoker.getRequestPath();
-        setupInner(invoker);
+        if (this.enableCross) {
+            setupInner(invoker);
+        }
         if (requestURI.startsWith(this.uiAdminBaseUri)) {
             try {
                 DatawayUtils.resetLocalTime();

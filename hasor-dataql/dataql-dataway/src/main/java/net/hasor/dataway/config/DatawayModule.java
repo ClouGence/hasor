@@ -126,7 +126,7 @@ public class DatawayModule implements WebModule, UiConfig {
         AdminUiAuthorization uiAuthorization = new AdminUiAuthorization(adminBaseUri, apiBinder.getEnvironment());
         apiBinder.filter(fixUrl(adminBaseUri + "/*")).through(Integer.MAX_VALUE, HasorUtils.autoAware(apiBinder.getEnvironment(), uiAuthorization));
         apiBinder.filter(fixUrl(adminBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceAuthorizationFilter(adminBaseUri));
-        apiBinder.filter(fixUrl(adminBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceUiFilter(adminBaseUri));
+        apiBinder.filter(fixUrl(adminBaseUri + "/*")).through(Integer.MAX_VALUE, new InterfaceUiFilter(apiBinder.getEnvironment(), adminBaseUri));
     }
 
     private void loadController(WebApiBinder apiBinder, Class<?> aClass, String adminBaseUri, String apiBaseUri) {
