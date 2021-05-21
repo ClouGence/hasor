@@ -44,8 +44,6 @@ public class PostgresColumn implements ColumnDef {
     private Integer       numericPrecisionRadix;
     private Integer       numericScale;
     private Integer       datetimePrecision;
-    //
-    private boolean       identity;
 
     @Override
     public String getName() {
@@ -193,13 +191,5 @@ public class PostgresColumn implements ColumnDef {
 
     public void setDatetimePrecision(Integer datetimePrecision) {
         this.datetimePrecision = datetimePrecision;
-    }
-
-    public boolean isIdentity() {
-        return this.identity;
-    }
-
-    public void setIdentity(boolean identity) {
-        this.identity = identity;
     }
 }

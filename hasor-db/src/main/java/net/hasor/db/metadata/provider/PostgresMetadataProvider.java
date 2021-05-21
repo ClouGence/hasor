@@ -62,10 +62,10 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
             + "           t.typbasetype,\n"//
             + "           t.typtype,\n"//
             + "           a.attnotnull or (t.typtype = 'd' and t.typnotnull)                                                                                      as not_null,\n"//
-            + "           case\n"//
-            + "               when a.attidentity = any (array ['a'::\"char\", 'd'::\"char\"]) then 'YES'::text\n"//
-            + "               else 'NO'::text\n"//
-            + "               end                                                                                                                                 as is_identity,\n"//
+            //            + "           case\n"//
+            //            + "               when a.attidentity = any (array ['a'::\"char\", 'd'::\"char\"]) then 'YES'::text\n"//
+            //            + "               else 'NO'::text\n"//
+            //            + "               end                                                                                                                                 as is_identity,\n"//
             + "           a.attlen,\n"//
             + "           information_schema._pg_char_max_length(information_schema._pg_truetypid(a.*, t.*), information_schema._pg_truetypmod(a.*, t.*))         as character_maximum_length,\n"//
             + "           information_schema._pg_char_octet_length(information_schema._pg_truetypid(a.*, t.*), information_schema._pg_truetypmod(a.*, t.*))       as character_octet_length,\n"//
@@ -668,8 +668,6 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
         column.setNumericPrecisionRadix(safeToInteger(recordMap.get("numeric_precision_radix")));
         column.setNumericScale(safeToInteger(recordMap.get("numeric_scale")));
         column.setDatetimePrecision(safeToInteger(recordMap.get("datetime_precision")));
-        //
-        column.setIdentity(safeToBoolean(recordMap.get("is_identity")));
         //
         column.setPrimaryKey(primaryKeyColumnList.contains(column.getName()));
         column.setUniqueKey(uniqueKeyColumnList.contains(column.getName()));

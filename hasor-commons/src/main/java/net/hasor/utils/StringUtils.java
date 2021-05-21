@@ -4124,8 +4124,9 @@ public class StringUtils {
      *  <code>null</code> if null String input
      */
     public static String repeat(final char character, final int repeat) {
-        return repeat(character + "",repeat);
+        return repeat(character + "", repeat);
     }
+
     /**
      * <p>Repeat a String <code>repeat</code> times to form a
      * new String.</p>
@@ -4161,28 +4162,28 @@ public class StringUtils {
         }
         int outputLength = inputLength * repeat;
         switch (inputLength) {
-        case 1:
-            char ch = str.charAt(0);
-            char[] output1 = new char[outputLength];
-            for (int i = repeat - 1; i >= 0; i--) {
-                output1[i] = ch;
-            }
-            return new String(output1);
-        case 2:
-            char ch0 = str.charAt(0);
-            char ch1 = str.charAt(1);
-            char[] output2 = new char[outputLength];
-            for (int i = repeat * 2 - 2; i >= 0; i--, i--) {
-                output2[i] = ch0;
-                output2[i + 1] = ch1;
-            }
-            return new String(output2);
-        default:
-            StringBuilder buf = new StringBuilder(outputLength);
-            for (int i = 0; i < repeat; i++) {
-                buf.append(str);
-            }
-            return buf.toString();
+            case 1:
+                char ch = str.charAt(0);
+                char[] output1 = new char[outputLength];
+                for (int i = repeat - 1; i >= 0; i--) {
+                    output1[i] = ch;
+                }
+                return new String(output1);
+            case 2:
+                char ch0 = str.charAt(0);
+                char ch1 = str.charAt(1);
+                char[] output2 = new char[outputLength];
+                for (int i = repeat * 2 - 2; i >= 0; i--, i--) {
+                    output2[i] = ch0;
+                    output2[i + 1] = ch1;
+                }
+                return new String(output2);
+            default:
+                StringBuilder buf = new StringBuilder(outputLength);
+                for (int i = 0; i < repeat; i++) {
+                    buf.append(str);
+                }
+                return buf.toString();
         }
     }
 

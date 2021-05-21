@@ -55,13 +55,6 @@
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>com.github.jsqlparser</groupId>
-            <artifactId>jsqlparser</artifactId>
-            <version>3.1</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
 
         <!-- 测试 -->
         <dependency>
@@ -78,7 +71,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.2.18</version>
+            <version>42.2.20</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -102,6 +95,14 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- driver -->
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>19.3.0.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
