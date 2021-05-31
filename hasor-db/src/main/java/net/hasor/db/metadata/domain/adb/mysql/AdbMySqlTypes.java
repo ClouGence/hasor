@@ -125,7 +125,7 @@ public enum AdbMySqlTypes implements SqlType {
 
     public static AdbMySqlTypes valueOfCode(String code) {
         for (AdbMySqlTypes tableType : AdbMySqlTypes.values()) {
-            if (tableType.codeKey.equals(code)) {
+            if (tableType.codeKey.equalsIgnoreCase(code)) {
                 return tableType;
             }
         }

@@ -84,7 +84,7 @@ public enum OracleSqlTypes implements SqlType {
 
     public static OracleSqlTypes valueOfCode(String code) {
         for (OracleSqlTypes tableType : OracleSqlTypes.values()) {
-            if (tableType.codeKey.equals(code)) {
+            if (tableType.codeKey.equalsIgnoreCase(code)) {
                 return tableType;
             }
         }

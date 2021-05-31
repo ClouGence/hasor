@@ -201,7 +201,7 @@ public enum JdbcSqlTypes implements SqlType {
 
     public static JdbcSqlTypes valueOfCode(String code) {
         for (JdbcSqlTypes tableType : JdbcSqlTypes.values()) {
-            if (tableType.codeKey.equals(code)) {
+            if (tableType.codeKey.equalsIgnoreCase(code)) {
                 return tableType;
             }
         }

@@ -294,7 +294,7 @@ public enum MySqlTypes implements SqlType {
 
     public static MySqlTypes valueOfCode(String code) {
         for (MySqlTypes tableType : MySqlTypes.values()) {
-            if (tableType.codeKey.equals(code)) {
+            if (tableType.codeKey.equalsIgnoreCase(code)) {
                 return tableType;
             }
         }

@@ -111,6 +111,9 @@ create table tb_postgre_types
     c_pg_lsn                    pg_lsn,
     c_txid_snapshot             txid_snapshot,
     --
+    c_oid                       oid,
+    c_name                      name,
+    --
     --
     --
     --
@@ -215,6 +218,9 @@ create table tb_postgre_types
     a_daterange                 daterange[],
     --
     a_pg_lsn                    pg_lsn[],
-    a_txid_snapshot             txid_snapshot[]
+    a_txid_snapshot             txid_snapshot[],
+    --
+    a_oid                       oid[],
+    a_name                      name[]
     -- c_enum example_enum
 )
