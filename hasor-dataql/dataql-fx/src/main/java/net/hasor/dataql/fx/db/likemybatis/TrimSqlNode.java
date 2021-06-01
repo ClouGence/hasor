@@ -54,7 +54,7 @@ public class TrimSqlNode extends SqlNode {
                 }
             }
             //去掉suffixOverrides
-            if (StringUtils.isNotEmpty(this.suffixOverrides)) {
+            if (StringUtils.isNotBlank(this.suffixOverrides)) {
                 String[] overrideArray = this.suffixOverrides.split("\\|");
                 for (String override : overrideArray) {
                     if (childrenSql.trim().endsWith(override)) {
