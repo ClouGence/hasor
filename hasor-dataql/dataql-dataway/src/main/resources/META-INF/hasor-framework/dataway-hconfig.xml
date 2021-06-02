@@ -34,6 +34,8 @@
         <HASOR_DATAQL_DATAWAY_AUTHORIZATION_PASSWORD>admin</HASOR_DATAQL_DATAWAY_AUTHORIZATION_PASSWORD>
         <!-- 登陆页面资源 -->
         <HASOR_DATAQL_DATAWAY_AUTHORIZATION_LOGIN_PAGE>classpath:/META-INF/hasor-framework/dataway-ui/login.html</HASOR_DATAQL_DATAWAY_AUTHORIZATION_LOGIN_PAGE>
+        <!-- 是否启用UI界面跨域功能 -->
+        <HASOR_DATAQL_DATAWAY_INTERFACE_UI_CROSS>false</HASOR_DATAQL_DATAWAY_INTERFACE_UI_CROSS>
 
         <!-- nacos 的服务地址 -->
         <HASOR_NACOS_ADDR></HASOR_NACOS_ADDR>
@@ -72,6 +74,8 @@
             <!-- dataway-ui 的工作路径，必须开启管理功能 -->
             <baseAdminUrl>${HASOR_DATAQL_DATAWAY_UI_URL}</baseAdminUrl>
 
+            <!-- dataway-interface-ui 是否启用跨域(一般测试时开启) -->
+            <interfaceUICross>${HASOR_DATAQL_DATAWAY_INTERFACE_UI_CROSS}</interfaceUICross>
             <!-- 是否启用 Admin UI 的登陆认证 -->
             <!--    enable : 是否启用，默认 true 启用、false 为不启用 -->
             <authorization enable="${HASOR_DATAQL_DATAWAY_AUTHORIZATION_ENABLE}">
