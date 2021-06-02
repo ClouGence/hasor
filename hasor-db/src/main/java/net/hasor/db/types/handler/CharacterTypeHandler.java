@@ -28,18 +28,18 @@ public class CharacterTypeHandler extends AbstractTypeHandler<Character> {
     @Override
     public Character getNullableResult(ResultSet rs, String columnName) throws SQLException {
         String columnValue = rs.getString(columnName);
-        return columnValue != null ? columnValue.charAt(0) : null;
+        return columnValue != null && columnValue.length() > 0 ? columnValue.charAt(0) : null;
     }
 
     @Override
     public Character getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         String columnValue = rs.getString(columnIndex);
-        return columnValue != null ? columnValue.charAt(0) : null;
+        return columnValue != null && columnValue.length() > 0 ? columnValue.charAt(0) : null;
     }
 
     @Override
     public Character getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         String columnValue = cs.getString(columnIndex);
-        return columnValue != null ? columnValue.charAt(0) : null;
+        return columnValue != null && columnValue.length() > 0 ? columnValue.charAt(0) : null;
     }
 }
