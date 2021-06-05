@@ -215,9 +215,13 @@
     <!-- 发布使用的版本库 -->
     <distributionManagement>
         <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>rdc-snapshots</id>
+            <url>https://packages.aliyun.com/maven/repository/2012878-snapshot-wXHWRP</url>
         </snapshotRepository>
+        <!--        <snapshotRepository>-->
+        <!--            <id>ossrh</id>-->
+        <!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+        <!--        </snapshotRepository>-->
     </distributionManagement>
 
     <!-- 使用“-P release”启用下面配置 -->

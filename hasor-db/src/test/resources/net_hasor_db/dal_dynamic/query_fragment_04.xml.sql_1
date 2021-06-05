@@ -1,0 +1,12 @@
+
+    UPDATE
+    alert_config_detail
+    set alert_config_detail.phone = ?,
+        
+            alert_config_detail.email = ?,
+        
+            alert_config_detail.expression = ? 
+    WHERE
+    id = ?
+    AND
+    uid = ?

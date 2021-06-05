@@ -1,0 +1,25 @@
+<select>
+    UPDATE
+    alert_config_detail
+    <set>
+        <if test="phone != null">
+            alert_config_detail.phone = #{phone},
+        </if>
+        <if test="email != null">
+            alert_config_detail.email = #{email},
+        </if>
+        <if test="dingding != null">
+            alert_config_detail.dingding = #{dingding},
+        </if>
+        <if test="sms != null">
+            alert_config_detail.sms = #{sms},
+        </if>
+        <if test="expression != null">
+            alert_config_detail.expression = #{expression},
+        </if>
+    </set>
+    WHERE
+    id = #{id}
+    AND
+    uid = #{uid}
+</select>

@@ -74,7 +74,7 @@
                 <dal_nacos_discovery_port>${HASOR_NACOS_DISCOVERY_PORT:0}</dal_nacos_discovery_port>
             </settings>
 
-            <!-- globalConfig 会通过 global-config 接口送给前端页面 -->
+            <!-- globalConfig 会通过 global-config 接口送给前端页面，每个接口可以独立配置下列参数 -->
             <globalConfig>
                 <!-- 是否启用跨域访问能力 -->
                 <enableCrossDomain>true</enableCrossDomain>
@@ -92,7 +92,7 @@
     "value"        : "@resultData"
 }
                 ]]></responseFormat>
-                <!-- 是否将所有请求参数打包到一个新的 参数中便于统一获取。 -->
+                <!-- 是否将所有请求参数打包到一个新的 参数中便于统一获取 -->
                 <wrapAllParameters>false</wrapAllParameters>
                 <!-- 结合 wrapAllParameters 参数一起使用，当 wrapAllParameters 配置为 true 时候被封装的新参数名称 -->
                 <wrapParameterName>root</wrapParameterName>

@@ -1,0 +1,11 @@
+<select>
+    SELECT
+    <include refid="alertConfigDetail_allColumns"/>
+    FROM
+    alert_detail
+    WHERE
+    alert_detail.event_type IN
+    <foreach collection="eventTypes" item="eventType" separator="," open="(" close=")">
+        #{eventType,javaType=net.hasor.test.db.dto.CharacterSensitiveEnum}
+    </foreach>
+</select>

@@ -1,0 +1,28 @@
+<select>
+    SELECT
+    <include refid="consoleJob_allColumns"/>
+    FROM
+    console_job
+    WHERE 1=1
+    <if test="startId != 0">
+        <![CDATA[
+            AND console_job.id < #{startId}
+            ]]>
+    </if>
+    <if test="label != null and label.size() > 0">
+        AND console_job.label in
+        <foreach collection="label" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </if>
+    <if test="state != null and state.size() >0">
+        AND console_job.task_state in
+        <foreach collection="state" item="item" separator="," open="(" close=")">
+            #{item,javaType=net.hasor.test.db.dto.CharacterSensitiveEnum}
+        </foreach>
+    </if>
+    <if test="consoleJobId != null and consoleJobId >0">
+        AND console_job.id=#{consoleJobId}
+    </if>
+    ORDER BY console_job.id DESC LIMIT #{pageSize}
+</select>

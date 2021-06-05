@@ -229,13 +229,7 @@ public class BeanMap extends AbstractMap<String, Object> implements Cloneable {
             if (method != null) {
                 try {
                     return method.invoke(bean, NULL_ARGUMENTS);
-                } catch (IllegalAccessException e) {
-                    logWarn(e);
-                } catch (IllegalArgumentException e) {
-                    logWarn(e);
-                } catch (InvocationTargetException e) {
-                    logWarn(e);
-                } catch (NullPointerException e) {
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException e) {
                     logWarn(e);
                 }
             }
@@ -265,10 +259,7 @@ public class BeanMap extends AbstractMap<String, Object> implements Cloneable {
                 method.invoke(bean, arguments);
                 Object newValue = get(name);
                 firePropertyChange(name, oldValue, newValue);
-            } catch (InvocationTargetException e) {
-                logInfo(e);
-                throw new IllegalArgumentException(e.getMessage());
-            } catch (IllegalAccessException e) {
+            } catch (InvocationTargetException | IllegalAccessException e) {
                 logInfo(e);
                 throw new IllegalArgumentException(e.getMessage());
             }
@@ -468,8 +459,7 @@ public class BeanMap extends AbstractMap<String, Object> implements Cloneable {
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             BeanUtils.getProperties(beanClass).forEach(s -> pd.put(s, null));
             if (propertyDescriptors != null) {
-                for (int i = 0; i < propertyDescriptors.length; i++) {
-                    PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
+                for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
                     pd.put(propertyDescriptor.getName(), propertyDescriptor);
                 }
             }
@@ -562,10 +552,7 @@ public class BeanMap extends AbstractMap<String, Object> implements Cloneable {
             }
             Object[] answer = { value };
             return answer;
-        } catch (InvocationTargetException e) {
-            logInfo(e);
-            throw new IllegalArgumentException(e.getMessage());
-        } catch (InstantiationException e) {
+        } catch (InvocationTargetException | InstantiationException e) {
             logInfo(e);
             throw new IllegalArgumentException(e.getMessage());
         }

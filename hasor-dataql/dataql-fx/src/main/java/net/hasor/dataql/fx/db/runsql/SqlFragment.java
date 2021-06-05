@@ -29,16 +29,18 @@ import net.hasor.dataql.fx.db.FxSqlCheckChainSpi.FxSqlInfo;
 import net.hasor.dataql.fx.db.LookupConnectionListener;
 import net.hasor.dataql.fx.db.LookupDataSourceListener;
 import net.hasor.db.JdbcUtils;
-import net.hasor.db.dal.fxquery.DefaultFxQuery;
-import net.hasor.db.dal.fxquery.FxQuery;
+import net.hasor.db.dal.dynamic.BuilderContext;
+import net.hasor.db.dal.dynamic.DynamicParser;
+import net.hasor.db.dal.dynamic.DynamicSql;
+import net.hasor.db.dal.dynamic.QuerySqlBuilder;
+import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.dialect.SqlDialectRegister;
 import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.core.ArgPreparedStatementSetter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
-import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.SqlDialect;
-import net.hasor.db.dialect.SqlDialectRegister;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
 
@@ -157,8 +159,9 @@ public class SqlFragment implements FragmentProcess {
             return Collections.singletonList(this.runFragment(hint, params.get(0), fragmentString));
         }
         // 有占位符 或者 Insert/Update/Delete 之外的
-        FxQuery fxSql = analysisSQL(hint, fragmentString);
-        String tempFragmentString = fxSql.buildQueryString(params.get(0));
+        DynamicSql fxSql = analysisSQL(hint, fragmentString);
+        QuerySqlBuilder tempBuilder = fxSql.buildQuery(new BuilderContext(params.get(0)));
+        String tempFragmentString = tempBuilder.getSqlString();
         boolean useBatch = true;
         if (fxSql.isHavePlaceholder()) {
             // 分析SQL后如果含有占位符：退化为 非批量（占位符会导致每次执行的SQL语句可能不一样）
@@ -183,33 +186,32 @@ public class SqlFragment implements FragmentProcess {
         }
         //
         // --- 批量模式
-        List<Object[]> batchParam = params.stream().map(preparedParams -> {
-            return fxSql.buildParameterSource(preparedParams).toArray();
-        }).collect(Collectors.toList());
         String sourceName = hint.getOrDefault(FRAGMENT_SQL_DATA_SOURCE.name(), "").toString();
-        //
-        return this.executeSQL(true, sourceName, tempFragmentString, batchParam.toArray(), new SqlQuery<List<Object>>() {
-            public List<Object> doQuery(String querySQL, Object[] params, JdbcTemplate useJdbcTemplate) throws SQLException {
-                PreparedStatementSetter[] parameterArrays = Arrays.stream(params).map(o -> {
-                    return new ArgPreparedStatementSetter((Object[]) o);
-                }).toArray(PreparedStatementSetter[]::new);
-                int[] executeBatch = useJdbcTemplate.executeBatch(querySQL, new BatchPreparedStatementSetter() {
-                    public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        parameterArrays[i].setValues(ps);
-                    }
+        ArrayList<Object[]> arrayList = new ArrayList<>();
+        for (Map<String, Object> paramItem : params) {
+            QuerySqlBuilder builder = fxSql.buildQuery(new BuilderContext(paramItem));
+            arrayList.add(builder.getArgs());
+        }
+        return this.executeSQL(true, sourceName, tempFragmentString, arrayList.toArray(), (querySQL, paramArray, useJdbcTemplate) -> {
+            PreparedStatementSetter[] parameterArrays = Arrays.stream(paramArray).map(o -> {
+                return new ArgPreparedStatementSetter((Object[]) o);
+            }).toArray(PreparedStatementSetter[]::new);
+            int[] executeBatch = useJdbcTemplate.executeBatch(querySQL, new BatchPreparedStatementSetter() {
+                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                    parameterArrays[i].setValues(ps);
+                }
 
-                    public int getBatchSize() {
-                        return parameterArrays.length;
-                    }
-                });
-                return Arrays.stream(executeBatch).boxed().collect(Collectors.toList());
-            }
+                public int getBatchSize() {
+                    return parameterArrays.length;
+                }
+            });
+            return Arrays.stream(executeBatch).boxed().collect(Collectors.toList());
         });
     }
 
     @Override
     public Object runFragment(Hints hint, Map<String, Object> paramMap, String fragmentString) throws Throwable {
-        FxQuery fxSql = analysisSQL(hint, fragmentString);
+        DynamicSql fxSql = analysisSQL(hint, fragmentString);
         if (usePage(hint) && evalSqlMode(fragmentString) == SqlMode.Query) {
             return this.usePageFragment(fxSql, hint, paramMap);
         } else {
@@ -218,7 +220,7 @@ public class SqlFragment implements FragmentProcess {
     }
 
     /** 分页模式 */
-    protected Object usePageFragment(FxQuery fxSql, Hints hints, Map<String, Object> paramMap) throws SQLException {
+    protected Object usePageFragment(DynamicSql fxSql, Hints hints, Map<String, Object> paramMap) throws SQLException {
         // .优先从 hint 中取方言，取不到在自动推断
         String sqlDialect = hints.getOrDefault(FRAGMENT_SQL_PAGE_DIALECT.name(), "").toString();
         if (StringUtils.isBlank(sqlDialect)) {
@@ -239,18 +241,17 @@ public class SqlFragment implements FragmentProcess {
         //        Map<String, Object> queryParamMap,  // 查询参数
         //        SqlPageDialect pageDialect,         // 分页方言服务
         //        SqlPageQuery pageQuery              // 用于执行分页查询的服务
-        String sqlQuery = fxSql.buildQueryString(paramMap);
-        Object[] sqlArgs = fxSql.buildParameterSource(paramMap).toArray();
-        BoundSql boundSql = new BoundSql.BoundSqlObj(sqlQuery, sqlArgs);
+        BoundSql boundSql = fxSql.buildQuery(new BuilderContext(paramMap));
         return new SqlPageObject(hints, boundSql, pageDialect, this);
     }
 
     /** 非分页模式 */
-    protected Object noPageFragment(FxQuery fxSql, Hints hint, Map<String, Object> paramMap) throws Throwable {
+    protected Object noPageFragment(DynamicSql fxSql, Hints hint, Map<String, Object> paramMap) throws Throwable {
         // 获取必要的参数
         String useSourceName = hint.getOrDefault(FRAGMENT_SQL_DATA_SOURCE.name(), "").toString();
-        String buildQueryString = fxSql.buildQueryString(paramMap);
-        Object[] buildQueryParams = fxSql.buildParameterSource(paramMap).toArray();
+        BoundSql boundSql = fxSql.buildQuery(new BuilderContext(paramMap));
+        String buildQueryString = boundSql.getSqlString();
+        Object[] buildQueryParams = boundSql.getArgs();
         // 使用 preparedCallback 执行查询
         return this.executeSQL(useSourceName, buildQueryString, buildQueryParams, (queryString, queryParams, useJdbcTemplate) -> {
             // 准备 preparedCallback
@@ -331,8 +332,8 @@ public class SqlFragment implements FragmentProcess {
     }
 
     /** 分析 SQL */
-    protected FxQuery analysisSQL(Hints hint, String fragmentString) {
-        return DefaultFxQuery.analysisSQL(fragmentString);
+    protected DynamicSql analysisSQL(Hints hint, String fragmentString) {
+        return new DynamicParser().parseDynamicSql(fragmentString);
     }
 
     /** 结果转换 */

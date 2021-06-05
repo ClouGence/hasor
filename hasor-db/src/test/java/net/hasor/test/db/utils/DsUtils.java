@@ -86,8 +86,8 @@ public class DsUtils {
     }
 
     public static Connection aliyunAdbMySQL() throws SQLException {
-        //return DriverManager.getConnection(ADBMYSQL_JDBC_URL, "lab_1930494464", "3c8cb997a455_#@Aa");
-        return DriverManager.getConnection("jdbc:mysql://am-bp1n12212i9iuio5e167320o.ads.aliyuncs.com:3306/adb_mysql_4387qyy", "root", "am-bp1n12212i9iuio5e");
+        return DriverManager.getConnection(ADBMYSQL_JDBC_URL, "lab_1930494464", "3c8cb997a455_#@Aa");
+        //        return DriverManager.getConnection("jdbc:mysql://am-bp1n12212i9iuio5e167320o.ads.aliyuncs.com:3306/adb_mysql_4387qyy", "root", "am-bp1n12212i9iuio5e");
     }
     //
 

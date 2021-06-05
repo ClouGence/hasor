@@ -1,4 +1,5 @@
 package net.hasor.db.dal.fxquery;
+import net.hasor.db.dal.dynamic.tokens.GenericTokenParser;
 import org.junit.Test;
 
 public class TokenTest {

@@ -1,0 +1,14 @@
+<select>
+    select
+    <include refid="projectInfoDO_allColumns"/>
+    from
+    PROJECT_INFO
+    where 1=1
+    and status = 2
+    <if test="ownerID != null and ownerType !=null">
+        and owner_id = #{ownerID}
+        and owner_type = #{ownerType}
+    </if>
+    order by
+    name asc
+</select>

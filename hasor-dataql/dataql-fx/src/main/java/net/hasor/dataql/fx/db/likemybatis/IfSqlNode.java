@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db.likemybatis;
-import net.hasor.db.dal.fxquery.DefaultFxQuery;
+import net.hasor.db.dal.dynamic.ognl.OgnlUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +36,7 @@ public class IfSqlNode extends SqlNode {
     @Override
     public String getSql(Map<String, Object> paramMap, List<Object> parameters) {
         // 执行表达式
-        Object value = DefaultFxQuery.evalOgnl(test, paramMap);
+        Object value = OgnlUtils.evalOgnl(test, paramMap);
         // 判断表达式返回结果是否是true，如果不是则过滤子节点
         if (Objects.equals(value, true)) {
             return executeChildren(paramMap, parameters);

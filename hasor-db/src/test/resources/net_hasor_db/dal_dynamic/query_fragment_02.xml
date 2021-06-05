@@ -1,0 +1,6 @@
+<select>
+    SELECT
+    <include refid="alertConfigDetail_allColumns"/>
+    FROM alert_detail
+    WHERE config_detail.event_type = #{eventType,javaType=java.lang.Integer}
+</select>

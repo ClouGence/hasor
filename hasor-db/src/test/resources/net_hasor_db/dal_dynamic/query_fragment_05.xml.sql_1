@@ -1,0 +1,22 @@
+
+    SELECT
+     * 
+    FROM
+    console_job
+    WHERE 1=1
+    
+            AND console_job.id < ?
+            
+        AND console_job.label in
+        (
+            ?
+        ,
+            ?
+        )
+        AND console_job.task_state in
+        (
+            ?
+        )
+        AND console_job.id=?
+    
+    ORDER BY console_job.id DESC LIMIT ?

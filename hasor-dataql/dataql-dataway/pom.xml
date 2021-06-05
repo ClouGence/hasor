@@ -85,7 +85,6 @@
                             <workingDirectory>${basedir}/src/console</workingDirectory>
                         </configuration>
                     </execution>
-
                 </executions>
             </plugin>
             <!-- console dist add to resources -->

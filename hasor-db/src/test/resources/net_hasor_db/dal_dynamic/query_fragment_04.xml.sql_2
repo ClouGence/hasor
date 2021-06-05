@@ -1,0 +1,8 @@
+
+    UPDATE
+    alert_config_detail
+    
+    WHERE
+    id = ?
+    AND
+    uid = ?

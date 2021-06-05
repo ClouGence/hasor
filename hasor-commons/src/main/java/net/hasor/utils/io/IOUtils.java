@@ -946,7 +946,7 @@ public class IOUtils {
         List<String> stringList = readLines(input, charset);
         StringBuilder builder = new StringBuilder();
         for (String str : stringList) {
-            builder = builder.append(str);
+            builder.append(str).append("\n");
         }
         return builder.toString();
     }
@@ -955,7 +955,7 @@ public class IOUtils {
         List<String> stringList = readLines(input);
         StringBuilder builder = new StringBuilder();
         for (String str : stringList) {
-            builder = builder.append(str);
+            builder.append(str).append("\n");
         }
         return builder.toString();
     }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.fx.db.likemybatis;
-import net.hasor.db.dal.fxquery.DefaultFxQuery;
+import net.hasor.db.dal.dynamic.ognl.OgnlUtils;
 import net.hasor.utils.StringUtils;
 
 import java.util.List;
@@ -42,13 +42,13 @@ public class TextSqlNode extends SqlNode {
             List<String> expressions = extractParameter(expressionRegx, text);
             for (String expression : expressions) {
                 // 执行表达式
-                Object val = DefaultFxQuery.evalOgnl(expression, paramMap);
+                Object val = OgnlUtils.evalOgnl(expression, paramMap);
                 parameters.add(val);
                 sql = sql.replaceFirst(expressionRegx.pattern(), "?");
             }
             expressions = extractParameter(replaceRegx, text);
             for (String expression : expressions) {
-                Object val = DefaultFxQuery.evalOgnl(expression, paramMap);
+                Object val = OgnlUtils.evalOgnl(expression, paramMap);
                 sql = sql.replaceFirst(replaceRegx.pattern(), Objects.toString(val, ""));
             }
         }

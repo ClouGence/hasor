@@ -17,7 +17,7 @@ package net.hasor.dataql.fx.db.likemybatis;
 import net.hasor.core.Singleton;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.fx.db.runsql.SqlFragment;
-import net.hasor.db.dal.fxquery.FxQuery;
+import net.hasor.db.dal.dynamic.DynamicSql;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -39,8 +39,8 @@ import java.util.Map;
 public class MybatisFragment extends SqlFragment {
     @Override
     public Object runFragment(Hints hint, Map<String, Object> paramMap, String fragmentString) throws Throwable {
-        SqlNode sqlNode = parseSqlNode(fragmentString.trim());
-        FxQuery fxSql = new MybatisSqlQuery(sqlNode);
+        net.hasor.dataql.fx.db.likemybatis.SqlNode sqlNode = parseSqlNode(fragmentString.trim());
+        DynamicSql fxSql = new MybatisSqlSegmentQuery(sqlNode);
         if (usePage(hint)) {
             return this.usePageFragment(fxSql, hint, paramMap);
         } else {
@@ -48,17 +48,12 @@ public class MybatisFragment extends SqlFragment {
         }
     }
 
-    /**
-     * 枷锁防止多线程事件
-     * @param fragmentString
-     * @throws Exception
-     */
-    private synchronized SqlNode parseSqlNode(String fragmentString) throws Exception {
+    private net.hasor.dataql.fx.db.likemybatis.SqlNode parseSqlNode(String fragmentString) throws Exception {
         DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = documentBuilder.parse(new ByteArrayInputStream(fragmentString.getBytes()));
         Element root = document.getDocumentElement();
         String tagName = root.getTagName();
-        SqlNode sqlNode = new TextSqlNode("");
+        net.hasor.dataql.fx.db.likemybatis.SqlNode sqlNode = new TextSqlNode("");
         if ("select".equalsIgnoreCase(tagName)) {
             sqlNode.setSqlNode(SqlMode.Query);
         } else if ("update".equalsIgnoreCase(tagName)) {
@@ -74,14 +69,14 @@ public class MybatisFragment extends SqlFragment {
         return sqlNode;
     }
 
-    private void parseNodeList(SqlNode sqlNode, NodeList nodeList) {
+    private void parseNodeList(net.hasor.dataql.fx.db.likemybatis.SqlNode sqlNode, NodeList nodeList) {
         for (int i = 0, len = nodeList.getLength(); i < len; i++) {
             Node node = nodeList.item(i);
             if (node.getNodeType() == Node.TEXT_NODE) {
                 sqlNode.addChildNode(new TextSqlNode(node.getNodeValue().trim()));
             } else if (node.getNodeType() != Node.COMMENT_NODE) {
                 String nodeName = node.getNodeName();
-                SqlNode childNode;
+                net.hasor.dataql.fx.db.likemybatis.SqlNode childNode;
                 if ("foreach".equalsIgnoreCase(nodeName)) {
                     childNode = parseForeachSqlNode(node);
                 } else if ("if".equalsIgnoreCase(nodeName)) {
