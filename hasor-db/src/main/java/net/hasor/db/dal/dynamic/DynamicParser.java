@@ -28,7 +28,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 
 /**
- * @version : 2013-7-13
+ * 解析动态 SQL 配置
+ * @version : 2021-06-05
  * @author 赵永春 (zyc@byshell.org)
  */
 public class DynamicParser {

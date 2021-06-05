@@ -24,6 +24,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * SQL Build
+ * @version : 2021-06-05
+ * @author 赵永春 (zyc@byshell.org)
+ */
 public class QuerySqlBuilder implements DalBoundSql {
     private final StringBuilder queryString = new StringBuilder();
     private final List<SqlArg>  argList     = new ArrayList<>();

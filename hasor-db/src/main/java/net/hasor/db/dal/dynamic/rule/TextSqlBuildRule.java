@@ -19,6 +19,11 @@ import net.hasor.db.dal.dynamic.QuerySqlBuilder;
 
 import java.util.Map;
 
+/**
+ * 动态参数规则，普通文本
+ * @version : 2021-06-05
+ * @author 赵永春 (zyc@hasor.net)
+ */
 public class TextSqlBuildRule implements SqlBuildRule {
     public static final SqlBuildRule INSTANCE = new TextSqlBuildRule();
 

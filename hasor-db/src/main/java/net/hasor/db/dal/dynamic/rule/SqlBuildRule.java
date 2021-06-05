@@ -20,6 +20,11 @@ import net.hasor.db.dal.dynamic.QuerySqlBuilder;
 import java.sql.SQLException;
 import java.util.Map;
 
+/**
+ * 动态 SQL 中定义的规则。
+ * @version : 2021-06-05
+ * @author 赵永春 (zyc@hasor.net)
+ */
 public interface SqlBuildRule {
     public void executeRule(BuilderContext builderContext, QuerySqlBuilder querySqlBuilder, String ruleValue, Map<String, String> config) throws SQLException;
 }

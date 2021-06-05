@@ -20,6 +20,11 @@ import net.hasor.db.types.TypeHandlerRegistry;
 
 import java.util.Map;
 
+/**
+ * 生成动态 SQL 的 Build 环境
+ * @version : 2021-06-05
+ * @author 赵永春 (zyc@byshell.org)
+ */
 public class BuilderContext {
     private final Map<String, Object> context;
     private final TypeHandlerRegistry handlerRegistry;

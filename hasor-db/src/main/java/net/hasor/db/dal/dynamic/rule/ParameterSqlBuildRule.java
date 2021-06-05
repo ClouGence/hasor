@@ -26,6 +26,11 @@ import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.util.Map;
 
+/**
+ * 动态参数规则，负责动态 SQL 中 #{} 的解析。
+ * @version : 2021-06-05
+ * @author 赵永春 (zyc@hasor.net)
+ */
 public class ParameterSqlBuildRule implements SqlBuildRule {
     public static final SqlBuildRule INSTANCE          = new ParameterSqlBuildRule();
     public static final String       CFG_KEY_MODE      = "mode";

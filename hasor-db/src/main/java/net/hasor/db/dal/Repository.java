@@ -21,7 +21,7 @@ import net.hasor.db.lambda.LambdaOperations.LambdaQuery;
 import net.hasor.db.lambda.LambdaOperations.LambdaUpdate;
 
 /**
- *
+ * 基础数据库操作接口
  * @version : 2021-05-19
  * @author 赵永春 (zyc@hasor.net)
  */

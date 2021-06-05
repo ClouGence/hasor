@@ -21,6 +21,11 @@ import net.hasor.db.dal.dynamic.QuerySqlBuilder;
 import java.sql.SQLException;
 import java.util.Map;
 
+/**
+ * 动态参数规则，负责处理包含另外一段动态 SQL。
+ * @version : 2021-06-05
+ * @author 赵永春 (zyc@hasor.net)
+ */
 public class IncludeSqlBuildRule implements SqlBuildRule {
     public static final SqlBuildRule INSTANCE = new IncludeSqlBuildRule();
 

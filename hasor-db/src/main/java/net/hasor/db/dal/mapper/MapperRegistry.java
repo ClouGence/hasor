@@ -17,7 +17,9 @@ package net.hasor.db.dal.mapper;
 import net.hasor.db.dal.dynamic.DynamicSql;
 
 /**
- *
+ * Mapper 配置中心
+ * @version : 2021-06-05
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class MapperRegistry {
     public static final MapperRegistry DEFAULT = new MapperRegistry();

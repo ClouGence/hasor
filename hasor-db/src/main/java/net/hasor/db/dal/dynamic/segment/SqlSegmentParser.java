@@ -15,13 +15,18 @@
  */
 package net.hasor.db.dal.dynamic.segment;
 import net.hasor.db.dal.dynamic.DynamicSql;
-import net.hasor.db.dal.dynamic.tokens.GenericTokenParser;
 import net.hasor.db.dal.dynamic.rule.ParameterSqlBuildRule;
+import net.hasor.db.dal.dynamic.tokens.GenericTokenParser;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
 
 import java.util.Map;
 
+/**
+ * DynamicSql 解析器，仅支持：@{}、#{}、${} 三种写法。
+ * @version : 2021-05-19
+ * @author 赵永春 (zyc@hasor.net)
+ */
 public class SqlSegmentParser {
     public static DynamicSql analysisSQL(String fragmentString) {
         final DefaultSqlSegment fxSql = new DefaultSqlSegment();
