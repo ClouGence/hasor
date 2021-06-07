@@ -40,6 +40,15 @@ public class QuerySqlBuilder implements DalBoundSql {
         this.queryString.append(sql);
     }
 
+    public boolean lastSpaceCharacter() {
+        if (this.queryString.length() == 0) {
+            return true;
+        } else {
+            char charAt = this.queryString.charAt(this.queryString.length() - 1);
+            return charAt == ' ' || charAt == '\n' || charAt == '\t';
+        }
+    }
+
     public void appendArgs(List<SqlArg> originalArgList) {
         this.argList.addAll(originalArgList);
     }

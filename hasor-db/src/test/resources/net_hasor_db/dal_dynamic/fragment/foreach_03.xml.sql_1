@@ -1,6 +1,6 @@
 
     SELECT
-     * 
+    * 
     FROM
     alert_detail
     WHERE

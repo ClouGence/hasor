@@ -47,6 +47,9 @@ public class ChooseDynamicSql extends ArrayDynamicSql {
             super.buildQuery(builderContext, querySqlBuilder);
         } finally {
             if (this.useDefault.get()) {
+                if (!querySqlBuilder.lastSpaceCharacter()) {
+                    querySqlBuilder.appendSql(" ");
+                }
                 this.defaultDynamicSql.buildQuery(builderContext, querySqlBuilder);
             }
             this.useDefault.remove();
@@ -56,6 +59,16 @@ public class ChooseDynamicSql extends ArrayDynamicSql {
     private class WhenDynamicSql extends IfDynamicSql {
         public WhenDynamicSql(String testExpr) {
             super(testExpr);
+        }
+
+        @Override
+        public void buildQuery(BuilderContext builderContext, QuerySqlBuilder querySqlBuilder) throws SQLException {
+            if (test(builderContext)) {
+                if (!querySqlBuilder.lastSpaceCharacter()) {
+                    querySqlBuilder.appendSql(" ");
+                }
+                super.buildQuery(builderContext, querySqlBuilder);
+            }
         }
 
         @Override

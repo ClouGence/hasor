@@ -2,12 +2,12 @@ package net.hasor.db.dal.repository.config;
 import net.hasor.db.dal.dynamic.DynamicSql;
 import org.w3c.dom.Node;
 
-public class DeleteDynamicSql extends DmlDynamicSql {
-    public DeleteDynamicSql(DynamicSql target) {
+public class DeleteSqlConfig extends DmlSqlConfig {
+    public DeleteSqlConfig(DynamicSql target) {
         super(target);
     }
 
-    public DeleteDynamicSql(DynamicSql target, Node operationNode) {
+    public DeleteSqlConfig(DynamicSql target, Node operationNode) {
         super(target, operationNode);
     }
 

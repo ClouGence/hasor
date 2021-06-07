@@ -26,7 +26,7 @@ import org.w3c.dom.Node;
  * @version : 2021-06-05
  * @author 赵永春 (zyc@byshell.org)
  */
-public class RepositoryDynamicParser extends DynamicParser {
+public class SqlConfigParser extends DynamicParser {
     protected QueryType getQueryType(String elementName, StatementType statementTypeEnum) {
         if (StringUtils.isBlank(elementName)) {
             throw new UnsupportedOperationException("tag name is Empty.");
@@ -52,7 +52,7 @@ public class RepositoryDynamicParser extends DynamicParser {
         }
     }
 
-    protected DynamicSql parseDynamicSql(Node configNode) {
+    protected DynamicSql parseSqlConfig(Node configNode) {
         NamedNodeMap nodeAttributes = configNode.getAttributes();
         Node statementTypeNode = nodeAttributes.getNamedItem("statementType");
         String statementType = (statementTypeNode != null) ? statementTypeNode.getNodeValue() : null;
@@ -68,17 +68,17 @@ public class RepositoryDynamicParser extends DynamicParser {
         }
         switch (queryType) {
             case Insert:
-                return new InsertDynamicSql(dynamicSql, configNode);
+                return new InsertSqlConfig(dynamicSql, configNode);
             case Delete:
-                return new DeleteDynamicSql(dynamicSql, configNode);
+                return new DeleteSqlConfig(dynamicSql, configNode);
             case Update:
-                return new UpdateDynamicSql(dynamicSql, configNode);
+                return new UpdateSqlConfig(dynamicSql, configNode);
             case Query:
-                return new QueryDynamicSql(dynamicSql, configNode);
+                return new QuerySqlConfig(dynamicSql, configNode);
             case Callable:
-                return new CallableDynamicSql(dynamicSql, configNode);
+                return new CallableSqlConfig(dynamicSql, configNode);
             case Segment:
-                return new SegmentDynamicSql(dynamicSql);
+                return new SegmentSqlConfig(dynamicSql);
             default:
                 throw new UnsupportedOperationException("" + queryType.name() + "> Unsupported.");
         }

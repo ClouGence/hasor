@@ -1,0 +1,5 @@
+<select>
+    <bind name="abc" value="sellerId + 'abc'" overwrite="true"/>
+    SELECT * FROM console_job
+    WHERE aac = #{abc}
+</select>

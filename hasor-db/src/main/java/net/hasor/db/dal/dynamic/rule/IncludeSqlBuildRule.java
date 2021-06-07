@@ -36,7 +36,9 @@ public class IncludeSqlBuildRule implements SqlBuildRule {
             throw new SQLException("include sql '" + ruleValue + "' not found.");
         }
         QuerySqlBuilder sqlBuilder = includeSql.buildQuery(builderContext);
-        querySqlBuilder.appendSql(" ");
+        if (!querySqlBuilder.lastSpaceCharacter()) {
+            querySqlBuilder.appendSql(" ");
+        }
         querySqlBuilder.appendBuilder(sqlBuilder);
         querySqlBuilder.appendSql(" ");
     }

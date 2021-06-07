@@ -5,7 +5,6 @@ import org.junit.Test;
 public class TokenTest {
     @Test
     public void test() {
-        //
         GenericTokenParser tokenParser = new GenericTokenParser(new String[] { "#{", "${" }, "}", (builder, token, content) -> {
             System.out.println("ST-> " + builder.toString());
             if (token.equalsIgnoreCase("${")) {

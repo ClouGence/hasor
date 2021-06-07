@@ -4,15 +4,15 @@ import net.hasor.utils.StringUtils;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-public abstract class DmlDynamicSql extends SegmentDynamicSql {
+public abstract class DmlSqlConfig extends SegmentSqlConfig {
     private StatementType statementType = StatementType.Prepared;
     private int           timeout       = -1;
 
-    public DmlDynamicSql(DynamicSql target) {
+    public DmlSqlConfig(DynamicSql target) {
         super(target);
     }
 
-    public DmlDynamicSql(DynamicSql target, Node operationNode) {
+    public DmlSqlConfig(DynamicSql target, Node operationNode) {
         super(target);
         NamedNodeMap nodeAttributes = operationNode.getAttributes();
         Node statementTypeNode = nodeAttributes.getNamedItem("statementType");

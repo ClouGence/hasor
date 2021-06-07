@@ -5,10 +5,10 @@ import net.hasor.db.dal.dynamic.QuerySqlBuilder;
 
 import java.sql.SQLException;
 
-public class SegmentDynamicSql implements DynamicSql {
+public class SegmentSqlConfig implements DynamicSql {
     private final DynamicSql target;
 
-    public SegmentDynamicSql(DynamicSql target) {
+    public SegmentSqlConfig(DynamicSql target) {
         this.target = target;
     }
 

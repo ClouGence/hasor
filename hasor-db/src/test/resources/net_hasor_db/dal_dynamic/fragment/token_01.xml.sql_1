@@ -1,0 +1,8 @@
+
+    param1 = ?
+    
+    param2 = ?
+    
+    param3 = user_name asc
+    
+    param4 = and owner_type in (user_name asc)

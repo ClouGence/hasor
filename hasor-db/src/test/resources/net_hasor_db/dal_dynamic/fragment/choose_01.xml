@@ -1,0 +1,10 @@
+<select>
+    select * from t_blog
+    <where>
+        <choose>
+            <when test="title != null">and title = #{title}</when>
+            <when test="content != null">and content = #{content}</when>
+            <otherwise>and owner = "owner1"</otherwise>
+        </choose>
+    </where>
+</select>

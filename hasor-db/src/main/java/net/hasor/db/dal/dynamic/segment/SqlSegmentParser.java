@@ -73,7 +73,7 @@ public class SqlSegmentParser {
 
     private static void parserValue(DefaultSqlSegment fxQuery, String content) {
         String[] valueData = content.split(",");
-        if (valueData.length > 4 || valueData.length == 0) {
+        if (valueData.length > 5 || valueData.length == 0) {
             throw new IllegalArgumentException("analysisSQL failed, format error -> '#{valueExpr [,mode= IN|OUT|INOUT] [,jdbcType=INT] [,javaType=java.lang.String] [,typeHandler=YouTypeHandlerClassName]}'");
         }
         //

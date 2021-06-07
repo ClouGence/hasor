@@ -4,18 +4,18 @@ import net.hasor.utils.StringUtils;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-public class QueryDynamicSql extends DmlDynamicSql {
+public class QuerySqlConfig extends DmlSqlConfig {
     private String        resultMapper;
     private String        resultType;
     private int           fetchSize;
     private ResultSetType resultSetType;
     private String        resultDataQL;
 
-    public QueryDynamicSql(DynamicSql target) {
+    public QuerySqlConfig(DynamicSql target) {
         super(target);
     }
 
-    public QueryDynamicSql(DynamicSql target, Node operationNode) {
+    public QuerySqlConfig(DynamicSql target, Node operationNode) {
         super(target, operationNode);
         NamedNodeMap nodeAttributes = operationNode.getAttributes();
         Node resultMapperNode = nodeAttributes.getNamedItem("resultMapper");

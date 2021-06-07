@@ -1,0 +1,12 @@
+<select>
+    param1 = #{abc}
+    <!-- 参数化 -->
+    param2 = #{futures, mode = out,
+                typeHandler=net.hasor.db.types.handler.BlobBytesTypeHandler,
+                javaType=net.hasor.test.db.dto.TB_User,
+                jdbcType=INT}
+    <!-- SQL 注入 -->
+    param3 = ${orderBy}
+    <!-- 执行规则( @{<规则名>, <启用规则的条件参数>, 规则内容 ) -->
+    param4 = @{nonull, info.status , 'and owner_type in (' + orderBy + ')' }
+</select>

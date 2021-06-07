@@ -37,12 +37,25 @@ import java.util.Map;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class MapperRegistry {
-    public static final MapperRegistry          DEFAULT       = new MapperRegistry();
-    private final       Map<String, DynamicSql> dynamicSqlMap = new HashMap<>();
-    private             ResourceLoader          resourceLoader;
+    public static final MapperRegistry                       DEFAULT       = new MapperRegistry();
+    private final       Map<String, Map<String, DynamicSql>> spaceSqlMap   = new HashMap<>();
+    private final       Map<String, DynamicSql>              defaultSqlMap = new HashMap<>();
+    private             ResourceLoader                       resourceLoader;
 
     public DynamicSql findDynamicSql(String dynamicId) {
-        return this.dynamicSqlMap.get(dynamicId);
+        return this.defaultSqlMap.get(dynamicId);
+    }
+
+    public DynamicSql findDynamicSql(String namespace, String dynamicId) {
+        if (StringUtils.isBlank(namespace)) {
+            return findDynamicSql(dynamicId);
+        }
+        Map<String, DynamicSql> dynamicSqlMap = spaceSqlMap.get(namespace);
+        if (dynamicSqlMap == null) {
+            return null;
+        } else {
+            return dynamicSqlMap.get(dynamicId);
+        }
     }
 
     protected InputStream loadResource(String resource) throws IOException {
@@ -53,12 +66,12 @@ public class MapperRegistry {
         }
     }
 
-    protected RepositoryDynamicParser getRepositoryDynamicParser() {
-        return new RepositoryDynamicParser();
+    protected SqlConfigParser getRepositoryDynamicParser() {
+        return new SqlConfigParser();
     }
 
     public void loadMapper(String resource) throws IOException {
-        RepositoryDynamicParser dynamicParser = getRepositoryDynamicParser();
+        SqlConfigParser dynamicParser = getRepositoryDynamicParser();
         try (InputStream asStream = loadResource(resource)) {
             if (asStream == null) {
                 throw new IOException("mapper resource not exist.");
@@ -66,6 +79,16 @@ public class MapperRegistry {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = documentBuilder.parse(new InputSource(asStream));
             Element root = document.getDocumentElement();
+            NamedNodeMap rootAttributes = root.getAttributes();
+            String mapperSpace = "";
+            if (rootAttributes != null) {
+                Node namespaceNode = rootAttributes.getNamedItem("namespace");
+                mapperSpace = (namespaceNode != null) ? namespaceNode.getNodeValue() : null;
+                if (!this.spaceSqlMap.containsKey(mapperSpace)) {
+                    this.spaceSqlMap.put(mapperSpace, new HashMap<>());
+                }
+            }
+            //
             NodeList childNodes = root.getChildNodes();
             for (int i = 0, len = childNodes.getLength(); i < len; i++) {
                 Node node = childNodes.item(i);
@@ -78,9 +101,10 @@ public class MapperRegistry {
                 if (StringUtils.isBlank(idString)) {
                     throw new IOException("the ID attribute of the <" + root.getNodeName() + "> tag is empty.");
                 }
-                DynamicSql dynamicSql = dynamicParser.parseDynamicSql(node);
+                DynamicSql dynamicSql = dynamicParser.parseSqlConfig(node);
                 if (dynamicSql != null) {
-                    this.dynamicSqlMap.put(idString, dynamicSql);
+                    this.defaultSqlMap.put(idString, dynamicSql);
+                    this.spaceSqlMap.get(mapperSpace).put(idString, dynamicSql);
                 }
             }
         } catch (ParserConfigurationException | SAXException e) {

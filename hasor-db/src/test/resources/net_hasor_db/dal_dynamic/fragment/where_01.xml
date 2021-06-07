@@ -1,0 +1,15 @@
+<select id="findActiveBlogLike"
+        resultType="Blog">
+    SELECT * FROM BLOG
+    <where>
+        <if test="state != null">
+            and state = #{state}
+        </if>
+        <if test="title != null">
+            and title like #{title}
+        </if>
+        <if test="author != null and author.name != null">
+            AND author_name like #{author.name}
+        </if>
+    </where>
+</select>

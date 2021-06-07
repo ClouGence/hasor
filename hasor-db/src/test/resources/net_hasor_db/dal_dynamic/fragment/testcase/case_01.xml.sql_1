@@ -1,6 +1,6 @@
 
     SELECT
-     * 
+    * 
     FROM
     console_job
     WHERE 1=1

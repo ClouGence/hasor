@@ -26,6 +26,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class BuilderContext {
+    private final String              namespace;
     private final Map<String, Object> context;
     private final TypeHandlerRegistry handlerRegistry;
     private final RuleRegistry        ruleRegistry;
@@ -33,10 +34,15 @@ public class BuilderContext {
     private final MapperRegistry      mapperRegistry;
 
     public BuilderContext(Map<String, Object> context) {
-        this(context, TypeHandlerRegistry.DEFAULT, RuleRegistry.DEFAULT, MapperRegistry.DEFAULT, null);
+        this("", context, TypeHandlerRegistry.DEFAULT, RuleRegistry.DEFAULT, MapperRegistry.DEFAULT, null);
     }
 
-    public BuilderContext(Map<String, Object> context, TypeHandlerRegistry handlerRegistry, RuleRegistry ruleRegistry, MapperRegistry mapperRegistry, ClassLoader classLoader) {
+    public BuilderContext(String namespace, Map<String, Object> context) {
+        this(namespace, context, TypeHandlerRegistry.DEFAULT, RuleRegistry.DEFAULT, MapperRegistry.DEFAULT, null);
+    }
+
+    public BuilderContext(String namespace, Map<String, Object> context, TypeHandlerRegistry handlerRegistry, RuleRegistry ruleRegistry, MapperRegistry mapperRegistry, ClassLoader classLoader) {
+        this.namespace = namespace;
         this.context = context;
         this.handlerRegistry = (handlerRegistry == null) ? TypeHandlerRegistry.DEFAULT : handlerRegistry;
         this.ruleRegistry = (ruleRegistry == null) ? RuleRegistry.DEFAULT : ruleRegistry;
@@ -50,7 +56,7 @@ public class BuilderContext {
 
     public DynamicSql findDynamicSqlById(String dynamicId) {
         if (this.mapperRegistry != null) {
-            return mapperRegistry.findDynamicSql(dynamicId);
+            return mapperRegistry.findDynamicSql(this.namespace, dynamicId);
         }
         return null;
     }
