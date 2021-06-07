@@ -49,7 +49,7 @@ public class J2eeFilterAsFilter implements InvokerFilter, Filter {
             } catch (IOException | ServletException e) {
                 throw e;
             } catch (Throwable e) {
-                throw ExceptionUtils.toRuntimeException(e);
+                throw ExceptionUtils.toRuntime(e);
             }
         });
         return invoker.get(Invoker.RETURN_DATA_KEY);

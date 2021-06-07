@@ -129,7 +129,7 @@ public class CollectionUdfSource implements UdfSourceAssembly {
             try {
                 return (boolean) filter.call(hints, o);
             } catch (Throwable e) {
-                throw ExceptionUtils.toRuntimeException(e);
+                throw ExceptionUtils.toRuntime(e);
             }
         });
         //
@@ -227,7 +227,7 @@ public class CollectionUdfSource implements UdfSourceAssembly {
                 try {
                     return (Integer) sortUdf.call(hints, new Object[] { o1, o2 });
                 } catch (Throwable e) {
-                    throw ExceptionUtils.toRuntimeException(e);
+                    throw ExceptionUtils.toRuntime(e);
                 }
             });
             return listData;

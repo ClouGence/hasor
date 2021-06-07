@@ -656,7 +656,7 @@ public class FileUpload {
             try {
                 return findNextItem();
             } catch (IOException e) {
-                throw ExceptionUtils.toRuntimeException(e);
+                throw ExceptionUtils.toRuntime(e);
             }
         }
 

@@ -30,7 +30,7 @@ public interface ESupplier<T, E extends Throwable> extends Supplier<T> {
         try {
             return this.eGet();
         } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 

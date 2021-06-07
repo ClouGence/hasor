@@ -319,7 +319,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
                     logger.error("load module Type " + moduleType + " is failure. :" + e.getMessage(), e);
                 } else {
                     logger.error("load module Type " + moduleType + " is failure. :" + e.getMessage());
-                    throw ExceptionUtils.toRuntimeException(e);
+                    throw ExceptionUtils.toRuntime(e);
                 }
             }
         }
@@ -588,9 +588,9 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
                 future.get(timeout, unit);
             }
         } catch (ExecutionException e) {
-            throw ExceptionUtils.toRuntimeException(e.getCause());
+            throw ExceptionUtils.toRuntime(e.getCause());
         } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 

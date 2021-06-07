@@ -77,7 +77,7 @@ public class ImportInstCompiler implements InstCompiler<ImportInst> {
             InputStream inputStream = Objects.requireNonNull(compilerContext.findResource(importName), "import resource '" + importName + "' not found.");
             queryModel = (RootBlockSet) QueryHelper.queryParser(inputStream);
         } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e, throwable -> new QueryCompilerException("import compiler failed -> parser failed.", throwable));
+            throw ExceptionUtils.toRuntime(e, throwable -> new QueryCompilerException("import compiler failed -> parser failed.", throwable));
         }
         // 编译资源
         compilerContext.findInstCompilerByInst(queryModel).doCompiler(queue);

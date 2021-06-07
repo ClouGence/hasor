@@ -29,7 +29,7 @@ public class OgnlUtils {
             OgnlContext context = new OgnlContext(null, null, new OgnlMemberAccess(true));
             return Ognl.getValue(exprString, context, root);
         } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 }

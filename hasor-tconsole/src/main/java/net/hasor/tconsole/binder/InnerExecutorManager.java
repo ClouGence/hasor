@@ -119,7 +119,7 @@ class InnerExecutorManager extends AbstractContainer implements AppContextAware,
                     try {
                         ((HostTelService) this.service).sendCommand(command);
                     } catch (IOException e) {
-                        throw ExceptionUtils.toRuntimeException(e);
+                        throw ExceptionUtils.toRuntime(e);
                     }
                 }
                 logger.info("tConsole -> trigger TelHostPreFinishListener.onFinish");

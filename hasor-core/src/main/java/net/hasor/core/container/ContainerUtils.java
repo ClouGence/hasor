@@ -216,7 +216,7 @@ public class ContainerUtils {
                 }
             }
         } catch (InvocationTargetException e2) {
-            throw ExceptionUtils.toRuntimeException(e2.getTargetException());
+            throw ExceptionUtils.toRuntime(e2.getTargetException());
         }
     }
 

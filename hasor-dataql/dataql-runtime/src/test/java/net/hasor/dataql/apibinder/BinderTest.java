@@ -44,7 +44,7 @@ public class BinderTest extends AbstractTestResource {
                 objectMap.put(targetType, targetType.newInstance());
                 return (T) objectMap.get(targetType);
             } catch (Exception e) {
-                throw ExceptionUtils.toRuntimeException(e);
+                throw ExceptionUtils.toRuntime(e);
             }
         }
     };

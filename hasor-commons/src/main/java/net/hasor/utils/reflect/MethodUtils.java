@@ -659,7 +659,7 @@ public class MethodUtils {
                 writeLock.unlock();
             }
         } catch (ReflectiveOperationException e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 

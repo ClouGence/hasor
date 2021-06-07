@@ -15,16 +15,18 @@
  */
 package net.hasor.db.dal.dynamic;
 import net.hasor.db.dal.dynamic.nodes.*;
-import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.convert.ConverterUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.io.StringReader;
 
 /**
@@ -33,17 +35,17 @@ import java.io.StringReader;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class DynamicParser {
-    public DynamicSql parseDynamicSql(String sqlString) {
-        try {
-            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = documentBuilder.parse(new InputSource(new StringReader(sqlString)));
-            Element root = document.getDocumentElement();
-            ArrayDynamicSql arraySqlNode = new ArrayDynamicSql();
-            parseNodeList(arraySqlNode, root.getChildNodes());
-            return arraySqlNode;
-        } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e);
-        }
+    public DynamicSql parseDynamicSql(String sqlString) throws IOException, SAXException, ParserConfigurationException {
+        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = documentBuilder.parse(new InputSource(new StringReader(sqlString)));
+        Element root = document.getDocumentElement();
+        return parseDynamicSql(root);
+    }
+
+    public DynamicSql parseDynamicSql(Node configNode) {
+        ArrayDynamicSql arraySqlNode = new ArrayDynamicSql();
+        parseNodeList(arraySqlNode, configNode.getChildNodes());
+        return arraySqlNode;
     }
 
     protected String getNodeAttributeValue(Node node, String attributeKey) {

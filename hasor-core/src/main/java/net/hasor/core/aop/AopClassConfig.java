@@ -364,7 +364,7 @@ public class AopClassConfig {
             mv.visitVarInsn(ASTORE, 0);
             mv.visitLabel(cacheStartCodeLabel);
             mv.visitVarInsn(ALOAD, 0);
-            String exceptionMethodDesc = AsmTools.toAsmDesc(ExceptionUtils.class.getMethod("toRuntimeException", Throwable.class));
+            String exceptionMethodDesc = AsmTools.toAsmDesc(ExceptionUtils.class.getMethod("toRuntime", Throwable.class));
             mv.visitMethodInsn(INVOKESTATIC, exceptionUtilsName, "toRuntimeException", exceptionMethodDesc, false);
             mv.visitInsn(ATHROW);
             mv.visitLabel(returnLabel);
@@ -485,7 +485,7 @@ public class AopClassConfig {
             mv.visitVarInsn(ASTORE, paramIndexMap.get("e"));
             mv.visitLabel(eLabel);
             mv.visitVarInsn(ALOAD, paramIndexMap.get("e"));
-            String exceptionMethodDesc = AsmTools.toAsmDesc(ExceptionUtils.class.getMethod("toRuntimeException", Throwable.class));
+            String exceptionMethodDesc = AsmTools.toAsmDesc(ExceptionUtils.class.getMethod("toRuntime", Throwable.class));
             mv.visitMethodInsn(INVOKESTATIC, AsmTools.replaceClassName(ExceptionUtils.class), "toRuntimeException", exceptionMethodDesc, false);
             mv.visitInsn(ATHROW);
             //

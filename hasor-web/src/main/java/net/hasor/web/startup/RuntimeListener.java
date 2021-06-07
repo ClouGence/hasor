@@ -129,7 +129,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             newHasor.addVariable("HASOR_WEBROOT", webContextDir);
             return newHasor.build(startModule);
         } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 

@@ -41,6 +41,7 @@ import net.hasor.db.jdbc.core.ArgPreparedStatementSetter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
+import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
 
@@ -333,7 +334,11 @@ public class SqlFragment implements FragmentProcess {
 
     /** 分析 SQL */
     protected DynamicSql analysisSQL(Hints hint, String fragmentString) {
-        return new DynamicParser().parseDynamicSql(fragmentString);
+        try {
+            return new DynamicParser().parseDynamicSql(fragmentString);
+        } catch (Exception e) {
+            throw ExceptionUtils.toRuntime(e);
+        }
     }
 
     /** 结果转换 */

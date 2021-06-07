@@ -30,7 +30,7 @@ public interface EConsumer<T, E extends Throwable> extends Consumer<T> {
         try {
             this.eAccept(t);
         } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 

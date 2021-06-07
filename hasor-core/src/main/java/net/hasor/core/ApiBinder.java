@@ -155,7 +155,7 @@ public interface ApiBinder {
             }
             return this;
         } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 

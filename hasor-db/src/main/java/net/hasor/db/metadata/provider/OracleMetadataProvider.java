@@ -62,7 +62,20 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
     @Override
     public String getVersion() throws SQLException {
         try (Connection conn = this.connectSupplier.eGet()) {
-            return new JdbcTemplate(conn).queryForString("select * from v$version");
+            List<Map<String, Object>> moreInfo = new JdbcTemplate(conn).queryForList("select PRODUCT,VERSION,STATUS FROM PRODUCT_COMPONENT_VERSION");
+            String version = null;
+            for (Map<String, Object> line : moreInfo) {
+                String productStr = line.get("PRODUCT").toString();
+                if (StringUtils.containsAny(productStr, "Oracle Database")) {
+                    version = line.get("VERSION").toString();
+                    break;
+                }
+            }
+            if (StringUtils.isBlank(version)) {
+                return new JdbcTemplate(conn).queryForString("select * from v$version");
+            } else {
+                return version;
+            }
         }
     }
 

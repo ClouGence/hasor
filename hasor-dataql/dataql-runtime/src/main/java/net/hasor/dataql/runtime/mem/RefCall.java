@@ -56,7 +56,7 @@ public class RefCall {
             if (e instanceof DataQueryException) {
                 throw (DataQueryException) e;
             }
-            throw ExceptionUtils.toRuntimeException(e, throwable -> {
+            throw ExceptionUtils.toRuntime(e, throwable -> {
                 String message = e.getClass().getName() + ": " + throwable.getLocalizedMessage();
                 return new QueryRuntimeException(location, message, throwable);
             });

@@ -71,7 +71,7 @@ public class AddressPool implements RsfUpdater {
             this.argsKey = (ArgsKey) type.newInstance();
         } catch (Throwable e) {
             this.logger.error("create argsKey " + argsKeyType + " , message = " + e.getMessage(), e);
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
         //
         // .接受删除事件,把对应的地址本清除掉。

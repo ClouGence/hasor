@@ -95,7 +95,7 @@ class NacosUtils {
                 try {
                     return configService.publishConfig(configId, groupName, configData);
                 } catch (NacosException e3) {
-                    throw ExceptionUtils.toRuntimeException(e3);
+                    throw ExceptionUtils.toRuntime(e3);
                 }
             }
         }
@@ -112,7 +112,7 @@ class NacosUtils {
                 try {
                     return configService.removeConfig(configId, groupName);
                 } catch (NacosException e3) {
-                    throw ExceptionUtils.toRuntimeException(e3);
+                    throw ExceptionUtils.toRuntime(e3);
                 }
             }
         }

@@ -92,7 +92,7 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
                 return this.releaseDal.getObjectBy(indexKey, indexValue);
             }
         } catch (SQLException e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 
@@ -105,7 +105,7 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
                 return this.releaseDal.listObjectBy(conditions);
             }
         } catch (SQLException e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 
@@ -124,7 +124,7 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
                 return this.releaseDal.deleteObject(id);
             }
         } catch (SQLException e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 
@@ -137,7 +137,7 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
                 return this.releaseDal.updateObject(id, newData);
             }
         } catch (SQLException e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 
@@ -150,7 +150,7 @@ public class DataBaseApiDataAccessLayer implements ApiDataAccessLayer {
                 return this.releaseDal.createObject(newData);
             }
         } catch (SQLException e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 }

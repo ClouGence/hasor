@@ -46,7 +46,7 @@ public interface DatawayService {
         try {
             return invokeApi(apiPath, jsonParam);
         } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 

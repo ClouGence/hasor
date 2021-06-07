@@ -90,7 +90,7 @@ public interface Invoker extends MimeType {
         try {
             return this.fillForm(formType, this.getAppContext().justInject(formType.newInstance()));
         } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 

@@ -251,7 +251,7 @@ public final class TypeHandlerRegistry {
                     return typeHandler.newInstance();
                 }
             } catch (Exception e) {
-                throw ExceptionUtils.toRuntimeException(e);
+                throw ExceptionUtils.toRuntime(e);
             }
         });
         return cachedSingleHandlers.get(typeHandler);

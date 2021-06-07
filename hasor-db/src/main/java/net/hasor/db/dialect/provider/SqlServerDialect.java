@@ -49,7 +49,7 @@ public class SqlServerDialect extends AbstractDialect implements SqlDialect {
                 CACHE.put(buildSqlString, select);
                 return select;
             } catch (JSQLParserException e) {
-                throw ExceptionUtils.toRuntimeException(e);
+                throw ExceptionUtils.toRuntime(e);
             }
         }
     }

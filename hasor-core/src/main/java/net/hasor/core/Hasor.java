@@ -272,7 +272,7 @@ public final class Hasor {
             }
             return mainSettings;
         } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 
@@ -294,7 +294,7 @@ public final class Hasor {
             appContext.start(this.moduleList.toArray(new Module[0]));
             return appContext;
         } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 

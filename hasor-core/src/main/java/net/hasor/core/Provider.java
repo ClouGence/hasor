@@ -37,7 +37,7 @@ public interface Provider<T> extends Supplier<T>, javax.inject.Provider<T>, Call
         try {
             return this.call();
         } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 

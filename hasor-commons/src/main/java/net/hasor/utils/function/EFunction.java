@@ -30,7 +30,7 @@ public interface EFunction<T, R, E extends Throwable> extends Function<T, R> {
         try {
             return this.eApply(t);
         } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 

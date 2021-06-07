@@ -262,9 +262,9 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
                 future.get(timeout, unit);
             }
         } catch (ExecutionException e) {
-            throw ExceptionUtils.toRuntimeException(e.getCause());
+            throw ExceptionUtils.toRuntime(e.getCause());
         } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 

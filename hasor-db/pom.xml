@@ -134,15 +134,15 @@
                             <relocations>
                                 <relocation>
                                     <pattern>ognl</pattern>
-                                    <shadedPattern>net.hasor.db.ognl</shadedPattern>
+                                    <shadedPattern>net.hasor.db.jars.ognl</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>javassist</pattern>
-                                    <shadedPattern>net.hasor.db.javassist</shadedPattern>
+                                    <shadedPattern>net.hasor.db.jars.javassist</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>net.sf.jsqlparser</pattern>
-                                    <shadedPattern>net.hasor.db.jsqlparser</shadedPattern>
+                                    <shadedPattern>net.hasor.db.jars.jsqlparser</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>

@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.db.mapping;
-import net.hasor.db.metadata.*;
+import net.hasor.db.metadata.CaseSensitivityType;
+import net.hasor.db.metadata.ColumnDef;
+import net.hasor.db.metadata.MetaDataService;
+import net.hasor.db.metadata.TableDef;
 import net.hasor.db.metadata.domain.SimpleColumnDef;
 import net.hasor.db.metadata.domain.jdbc.JdbcTableType;
 import net.hasor.db.types.TypeHandler;
@@ -108,7 +111,7 @@ public class MappingRegistry {
                     tableMapping = parserEntity(entityType, metaDataService);
                     this.entityMappingMap.put(entityType, tableMapping);
                 } catch (SQLException e) {
-                    throw ExceptionUtils.toRuntimeException(e);
+                    throw ExceptionUtils.toRuntime(e);
                 }
             }
         }
@@ -312,7 +315,7 @@ public class MappingRegistry {
                 try {
                     typeHandler = typeHandlerClass.newInstance();
                 } catch (Exception e) {
-                    throw ExceptionUtils.toRuntimeException(e);
+                    throw ExceptionUtils.toRuntime(e);
                 }
             }
             //typeRegistry

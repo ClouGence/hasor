@@ -316,9 +316,9 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
                         targetObject = tConstructor.newInstance(ArrayUtils.EMPTY_OBJECT_ARRAY);
                     }
                 } catch (InvocationTargetException e) {
-                    throw ExceptionUtils.toRuntimeException(e.getTargetException(), IllegalStateException::new);
+                    throw ExceptionUtils.toRuntime(e.getTargetException(), IllegalStateException::new);
                 } catch (Exception e) {
-                    throw ExceptionUtils.toRuntimeException(e, IllegalStateException::new);
+                    throw ExceptionUtils.toRuntime(e, IllegalStateException::new);
                 }
                 //
                 // .执行依赖注入
@@ -402,7 +402,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
             try {
                 newType = engine.buildClass();
             } catch (Exception e) {
-                throw ExceptionUtils.toRuntimeException(e);
+                throw ExceptionUtils.toRuntime(e);
             }
         }
         //
@@ -442,7 +442,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
             try {
                 ((InjectMembers) targetBean).doInject(appContext);
             } catch (Throwable e) {
-                throw ExceptionUtils.toRuntimeException(e);
+                throw ExceptionUtils.toRuntime(e);
             }
             return;
         }
@@ -518,9 +518,9 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
             try {
                 method.invoke(targetBean, parameterSupplier.get());
             } catch (InvocationTargetException e2) {
-                throw ExceptionUtils.toRuntimeException(e2.getTargetException());
+                throw ExceptionUtils.toRuntime(e2.getTargetException());
             } catch (Exception e) {
-                throw ExceptionUtils.toRuntimeException(e);
+                throw ExceptionUtils.toRuntime(e);
             }
         }
     }

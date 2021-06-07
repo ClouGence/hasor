@@ -89,7 +89,7 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
                 T listener = (T) listeners.get(0).get();
                 return spiCaller.doResultSpi(listener, defaultResult);
             } catch (Throwable e) {
-                throw ExceptionUtils.toRuntimeException(e);
+                throw ExceptionUtils.toRuntime(e);
             }
         }
         //
@@ -124,7 +124,7 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
                 return lastResult;
             }
         } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
     }
 

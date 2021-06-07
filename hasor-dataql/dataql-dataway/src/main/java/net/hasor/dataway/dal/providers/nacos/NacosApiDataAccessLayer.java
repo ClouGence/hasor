@@ -147,7 +147,7 @@ public class NacosApiDataAccessLayer implements ApiDataAccessLayer {
             byte[] digest = mdTemp.digest();
             oriId = new BigInteger(digest).abs().toString(24);
         } catch (NoSuchAlgorithmException e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw ExceptionUtils.toRuntime(e);
         }
         return ((EntityDef.INFO == objectType) ? "i_" : "r_") + oriId.toLowerCase();
     }

@@ -33,14 +33,14 @@ import java.util.function.Function;
  * @version $Id: ExceptionUtils.java 1436770 2013-01-22 07:09:45Z ggregory $
  */
 public class ExceptionUtils {
-    public static RuntimeException toRuntimeException(Throwable proxy) {
-        return toRuntimeException(proxy, throwable -> {
+    public static RuntimeException toRuntime(Throwable proxy) {
+        return toRuntime(proxy, throwable -> {
             return new RuntimeException(throwable.getClass().getName() + " - " + throwable.getMessage(), throwable);
         });
     }
 
     /**将异常包装为 {@link RuntimeException}*/
-    public static RuntimeException toRuntimeException(Throwable proxy, Function<Throwable, RuntimeException> convert) {
+    public static RuntimeException toRuntime(Throwable proxy, Function<Throwable, RuntimeException> convert) {
         if (proxy instanceof InvocationTargetException && ((InvocationTargetException) proxy).getTargetException() != null) {
             proxy = ((InvocationTargetException) proxy).getTargetException();
         }
@@ -50,7 +50,7 @@ public class ExceptionUtils {
         return convert.apply(proxy);
     }
 
-    public static Throwable toRuntimeException(Throwable proxy, Class<?>[] exceptionTypes) {
+    public static Throwable toRuntime(Throwable proxy, Class<?>[] exceptionTypes) {
         if (exceptionTypes != null) {
             for (Class<?> e : exceptionTypes) {
                 if (e.isInstance(exceptionTypes)) {

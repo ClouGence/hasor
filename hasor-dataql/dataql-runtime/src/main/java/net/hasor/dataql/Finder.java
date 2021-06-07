@@ -63,7 +63,7 @@ public interface Finder {
         try {
             inputStream = ResourcesUtils.getResourceAsStream(resourceName);
         } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e, throwable -> new RuntimeException("import compiler failed -> '" + resourceName + "' not found.", throwable));
+            throw ExceptionUtils.toRuntime(e, throwable -> new RuntimeException("import compiler failed -> '" + resourceName + "' not found.", throwable));
         }
         return inputStream;
     }
@@ -73,7 +73,7 @@ public interface Finder {
         try {
             return beanType.newInstance();
         } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e, throwable -> new RuntimeException("load Bean failed -> '" + beanType.getName(), throwable));
+            throw ExceptionUtils.toRuntime(e, throwable -> new RuntimeException("load Bean failed -> '" + beanType.getName(), throwable));
         }
     }
 
