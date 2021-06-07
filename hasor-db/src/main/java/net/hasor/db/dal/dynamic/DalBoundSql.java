@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.dal;
+package net.hasor.db.dal.dynamic;
+import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.types.TypeHandler;
+
+import java.sql.JDBCType;
+
 /**
- * 参数模式
+ * 代表一个动态 SQL Build 之后的具体 SQL 和其参数
+ * @version : 2021-06-05
  * @author 赵永春 (zyc@byshell.org)
- * @version : 2021-05-24
  */
-public enum SqlMode {
-    In,
-    Out,
-    InOut
+public interface DalBoundSql extends BoundSql {
+    public SqlMode[] getSqlModes();
+
+    public JDBCType[] getJdbcType();
+
+    public Class<?>[] getJavaType();
+
+    public TypeHandler<?>[] getTypeHandlers();
 }

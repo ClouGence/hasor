@@ -1,4 +1,4 @@
-package net.hasor.db.dal.fxquery;
+package net.hasor.db.dal.dynamic;
 import net.hasor.db.dal.dynamic.tokens.GenericTokenParser;
 import org.junit.Test;
 

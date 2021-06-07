@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.db.dal.dynamic.rule;
-import net.hasor.db.dal.SqlMode;
 import net.hasor.db.dal.dynamic.BuilderContext;
 import net.hasor.db.dal.dynamic.QuerySqlBuilder;
+import net.hasor.db.dal.dynamic.SqlMode;
 import net.hasor.db.dal.dynamic.ognl.OgnlUtils;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;

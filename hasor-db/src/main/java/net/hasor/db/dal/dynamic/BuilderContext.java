@@ -15,7 +15,7 @@
  */
 package net.hasor.db.dal.dynamic;
 import net.hasor.db.dal.dynamic.rule.RuleRegistry;
-import net.hasor.db.dal.mapper.MapperRegistry;
+import net.hasor.db.dal.repository.MapperRegistry;
 import net.hasor.db.types.TypeHandlerRegistry;
 
 import java.util.Map;
