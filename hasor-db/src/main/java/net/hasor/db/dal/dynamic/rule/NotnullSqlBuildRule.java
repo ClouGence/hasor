@@ -16,6 +16,7 @@
 package net.hasor.db.dal.dynamic.rule;
 import net.hasor.db.dal.dynamic.BuilderContext;
 import net.hasor.db.dal.dynamic.QuerySqlBuilder;
+import net.hasor.db.dal.dynamic.ognl.OgnlUtils;
 
 import java.sql.SQLException;
 import java.util.Map;
@@ -23,14 +24,22 @@ import java.util.Map;
 import static net.hasor.db.dal.dynamic.ognl.OgnlUtils.evalOgnl;
 
 /**
- * 动态 SQL 中定义的规则。
+ * 动态参数规则，非空
  * @version : 2021-06-05
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface SqlBuildRule {
-    public default boolean test(BuilderContext builderContext, String activateExpr) {
-        return Boolean.TRUE.equals(evalOgnl(activateExpr, builderContext.getContext()));
+public class NotnullSqlBuildRule implements SqlBuildRule {
+    public static final SqlBuildRule INSTANCE = new NotnullSqlBuildRule();
+
+    @Override
+    public boolean test(BuilderContext builderContext, String activateExpr) {
+        Object evalObject = evalOgnl(activateExpr, builderContext.getContext());
+        return evalObject != null;
     }
 
-    public void executeRule(BuilderContext builderContext, QuerySqlBuilder querySqlBuilder, String ruleValue, Map<String, String> config) throws SQLException;
+    @Override
+    public void executeRule(BuilderContext builderContext, QuerySqlBuilder querySqlBuilder, String ruleValue, Map<String, String> config) throws SQLException {
+        Object evalOgnl = OgnlUtils.evalOgnl(ruleValue, builderContext.getContext());
+        querySqlBuilder.appendSql(evalOgnl.toString());
+    }
 }

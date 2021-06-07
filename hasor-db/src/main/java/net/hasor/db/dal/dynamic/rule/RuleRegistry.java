@@ -14,18 +14,32 @@
  * limitations under the License.
  */
 package net.hasor.db.dal.dynamic.rule;
+import net.hasor.utils.ref.LinkedCaseInsensitiveMap;
+
+import java.util.Map;
+
 /**
  * SqlBuildRule 注册器
  * @version : 2021-06-05
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RuleRegistry {
-    public static final RuleRegistry DEFAULT = new RuleRegistry();
+    public static final RuleRegistry              DEFAULT = new RuleRegistry();
+    private final       Map<String, SqlBuildRule> ruleMap = new LinkedCaseInsensitiveMap<>();
+
+    public RuleRegistry() {
+        register("include", IncludeSqlBuildRule.INSTANCE);
+        register("text", TextSqlBuildRule.INSTANCE);
+        register("nonull", NotnullSqlBuildRule.INSTANCE);
+        register("parameter", ParameterSqlBuildRule.INSTANCE);
+    }
 
     public SqlBuildRule findByName(String ruleName) {
-        if (ruleName.equalsIgnoreCase("include")) {
-            return IncludeSqlBuildRule.INSTANCE;
-        }
-        return null;
+        return this.ruleMap.get(ruleName);
+    }
+
+    /** 注册 SqlBuildRule */
+    public void register(String ruleName, SqlBuildRule sqlBuildRule) {
+        this.ruleMap.put(ruleName, sqlBuildRule);
     }
 }

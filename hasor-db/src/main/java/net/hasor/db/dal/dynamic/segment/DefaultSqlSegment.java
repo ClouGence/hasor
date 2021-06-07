@@ -187,12 +187,11 @@ public class DefaultSqlSegment implements Cloneable, DynamicSql {
 
         @Override
         public void buildQuery(BuilderContext builderContext, QuerySqlBuilder querySqlBuilder) throws SQLException {
-            boolean activate = Boolean.TRUE.equals(evalOgnl(this.activateExpr, builderContext.getContext()));
-            if (activate) {
-                SqlBuildRule ruleByName = builderContext.getRuleRegistry().findByName(this.ruleName);
-                if (ruleByName == null) {
-                    throw new UnsupportedOperationException("rule `" + this.ruleName + "` Unsupported.");
-                }
+            SqlBuildRule ruleByName = builderContext.getRuleRegistry().findByName(this.ruleName);
+            if (ruleByName == null) {
+                throw new UnsupportedOperationException("rule `" + this.ruleName + "` Unsupported.");
+            }
+            if (ruleByName.test(builderContext, this.activateExpr)) {
                 ruleByName.executeRule(builderContext, querySqlBuilder, this.ruleValue, Collections.emptyMap());
             }
         }
