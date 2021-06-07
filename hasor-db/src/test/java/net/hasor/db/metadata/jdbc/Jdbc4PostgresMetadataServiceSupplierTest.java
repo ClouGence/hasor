@@ -178,9 +178,9 @@ public class Jdbc4PostgresMetadataServiceSupplierTest extends AbstractMetadataSe
         List<JdbcConstraint> columnList = this.repository.getConstraint(null, "tester", "proc_table_ref");
         Map<String, JdbcConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(JdbcConstraint::getName, JdbcConstraint::getConstraintType));
         assert typeMap.size() == 2;
-        assert typeMap.containsKey("PRIMARY");
+        assert typeMap.containsKey("proc_table_ref_pkey");
         assert typeMap.containsKey("ptr");
-        assert typeMap.get("PRIMARY") == JdbcConstraintType.PrimaryKey;
+        assert typeMap.get("proc_table_ref_pkey") == JdbcConstraintType.PrimaryKey;
         assert typeMap.get("ptr") == JdbcConstraintType.ForeignKey;
     }
 

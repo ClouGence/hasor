@@ -37,7 +37,7 @@ public enum MySqlTableType implements TableType {
 
     public static MySqlTableType valueOfCode(String code) {
         for (MySqlTableType tableType : MySqlTableType.values()) {
-            if (tableType.typeName.equals(code)) {
+            if (tableType.typeName.equalsIgnoreCase(code)) {
                 return tableType;
             }
         }

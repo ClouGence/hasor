@@ -37,7 +37,7 @@ public enum PostgresForeignKeyRule {
 
     public static PostgresForeignKeyRule valueOfCode(String code) {
         for (PostgresForeignKeyRule foreignKeyRule : PostgresForeignKeyRule.values()) {
-            if (foreignKeyRule.typeName.equals(code)) {
+            if (foreignKeyRule.typeName.equalsIgnoreCase(code)) {
                 return foreignKeyRule;
             }
         }

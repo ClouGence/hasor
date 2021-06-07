@@ -45,7 +45,7 @@ public enum JdbcTableType implements TableType {
 
     public static JdbcTableType valueOfCode(String code) {
         for (JdbcTableType constraintType : JdbcTableType.values()) {
-            if (constraintType.typeName != null && constraintType.typeName.equals(code)) {
+            if (constraintType.typeName != null && constraintType.typeName.equalsIgnoreCase(code)) {
                 return constraintType;
             }
         }

@@ -14,34 +14,25 @@
  * limitations under the License.
  */
 package net.hasor.db.mapping;
-import net.hasor.db.types.TypeHandler;
-import net.hasor.db.types.UnknownTypeHandler;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * （可选）标记在字段上表示映射到的列
+ * 标记在类型上表示映射到查询结果集
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Column {
-    /** 列名，为空的话表示采用字段名为列名 see: {@link #name()} */
+public @interface Result {
+    /** 表名，为空的话表示采用类名为表名 see: {@link #name()} */
     public String value() default "";
 
-    /** 列名，为空的话表示采用类名为表名 see: {@link #value()} */
+    /** 表名，为空的话表示采用类名为表名 see: {@link #value()} */
     public String name() default "";
 
-    /** 指定使用的 typeHandler（功效和 Mybatis 的 TypeHandler 相同） */
-    public Class<? extends TypeHandler<?>> typeHandler() default UnknownTypeHandler.class;
-
-    /** 参与更新（在配置了 @Table 注解时，通过 net.hasor.db.lambda.LambdaOperations 接口操作才有效。） */
-    public boolean update() default true;
-
-    /** 参与新增（在配置了 @Table 注解时，通过 net.hasor.db.lambda.LambdaOperations 接口操作才有效。） */
-    public boolean insert() default true;
+    /** 是否将类型下的所有字段都自动和数据库中的列进行映射匹配，true 表示自动。false 表示必须通过 @Column 注解声明。 */
+    public boolean autoMapping() default true;
 }

@@ -945,8 +945,12 @@ public class IOUtils {
     public static String readToString(InputStream input, String charset) throws IOException {
         List<String> stringList = readLines(input, charset);
         StringBuilder builder = new StringBuilder();
-        for (String str : stringList) {
-            builder.append(str).append("\n");
+        for (int i = 0; i < stringList.size(); i++) {
+            if (i > 0) {
+                builder.append("\n");
+            }
+            String str = stringList.get(i);
+            builder.append(str);
         }
         return builder.toString();
     }
@@ -954,8 +958,12 @@ public class IOUtils {
     public static String readToString(Reader input) throws IOException {
         List<String> stringList = readLines(input);
         StringBuilder builder = new StringBuilder();
-        for (String str : stringList) {
-            builder.append(str).append("\n");
+        for (int i = 0; i < stringList.size(); i++) {
+            if (i > 0) {
+                builder.append("\n");
+            }
+            String str = stringList.get(i);
+            builder.append(str);
         }
         return builder.toString();
     }

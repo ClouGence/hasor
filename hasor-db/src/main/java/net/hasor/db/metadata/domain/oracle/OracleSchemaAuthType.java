@@ -37,7 +37,7 @@ public enum OracleSchemaAuthType {
 
     public static OracleSchemaAuthType valueOfCode(String code) {
         for (OracleSchemaAuthType tableType : OracleSchemaAuthType.values()) {
-            if (tableType.typeName.equals(code)) {
+            if (tableType.typeName.equalsIgnoreCase(code)) {
                 return tableType;
             }
         }

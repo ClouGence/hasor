@@ -39,7 +39,7 @@ public enum MySqlConstraintType {
 
     public static MySqlConstraintType valueOfCode(String code) {
         for (MySqlConstraintType constraintType : MySqlConstraintType.values()) {
-            if (constraintType.typeName.equals(code)) {
+            if (constraintType.typeName.equalsIgnoreCase(code)) {
                 return constraintType;
             }
         }

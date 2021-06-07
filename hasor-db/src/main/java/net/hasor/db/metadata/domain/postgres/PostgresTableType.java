@@ -40,7 +40,7 @@ public enum PostgresTableType implements TableType {
 
     public static PostgresTableType valueOfCode(String code) {
         for (PostgresTableType tableType : PostgresTableType.values()) {
-            if (tableType.typeName.equals(code)) {
+            if (tableType.typeName.equalsIgnoreCase(code)) {
                 return tableType;
             }
         }

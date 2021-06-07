@@ -35,7 +35,7 @@ public enum OracleForeignKeyRule {
 
     public static OracleForeignKeyRule valueOfCode(String code) {
         for (OracleForeignKeyRule foreignKeyRule : OracleForeignKeyRule.values()) {
-            if (foreignKeyRule.typeName.equals(code)) {
+            if (foreignKeyRule.typeName.equalsIgnoreCase(code)) {
                 return foreignKeyRule;
             }
         }

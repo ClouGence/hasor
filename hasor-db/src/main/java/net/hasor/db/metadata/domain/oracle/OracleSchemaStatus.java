@@ -66,7 +66,7 @@ public enum OracleSchemaStatus {
 
     public static OracleSchemaStatus valueOfCode(String code) {
         for (OracleSchemaStatus tableType : OracleSchemaStatus.values()) {
-            if (tableType.typeName.equals(code)) {
+            if (tableType.typeName.equalsIgnoreCase(code)) {
                 return tableType;
             }
         }

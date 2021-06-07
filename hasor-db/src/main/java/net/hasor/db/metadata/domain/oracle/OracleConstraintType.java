@@ -52,7 +52,7 @@ public enum OracleConstraintType {
 
     public static OracleConstraintType valueOfCode(String code) {
         for (OracleConstraintType constraintType : OracleConstraintType.values()) {
-            if (constraintType.typeName.equals(code)) {
+            if (constraintType.typeName.equalsIgnoreCase(code)) {
                 return constraintType;
             }
         }

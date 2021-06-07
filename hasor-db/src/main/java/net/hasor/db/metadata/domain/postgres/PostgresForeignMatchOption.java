@@ -36,7 +36,7 @@ public enum PostgresForeignMatchOption {
 
     public static PostgresForeignMatchOption valueOfCode(String code) {
         for (PostgresForeignMatchOption foreignKeyRule : PostgresForeignMatchOption.values()) {
-            if (foreignKeyRule.typeName.equals(code)) {
+            if (foreignKeyRule.typeName.equalsIgnoreCase(code)) {
                 return foreignKeyRule;
             }
         }

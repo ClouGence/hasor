@@ -42,7 +42,7 @@ public enum AdbMySqlTableType implements TableType {
 
     public static AdbMySqlTableType valueOfCode(String code) {
         for (AdbMySqlTableType tableType : AdbMySqlTableType.values()) {
-            if (tableType.typeName.equals(code)) {
+            if (tableType.typeName.equalsIgnoreCase(code)) {
                 return tableType;
             }
         }

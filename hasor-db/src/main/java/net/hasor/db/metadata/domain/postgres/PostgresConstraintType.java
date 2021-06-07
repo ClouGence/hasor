@@ -41,7 +41,7 @@ public enum PostgresConstraintType {
 
     public static PostgresConstraintType valueOfCode(String code) {
         for (PostgresConstraintType constraintType : PostgresConstraintType.values()) {
-            if (constraintType.typeName.equals(code)) {
+            if (constraintType.typeName.equalsIgnoreCase(code)) {
                 return constraintType;
             }
         }

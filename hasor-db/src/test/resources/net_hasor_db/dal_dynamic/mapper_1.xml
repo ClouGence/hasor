@@ -81,9 +81,9 @@
         now(),
         now()
         );
-        <selectKey keyProperty="id" resultType="long">
-            select LAST_INSERT_ID() as value
-        </selectKey>
+<!--        <selectKey keyProperty="id" resultType="long">-->
+<!--            select LAST_INSERT_ID() as value-->
+<!--        </selectKey>-->
     </insert>
 
     <update id="projectInfo_updateWithoutContent">

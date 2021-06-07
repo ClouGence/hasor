@@ -36,7 +36,7 @@ public enum OracleTableType implements TableType {
 
     public static OracleTableType valueOfCode(String code) {
         for (OracleTableType tableType : OracleTableType.values()) {
-            if (tableType.typeName.equals(code)) {
+            if (tableType.typeName.equalsIgnoreCase(code)) {
                 return tableType;
             }
         }

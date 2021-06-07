@@ -44,7 +44,7 @@ public enum OracleIndexType {
 
     public static OracleIndexType valueOfCode(String code) {
         for (OracleIndexType tableType : OracleIndexType.values()) {
-            if (tableType.typeName.equals(code)) {
+            if (tableType.typeName.equalsIgnoreCase(code)) {
                 return tableType;
             }
         }

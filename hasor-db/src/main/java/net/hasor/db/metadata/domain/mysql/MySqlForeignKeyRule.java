@@ -37,7 +37,7 @@ public enum MySqlForeignKeyRule {
 
     public static MySqlForeignKeyRule valueOfCode(String code) {
         for (MySqlForeignKeyRule foreignKeyRule : MySqlForeignKeyRule.values()) {
-            if (foreignKeyRule.typeName.equals(code)) {
+            if (foreignKeyRule.typeName.equalsIgnoreCase(code)) {
                 return foreignKeyRule;
             }
         }
