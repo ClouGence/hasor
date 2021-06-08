@@ -16,7 +16,7 @@
 package net.hasor.db.dialect.provider;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.InsertSqlDialect;
-import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.dialect.PageSqlDialect;
 import net.hasor.db.metadata.ColumnDef;
 import net.hasor.db.metadata.TableDef;
 import net.hasor.utils.StringUtils;
@@ -30,7 +30,7 @@ import java.util.List;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MySqlDialect extends AbstractDialect implements SqlDialect, InsertSqlDialect {
+public class MySqlDialect extends AbstractDialect implements PageSqlDialect, InsertSqlDialect {
     @Override
     protected String keyWordsResource() {
         return "/META-INF/hasor-framework/db-keywords/mysql.keywords";

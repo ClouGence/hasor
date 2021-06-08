@@ -15,7 +15,7 @@
  */
 package net.hasor.db.dialect.provider;
 import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.dialect.PageSqlDialect;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +26,7 @@ import java.util.List;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ImpalaDialect extends AbstractDialect implements SqlDialect {
+public class ImpalaDialect extends AbstractDialect implements PageSqlDialect {
     @Override
     protected String defaultQualifier() {
         return "\"";

@@ -15,7 +15,7 @@
  */
 package net.hasor.db.dialect.provider;
 import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.dialect.PageSqlDialect;
 import net.hasor.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import java.util.List;
  * @author hubin
  * @since 2016-11-10
  */
-public class SqlServer2005Dialect extends SqlServerDialect implements SqlDialect {
+public class SqlServer2005Dialect extends SqlServerDialect implements PageSqlDialect {
     private static String getOrderByPart(String sql) {
         String loweredString = sql.toLowerCase();
         int orderByIndex = loweredString.indexOf("order by");

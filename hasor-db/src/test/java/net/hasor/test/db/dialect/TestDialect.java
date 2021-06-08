@@ -16,17 +16,27 @@
 package net.hasor.test.db.dialect;
 import net.hasor.core.exts.aop.Aop;
 import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.dialect.PageSqlDialect;
 import net.hasor.db.metadata.ColumnDef;
 import net.hasor.db.metadata.TableDef;
 
 import java.util.Set;
 
 @Aop(TestDialectAop.class)
-public class TestDialect implements SqlDialect {
+public class TestDialect implements PageSqlDialect {
     @Override
     public Set<String> keywords() {
         return null;
+    }
+
+    @Override
+    public String leftQualifier() {
+        return "`";
+    }
+
+    @Override
+    public String rightQualifier() {
+        return "`";
     }
 
     @Override

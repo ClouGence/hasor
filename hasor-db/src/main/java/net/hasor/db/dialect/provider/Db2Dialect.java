@@ -15,14 +15,14 @@
  */
 package net.hasor.db.dialect.provider;
 import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.dialect.PageSqlDialect;
 
 /**
  * DB2 的 SqlDialect 实现
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class Db2Dialect extends AbstractDialect implements SqlDialect {
+public class Db2Dialect extends AbstractDialect implements PageSqlDialect {
     @Override
     protected String defaultQualifier() {
         return "\"";

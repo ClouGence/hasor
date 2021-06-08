@@ -15,7 +15,7 @@
  */
 package net.hasor.db.dialect.provider;
 import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.dialect.PageSqlDialect;
 import net.hasor.utils.ExceptionUtils;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -30,7 +30,7 @@ import java.util.*;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SqlServerDialect extends AbstractDialect implements SqlDialect {
+public class SqlServerDialect extends AbstractDialect implements PageSqlDialect {
     private static final Map<String, Select> CACHE       = new WeakHashMap<>();
     private static final Object              LOCK_OBJECT = new Object();
 
@@ -54,11 +54,11 @@ public class SqlServerDialect extends AbstractDialect implements SqlDialect {
         }
     }
 
-    protected String leftQualifier() {
+    public String leftQualifier() {
         return "[";
     }
 
-    protected String rightQualifier() {
+    public String rightQualifier() {
         return "]";
     }
 

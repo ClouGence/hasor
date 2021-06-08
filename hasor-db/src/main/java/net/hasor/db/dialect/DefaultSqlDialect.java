@@ -19,6 +19,7 @@ import net.hasor.db.metadata.TableDef;
 import net.hasor.utils.StringUtils;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,10 +27,22 @@ import java.util.Set;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DefaultSqlDialect implements SqlDialect {
+public class DefaultSqlDialect implements ConditionSqlDialect, PageSqlDialect, InsertSqlDialect {
+    public static SqlDialect DEFAULT = new DefaultSqlDialect();
+
     @Override
     public Set<String> keywords() {
         return Collections.emptySet();
+    }
+
+    @Override
+    public String leftQualifier() {
+        return "`";
+    }
+
+    @Override
+    public String rightQualifier() {
+        return "`";
     }
 
     @Override
@@ -53,6 +66,46 @@ public class DefaultSqlDialect implements SqlDialect {
 
     @Override
     public BoundSql pageSql(BoundSql boundSql, int start, int limit) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean supportInsertIgnore(List<ColumnDef> primaryColumns) {
+        return false;
+    }
+
+    @Override
+    public String insertWithIgnore(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean supportInsertIgnoreFromSelect(List<ColumnDef> primaryColumns) {
+        return false;
+    }
+
+    @Override
+    public String insertIgnoreFromSelect(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean supportInsertReplace(List<ColumnDef> primaryColumns) {
+        return false;
+    }
+
+    @Override
+    public String insertWithReplace(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean supportInsertReplaceFromSelect(List<ColumnDef> primaryColumns) {
+        return false;
+    }
+
+    @Override
+    public String insertWithReplaceFromSelect(boolean useQualifier, TableDef tableDef, List<ColumnDef> primaryColumns, List<ColumnDef> insertColumns) {
         throw new UnsupportedOperationException();
     }
 }

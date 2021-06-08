@@ -20,7 +20,7 @@ import net.hasor.db.metadata.TableDef;
 import java.util.List;
 
 /**
- * 扩展了 SqlDialect 接口增加了 insert 的更多特性生成。
+ * SQL 插入数据方言。
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */

@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.lambda.query;
-import net.hasor.db.dialect.BatchBoundSql;
-import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.InsertSqlDialect;
-import net.hasor.db.dialect.SqlDialect;
+import net.hasor.db.dialect.*;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.lambda.InsertExecute;
 import net.hasor.db.lambda.LambdaOperations.LambdaInsert;
@@ -227,7 +224,7 @@ public class LambdaInsertWrapper<T> extends AbstractExecute<T> implements Lambda
                 }
             }
             // select
-            insertTemplate.addSegment(dialect::selectAsInsertConcatStr);
+            insertTemplate.addSegment(((ConditionSqlDialect) dialect)::selectAsInsertConcatStr);
             //
             if (this.isQualifier()) {
                 this.insertAsQuery.useQualifier();

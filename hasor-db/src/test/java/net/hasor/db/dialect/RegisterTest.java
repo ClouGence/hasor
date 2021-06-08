@@ -30,8 +30,8 @@ import org.junit.Test;
 public class RegisterTest extends AbstractDbTest {
     @Test
     public void dialectRegisterTest_1() {
-        assert SqlDialectRegister.findOrCreate("") == SqlDialect.DEFAULT;
-        assert SqlDialectRegister.findOrCreate(null) == SqlDialect.DEFAULT;
+        assert SqlDialectRegister.findOrCreate("") == DefaultSqlDialect.DEFAULT;
+        assert SqlDialectRegister.findOrCreate(null) == DefaultSqlDialect.DEFAULT;
     }
 
     @Test

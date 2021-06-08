@@ -17,6 +17,7 @@ package net.hasor.dataql.fx.db.runsql;
 import net.hasor.dataql.Hints;
 import net.hasor.dataql.UdfSourceAssembly;
 import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.dialect.PageSqlDialect;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.utils.convert.ConverterUtils;
 
@@ -85,7 +86,7 @@ class SqlPageObject implements UdfSourceAssembly {
     private int totalCount() throws SQLException {
         if (!this.totalCountInited) {
             // 准备SQL和执行的参数
-            BoundSql countBoundSql = this.pageDialect.countSql(this.originalBoundSql);
+            BoundSql countBoundSql = ((PageSqlDialect) this.pageDialect).countSql(this.originalBoundSql);
             String countFxSql = countBoundSql.getSqlString();
             Object[] countParams = countBoundSql.getArgs();
             // 通过 doQuery 方法来执行SQL。
@@ -200,7 +201,7 @@ class SqlPageObject implements UdfSourceAssembly {
             boundSql = this.originalBoundSql;// 如果分页的页码小于0  -> 那么查询所有数据
         } else {
             // 如果分页的页码不等于0  -> 那么执行分页查询
-            boundSql = this.pageDialect.pageSql(this.originalBoundSql, firstRecordPosition(), pageSize());
+            boundSql = ((PageSqlDialect) this.pageDialect).pageSql(this.originalBoundSql, firstRecordPosition(), pageSize());
         }
         // 通过 doQuery 方法来执行SQL。
         return this.sourceSqlFragment.executeSQL(//

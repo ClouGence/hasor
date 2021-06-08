@@ -15,6 +15,7 @@
  */
 package net.hasor.db.lambda.query;
 import net.hasor.db.JdbcUtils;
+import net.hasor.db.dialect.DefaultSqlDialect;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.dialect.SqlDialectRegister;
 import net.hasor.db.jdbc.ConnectionCallback;
@@ -64,7 +65,7 @@ public abstract class AbstractExecute<T> {
         //
         SqlDialect tempDialect = SqlDialectRegister.findOrCreate(tmpDbType);
         this.dbType = tmpDbType;
-        this.dialect = (tempDialect == null) ? SqlDialect.DEFAULT : tempDialect;
+        this.dialect = (tempDialect == null) ? DefaultSqlDialect.DEFAULT : tempDialect;
     }
 
     AbstractExecute(Class<T> exampleType, JdbcTemplate jdbcTemplate, String dbType, SqlDialect dialect) {
@@ -75,7 +76,7 @@ public abstract class AbstractExecute<T> {
         this.exampleTableMapping = this.exampleTableReader.getTableMapping();
         //
         this.dbType = dbType;
-        this.dialect = (dialect == null) ? SqlDialect.DEFAULT : dialect;
+        this.dialect = (dialect == null) ? DefaultSqlDialect.DEFAULT : dialect;
     }
 
     public final Class<T> exampleType() {

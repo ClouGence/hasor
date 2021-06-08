@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.db.dialect.provider;
-import net.hasor.db.dialect.BoundSql;
-import net.hasor.db.dialect.SqlDialect;
-
 /**
  * Hive 的 SqlDialect 实现
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public class HiveDialect extends AbstractDialect implements SqlDialect {
+public class HiveDialect extends AbstractDialect {
     @Override
     protected String defaultQualifier() {
         return "\"";
-    }
-
-    @Override
-    public BoundSql countSql(BoundSql boundSql) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public BoundSql pageSql(BoundSql boundSql, int start, int limit) {
-        throw new UnsupportedOperationException();
     }
 }

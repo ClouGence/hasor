@@ -72,7 +72,7 @@ public class SqlDialectRegister {
 
     public static SqlDialect findOrCreate(final String dialectName, AppContext appContext) {
         if (StringUtils.isBlank(dialectName)) {
-            return SqlDialect.DEFAULT;
+            return DefaultSqlDialect.DEFAULT;
         }
         SqlDialect dialect = dialectCache.get(dialectName);
         if (dialect != null) {

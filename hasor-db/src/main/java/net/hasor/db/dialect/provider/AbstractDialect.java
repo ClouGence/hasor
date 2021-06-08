@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.dialect.provider;
+import net.hasor.db.dialect.ConditionSqlDialect;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.metadata.ColumnDef;
 import net.hasor.db.metadata.TableDef;
@@ -33,7 +34,7 @@ import java.util.Set;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractDialect implements SqlDialect {
+public abstract class AbstractDialect implements SqlDialect, ConditionSqlDialect {
     private static final Logger      logger = LoggerFactory.getLogger(AbstractDialect.class);
     private              Set<String> keyWords;
 
@@ -91,11 +92,11 @@ public abstract class AbstractDialect implements SqlDialect {
         return "";
     }
 
-    protected String leftQualifier() {
+    public String leftQualifier() {
         return this.defaultQualifier();
     }
 
-    protected String rightQualifier() {
+    public String rightQualifier() {
         return this.defaultQualifier();
     }
 }

@@ -14,27 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.db.dialect;
-import net.hasor.db.metadata.ColumnDef;
-import net.hasor.db.metadata.TableDef;
-
-import java.util.Set;
-
 /**
- * SQL 方言
+ * SQL 分页方言
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface SqlDialect {
-    /** Cannot be used as a key for column names. when column name is key words, Generate SQL using Qualifier warp it. */
-    public Set<String> keywords();
+public interface PageSqlDialect extends SqlDialect {
+    /** 生成 count 查询 SQL */
+    public default BoundSql countSql(BoundSql boundSql) {
+        return new BoundSql.BoundSqlObj("SELECT COUNT(*) FROM (" + boundSql.getSqlString() + ") as TEMP_T", boundSql.getArgs());
+    }
 
-    public String leftQualifier();
-
-    public String rightQualifier();
-
-    /** 生成 form 后面的表名 */
-    public String tableName(boolean useQualifier, TableDef tableDef);
-
-    /** 生成 where 中用到的条件名（包括 group by、order by） */
-    public String columnName(boolean useQualifier, TableDef tableDef, ColumnDef columnDef);
+    /** 生成分页查询 SQL */
+    public BoundSql pageSql(BoundSql boundSql, int start, int limit);
 }

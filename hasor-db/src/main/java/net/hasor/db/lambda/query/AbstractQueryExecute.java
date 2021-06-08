@@ -15,6 +15,7 @@
  */
 package net.hasor.db.lambda.query;
 import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.dialect.PageSqlDialect;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.jdbc.ResultSetExtractor;
 import net.hasor.db.jdbc.RowCallbackHandler;
@@ -57,7 +58,7 @@ public abstract class AbstractQueryExecute<T> extends AbstractExecute<T> impleme
             int pageSize = this.pageInfo.getPageSize();
             if (supportPage() && pageSize > 0) {
                 int recordPosition = this.pageInfo.getFirstRecordPosition();
-                return dialect.pageSql(getOriginalBoundSql(), recordPosition, pageSize);
+                return ((PageSqlDialect) dialect).pageSql(getOriginalBoundSql(), recordPosition, pageSize);
             } else {
                 return this.getOriginalBoundSql();
             }
@@ -138,13 +139,13 @@ public abstract class AbstractQueryExecute<T> extends AbstractExecute<T> impleme
 
     @Override
     public int queryForCount() throws SQLException {
-        BoundSql countSql = this.dialect().countSql(this.getOriginalBoundSql());
+        BoundSql countSql = ((PageSqlDialect) this.dialect()).countSql(this.getOriginalBoundSql());
         return this.getJdbcTemplate().queryForInt(countSql.getSqlString(), countSql.getArgs());
     }
 
     @Override
     public long queryForLargeCount() throws SQLException {
-        BoundSql countSql = this.dialect().countSql(this.getOriginalBoundSql());
+        BoundSql countSql = ((PageSqlDialect) this.dialect()).countSql(this.getOriginalBoundSql());
         return this.getJdbcTemplate().queryForLong(countSql.getSqlString(), countSql.getArgs());
     }
 }

@@ -15,6 +15,7 @@
  */
 package net.hasor.db.lambda.query;
 import net.hasor.db.dialect.BoundSql;
+import net.hasor.db.dialect.ConditionSqlDialect;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.lambda.QueryCompare;
 import net.hasor.db.lambda.segment.MergeSqlSegment;
@@ -231,7 +232,7 @@ public abstract class AbstractQueryCompare<T, R> extends AbstractQueryExecute<T>
     private Segment formatLikeValue(SqlLike like, Object param) {
         return () -> {
             format(param);
-            return this.dialect().like(like, param);
+            return ((ConditionSqlDialect) this.dialect()).like(like, param);
         };
     }
 

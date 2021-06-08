@@ -14,27 +14,31 @@
  * limitations under the License.
  */
 package net.hasor.db.dialect;
-import net.hasor.db.metadata.ColumnDef;
-import net.hasor.db.metadata.TableDef;
-
-import java.util.Set;
+import net.hasor.db.lambda.segment.SqlLike;
+import net.hasor.utils.StringUtils;
 
 /**
- * SQL 方言
+ * SQL 条件方言
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface SqlDialect {
-    /** Cannot be used as a key for column names. when column name is key words, Generate SQL using Qualifier warp it. */
-    public Set<String> keywords();
+public interface ConditionSqlDialect extends SqlDialect {
+    /** 用于链接 insert into .... 和 select ... */
+    public default String selectAsInsertConcatStr() {
+        return "";
+    }
 
-    public String leftQualifier();
-
-    public String rightQualifier();
-
-    /** 生成 form 后面的表名 */
-    public String tableName(boolean useQualifier, TableDef tableDef);
-
-    /** 生成 where 中用到的条件名（包括 group by、order by） */
-    public String columnName(boolean useQualifier, TableDef tableDef, ColumnDef columnDef);
+    public default String like(SqlLike likeType, Object value) {
+        if (value == null || StringUtils.isBlank(value.toString())) {
+            return "%";
+        }
+        switch (likeType) {
+            case LEFT:
+                return "CONCAT('%', ? )";
+            case RIGHT:
+                return "CONCAT( ? ,'%')";
+            default:
+                return "CONCAT('%', ? ,'%')";
+        }
+    }
 }
