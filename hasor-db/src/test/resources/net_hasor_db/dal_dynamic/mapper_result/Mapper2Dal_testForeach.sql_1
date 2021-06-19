@@ -1,0 +1,1 @@
+SELECT * FROM alert_detail WHERE alert_detail.event_type IN (    ?,    ?,    ?,    ?,    ?)

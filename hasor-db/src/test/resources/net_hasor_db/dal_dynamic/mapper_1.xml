@@ -1,155 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="sp_project_info_space">
-
-    <resultMap id="projectInfoDOMap" type="net.hasor.website.domain.ProjectInfoDO">
-        <result property="id" column="id"/>
-        <result property="ownerID" column="owner_id"/>
-        <result property="ownerType" column="owner_type" typeHandler="net.hasor.website.datadao.convert.OwnerTypeConvert"/>
-        <result property="parentID" column="parent_id"/>
-        <result property="status" column="status" typeHandler="net.hasor.website.datadao.convert.ProjectStatusConvert"/>
-
-        <result property="name" column="name"/>
-        <result property="subtitle" column="subtitle"/>
-        <result property="present" column="present"/>
-        <result property="contentFormat" column="present_format" typeHandler="net.hasor.website.datadao.convert.ContentFormatConvert"/>
-
-        <result property="homePage" column="home_page"/>
-        <result property="downPage" column="down_page"/>
-        <result property="sourceType" column="type" typeHandler="net.hasor.website.datadao.convert.SourceTypeConvert"/>
-        <result property="language" column="language"/>
-        <result property="license" column="license"/>
-        <result property="futures" column="futures" typeHandler="net.hasor.website.datadao.convert.ProjectFuturesConvert"/>
-
-        <result property="createTime" column="create_time"/>
-        <result property="modifyTime" column="modify_time"/>
-    </resultMap>
-
+<mapper namespace="net.hasor.test.db.dal.Mapper1Dal">
     <sql id="projectInfoDO_allColumns">
-        id,
-        owner_id,
-        owner_type,
-        parent_id,
-        status,
-        name,
-        subtitle,
-        present,
-        present_format,
-        home_page,
-        down_page,
-        type,
-        language,
-        license,
-        futures,
-        create_time,
-        modify_time
+        id, owner_id
     </sql>
 
-    <insert id="projectInfo_insert" parameterType="net.hasor.website.domain.ProjectInfoDO">
-        insert into PROJECT_INFO(
-        owner_id,
-        owner_type,
-        parent_id,
-        status,
-        name,
-        subtitle,
-        present,
-        present_format,
-        home_page,
-        down_page,
-        type,
-        language,
-        license,
-        futures,
-        create_time,
-        modify_time
-        ) values(
-        #{ownerID},
-        #{ownerType, typeHandler=net.hasor.website.datadao.convert.OwnerTypeConvert},
-        #{parentID},
-        #{status, typeHandler=net.hasor.website.datadao.convert.ProjectStatusConvert},
-        #{name},
-        #{subtitle},
-        #{present},
-        #{contentFormat, typeHandler=net.hasor.website.datadao.convert.ContentFormatConvert},
-        #{homePage},
-        #{downPage},
-        #{sourceType, typeHandler=net.hasor.website.datadao.convert.SourceTypeConvert},
-        #{language},
-        #{license},
-        #{futures, typeHandler=net.hasor.website.datadao.convert.ProjectFuturesConvert},
-        now(),
-        now()
-        );
-<!--        <selectKey keyProperty="id" resultType="long">-->
-<!--            select LAST_INSERT_ID() as value-->
-<!--        </selectKey>-->
-    </insert>
-
-    <update id="projectInfo_updateWithoutContent">
-        update PROJECT_INFO
-        set name        = #{info.name},
-            subtitle    = #{info.subtitle},
-            home_page   = #{info.homePage},
-            down_page   = #{info.downPage},
-            type        = #{info.sourceType, typeHandler=net.hasor.website.datadao.convert.SourceTypeConvert},
-            language    = #{info.language},
-            license     = #{info.license},
-            futures     = #{info.futures, typeHandler=net.hasor.website.datadao.convert.ProjectFuturesConvert},
-            modify_time = now()
-        where 1 = 1
-          and id = #{info.id}
-          and owner_id = #{info.ownerID}
-          and owner_type = #{info.ownerType.type}
-
-            <!-- 参数化 -->
-            #{info.futures, typeHandler=net.hasor.website.datadao.convert.ProjectFuturesConvert},
-            <!-- SQL 注入 -->
-            ${info.futures}
-            <!-- 执行规则( @{<规则名>, <启用规则的条件参数>, 规则内容 ) -->
-            @{nonull, info.futures , 'and owner_type in (' + sqlArgs(info.userList) + ')'  }
-
-          and status != -1
-        limit 1
-    </update>
-
-    <update id="projectInfo_updateContent">
-        update PROJECT_INFO
-        set present        = #{info.present},
-            present_format = #{info.contentFormat, typeHandler=net.hasor.website.datadao.convert.ContentFormatConvert},
-            modify_time    = now()
-        where 1 = 1
-          and id = #{info.id}
-          and owner_id = #{info.ownerID}
-          and owner_type = #{info.ownerType.type}
-          and status != -1
-        limit 1
-    </update>
-
-    <select id="projectInfo_queryByID" resultMap="projectInfoDOMap">
-        select
-        <include refid="projectInfoDO_allColumns"/>
-        from
-        PROJECT_INFO
-        where
-        id = #{projectID}
-        limit 1
+    <select id="testBind" resultType="net.hasor.test.db.dto.TbUser">
+        <bind name="abc" value="sellerId + 'abc'"/>
+        SELECT * FROM console_job
+        WHERE aac = #{abc}
     </select>
 
-    <select id="projectInfo_queryByOwner" resultMap="projectInfoDOMap">
-        select
-        <include refid="projectInfoDO_allColumns"/>
-        from
-        PROJECT_INFO
-        where 1=1
-        and owner_id = #{ownerID}
-        and owner_type = #{ownerType}
-        and status != -1
-        order by
-        create_time desc
+    <select id="testChoose" resultType="net.hasor.test.db.dto.TbUser">
+        select * from t_blog
+        <where>
+            <choose>
+                <when test="title != null">and title = #{title}</when>
+                <when test="content != null">and content = #{content}</when>
+                <otherwise>and owner = "owner1"</otherwise>
+            </choose>
+        </where>
     </select>
 
-    <select id="projectInfo_queryPublishList" resultMap="projectInfoDOMap">
+    <select id="testForeach" resultType="net.hasor.test.db.dto.TbUser">
+        SELECT
+        <include refid="projectInfoDO_allColumns"/>
+        FROM
+        alert_detail
+        WHERE
+        alert_detail.event_type IN
+        <foreach collection="eventTypes" item="eventType" separator="," open="(" close=")">
+            #{eventType,javaType=net.hasor.test.db.dto.CharacterSensitiveEnum}
+        </foreach>
+    </select>
+
+    <select id="testIf" resultType="net.hasor.test.db.dto.TbUser">
         select
         <include refid="projectInfoDO_allColumns"/>
         from
@@ -163,15 +48,4 @@
         order by
         name asc
     </select>
-
-    <!-- 更新项目信息（仅包含：介绍正文、正文格式） -->
-    <update id="projectInfo_updateStatusAndFutures">
-        update PROJECT_INFO
-        set futures     = #{projectInfo.futures, typeHandler=net.hasor.website.datadao.convert.ProjectFuturesConvert},
-            status      = #{projectInfo.status, typeHandler=net.hasor.website.datadao.convert.ProjectStatusConvert},
-            modify_time = now()
-        where 1 = 1
-          and id = #{projectID}
-        limit 1
-    </update>
 </mapper>

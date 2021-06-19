@@ -73,6 +73,9 @@ public class TermDynamicSql extends ArrayDynamicSql {
         //
         String childrenSql = tempQuerySqlBuilder.getSqlString().trim();
         if (StringUtils.isNotBlank(childrenSql)) {
+            if (!querySqlBuilder.lastSpaceCharacter()) {
+                querySqlBuilder.appendSql(" ");
+            }
             querySqlBuilder.appendSql(StringUtils.defaultString(this.prefix) + " "); // 开始拼接SQL
             //
             // 去掉prefixOverrides

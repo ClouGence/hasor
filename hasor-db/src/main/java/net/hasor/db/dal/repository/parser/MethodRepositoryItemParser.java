@@ -21,6 +21,7 @@ import net.hasor.db.dal.repository.RepositoryItemParser;
 import net.hasor.db.dal.repository.config.QueryType;
 import net.hasor.db.dal.repository.config.StatementType;
 import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.StringUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -128,9 +129,8 @@ public class MethodRepositoryItemParser extends DynamicParser implements Reposit
         StringBuilder xmlBuilder = new StringBuilder();
         xmlBuilder.append("<" + queryType.getXmlTag());
         dynamicSqlAttribute.forEach((key, value) -> {
-            String xmlKey = key.replace("\"", "&quot;");
-            String xmlValue = value.replace("\"", "&quot;");
-            xmlBuilder.append("\"" + xmlKey + "\"=\"" + xmlValue + "\"");
+            String xmlValue = StringUtils.isNotBlank(value) ? value.replace("\"", "&quot;") : "";
+            xmlBuilder.append(" " + key + " =\"" + xmlValue + "\"");
         });
         xmlBuilder.append(">");
         xmlBuilder.append(dynamicSqlBody);
