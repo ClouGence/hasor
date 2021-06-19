@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.dal;
-import net.hasor.db.dal.repository.config.StatementType;
-
-import java.lang.annotation.*;
+package net.hasor.db.dal.repository;
+import net.hasor.db.dal.dynamic.DynamicSql;
 
 /**
- * delete 语句
- * @version : 2021-05-19
- * @author 赵永春 (zyc@hasor.net)
+ * 解析动态 SQL 配置
+ * @version : 2021-06-05
+ * @author 赵永春 (zyc@byshell.org)
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Delete {
-    public String value();
-
-    public StatementType statementType() default StatementType.Prepared;
-
-    public int timeout() default -1;
+public interface RepositoryItemParser<T> {
+    public DynamicSql parseSqlConfig(T config);
 }

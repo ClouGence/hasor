@@ -23,7 +23,7 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target(ElementType.TYPE)
 public @interface RefMapper {
     String value();
 }

@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.db.dal.repository;
+import net.hasor.db.dal.RefMapper;
 import net.hasor.db.dal.dynamic.DynamicSql;
+import net.hasor.db.dal.repository.parser.MethodRepositoryItemParser;
+import net.hasor.db.dal.repository.parser.XmlNodeRepositoryItemParser;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
@@ -28,6 +31,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,10 +46,12 @@ public class MapperRegistry {
     private final       Map<String, DynamicSql>              defaultSqlMap = new HashMap<>();
     private             ResourceLoader                       resourceLoader;
 
+    /** 根据配置 ID 查找 DynamicSql */
     public DynamicSql findDynamicSql(String dynamicId) {
         return this.defaultSqlMap.get(dynamicId);
     }
 
+    /** 根据 namespace 和 ID 查找 DynamicSql */
     public DynamicSql findDynamicSql(String namespace, String dynamicId) {
         if (StringUtils.isBlank(namespace)) {
             return findDynamicSql(dynamicId);
@@ -58,6 +64,26 @@ public class MapperRegistry {
         }
     }
 
+    protected void saveDynamicSql(String mapperSpace, String idString, DynamicSql dynamicSql) throws IOException {
+        Map<String, DynamicSql> sqlMap = null;
+        if (StringUtils.isBlank(mapperSpace)) {
+            sqlMap = this.defaultSqlMap;
+        } else {
+            if (!this.spaceSqlMap.containsKey(mapperSpace)) {
+                this.spaceSqlMap.put(mapperSpace, new HashMap<>());
+            }
+            sqlMap = this.spaceSqlMap.get(mapperSpace);
+        }
+        //
+        if (sqlMap.containsKey(idString)) {
+            String msg = StringUtils.isBlank(mapperSpace) ? "default namespace" : ("'" + mapperSpace + "' namespace.");
+            throw new IOException("repeat '" + idString + "' in " + msg);
+        } else {
+            sqlMap.put(idString, dynamicSql);
+        }
+    }
+
+    //------------------------------------------------------------------------------------------------------------- Xml
     protected InputStream loadResource(String resource) throws IOException {
         if (this.resourceLoader != null) {
             return this.resourceLoader.getResourceAsStream(resource);
@@ -66,26 +92,39 @@ public class MapperRegistry {
         }
     }
 
-    protected SqlConfigParser getRepositoryDynamicParser() {
-        return new SqlConfigParser();
+    protected XmlNodeRepositoryItemParser getXmlRepositoryParser() {
+        return new XmlNodeRepositoryItemParser();
     }
 
+    protected MethodRepositoryItemParser getMethodRepositoryParser() {
+        return new MethodRepositoryItemParser();
+    }
+
+    /** 解析并载入 mapper.xml（支持 MyBatis 大部分能力） */
     public void loadMapper(String resource) throws IOException {
-        SqlConfigParser dynamicParser = getRepositoryDynamicParser();
+        this.loadMapper(resource, null);
+    }
+
+    /** 解析并载入 mapper.xml（支持 MyBatis 大部分能力） */
+    public void loadMapper(String resource, Class<?> refRepository) throws IOException {
+        String mapperSpace = "";
+        if (refRepository != null) {
+            mapperSpace = refRepository.getName();
+        }
+        //
+        XmlNodeRepositoryItemParser dynamicParser = getXmlRepositoryParser();
         try (InputStream asStream = loadResource(resource)) {
             if (asStream == null) {
-                throw new IOException("mapper resource not exist.");
+                throw new IOException("mapper resource '" + resource + "' not exist.");
             }
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = documentBuilder.parse(new InputSource(asStream));
             Element root = document.getDocumentElement();
             NamedNodeMap rootAttributes = root.getAttributes();
-            String mapperSpace = "";
             if (rootAttributes != null) {
                 Node namespaceNode = rootAttributes.getNamedItem("namespace");
-                mapperSpace = (namespaceNode != null) ? namespaceNode.getNodeValue() : null;
-                if (!this.spaceSqlMap.containsKey(mapperSpace)) {
-                    this.spaceSqlMap.put(mapperSpace, new HashMap<>());
+                if (namespaceNode != null && StringUtils.isBlank(mapperSpace)) {
+                    mapperSpace = namespaceNode.getNodeValue();
                 }
             }
             //
@@ -99,16 +138,46 @@ public class MapperRegistry {
                 Node idNode = nodeAttributes.getNamedItem("id");
                 String idString = (idNode != null) ? idNode.getNodeValue() : null;
                 if (StringUtils.isBlank(idString)) {
-                    throw new IOException("the ID attribute of the <" + root.getNodeName() + "> tag is empty.");
+                    throw new IOException("the <" + root.getNodeName() + "> tag is missing an ID.");
                 }
                 DynamicSql dynamicSql = dynamicParser.parseSqlConfig(node);
                 if (dynamicSql != null) {
-                    this.defaultSqlMap.put(idString, dynamicSql);
-                    this.spaceSqlMap.get(mapperSpace).put(idString, dynamicSql);
+                    saveDynamicSql(mapperSpace, idString, dynamicSql);
                 }
             }
         } catch (ParserConfigurationException | SAXException e) {
             throw ExceptionUtils.toRuntime(e);
+        }
+    }
+    //---------------------------------------------------------------------------------------------------------- Method
+
+    /** 解析并载入类型 */
+    public void loadMapper(Class<?> dalType) throws IOException {
+        if (!dalType.isInterface()) {
+            throw new UnsupportedOperationException("the '" + dalType.getName() + "' must interface.");
+        }
+        //
+        if (!dalType.isAnnotationPresent(RefMapper.class) && !MethodRepositoryItemParser.matchType(dalType)) {
+            throw new UnsupportedOperationException("type '" + dalType.getName() + "' is not Repository.");
+        }
+        //
+        RefMapper refMapper = dalType.getAnnotation(RefMapper.class);
+        if (refMapper != null) {
+            loadMapper(refMapper.value(), dalType);
+            return;
+        }
+        //
+        String mapperSpace = dalType.getName();
+        Method[] dalTypeMethods = dalType.getMethods();
+        MethodRepositoryItemParser dynamicParser = getMethodRepositoryParser();
+        for (Method method : dalTypeMethods) {
+            if (!MethodRepositoryItemParser.matchMethod(method)) {
+                continue;
+            }
+            //
+            String idString = method.getName();
+            DynamicSql dynamicSql = dynamicParser.parseSqlConfig(method);
+            this.saveDynamicSql(mapperSpace, idString, dynamicSql);
         }
     }
 }

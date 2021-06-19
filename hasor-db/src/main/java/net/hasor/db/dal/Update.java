@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.dal;
+import net.hasor.db.dal.repository.config.StatementType;
+
 import java.lang.annotation.*;
 
 /**
@@ -23,7 +25,11 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target(ElementType.METHOD)
 public @interface Update {
-    String value();
+    public String value();
+
+    public StatementType statementType() default StatementType.Prepared;
+
+    public int timeout() default -1;
 }

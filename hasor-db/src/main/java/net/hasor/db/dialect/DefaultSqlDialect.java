@@ -37,12 +37,12 @@ public class DefaultSqlDialect implements ConditionSqlDialect, PageSqlDialect, I
 
     @Override
     public String leftQualifier() {
-        return "`";
+        return "";
     }
 
     @Override
     public String rightQualifier() {
-        return "`";
+        return "";
     }
 
     @Override

@@ -5,11 +5,12 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 public class QuerySqlConfig extends DmlSqlConfig {
-    private String        resultMapper;
-    private String        resultType;
-    private int           fetchSize;
-    private ResultSetType resultSetType;
-    private String        resultDataQL;
+    private String              resultMapper;
+    private String              resultType;
+    private int                 fetchSize;
+    private ResultSetType       resultSetType;
+    private MultipleResultsType multipleResultType;
+    private String              resultDataQL;
 
     public QuerySqlConfig(DynamicSql target) {
         super(target);
@@ -23,16 +24,19 @@ public class QuerySqlConfig extends DmlSqlConfig {
         Node fetchSizeNode = nodeAttributes.getNamedItem("fetchSize");
         Node resultSetTypeNode = nodeAttributes.getNamedItem("resultSetType");
         Node resultDataQLNode = nodeAttributes.getNamedItem("resultDataQL");
+        Node multipleResultNode = nodeAttributes.getNamedItem("multipleResult");
         String resultMapper = (resultMapperNode != null) ? resultMapperNode.getNodeValue() : null;
         String resultType = (resultTypeNode != null) ? resultTypeNode.getNodeValue() : null;
         String fetchSize = (fetchSizeNode != null) ? fetchSizeNode.getNodeValue() : null;
         String resultSetType = (resultSetTypeNode != null) ? resultSetTypeNode.getNodeValue() : null;
+        String multipleResult = (multipleResultNode != null) ? multipleResultNode.getNodeValue() : null;
         String resultDataQL = (resultDataQLNode != null) ? resultDataQLNode.getNodeValue() : null;
         //
         this.resultMapper = resultMapper;
         this.resultType = resultType;
         this.fetchSize = StringUtils.isBlank(fetchSize) ? 256 : Integer.parseInt(fetchSize);
         this.resultSetType = ResultSetType.valueOfCode(resultSetType, ResultSetType.DEFAULT);
+        this.multipleResultType = MultipleResultsType.valueOfCode(multipleResult, MultipleResultsType.LAST);
         this.resultDataQL = resultDataQL;
     }
 
@@ -71,6 +75,14 @@ public class QuerySqlConfig extends DmlSqlConfig {
 
     public void setResultSetType(ResultSetType resultSetType) {
         this.resultSetType = resultSetType;
+    }
+
+    public MultipleResultsType getMultipleResultType() {
+        return this.multipleResultType;
+    }
+
+    public void setMultipleResultType(MultipleResultsType multipleResultType) {
+        this.multipleResultType = multipleResultType;
     }
 
     public String getResultDataQL() {

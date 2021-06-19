@@ -1,5 +1,4 @@
-<select id="findActiveBlogLike"
-        resultType="Blog">
+<select id="findActiveBlogLike" resultType="Blog">
     SELECT * FROM BLOG
     <where>
         <if test="state != null">

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2002-2005 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.db.dal;
-import net.hasor.db.dal.Repository;
-import net.hasor.test.db.dto.TbUser;
+package net.hasor.db.dal;
+import java.lang.annotation.*;
 
 /**
- *
- * @version : 2013-12-10
+ * 基于注解的 Mapper 。
+ * @version : 2021-06-19
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface TbUserRepository extends Repository<TbUser> {
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface SimpleMapper {
 }

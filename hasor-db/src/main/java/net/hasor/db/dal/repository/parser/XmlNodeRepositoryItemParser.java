@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.dal.repository;
+package net.hasor.db.dal.repository.parser;
 import net.hasor.db.dal.dynamic.DynamicParser;
 import net.hasor.db.dal.dynamic.DynamicSql;
+import net.hasor.db.dal.repository.RepositoryItemParser;
 import net.hasor.db.dal.repository.config.*;
 import net.hasor.utils.StringUtils;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 /**
- * 解析动态 SQL 配置
+ * 解析动态 SQL 配置（XML形式）
  * @version : 2021-06-05
  * @author 赵永春 (zyc@byshell.org)
  */
-public class SqlConfigParser extends DynamicParser {
+public class XmlNodeRepositoryItemParser extends DynamicParser implements RepositoryItemParser<Node> {
     protected QueryType getQueryType(String elementName, StatementType statementTypeEnum) {
         if (StringUtils.isBlank(elementName)) {
             throw new UnsupportedOperationException("tag name is Empty.");
@@ -34,25 +35,10 @@ public class SqlConfigParser extends DynamicParser {
         if (statementTypeEnum == StatementType.Callable) {
             return QueryType.Callable;
         }
-        switch (elementName) {
-            case "insert":
-                return QueryType.Insert;
-            case "delete":
-                return QueryType.Delete;
-            case "update":
-                return QueryType.Update;
-            case "select":
-                return QueryType.Query;
-            case "callable":
-                return QueryType.Callable;
-            case "sql":
-                return QueryType.Segment;
-            default:
-                return null;
-        }
+        return QueryType.valueOfTag(elementName);
     }
 
-    protected DynamicSql parseSqlConfig(Node configNode) {
+    public DynamicSql parseSqlConfig(Node configNode) {
         NamedNodeMap nodeAttributes = configNode.getAttributes();
         Node statementTypeNode = nodeAttributes.getNamedItem("statementType");
         String statementType = (statementTypeNode != null) ? statementTypeNode.getNodeValue() : null;
@@ -80,7 +66,7 @@ public class SqlConfigParser extends DynamicParser {
             case Segment:
                 return new SegmentSqlConfig(dynamicSql);
             default:
-                throw new UnsupportedOperationException("" + queryType.name() + "> Unsupported.");
+                throw new UnsupportedOperationException("queryType '" + queryType.name() + "' Unsupported.");
         }
     }
 }
