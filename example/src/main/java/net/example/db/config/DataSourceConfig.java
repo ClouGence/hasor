@@ -74,6 +74,16 @@ public class DataSourceConfig {
         return this.buildDataSource(jdbcUrl, driver, username, password);
     }
 
+    // 数据仓库 3
+    @Bean("dataDs3")
+    public DataSource data3Store(//
+            @Value("${spring.datasource.db3.url}") String jdbcUrl,       //
+            @Value("${spring.datasource.db3.driver}") String driver,     //
+            @Value("${spring.datasource.db3.username}") String username, //
+            @Value("${spring.datasource.db3.password}") String password) throws SQLException {
+        return this.buildDataSource(jdbcUrl, driver, username, password);
+    }
+
     private DataSource buildDataSource(String jdbcUrl, String driver, String username, String password) throws SQLException {
         DruidDataSource druid = new DruidDataSource();
         druid.setUrl(jdbcUrl);

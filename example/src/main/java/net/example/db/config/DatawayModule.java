@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 package net.example.db.config;
-import net.hasor.core.DimModule;
+import net.hasor.core.TypeSupplier;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.QueryApiBinder;
 import net.hasor.dataway.dal.providers.db.InformationStorage;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
-import net.hasor.spring.SpringModule;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -33,15 +33,28 @@ import java.util.Objects;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2021-01-02
  */
-@DimModule
 @Component
-public class DatawayModule implements WebModule, SpringModule {
+public class DatawayModule implements WebModule, TypeSupplier {
     @Resource(name = "metadataDs")
-    private DataSource metadataDs = null;
+    private DataSource         metadataDs = null;
     @Resource(name = "dataDs1")
-    private DataSource dataDs1    = null;
+    private DataSource         dataDs1    = null;
     @Resource(name = "dataDs2")
-    private DataSource dataDs2    = null;
+    private DataSource         dataDs2    = null;
+    @Resource(name = "dataDs3")
+    private DataSource         dataDs3    = null;
+    @Resource
+    private ApplicationContext applicationContext;
+
+    @Override
+    public <T> T get(Class<? extends T> targetType) {
+        return applicationContext.getBean(targetType);
+    }
+
+    @Override
+    public <T> boolean test(Class<? extends T> targetType) {
+        return applicationContext.getBeanNamesForType(targetType).length > 0;
+    }
 
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
@@ -51,6 +64,7 @@ public class DatawayModule implements WebModule, SpringModule {
         Objects.requireNonNull(this.metadataDs, "metadataDs is null");
         Objects.requireNonNull(this.dataDs1, "dataDs1 is null");
         Objects.requireNonNull(this.dataDs2, "dataDs2 is null");
+        Objects.requireNonNull(this.dataDs3, "dataDs2 is null");
         //
         // .isolation meta-tables using InformationStorage
         apiBinder.bindType(InformationStorage.class).toInstance(() -> {
@@ -60,9 +74,10 @@ public class DatawayModule implements WebModule, SpringModule {
         // .add two data sources in to Dataway
         apiBinder.installModule(new JdbcModule(Level.Full, "ds1", this.dataDs1));
         apiBinder.installModule(new JdbcModule(Level.Full, "ds2", this.dataDs2));
+        apiBinder.installModule(new JdbcModule(Level.Full, "ds3", this.dataDs3));
         //
         // udf/udfSource/import 指令 的类型创建委托给 spring
         QueryApiBinder queryBinder = apiBinder.tryCast(QueryApiBinder.class);
-        queryBinder.bindFinder(Finder.TYPE_SUPPLIER.apply(springTypeSupplier(apiBinder)));
+        queryBinder.bindFinder(Finder.TYPE_SUPPLIER.apply(this));
     }
 }

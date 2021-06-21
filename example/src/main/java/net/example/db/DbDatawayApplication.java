@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.example.db;
-import net.hasor.spring.boot.EnableHasor;
-import net.hasor.spring.boot.EnableHasorWeb;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -23,8 +21,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2021-01-02
  */
-@EnableHasor()
-@EnableHasorWeb()
 @SpringBootApplication(scanBasePackages = { "net.example.db" })
 public class DbDatawayApplication {
     public static void main(String[] args) {
