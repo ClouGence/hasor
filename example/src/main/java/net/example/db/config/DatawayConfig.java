@@ -16,6 +16,7 @@
 package net.example.db.config;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.core.Settings;
 import net.hasor.web.startup.RuntimeFilter;
 import net.hasor.web.startup.RuntimeListener;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -53,7 +54,7 @@ public class DatawayConfig {
             if (source instanceof Map) {
                 ((Map<?, ?>) source).forEach((BiConsumer<Object, Object>) (key, value) -> {
                     if (key != null && value != null) {
-                        loaderWith.addVariable(key.toString(), value.toString());
+                        loaderWith.addSettings(Settings.DefaultNameSpace, key.toString(), value.toString());
                     }
                 });
             }
