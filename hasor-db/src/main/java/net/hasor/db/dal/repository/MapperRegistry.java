@@ -199,4 +199,32 @@ public class MapperRegistry {
             this.saveDynamicSql(mapperSpace, idString, dynamicSql, overwrite);
         }
     }
+    //---------------------------------------------------------------------------------------------------------- String
+
+    /** 解析并载入 mapper.xml（支持 MyBatis 大部分能力） */
+    public void loadXmlString(String mapperSpace, String idString, String xmlString) throws IOException {
+        this.loadXmlString(mapperSpace, idString, xmlString, false);
+    }
+
+    /** 解析并载入 mapper.xml（支持 MyBatis 大部分能力） */
+    public void loadXmlString(String mapperSpace, String idString, String xmlString, boolean overwrite) throws IOException {
+        if (StringUtils.isBlank(xmlString)) {
+            return;
+        }
+        //
+        xmlString = xmlString.trim();
+        boolean isXml = xmlString.startsWith("<") && xmlString.endsWith(">");
+        if (!isXml) {
+            xmlString = "<select>" + xmlString + "</select>";
+        }
+        //
+        try {
+            DynamicSql dynamicSql = this.getXmlRepositoryParser().parseDynamicSql(xmlString);
+            if (dynamicSql != null) {
+                saveDynamicSql(mapperSpace, idString, dynamicSql, overwrite);
+            }
+        } catch (ParserConfigurationException | SAXException e) {
+            throw ExceptionUtils.toRuntime(e);
+        }
+    }
 }

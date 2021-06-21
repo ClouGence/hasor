@@ -1115,4 +1115,12 @@ public class ClassUtils {
         }
         return (Class<?>) params[index];
     }
+
+    public static <T> T newInstance(final Class<?> clazz) {
+        try {
+            return (T) clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw ExceptionUtils.toRuntime(e);
+        }
+    }
 }

@@ -987,7 +987,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
 
     /** Create a new RowMapper for reading columns as Bean pairs. */
-    protected <T> RowMapper<T> getBeanPropertyRowMapper(final Class<T> requiredType) {
+    protected <T> RowMapper<T> getBeanPropertyRowMapper(final Class<T> requiredType) throws SQLException {
         Objects.requireNonNull(requiredType, "requiredType is null.");
         if (Map.class.isAssignableFrom(requiredType)) {
             return (RowMapper<T>) this.getColumnMapRowMapper();

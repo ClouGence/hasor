@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.clougence.clouddm.console.web.mapper.BlobResourceMapper">
 
-    <resultMap id="blobResourceDO" type="com.clougence.clouddm.console.web.model.entity.BlobResourceDO">
+    <resultMap id="blobResourceDO" type="com.clougence.clouddm.console.web.model.entity.BlobResourceDO" autoMapping="true">
         <result column="id" property="id"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
@@ -13,35 +13,5 @@
         <result column="content" property="content"/>
     </resultMap>
 
-    <sql id="blobResource">
-        blob_resource.id id,
-        blob_resource.gmt_create gmt_create,
-        blob_resource.gmt_modified gmt_modified,
-        blob_resource.instance_id instance_id,
-        blob_resource.owner_name owner_name,
-        blob_resource.owner_type owner_type,
-        blob_resource.blob_type blob_type,
-        blob_resource.content content
-    </sql>
 
-    <select id="queryByIdentify" resultMap="blobResourceDO">
-        SELECT
-        <include refid="blobResource"/>
-        FROM
-        blob_resource
-        WHERE
-        instance_id = #{instanceId}
-        AND
-        owner_type = #{resourceType,javaType=com.clougence.clouddm.console.web.constants.ResourceType}
-        AND
-        blob_type = #{fileType,mode=in,javaType=com.clougence.clouddm.console.web.constants.SecurityFileType,typeHandler=}
-    </select>
-
-    <delete id="deleteByIdentify">
-        DELETE
-        FROM blob_resource
-        WHERE instance_id = #{instanceId}
-          AND owner_type = #{resourceType,javaType=com.clougence.clouddm.console.web.constants.ResourceType}
-          AND blob_type = #{fileType,javaType=com.clougence.clouddm.console.web.constants.SecurityFileType}
-    </delete>
 </mapper>

@@ -24,7 +24,7 @@ import java.sql.JDBCType;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-class ColumnMappingDef implements ColumnMapping {
+public class ColumnMappingDef implements ColumnMapping {
     private final String         columnName;
     private final String         columnType;
     private final String         propertyName;

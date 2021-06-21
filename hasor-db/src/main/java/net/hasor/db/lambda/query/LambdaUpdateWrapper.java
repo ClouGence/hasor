@@ -21,7 +21,7 @@ import net.hasor.db.lambda.UpdateExecute;
 import net.hasor.db.lambda.segment.MergeSqlSegment;
 import net.hasor.db.mapping.ColumnMapping;
 import net.hasor.db.mapping.TableMapping;
-import net.hasor.db.mapping.TableReader;
+import net.hasor.db.mapping.reader.TableReader;
 import net.hasor.db.metadata.ColumnDef;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.reflect.SFunction;

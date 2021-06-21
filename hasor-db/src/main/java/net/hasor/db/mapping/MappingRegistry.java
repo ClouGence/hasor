@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.db.mapping;
-import net.hasor.db.metadata.CaseSensitivityType;
-import net.hasor.db.metadata.ColumnDef;
+import net.hasor.db.mapping.reader.DefaultTableReader;
+import net.hasor.db.mapping.reader.TableReader;
+import net.hasor.db.mapping.resolve.ClassResolveTableMapping;
 import net.hasor.db.metadata.MetaDataService;
-import net.hasor.db.metadata.TableDef;
-import net.hasor.db.metadata.domain.SimpleColumnDef;
-import net.hasor.db.metadata.domain.jdbc.JdbcTableType;
-import net.hasor.db.types.TypeHandler;
 import net.hasor.db.types.TypeHandlerRegistry;
-import net.hasor.db.types.UnknownTypeHandler;
-import net.hasor.utils.BeanUtils;
-import net.hasor.utils.ExceptionUtils;
-import net.hasor.utils.StringUtils;
 
-import java.lang.reflect.Field;
-import java.sql.JDBCType;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -42,7 +34,6 @@ public class MappingRegistry {
     public final static MappingRegistry               DEFAULT = new MappingRegistry(TypeHandlerRegistry.DEFAULT, null);
     protected final     TypeHandlerRegistry           typeRegistry;
     protected final     MetaDataService               metaService;
-    protected final     Map<Class<?>, TableMapping>   entityMappingMap;
     protected final     Map<Class<?>, TableReader<?>> entityReaderMap;
 
     public MappingRegistry() {
@@ -56,14 +47,12 @@ public class MappingRegistry {
     public MappingRegistry(MetaDataService metaDataService) {
         this.typeRegistry = TypeHandlerRegistry.DEFAULT;
         this.metaService = metaDataService;
-        this.entityMappingMap = new ConcurrentHashMap<>();
         this.entityReaderMap = new ConcurrentHashMap<>();
     }
 
     public MappingRegistry(TypeHandlerRegistry typeRegistry, MetaDataService metaDataService) {
         this.typeRegistry = Objects.requireNonNull(typeRegistry, "typeRegistry not null.");
         this.metaService = metaDataService;
-        this.entityMappingMap = new ConcurrentHashMap<>();
         this.entityReaderMap = new ConcurrentHashMap<>();
     }
 
@@ -71,15 +60,27 @@ public class MappingRegistry {
         return this.typeRegistry;
     }
 
-    public <T> TableReader<T> resolveTableReader(Class<T> entityType) {
+    /** 从类型中解析 TableReader */
+    public <T> TableReader<T> resolveTableReader(Class<T> entityType) throws SQLException {
         return resolveTableReader(entityType, this.metaService);
     }
 
-    public TableMapping resolveMapping(Class<?> entityType) {
-        return resolveMapping(entityType, this.metaService);
+    /** 从类型中解析 TableMapping */
+    public TableMapping resolveTableMapping(Class<?> entityType) throws SQLException {
+        return resolveTableMapping(entityType, this.metaService);
     }
 
-    public <T> TableReader<T> resolveTableReader(Class<T> entityType, MetaDataService metaDataService) {
+    /** 从类型中解析 TableReader */
+    public TableMapping resolveTableMapping(Class<?> entityType, MetaDataService metaDataService) throws SQLException {
+        TableReader<?> tableReader = resolveTableReader(entityType, metaDataService);
+        if (tableReader != null) {
+            return tableReader.getTableMapping();
+        }
+        return null;
+    }
+
+    /** 从类型中解析 TableMapping */
+    public <T> TableReader<T> resolveTableReader(Class<T> entityType, MetaDataService metaDataService) throws SQLException {
         TableReader<T> resultMapper = (TableReader<T>) this.entityReaderMap.get(entityType);
         if (resultMapper == null) {
             synchronized (this) {
@@ -87,280 +88,15 @@ public class MappingRegistry {
                 if (resultMapper != null) {
                     return resultMapper;
                 }
-                TableMapping tableMapping = resolveMapping(entityType, metaDataService);
+                TableMapping tableMapping = new ClassResolveTableMapping().resolveTableMapping(entityType, this.typeRegistry, metaDataService);
                 if (tableMapping == null) {
                     return null;
                 }
-                resultMapper = new TableReaderImpl<>(entityType, tableMapping);
+                resultMapper = new DefaultTableReader<>(entityType, tableMapping);
                 //
                 this.entityReaderMap.put(entityType, resultMapper);
             }
         }
         return resultMapper;
-    }
-
-    public TableMapping resolveMapping(Class<?> entityType, MetaDataService metaDataService) {
-        TableMapping tableMapping = this.entityMappingMap.get(entityType);
-        if (tableMapping == null) {
-            synchronized (this) {
-                tableMapping = this.entityMappingMap.get(entityType);
-                if (tableMapping != null) {
-                    return tableMapping;
-                }
-                try {
-                    tableMapping = parserEntity(entityType, metaDataService);
-                    this.entityMappingMap.put(entityType, tableMapping);
-                } catch (SQLException e) {
-                    throw ExceptionUtils.toRuntime(e);
-                }
-            }
-        }
-        return tableMapping;
-    }
-
-    private TableMapping parserEntity(Class<?> entityType, MetaDataService metaDataService) throws SQLException {
-        boolean useDelimited;
-        CaseSensitivityType caseSensitivity;
-        TableMappingDef def = new TableMappingDef(entityType);
-        //
-        // build MappingDef
-        if (entityType.isAnnotationPresent(Table.class)) {
-            Table defTable = entityType.getAnnotation(Table.class);
-            String catalog = defTable.catalog();
-            String schema = defTable.schema();
-            String table = StringUtils.isNotBlank(defTable.name()) ? defTable.name() : defTable.value();
-            //
-            def.setCatalog(StringUtils.isNotBlank(catalog) ? catalog : null);
-            def.setSchema(StringUtils.isNotBlank(schema) ? schema : null);
-            def.setTable(table);
-            def.setTableType(JdbcTableType.Table);
-            def.setAutoProperty(defTable.autoMapping());
-            useDelimited = defTable.useDelimited();
-        } else {
-            def.setCatalog(null);
-            def.setSchema(null);
-            def.setTable(entityType.getSimpleName());
-            def.setTableType(null);
-            def.setAutoProperty(true);
-            useDelimited = false;
-        }
-        //
-        // make sure CaseSensitivity
-        if (metaDataService != null) {
-            if (useDelimited) {
-                // in delimited CaseSensitivity can not be Fuzzy
-                caseSensitivity = caseSensitivity(metaDataService.getDelimited(), CaseSensitivityType.Exact);
-            } else {
-                caseSensitivity = caseSensitivity(metaDataService.getPlain(), CaseSensitivityType.Fuzzy);
-            }
-        } else {
-            caseSensitivity = CaseSensitivityType.Fuzzy;
-        }
-        def.setUseDelimited(useDelimited);
-        def.setCaseSensitivity(caseSensitivity);
-        //
-        // modify the names by referring to the metadata.
-        if (metaDataService != null) {
-            String catalog = def.getCatalog();
-            String schema = def.getSchema();
-            String table = def.getTable();
-            //
-            if (StringUtils.isBlank(catalog)) {
-                catalog = metaDataService.getCurrentCatalog();
-            }
-            if (StringUtils.isBlank(schema)) {
-                schema = metaDataService.getCurrentSchema();
-            }
-            //
-            catalog = formatCaseSensitivity(catalog, def.getCaseSensitivity());
-            schema = formatCaseSensitivity(schema, def.getCaseSensitivity());
-            table = formatCaseSensitivity(table, def.getCaseSensitivity());
-            TableDef tableDef = metaDataService.searchTable(catalog, schema, table);
-            if (tableDef != null) {
-                def.setCatalog(tableDef.getCatalog());
-                def.setSchema(tableDef.getSchema());
-                def.setTable(tableDef.getTable());
-                def.setTableType(tableDef.getTableType());
-            }
-        } else {
-            def.setCatalog(formatCaseSensitivity(def.getCatalog(), def.getCaseSensitivity()));
-            def.setSchema(formatCaseSensitivity(def.getSchema(), def.getCaseSensitivity()));
-            def.setTable(formatCaseSensitivity(def.getTable(), def.getCaseSensitivity()));
-        }
-        //
-        return parserProperty(def, metaDataService);
-    }
-
-    private TableMapping parserProperty(TableMappingDef def, MetaDataService metaDataService) throws SQLException {
-        // collect @Property and ColumnDef
-        Map<String, WrapProperty> propertyInfoMap = matchProperty(def, def.isAutoProperty(), this.typeRegistry);
-        Map<String, ColumnDef> columnDefMap = null;
-        if (metaDataService != null) {
-            columnDefMap = metaDataService.getColumnMap(def.getCatalog(), def.getSchema(), def.getTable());
-        }
-        //
-        for (String propertyName : propertyInfoMap.keySet()) {
-            WrapProperty wrapProperty = propertyInfoMap.get(propertyName);
-            String columnName = getColumnName(propertyName, propertyInfoMap);
-            columnName = formatCaseSensitivity(columnName, def.getCaseSensitivity());
-            //
-            ColumnDef columnDef = null;
-            if (columnDefMap != null && columnDefMap.containsKey(columnName)) {
-                columnDef = columnDefMap.get(columnName);
-            } else {
-                columnDef = convertColumnDef(columnName, wrapProperty, def.getCaseSensitivity());
-            }
-            if (columnDef == null) {
-                continue;
-            }
-            //
-            // build PropertyMapping
-            Class<?> propertyType = wrapProperty.propertyField.getType();
-            ColumnMappingDef mappingDef = new ColumnMappingDef(propertyName, propertyType, columnDef);
-            mappingDef.setJdbcType(columnDef.getJdbcType());
-            mappingDef.setPrimary(columnDef.isPrimaryKey());
-            mappingDef.setInsert(wrapProperty.column.insert());
-            mappingDef.setUpdate(wrapProperty.column.update());
-            mappingDef.setTypeHandler(wrapProperty.typeHandler);
-            //
-            // add to def
-            def.addMapping(mappingDef);
-            //
-            if (def.isEmpty()) {
-                throw new IllegalStateException(def.entityType().getName() + " Missing property mapping.");
-            }
-        }
-        return def;
-    }
-
-    private static class WrapProperty {
-        public final Column         column;
-        public final ColumnMeta     columnMeta;
-        public final Field          propertyField;
-        public final TypeHandler<?> typeHandler;
-
-        public WrapProperty(Column column, ColumnMeta columnMeta, Field propertyField, TypeHandler<?> typeHandler) {
-            this.column = Objects.requireNonNull(column, "property is not null.");
-            this.columnMeta = columnMeta;
-            this.propertyField = Objects.requireNonNull(propertyField, "propertyField is not null.");
-            this.typeHandler = Objects.requireNonNull(typeHandler, "typeHandler is not null.");
-        }
-    }
-
-    private static ColumnDef convertColumnDef(String columnName, WrapProperty wrapProperty, CaseSensitivityType caseSensitivity) {
-        Field propertyField = wrapProperty.propertyField;
-        ColumnMeta columnMeta = wrapProperty.columnMeta;
-        Class<?> propertyType = propertyField.getType();
-        //
-        SimpleColumnDef columnDef = new SimpleColumnDef();
-        columnDef.setName(formatCaseSensitivity(columnName, caseSensitivity));
-        columnDef.setJavaType(propertyType);
-        columnDef.setJdbcType(TypeHandlerRegistry.toSqlType(propertyType));
-        if (columnMeta != null) {
-            columnDef.setPrimaryKey(columnMeta.primary());
-        } else {
-            columnDef.setPrimaryKey(false);
-        }
-        return columnDef;
-    }
-
-    private static Map<String, WrapProperty> matchProperty(TableMappingDef def, boolean includeAll, TypeHandlerRegistry typeRegistry) {
-        Map<String, WrapProperty> propertyMap = new LinkedHashMap<>();
-        //
-        // keep sort
-        List<String> targetProperties = new ArrayList<>();
-        List<String> sourceProperties = BeanUtils.getProperties(def.entityType());
-        List<Field> sourceFields = BeanUtils.findALLFields(def.entityType());
-        for (Field source : sourceFields) {
-            if (!targetProperties.contains(source.getName())) {
-                targetProperties.add(source.getName());
-            }
-        }
-        for (String source : sourceProperties) {
-            if (!targetProperties.contains(source)) {
-                targetProperties.add(source);
-            }
-        }
-        //
-        for (String name : targetProperties) {
-            Field propertyField = BeanUtils.getField(name, def.entityType());
-            if (propertyField == null) {
-                continue;
-            }
-            Column info = null;
-            if (propertyField.isAnnotationPresent(Column.class)) {
-                info = propertyField.getAnnotation(Column.class);
-            } else if (includeAll) {
-                info = new ColumnInfo(name);
-            } else {
-                continue;
-            }
-            ColumnMeta columnMeta = null;
-            if (propertyField.isAnnotationPresent(ColumnMeta.class)) {
-                columnMeta = propertyField.getAnnotation(ColumnMeta.class);
-            }
-            //
-            Class<?> propertyType = propertyField.getType();
-            Class<? extends TypeHandler<?>> typeHandlerClass = info.typeHandler();
-            TypeHandler<?> typeHandler = null;
-            if (typeHandlerClass == UnknownTypeHandler.class) {
-                JDBCType jdbcType = (columnMeta != null) ? columnMeta.jdbcType() : JDBCType.OTHER;
-                if (jdbcType == JDBCType.OTHER) {
-                    jdbcType = TypeHandlerRegistry.toSqlType(propertyType);
-                }
-                typeHandler = typeRegistry.getTypeHandler(propertyType, jdbcType);
-            } else if (TypeHandlerRegistry.hasTypeHandlerType(typeHandlerClass)) {
-                typeHandler = TypeHandlerRegistry.getTypeHandlerByType(typeHandlerClass);
-            } else {
-                try {
-                    typeHandler = typeHandlerClass.newInstance();
-                } catch (Exception e) {
-                    throw ExceptionUtils.toRuntime(e);
-                }
-            }
-            //typeRegistry
-            propertyMap.put(name, new WrapProperty(info, columnMeta, propertyField, typeHandler));
-        }
-        return propertyMap;
-    }
-
-    private static String getColumnName(String propertyName, Map<String, WrapProperty> propertyInfoMap) {
-        WrapProperty wrapProperty = propertyInfoMap.get(propertyName);
-        if (wrapProperty != null) {
-            Column column = wrapProperty.column;
-            String columnName = propertyName;
-            if (StringUtils.isNotBlank(column.name())) {
-                columnName = column.name();
-            } else {
-                columnName = column.value();
-            }
-            if (StringUtils.isBlank(columnName)) {
-                columnName = propertyName;
-            }
-            return columnName;
-        } else {
-            return propertyName;
-        }
-    }
-
-    private static CaseSensitivityType caseSensitivity(CaseSensitivityType check, CaseSensitivityType defaultType) {
-        return (check == null) ? defaultType : check;
-    }
-
-    private static String formatCaseSensitivity(String dataString, CaseSensitivityType sensitivityType) {
-        if (sensitivityType == null || dataString == null) {
-            return dataString;
-        }
-        switch (sensitivityType) {
-            case Lower: {
-                return dataString.toLowerCase();
-            }
-            case Upper: {
-                return dataString.toUpperCase();
-            }
-            default: {
-                return dataString;
-            }
-        }
     }
 }

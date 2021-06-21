@@ -22,7 +22,8 @@ import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.RowMapper;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.mapping.TableMapping;
-import net.hasor.db.mapping.TableReader;
+import net.hasor.db.mapping.reader.TableReader;
+import net.hasor.utils.ExceptionUtils;
 
 import java.sql.DatabaseMetaData;
 import java.util.Map;
@@ -47,11 +48,15 @@ public abstract class AbstractExecute<T> {
         if (Objects.requireNonNull(exampleType, "exampleType is null.") == Map.class) {
             throw new UnsupportedOperationException("Map cannot be used as lambda exampleType.");
         }
-        this.exampleType = exampleType;
-        this.jdbcTemplate = jdbcTemplate;
-        this.exampleTableReader = jdbcTemplate.getMappingRegistry().resolveTableReader(exampleType);
-        this.exampleRowMapper = this.exampleTableReader::readRow;
-        this.exampleTableMapping = this.exampleTableReader.getTableMapping();
+        try {
+            this.exampleType = exampleType;
+            this.jdbcTemplate = jdbcTemplate;
+            this.exampleTableReader = jdbcTemplate.getMappingRegistry().resolveTableReader(exampleType);
+            this.exampleRowMapper = this.exampleTableReader::readRow;
+            this.exampleTableMapping = this.exampleTableReader.getTableMapping();
+        } catch (Exception e) {
+            throw ExceptionUtils.toRuntime(e);
+        }
         //
         String tmpDbType = "";
         try {
@@ -69,11 +74,15 @@ public abstract class AbstractExecute<T> {
     }
 
     AbstractExecute(Class<T> exampleType, JdbcTemplate jdbcTemplate, String dbType, SqlDialect dialect) {
-        this.exampleType = exampleType;
-        this.jdbcTemplate = jdbcTemplate;
-        this.exampleTableReader = jdbcTemplate.getMappingRegistry().resolveTableReader(exampleType);
-        this.exampleRowMapper = this.exampleTableReader::readRow;
-        this.exampleTableMapping = this.exampleTableReader.getTableMapping();
+        try {
+            this.exampleType = exampleType;
+            this.jdbcTemplate = jdbcTemplate;
+            this.exampleTableReader = jdbcTemplate.getMappingRegistry().resolveTableReader(exampleType);
+            this.exampleRowMapper = this.exampleTableReader::readRow;
+            this.exampleTableMapping = this.exampleTableReader.getTableMapping();
+        } catch (Exception e) {
+            throw ExceptionUtils.toRuntime(e);
+        }
         //
         this.dbType = dbType;
         this.dialect = (dialect == null) ? DefaultSqlDialect.DEFAULT : dialect;

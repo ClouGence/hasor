@@ -42,7 +42,7 @@ public class DynamicParser {
         return parseDynamicSql(root);
     }
 
-    protected DynamicSql parseDynamicSql(Node configNode) {
+    public DynamicSql parseDynamicSql(Node configNode) {
         ArrayDynamicSql arraySqlNode = new ArrayDynamicSql();
         parseNodeList(arraySqlNode, configNode.getChildNodes());
         return arraySqlNode;

@@ -54,7 +54,7 @@ public class PostgresIndex {
     public void setIndexType(PostgresIndexType indexType) {
         this.indexType = indexType;
     }
- 
+
     public List<String> getColumns() {
         return this.columns;
     }

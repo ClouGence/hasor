@@ -30,9 +30,9 @@ import net.hasor.dataql.fx.db.LookupConnectionListener;
 import net.hasor.dataql.fx.db.LookupDataSourceListener;
 import net.hasor.db.JdbcUtils;
 import net.hasor.db.dal.dynamic.BuilderContext;
-import net.hasor.db.dal.dynamic.DynamicParser;
 import net.hasor.db.dal.dynamic.DynamicSql;
 import net.hasor.db.dal.dynamic.QuerySqlBuilder;
+import net.hasor.db.dal.repository.MapperRegistry;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialect;
 import net.hasor.db.dialect.SqlDialectRegister;
@@ -41,6 +41,7 @@ import net.hasor.db.jdbc.core.ArgPreparedStatementSetter;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
+import net.hasor.utils.CommonCodeUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
@@ -49,6 +50,7 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.StringReader;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -335,8 +337,16 @@ public class SqlFragment implements FragmentProcess {
     /** 分析 SQL */
     protected DynamicSql analysisSQL(Hints hint, String fragmentString) {
         try {
-            return new DynamicParser().parseDynamicSql(fragmentString);
-        } catch (Exception e) {
+            String sqlCacheId = CommonCodeUtils.MD5.getMD5(fragmentString);
+            DynamicSql dynamicSql = MapperRegistry.DEFAULT.findDynamicSql(SqlFragment.class, sqlCacheId);
+            if (dynamicSql != null) {
+                return dynamicSql;
+            } else {
+                MapperRegistry.DEFAULT.loadXmlString(SqlFragment.class.getName(), sqlCacheId, fragmentString);
+                dynamicSql = MapperRegistry.DEFAULT.findDynamicSql(SqlFragment.class, sqlCacheId);
+            }
+            return dynamicSql;
+        } catch (NoSuchAlgorithmException | IOException e) {
             throw ExceptionUtils.toRuntime(e);
         }
     }

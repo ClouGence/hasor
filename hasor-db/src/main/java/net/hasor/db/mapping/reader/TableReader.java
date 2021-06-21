@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.mapping;
+package net.hasor.db.mapping.reader;
+import net.hasor.db.mapping.ColumnMapping;
+import net.hasor.db.mapping.TableMapping;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

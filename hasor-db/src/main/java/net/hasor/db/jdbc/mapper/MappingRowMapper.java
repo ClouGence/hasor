@@ -16,7 +16,7 @@
 package net.hasor.db.jdbc.mapper;
 import net.hasor.db.jdbc.RowMapper;
 import net.hasor.db.mapping.MappingRegistry;
-import net.hasor.db.mapping.TableReader;
+import net.hasor.db.mapping.reader.TableReader;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,12 +31,12 @@ public class MappingRowMapper<T> implements RowMapper<T> {
     private final TableReader<T> tableReader;
 
     /** Create a new ResultMapper.*/
-    public MappingRowMapper(Class<T> mapperClass) {
+    public MappingRowMapper(Class<T> mapperClass) throws SQLException {
         this(mapperClass, MappingRegistry.DEFAULT);
     }
 
     /** Create a new ResultMapper.*/
-    public MappingRowMapper(Class<T> mapperClass, MappingRegistry handlerRegistry) {
+    public MappingRowMapper(Class<T> mapperClass, MappingRegistry handlerRegistry) throws SQLException {
         this(handlerRegistry.resolveTableReader(mapperClass));
     }
 
@@ -53,7 +53,7 @@ public class MappingRowMapper<T> implements RowMapper<T> {
      * Static factory method to create a new BeanPropertyRowMapper (with the mapped class specified only once).
      * @param mappedClass the class that each row should be mapped to
      */
-    public static <T> MappingRowMapper<T> newInstance(final Class<T> mappedClass) {
+    public static <T> MappingRowMapper<T> newInstance(final Class<T> mappedClass) throws SQLException {
         return new MappingRowMapper<>(mappedClass);
     }
 
@@ -61,7 +61,7 @@ public class MappingRowMapper<T> implements RowMapper<T> {
      * Static factory method to create a new BeanPropertyRowMapper (with the mapped class specified only once).
      * @param mappedClass the class that each row should be mapped to
      */
-    public static <T> MappingRowMapper<T> newInstance(final Class<T> mappedClass, final MappingRegistry registry) {
+    public static <T> MappingRowMapper<T> newInstance(final Class<T> mappedClass, final MappingRegistry registry) throws SQLException {
         return new MappingRowMapper<>(mappedClass, registry);
     }
 }

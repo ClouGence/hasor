@@ -28,7 +28,7 @@ import java.util.Map;
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-class TableMappingDef implements TableMapping {
+public class TableMappingDef implements TableMapping {
     private       String                           catalogName;
     private       String                           schemaName;
     private       String                           tableName;

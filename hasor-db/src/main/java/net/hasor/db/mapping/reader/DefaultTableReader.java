@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.mapping;
+package net.hasor.db.mapping.reader;
+import net.hasor.db.mapping.ColumnMapping;
+import net.hasor.db.mapping.TableMapping;
 import net.hasor.db.metadata.CaseSensitivityType;
 import net.hasor.db.types.TypeHandler;
 import net.hasor.utils.BeanUtils;
@@ -31,7 +33,7 @@ import java.util.*;
  * @version : 2021-04-13
  * @author 赵永春 (zyc@hasor.net)
  */
-class TableReaderImpl<T> implements TableReader<T> {
+public class DefaultTableReader<T> implements TableReader<T> {
     private final Class<T>                  mapperClass;
     private final TableMapping              tableMapping;
     //
@@ -40,7 +42,7 @@ class TableReaderImpl<T> implements TableReader<T> {
     private final Map<String, String>       propertyForWriteByColumn;
 
     /** Create a new TableReader.*/
-    public TableReaderImpl(Class<T> mapperClass, TableMapping tableMapping) {
+    public DefaultTableReader(Class<T> mapperClass, TableMapping tableMapping) {
         this.mapperClass = mapperClass;
         this.tableMapping = tableMapping;
         this.columnNames = new ArrayList<>();

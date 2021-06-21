@@ -16,6 +16,7 @@
 package net.hasor.dataql;
 import net.hasor.core.AppContext;
 import net.hasor.core.TypeSupplier;
+import net.hasor.utils.ClassUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.supplier.SingleProvider;
@@ -38,7 +39,11 @@ public interface Finder {
     public static final Function<TypeSupplier, Finder>         TYPE_SUPPLIER        = typeSupplier -> {
         return new Finder() {
             public Object findBean(Class<?> beanType) {
-                return typeSupplier.get(beanType);
+                if (typeSupplier.test(beanType)) {
+                    return typeSupplier.get(beanType);
+                } else {
+                    return ClassUtils.newInstance(beanType);
+                }
             }
         };
     };
@@ -70,11 +75,7 @@ public interface Finder {
 
     /** 负责处理 <code>import 'net.hasor.dataql.sdk.CollectionUdfSource' as collect;</code>方式的资源的加载。 */
     public default Object findBean(Class<?> beanType) {
-        try {
-            return beanType.newInstance();
-        } catch (Exception e) {
-            throw ExceptionUtils.toRuntime(e, throwable -> new RuntimeException("load Bean failed -> '" + beanType.getName(), throwable));
-        }
+        return ClassUtils.newInstance(beanType);
     }
 
     public default FragmentProcess findFragmentProcess(String fragmentType) {
