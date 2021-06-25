@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.example.db.config;
+package net.example.db.config.hasor;
+import net.example.db.config.DatawayModule;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
-import net.hasor.web.startup.RuntimeFilter;
 import net.hasor.web.startup.RuntimeListener;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -27,10 +26,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.Filter;
 import javax.servlet.ServletContext;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -40,7 +38,7 @@ import java.util.function.BiConsumer;
  * @version : 2021-01-02
  */
 @Configuration(proxyBeanMethods = false)
-public class DatawayConfig {
+public class BasicConfig implements WebMvcConfigurer {
     // 把 spring 的配置文件导入到 hasor.
     public Hasor importConfig(Hasor loaderWith, ApplicationContext applicationContext) {
         for (PropertySource<?> propertySource : ((StandardEnvironment) applicationContext.getEnvironment()).getPropertySources()) {
@@ -50,6 +48,7 @@ public class DatawayConfig {
             if ("systemEnvironment".equalsIgnoreCase(propertySource.getName())) {
                 continue;// this propertySource in Hasor has same one
             }
+            //
             Object source = propertySource.getSource();
             if (source instanceof Map) {
                 ((Map<?, ?>) source).forEach((BiConsumer<Object, Object>) (key, value) -> {
@@ -77,19 +76,9 @@ public class DatawayConfig {
     }
 
     @Bean()
-    public ServletListenerRegistrationBean<RuntimeListener> registrationListener(AppContext appContext) {
+    public ServletListenerRegistrationBean<RuntimeListener> addListener(AppContext appContext) {
         Objects.requireNonNull(appContext, "appContext is null.");
         RuntimeListener listener = new RuntimeListener(appContext);
         return new ServletListenerRegistrationBean<>(listener);
-    }
-
-    @Bean
-    public FilterRegistrationBean<Filter> registrationFilter(AppContext appContext) {
-        Objects.requireNonNull(appContext, "appContext is null.");
-        RuntimeFilter filter = new RuntimeFilter(appContext);
-        FilterRegistrationBean<Filter> filterBean = new FilterRegistrationBean<>(filter);
-        filterBean.setUrlPatterns(Collections.singletonList("/*"));
-        filterBean.setName(RuntimeFilter.class.getName());
-        return filterBean;
     }
 }

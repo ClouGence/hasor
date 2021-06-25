@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.example.db.config;
+package net.example.db.config.swagger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -36,7 +36,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)//
                 .apiInfo(apiInfo())//
                 .select()//
-                .apis(RequestHandlerSelectors.basePackage("net.example.hasor"))//
+                .apis(RequestHandlerSelectors.basePackage("net.example.db"))//
                 .paths(PathSelectors.any())//
                 .build();
     }

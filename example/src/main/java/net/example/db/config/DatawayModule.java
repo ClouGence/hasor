@@ -58,6 +58,7 @@ public class DatawayModule implements WebModule, TypeSupplier {
 
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
+        //
         apiBinder.setEncodingCharacter("UTF-8", "UTF-8");
         //
         // .check dataSource
@@ -77,7 +78,6 @@ public class DatawayModule implements WebModule, TypeSupplier {
         apiBinder.installModule(new JdbcModule(Level.Full, "ds3", this.dataDs3));
         //
         // udf/udfSource/import 指令 的类型创建委托给 spring
-        QueryApiBinder queryBinder = apiBinder.tryCast(QueryApiBinder.class);
-        queryBinder.bindFinder(Finder.TYPE_SUPPLIER.apply(this));
+        apiBinder.tryCast(QueryApiBinder.class).bindFinder(Finder.TYPE_SUPPLIER.apply(this));
     }
 }
