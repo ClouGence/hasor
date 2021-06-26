@@ -33,7 +33,7 @@ import java.util.List;
  * @version : 2014-1-13
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MappingTest extends AbstractDbTest {
+public class ClassMappingTest extends AbstractDbTest {
     @Test
     public void useMappingReadTable_1() throws SQLException {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {

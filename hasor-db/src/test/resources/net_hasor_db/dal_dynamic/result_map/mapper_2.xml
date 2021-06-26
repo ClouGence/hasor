@@ -1,0 +1,10 @@
+<resultMap id="blobResourceDO" type="net.hasor.test.db.dto.TB_User">
+    <id column="user_uuid" property="userUUID"/>
+    <result column="name" property="name"/>
+    <result column="login_name" property="loginName"/>
+    <result column="login_password" property="loginPassword"/>
+    <result column="email" property="email"/>
+    <result column="index" property="index" javaType="int"/>
+    <!--    <result column="blob_type" property="blobType" javaType="com.clougence.clouddm.console.web.constants.SecurityFileType"/>-->
+    <result column="register_time" property="registerTime"/>
+</resultMap>

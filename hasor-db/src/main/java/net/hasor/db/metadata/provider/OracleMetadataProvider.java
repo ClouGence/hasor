@@ -96,6 +96,9 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
     @Override
     public TableDef searchTable(String catalog, String schema, String table) throws SQLException {
         String dbName = StringUtils.isNotBlank(catalog) ? catalog : schema;
+        if (StringUtils.isNotBlank(dbName)) {
+            dbName = getCurrentSchema();
+        }
         return getTable(dbName, table);
     }
 

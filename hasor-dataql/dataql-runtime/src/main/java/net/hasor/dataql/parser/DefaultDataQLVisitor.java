@@ -15,7 +15,6 @@
  */
 package net.hasor.dataql.parser;
 import net.hasor.dataql.parser.DataQLParser.*;
-import net.hasor.dataql.parser.DataQLParserVisitor;
 import net.hasor.dataql.parser.ast.Expression;
 import net.hasor.dataql.parser.ast.RouteVariable;
 import net.hasor.dataql.parser.ast.Variable;

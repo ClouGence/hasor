@@ -43,7 +43,7 @@ public class ColumnMappingDef implements ColumnMapping {
         this.javaType = javaType;
         this.insert = true;
         this.update = true;
-        this.primary = false;
+        this.primary = columnDef.isPrimaryKey();
     }
 
     @Override

@@ -17,9 +17,19 @@ package net.hasor.db.mapping;
 import net.hasor.db.mapping.reader.DefaultTableReader;
 import net.hasor.db.mapping.reader.TableReader;
 import net.hasor.db.mapping.resolve.ClassResolveTableMapping;
+import net.hasor.db.mapping.resolve.XmlResolveTableMapping;
 import net.hasor.db.metadata.MetaDataService;
 import net.hasor.db.types.TypeHandlerRegistry;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.StringReader;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Objects;
@@ -31,56 +41,38 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MappingRegistry {
-    public final static MappingRegistry               DEFAULT = new MappingRegistry(TypeHandlerRegistry.DEFAULT, null);
-    protected final     TypeHandlerRegistry           typeRegistry;
-    protected final     MetaDataService               metaService;
-    protected final     Map<Class<?>, TableReader<?>> entityReaderMap;
+    public final static MappingRegistry DEFAULT = new MappingRegistry(TypeHandlerRegistry.DEFAULT, null, null);
+
+    public static MappingRegistry newMappingRegistry(ClassLoader classLoader, MetaDataService metaDataService, TypeHandlerRegistry typeRegistry) {
+        return new MappingRegistry(typeRegistry, metaDataService, classLoader);
+    }
+
+    private final ClassLoader                 classLoader;
+    private final TypeHandlerRegistry         typeRegistry;
+    private final MetaDataService             metaService;
+    private final Map<String, TableReader<?>> entityReaderMap;
 
     public MappingRegistry() {
-        this(TypeHandlerRegistry.DEFAULT);
+        this(TypeHandlerRegistry.DEFAULT, null, null);
     }
 
-    public MappingRegistry(TypeHandlerRegistry typeRegistry) {
-        this(typeRegistry, null);
-    }
-
-    public MappingRegistry(MetaDataService metaDataService) {
-        this.typeRegistry = TypeHandlerRegistry.DEFAULT;
-        this.metaService = metaDataService;
-        this.entityReaderMap = new ConcurrentHashMap<>();
-    }
-
-    public MappingRegistry(TypeHandlerRegistry typeRegistry, MetaDataService metaDataService) {
+    public MappingRegistry(TypeHandlerRegistry typeRegistry, MetaDataService metaService, ClassLoader classLoader) {
         this.typeRegistry = Objects.requireNonNull(typeRegistry, "typeRegistry not null.");
-        this.metaService = metaDataService;
+        this.metaService = metaService;
         this.entityReaderMap = new ConcurrentHashMap<>();
+        this.classLoader = (classLoader != null) ? classLoader : Thread.currentThread().getContextClassLoader();
     }
 
     public TypeHandlerRegistry getTypeRegistry() {
         return this.typeRegistry;
     }
 
-    /** 从类型中解析 TableReader */
+    public MetaDataService getMetaService() {
+        return this.metaService;
+    }
+
+    /** 从类型中解析 TableMapping */
     public <T> TableReader<T> resolveTableReader(Class<T> entityType) throws SQLException {
-        return resolveTableReader(entityType, this.metaService);
-    }
-
-    /** 从类型中解析 TableMapping */
-    public TableMapping resolveTableMapping(Class<?> entityType) throws SQLException {
-        return resolveTableMapping(entityType, this.metaService);
-    }
-
-    /** 从类型中解析 TableReader */
-    public TableMapping resolveTableMapping(Class<?> entityType, MetaDataService metaDataService) throws SQLException {
-        TableReader<?> tableReader = resolveTableReader(entityType, metaDataService);
-        if (tableReader != null) {
-            return tableReader.getTableMapping();
-        }
-        return null;
-    }
-
-    /** 从类型中解析 TableMapping */
-    public <T> TableReader<T> resolveTableReader(Class<T> entityType, MetaDataService metaDataService) throws SQLException {
         TableReader<T> resultMapper = (TableReader<T>) this.entityReaderMap.get(entityType);
         if (resultMapper == null) {
             synchronized (this) {
@@ -88,15 +80,69 @@ public class MappingRegistry {
                 if (resultMapper != null) {
                     return resultMapper;
                 }
-                TableMapping tableMapping = new ClassResolveTableMapping().resolveTableMapping(entityType, this.typeRegistry, metaDataService);
+                ClassLoader classLoader = entityType.getClassLoader();
+                if (classLoader == null) {
+                    classLoader = Thread.currentThread().getContextClassLoader();
+                }
+                TableMapping tableMapping = new ClassResolveTableMapping().resolveTableMapping(entityType, classLoader, this.typeRegistry, this.metaService);
                 if (tableMapping == null) {
                     return null;
                 }
                 resultMapper = new DefaultTableReader<>(entityType, tableMapping);
                 //
-                this.entityReaderMap.put(entityType, resultMapper);
+                this.entityReaderMap.put(entityType.getName(), resultMapper);
             }
         }
         return resultMapper;
+    }
+
+    /** 从类型中解析 TableMapping */
+    public TableMapping resolveTableMapping(Class<?> entityType) throws SQLException {
+        TableReader<?> tableReader = resolveTableReader(entityType);
+        if (tableReader != null) {
+            return tableReader.getTableMapping();
+        }
+        return null;
+    }
+
+    public <T> TableReader<T> resolveTableReader(String id, String mapperData) throws SQLException, ClassNotFoundException, IOException {
+        TableReader<T> resultMapper = (TableReader<T>) this.entityReaderMap.get(id);
+        if (resultMapper == null) {
+            synchronized (this) {
+                resultMapper = (TableReader<T>) this.entityReaderMap.get(id);
+                if (resultMapper != null) {
+                    return resultMapper;
+                }
+                //
+                Node refData = null;
+                try {
+                    DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                    Document document = documentBuilder.parse(new InputSource(new StringReader(mapperData)));
+                    refData = document.getDocumentElement();
+                } catch (SAXException | ParserConfigurationException e) {
+                    throw new IOException(e);
+                }
+                //
+                XmlResolveTableMapping resolveTableMapping = new XmlResolveTableMapping();
+                TableMapping tableMapping = resolveTableMapping.resolveTableMapping(refData, this.classLoader, this.typeRegistry, this.metaService);
+                if (tableMapping == null) {
+                    return null;
+                }
+                //
+                Class<T> entityType = (Class<T>) tableMapping.entityType();
+                resultMapper = new DefaultTableReader<>(entityType, tableMapping);
+                this.entityReaderMap.put(id, resultMapper);
+            }
+        }
+        return resultMapper;
+    }
+
+    /** 从类型中解析 TableMapping */
+    public TableMapping resolveTableMapping(String id, String mapperData) throws SQLException, IOException, ClassNotFoundException {
+        TableReader<?> tableReader = resolveTableReader(id, mapperData);
+        if (tableReader != null) {
+            return tableReader.getTableMapping();
+        }
+        return null;
     }
 }

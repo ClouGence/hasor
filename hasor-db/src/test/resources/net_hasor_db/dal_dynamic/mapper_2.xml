@@ -3,7 +3,7 @@
 <mapper namespace="com.clougence.clouddm.console.web.mapper.BlobResourceMapper">
 
     <resultMap id="blobResourceDO" type="com.clougence.clouddm.console.web.model.entity.BlobResourceDO" autoMapping="true">
-        <result column="id" property="id"/>
+        <id column="id" property="id"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="instance_id" property="instanceId"/>
@@ -12,6 +12,4 @@
         <result column="blob_type" property="blobType" javaType="com.clougence.clouddm.console.web.constants.SecurityFileType"/>
         <result column="content" property="content"/>
     </resultMap>
-
-
 </mapper>

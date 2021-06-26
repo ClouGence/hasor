@@ -74,8 +74,8 @@
                         <phase>compile</phase>
                         <configuration>
                             <target>
-                                <copy file="${basedir}/target/generated-sources/antlr4/DataQLLexer.tokens" tofile="${basedir}/src/main/antlr4/net/hasor/dataql/parser/DataQLLexer.tokens" />
-                                <copy file="${basedir}/target/generated-sources/antlr4/DataQLParser.tokens" tofile="${basedir}/src/main/antlr4/net/hasor/dataql/parser/DataQLParser.tokens" />
+                                <copy file="${basedir}/target/generated-sources/antlr4/DataQLLexer.tokens" tofile="${basedir}/src/main/antlr4/net/hasor/dataql/parser/DataQLLexer.tokens"/>
+                                <copy file="${basedir}/target/generated-sources/antlr4/DataQLParser.tokens" tofile="${basedir}/src/main/antlr4/net/hasor/dataql/parser/DataQLParser.tokens"/>
                             </target>
                         </configuration>
                         <goals>

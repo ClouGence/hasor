@@ -41,7 +41,7 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
      * @see String#toLowerCase()
      */
     public LinkedCaseInsensitiveMap() {
-        this(null);
+        this(Locale.getDefault());
     }
 
     /**
@@ -79,6 +79,13 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
         super(initialCapacity);
         this.caseInsensitiveKeys = new HashMap<>(initialCapacity);
         this.locale = locale != null ? locale : Locale.getDefault();
+    }
+
+    public LinkedCaseInsensitiveMap(Map<String, V> columnMap) {
+        this(Locale.getDefault());
+        if (columnMap != null) {
+            this.putAll(columnMap);
+        }
     }
 
     @Override

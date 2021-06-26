@@ -136,7 +136,11 @@ public final class Hasor {
     /** 从资源文件中加载环境变量到 Hasor 框架中 */
     public Hasor loadVariables(String resourceName) throws IOException {
         InputStream inStream = ResourcesUtils.getResourceAsStream(resourceName);
-        return loadVariables(new InputStreamReader(inStream, Settings.DefaultCharset));
+        if (inStream != null) {
+            return loadVariables(new InputStreamReader(inStream, Settings.DefaultCharset));
+        } else {
+            return this;
+        }
     }
 
     /** 从资源文件中加载环境变量到 Hasor 框架中 */

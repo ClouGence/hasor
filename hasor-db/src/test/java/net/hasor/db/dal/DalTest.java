@@ -33,7 +33,7 @@ public class DalTest {
             // 类型处理器（可选）
             TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry();
             // ORM注册管理（可选）
-            MappingRegistry mappingRegistry = new MappingRegistry(typeHandlerRegistry, metaDataService);
+            MappingRegistry mappingRegistry = new MappingRegistry(typeHandlerRegistry, metaDataService, null);
             //
             // 两个相关的数据操作接口
             LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource, mappingRegistry);

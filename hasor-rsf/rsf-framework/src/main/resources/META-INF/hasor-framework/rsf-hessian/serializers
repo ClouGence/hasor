@@ -1,7 +1,7 @@
-java.io.File                            = net.hasor.libs.com.caucho.hessian.io.StringValueSerializer
-java.math.BigDecimal                    = net.hasor.libs.com.caucho.hessian.io.StringValueSerializer
-java.util.Locale                        = net.hasor.libs.com.caucho.hessian.io.LocaleSerializer
-javax.management.ObjectName             = net.hasor.libs.com.caucho.hessian.io.StringValueSerializer
+java.io.File                            = net.hasor.rsf.hessian.io.StringValueSerializer
+java.math.BigDecimal                    = net.hasor.rsf.hessian.io.StringValueSerializer
+java.util.Locale                        = net.hasor.rsf.hessian.io.LocaleSerializer
+javax.management.ObjectName             = net.hasor.rsf.hessian.io.StringValueSerializer
 
-net.hasor.libs.com.caucho.hessian.io.HessianRemoteObject = net.hasor.libs.com.caucho.hessian.io.RemoteSerializer
-#com.caucho.burlap.io.BurlapRemoteObject                 = net.hasor.libs.com.caucho.hessian.io.RemoteSerializer
+net.hasor.rsf.hessian.io.HessianRemoteObject = net.hasor.rsf.hessian.io.RemoteSerializer
+#com.caucho.burlap.io.BurlapRemoteObject     = net.hasor.rsf.hessian.io.RemoteSerializer

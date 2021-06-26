@@ -163,4 +163,12 @@ public class TableMappingDef implements TableMapping {
         List<ColumnMapping> propertyNames = this.columnNameMapping.computeIfAbsent(columnName, k -> new ArrayList<>());
         propertyNames.add(mapping);
     }
+
+    public void clearMapping() {
+        this.propertyNames.clear();
+        this.propertyMapping.clear();
+        this.mappingList.clear();
+        this.columnNames.clear();
+        this.columnNameMapping.clear();
+    }
 }
