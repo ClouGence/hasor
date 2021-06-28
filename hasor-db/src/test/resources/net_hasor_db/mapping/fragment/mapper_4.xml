@@ -1,0 +1,9 @@
+<resultMap id="mapper_4" type="net.hasor.test.db.dto.TbUser2">
+    <id column="user_uuid" property="uid"/>
+    <result column="name" property="name"/>
+    <result column="login_name" property="account"/>
+    <result column="login_password" property="password"/>
+    <result column="email" property="mail"/>
+    <result column="index" property="index" javaType="int"/>
+    <result column="register_time" property="createTime"/>
+</resultMap>

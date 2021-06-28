@@ -26,5 +26,5 @@ import java.sql.SQLException;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface ResolveTableMapping<T> {
-    public TableMapping resolveTableMapping(T refData, ClassLoader classLoader, TypeHandlerRegistry typeRegistry, MetaDataService metaDataService) throws SQLException, ClassNotFoundException;
+    public TableMapping resolveTableMapping(T refData, ClassLoader classLoader, TypeHandlerRegistry typeRegistry, MetaDataService metaDataService, MappingOptions options) throws SQLException, ClassNotFoundException;
 }

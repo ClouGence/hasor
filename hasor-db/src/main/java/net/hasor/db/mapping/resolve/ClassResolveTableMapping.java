@@ -33,6 +33,8 @@ import java.lang.reflect.Field;
 import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 通过 Class 来解析 TableMapping
@@ -41,12 +43,14 @@ import java.util.*;
  */
 public class ClassResolveTableMapping extends AbstractResolveTableMapping implements ResolveTableMapping<Class<?>> {
     @Override
-    public TableMappingDef resolveTableMapping(Class<?> entityType, ClassLoader classLoader, TypeHandlerRegistry typeRegistry, MetaDataService metaDataService) throws SQLException {
-        TableMappingDef def = this.parserTable(entityType, metaDataService);
-        return parserProperty(def, typeRegistry, metaDataService);
+    public TableMappingDef resolveTableMapping(Class<?> entityType, ClassLoader classLoader, TypeHandlerRegistry typeRegistry, MetaDataService metaDataService, MappingOptions options) throws SQLException {
+        options = (options == null) ? new MappingOptions() : options;
+        options = new MappingOptions(options);
+        TableMappingDef def = this.parserTable(entityType, metaDataService, options);
+        return parserProperty(def, typeRegistry, metaDataService, options);
     }
 
-    public TableMappingDef parserTable(Class<?> entityType, MetaDataService metaDataService) throws SQLException {
+    public TableMappingDef parserTable(Class<?> entityType, MetaDataService metaDataService, MappingOptions options) throws SQLException {
         boolean useDelimited;
         CaseSensitivityType caseSensitivity;
         TableMappingDef def = new TableMappingDef(entityType);
@@ -54,6 +58,9 @@ public class ClassResolveTableMapping extends AbstractResolveTableMapping implem
         // build MappingDef
         if (entityType.isAnnotationPresent(Table.class)) {
             Table defTable = entityType.getAnnotation(Table.class);
+            if (!options.isMapUnderscoreToCamelCase()) {
+                options.setMapUnderscoreToCamelCase(defTable.mapUnderscoreToCamelCase());
+            }
             String catalog = defTable.catalog();
             String schema = defTable.schema();
             String table = StringUtils.isNotBlank(defTable.name()) ? defTable.name() : defTable.value();
@@ -67,7 +74,7 @@ public class ClassResolveTableMapping extends AbstractResolveTableMapping implem
         } else {
             def.setCatalog(null);
             def.setSchema(null);
-            def.setTable(entityType.getSimpleName());
+            def.setTable(humpToLine(entityType.getSimpleName(), options.isMapUnderscoreToCamelCase()));
             def.setTableType(null);
             def.setAutoProperty(true);
             useDelimited = false;
@@ -119,7 +126,7 @@ public class ClassResolveTableMapping extends AbstractResolveTableMapping implem
         return def;
     }
 
-    private TableMappingDef parserProperty(TableMappingDef def, TypeHandlerRegistry typeRegistry, MetaDataService metaDataService) throws SQLException {
+    private TableMappingDef parserProperty(TableMappingDef def, TypeHandlerRegistry typeRegistry, MetaDataService metaDataService, MappingOptions options) throws SQLException {
         // collect @Property and ColumnDef
         Map<String, WrapProperty> propertyInfoMap = matchProperty(def, def.isAutoProperty(), typeRegistry);
         Map<String, ColumnDef> columnDefMap = null;
@@ -129,7 +136,7 @@ public class ClassResolveTableMapping extends AbstractResolveTableMapping implem
         //
         for (String propertyName : propertyInfoMap.keySet()) {
             WrapProperty wrapProperty = propertyInfoMap.get(propertyName);
-            String columnName = getColumnName(propertyName, propertyInfoMap);
+            String columnName = getColumnName(propertyName, propertyInfoMap, options);
             columnName = formatCaseSensitivity(columnName, def.getCaseSensitivity());
             //
             ColumnDef columnDef = null;
@@ -238,7 +245,7 @@ public class ClassResolveTableMapping extends AbstractResolveTableMapping implem
         return propertyMap;
     }
 
-    private static String getColumnName(String propertyName, Map<String, WrapProperty> propertyInfoMap) {
+    private static String getColumnName(String propertyName, Map<String, WrapProperty> propertyInfoMap, MappingOptions options) {
         WrapProperty wrapProperty = propertyInfoMap.get(propertyName);
         if (wrapProperty != null) {
             Column column = wrapProperty.column;
@@ -251,10 +258,31 @@ public class ClassResolveTableMapping extends AbstractResolveTableMapping implem
             if (StringUtils.isBlank(columnName)) {
                 columnName = propertyName;
             }
-            return columnName;
+            return humpToLine(columnName, options.isMapUnderscoreToCamelCase());
         } else {
-            return propertyName;
+            return humpToLine(propertyName, options.isMapUnderscoreToCamelCase());
         }
+    }
+
+    private static final Pattern humpPattern = Pattern.compile("[A-Z]");
+
+    private static String humpToLine(String str, boolean mapUnderscoreToCamelCase) {
+        if (StringUtils.isBlank(str) || !mapUnderscoreToCamelCase) {
+            return str;
+        }
+        Matcher matcher = humpPattern.matcher(str);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            matcher.appendReplacement(sb, "_" + matcher.group(0).toLowerCase());
+        }
+        matcher.appendTail(sb);
+        //
+        String strString = sb.toString();
+        strString = strString.replaceAll("_{2,}", "_");
+        if (strString.charAt(0) == '_') {
+            strString = strString.substring(1);
+        }
+        return strString;
     }
 
     private static class WrapProperty {

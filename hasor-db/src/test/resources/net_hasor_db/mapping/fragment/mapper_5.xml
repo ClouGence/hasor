@@ -1,0 +1,1 @@
+<resultMap id="mapper_5" type="net.hasor.test.db.dto.TbUser2" autoMapping="true" mapUnderscoreToCamelCase="true"/>

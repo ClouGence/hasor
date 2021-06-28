@@ -23,6 +23,7 @@ import net.hasor.db.jdbc.RowMapper;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.mapping.TableMapping;
 import net.hasor.db.mapping.reader.TableReader;
+import net.hasor.db.mapping.resolve.MappingOptions;
 import net.hasor.utils.ExceptionUtils;
 
 import java.sql.DatabaseMetaData;
@@ -51,7 +52,7 @@ public abstract class AbstractExecute<T> {
         try {
             this.exampleType = exampleType;
             this.jdbcTemplate = jdbcTemplate;
-            this.exampleTableReader = jdbcTemplate.getMappingRegistry().resolveTableReader(exampleType);
+            this.exampleTableReader = jdbcTemplate.getMappingRegistry().loadReader(exampleType, new MappingOptions());
             this.exampleRowMapper = this.exampleTableReader::readRow;
             this.exampleTableMapping = this.exampleTableReader.getTableMapping();
         } catch (Exception e) {
@@ -77,7 +78,7 @@ public abstract class AbstractExecute<T> {
         try {
             this.exampleType = exampleType;
             this.jdbcTemplate = jdbcTemplate;
-            this.exampleTableReader = jdbcTemplate.getMappingRegistry().resolveTableReader(exampleType);
+            this.exampleTableReader = jdbcTemplate.getMappingRegistry().loadReader(exampleType, new MappingOptions());
             this.exampleRowMapper = this.exampleTableReader::readRow;
             this.exampleTableMapping = this.exampleTableReader.getTableMapping();
         } catch (Exception e) {

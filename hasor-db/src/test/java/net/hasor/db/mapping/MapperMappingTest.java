@@ -15,11 +15,9 @@
  */
 package net.hasor.db.mapping;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.utils.ResourcesUtils;
-import net.hasor.utils.io.IOUtils;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.sql.JDBCType;
 
 /***
@@ -27,28 +25,18 @@ import java.sql.JDBCType;
  * @version : 2014-1-13
  * @author 赵永春 (zyc@hasor.net)
  */
-public class XmlMappingTest extends AbstractDbTest {
-    private String loadString(String queryConfig) throws IOException {
-        return IOUtils.readToString(ResourcesUtils.getResourceAsStream(queryConfig), "UTF-8");
+public class MapperMappingTest extends AbstractDbTest {
+    private MappingRegistry mappingRegistry;
+
+    @Before
+    public void beforeTest() throws Exception {
+        this.mappingRegistry = MappingRegistry.newInstance();
+        this.mappingRegistry.loadMapper("/net_hasor_db/mapping/mapper_1.xml");
     }
 
     @Test
-    public void mapperTest_01() throws Exception {
-        String mapperString1 = loadString("/net_hasor_db/mapping/fragment/mapper_1_1.xml");
-        TableMapping tableMapping1_1 = MappingRegistry.DEFAULT.loadMapping("mapperTest_01", mapperString1);
-        TableMapping tableMapping1_2 = MappingRegistry.DEFAULT.loadMapping("mapperTest_01", mapperString1);
-        assert tableMapping1_1 == tableMapping1_2;
-        //
-        String mapperString2 = loadString("/net_hasor_db/mapping/fragment/mapper_1_2.xml");
-        TableMapping tableMapping2_1 = MappingRegistry.DEFAULT.loadMapping("mapperTest_01", mapperString2);
-        TableMapping tableMapping2_2 = MappingRegistry.DEFAULT.loadMapping("mapperTest_01", mapperString2);
-        assert tableMapping2_1 != tableMapping2_2;
-    }
-
-    @Test
-    public void mapperTest_02() throws Exception {
-        String mapperString = loadString("/net_hasor_db/mapping/fragment/mapper_2.xml");
-        TableMapping tableMapping = MappingRegistry.DEFAULT.loadMapping("mapperTest_02", mapperString);
+    public void mapperTest_01() {
+        TableMapping tableMapping = mappingRegistry.getMapping("resultMap_test.resultMap_1");
         //
         assert tableMapping.getMapping("uid").getName().equals("userUUID");
         assert tableMapping.getMapping("name").getName().equals("name");
@@ -65,9 +53,8 @@ public class XmlMappingTest extends AbstractDbTest {
     }
 
     @Test
-    public void mapperTest_03() throws Exception {
-        String mapperString = loadString("/net_hasor_db/mapping/fragment/mapper_3.xml");
-        TableMapping tableMapping = MappingRegistry.DEFAULT.loadMapping("mapperTest_03", mapperString);
+    public void mapperTest_02() {
+        TableMapping tableMapping = mappingRegistry.getMapping("resultMap_test.resultMap_2");
         //
         assert tableMapping.getMapping("uid").getName().equals("uid");
         assert tableMapping.getMapping("name").getName().equals("name");
@@ -84,9 +71,8 @@ public class XmlMappingTest extends AbstractDbTest {
     }
 
     @Test
-    public void mapperTest_04() throws Exception {
-        String mapperString = loadString("/net_hasor_db/mapping/fragment/mapper_4.xml");
-        TableMapping tableMapping = MappingRegistry.DEFAULT.loadMapping("mapperTest_04", mapperString);
+    public void mapperTest_03() {
+        TableMapping tableMapping = mappingRegistry.getMapping("resultMap_test.resultMap_3");
         //
         assert tableMapping.getMapping("uid").getName().equals("user_uuid");
         assert tableMapping.getMapping("name").getName().equals("name");
@@ -103,9 +89,8 @@ public class XmlMappingTest extends AbstractDbTest {
     }
 
     @Test
-    public void mapperTest_05() throws Exception {
-        String mapperString = loadString("/net_hasor_db/mapping/fragment/mapper_5.xml");
-        TableMapping tableMapping = MappingRegistry.DEFAULT.loadMapping("mapperTest_05", mapperString);
+    public void mapperTest_04() {
+        TableMapping tableMapping = mappingRegistry.getMapping("resultMap_test.resultMap_4");
         //
         assert tableMapping.getMapping("uid").getName().equals("uid");
         assert tableMapping.getMapping("name").getName().equals("name");

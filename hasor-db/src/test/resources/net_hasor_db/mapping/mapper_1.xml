@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="resultMap_test">
+    <resultMap id="resultMap_1" type="net.hasor.test.db.dto.TbUser" autoMapping="true"/>
+
+    <resultMap id="resultMap_2" type="net.hasor.test.db.dto.TbUser2" autoMapping="true"/>
+
+    <resultMap id="resultMap_3" type="net.hasor.test.db.dto.TbUser2">
+        <id column="user_uuid" property="uid"/>
+        <result column="name" property="name"/>
+        <result column="login_name" property="account"/>
+        <result column="login_password" property="password"/>
+        <result column="email" property="mail"/>
+        <result column="index" property="index" javaType="int"/>
+        <result column="register_time" property="createTime"/>
+    </resultMap>
+
+    <resultMap id="resultMap_4" type="net.hasor.test.db.dto.TbUser2" autoMapping="true" mapUnderscoreToCamelCase="true"/>
+</mapper>

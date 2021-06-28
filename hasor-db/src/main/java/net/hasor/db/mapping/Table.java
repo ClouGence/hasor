@@ -49,4 +49,7 @@ public @interface Table {
 
     /** 是否将类型下的所有字段都自动和数据库中的列进行映射匹配，true 表示自动。false 表示必须通过 @Column 注解声明。 */
     public boolean autoMapping() default true;
+
+    /** 表名和属性名，根据驼峰规则转换为带有下划线的表名和列名。 */
+    public boolean mapUnderscoreToCamelCase() default false;
 }

@@ -17,6 +17,7 @@ package net.hasor.db.jdbc.mapper;
 import net.hasor.db.jdbc.RowMapper;
 import net.hasor.db.mapping.MappingRegistry;
 import net.hasor.db.mapping.reader.TableReader;
+import net.hasor.db.mapping.resolve.MappingOptions;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,7 +38,7 @@ public class MappingRowMapper<T> implements RowMapper<T> {
 
     /** Create a new ResultMapper.*/
     public MappingRowMapper(Class<T> mapperClass, MappingRegistry handlerRegistry) throws SQLException {
-        this(handlerRegistry.resolveTableReader(mapperClass));
+        this(handlerRegistry.loadReader(mapperClass, new MappingOptions()));
     }
 
     public MappingRowMapper(TableReader<T> tableReader) {

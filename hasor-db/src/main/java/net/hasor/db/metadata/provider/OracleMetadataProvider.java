@@ -95,17 +95,15 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
 
     @Override
     public TableDef searchTable(String catalog, String schema, String table) throws SQLException {
-        String dbName = StringUtils.isNotBlank(catalog) ? catalog : schema;
-        if (StringUtils.isNotBlank(dbName)) {
-            dbName = getCurrentSchema();
+        if (StringUtils.isNotBlank(schema)) {
+            schema = getCurrentSchema();
         }
-        return getTable(dbName, table);
+        return getTable(schema, table);
     }
 
     @Override
     public Map<String, ColumnDef> getColumnMap(String catalog, String schema, String table) throws SQLException {
-        String dbName = StringUtils.isNotBlank(catalog) ? catalog : schema;
-        List<OracleColumn> columns = this.getColumns(dbName, table);
+        List<OracleColumn> columns = this.getColumns(schema, table);
         if (columns != null) {
             return columns.stream().collect(Collectors.toMap(OracleColumn::getName, o -> o));
         } else {

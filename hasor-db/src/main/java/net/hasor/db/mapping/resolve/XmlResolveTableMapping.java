@@ -47,22 +47,17 @@ public class XmlResolveTableMapping extends AbstractResolveTableMapping implemen
     private final ClassResolveTableMapping classResolveTableMapping = new ClassResolveTableMapping();
 
     @Override
-    public TableMapping resolveTableMapping(Node refData, ClassLoader classLoader, TypeHandlerRegistry typeRegistry, MetaDataService metaDataService) throws SQLException, ClassNotFoundException {
+    public TableMapping resolveTableMapping(Node refData, ClassLoader classLoader, TypeHandlerRegistry typeRegistry, MetaDataService metaDataService, MappingOptions options) throws SQLException, ClassNotFoundException {
         NamedNodeMap nodeAttributes = refData.getAttributes();
-        Node idNode = nodeAttributes.getNamedItem("id");
         Node typeNode = nodeAttributes.getNamedItem("type");
-        Node autoMappingNode = nodeAttributes.getNamedItem("autoMapping");
-        String id = (idNode != null) ? idNode.getNodeValue() : null;
         String type = (typeNode != null) ? typeNode.getNodeValue() : null;
-        String autoMapping = (autoMappingNode != null) ? autoMappingNode.getNodeValue() : null;
         //
         Class<?> tableType = ClassUtils.getClass(classLoader, type);
-        id = StringUtils.isBlank(id) ? tableType.getName() : id;
         //
-        if (Boolean.TRUE.equals(ConverterUtils.convert(autoMapping, Boolean.TYPE))) {
-            return this.classResolveTableMapping.resolveTableMapping(tableType, classLoader, typeRegistry, metaDataService);
+        if (options.isAutoMapping()) {
+            return this.classResolveTableMapping.resolveTableMapping(tableType, classLoader, typeRegistry, metaDataService, options);
         } else {
-            TableMappingDef mappingByType = this.classResolveTableMapping.parserTable(tableType, metaDataService);
+            TableMappingDef mappingByType = this.classResolveTableMapping.parserTable(tableType, metaDataService, options);
             return loadTableMappingByConfig(mappingByType, refData, classLoader, typeRegistry, metaDataService);
         }
     }
@@ -130,7 +125,7 @@ public class XmlResolveTableMapping extends AbstractResolveTableMapping implemen
         }
         //
         JDBCType columnJdbcType = null;
-        if (StringUtils.isNotBlank(javaType)) {
+        if (StringUtils.isNotBlank(jdbcType)) {
             columnJdbcType = (JDBCType) ConverterUtils.convert(jdbcType, JDBCType.class);
         } else {
             if (columnMeta != null) {
@@ -163,7 +158,6 @@ public class XmlResolveTableMapping extends AbstractResolveTableMapping implemen
             columnDef.setColumnType(columnMeta.getColumnType());
             columnDef.setPrimaryKey(columnMeta.isPrimaryKey());
         }
-        //
         //
         ColumnMappingDef mappingDef = new ColumnMappingDef(property, columnJavaType, columnDef);
         mappingDef.setJdbcType(columnDef.getJdbcType());

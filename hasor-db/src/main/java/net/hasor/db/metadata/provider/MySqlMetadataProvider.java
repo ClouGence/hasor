@@ -88,17 +88,15 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements M
 
     @Override
     public TableDef searchTable(String catalog, String schema, String table) throws SQLException {
-        String dbName = StringUtils.isNotBlank(catalog) ? catalog : schema;
-        if (StringUtils.isNotBlank(dbName)) {
-            dbName = getCurrentCatalog();
+        if (StringUtils.isNotBlank(schema)) {
+            schema = getCurrentCatalog();
         }
-        return getTable(dbName, table);
+        return getTable(schema, table);
     }
 
     @Override
     public Map<String, ColumnDef> getColumnMap(String catalog, String schema, String table) throws SQLException {
-        String dbName = StringUtils.isNotBlank(catalog) ? catalog : schema;
-        List<MySqlColumn> columns = this.getColumns(dbName, table);
+        List<MySqlColumn> columns = this.getColumns(schema, table);
         if (columns != null) {
             return columns.stream().collect(Collectors.toMap(MySqlColumn::getName, o -> o));
         } else {

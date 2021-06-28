@@ -1,4 +1,4 @@
-<resultMap id="blobResourceDO" type="net.hasor.test.db.dto.TB_User" autoMapping="true">
+<resultMap id="blobResourceDO" type="net.hasor.test.db.dto.TB_User" autoMapping="true" overwrite="false">
     <id column="id" property="id"/>
     <result column="gmt_create" property="gmtCreate"/>
     <result column="gmt_modified" property="gmtModified"/>

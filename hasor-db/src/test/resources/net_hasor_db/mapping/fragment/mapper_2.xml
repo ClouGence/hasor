@@ -1,0 +1,1 @@
+<resultMap id="tbUser" type="net.hasor.test.db.dto.TbUser" autoMapping="true"/>

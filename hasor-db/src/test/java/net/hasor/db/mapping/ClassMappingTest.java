@@ -39,7 +39,7 @@ public class ClassMappingTest extends AbstractDbTest {
         try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             //
-            TableReader<TbUser> tableReader = MappingRegistry.DEFAULT.resolveTableReader(TbUser.class);
+            TableReader<TbUser> tableReader = MappingRegistry.DEFAULT.loadReader(TbUser.class, null);
             List<TbUser> tbUsers = jdbcTemplate.query("select * from tb_user", new RowMapperResultSetExtractor<>(tableReader::readRow));
             assert tbUsers.size() == 3;
             assert TestUtils.beanForData1().getUserUUID().equals(tbUsers.get(0).getUid());
@@ -50,7 +50,7 @@ public class ClassMappingTest extends AbstractDbTest {
 
     @Test
     public void testBeanRowMapper_1() throws SQLException {
-        TableReader<TbUser> tableReader = MappingRegistry.DEFAULT.resolveTableReader(TbUser.class);
+        TableReader<TbUser> tableReader = MappingRegistry.DEFAULT.loadReader(TbUser.class, null);
         //        TypeHandlerRegistry registry = TypeHandlerRegistry.DEFAULT;
         //        MappingRegistry handler = new MappingRegistry(registry);
         //        MappingRowMapper<TbUser> resultMapper = handler.resolveMapper(TbUser.class);

@@ -1,0 +1,10 @@
+<resultMap id="blobResourceDO" type="net.hasor.test.db.dto.TB_User" autoMapping="true" overwrite="true">
+    <id column="id" property="id"/>
+    <result column="gmt_create" property="gmtCreate"/>
+    <result column="gmt_modified" property="gmtModified"/>
+    <result column="instance_id" property="instanceId"/>
+    <result column="owner_name" property="ownerName"/>
+    <result column="owner_type" property="ownerType" javaType="com.clougence.clouddm.console.web.constants.ResourceType"/>
+    <result column="blob_type" property="blobType" javaType="com.clougence.clouddm.console.web.constants.SecurityFileType"/>
+    <result column="content" property="content"/>
+</resultMap>

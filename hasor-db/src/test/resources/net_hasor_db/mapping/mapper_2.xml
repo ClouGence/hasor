@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.clougence.clouddm.console.web.mapper.BlobResourceMapper">
-
+<mapper namespace="net.hasor.test.db.dal.Mapper1Dal">
     <resultMap id="blobResourceDO" type="com.clougence.clouddm.console.web.model.entity.BlobResourceDO" autoMapping="true">
         <id column="id" property="id"/>
         <result column="gmt_create" property="gmtCreate"/>
@@ -12,4 +11,28 @@
         <result column="blob_type" property="blobType" javaType="com.clougence.clouddm.console.web.constants.SecurityFileType"/>
         <result column="content" property="content"/>
     </resultMap>
+    
+    <sql id="projectInfoDO_allColumns">
+        id
+        , owner_id
+    </sql>
+
+    <select id="testBind" resultType="net.hasor.test.db.dto.TbUser">
+        <bind name="abc" value="sellerId + 'abc'"/>
+        SELECT * FROM console_job
+        WHERE aac = #{abc}
+    </select>
+
+    <select id="testChoose" resultType="net.hasor.test.db.dto.TbUser">
+        select * from t_blog
+        <where>
+            <choose>
+                <when test="title != null">and title = #{title}</when>
+                <when test="content != null">and content = #{content}</when>
+                <otherwise>and owner = "owner1"</otherwise>
+            </choose>
+        </where>
+    </select>
+
+
 </mapper>
