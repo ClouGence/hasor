@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.mapping;
+import net.hasor.db.mapping.resolve.MappingOptions;
 import net.hasor.test.db.AbstractDbTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,13 +31,13 @@ public class MapperMappingTest extends AbstractDbTest {
 
     @Before
     public void beforeTest() throws Exception {
-        this.mappingRegistry = MappingRegistry.newInstance();
-        this.mappingRegistry.loadMapper("/net_hasor_db/mapping/mapper_1.xml");
+        this.mappingRegistry = new MappingRegistry();
+        this.mappingRegistry.loadMapper("/net_hasor_db/mapping/mapper_1.xml", new MappingOptions());
     }
 
     @Test
     public void mapperTest_01() {
-        TableMapping tableMapping = mappingRegistry.getMapping("resultMap_test.resultMap_1");
+        TableMapping tableMapping = mappingRegistry.getTableReader("resultMap_test", "resultMap_1").getTableMapping();
         //
         assert tableMapping.getMapping("uid").getName().equals("userUUID");
         assert tableMapping.getMapping("name").getName().equals("name");
@@ -54,7 +55,7 @@ public class MapperMappingTest extends AbstractDbTest {
 
     @Test
     public void mapperTest_02() {
-        TableMapping tableMapping = mappingRegistry.getMapping("resultMap_test.resultMap_2");
+        TableMapping tableMapping = mappingRegistry.getTableReader("resultMap_test", "resultMap_2").getTableMapping();
         //
         assert tableMapping.getMapping("uid").getName().equals("uid");
         assert tableMapping.getMapping("name").getName().equals("name");
@@ -72,7 +73,7 @@ public class MapperMappingTest extends AbstractDbTest {
 
     @Test
     public void mapperTest_03() {
-        TableMapping tableMapping = mappingRegistry.getMapping("resultMap_test.resultMap_3");
+        TableMapping tableMapping = mappingRegistry.getTableReader("resultMap_test", "resultMap_3").getTableMapping();
         //
         assert tableMapping.getMapping("uid").getName().equals("user_uuid");
         assert tableMapping.getMapping("name").getName().equals("name");
@@ -90,7 +91,7 @@ public class MapperMappingTest extends AbstractDbTest {
 
     @Test
     public void mapperTest_04() {
-        TableMapping tableMapping = mappingRegistry.getMapping("resultMap_test.resultMap_4");
+        TableMapping tableMapping = mappingRegistry.getTableReader("resultMap_test", "resultMap_4").getTableMapping();
         //
         assert tableMapping.getMapping("uid").getName().equals("uid");
         assert tableMapping.getMapping("name").getName().equals("name");

@@ -54,7 +54,7 @@ public class XmlResolveTableMapping extends AbstractResolveTableMapping implemen
         //
         Class<?> tableType = ClassUtils.getClass(classLoader, type);
         //
-        if (options.isAutoMapping()) {
+        if (options.getAutoMapping() != null && options.getAutoMapping()) {
             return this.classResolveTableMapping.resolveTableMapping(tableType, classLoader, typeRegistry, metaDataService, options);
         } else {
             TableMappingDef mappingByType = this.classResolveTableMapping.parserTable(tableType, metaDataService, options);

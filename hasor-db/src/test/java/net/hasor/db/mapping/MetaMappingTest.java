@@ -70,8 +70,8 @@ public class MetaMappingTest extends AbstractMetadataServiceSupplierTest<MySqlMe
 
     @Test
     public void metaTest_02() throws Exception {
-        MappingRegistry mappingRegistry = MappingRegistry.newInstance(this.repository);
-        TableMapping tableMapping = mappingRegistry.loadMapping(T1.class, new MappingOptions());
+        MappingRegistry mappingRegistry = new MappingRegistry(this.repository);
+        TableMapping tableMapping = mappingRegistry.loadReader(T1.class, new MappingOptions()).getTableMapping();
         //
         assert tableMapping.getMapping("t1S1").getName().equals("t1_s1");
         assert tableMapping.getMapping("t1S2").getName().equals("t1_s2");

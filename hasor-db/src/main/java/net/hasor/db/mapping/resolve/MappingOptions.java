@@ -8,9 +8,9 @@ public class MappingOptions {
     public static String  OPT_KEY_AUTO_MAPPING = "autoMapping";
     public static String  OPT_KEY_OVERWRITE    = "overwrite";
     //
-    private       boolean overwrite;
-    private       boolean autoMapping;
-    private       boolean mapUnderscoreToCamelCase;
+    private       Boolean overwrite;
+    private       Boolean autoMapping;
+    private       Boolean mapUnderscoreToCamelCase;
 
     public MappingOptions() {
     }
@@ -23,31 +23,34 @@ public class MappingOptions {
         }
     }
 
-    public boolean isOverwrite() {
+    public Boolean getOverwrite() {
         return this.overwrite;
     }
 
-    public void setOverwrite(boolean overwrite) {
+    public void setOverwrite(Boolean overwrite) {
         this.overwrite = overwrite;
     }
 
-    public boolean isAutoMapping() {
+    public Boolean getAutoMapping() {
         return this.autoMapping;
     }
 
-    public void setAutoMapping(boolean autoMapping) {
+    public void setAutoMapping(Boolean autoMapping) {
         this.autoMapping = autoMapping;
     }
 
-    public boolean isMapUnderscoreToCamelCase() {
+    public Boolean getMapUnderscoreToCamelCase() {
         return this.mapUnderscoreToCamelCase;
     }
 
-    public void setMapUnderscoreToCamelCase(boolean mapUnderscoreToCamelCase) {
+    public void setMapUnderscoreToCamelCase(Boolean mapUnderscoreToCamelCase) {
         this.mapUnderscoreToCamelCase = mapUnderscoreToCamelCase;
     }
 
     public static MappingOptions resolveOptions(Node refData) {
+        if (refData == null) {
+            return new MappingOptions();
+        }
         NamedNodeMap nodeAttributes = refData.getAttributes();
         Node overwriteNode = nodeAttributes.getNamedItem(OPT_KEY_OVERWRITE);
         Node autoMappingNode = nodeAttributes.getNamedItem(OPT_KEY_AUTO_MAPPING);
@@ -57,9 +60,23 @@ public class MappingOptions {
         String mapUnderscoreToCamelCase = (mapUnderscoreToCamelCaseNode != null) ? mapUnderscoreToCamelCaseNode.getNodeValue() : null;
         //
         MappingOptions options = new MappingOptions();
-        options.overwrite = Boolean.TRUE.equals(ConverterUtils.convert(overwrite, Boolean.TYPE));
-        options.autoMapping = Boolean.TRUE.equals(ConverterUtils.convert(autoMapping, Boolean.TYPE));
-        options.mapUnderscoreToCamelCase = Boolean.TRUE.equals(ConverterUtils.convert(mapUnderscoreToCamelCase, Boolean.TYPE));
+        options.overwrite = (overwrite == null) ? null : Boolean.TRUE.equals(ConverterUtils.convert(overwrite, Boolean.TYPE));
+        options.autoMapping = (autoMapping == null) ? null : Boolean.TRUE.equals(ConverterUtils.convert(autoMapping, Boolean.TYPE));
+        options.mapUnderscoreToCamelCase = (mapUnderscoreToCamelCase == null) ? null : Boolean.TRUE.equals(ConverterUtils.convert(mapUnderscoreToCamelCase, Boolean.TYPE));
+        return options;
+    }
+
+    public static MappingOptions resolveOptions(Node refData, MappingOptions defaultOptions) {
+        MappingOptions options = resolveOptions(refData);
+        if (options.overwrite == null) {
+            options.overwrite = defaultOptions.overwrite;
+        }
+        if (options.autoMapping == null) {
+            options.autoMapping = defaultOptions.autoMapping;
+        }
+        if (options.mapUnderscoreToCamelCase == null) {
+            options.mapUnderscoreToCamelCase = defaultOptions.mapUnderscoreToCamelCase;
+        }
         return options;
     }
 }

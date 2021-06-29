@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,38 +46,33 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MappingRegistry {
-    public final static MappingRegistry DEFAULT = new MappingRegistry();
-
-    public static MappingRegistry newInstance() {
-        return new MappingRegistry(TypeHandlerRegistry.DEFAULT, null, Thread.currentThread().getContextClassLoader());
-    }
-
-    public static MappingRegistry newInstance(MetaDataService metaService) {
-        return new MappingRegistry(TypeHandlerRegistry.DEFAULT, metaService, Thread.currentThread().getContextClassLoader());
-    }
-
-    public static MappingRegistry newInstance(TypeHandlerRegistry typeRegistry) {
-        return new MappingRegistry(typeRegistry, null, Thread.currentThread().getContextClassLoader());
-    }
-
-    public static MappingRegistry newInstance(ClassLoader classLoader, MetaDataService metaService, TypeHandlerRegistry typeRegistry) {
-        return new MappingRegistry(typeRegistry, metaService, classLoader);
-    }
-
-    private final ClassLoader                 classLoader;
-    private final TypeHandlerRegistry         typeRegistry;
-    private final MetaDataService             metaService;
-    private final Map<String, TableReader<?>> entityReaderMap;
+    public final static MappingRegistry                          DEFAULT       = new MappingRegistry();
+    private final       ClassLoader                              classLoader;
+    private final       TypeHandlerRegistry                      typeRegistry;
+    private final       MetaDataService                          metaService;
+    private final       Map<String, Map<String, TableReader<?>>> spaceSqlMap   = new ConcurrentHashMap<>();
+    private final       Map<String, TableReader<?>>              defaultSqlMap = new ConcurrentHashMap<>();
 
     public MappingRegistry() {
         this(TypeHandlerRegistry.DEFAULT, null, null);
     }
 
+    public MappingRegistry(MetaDataService metaService) {
+        this(TypeHandlerRegistry.DEFAULT, metaService, Thread.currentThread().getContextClassLoader());
+    }
+
+    public MappingRegistry(TypeHandlerRegistry typeRegistry) {
+        this(typeRegistry, null, Thread.currentThread().getContextClassLoader());
+    }
+
     public MappingRegistry(TypeHandlerRegistry typeRegistry, MetaDataService metaService, ClassLoader classLoader) {
         this.typeRegistry = Objects.requireNonNull(typeRegistry, "typeRegistry not null.");
         this.metaService = metaService;
-        this.entityReaderMap = new ConcurrentHashMap<>();
         this.classLoader = (classLoader != null) ? classLoader : Thread.currentThread().getContextClassLoader();
+    }
+
+    public ClassLoader getClassLoader() {
+        return this.classLoader;
     }
 
     public TypeHandlerRegistry getTypeRegistry() {
@@ -88,69 +84,101 @@ public class MappingRegistry {
     }
 
     /** 从类型中解析 TableMapping */
-    public TableMapping getMapping(Class<?> entityType) {
-        return getMapping(entityType.getName());
-    }
-
-    /** 从类型中解析 TableMapping */
-    public TableMapping getMapping(String mappingId) {
-        TableReader<?> tableReader = this.entityReaderMap.get(mappingId);
-        return tableReader == null ? null : tableReader.getTableMapping();
-    }
-
-    /** 从类型中解析 TableReader */
     public <T> TableReader<T> getTableReader(Class<?> entityType) {
-        return getTableReader(entityType.getName());
+        return getTableReader("", entityType.getName());
     }
 
-    /** 从类型中解析 TableReader */
+    /** 从类型中解析 TableMapping */
+    public <T> TableReader<T> getTableReader(String namespace, Class<?> entityType) {
+        return getTableReader(namespace, entityType.getName());
+    }
+
+    /** 从类型中解析 TableMapping */
     public <T> TableReader<T> getTableReader(String mappingId) {
-        TableReader<?> tableReader = this.entityReaderMap.get(mappingId);
-        return tableReader == null ? null : (TableReader<T>) tableReader.getTableMapping();
+        return getTableReader("", mappingId);
     }
 
     /** 从类型中解析 TableMapping */
-    public TableMapping loadMapping(Class<?> entityType, MappingOptions options) throws SQLException {
-        TableReader<?> tableReader = loadReader(entityType, options);
-        return (tableReader != null) ? tableReader.getTableMapping() : null;
-    }
-
-    /** 从类型中解析 TableMapping */
-    public <T> TableReader<T> loadReader(Class<T> entityType, MappingOptions options) throws SQLException {
-        options = (options == null) ? new MappingOptions() : options;
-        boolean overwrite = options.isOverwrite();
-        //
-        TableReader<T> resultMapper = (TableReader<T>) this.entityReaderMap.get(entityType);
-        if (resultMapper == null || overwrite) {
-            synchronized (this) {
-                resultMapper = (TableReader<T>) this.entityReaderMap.get(entityType);
-                if (resultMapper != null && !overwrite) {
-                    return resultMapper;
-                }
-                ClassLoader classLoader = entityType.getClassLoader();
-                if (classLoader == null) {
-                    classLoader = this.classLoader;
-                }
-                TableMapping tableMapping = new ClassResolveTableMapping().resolveTableMapping(entityType, classLoader, this.typeRegistry, this.metaService, options);
-                if (tableMapping == null) {
-                    return null;
-                }
-                resultMapper = new DefaultTableReader<>(entityType, tableMapping);
-                //
-                this.entityReaderMap.put(entityType.getName(), resultMapper);
-            }
+    public <T> TableReader<T> getTableReader(String namespace, String mappingId) {
+        if (StringUtils.isBlank(namespace)) {
+            return (TableReader<T>) this.defaultSqlMap.get(mappingId);
         }
-        return resultMapper;
+        Map<String, TableReader<?>> tableReaderMap = this.spaceSqlMap.get(namespace);
+        if (tableReaderMap == null) {
+            return null;
+        }
+        return (TableReader<T>) tableReaderMap.get(mappingId);
+    }
+
+    public <T> TableReader<T> loadReader(Class<T> entityType, MappingOptions defaultOptions) throws SQLException {
+        return this.loadReader("", entityType.getName(), entityType, defaultOptions);
+    }
+
+    public <T> TableReader<T> loadReader(String mapperData, MappingOptions defaultOptions) throws SQLException, IOException, ClassNotFoundException {
+        Element root = null;
+        try {
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document document = documentBuilder.parse(new InputSource(new StringReader(mapperData)));
+            root = document.getDocumentElement();
+        } catch (ParserConfigurationException | SAXException e) {
+            throw ExceptionUtils.toRuntime(e);
+        }
+        //
+        NamedNodeMap nodeAttributes = root.getAttributes();
+        Node idNode = nodeAttributes.getNamedItem("id");
+        String idString = (idNode != null) ? idNode.getNodeValue() : null;
+        if (StringUtils.isBlank(idString)) {
+            throw new SQLException("the <" + root.getNodeName() + "> tag is missing an ID.");
+        }
+        //
+        defaultOptions = MappingOptions.resolveOptions(root, defaultOptions);
+        return this.loadReader("", idString, root, defaultOptions, false);
+    }
+
+    public <T> TableReader<T> loadReader(String id, Class<T> entityType, MappingOptions defaultOptions) throws SQLException, IOException {
+        if (StringUtils.isBlank(id)) {
+            throw new SQLException("id is null");
+        }
+        return this.loadReader("", id, entityType, defaultOptions);
+    }
+
+    public <T> TableReader<T> loadReader(String id, String mapperData, MappingOptions defaultOptions) throws SQLException, IOException, ClassNotFoundException {
+        if (StringUtils.isBlank(id)) {
+            throw new SQLException("id is null");
+        }
+        return this.loadReader("", id, mapperData, defaultOptions);
     }
 
     /** 从类型中解析 TableMapping */
-    public TableMapping loadMapping(String id, String mapperData) throws SQLException, IOException, ClassNotFoundException {
-        TableReader<?> tableReader = loadReader(id, mapperData);
-        return (tableReader != null) ? tableReader.getTableMapping() : null;
+    public <T> TableReader<T> loadReader(String namespace, String id, Class<T> entityType, MappingOptions defaultOptions) throws SQLException {
+        if (StringUtils.isBlank(id)) {
+            throw new SQLException("id is null");
+        }
+        defaultOptions = (defaultOptions == null) ? new MappingOptions() : defaultOptions;
+        boolean overwrite = defaultOptions.getOverwrite() != null && defaultOptions.getOverwrite();
+        TableReader<T> tableReader = this.getTableReader(namespace, id);
+        if (tableReader != null && !overwrite) {
+            return tableReader;
+        }
+        //
+        ClassLoader classLoader = entityType.getClassLoader();
+        if (classLoader == null) {
+            classLoader = this.classLoader;
+        }
+        TableMapping tableMapping = new ClassResolveTableMapping().resolveTableMapping(entityType, classLoader, this.typeRegistry, this.metaService, defaultOptions);
+        if (tableMapping == null) {
+            return null;
+        }
+        tableReader = new DefaultTableReader<>(entityType, tableMapping);
+        this.saveTableReader(namespace, id, tableReader, overwrite);
+        return tableReader;
     }
 
     /** 从 Xml 中解析 TableMapping */
-    public <T> TableReader<T> loadReader(String id, String mapperData) throws SQLException, ClassNotFoundException, IOException {
+    public <T> TableReader<T> loadReader(String namespace, String id, String mapperData, MappingOptions defaultOptions) throws SQLException, ClassNotFoundException, IOException {
+        if (StringUtils.isBlank(id)) {
+            throw new SQLException("id is null");
+        }
         Node refData = null;
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -159,47 +187,46 @@ public class MappingRegistry {
         } catch (SAXException | ParserConfigurationException e) {
             throw new IOException(e);
         }
-        return loadReader(id, refData);
+        //
+        defaultOptions = MappingOptions.resolveOptions(refData, defaultOptions);
+        boolean overwrite = defaultOptions.getOverwrite() != null && defaultOptions.getOverwrite();
+        //
+        TableReader<T> tableReader = this.getTableReader(namespace, id);
+        if (tableReader != null && !overwrite) {
+            return tableReader;
+        }
+        return loadReader(namespace, id, refData, MappingOptions.resolveOptions(refData, defaultOptions), false);
     }
 
     /** 从 Xml 中解析 TableMapping */
-    public <T> TableReader<T> loadReader(String id, Node refData) throws SQLException, ClassNotFoundException {
-        MappingOptions options = MappingOptions.resolveOptions(refData);
-        boolean overwrite = options.isOverwrite();
+    public <T> TableReader<T> loadReader(String namespace, String id, Node refData, MappingOptions defaultOptions, boolean isDataQL) throws SQLException, ClassNotFoundException {
+        if (StringUtils.isBlank(id)) {
+            throw new SQLException("id is null");
+        }
+        defaultOptions = MappingOptions.resolveOptions(refData, defaultOptions);
+        boolean overwrite = defaultOptions.getOverwrite() != null && defaultOptions.getOverwrite();
+        TableReader<T> tableReader = this.getTableReader(namespace, id);
+        if (tableReader != null && !overwrite) {
+            return tableReader;
+        }
         //
-        TableReader<T> resultMapper = (TableReader<T>) this.entityReaderMap.get(id);
-        if (resultMapper == null || overwrite) {
-            synchronized (this) {
-                resultMapper = (TableReader<T>) this.entityReaderMap.get(id);
-                if (resultMapper != null && !overwrite) {
-                    return resultMapper;
-                }
-                //
-                XmlResolveTableMapping resolveTableMapping = new XmlResolveTableMapping();
-                TableMapping tableMapping = resolveTableMapping.resolveTableMapping(refData, this.classLoader, this.typeRegistry, this.metaService, options);
-                if (tableMapping == null) {
-                    return null;
-                }
-                //
-                Class<T> entityType = (Class<T>) tableMapping.entityType();
-                resultMapper = new DefaultTableReader<>(entityType, tableMapping);
-                this.entityReaderMap.put(id, resultMapper);
-            }
+        if (StringUtils.isBlank(id)) {
+            throw new SQLException("id is null");
         }
-        return resultMapper;
-    }
-
-    private InputStream loadResource(String resource) throws IOException {
-        if (this.classLoader != null) {
-            return ResourcesUtils.getResourceAsStream(this.classLoader, resource);
-        } else {
-            return ResourcesUtils.getResourceAsStream(resource);
+        XmlResolveTableMapping resolveTableMapping = new XmlResolveTableMapping();
+        TableMapping tableMapping = resolveTableMapping.resolveTableMapping(refData, this.classLoader, this.typeRegistry, this.metaService, defaultOptions);
+        if (tableMapping == null) {
+            return null;
         }
+        //
+        Class<T> entityType = (Class<T>) tableMapping.entityType();
+        tableReader = new DefaultTableReader<>(entityType, tableMapping);
+        this.saveTableReader(namespace, id, tableReader, overwrite);
+        return tableReader;
     }
 
     /** 解析 mapper.xml 并载入各种 resultMap */
-    public void loadMapper(String resource) throws SQLException, ClassNotFoundException, IOException {
-        String namespace = "";
+    public void loadMapper(String resource, MappingOptions defaultOptions) throws SQLException, ClassNotFoundException, IOException {
         Element root = null;
         try (InputStream asStream = loadResource(resource)) {
             if (asStream == null) {
@@ -211,9 +238,12 @@ public class MappingRegistry {
         } catch (ParserConfigurationException | SAXException e) {
             throw ExceptionUtils.toRuntime(e);
         }
-        //
+        loadMapper("", root, defaultOptions);
+    }
+
+    public void loadMapper(String namespace, Node root, MappingOptions defaultOptions) throws SQLException, ClassNotFoundException, IOException {
         NamedNodeMap rootAttributes = root.getAttributes();
-        if (rootAttributes != null) {
+        if (StringUtils.isBlank(namespace) && rootAttributes != null) {
             Node namespaceNode = rootAttributes.getNamedItem("namespace");
             if (namespaceNode != null && StringUtils.isBlank(namespace)) {
                 namespace = namespaceNode.getNodeValue();
@@ -226,17 +256,56 @@ public class MappingRegistry {
             if (node.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
+            boolean isResultMap = "resultMap".equalsIgnoreCase(node.getNodeName());
+            boolean isDataQlMap = "dataqlMap".equalsIgnoreCase(node.getNodeName());
+            if (!(isResultMap || isDataQlMap)) {
+                continue;
+            }
+            //
             NamedNodeMap nodeAttributes = node.getAttributes();
             Node idNode = nodeAttributes.getNamedItem("id");
             String idString = (idNode != null) ? idNode.getNodeValue() : null;
             if (StringUtils.isBlank(idString)) {
-                throw new IOException("the <" + root.getNodeName() + "> tag is missing an ID.");
+                throw new IOException("the <" + node.getNodeName() + "> tag is missing an ID.");
             }
             //
-            if (StringUtils.isNotBlank(namespace)) {
-                idString = namespace + "." + idString;
+            if (isResultMap) {
+                loadReader(namespace, idString, node, MappingOptions.resolveOptions(node, defaultOptions), false);
             }
-            loadReader(idString, node);
+            if (isDataQlMap) {
+                loadReader(namespace, idString, node, MappingOptions.resolveOptions(node, defaultOptions), true);
+            }
+        }
+    }
+
+    private void saveTableReader(String namespace, String idString, TableReader<?> tableReader, boolean overwrite) throws SQLException {
+        if (StringUtils.isBlank(idString)) {
+            throw new SQLException("id is null");
+        }
+        //
+        Map<String, TableReader<?>> sqlMap = null;
+        if (StringUtils.isBlank(namespace)) {
+            sqlMap = this.defaultSqlMap;
+        } else {
+            if (!this.spaceSqlMap.containsKey(namespace)) {
+                this.spaceSqlMap.put(namespace, new HashMap<>());
+            }
+            sqlMap = this.spaceSqlMap.get(namespace);
+        }
+        //
+        if (sqlMap.containsKey(idString) && !overwrite) {
+            String msg = StringUtils.isBlank(namespace) ? "default namespace" : ("'" + namespace + "' namespace.");
+            throw new SQLException("repeat '" + idString + "' in " + msg);
+        } else {
+            sqlMap.put(idString, tableReader);
+        }
+    }
+
+    private InputStream loadResource(String resource) throws IOException {
+        if (this.classLoader != null) {
+            return ResourcesUtils.getResourceAsStream(this.classLoader, resource);
+        } else {
+            return ResourcesUtils.getResourceAsStream(resource);
         }
     }
 }

@@ -44,7 +44,6 @@ import java.util.regex.Pattern;
 public class ClassResolveTableMapping extends AbstractResolveTableMapping implements ResolveTableMapping<Class<?>> {
     @Override
     public TableMappingDef resolveTableMapping(Class<?> entityType, ClassLoader classLoader, TypeHandlerRegistry typeRegistry, MetaDataService metaDataService, MappingOptions options) throws SQLException {
-        options = (options == null) ? new MappingOptions() : options;
         options = new MappingOptions(options);
         TableMappingDef def = this.parserTable(entityType, metaDataService, options);
         return parserProperty(def, typeRegistry, metaDataService, options);
@@ -58,7 +57,7 @@ public class ClassResolveTableMapping extends AbstractResolveTableMapping implem
         // build MappingDef
         if (entityType.isAnnotationPresent(Table.class)) {
             Table defTable = entityType.getAnnotation(Table.class);
-            if (!options.isMapUnderscoreToCamelCase()) {
+            if (options.getMapUnderscoreToCamelCase() == null || !options.getMapUnderscoreToCamelCase()) {
                 options.setMapUnderscoreToCamelCase(defTable.mapUnderscoreToCamelCase());
             }
             String catalog = defTable.catalog();
@@ -74,7 +73,7 @@ public class ClassResolveTableMapping extends AbstractResolveTableMapping implem
         } else {
             def.setCatalog(null);
             def.setSchema(null);
-            def.setTable(humpToLine(entityType.getSimpleName(), options.isMapUnderscoreToCamelCase()));
+            def.setTable(humpToLine(entityType.getSimpleName(), options.getMapUnderscoreToCamelCase()));
             def.setTableType(null);
             def.setAutoProperty(true);
             useDelimited = false;
@@ -258,16 +257,16 @@ public class ClassResolveTableMapping extends AbstractResolveTableMapping implem
             if (StringUtils.isBlank(columnName)) {
                 columnName = propertyName;
             }
-            return humpToLine(columnName, options.isMapUnderscoreToCamelCase());
+            return humpToLine(columnName, options.getMapUnderscoreToCamelCase());
         } else {
-            return humpToLine(propertyName, options.isMapUnderscoreToCamelCase());
+            return humpToLine(propertyName, options.getMapUnderscoreToCamelCase());
         }
     }
 
     private static final Pattern humpPattern = Pattern.compile("[A-Z]");
 
-    private static String humpToLine(String str, boolean mapUnderscoreToCamelCase) {
-        if (StringUtils.isBlank(str) || !mapUnderscoreToCamelCase) {
+    private static String humpToLine(String str, Boolean mapUnderscoreToCamelCase) {
+        if (StringUtils.isBlank(str) || mapUnderscoreToCamelCase == null || !mapUnderscoreToCamelCase) {
             return str;
         }
         Matcher matcher = humpPattern.matcher(str);

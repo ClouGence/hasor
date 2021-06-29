@@ -104,7 +104,13 @@ public class StringUdfSource implements UdfSourceAssembly {
             matcher.appendReplacement(sb, "_" + matcher.group(0).toLowerCase());
         }
         matcher.appendTail(sb);
-        return sb.toString();
+        //
+        String strString = sb.toString();
+        strString = strString.replaceAll("_{2,}", "_");
+        if (strString.charAt(0) == '_') {
+            strString = strString.substring(1);
+        }
+        return strString;
     }
     // UpperCase/LowerCase
     //-----------------------------------------------------------------------

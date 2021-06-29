@@ -25,12 +25,13 @@ import org.w3c.dom.Node;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class QuerySqlConfig extends DmlSqlConfig {
-    private String              resultMapper;
+    private String              resultMap;
+    private String              dataqlMap;
+    //
     private String              resultType;
     private int                 fetchSize;
     private ResultSetType       resultSetType;
     private MultipleResultsType multipleResultType;
-    private String              resultDataQL;
 
     public QuerySqlConfig(DynamicSql target) {
         super(target);
@@ -39,25 +40,25 @@ public class QuerySqlConfig extends DmlSqlConfig {
     public QuerySqlConfig(DynamicSql target, Node operationNode) {
         super(target, operationNode);
         NamedNodeMap nodeAttributes = operationNode.getAttributes();
-        Node resultMapperNode = nodeAttributes.getNamedItem("resultMapper");
+        Node resultMapNode = nodeAttributes.getNamedItem("resultMap");
+        Node dataqlMapNode = nodeAttributes.getNamedItem("dataqlMap");
         Node resultTypeNode = nodeAttributes.getNamedItem("resultType");
         Node fetchSizeNode = nodeAttributes.getNamedItem("fetchSize");
         Node resultSetTypeNode = nodeAttributes.getNamedItem("resultSetType");
-        Node resultDataQLNode = nodeAttributes.getNamedItem("resultDataQL");
         Node multipleResultNode = nodeAttributes.getNamedItem("multipleResult");
-        String resultMapper = (resultMapperNode != null) ? resultMapperNode.getNodeValue() : null;
+        String resultMap = (resultMapNode != null) ? resultMapNode.getNodeValue() : null;
         String resultType = (resultTypeNode != null) ? resultTypeNode.getNodeValue() : null;
         String fetchSize = (fetchSizeNode != null) ? fetchSizeNode.getNodeValue() : null;
         String resultSetType = (resultSetTypeNode != null) ? resultSetTypeNode.getNodeValue() : null;
         String multipleResult = (multipleResultNode != null) ? multipleResultNode.getNodeValue() : null;
-        String resultDataQL = (resultDataQLNode != null) ? resultDataQLNode.getNodeValue() : null;
+        String dataqlMap = (dataqlMapNode != null) ? dataqlMapNode.getNodeValue() : null;
         //
-        this.resultMapper = resultMapper;
+        this.resultMap = resultMap;
         this.resultType = resultType;
         this.fetchSize = StringUtils.isBlank(fetchSize) ? 256 : Integer.parseInt(fetchSize);
         this.resultSetType = ResultSetType.valueOfCode(resultSetType, ResultSetType.DEFAULT);
         this.multipleResultType = MultipleResultsType.valueOfCode(multipleResult, MultipleResultsType.LAST);
-        this.resultDataQL = resultDataQL;
+        this.dataqlMap = dataqlMap;
     }
 
     @Override
@@ -65,12 +66,20 @@ public class QuerySqlConfig extends DmlSqlConfig {
         return QueryType.Query;
     }
 
-    public String getResultMapper() {
-        return this.resultMapper;
+    public String getResultMap() {
+        return this.resultMap;
     }
 
-    public void setResultMapper(String resultMapper) {
-        this.resultMapper = resultMapper;
+    public void setResultMap(String resultMap) {
+        this.resultMap = resultMap;
+    }
+
+    public String getDataqlMap() {
+        return this.dataqlMap;
+    }
+
+    public void setDataqlMap(String dataqlMap) {
+        this.dataqlMap = dataqlMap;
     }
 
     public String getResultType() {
@@ -103,13 +112,5 @@ public class QuerySqlConfig extends DmlSqlConfig {
 
     public void setMultipleResultType(MultipleResultsType multipleResultType) {
         this.multipleResultType = multipleResultType;
-    }
-
-    public String getResultDataQL() {
-        return this.resultDataQL;
-    }
-
-    public void setResultDataQL(String resultDataQL) {
-        this.resultDataQL = resultDataQL;
     }
 }

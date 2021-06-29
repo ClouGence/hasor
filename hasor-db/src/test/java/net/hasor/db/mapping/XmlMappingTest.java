@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.mapping;
+import net.hasor.db.mapping.resolve.MappingOptions;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.io.IOUtils;
@@ -35,20 +36,20 @@ public class XmlMappingTest extends AbstractDbTest {
     @Test
     public void mapperTest_01() throws Exception {
         String mapperString1 = loadString("/net_hasor_db/mapping/fragment/mapper_1_1.xml");
-        TableMapping tableMapping1_1 = MappingRegistry.DEFAULT.loadMapping("mapperTest_01", mapperString1);
-        TableMapping tableMapping1_2 = MappingRegistry.DEFAULT.loadMapping("mapperTest_01", mapperString1);
+        TableMapping tableMapping1_1 = MappingRegistry.DEFAULT.loadReader("mapperTest_011", mapperString1, new MappingOptions()).getTableMapping();
+        TableMapping tableMapping1_2 = MappingRegistry.DEFAULT.loadReader("mapperTest_011", mapperString1, new MappingOptions()).getTableMapping();
         assert tableMapping1_1 == tableMapping1_2;
         //
         String mapperString2 = loadString("/net_hasor_db/mapping/fragment/mapper_1_2.xml");
-        TableMapping tableMapping2_1 = MappingRegistry.DEFAULT.loadMapping("mapperTest_01", mapperString2);
-        TableMapping tableMapping2_2 = MappingRegistry.DEFAULT.loadMapping("mapperTest_01", mapperString2);
+        TableMapping tableMapping2_1 = MappingRegistry.DEFAULT.loadReader("mapperTest_012", mapperString2, new MappingOptions()).getTableMapping();
+        TableMapping tableMapping2_2 = MappingRegistry.DEFAULT.loadReader("mapperTest_012", mapperString2, new MappingOptions()).getTableMapping();
         assert tableMapping2_1 != tableMapping2_2;
     }
 
     @Test
     public void mapperTest_02() throws Exception {
         String mapperString = loadString("/net_hasor_db/mapping/fragment/mapper_2.xml");
-        TableMapping tableMapping = MappingRegistry.DEFAULT.loadMapping("mapperTest_02", mapperString);
+        TableMapping tableMapping = MappingRegistry.DEFAULT.loadReader("mapperTest_02", mapperString, new MappingOptions()).getTableMapping();
         //
         assert tableMapping.getMapping("uid").getName().equals("userUUID");
         assert tableMapping.getMapping("name").getName().equals("name");
@@ -67,7 +68,7 @@ public class XmlMappingTest extends AbstractDbTest {
     @Test
     public void mapperTest_03() throws Exception {
         String mapperString = loadString("/net_hasor_db/mapping/fragment/mapper_3.xml");
-        TableMapping tableMapping = MappingRegistry.DEFAULT.loadMapping("mapperTest_03", mapperString);
+        TableMapping tableMapping = MappingRegistry.DEFAULT.loadReader("mapperTest_03", mapperString, new MappingOptions()).getTableMapping();
         //
         assert tableMapping.getMapping("uid").getName().equals("uid");
         assert tableMapping.getMapping("name").getName().equals("name");
@@ -86,7 +87,7 @@ public class XmlMappingTest extends AbstractDbTest {
     @Test
     public void mapperTest_04() throws Exception {
         String mapperString = loadString("/net_hasor_db/mapping/fragment/mapper_4.xml");
-        TableMapping tableMapping = MappingRegistry.DEFAULT.loadMapping("mapperTest_04", mapperString);
+        TableMapping tableMapping = MappingRegistry.DEFAULT.loadReader("mapperTest_04", mapperString, new MappingOptions()).getTableMapping();
         //
         assert tableMapping.getMapping("uid").getName().equals("user_uuid");
         assert tableMapping.getMapping("name").getName().equals("name");
@@ -105,7 +106,7 @@ public class XmlMappingTest extends AbstractDbTest {
     @Test
     public void mapperTest_05() throws Exception {
         String mapperString = loadString("/net_hasor_db/mapping/fragment/mapper_5.xml");
-        TableMapping tableMapping = MappingRegistry.DEFAULT.loadMapping("mapperTest_05", mapperString);
+        TableMapping tableMapping = MappingRegistry.DEFAULT.loadReader("mapperTest_05", mapperString, new MappingOptions()).getTableMapping();
         //
         assert tableMapping.getMapping("uid").getName().equals("uid");
         assert tableMapping.getMapping("name").getName().equals("name");
