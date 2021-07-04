@@ -21,6 +21,7 @@ import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.spi.SpiJudge;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.supplier.TypeSupplier;
 
 import javax.inject.Singleton;
 import java.io.Closeable;

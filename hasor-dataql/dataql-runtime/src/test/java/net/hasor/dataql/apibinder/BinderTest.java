@@ -15,7 +15,7 @@
  */
 package net.hasor.dataql.apibinder;
 import net.hasor.core.Hasor;
-import net.hasor.core.TypeSupplier;
+import net.hasor.utils.supplier.TypeSupplier;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.dataql.*;
 import net.hasor.test.dataql.udfs.AnnoDemoUdf;

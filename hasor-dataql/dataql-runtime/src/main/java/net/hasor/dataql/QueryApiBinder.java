@@ -16,7 +16,7 @@
 package net.hasor.dataql;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
-import net.hasor.core.TypeSupplier;
+import net.hasor.utils.supplier.TypeSupplier;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.dataql.DataQL.ConfigOption;

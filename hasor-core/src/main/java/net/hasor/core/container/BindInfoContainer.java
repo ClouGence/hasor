@@ -18,6 +18,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
+import net.hasor.core.info.GenerateBeanID;
 import net.hasor.core.info.NotifyData;
 import net.hasor.core.spi.BindInfoProvisionListener;
 import net.hasor.utils.StringUtils;
@@ -40,6 +41,7 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
     private final    ConcurrentHashMap<String, List<String>> indexTypeMapping = new ConcurrentHashMap<>();
     private final    ConcurrentHashMap<String, BindInfo<?>>  idDataSource     = new ConcurrentHashMap<>();
     private final    SpiCallerContainer                      spiCallerContainer;
+    private final    GenerateBeanID                          generateBeanID   = new GenerateBeanID();
 
     public BindInfoContainer(SpiCallerContainer spiCallerContainer) {
         this.spiCallerContainer = spiCallerContainer;
@@ -118,7 +120,7 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
             throw new IllegalStateException("container has been started.");
         }
         // .构造 BindInfo
-        DefaultBindInfoProviderAdapter<T> adapter = new DefaultBindInfoProviderAdapter<>(bindType);
+        DefaultBindInfoProviderAdapter<T> adapter = new DefaultBindInfoProviderAdapter<>(bindType, this.generateBeanID);
         adapter.addObserver(this);
         adapter.setBindID(adapter.getBindID());
         // .触发 SPI
@@ -196,7 +198,7 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
             newValue = Objects.requireNonNull(newValue);
             BindInfo bindInfo = this.findBindInfo((String) newValue, target.getBindType());
             if (bindInfo != null) {
-                String bindMessage = "bindType='" + bindInfo.getBindType() + "', bindID='" + bindInfo.getBindID() + "'";
+                String bindMessage = "bindType='" + bindInfo.getBindType().getName() + "', bindID='" + bindInfo.getBindID() + "'";
                 throw new IllegalStateException("duplicate bind -> bindName '" + newValue + "' conflict with " + bindMessage);
             }
         }

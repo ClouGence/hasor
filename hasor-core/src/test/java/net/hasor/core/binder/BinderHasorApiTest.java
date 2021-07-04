@@ -17,7 +17,7 @@ package net.hasor.core.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.core.TypeSupplier;
+import net.hasor.utils.supplier.TypeSupplier;
 import net.hasor.core.exts.aop.Aop;
 import net.hasor.core.scope.SingletonScope;
 import net.hasor.test.core.basic.pojo.*;

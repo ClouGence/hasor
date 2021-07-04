@@ -17,6 +17,7 @@ package net.hasor.core.binder;
 import net.hasor.core.*;
 import net.hasor.core.aop.PropertyDelegate;
 import net.hasor.core.spi.SpiJudge;
+import net.hasor.utils.supplier.TypeSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

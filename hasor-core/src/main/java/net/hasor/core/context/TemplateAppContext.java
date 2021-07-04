@@ -435,8 +435,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         //
         // .返回
         Class<?>[] apiArrays = supportMap.keySet().toArray(new Class<?>[0]);
-        ApiBinder apiBinder = (ApiBinder) Proxy.newProxyInstance(this.
-                getClassLoader(), apiArrays, new ApiBinderInvocationHandler(supportMap));
+        ApiBinder apiBinder = (ApiBinder) Proxy.newProxyInstance(this.getClassLoader(), apiArrays, new ApiBinderInvocationHandler(supportMap));
         proxyApiBinder.set(apiBinder);
         return apiBinder;
     }
@@ -444,20 +443,15 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     /**当开始所有 Module 的 installModule 之前。*/
     protected void doBindBefore(ApiBinder apiBinder) {
         /*绑定Settings对象的Provider*/
-        apiBinder.bindType(Settings.class).idWith(Settings.class.getName())           //
-                .toProvider(() -> getEnvironment().getSettings());
+        apiBinder.bindType(Settings.class).toProvider(() -> getEnvironment().getSettings());
         /*绑定EventContext对象的Provider*/
-        apiBinder.bindType(EventContext.class).idWith(EventContext.class.getName())   //
-                .toProvider(() -> getEnvironment().getEventContext());
+        apiBinder.bindType(EventContext.class).toProvider(() -> getEnvironment().getEventContext());
         /*绑定Environment对象的Provider*/
-        apiBinder.bindType(Environment.class).idWith(Environment.class.getName())     //
-                .toProvider(this::getEnvironment);
+        apiBinder.bindType(Environment.class).toProvider(this::getEnvironment);
         /*绑定AppContext对象的Provider*/
-        apiBinder.bindType(AppContext.class).idWith(AppContext.class.getName())       //
-                .toProvider(() -> TemplateAppContext.this);
+        apiBinder.bindType(AppContext.class).toProvider(() -> TemplateAppContext.this);
         /*绑定SpiTrigger对象的Provider*/
-        apiBinder.bindType(SpiTrigger.class).idWith(SpiTrigger.class.getName())       //
-                .toProvider(() -> getContainer().getSpiContainer());
+        apiBinder.bindType(SpiTrigger.class).toProvider(() -> getContainer().getSpiContainer());
     }
 
     /**当完成所有 Module 的 installModule 直呼。*/

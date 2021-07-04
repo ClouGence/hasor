@@ -24,6 +24,7 @@ import net.hasor.core.info.DelegateBindInfoAdapter;
 import net.hasor.core.spi.SpiJudge;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.supplier.TypeSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

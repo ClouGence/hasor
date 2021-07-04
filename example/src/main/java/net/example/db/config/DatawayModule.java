@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.example.db.config;
-import net.hasor.core.TypeSupplier;
+import net.hasor.utils.supplier.TypeSupplier;
 import net.hasor.dataql.Finder;
 import net.hasor.dataql.QueryApiBinder;
 import net.hasor.dataway.dal.providers.db.InformationStorage;
-import net.hasor.db.JdbcModule;
-import net.hasor.db.Level;
+import net.hasor.core.exts.jdbc.JdbcModule;
+import net.hasor.core.exts.jdbc.Level;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import org.springframework.context.ApplicationContext;

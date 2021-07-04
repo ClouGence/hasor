@@ -15,7 +15,7 @@
  */
 package net.hasor.dataql;
 import net.hasor.core.AppContext;
-import net.hasor.core.TypeSupplier;
+import net.hasor.utils.supplier.TypeSupplier;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;

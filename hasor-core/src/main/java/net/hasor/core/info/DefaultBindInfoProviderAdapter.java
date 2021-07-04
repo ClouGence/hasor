@@ -47,9 +47,9 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         this.propertyDelegate = new HashMap<>();
     }
 
-    public DefaultBindInfoProviderAdapter(Class<T> bindingType) {
+    public DefaultBindInfoProviderAdapter(Class<T> bindingType, GenerateBeanID generateBeanID) {
         this();
-        this.setBindID(UUID.randomUUID().toString().replace("-", ""));
+        this.setBindID(generateBeanID.generateBeanID(bindingType));
         this.setBindType(bindingType);
     }
 
@@ -113,12 +113,12 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         Class<?>[] types = new Class<?>[size];
         Supplier<?>[] providers = new Supplier<?>[size];
         for (Integer val : ints) {
-            ParamInfo pinfo = constructorParams.get(val);
-            types[val] = pinfo.paramType;
-            if (pinfo.useProvider) {
-                providers[val] = pinfo.valueProvider;
+            ParamInfo pInfo = constructorParams.get(val);
+            types[val] = pInfo.paramType;
+            if (pInfo.useProvider) {
+                providers[val] = pInfo.valueProvider;
             } else {
-                providers[val] = appContext.getProvider(pinfo.valueInfo);
+                providers[val] = appContext.getProvider(pInfo.valueInfo);
             }
         }
         return new ConstructorInfo(types, providers);

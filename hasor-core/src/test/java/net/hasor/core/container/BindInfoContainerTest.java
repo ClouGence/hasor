@@ -115,17 +115,14 @@ public class BindInfoContainerTest {
 
     @Test
     public void infoTest6() {
-        SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
-        BindInfoContainer infoContainer = new BindInfoContainer(spiCallerContainer);
-        //
-        infoContainer.createInfoAdapter(PojoBean.class, null);
-        infoContainer.createInfoAdapter(PojoBean.class, null);
-        //
         try {
-            infoContainer.init();
+            Hasor.create().build(apiBinder -> {
+                apiBinder.bindType(PojoBean.class).nameWith("");
+                apiBinder.bindType(PojoBean.class).nameWith("");
+            });
             assert false;
         } catch (Exception e) {
-            assert e.getMessage().equals("conflict type '" + PojoBean.class.getName() + "' of same name ''");
+            assert e.getMessage().equals("duplicate bind -> bindName '' conflict with bindType='" + PojoBean.class.getName() + "', bindID='" + PojoBean.class.getName() + "'");
         }
     }
 
@@ -177,7 +174,7 @@ public class BindInfoContainerTest {
             });
             assert false;
         } catch (Exception e) {
-            assert e.getMessage().startsWith("duplicate bind -> bindName 'a' conflict with bindType='class net.hasor.test.core.basic.pojo.PojoBean', bindID='");
+            assert e.getMessage().startsWith("duplicate bind -> bindName 'a' conflict with bindType='net.hasor.test.core.basic.pojo.PojoBean', bindID='");
         }
     }
 

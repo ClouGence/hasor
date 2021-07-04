@@ -45,6 +45,7 @@ import net.hasor.utils.CommonCodeUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
+import net.hasor.utils.supplier.TypeSupplier;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -238,7 +239,12 @@ public class SqlFragment implements FragmentProcess {
             }
         }
         //
-        final SqlDialect pageDialect = SqlDialectRegister.findOrCreate(sqlDialect, this.appContext);
+        final SqlDialect pageDialect = SqlDialectRegister.findOrCreate(sqlDialect, new TypeSupplier() {
+            @Override
+            public <T> T get(Class<? extends T> targetType) {
+                return appContext.getInstance(targetType);
+            }
+        });
         //        Hints hints,                        // 查询包含的 Hint
         //        FxQuery fxQuery,                    // 查询语句
         //        Map<String, Object> queryParamMap,  // 查询参数

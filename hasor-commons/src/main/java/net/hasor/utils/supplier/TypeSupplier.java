@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.hasor.utils.supplier;
 /**
  * 根据类型创建对象。
  * @version : 2020年2月27日

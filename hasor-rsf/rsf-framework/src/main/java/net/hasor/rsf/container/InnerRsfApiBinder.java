@@ -21,6 +21,7 @@ import net.hasor.core.spi.SpiJudge;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfEnvironment;
+import net.hasor.utils.supplier.TypeSupplier;
 
 import java.lang.reflect.Method;
 import java.util.EventListener;

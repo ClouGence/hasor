@@ -15,6 +15,7 @@
  */
 package net.hasor.core;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.supplier.TypeSupplier;
 
 import java.io.Closeable;
 import java.lang.annotation.Annotation;

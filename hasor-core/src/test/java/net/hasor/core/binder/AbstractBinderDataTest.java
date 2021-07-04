@@ -22,6 +22,7 @@ import net.hasor.core.container.ScopeContainer;
 import net.hasor.core.container.SpiCallerContainer;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
+import net.hasor.core.info.GenerateBeanID;
 import org.powermock.api.mockito.PowerMockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class AbstractBinderDataTest {
         BindInfoContainer bindInfoContainer = PowerMockito.mock(BindInfoContainer.class);
         PowerMockito.when(bindInfoContainer.createInfoAdapter((Class<?>) any(), any())).thenAnswer(invocationOnMock -> {
             Class<Object> targetType = (Class<Object>) invocationOnMock.getArguments()[0];
-            DefaultBindInfoProviderAdapter<Object> adapter = new DefaultBindInfoProviderAdapter<>(targetType);
+            DefaultBindInfoProviderAdapter<Object> adapter = new DefaultBindInfoProviderAdapter<>(targetType, new GenerateBeanID());
             Predicate<Class<?>> defaultMatcher = (ignoreMatcher == null) ? (aClass -> false) : ignoreMatcher;
             if (defaultMatcher.test(targetType)) {
                 return adapter;

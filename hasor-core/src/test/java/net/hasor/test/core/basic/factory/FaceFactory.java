@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.test.core.basic.factory;
-import net.hasor.core.TypeSupplier;
+import net.hasor.utils.supplier.TypeSupplier;
 import net.hasor.test.core.basic.pojo.SampleBean;
 import net.hasor.test.core.basic.pojo.SampleFace;
 

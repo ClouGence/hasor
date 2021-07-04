@@ -294,7 +294,21 @@ public abstract class ResourcesUtils {
      * @throws ClassNotFoundException If the class cannot be found (duh!)
      */
     public static Class<?> classForName(String className) throws ClassNotFoundException {
-        return getCurrentLoader().loadClass(className);
+        return classForName(getCurrentLoader(), className);
+    }
+
+    /**
+     * Loads a class
+     * @param className - the class to fetch
+     * @return The loaded class
+     * @throws ClassNotFoundException If the class cannot be found (duh!)
+     */
+    public static Class<?> classForName(ClassLoader loader, String className) throws ClassNotFoundException {
+        if (loader == null) {
+            return getCurrentLoader().loadClass(className);
+        } else {
+            return loader.loadClass(className);
+        }
     }
     /*------------------------------------------------------------------------------*/
 

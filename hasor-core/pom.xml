@@ -34,6 +34,11 @@
             <groupId>net.hasor</groupId>
             <artifactId>hasor-commons</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-db</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- shade -->
         <dependency>
