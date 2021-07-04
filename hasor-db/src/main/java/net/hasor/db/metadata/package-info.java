@@ -26,6 +26,4 @@
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-01-22
  */
-@IgnoreProxy
 package net.hasor.db.metadata;
-import net.hasor.core.IgnoreProxy;

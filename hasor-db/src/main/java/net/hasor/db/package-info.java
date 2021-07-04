@@ -18,6 +18,4 @@
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-@IgnoreProxy
 package net.hasor.db;
-import net.hasor.core.IgnoreProxy;

@@ -189,14 +189,9 @@ public class MapperRegistry {
                 DynamicSql dynamicSql = dynamicParser.parseSqlConfig(node);
                 if (dynamicSql instanceof QuerySqlConfig) {
                     String resultMap = ((QuerySqlConfig) dynamicSql).getResultMap();
-                    String dataqlMap = ((QuerySqlConfig) dynamicSql).getDataqlMap();
                     if (StringUtils.isNotBlank(resultMap)) {
                         Object reader = this.mappingRegistry.getTableReader(namespace, resultMap);
                         Objects.requireNonNull(reader, "loadMapper failed, '" + idString + "', resultMap '" + resultMap + "' is missing ,resource '" + resource + "'");
-                    }
-                    if (StringUtils.isNotBlank(dataqlMap)) {
-                        Object reader = this.mappingRegistry.getTableReader(namespace, dataqlMap);
-                        Objects.requireNonNull(reader, "loadMapper failed, '" + idString + "', dataqlMap '" + dataqlMap + "' is missing ,resource '" + resource + "'");
                     }
                 }
                 //

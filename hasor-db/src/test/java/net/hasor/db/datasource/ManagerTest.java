@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.db.datasource;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TB_User;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ManagerTest extends AbstractDbTest {
     @Test
-    public void manager_basic_test_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            DataSource dataSource = appContext.getInstance(DataSource.class);
+    public void manager_basic_test_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
             Connection connection = DataSourceManager.newConnection(dataSource);
             //
             JdbcTemplate jdbcTemplate = new JdbcTemplate(connection);

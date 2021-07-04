@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.mapper.MappingRowMapper;
 import net.hasor.db.jdbc.paramer.BeanSqlParameterSource;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TB_User;
 import net.hasor.test.db.dto.TbUser;
+import net.hasor.test.db.utils.DsUtils;
 import net.hasor.test.db.utils.TestUtils;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +35,9 @@ import java.util.Map;
  */
 public class QueryForTest extends AbstractDbTest {
     @Test
-    public void queryForList_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForList_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<TbUser> tbUsers = jdbcTemplate.queryForList("select * from tb_user", TbUser.class);
             assert tbUsers.size() == 3;
@@ -50,9 +48,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForList_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForList_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             List<TbUser> tbUsers = jdbcTemplate.queryForList("select * from tb_user where userUUID = ?", TbUser.class, tbUser.getUserUUID());
@@ -62,9 +60,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForList_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForList_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             List<TbUser> tbUsers = jdbcTemplate.queryForList("select * from tb_user where userUUID = ?", new Object[] { tbUser.getUserUUID() }, TbUser.class);
@@ -74,9 +72,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForList_4() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForList_4() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             BeanSqlParameterSource beanSqlParameterSource = new BeanSqlParameterSource(tbUser);
@@ -87,9 +85,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForList_5() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForList_5() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             Map<String, String> mapParams = new HashMap<>();
@@ -101,9 +99,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForObject_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForObject_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             MappingRowMapper<TbUser> rowMapper = MappingRowMapper.newInstance(TbUser.class);
@@ -114,9 +112,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForObject_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForObject_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             MappingRowMapper<TbUser> rowMapper = MappingRowMapper.newInstance(TbUser.class);
@@ -127,9 +125,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForObject_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForObject_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             MappingRowMapper<TbUser> rowMapper = MappingRowMapper.newInstance(TbUser.class);
@@ -140,9 +138,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForObject_4() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForObject_4() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             BeanSqlParameterSource beanSqlParameterSource = new BeanSqlParameterSource(tbUser);
@@ -154,9 +152,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForObject_5() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForObject_5() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             Map<String, String> mapParams = new HashMap<>();
@@ -169,9 +167,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForObject_6() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForObject_6() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             TbUser user = jdbcTemplate.queryForObject("select * from tb_user where userUUID = '" + tbUser.getUserUUID() + "'", TbUser.class);
@@ -181,9 +179,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForObject_7() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForObject_7() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             TbUser user = jdbcTemplate.queryForObject("select * from tb_user where userUUID = ?", TbUser.class, tbUser.getUserUUID());
@@ -193,9 +191,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForObject_8() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForObject_8() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             TbUser user = jdbcTemplate.queryForObject("select * from tb_user where userUUID = ?", new Object[] { tbUser.getUserUUID() }, TbUser.class);
@@ -205,9 +203,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForObject_9() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForObject_9() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             BeanSqlParameterSource beanSqlParameterSource = new BeanSqlParameterSource(tbUser);
@@ -218,9 +216,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForObject_10() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForObject_10() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             Map<String, String> mapParams = new HashMap<>();
@@ -232,9 +230,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForNumber_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForNumber_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             long userCountLong = jdbcTemplate.queryForLong("select count(*) from tb_user");
             assert userCountLong == 3;
@@ -244,9 +242,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForNumber_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForNumber_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             long userCountLong = jdbcTemplate.queryForLong("select count(*) from tb_user where userUUID != ?", tbUser.getUserUUID());
@@ -257,9 +255,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForNumber_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForNumber_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             BeanSqlParameterSource beanSqlParameterSource = new BeanSqlParameterSource(tbUser);
@@ -271,9 +269,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForNumber_4() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForNumber_4() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             Map<String, String> mapParams = new HashMap<>();
@@ -286,9 +284,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForMap_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForMap_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             Map<String, Object> mapData = jdbcTemplate.queryForMap("select * from tb_user where userUUID = '" + tbUser.getUserUUID() + "'");
@@ -298,9 +296,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForMap_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForMap_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             Map<String, Object> mapData = jdbcTemplate.queryForMap("select * from tb_user where userUUID = ?", tbUser.getUserUUID());
@@ -310,9 +308,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForMap_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForMap_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             BeanSqlParameterSource beanSqlParameterSource = new BeanSqlParameterSource(tbUser);
@@ -323,9 +321,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForMap_4() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForMap_4() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             Map<String, String> mapParams = new HashMap<>();
@@ -337,9 +335,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForListMap_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForListMap_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<Map<String, Object>> tbUsers = jdbcTemplate.queryForList("select * from tb_user");
             assert tbUsers.size() == 3;
@@ -350,9 +348,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForListMap_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForListMap_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             List<Map<String, Object>> tbUsers = jdbcTemplate.queryForList("select * from tb_user where userUUID = ?", tbUser.getUserUUID());
@@ -362,9 +360,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForListMap_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForListMap_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             BeanSqlParameterSource beanSqlParameterSource = new BeanSqlParameterSource(tbUser);
@@ -375,9 +373,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForListMap_4() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForListMap_4() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             Map<String, String> mapParams = new HashMap<>();
@@ -389,9 +387,9 @@ public class QueryForTest extends AbstractDbTest {
     }
 
     @Test
-    public void queryForListMap_5() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void queryForListMap_5() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TB_User tbUser = TestUtils.beanForData1();
             List<Map<String, Object>> tbUsers = jdbcTemplate.queryForList("select * from tb_user where userUUID = ? ", ps -> {

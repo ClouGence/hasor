@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.db.types;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.ClobTypeHandler;
 import net.hasor.db.types.handler.NClobTypeHandler;
 import net.hasor.db.types.handler.NStringTypeHandler;
 import net.hasor.db.types.handler.StringTypeHandler;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
@@ -35,9 +33,9 @@ import java.util.Map;
 
 public class StringTypeTest {
     @Test
-    public void testClobTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testClobTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
             List<String> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
@@ -48,9 +46,9 @@ public class StringTypeTest {
     }
 
     @Test
-    public void testClobTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testClobTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
             List<String> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
@@ -61,9 +59,9 @@ public class StringTypeTest {
     }
 
     @Test
-    public void testClobTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testClobTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<String> dat = jdbcTemplate.query("select ?", ps -> {
                 new ClobTypeHandler().setParameter(ps, 1, "abcedfg", JDBCType.CLOB);
@@ -91,9 +89,9 @@ public class StringTypeTest {
     }
 
     @Test
-    public void testNClobTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNClobTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
             List<String> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
@@ -104,9 +102,9 @@ public class StringTypeTest {
     }
 
     @Test
-    public void testNClobTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNClobTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
             List<String> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
@@ -117,9 +115,9 @@ public class StringTypeTest {
     }
 
     @Test
-    public void testNClobTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNClobTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<String> dat = jdbcTemplate.query("select ?", ps -> {
                 new NClobTypeHandler().setParameter(ps, 1, "abcedfg", JDBCType.CLOB);
@@ -147,9 +145,9 @@ public class StringTypeTest {
     }
 
     @Test
-    public void testStringTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testStringTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
             List<String> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
@@ -160,9 +158,9 @@ public class StringTypeTest {
     }
 
     @Test
-    public void testStringTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testStringTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
             List<String> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
@@ -173,9 +171,9 @@ public class StringTypeTest {
     }
 
     @Test
-    public void testStringTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testStringTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             String dat1 = jdbcTemplate.queryForObject("select ?", String.class, "abcdefg");
             String dat2 = jdbcTemplate.queryForObject("select ?", String.class, (String) null);
@@ -208,9 +206,9 @@ public class StringTypeTest {
     }
 
     @Test
-    public void testNStringTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNStringTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
             List<String> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
@@ -221,9 +219,9 @@ public class StringTypeTest {
     }
 
     @Test
-    public void testNStringTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNStringTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
             List<String> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
@@ -234,9 +232,9 @@ public class StringTypeTest {
     }
 
     @Test
-    public void testNStringTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNStringTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             String dat1 = jdbcTemplate.queryForObject("select ?", String.class, "abcdefg");
             String dat2 = jdbcTemplate.queryForObject("select ?", String.class, (String) null);

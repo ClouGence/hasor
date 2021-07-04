@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.db.types;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.YearOfNumberTypeHandler;
 import net.hasor.db.types.handler.YearOfStringTypeHandler;
 import net.hasor.db.types.handler.YearOfTimeTypeHandler;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
@@ -34,9 +32,9 @@ import java.util.*;
 
 public class YearTypeTest {
     @Test
-    public void testYearOfNumberTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testYearOfNumberTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_smallint) values (2020);");
             List<Year> dat = jdbcTemplate.query("select c_smallint from tb_h2_types where c_smallint is not null limit 1;", (rs, rowNum) -> {
@@ -47,9 +45,9 @@ public class YearTypeTest {
     }
 
     @Test
-    public void testYearOfNumberTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testYearOfNumberTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_smallint) values (2020);");
             List<Year> dat = jdbcTemplate.query("select c_smallint from tb_h2_types where c_smallint is not null limit 1;", (rs, rowNum) -> {
@@ -60,9 +58,9 @@ public class YearTypeTest {
     }
 
     @Test
-    public void testYearOfNumberTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testYearOfNumberTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Year dat1 = jdbcTemplate.queryForObject("select ?", Year.class, Year.of(2008));
             assert dat1.getValue() == 2008;
@@ -94,9 +92,9 @@ public class YearTypeTest {
     }
 
     @Test
-    public void testYearOfStringTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testYearOfStringTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('2008');");
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('2022');");
@@ -109,9 +107,9 @@ public class YearTypeTest {
     }
 
     @Test
-    public void testYearOfStringTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testYearOfStringTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('1986');");
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('1998');");
@@ -124,9 +122,9 @@ public class YearTypeTest {
     }
 
     @Test
-    public void testYearOfStringTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testYearOfStringTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Year dat1 = jdbcTemplate.queryForObject("select ?", Year.class, "0005");
             assert dat1.getValue() == 5;
@@ -160,9 +158,9 @@ public class YearTypeTest {
     }
 
     @Test
-    public void testYearOfTimeTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testYearOfTimeTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (CURRENT_TIMESTAMP(9));");
             List<Year> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
@@ -173,9 +171,9 @@ public class YearTypeTest {
     }
 
     @Test
-    public void testYearOfTimeTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testYearOfTimeTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (CURRENT_TIMESTAMP(9));");
             List<Year> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
@@ -186,9 +184,9 @@ public class YearTypeTest {
     }
 
     @Test
-    public void testYearOfTimeTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testYearOfTimeTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             //
             Year dat1 = jdbcTemplate.queryForObject("select ?", Year.class, new Date());

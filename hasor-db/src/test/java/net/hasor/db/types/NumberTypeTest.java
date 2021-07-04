@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.db.types;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.NumberTypeHandler;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.JDBCType;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -34,9 +31,9 @@ import java.util.Map;
 
 public class NumberTypeTest {
     @Test
-    public void testNumberTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNumberTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Date testData = new Date();
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
@@ -49,9 +46,9 @@ public class NumberTypeTest {
     }
 
     @Test
-    public void testNumberTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNumberTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Date testData = new Date();
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
@@ -64,9 +61,9 @@ public class NumberTypeTest {
     }
 
     @Test
-    public void testNumberTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNumberTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_char) values ('123');");
             List<Number> dat = jdbcTemplate.query("select c_char from tb_h2_types where c_char is not null limit 1;", (rs, rowNum) -> {
@@ -78,9 +75,9 @@ public class NumberTypeTest {
     }
 
     @Test
-    public void testNumberTypeHandler_4() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNumberTypeHandler_4() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('123');");
             List<Number> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {

@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.dialect;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
-import net.hasor.core.aop.DynamicClass;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.dialect.TestDialect;
 import org.junit.Test;
 
 /***
@@ -43,53 +38,11 @@ public class RegisterTest extends AbstractDbTest {
             assert e.getMessage().equals("load dialect 'abc' class not found");
         }
     }
-
-    @Test
-    public void dialectRegisterTest_3() {
-        SqlDialectRegister.clearDialectCache();
-        SqlDialect dialect = SqlDialectRegister.findOrCreate("net.hasor.test.db.dialect.TestDialect");
-        assert dialect != null;
-        assert dialect instanceof TestDialect;
-        assert !(dialect instanceof DynamicClass);
-    }
-
-    @Test
-    public void dialectRegisterTest_4() {
-        try (AppContext appContext = Hasor.create().build()) {
-            SqlDialectRegister.clearDialectCache();
-            SqlDialect dialect = SqlDialectRegister.findOrCreate("net.hasor.test.db.dialect.TestDialect", appContext);
-            assert dialect != null;
-            assert dialect instanceof TestDialect;
-            assert dialect instanceof DynamicClass;
-        }
-    }
-
-    @Test
-    public void dialectRegisterTest_5() {
-        try (AppContext appContext = Hasor.create().build()) {
-            SqlDialectRegister.clearDialectCache();
-            SqlDialect dialect1 = SqlDialectRegister.findOrCreate("net.hasor.test.db.dialect.TestDialect");
-            assert dialect1 != null;
-            assert dialect1 instanceof TestDialect;
-            assert !(dialect1 instanceof DynamicClass);
-            //
-            SqlDialect dialect2 = SqlDialectRegister.findOrCreate("net.hasor.test.db.dialect.TestDialect", appContext);
-            assert dialect2 != null;
-            assert dialect2 instanceof TestDialect;
-            assert !(dialect1 instanceof DynamicClass); // in cache
-        }
-    }
-
-    @Test
-    public void dialectRegisterTest_6() {
-        Module module = apiBinder -> apiBinder.bindType(SqlDialect.class).nameWith("abc").to(TestDialect.class);
-        //
-        try (AppContext appContext = Hasor.create().build(module)) {
-            SqlDialectRegister.clearDialectCache();
-            SqlDialect dialect1 = SqlDialectRegister.findOrCreate("abc", appContext);
-            assert dialect1 != null;
-            assert dialect1 instanceof TestDialect;
-            assert dialect1 instanceof DynamicClass;
-        }
-    }
+    //    @Test
+    //    public void dialectRegisterTest_3() {
+    //        SqlDialectRegister.clearDialectCache();
+    //        SqlDialect dialect = SqlDialectRegister.findOrCreate("net.hasor.test.db.dialect.TestDialect");
+    //        assert dialect != null;
+    //        assert dialect instanceof TestDialect;
+    //    }
 }

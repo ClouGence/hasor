@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.db.lambda;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.mapping.MappingRegistry;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TbUser;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Map;
 
 /***
@@ -34,9 +31,9 @@ import java.util.Map;
  */
 public class BaseLambdaTest extends AbstractDbTest {
     @Test
-    public void base_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void base_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             LambdaTemplate lambdaTemplate = new LambdaTemplate(jdbcTemplate);
             //
             Map<String, Object> tbUser = lambdaTemplate.lambdaQuery(TbUser.class)//
@@ -48,9 +45,8 @@ public class BaseLambdaTest extends AbstractDbTest {
     }
 
     @Test
-    public void base_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            DataSource dataSource = appContext.getInstance(DataSource.class);
+    public void base_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
             try (Connection conn = dataSource.getConnection()) {
                 LambdaTemplate lambdaTemplate = new LambdaTemplate(conn, MappingRegistry.DEFAULT);
                 Map<String, Object> tbUser = lambdaTemplate.lambdaQuery(TbUser.class)//
@@ -72,9 +68,8 @@ public class BaseLambdaTest extends AbstractDbTest {
     }
 
     @Test
-    public void base_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            DataSource dataSource = appContext.getInstance(DataSource.class);
+    public void base_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
             LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource, MappingRegistry.DEFAULT);
             Map<String, Object> tbUser = lambdaTemplate.lambdaQuery(TbUser.class)//
                     .eq(TbUser::getAccount, "muhammad").apply("limit 1")//
@@ -85,9 +80,8 @@ public class BaseLambdaTest extends AbstractDbTest {
     }
 
     @Test
-    public void base_4() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            DataSource dataSource = appContext.getInstance(DataSource.class);
+    public void base_4() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
             LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource);
             Map<String, Object> tbUser = lambdaTemplate.lambdaQuery(TbUser.class)//
                     .eq(TbUser::getAccount, "muhammad").apply("limit 1")//
@@ -98,9 +92,8 @@ public class BaseLambdaTest extends AbstractDbTest {
     }
 
     @Test
-    public void base_5() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            DataSource dataSource = appContext.getInstance(DataSource.class);
+    public void base_5() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
             LambdaTemplate lambdaTemplate = new LambdaTemplateProvider(dataSource).get();
             Map<String, Object> tbUser = lambdaTemplate.lambdaQuery(TbUser.class)//
                     .eq(TbUser::getAccount, "muhammad").apply("limit 1")//

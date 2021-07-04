@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.StatementCallback;
 import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TB_User;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +39,9 @@ import static net.hasor.test.db.utils.TestUtils.beanForData1;
  */
 public class ExecuteTest extends AbstractDbTest {
     @Test
-    public void execute_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void execute_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.execute((ConnectionCallback<Boolean>) con -> {
                 return con.createStatement().execute("update tb_user set name = CONCAT(name, '~' ) where userUUID = '" + beanForData1().getUserUUID() + "'");
@@ -57,9 +55,9 @@ public class ExecuteTest extends AbstractDbTest {
     }
 
     @Test
-    public void execute_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void execute_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.execute((StatementCallback<Boolean>) s -> {
                 return s.execute("update tb_user set name = CONCAT(name, '~' ) where userUUID = '" + beanForData1().getUserUUID() + "'");
@@ -73,9 +71,9 @@ public class ExecuteTest extends AbstractDbTest {
     }
 
     @Test
-    public void execute_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void execute_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.execute(con -> {
                 return con.prepareCall("update tb_user set name = CONCAT(name, '~' ) where userUUID = ?");
@@ -92,9 +90,9 @@ public class ExecuteTest extends AbstractDbTest {
     }
 
     @Test
-    public void execute_4() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void execute_4() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.execute("update tb_user set name = CONCAT(name, '~' ) where userUUID = ?", ps -> {
                 ps.setString(1, beanForData1().getUserUUID());
@@ -109,9 +107,9 @@ public class ExecuteTest extends AbstractDbTest {
     }
 
     @Test
-    public void execute_5() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void execute_5() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.execute("update tb_user set name = CONCAT(name, '~' ) where userUUID = '" + beanForData1().getUserUUID() + "'");
             //
@@ -123,9 +121,9 @@ public class ExecuteTest extends AbstractDbTest {
     }
 
     @Test
-    public void execute_6() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void execute_6() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Map<String, String> dat = Collections.singletonMap("uuid", beanForData1().getUserUUID());
             jdbcTemplate.execute("update tb_user set name = CONCAT(name, '~' ) where userUUID = :uuid", dat, PreparedStatement::execute);
@@ -138,9 +136,9 @@ public class ExecuteTest extends AbstractDbTest {
     }
 
     @Test
-    public void execute_7() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void execute_7() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Map<String, String> dat = Collections.singletonMap("uuid", beanForData1().getUserUUID());
             jdbcTemplate.execute("update tb_user set name = CONCAT(name, '~' ) where userUUID = :uuid", new MapSqlParameterSource(dat), PreparedStatement::execute);

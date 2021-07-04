@@ -22,13 +22,13 @@ import net.hasor.db.metadata.TableDef;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class OracleTable implements TableDef {
-    private String          schema;
-    private String          table;
-    private String          tableSpace;
-    private Boolean         readOnly;
-    private OracleTableType tableType;
-    private String          materializedLog;
-    private String          comment;
+    private String                schema;
+    private String                table;
+    private String                tableSpace;
+    private Boolean               readOnly;
+    private OracleTableType       tableType;
+    private OracleMaterializedLog materializedLog;
+    private String                comment;
 
     @Override
     public String getCatalog() {
@@ -77,11 +77,11 @@ public class OracleTable implements TableDef {
         this.tableType = tableType;
     }
 
-    public String getMaterializedLog() {
+    public OracleMaterializedLog getMaterializedLog() {
         return this.materializedLog;
     }
 
-    public void setMaterializedLog(String materializedLog) {
+    public void setMaterializedLog(OracleMaterializedLog materializedLog) {
         this.materializedLog = materializedLog;
     }
 

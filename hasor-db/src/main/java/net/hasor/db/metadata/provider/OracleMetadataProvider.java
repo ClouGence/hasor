@@ -40,11 +40,11 @@ import static net.hasor.db.metadata.domain.oracle.OracleSqlTypes.TIMESTAMP;
 public class OracleMetadataProvider extends AbstractMetadataProvider implements MetaDataService {
     private static final String SCHEMA  = "select USERNAME,ACCOUNT_STATUS,LOCK_DATE,EXPIRY_DATE,DEFAULT_TABLESPACE,TEMPORARY_TABLESPACE,CREATED,PROFILE,AUTHENTICATION_TYPE,LAST_LOGIN from SYS.DBA_USERS";
     private static final String TABLE   = ""//
-            + "select TAB.OWNER,TAB.TABLE_NAME,TABLESPACE_NAME,READ_ONLY,TAB.TABLE_TYPE,LOG_TABLE,COMMENTS from (\n"//
-            + "  select OWNER,TABLE_NAME,TABLESPACE_NAME,READ_ONLY,'TABLE' TABLE_TYPE,LOG_TABLE from SYS.DBA_TABLES\n"//
-            + "  left join SYS.DBA_MVIEW_LOGS on LOG_OWNER = OWNER and MASTER = TABLE_NAME\n"//
+            + "select TAB.OWNER,TAB.TABLE_NAME,TABLESPACE_NAME,READ_ONLY,TAB.TABLE_TYPE,LOG_TABLE,LOG_ROWIDS,LOG_PK,LOG_SEQ,COMMENTS from (\n"//
+            + "  select OWNER,TABLE_NAME,TABLESPACE_NAME,READ_ONLY,'TABLE' TABLE_TYPE,LOG.LOG_TABLE,LOG.ROWIDS LOG_ROWIDS,LOG.PRIMARY_KEY LOG_PK,LOG.SEQUENCE LOG_SEQ from SYS.DBA_TABLES\n"//
+            + "  left join SYS.DBA_MVIEW_LOGS LOG on LOG_OWNER = OWNER and MASTER = TABLE_NAME\n"//
             + "  union all\n"//
-            + "  select OWNER,VIEW_NAME, null TABLESPACE_NAME,READ_ONLY,'VIEW' TABLE_TYPE,null LOG_TABLE from SYS.DBA_VIEWS\n"//
+            + "  select OWNER,VIEW_NAME, null TABLESPACE_NAME,READ_ONLY,'VIEW' TABLE_TYPE,null LOG_TABLE,null LOG_ROWIDS,null LOG_PK,null LOG_SEQ from SYS.DBA_VIEWS\n"//
             + ") TAB\n"//
             + "left join DBA_TAB_COMMENTS on TAB.OWNER = DBA_TAB_COMMENTS.OWNER and TAB.TABLE_NAME = DBA_TAB_COMMENTS.TABLE_NAME and TAB.TABLE_TYPE = DBA_TAB_COMMENTS.TABLE_TYPE";
     private static final String COLUMNS = ""//
@@ -521,7 +521,16 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
         table.setTableSpace(safeToString(recordMap.get("TABLESPACE_NAME")));
         table.setReadOnly(safeToBoolean(recordMap.get("READ_ONLY")));
         table.setTableType(OracleTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
-        table.setMaterializedLog(safeToString(recordMap.get("LOG_TABLE")));
+        //
+        String logTable = safeToString(recordMap.get("LOG_TABLE"));
+        if (StringUtils.isNotBlank(logTable)) {
+            OracleMaterializedLog materializedLog = new OracleMaterializedLog();
+            materializedLog.setLogTable(logTable);
+            materializedLog.setLogRowIds("YES".equalsIgnoreCase(safeToString(recordMap.get("LOG_ROWIDS"))));
+            materializedLog.setLogPk("YES".equalsIgnoreCase(safeToString(recordMap.get("LOG_PK"))));
+            materializedLog.setLogSeq("YES".equalsIgnoreCase(safeToString(recordMap.get("LOG_SEQ"))));
+            table.setMaterializedLog(materializedLog);
+        }
         table.setComment(safeToString(recordMap.get("COMMENTS")));
         return table;
     }

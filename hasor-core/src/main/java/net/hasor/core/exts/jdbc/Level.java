@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.db.dialect;
-import net.hasor.core.MethodInvocation;
-
-public class TestDialectAop implements net.hasor.core.MethodInterceptor {
-    @Override
-    public Object invoke(MethodInvocation invocation) throws Throwable {
-        return invocation.proceed();
-    }
+package net.hasor.core.exts.jdbc;
+/**
+ * DB 模块,加载级别
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2017-03-23
+ */
+public enum Level {
+    /** 加载 DataSource. */
+    DataSource, //
+    /** 加载 Jdbc 框架. */
+    Jdbc,//
+    /** 加载 Tran 框架. */
+    Tran,//
+    /** 全加载. */
+    Full
 }

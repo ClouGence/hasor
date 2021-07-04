@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.db.types;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.CharacterTypeHandler;
 import net.hasor.db.types.handler.NCharacterTypeHandler;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
@@ -33,9 +31,9 @@ import java.util.Map;
 
 public class CharacterTypeTest {
     @Test
-    public void testCharacterTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testCharacterTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_char) values ('1234567890');");
             List<Character> bigInteger = jdbcTemplate.query("select c_char from tb_h2_types where c_char is not null limit 1;", (rs, rowNum) -> {
@@ -46,9 +44,9 @@ public class CharacterTypeTest {
     }
 
     @Test
-    public void testCharacterTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testCharacterTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_char) values ('1234567890');");
             List<Character> bigInteger = jdbcTemplate.query("select c_char from tb_h2_types where c_char is not null limit 1;", (rs, rowNum) -> {
@@ -59,9 +57,9 @@ public class CharacterTypeTest {
     }
 
     @Test
-    public void testCharacterTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testCharacterTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             char dat1 = jdbcTemplate.queryForObject("select ?", char.class, "abc");
             Character dat2 = jdbcTemplate.queryForObject("select ?", Character.class, "abc");
@@ -102,9 +100,9 @@ public class CharacterTypeTest {
     }
 
     @Test
-    public void testNCharacterTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNCharacterTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_char) values ('1234567890');");
             List<Character> bigInteger = jdbcTemplate.query("select c_char from tb_h2_types where c_char is not null limit 1;", (rs, rowNum) -> {
@@ -115,9 +113,9 @@ public class CharacterTypeTest {
     }
 
     @Test
-    public void testNCharacterTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNCharacterTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_char) values ('1234567890');");
             List<Character> bigInteger = jdbcTemplate.query("select c_char from tb_h2_types where c_char is not null limit 1;", (rs, rowNum) -> {
@@ -128,9 +126,9 @@ public class CharacterTypeTest {
     }
 
     @Test
-    public void testNCharacterTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNCharacterTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             char dat1 = jdbcTemplate.queryForObject("select ?", char.class, "abc");
             Character dat2 = jdbcTemplate.queryForObject("select ?", Character.class, "abc");

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.db.mapping;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.mapping.reader.TableReader;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TbUser;
+import net.hasor.test.db.utils.DsUtils;
 import net.hasor.test.db.utils.TestUtils;
 import org.junit.Test;
 
@@ -35,9 +34,9 @@ import java.util.List;
  */
 public class ClassMappingTest extends AbstractDbTest {
     @Test
-    public void useMappingReadTable_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void useMappingReadTable_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             TableReader<TbUser> tableReader = MappingRegistry.DEFAULT.loadReader(TbUser.class, null);
             List<TbUser> tbUsers = jdbcTemplate.query("select * from tb_user", new RowMapperResultSetExtractor<>(tableReader::readRow));

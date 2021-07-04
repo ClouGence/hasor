@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.db.types;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.SqlDateTypeHandler;
 import net.hasor.db.types.handler.SqlTimeTypeHandler;
 import net.hasor.db.types.handler.SqlTimestampTypeHandler;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.JDBCType;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,9 +39,9 @@ import java.util.Map;
 
 public class SqlDateTypeTest {
     @Test
-    public void testSqlTimestampTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testSqlTimestampTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Date testData = new Date();
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
@@ -53,9 +54,9 @@ public class SqlDateTypeTest {
     }
 
     @Test
-    public void testSqlTimestampTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testSqlTimestampTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Date testData = new Date();
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
@@ -68,9 +69,9 @@ public class SqlDateTypeTest {
     }
 
     @Test
-    public void testSqlTimestampTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testSqlTimestampTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Timestamp testData = new Timestamp(new Date().getTime());
             List<Date> dat = jdbcTemplate.query("select ?", ps -> {
@@ -102,9 +103,9 @@ public class SqlDateTypeTest {
     }
 
     @Test
-    public void testSqlTimeTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testSqlTimeTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Date testData = new Date();
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
@@ -121,9 +122,9 @@ public class SqlDateTypeTest {
     }
 
     @Test
-    public void testSqlTimeTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testSqlTimeTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Date testData = new Date();
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
@@ -140,9 +141,9 @@ public class SqlDateTypeTest {
     }
 
     @Test
-    public void testSqlTimeTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testSqlTimeTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Time testTime = new Time(new Date().getTime());
             List<Time> dat = jdbcTemplate.query("select ?", ps -> {
@@ -176,9 +177,9 @@ public class SqlDateTypeTest {
     }
 
     @Test
-    public void testSqlDateTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testSqlDateTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Date testData = new Date();
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
@@ -194,9 +195,9 @@ public class SqlDateTypeTest {
     }
 
     @Test
-    public void testSqlDateTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testSqlDateTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Date testData = new Date();
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (?);", testData);
@@ -212,9 +213,9 @@ public class SqlDateTypeTest {
     }
 
     @Test
-    public void testSqlDateTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testSqlDateTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             java.sql.Date testData = new java.sql.Date(new Date().getTime());
             List<java.sql.Date> dat = jdbcTemplate.query("select ?", ps -> {

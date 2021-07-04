@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.db.lambda;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TB_User;
 import net.hasor.test.db.dto.TbUser;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +37,9 @@ import static net.hasor.test.db.utils.TestUtils.*;
  */
 public class LambdaQueryTest extends AbstractDbTest {
     @Test
-    public void lambda_select_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+    public void lambda_select_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource);
             //
             List<TbUser> tbUsers1 = lambdaTemplate.lambdaQuery(TbUser.class).queryForList();
             List<String> collect1 = tbUsers1.stream().map(TbUser::getName).collect(Collectors.toList());
@@ -90,9 +88,9 @@ public class LambdaQueryTest extends AbstractDbTest {
     }
 
     @Test
-    public void lambdaQuery_select_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+    public void lambdaQuery_select_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource);
             //
             List<TbUser> tbUsers1 = lambdaTemplate.lambdaQuery(TbUser.class).selectAll().queryForList();
             List<TbUser> tbUsers2 = lambdaTemplate.lambdaQuery(TbUser.class).queryForList();
@@ -110,9 +108,9 @@ public class LambdaQueryTest extends AbstractDbTest {
     }
 
     @Test
-    public void lambdaQuery_select_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+    public void lambdaQuery_select_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource);
             //
             List<TB_User> tbUsers1 = lambdaTemplate.lambdaQuery(TB_User.class).selectAll().queryForList();
             List<TB_User> tbUsers2 = lambdaTemplate.lambdaQuery(TB_User.class).queryForList();
@@ -130,9 +128,9 @@ public class LambdaQueryTest extends AbstractDbTest {
     }
 
     @Test
-    public void lambdaQuery_select_4() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+    public void lambdaQuery_select_4() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource);
             //
             TbUser tbUser = lambdaTemplate.lambdaQuery(TbUser.class)//
                     .eq(TbUser::getAccount, "muhammad").apply("limit 1").queryForObject();
@@ -142,9 +140,9 @@ public class LambdaQueryTest extends AbstractDbTest {
     }
 
     @Test
-    public void lambdaQuery_select_5() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+    public void lambdaQuery_select_5() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource);
             //
             TB_User tbUser = lambdaTemplate.lambdaQuery(TbUser.class)//
                     .eq(TbUser::getAccount, "muhammad").apply("limit 1")//
@@ -156,9 +154,9 @@ public class LambdaQueryTest extends AbstractDbTest {
     }
 
     @Test
-    public void lambdaQuery_select_6() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+    public void lambdaQuery_select_6() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource);
             //
             Map<String, Object> tbUser = lambdaTemplate.lambdaQuery(TbUser.class)//
                     .eq(TbUser::getAccount, "muhammad").apply("limit 1")//
@@ -170,9 +168,9 @@ public class LambdaQueryTest extends AbstractDbTest {
     }
 
     @Test
-    public void lambdaQuery_lambdaCount_7() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+    public void lambdaQuery_lambdaCount_7() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource);
             //
             int lambdaCount1 = lambdaTemplate.lambdaQuery(TbUser.class)//
                     .eq(TbUser::getAccount, "muhammad")//

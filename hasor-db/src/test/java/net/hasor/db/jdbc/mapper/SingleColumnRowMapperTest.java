@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.mapper;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TB_User2;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
 public class SingleColumnRowMapperTest {
     @Test
-    public void testSingleColumnRowMapper_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testSingleColumnRowMapper_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             String resultData = null;
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('abc');");
@@ -52,9 +50,9 @@ public class SingleColumnRowMapperTest {
     }
 
     @Test
-    public void testSingleColumnRowMapper_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testSingleColumnRowMapper_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_int) values (123);");
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_double) values (123.123);");
@@ -78,9 +76,9 @@ public class SingleColumnRowMapperTest {
     }
 
     @Test
-    public void testSingleColumnRowMapper_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testSingleColumnRowMapper_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<TB_User2> tbUser2s = jdbcTemplate.queryForList("select *,'' as futures from tb_user", TB_User2.class);
             assert tbUser2s.size() == 3;

@@ -26,7 +26,6 @@ import org.w3c.dom.Node;
  */
 public class QuerySqlConfig extends DmlSqlConfig {
     private String              resultMap;
-    private String              dataqlMap;
     //
     private String              resultType;
     private int                 fetchSize;
@@ -41,7 +40,6 @@ public class QuerySqlConfig extends DmlSqlConfig {
         super(target, operationNode);
         NamedNodeMap nodeAttributes = operationNode.getAttributes();
         Node resultMapNode = nodeAttributes.getNamedItem("resultMap");
-        Node dataqlMapNode = nodeAttributes.getNamedItem("dataqlMap");
         Node resultTypeNode = nodeAttributes.getNamedItem("resultType");
         Node fetchSizeNode = nodeAttributes.getNamedItem("fetchSize");
         Node resultSetTypeNode = nodeAttributes.getNamedItem("resultSetType");
@@ -51,14 +49,12 @@ public class QuerySqlConfig extends DmlSqlConfig {
         String fetchSize = (fetchSizeNode != null) ? fetchSizeNode.getNodeValue() : null;
         String resultSetType = (resultSetTypeNode != null) ? resultSetTypeNode.getNodeValue() : null;
         String multipleResult = (multipleResultNode != null) ? multipleResultNode.getNodeValue() : null;
-        String dataqlMap = (dataqlMapNode != null) ? dataqlMapNode.getNodeValue() : null;
         //
         this.resultMap = resultMap;
         this.resultType = resultType;
         this.fetchSize = StringUtils.isBlank(fetchSize) ? 256 : Integer.parseInt(fetchSize);
         this.resultSetType = ResultSetType.valueOfCode(resultSetType, ResultSetType.DEFAULT);
         this.multipleResultType = MultipleResultsType.valueOfCode(multipleResult, MultipleResultsType.LAST);
-        this.dataqlMap = dataqlMap;
     }
 
     @Override
@@ -72,14 +68,6 @@ public class QuerySqlConfig extends DmlSqlConfig {
 
     public void setResultMap(String resultMap) {
         this.resultMap = resultMap;
-    }
-
-    public String getDataqlMap() {
-        return this.dataqlMap;
-    }
-
-    public void setDataqlMap(String dataqlMap) {
-        this.dataqlMap = dataqlMap;
     }
 
     public String getResultType() {

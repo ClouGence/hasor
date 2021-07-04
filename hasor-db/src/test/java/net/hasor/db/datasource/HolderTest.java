@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.db.datasource;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TB_User;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,9 +31,8 @@ import static net.hasor.test.db.utils.TestUtils.*;
 
 public class HolderTest extends AbstractDbTest {
     @Test
-    public void holder_basic_test_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            DataSource dataSource = appContext.getInstance(DataSource.class);
+    public void holder_basic_test_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
             ConnectionHolder holder = new ConnectionHolder(dataSource);
             //
             assert !holder.isOpen();
@@ -66,9 +62,8 @@ public class HolderTest extends AbstractDbTest {
     }
 
     @Test
-    public void holder_basic_test_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            DataSource dataSource = appContext.getInstance(DataSource.class);
+    public void holder_basic_test_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
             ConnectionHolder holder = new ConnectionHolder(dataSource);
             //
             assert holder.getConnection() == null;
@@ -98,10 +93,8 @@ public class HolderTest extends AbstractDbTest {
     }
 
     @Test
-    public void holder_basic_test_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            DataSource dataSource = appContext.getInstance(DataSource.class);
-            //
+    public void holder_basic_test_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
             Connection conn = DataSourceManager.newConnection(dataSource);
             //
             assert conn instanceof ConnectionProxy;
@@ -116,9 +109,8 @@ public class HolderTest extends AbstractDbTest {
     }
 
     @Test
-    public void holder_tran_test_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            DataSource dataSource = appContext.getInstance(DataSource.class);
+    public void holder_tran_test_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
             ConnectionHolder holder1 = new ConnectionHolder(dataSource);    // tran1
             ConnectionHolder holder2 = new ConnectionHolder(dataSource);    // tran2
             //
@@ -160,9 +152,8 @@ public class HolderTest extends AbstractDbTest {
     }
 
     @Test
-    public void holder_tran_test_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            DataSource dataSource = appContext.getInstance(DataSource.class);
+    public void holder_tran_test_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
             ConnectionHolder holder1 = new ConnectionHolder(dataSource);    // tran1
             ConnectionHolder holder2 = new ConnectionHolder(dataSource);    // tran2
             //
@@ -196,9 +187,8 @@ public class HolderTest extends AbstractDbTest {
     }
 
     @Test
-    public void holder_savepoint_test_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            DataSource dataSource = appContext.getInstance(DataSource.class);
+    public void holder_savepoint_test_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
             ConnectionHolder holder1 = new ConnectionHolder(dataSource);    // tran1
             ConnectionHolder holder2 = new ConnectionHolder(dataSource);    // tran2
             //

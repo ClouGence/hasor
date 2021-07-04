@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.extractor;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.SingleDsModule;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -36,9 +34,9 @@ import static net.hasor.test.db.utils.TestUtils.*;
  */
 public class FilterNullResultSetExtractorTest extends AbstractDbTest {
     @Test
-    public void testFilterNullResultSetExtractor_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testFilterNullResultSetExtractor_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate(INSERT_ARRAY, arrayForData6());
             jdbcTemplate.executeUpdate(INSERT_ARRAY, arrayForData7());
@@ -57,9 +55,9 @@ public class FilterNullResultSetExtractorTest extends AbstractDbTest {
     }
 
     @Test
-    public void testFilterNullResultSetExtractor_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testFilterNullResultSetExtractor_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate(INSERT_ARRAY, arrayForData6());
             jdbcTemplate.executeUpdate(INSERT_ARRAY, arrayForData7());
@@ -82,9 +80,9 @@ public class FilterNullResultSetExtractorTest extends AbstractDbTest {
     }
 
     @Test
-    public void testFilterNullResultSetExtractor_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testFilterNullResultSetExtractor_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate(INSERT_ARRAY, arrayForData6()); // loginPassword is null
             jdbcTemplate.executeUpdate(INSERT_ARRAY, arrayForData7()); // loginPassword is null

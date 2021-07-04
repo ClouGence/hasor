@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.transaction.support.JdbcTransactionManager;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TB_User;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
 import java.sql.Connection;
@@ -37,10 +37,10 @@ import static net.hasor.test.db.utils.TestUtils.*;
 public class BasicPropagationTranTest extends AbstractDbTest {
     @Test
     public void tran_required_test_1() throws Throwable {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(false))) {
+        try (DruidDataSource dataSource = DsUtils.createDs(false)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+            TransactionTemplate temp = new JdbcTransactionManager(dataSource).getTransactionTemplate();
             // .REQUIRED：尝试加入已经存在的事务中，如果没有则开启一个新的事务.
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
             temp.execute((TransactionCallbackWithoutResult) t1 -> {
                 System.out.println("begin T1!");
                 /*T1 - 赵子龙*/
@@ -77,10 +77,10 @@ public class BasicPropagationTranTest extends AbstractDbTest {
 
     @Test
     public void tran_requirednew_test_1() throws Throwable {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(false))) {
+        try (DruidDataSource dataSource = DsUtils.createDs(false)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+            TransactionTemplate temp = new JdbcTransactionManager(dataSource).getTransactionTemplate();
             // .REQUIRES_NEW：使用独立事务.
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
             temp.execute((TransactionCallbackWithoutResult) t1 -> {
                 /*T1 - 赵子龙*/
                 jdbcTemplate.executeUpdate(INSERT_ARRAY, arrayForData4());
@@ -106,10 +106,10 @@ public class BasicPropagationTranTest extends AbstractDbTest {
 
     @Test
     public void tran_nested_test_1() throws Throwable {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(false))) {
+        try (DruidDataSource dataSource = DsUtils.createDs(false)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+            TransactionTemplate temp = new JdbcTransactionManager(dataSource).getTransactionTemplate();
             // .NESTED：使用保存点方式分割两个事务. - T2抛了异常由于T2被savepoint回滚掉了，最终数据库中只有T1的数据
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
             temp.execute((TransactionCallbackWithoutResult) t1 -> {
                 /*T1 - 赵子龙*/
                 jdbcTemplate.executeUpdate(INSERT_ARRAY, arrayForData4());
@@ -141,10 +141,10 @@ public class BasicPropagationTranTest extends AbstractDbTest {
 
     @Test
     public void tran_never_test_1() throws Throwable {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(false))) {
+        try (DruidDataSource dataSource = DsUtils.createDs(false)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+            TransactionTemplate temp = new JdbcTransactionManager(dataSource).getTransactionTemplate();
             // .NEVER：非事务方式运行.- T2抛了异常，但是是非事务方式，因此数据已经递交到数据库中。
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
             Connection connection = TranManager.currentConnection(jdbcTemplate.getDataSource());
             connection.setAutoCommit(true); // 打开默认事务
             //
@@ -175,10 +175,10 @@ public class BasicPropagationTranTest extends AbstractDbTest {
 
     @Test
     public void tran_never_test_2() throws Throwable {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(false))) {
+        try (DruidDataSource dataSource = DsUtils.createDs(false)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+            TransactionTemplate temp = new JdbcTransactionManager(dataSource).getTransactionTemplate();
             // .NEVER：环境中必须没有事务，否则抛异常
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
             Connection connection = TranManager.currentConnection(jdbcTemplate.getDataSource());
             connection.setAutoCommit(false); // 关闭默认事务，需要手动 commit
             //
@@ -201,11 +201,10 @@ public class BasicPropagationTranTest extends AbstractDbTest {
 
     @Test
     public void tran_mandatory_test_1() throws Throwable {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(false))) {
-            //
+        try (DruidDataSource dataSource = DsUtils.createDs(false)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+            TransactionTemplate temp = new JdbcTransactionManager(dataSource).getTransactionTemplate();
             // .MANDATORY：要求环境中必须有事务
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
             Connection connection = TranManager.currentConnection(jdbcTemplate.getDataSource());
             connection.setAutoCommit(false); // 关闭默认事务，开启手动事务
             //
@@ -235,10 +234,10 @@ public class BasicPropagationTranTest extends AbstractDbTest {
 
     @Test
     public void tran_mandatory_test_2() throws Throwable {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(false))) {
+        try (DruidDataSource dataSource = DsUtils.createDs(false)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+            TransactionTemplate temp = new JdbcTransactionManager(dataSource).getTransactionTemplate();
             // .MANDATORY：必须要有事务，否则抛异常
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
             Connection connection = TranManager.currentConnection(jdbcTemplate.getDataSource());
             connection.setAutoCommit(true); // 关闭手动事务，使用自动事务。
             //
@@ -261,10 +260,10 @@ public class BasicPropagationTranTest extends AbstractDbTest {
 
     @Test
     public void tran_supports_test_1() throws Throwable {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(false))) {
+        try (DruidDataSource dataSource = DsUtils.createDs(false)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+            TransactionTemplate temp = new JdbcTransactionManager(dataSource).getTransactionTemplate();
             // .SUPPORTS：跟随环境上的事务, 环境上启动事务，T1跟随环境，T2使用独立事务
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
             Connection connection = TranManager.currentConnection(jdbcTemplate.getDataSource());
             connection.setAutoCommit(false); // 启动事务
             //
@@ -301,10 +300,10 @@ public class BasicPropagationTranTest extends AbstractDbTest {
 
     @Test
     public void tran_not_supported_test_2() throws Throwable {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(false))) {
+        try (DruidDataSource dataSource = DsUtils.createDs(false)) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+            TransactionTemplate temp = new JdbcTransactionManager(dataSource).getTransactionTemplate();
             // .NOT_SUPPORTED：无事务，如有就挂起。 T1独立事务，T2排除事务
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
             temp.execute((TransactionCallbackWithoutResult) t1 -> {
                 /*T1 - 赵子龙*/
                 jdbcTemplate.executeUpdate(INSERT_ARRAY, arrayForData4());

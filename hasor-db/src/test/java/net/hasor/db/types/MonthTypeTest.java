@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.db.types;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.MonthOfNumberTypeHandler;
 import net.hasor.db.types.handler.MonthOfStringTypeHandler;
 import net.hasor.db.types.handler.MonthOfTimeTypeHandler;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
@@ -34,9 +32,9 @@ import java.util.*;
 
 public class MonthTypeTest {
     @Test
-    public void testMonthOfNumberTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testMonthOfNumberTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_tinyint) values (05);");
             List<Month> dat = jdbcTemplate.query("select c_tinyint from tb_h2_types where c_tinyint is not null limit 1;", (rs, rowNum) -> {
@@ -47,9 +45,9 @@ public class MonthTypeTest {
     }
 
     @Test
-    public void testMonthOfNumberTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testMonthOfNumberTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_tinyint) values (05);");
             List<Month> dat = jdbcTemplate.query("select c_tinyint from tb_h2_types where c_tinyint is not null limit 1;", (rs, rowNum) -> {
@@ -60,9 +58,9 @@ public class MonthTypeTest {
     }
 
     @Test
-    public void testMonthOfNumberTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testMonthOfNumberTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Month dat1 = jdbcTemplate.queryForObject("select ?", Month.class, 5);
             assert dat1 == Month.MAY;
@@ -94,9 +92,9 @@ public class MonthTypeTest {
     }
 
     @Test
-    public void testMonthOfStringTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testMonthOfStringTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('05');");
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('may');");
@@ -109,9 +107,9 @@ public class MonthTypeTest {
     }
 
     @Test
-    public void testMonthOfStringTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testMonthOfStringTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('05');");
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_varchar) values ('may');");
@@ -124,9 +122,9 @@ public class MonthTypeTest {
     }
 
     @Test
-    public void testMonthOfStringTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testMonthOfStringTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Month dat1 = jdbcTemplate.queryForObject("select ?", Month.class, "5");
             assert dat1 == Month.MAY;
@@ -160,9 +158,9 @@ public class MonthTypeTest {
     }
 
     @Test
-    public void testMonthOfTimeTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testMonthOfTimeTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (CURRENT_TIMESTAMP(9));");
             List<Month> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
@@ -173,9 +171,9 @@ public class MonthTypeTest {
     }
 
     @Test
-    public void testMonthOfTimeTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testMonthOfTimeTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_timestamp) values (CURRENT_TIMESTAMP(9));");
             List<Month> dat = jdbcTemplate.query("select c_timestamp from tb_h2_types where c_timestamp is not null limit 1;", (rs, rowNum) -> {
@@ -186,9 +184,9 @@ public class MonthTypeTest {
     }
 
     @Test
-    public void testMonthOfTimeTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testMonthOfTimeTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             //
             Month dat1 = jdbcTemplate.queryForObject("select ?", Month.class, new Date());

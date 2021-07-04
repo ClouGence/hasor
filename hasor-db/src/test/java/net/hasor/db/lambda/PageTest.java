@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.db.lambda;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.JdbcUtils;
 import net.hasor.db.dialect.BoundSql;
 import net.hasor.db.dialect.SqlDialectRegister;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TB_User;
 import net.hasor.test.db.dto.TbUser;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -79,9 +77,9 @@ public class PageTest extends AbstractDbTest {
     }
 
     @Test
-    public void pageTest_4() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+    public void pageTest_4() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource);
             JdbcTemplate jdbcTemplate = lambdaTemplate.getJdbcTemplate();
             jdbcTemplate.execute("delete from tb_user");
             //
@@ -125,9 +123,9 @@ public class PageTest extends AbstractDbTest {
     }
 
     @Test
-    public void pageTest_5() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+    public void pageTest_5() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource);
             JdbcTemplate jdbcTemplate = lambdaTemplate.getJdbcTemplate();
             jdbcTemplate.execute("delete from tb_user");
             //

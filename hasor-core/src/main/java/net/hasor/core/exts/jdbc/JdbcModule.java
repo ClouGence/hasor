@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db;
+package net.hasor.core.exts.jdbc;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
 import net.hasor.core.Module;
 import net.hasor.core.exts.aop.Matchers;
+import net.hasor.db.Transactional;
 import net.hasor.db.jdbc.JdbcOperations;
 import net.hasor.db.jdbc.core.JdbcAccessor;
 import net.hasor.db.jdbc.core.JdbcConnection;

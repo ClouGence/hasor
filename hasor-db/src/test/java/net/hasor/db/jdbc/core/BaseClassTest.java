@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.datasource.ConnectionProxy;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.StatementCallback;
 import net.hasor.db.mapping.MappingRegistry;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.SingleDsModule;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -119,9 +118,8 @@ public class BaseClassTest extends AbstractDbTest {
     }
 
     @Test
-    public void jdbcConnectionTest_4() {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            DataSource dataSource = appContext.getInstance(DataSource.class);
+    public void jdbcConnectionTest_4() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
             //
             try {
                 new JdbcConnection(dataSource).execute((ConnectionCallback<Object>) con -> {
@@ -149,9 +147,8 @@ public class BaseClassTest extends AbstractDbTest {
     }
 
     @Test
-    public void jdbcConnectionTest_5() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            DataSource dataSource = appContext.getInstance(DataSource.class);
+    public void jdbcConnectionTest_5() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
             JdbcConnection jdbcConnection = new JdbcConnection(dataSource);
             jdbcConnection.setMaxRows(123);
             jdbcConnection.setFetchSize(10);

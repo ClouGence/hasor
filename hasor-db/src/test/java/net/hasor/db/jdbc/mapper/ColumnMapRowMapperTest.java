@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.mapper;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
@@ -31,9 +29,9 @@ import static net.hasor.test.db.utils.TestUtils.*;
 
 public class ColumnMapRowMapperTest {
     @Test
-    public void testColumnMapRowMapper_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testColumnMapRowMapper_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             List<Map<String, Object>> mapList = jdbcTemplate.query("select * from tb_user", new ColumnMapRowMapper());
             //
             List<String> collect = mapList.stream().map(stringObjectMap -> {

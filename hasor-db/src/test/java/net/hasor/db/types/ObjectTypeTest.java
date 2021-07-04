@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.db.types;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.ObjectTypeHandler;
-import net.hasor.test.db.SingleDsModule;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
 import java.sql.JDBCType;
@@ -30,9 +29,9 @@ import java.util.Set;
 
 public class ObjectTypeTest {
     @Test
-    public void testObjectTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testObjectTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Set<String> testSet = new HashSet<>(Arrays.asList("a", "b", "c"));
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_other) values (?);", testSet);
@@ -49,9 +48,9 @@ public class ObjectTypeTest {
     }
 
     @Test
-    public void testObjectTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testObjectTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Set<String> testSet = new HashSet<>(Arrays.asList("a", "b", "c"));
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_other) values (?);", testSet);
@@ -68,9 +67,9 @@ public class ObjectTypeTest {
     }
 
     @Test
-    public void testObjectTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testObjectTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             Set<String> testSet = new HashSet<>(Arrays.asList("a", "b", "c"));
             List<Object> dat = jdbcTemplate.query("select ?", ps -> {

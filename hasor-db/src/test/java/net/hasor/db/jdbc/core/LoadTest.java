@@ -15,8 +15,8 @@
  */
 package net.hasor.db.jdbc.core;
 import net.hasor.db.jdbc.ConnectionCallback;
-import net.hasor.db.metadata.provider.MySqlMetadataProvider;
 import net.hasor.db.metadata.domain.mysql.MySqlTable;
+import net.hasor.db.metadata.provider.MySqlMetadataProvider;
 import net.hasor.test.db.AbstractDbTest;
 import net.hasor.test.db.utils.DsUtils;
 import net.hasor.utils.ResourcesUtils;

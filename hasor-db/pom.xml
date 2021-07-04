@@ -34,16 +34,6 @@
             <groupId>net.hasor</groupId>
             <artifactId>hasor-commons</artifactId>
         </dependency>
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-dataql</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-core</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- shade -->
         <dependency>

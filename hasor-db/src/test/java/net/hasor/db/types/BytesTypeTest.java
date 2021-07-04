@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.db.types;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.BytesForWrapTypeHandler;
 import net.hasor.db.types.handler.BytesInputStreamTypeHandler;
 import net.hasor.db.types.handler.BytesTypeHandler;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.utils.DsUtils;
 import net.hasor.utils.CommonCodeUtils;
 import net.hasor.utils.io.IOUtils;
@@ -29,7 +27,6 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.JDBCType;
 import java.sql.SQLException;
@@ -55,9 +52,9 @@ public class BytesTypeTest {
     }
 
     @Test
-    public void testBytesForWrapTypeHandler_1() throws SQLException, NoSuchAlgorithmException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testBytesForWrapTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_blob) values (?);", new Object[] { testData });
@@ -72,9 +69,9 @@ public class BytesTypeTest {
     }
 
     @Test
-    public void testBytesForWrapTypeHandler_2() throws SQLException, NoSuchAlgorithmException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testBytesForWrapTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_blob) values (?);", new Object[] { testData });
@@ -89,9 +86,9 @@ public class BytesTypeTest {
     }
 
     @Test
-    public void testBytesForWrapTypeHandler_3() throws SQLException, NoSuchAlgorithmException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testBytesForWrapTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             List<Byte[]> dat = jdbcTemplate.query("select ?", ps -> {
@@ -127,9 +124,9 @@ public class BytesTypeTest {
     }
 
     @Test
-    public void testBytesTypeHandler_1() throws SQLException, NoSuchAlgorithmException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testBytesTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_blob) values (?);", new Object[] { testData });
@@ -144,9 +141,9 @@ public class BytesTypeTest {
     }
 
     @Test
-    public void testBytesTypeHandler_2() throws SQLException, NoSuchAlgorithmException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testBytesTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_blob) values (?);", new Object[] { testData });
@@ -161,9 +158,9 @@ public class BytesTypeTest {
     }
 
     @Test
-    public void testBytesTypeHandler_3() throws SQLException, NoSuchAlgorithmException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testBytesTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             List<byte[]> dat = jdbcTemplate.query("select ?", ps -> {
@@ -199,9 +196,9 @@ public class BytesTypeTest {
     }
 
     @Test
-    public void testBytesInputStreamTypeHandler_1() throws Exception {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testBytesInputStreamTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_blob) values (?);", new Object[] { testData });
@@ -216,9 +213,9 @@ public class BytesTypeTest {
     }
 
     @Test
-    public void testBytesInputStreamTypeHandler_2() throws Exception {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testBytesInputStreamTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_blob) values (?);", new Object[] { testData });
@@ -233,9 +230,9 @@ public class BytesTypeTest {
     }
 
     @Test
-    public void testBytesInputStreamTypeHandler_3() throws Exception {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testBytesInputStreamTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             byte[] testData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             List<InputStream> dat = jdbcTemplate.query("select ?", ps -> {

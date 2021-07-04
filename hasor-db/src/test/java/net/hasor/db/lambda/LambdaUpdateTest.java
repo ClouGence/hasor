@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.db.lambda;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.lambda.LambdaOperations.LambdaQuery;
 import net.hasor.db.lambda.LambdaOperations.LambdaUpdate;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TB_User;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,9 +34,9 @@ import static net.hasor.test.db.utils.TestUtils.beanForData1;
  */
 public class LambdaUpdateTest extends AbstractDbTest {
     @Test
-    public void lambda_update_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+    public void lambda_update_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource);
             LambdaQuery<TB_User> lambdaQuery = lambdaTemplate.lambdaQuery(TB_User.class);
             List<TB_User> tbUsers1 = lambdaQuery.queryForList();
             assert tbUsers1.size() == 3;
@@ -60,9 +58,9 @@ public class LambdaUpdateTest extends AbstractDbTest {
     }
 
     @Test
-    public void lambda_update_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+    public void lambda_update_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource);
             LambdaQuery<TB_User> lambdaQuery = lambdaTemplate.lambdaQuery(TB_User.class);
             TB_User tbUser1 = lambdaQuery.eq(TB_User::getLoginName, beanForData1().getLoginName()).queryForObject();
             assert tbUser1.getName() != null;

@@ -1,6 +1,5 @@
 package net.hasor.db.dal;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.lambda.LambdaOperations;
 import net.hasor.db.lambda.LambdaTemplate;
@@ -8,11 +7,10 @@ import net.hasor.db.mapping.MappingRegistry;
 import net.hasor.db.metadata.MetaDataService;
 import net.hasor.db.metadata.provider.JdbcMetadataProvider;
 import net.hasor.db.types.TypeHandlerRegistry;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TbUser;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
@@ -24,10 +22,8 @@ public class DalTest {
     }
 
     @Test
-    public void test() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            // 数据源
-            DataSource dataSource = appContext.getInstance(DataSource.class);
+    public void test() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
             // 元信息服务（可选）
             MetaDataService metaDataService = new JdbcMetadataProvider(dataSource);
             // 类型处理器（可选）

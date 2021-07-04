@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.extractor;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.db.types.TypeHandlerRegistry;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.SingleDsModule;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -35,9 +33,9 @@ import static net.hasor.test.db.utils.TestUtils.*;
  */
 public class ColumnMapResultSetExtractorTest extends AbstractDbTest {
     @Test
-    public void testColumnMapResultSetExtractor_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testColumnMapResultSetExtractor_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<Map<String, Object>> mapList1 = jdbcTemplate.query("select * from tb_user", new ColumnMapResultSetExtractor(1));
             List<Map<String, Object>> mapList2 = jdbcTemplate.query("select * from tb_user", new ColumnMapResultSetExtractor());
@@ -52,9 +50,9 @@ public class ColumnMapResultSetExtractorTest extends AbstractDbTest {
     }
 
     @Test
-    public void testRowMapperResultSetExtractor_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testRowMapperResultSetExtractor_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             ColumnMapRowMapper rowMapper = new ColumnMapRowMapper();
             List<Map<String, Object>> mapList1 = jdbcTemplate.query("select * from tb_user", new RowMapperResultSetExtractor<>(rowMapper, 1));
             List<Map<String, Object>> mapList2 = jdbcTemplate.query("select * from tb_user", new RowMapperResultSetExtractor<>(rowMapper));
@@ -65,9 +63,9 @@ public class ColumnMapResultSetExtractorTest extends AbstractDbTest {
     }
 
     @Test
-    public void testColumnMapResultSetExtractor_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testColumnMapResultSetExtractor_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             String dataId = beanForData4().getUserUUID();
             Object[] dataArgs = arrayForData4();

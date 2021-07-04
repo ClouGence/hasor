@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.db.types;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.BigDecimalTypeHandler;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
@@ -33,9 +31,9 @@ import java.util.Map;
 
 public class BigDecimalTypeTest {
     @Test
-    public void testBigDecimalTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testBigDecimalTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_decimal_1) values (1234567890.1234567890);");
             List<BigDecimal> dat1 = jdbcTemplate.query("select c_decimal_1 from tb_h2_types where c_decimal_1 is not null limit 1;", (rs, rowNum) -> {
@@ -52,9 +50,9 @@ public class BigDecimalTypeTest {
     }
 
     @Test
-    public void testBigDecimalTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testBigDecimalTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_decimal_1) values (1234567890.1234567890);");
             List<BigDecimal> dat1 = jdbcTemplate.query("select c_decimal_1 from tb_h2_types where c_decimal_1 is not null limit 1;", (rs, rowNum) -> {
@@ -71,9 +69,9 @@ public class BigDecimalTypeTest {
     }
 
     @Test
-    public void testBigDecimalTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testBigDecimalTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<BigDecimal> dat = jdbcTemplate.query("select ?", ps -> {
                 new BigDecimalTypeHandler().setParameter(ps, 1, new BigDecimal("1234567890.1234567890"), JDBCType.DECIMAL);

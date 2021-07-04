@@ -14,34 +14,30 @@
  * limitations under the License.
  */
 package net.hasor.db.types;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.ClobReaderTypeHandler;
 import net.hasor.db.types.handler.NClobReaderTypeHandler;
 import net.hasor.db.types.handler.NStringReaderTypeHandler;
 import net.hasor.db.types.handler.StringReaderTypeHandler;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.utils.DsUtils;
 import net.hasor.utils.io.IOUtils;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.JDBCType;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class StringReaderTypeTest {
     @Test
-    public void testClobReaderTypeHandler_1() throws SQLException, IOException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testClobReaderTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
             List<Reader> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
@@ -53,9 +49,9 @@ public class StringReaderTypeTest {
     }
 
     @Test
-    public void testClobReaderTypeHandler_2() throws SQLException, IOException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testClobReaderTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
             List<Reader> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
@@ -67,9 +63,9 @@ public class StringReaderTypeTest {
     }
 
     @Test
-    public void testClobReaderTypeHandler_3() throws SQLException, IOException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testClobReaderTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<Reader> dat = jdbcTemplate.query("select ?", ps -> {
                 new ClobReaderTypeHandler().setParameter(ps, 1, new StringReader("abcedfg"), JDBCType.CLOB);
@@ -99,9 +95,9 @@ public class StringReaderTypeTest {
     }
 
     @Test
-    public void testNClobReaderTypeHandler_1() throws SQLException, IOException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNClobReaderTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
             List<Reader> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
@@ -113,9 +109,9 @@ public class StringReaderTypeTest {
     }
 
     @Test
-    public void testNClobReaderTypeHandler_2() throws SQLException, IOException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNClobReaderTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_clob) values ('abcdefg');");
             List<Reader> dat = jdbcTemplate.query("select c_clob from tb_h2_types where c_clob is not null limit 1;", (rs, rowNum) -> {
@@ -127,9 +123,9 @@ public class StringReaderTypeTest {
     }
 
     @Test
-    public void testNClobReaderTypeHandler_3() throws SQLException, IOException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNClobReaderTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<Reader> dat = jdbcTemplate.query("select ?", ps -> {
                 new NClobReaderTypeHandler().setParameter(ps, 1, new StringReader("abcedfg"), JDBCType.CLOB);
@@ -159,9 +155,9 @@ public class StringReaderTypeTest {
     }
 
     @Test
-    public void testStringTypeHandler_1() throws SQLException, IOException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testStringTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
             List<Reader> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
@@ -173,9 +169,9 @@ public class StringReaderTypeTest {
     }
 
     @Test
-    public void testStringTypeHandler_2() throws SQLException, IOException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testStringTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
             List<Reader> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
@@ -187,9 +183,9 @@ public class StringReaderTypeTest {
     }
 
     @Test
-    public void testStringTypeHandler_3() throws SQLException, IOException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testStringTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             String dat1 = jdbcTemplate.queryForObject("select ?", String.class, "abcdefg");
             String dat2 = jdbcTemplate.queryForObject("select ?", String.class, (String) null);
@@ -224,9 +220,9 @@ public class StringReaderTypeTest {
     }
 
     @Test
-    public void testNStringTypeHandler_1() throws SQLException, IOException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNStringTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
             List<Reader> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
@@ -238,9 +234,9 @@ public class StringReaderTypeTest {
     }
 
     @Test
-    public void testNStringTypeHandler_2() throws SQLException, IOException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNStringTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_text) values ('abcdefg');");
             List<Reader> dat = jdbcTemplate.query("select c_text from tb_h2_types where c_text is not null limit 1;", (rs, rowNum) -> {
@@ -252,9 +248,9 @@ public class StringReaderTypeTest {
     }
 
     @Test
-    public void testNStringTypeHandler_3() throws SQLException, IOException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testNStringTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             String dat1 = jdbcTemplate.queryForObject("select ?", String.class, "abcdefg");
             String dat2 = jdbcTemplate.queryForObject("select ?", String.class, (String) null);

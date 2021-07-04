@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.paramer.BeanSqlParameterSource;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TB_User;
+import net.hasor.test.db.utils.DsUtils;
 import net.hasor.test.db.utils.TestUtils;
 import org.junit.Test;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +36,9 @@ import java.util.stream.Collectors;
  */
 public class ExecuteUpdateTest extends AbstractDbTest {
     @Test
-    public void executeUpdate_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void executeUpdate_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<TB_User> tbUsers1 = jdbcTemplate.queryForList("select * from tb_user", TB_User.class);
             Set<String> collect1 = tbUsers1.stream().map(TB_User::getName).collect(Collectors.toSet());
@@ -60,9 +58,9 @@ public class ExecuteUpdateTest extends AbstractDbTest {
     }
 
     @Test
-    public void executeUpdate_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void executeUpdate_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<TB_User> tbUsers1 = jdbcTemplate.queryForList("select * from tb_user", TB_User.class);
             Set<String> collect1 = tbUsers1.stream().map(TB_User::getName).collect(Collectors.toSet());
@@ -82,9 +80,9 @@ public class ExecuteUpdateTest extends AbstractDbTest {
     }
 
     @Test
-    public void executeUpdate_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void executeUpdate_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<TB_User> tbUsers1 = jdbcTemplate.queryForList("select * from tb_user", TB_User.class);
             Set<String> collect1 = tbUsers1.stream().map(TB_User::getName).collect(Collectors.toSet());
@@ -100,9 +98,9 @@ public class ExecuteUpdateTest extends AbstractDbTest {
     }
 
     @Test
-    public void executeUpdate_4() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void executeUpdate_4() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<TB_User> tbUsers1 = jdbcTemplate.queryForList("select * from tb_user", TB_User.class);
             Set<String> collect1 = tbUsers1.stream().map(TB_User::getName).collect(Collectors.toSet());
@@ -120,9 +118,9 @@ public class ExecuteUpdateTest extends AbstractDbTest {
     }
 
     @Test
-    public void executeUpdate_5() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void executeUpdate_5() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<TB_User> tbUsers1 = jdbcTemplate.queryForList("select * from tb_user", TB_User.class);
             Set<String> collect1 = tbUsers1.stream().map(TB_User::getName).collect(Collectors.toSet());
@@ -138,9 +136,9 @@ public class ExecuteUpdateTest extends AbstractDbTest {
     }
 
     @Test
-    public void executeUpdate_6() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void executeUpdate_6() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<TB_User> tbUsers1 = jdbcTemplate.queryForList("select * from tb_user", TB_User.class);
             Set<String> collect1 = tbUsers1.stream().map(TB_User::getName).collect(Collectors.toSet());
@@ -159,9 +157,9 @@ public class ExecuteUpdateTest extends AbstractDbTest {
     }
 
     @Test
-    public void executeUpdate_7() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void executeUpdate_7() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             List<TB_User> tbUsers1 = jdbcTemplate.queryForList("select * from tb_user", TB_User.class);
             Set<String> collect1 = tbUsers1.stream().map(TB_User::getName).collect(Collectors.toSet());

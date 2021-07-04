@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static net.hasor.test.db.utils.DsUtils.ADBMYSQL_SCHEMA_NAME;
+import static net.hasor.test.db.utils.DsUtils.ADB_MYSQL_SCHEMA_NAME;
 
 /***
  *
@@ -64,13 +64,13 @@ public class AdbMySqlMetadataServiceSupplierTest extends AbstractMetadataService
         List<AdbMySqlSchema> schemas = this.repository.getSchemas();
         List<String> collect = schemas.stream().map(AdbMySqlSchema::getName).collect(Collectors.toList());
         assert collect.contains("INFORMATION_SCHEMA");
-        assert collect.contains(ADBMYSQL_SCHEMA_NAME);
+        assert collect.contains(ADB_MYSQL_SCHEMA_NAME);
     }
 
     @Test
     public void getSchemaTest() throws SQLException {
         AdbMySqlSchema schema1 = this.repository.getSchema("abc");
-        AdbMySqlSchema schema2 = this.repository.getSchema(ADBMYSQL_SCHEMA_NAME);
+        AdbMySqlSchema schema2 = this.repository.getSchema(ADB_MYSQL_SCHEMA_NAME);
         assert schema1 == null;
         assert schema2 != null;
     }
@@ -89,7 +89,7 @@ public class AdbMySqlMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getMaterializedView() throws SQLException {
-        List<AdbMySqlTable> tableList = this.repository.findTable(ADBMYSQL_SCHEMA_NAME, new String[] { "m_tb_user" });
+        List<AdbMySqlTable> tableList = this.repository.findTable(ADB_MYSQL_SCHEMA_NAME, new String[] { "m_tb_user" });
         assert tableList.size() == 1;
         assert tableList.get(0) instanceof AdbMySqlMaterialized;
         assert tableList.get(0).getTableType() == AdbMySqlTableType.Materialized;
@@ -109,7 +109,7 @@ public class AdbMySqlMetadataServiceSupplierTest extends AbstractMetadataService
     public void getTable() throws SQLException {
         AdbMySqlTable tableObj1 = this.repository.getTable("INFORMATION_SCHEMA", "COLUMNS");
         AdbMySqlTable tableObj2 = this.repository.getTable("INFORMATION_SCHEMA", "ABC");
-        AdbMySqlTable tableObj3 = this.repository.getTable(ADBMYSQL_SCHEMA_NAME, "t3");
+        AdbMySqlTable tableObj3 = this.repository.getTable(ADB_MYSQL_SCHEMA_NAME, "t3");
         assert tableObj1 != null;
         assert tableObj1.getTableType() == AdbMySqlTableType.SystemView;
         assert tableObj2 == null;
@@ -138,7 +138,7 @@ public class AdbMySqlMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getColumns_2() throws SQLException {
-        List<AdbMySqlColumn> columnList = this.repository.getColumns(ADBMYSQL_SCHEMA_NAME, "proc_table_ref");
+        List<AdbMySqlColumn> columnList = this.repository.getColumns(ADB_MYSQL_SCHEMA_NAME, "proc_table_ref");
         Map<String, AdbMySqlColumn> columnMap = columnList.stream().collect(Collectors.toMap(AdbMySqlColumn::getName, c -> c));
         assert columnMap.size() == 6;
         assert columnMap.get("r_int").isPrimaryKey();
@@ -151,7 +151,7 @@ public class AdbMySqlMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getPrimaryKey1() throws SQLException {
-        AdbMySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(ADBMYSQL_SCHEMA_NAME, "proc_table_ref");
+        AdbMySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(ADB_MYSQL_SCHEMA_NAME, "proc_table_ref");
         assert primaryKey.getName().equals("PRIMARY");
         assert primaryKey.getColumns().size() == 1;
         assert primaryKey.getColumns().contains("r_int");
@@ -159,7 +159,7 @@ public class AdbMySqlMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getPrimaryKey2() throws SQLException {
-        AdbMySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(ADBMYSQL_SCHEMA_NAME, "proc_table");
+        AdbMySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(ADB_MYSQL_SCHEMA_NAME, "proc_table");
         assert primaryKey.getName().equals("PRIMARY");
         assert primaryKey.getColumns().size() == 2;
         assert primaryKey.getColumns().contains("c_id");
@@ -168,8 +168,8 @@ public class AdbMySqlMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getPrimaryKey3() throws SQLException {
-        AdbMySqlTable table = this.repository.getTable(ADBMYSQL_SCHEMA_NAME, "t3");
-        AdbMySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(ADBMYSQL_SCHEMA_NAME, "t3");
+        AdbMySqlTable table = this.repository.getTable(ADB_MYSQL_SCHEMA_NAME, "t3");
+        AdbMySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(ADB_MYSQL_SCHEMA_NAME, "t3");
         assert table != null;
         assert primaryKey != null;
         assert primaryKey.getName().equals("PRIMARY");

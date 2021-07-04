@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.db.types;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.FloatTypeHandler;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
@@ -32,9 +30,9 @@ import java.util.Map;
 
 public class FloatTypeTest {
     @Test
-    public void testFloatTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testFloatTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_float) values (123.123);");
             List<Float> dat = jdbcTemplate.query("select c_float from tb_h2_types where c_float is not null limit 1;", (rs, rowNum) -> {
@@ -45,9 +43,9 @@ public class FloatTypeTest {
     }
 
     @Test
-    public void testFloatTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testFloatTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_float) values (123.123);");
             List<Float> dat = jdbcTemplate.query("select c_float from tb_h2_types where c_float is not null limit 1;", (rs, rowNum) -> {
@@ -58,9 +56,9 @@ public class FloatTypeTest {
     }
 
     @Test
-    public void testFloatTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testFloatTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             float dat1 = jdbcTemplate.queryForObject("select ?", float.class, 123.123f);
             Float dat2 = jdbcTemplate.queryForObject("select ?", Float.class, 123.123f);

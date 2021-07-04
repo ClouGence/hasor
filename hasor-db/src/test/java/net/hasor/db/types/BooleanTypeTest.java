@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.db.types;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.jdbc.SqlParameterUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.types.handler.BooleanTypeHandler;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
@@ -32,9 +30,9 @@ import java.util.Map;
 
 public class BooleanTypeTest {
     @Test
-    public void testBooleanTypeHandler_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testBooleanTypeHandler_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_boolean) values (true);");
             List<Boolean> dat = jdbcTemplate.query("select c_boolean from tb_h2_types where c_boolean is not null limit 1;", (rs, rowNum) -> {
@@ -45,9 +43,9 @@ public class BooleanTypeTest {
     }
 
     @Test
-    public void testBooleanTypeHandler_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testBooleanTypeHandler_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             jdbcTemplate.executeUpdate("insert into tb_h2_types (c_boolean) values (true);");
             List<Boolean> dat = jdbcTemplate.query("select c_boolean from tb_h2_types where c_boolean is not null limit 1;", (rs, rowNum) -> {
@@ -58,9 +56,9 @@ public class BooleanTypeTest {
     }
 
     @Test
-    public void testBooleanTypeHandler_3() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+    public void testBooleanTypeHandler_3() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             //
             boolean dat1 = jdbcTemplate.queryForObject("select ?", boolean.class, true);
             Boolean dat2 = jdbcTemplate.queryForObject("select ?", Boolean.class, true);

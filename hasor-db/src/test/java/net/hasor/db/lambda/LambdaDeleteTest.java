@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.db.lambda;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import com.alibaba.druid.pool.DruidDataSource;
 import net.hasor.db.lambda.LambdaOperations.LambdaDelete;
 import net.hasor.test.db.AbstractDbTest;
-import net.hasor.test.db.SingleDsModule;
 import net.hasor.test.db.dto.TB_User;
+import net.hasor.test.db.utils.DsUtils;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,9 +33,9 @@ import static net.hasor.test.db.utils.TestUtils.*;
  */
 public class LambdaDeleteTest extends AbstractDbTest {
     @Test
-    public void lambda_delete_1() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+    public void lambda_delete_1() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource);
             //
             LambdaDelete<TB_User> lambdaDelete = lambdaTemplate.lambdaDelete(TB_User.class);
             int delete = lambdaDelete.allowEmptyWhere().doDelete();
@@ -46,9 +44,9 @@ public class LambdaDeleteTest extends AbstractDbTest {
     }
 
     @Test
-    public void lambda_delete_2() throws SQLException {
-        try (AppContext appContext = Hasor.create().build(new SingleDsModule(true))) {
-            LambdaTemplate lambdaTemplate = appContext.getInstance(LambdaTemplate.class);
+    public void lambda_delete_2() throws Throwable {
+        try (DruidDataSource dataSource = DsUtils.createDs()) {
+            LambdaTemplate lambdaTemplate = new LambdaTemplate(dataSource);
             //
             LambdaDelete<TB_User> lambdaDelete = lambdaTemplate.lambdaDelete(TB_User.class);
             int delete = lambdaDelete.eq(TB_User::getLoginName, beanForData1().getLoginName()).doDelete();
