@@ -1,5 +1,4 @@
 package net.hasor.dataql.extend;
-import net.hasor.core.Hasor;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.Udf;
 import net.hasor.dataql.domain.DataModel;
@@ -9,7 +8,6 @@ import net.hasor.dataql.extend.jsr223.DataQLScriptEngine;
 import org.junit.Test;
 
 import javax.script.*;
-import java.util.HashMap;
 
 public class Jsr223Test {
     @Test

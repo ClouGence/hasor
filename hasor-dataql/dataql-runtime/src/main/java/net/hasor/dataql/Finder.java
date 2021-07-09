@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-import net.hasor.core.AppContext;
-import net.hasor.utils.supplier.TypeSupplier;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
-import net.hasor.utils.supplier.SingleProvider;
+import net.hasor.utils.supplier.TypeSupplier;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * 资源加载器
@@ -33,10 +30,10 @@ import java.util.function.Supplier;
  */
 public interface Finder {
     /** 默认实现 */
-    public static final Finder                                 DEFAULT              = new Finder() {
+    public static final Finder                         DEFAULT       = new Finder() {
     };
     /** 通过 TypeSupplier 委托 findBean 的类型创建 */
-    public static final Function<TypeSupplier, Finder>         TYPE_SUPPLIER        = typeSupplier -> {
+    public static final Function<TypeSupplier, Finder> TYPE_SUPPLIER = typeSupplier -> {
         return new Finder() {
             public Object findBean(Class<?> beanType) {
                 if (typeSupplier.test(beanType)) {
@@ -46,19 +43,6 @@ public interface Finder {
                 }
             }
         };
-    };
-    /** 与 ofAppContext 类似不同的是允许 延迟生产 AppContext */
-    public static final Function<Supplier<AppContext>, Finder> APP_CONTEXT_SUPPLIER = appContextSupplier -> {
-        Supplier<AppContext> single = new SingleProvider<>(appContextSupplier);
-        return new Finder() {
-            public Object findBean(Class<?> beanType) {
-                return single.get().getInstance(beanType);
-            }
-        };
-    };
-    /** 通过 AppContext 委托 findBean 的类型创建 */
-    public static final Function<AppContext, Finder>           APP_CONTEXT          = appContext -> {
-        return APP_CONTEXT_SUPPLIER.apply(() -> appContext);
     };
 
     /** 负责处理 <code>import @"/net/hasor/demo.ql" as demo;</code>方式中 ‘/net/hasor/demo.ql’ 资源的加载 */
@@ -79,6 +63,6 @@ public interface Finder {
     }
 
     public default FragmentProcess findFragmentProcess(String fragmentType) {
-        throw new RuntimeException(fragmentType + " fragment undefine.");
+        throw new UnsupportedOperationException(fragmentType + " fragment undefine.");
     }
 }

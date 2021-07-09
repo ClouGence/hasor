@@ -393,6 +393,9 @@ public abstract class AbstractBinder implements ApiBinder {
 
         @Override
         public LifeBindingBuilder<T> toTypeSupplier(TypeSupplier typeSupplier) {
+            if (typeSupplier == null) {
+                return this;
+            }
             final Class<? extends T> bindType = (this.sourceType == null) ?//
                     this.typeBuilder.toInfo().getBindType() ://
                     this.sourceType;

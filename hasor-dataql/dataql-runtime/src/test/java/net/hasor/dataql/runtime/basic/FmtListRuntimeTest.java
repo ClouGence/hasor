@@ -52,7 +52,7 @@ public class FmtListRuntimeTest extends AbstractTestResource implements HintValu
             put("abc-abc", "abc");
         }};
         Query compilerQL = compilerQL("return ${_0} => [ `abc-abc` ]");
-        DataModel dataModel = compilerQL.execute(new Object[] { data}).getData();
+        DataModel dataModel = compilerQL.execute(new Object[] { data }).getData();
         //
         assert dataModel.isList();
         assert ((ListModel) dataModel).size() == 1;

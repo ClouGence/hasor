@@ -18,7 +18,9 @@ import net.hasor.dataql.domain.DataModel;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
+import net.hasor.utils.function.ESupplier;
 import net.hasor.utils.supplier.SingleProvider;
+import net.hasor.utils.supplier.TypeSupplier;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Method;
@@ -35,9 +37,13 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-12-11
  */
-public interface UdfSourceAssembly extends UdfSource {
-    public default Supplier<?> getSupplier(Class<?> targetType, Finder finder) {
-        return () -> this;// the Supplier return self.
+public interface UdfSourceAssembly extends UdfSource, TypeSupplier {
+    public default <T> T get(Class<? extends T> targetType) {
+        try {
+            return targetType.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public default Predicate<Method> getPredicate(Class<?> targetType) {
@@ -64,9 +70,9 @@ public interface UdfSourceAssembly extends UdfSource {
     }
 
     @Override
-    public default Supplier<Map<String, Udf>> getUdfResource(Finder finder) {
+    public default ESupplier<Map<String, Udf>, Exception> getUdfResource(Finder finder) {
         Class<?> targetType = getClass();
-        Supplier<?> supplier = getSupplier(targetType, finder);
+        ESupplier<?, Exception> supplier = () -> get(targetType);
         Predicate<Method> predicate = getPredicate(targetType);
         TypeUdfMap udfMap = new TypeUdfMap(targetType, supplier, predicate);
         return () -> udfMap;

@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql;
+package net.hasor.dataql.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
-import net.hasor.utils.supplier.TypeSupplier;
+import net.hasor.core.HasorUtils;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.dataql.DataQL.ConfigOption;
+import net.hasor.dataql.*;
+import net.hasor.utils.StringUtils;
+import net.hasor.utils.supplier.TypeSupplier;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -41,8 +44,6 @@ import java.util.function.Supplier;
 public interface QueryApiBinder extends ApiBinder, Hints {
     /** 配置编译参数 */
     public void configOption(ConfigOption optionKey, Object value);
-
-    public QueryApiBinder bindFinder(Finder finder);
 
     /** 加载带有 @DimFragment 注解的类 */
     public default QueryApiBinder loadFragment(Set<Class<?>> fragmentTypeSet) {
@@ -165,27 +166,16 @@ public interface QueryApiBinder extends ApiBinder, Hints {
             throw new IllegalStateException(sourceType.getName() + " must be normal Bean");
         }
         DimUdfSource annotationsByType = sourceType.getAnnotation(DimUdfSource.class);
-        if (annotationsByType == null) {
-            throw new IllegalStateException(sourceType.getName() + " must be configure @DimUdfSource");
+        if (annotationsByType == null || StringUtils.isBlank(annotationsByType.value())) {
+            throw new IllegalStateException(sourceType.getName() + " must be configure @DimUdfSource or name is empty.");
         }
         if (!UdfSource.class.isAssignableFrom(sourceType)) {
             throw new ClassCastException(sourceType.getName() + " is not " + UdfSource.class.getName());
         }
         //
-        Class<? extends UdfSource> udfSourceType = (Class<? extends UdfSource>) sourceType;
-        this.lazyLoad(appContext -> {
-            DataQL dataQL = appContext.getInstance(DataQL.class);
-            Finder qlFinder = dataQL.getFinder();
-            if (typeSupplier == null) {
-                dataQL.addShareVar(annotationsByType.value(), () -> {
-                    return appContext.getInstance(udfSourceType).getUdfResource(qlFinder).get();
-                });
-            } else {
-                dataQL.addShareVar(annotationsByType.value(), () -> {
-                    return typeSupplier.get(udfSourceType).getUdfResource(qlFinder).get();
-                });
-            }
-        });
+        BindInfo<?> bindInfo = bindType(sourceType).uniqueName().toTypeSupplier(typeSupplier).toInfo();
+        UdfSourceDefine define = HasorUtils.autoAware(getEnvironment(), new UdfSourceDefine(annotationsByType.value(), bindInfo));
+        bindType(UdfSourceDefine.class).uniqueName().toInstance(define);
     }
 
     /** 添加全局变量（等同于 compilerVar） */

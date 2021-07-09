@@ -1,7 +1,11 @@
 package net.hasor.dataql.runtime.ads;
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.Hasor;
-import net.hasor.dataql.*;
+import net.hasor.dataql.AbstractTestResource;
+import net.hasor.dataql.DataQL;
+import net.hasor.dataql.FragmentProcess;
+import net.hasor.dataql.Query;
+import net.hasor.dataql.binder.QueryModule;
 import net.hasor.dataql.domain.UdfModel;
 import net.hasor.test.dataql.udfs.SqlFragmentUdf;
 import org.junit.Test;

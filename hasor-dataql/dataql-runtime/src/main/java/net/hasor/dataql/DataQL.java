@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-import net.hasor.core.BindInfo;
 import net.hasor.dataql.compiler.qil.QIL;
 import net.hasor.dataql.parser.QueryModel;
 import org.antlr.v4.runtime.CharStream;
@@ -26,7 +25,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -55,35 +53,15 @@ public interface DataQL extends Hints {
     public void configOption(ConfigOption optionKey, Object value);
 
     /** 添加全局变量（等同于 compilerVar） */
-    public default DataQL addShareVarInstance(String name, Object instance) {
+    public default DataQL addShareVarValue(String name, Object instance) {
         return this.addShareVar(name, () -> instance);
     }
 
     /** 添加全局变量（等同于 compilerVar） */
-    public <T> DataQL addShareVar(String name, Class<? extends T> implementation);
+    public DataQL addShareVar(String name, Class<?> implementation);
 
     /** 添加全局变量（等同于 compilerVar） */
-    public <T> DataQL addShareVar(String name, Supplier<T> provider);
-
-    /** 获取所有全局变量 */
-    public Map<String, Supplier<?>> getShareVarMap();
-
-    /** 添加一个外部代码片段执行器 */
-    public default DataQL addFragmentProcess(String name, FragmentProcess instance) {
-        return this.addShareVar(name, () -> instance);
-    }
-
-    /** 添加一个外部代码片段执行器 */
-    public <T extends FragmentProcess> DataQL addFragmentProcess(String name, BindInfo<T> implementation);
-
-    /** 添加一个外部代码片段执行器 */
-    public <T extends FragmentProcess> DataQL addFragmentProcess(String name, Class<T> implementation);
-
-    /** 添加一个外部代码片段执行器 */
-    public <T extends FragmentProcess> DataQL addFragmentProcess(String name, Supplier<T> provider);
-
-    /** 获取默认的 Finder */
-    public Finder getFinder();
+    public DataQL addShareVar(String name, Supplier<?> provider);
 
     /**
      * 解析 DataQL 执行脚本

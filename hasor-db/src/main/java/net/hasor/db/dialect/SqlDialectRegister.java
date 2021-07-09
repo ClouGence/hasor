@@ -95,7 +95,11 @@ public class SqlDialectRegister {
         //
         if (aClass != null) {
             if (typeSupplier != null) {
-                dialect = (SqlDialect) typeSupplier.get(aClass);
+                try {
+                    dialect = (SqlDialect) typeSupplier.get(aClass);
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
             } else {
                 try {
                     dialect = (SqlDialect) aClass.newInstance();

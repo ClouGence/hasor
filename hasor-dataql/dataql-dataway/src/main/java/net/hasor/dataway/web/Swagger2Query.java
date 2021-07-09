@@ -1,12 +1,15 @@
 package net.hasor.dataway.web;
-import net.hasor.dataql.*;
-import net.hasor.dataql.parser.QueryParseException;
-import net.hasor.dataql.parser.QueryModel;
+import net.hasor.dataql.CustomizeScope;
+import net.hasor.dataql.Finder;
+import net.hasor.dataql.Query;
+import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.compiler.qil.QIL;
+import net.hasor.dataql.parser.QueryModel;
+import net.hasor.dataql.parser.QueryParseException;
 import net.hasor.dataql.runtime.CompilerArguments;
 import net.hasor.dataql.runtime.HintsSet;
-import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.dataql.runtime.QueryHelper;
+import net.hasor.dataql.runtime.QueryRuntimeException;
 import net.hasor.utils.ResourcesUtils;
 
 import java.io.IOException;
@@ -29,10 +32,6 @@ public class Swagger2Query extends HintsSet implements Query {
 
     public Swagger2Query() throws IOException, QueryParseException {
         this(Finder.DEFAULT, Collections.emptyMap());
-    }
-
-    public Swagger2Query(DataQL dataQL) throws IOException, QueryParseException {
-        this(dataQL.getFinder(), dataQL.getShareVarMap());
     }
 
     public Swagger2Query(Finder finder, Map<String, Supplier<?>> shareVarMap) throws IOException, QueryParseException {

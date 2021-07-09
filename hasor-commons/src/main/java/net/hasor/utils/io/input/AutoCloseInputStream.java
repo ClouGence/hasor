@@ -44,7 +44,7 @@ public class AutoCloseInputStream extends InputStream {
      */
     @Override
     public int read() throws IOException {
-        if (this.close == true) {
+        if (this.close) {
             return -1;
         }
         int read = this.in.read();

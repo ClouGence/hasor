@@ -17,8 +17,8 @@ package net.hasor.dataql.fx;
 import net.hasor.core.Environment;
 import net.hasor.core.setting.SettingNode;
 import net.hasor.dataql.FragmentProcess;
-import net.hasor.dataql.QueryApiBinder;
-import net.hasor.dataql.QueryModule;
+import net.hasor.dataql.binder.QueryApiBinder;
+import net.hasor.dataql.binder.QueryModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

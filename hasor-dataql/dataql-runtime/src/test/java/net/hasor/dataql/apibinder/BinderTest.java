@@ -15,12 +15,16 @@
  */
 package net.hasor.dataql.apibinder;
 import net.hasor.core.Hasor;
-import net.hasor.utils.supplier.TypeSupplier;
 import net.hasor.core.exts.aop.Matchers;
-import net.hasor.dataql.*;
+import net.hasor.dataql.AbstractTestResource;
+import net.hasor.dataql.DataQL;
+import net.hasor.dataql.DimUdf;
+import net.hasor.dataql.DimUdfSource;
+import net.hasor.dataql.binder.QueryModule;
 import net.hasor.test.dataql.udfs.AnnoDemoUdf;
 import net.hasor.test.dataql.udfs.TimeUdfSource;
 import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.supplier.TypeSupplier;
 import org.junit.Test;
 
 import java.io.IOException;

@@ -240,8 +240,7 @@ public class DatawayUtils {
             if (resultData instanceof String) {
                 //
                 setUIContextType(httpRequest, httpResponse, "text");
-                String characterEncoding = httpResponse.getCharacterEncoding();
-                responseString(httpResponse, contentType, characterEncoding, (String) resultData);
+                responseString(httpResponse, contentType, (String) resultData);
             } else if (resultData instanceof byte[]) {
                 //
                 setUIContextType(httpRequest, httpResponse, "bytes");
@@ -254,9 +253,8 @@ public class DatawayUtils {
             } else {
                 //
                 setUIContextType(httpRequest, httpResponse, "json");
-                String characterEncoding = httpResponse.getCharacterEncoding();
                 String body = JSON.toJSONString(resultData, SerializerFeature.WriteMapNullValue);
-                responseString(httpResponse, contentType, characterEncoding, body);
+                responseString(httpResponse, contentType, body);
             }
         }
         return objectMap;
@@ -286,10 +284,7 @@ public class DatawayUtils {
         }
     }
 
-    private static void responseString(HttpServletResponse httpResponse, String contentType, String characterEncoding, String contentBody) throws IOException {
-        if (StringUtils.isNotBlank(characterEncoding)) {
-            contentType = contentType + ";charset=" + characterEncoding; // 如果有 charset 那么加上 charset，否则会造成编码丢失问题。
-        }
+    private static void responseString(HttpServletResponse httpResponse, String contentType, String contentBody) throws IOException {
         if (StringUtils.isNotBlank(contentType)) {
             httpResponse.setContentType(contentType);
         }
