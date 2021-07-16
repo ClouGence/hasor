@@ -193,6 +193,18 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
     }
 
     @Test
+    public void getColumns_3() throws SQLException {
+        List<PostgresColumn> columnList = this.repository.getColumns("pg_catalog", "pg_amproc");
+        Map<String, PostgresColumn> columnMap = columnList.stream().collect(Collectors.toMap(PostgresColumn::getName, c -> c));
+        assert columnMap.size() == 6;
+        assert columnMap.get("amproc").getSqlType() == PostgresTypes.OID;
+        assert columnMap.get("amprocfamily").getSqlType() == PostgresTypes.OID;
+        assert columnMap.get("oid").getSqlType() == PostgresTypes.OID;
+        assert columnMap.get("amprocrighttype").getSqlType() == PostgresTypes.OID;
+        assert columnMap.get("amproclefttype").getSqlType() == PostgresTypes.OID;
+    }
+
+    @Test
     public void getConstraint1() throws SQLException {
         List<PostgresConstraint> columnList = this.repository.getConstraint("tester", "proc_table_ref");
         Map<String, PostgresConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(PostgresConstraint::getName, PostgresConstraint::getConstraintType));
