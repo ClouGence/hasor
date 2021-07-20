@@ -33,10 +33,16 @@ import java.util.List;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class MultipleResultSetExtractor implements PreparedStatementCallback<List<Object>>, CallableStatementCallback<List<Object>> {
-    private static final Logger             logger = LoggerFactory.getLogger(MultipleResultSetExtractor.class);
-    private final        List<RowMapper<?>> rowMappers;
+    private static final Logger              logger      = LoggerFactory.getLogger(MultipleResultSetExtractor.class);
+    private final List<RowMapper<?>>  rowMappers;
+    private       MultipleProcessType processType = MultipleProcessType.ALL;
 
     public MultipleResultSetExtractor(RowMapper<?>... rowMapper) {
+        this.rowMappers = Arrays.asList(rowMapper);
+    }
+
+    public MultipleResultSetExtractor(MultipleProcessType processType, RowMapper<?>... rowMapper) {
+        this.processType = processType;
         this.rowMappers = Arrays.asList(rowMapper);
     }
 
@@ -52,7 +58,7 @@ public class MultipleResultSetExtractor implements PreparedStatementCallback<Lis
         return doResult(retVal, ps);
     }
 
-    protected List<Object> doResult(boolean retVal, Statement stmt) throws SQLException {
+    public List<Object> doResult(boolean retVal, Statement stmt) throws SQLException {
         if (logger.isTraceEnabled()) {
             logger.trace("statement.execute() returned '" + retVal + "'");
         }
@@ -67,19 +73,30 @@ public class MultipleResultSetExtractor implements PreparedStatementCallback<Lis
             resultList.add(stmt.getUpdateCount());
         }
         //
+        if (this.processType == MultipleProcessType.FIRST) {
+            return resultList;
+        }
+        //
         int resultIndex = 1;
         while ((stmt.getMoreResults()) || (stmt.getUpdateCount() != -1)) {
             int updateCount = stmt.getUpdateCount();
+            Object last = null;
             try (ResultSet resultSet = stmt.getResultSet()) {
                 if (resultSet != null) {
                     if (this.rowMappers.size() > resultIndex) {
-                        resultList.add(processResultSet(resultSet, this.rowMappers.get(resultIndex++)));
+                        last = processResultSet(resultSet, this.rowMappers.get(resultIndex++));
                     } else {
-                        resultList.add(processResultSet(resultSet, getDefaultRowMapper()));
+                        last = processResultSet(resultSet, getDefaultRowMapper());
                     }
                 } else {
-                    resultList.add(updateCount);
+                    last = updateCount;
                 }
+            }
+            //
+            if (this.processType == MultipleProcessType.LAST) {
+                resultList.set(0, last);
+            } else {
+                resultList.add(last);
             }
         }
         return resultList;

@@ -15,12 +15,8 @@
  */
 package net.hasor.db.jdbc.core;
 import net.hasor.db.jdbc.*;
-import net.hasor.db.jdbc.SqlParameter.InSqlParameter;
-import net.hasor.db.jdbc.SqlParameter.OutSqlParameter;
 import net.hasor.db.jdbc.SqlParameter.ReturnSqlParameter;
-import net.hasor.db.jdbc.extractor.ColumnMapResultSetExtractor;
-import net.hasor.db.jdbc.extractor.RowCallbackHandlerResultSetExtractor;
-import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
+import net.hasor.db.jdbc.extractor.*;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.mapper.MappingRowMapper;
 import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
@@ -853,101 +849,24 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
 
     @Override
-    public Map<String, Object> call(String callString, List<SqlParameter> declaredParameters) throws SQLException {
-        return this.call(callString, cs -> {
-            //
-            // process params
-            int sqlColIndex = 1;
-            final List<ReturnSqlParameter> resultParameters = new ArrayList<>();
-            for (SqlParameter declaredParam : declaredParameters) {
-                // input parameters
-                if (declaredParam instanceof InSqlParameter) {
-                    JDBCType paramJdbcType = Objects.requireNonNull(((InSqlParameter) declaredParam).getJdbcType(), "jdbcType must not be null");
-                    Object paramValue = ((InSqlParameter) declaredParam).getValue();
-                    TypeHandler paramTypeHandler = ((InSqlParameter) declaredParam).getTypeHandler();
-                    //
-                    paramTypeHandler = (paramTypeHandler != null) ? paramTypeHandler : TypeHandlerRegistry.DEFAULT.getTypeHandler(paramJdbcType);
-                    paramTypeHandler.setParameter(cs, sqlColIndex, paramValue, paramJdbcType);
-                }
-                // output parameters
-                if (declaredParam instanceof OutSqlParameter) {
-                    JDBCType paramJdbcType = Objects.requireNonNull(((OutSqlParameter) declaredParam).getJdbcType(), "jdbcType must not be null");
-                    String paramTypeName = ((OutSqlParameter) declaredParam).getTypeName();
-                    Integer paramScale = ((OutSqlParameter) declaredParam).getScale();
-                    //
-                    if (paramTypeName != null) {
-                        cs.registerOutParameter(sqlColIndex, paramJdbcType, paramTypeName);
-                    } else if (paramScale != null) {
-                        cs.registerOutParameter(sqlColIndex, paramJdbcType, paramScale);
-                    } else {
-                        cs.registerOutParameter(sqlColIndex, paramJdbcType);
-                    }
-                }
-                // return parameters
-                if (declaredParam instanceof ReturnSqlParameter) {
-                    resultParameters.add((ReturnSqlParameter) declaredParam);
-                }
-                sqlColIndex++;
-            }
-            //
-            // execute call
-            Map<String, Object> resultsMap = createResultsMap();
-            boolean retVal = cs.execute();
-            if (logger.isTraceEnabled()) {
-                logger.trace("CallableStatement.execute() returned '" + retVal + "'");
-            }
-            //
-            // fetch output
-            for (int i = 1; i <= declaredParameters.size(); i++) {
-                SqlParameter declaredParam = declaredParameters.get(i - 1);
-                OutSqlParameter outParameter = null;
-                if (!(declaredParam instanceof OutSqlParameter)) {
-                    continue;
-                }
-                outParameter = (OutSqlParameter) declaredParam;
-                String paramName = declaredParam.getName();
-                JDBCType paramJdbcType = Objects.requireNonNull(outParameter.getJdbcType(), "jdbcType must not be null");
-                TypeHandler paramTypeHandler = outParameter.getTypeHandler();
-                //
-                paramName = StringUtils.isNotBlank(paramName) ? paramName : "#out-" + i;
-                paramTypeHandler = (paramTypeHandler != null) ? paramTypeHandler : TypeHandlerRegistry.DEFAULT.getTypeHandler(paramJdbcType);
-                Object resultValue = paramTypeHandler.getResult(cs, i);
-                resultsMap.put(paramName, resultValue);
-            }
-            //
-            // fetch results
-            int resultIndex = 1;
-            ReturnSqlParameter sqlParameter = resultParameters.size() > 0 ? resultParameters.get(0) : null;
-            if (retVal) {
-                try (ResultSet resultSet = cs.getResultSet()) {
-                    String name = resultParameterName(sqlParameter, "#result-set-" + resultIndex);
-                    resultsMap.put(name, processResultSet(isResultsCaseInsensitive(), resultSet, sqlParameter));
-                }
-            } else {
-                String name = resultParameterName(sqlParameter, "#update-count-" + resultIndex);
-                resultsMap.put(name, cs.getUpdateCount());
-            }
-            while ((cs.getMoreResults()) || (cs.getUpdateCount() != -1)) {
-                resultIndex++;
-                sqlParameter = resultParameters.size() > resultIndex ? resultParameters.get(resultIndex - 1) : null;
-                int updateCount = cs.getUpdateCount();
-                //
-                try (ResultSet resultSet = cs.getResultSet()) {
-                    if (resultSet != null) {
-                        String name = resultParameterName(sqlParameter, "#result-set-" + resultIndex);
-                        resultsMap.put(name, processResultSet(isResultsCaseInsensitive(), resultSet, sqlParameter));
-                    } else {
-                        String name = resultParameterName(sqlParameter, "#update-count-" + resultIndex);
-                        resultsMap.put(name, updateCount);
-                    }
-                }
-            }
-            return resultsMap;
-        });
+    public Map<String, Object> call(CallableStatementCreator csc, List<SqlParameter> declaredParameters) throws SQLException {
+        return this.call(csc, new SimpleCallableStatementCallback(MultipleProcessType.ALL, declaredParameters));
     }
 
-    private static String resultParameterName(ReturnSqlParameter sqlParameter, String defaultName) {
-        return (sqlParameter == null || StringUtils.isBlank(sqlParameter.getName())) ? defaultName : sqlParameter.getName();
+    @Override
+    public Map<String, Object> call(String callString, List<SqlParameter> declaredParameters) throws SQLException {
+        final SimpleCallableStatementCallback csc = new SimpleCallableStatementCallback(MultipleProcessType.ALL, declaredParameters) {
+            @Override
+            public boolean isResultsCaseInsensitive() {
+                return JdbcTemplate.this.isResultsCaseInsensitive();
+            }
+
+            @Override
+            protected Map<String, Object> createResultsMap() {
+                return JdbcTemplate.this.createResultsMap();
+            }
+        };
+        return this.call(callString, csc);
     }
 
     /**

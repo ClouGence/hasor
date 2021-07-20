@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 /**
- * 数据库操作框架，对 Spring JDBC 进行了重新设计和实现。
+ * 提供 dynamicSql 机制并可以生成 SQL 和其附属必要的参数等信息。
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2017-03-23
  */
-package net.hasor.db.jdbc;
+package net.hasor.db.dal.dynamic;

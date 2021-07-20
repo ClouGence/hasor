@@ -398,5 +398,7 @@ public interface JdbcOperations {
 
     public <T> T call(String callString, CallableStatementSetter setter, CallableStatementCallback<T> action) throws SQLException;
 
+    public Map<String, Object> call(CallableStatementCreator csc, List<SqlParameter> declaredParameters) throws SQLException;
+
     public Map<String, Object> call(String callString, List<SqlParameter> declaredParameters) throws SQLException;
 }

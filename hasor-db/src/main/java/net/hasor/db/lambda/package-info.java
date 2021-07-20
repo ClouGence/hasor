@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 数据库操作框架，对 Spring JDBC 进行了重新设计和实现。
+ * 提供单表的 CURD 能力，并提供 lambda 方式操作操作数据库。
  */
-package net.hasor.db.jdbc;
+package net.hasor.db.lambda;

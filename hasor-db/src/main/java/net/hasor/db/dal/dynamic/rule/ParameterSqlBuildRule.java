@@ -15,6 +15,7 @@
  */
 package net.hasor.db.dal.dynamic.rule;
 import net.hasor.db.dal.dynamic.BuilderContext;
+import net.hasor.db.dal.dynamic.DalBoundSql.SqlArg;
 import net.hasor.db.dal.dynamic.QuerySqlBuilder;
 import net.hasor.db.dal.dynamic.SqlMode;
 import net.hasor.db.dal.dynamic.ognl.OgnlUtils;
@@ -109,86 +110,20 @@ public class ParameterSqlBuildRule implements SqlBuildRule {
                 typeHandler = handlerRegistry.getTypeHandler(javaType, jdbcType);
             } else if (jdbcType != null) {
                 typeHandler = handlerRegistry.getTypeHandler(jdbcType);
-            } else {
+            }
+            if (typeHandler == null) {
                 typeHandler = handlerRegistry.getDefaultTypeHandler();
             }
         }
         //
+        if (argValue == null && jdbcType == null && javaType == null) {
+            jdbcType = JDBCType.VARCHAR;// fix all parameters unknown.
+        }
         querySqlBuilder.appendSql("?", new SqlArg(argValue, sqlMode, jdbcType, javaType, typeHandler));
     }
 
     @Override
     public String toString() {
         return "Parameter [" + this.hashCode() + "]";
-    }
-
-    /**
-     * delete 语句
-     * @version : 2021-05-19
-     * @author 赵永春 (zyc@hasor.net)
-     */
-    public static class SqlArg {
-        private Object         value;
-        private SqlMode        sqlMode;
-        private JDBCType       jdbcType;
-        private Class<?>       javaType;
-        private TypeHandler<?> typeHandler;
-
-        public SqlArg(Object value) {
-            this.value = value;
-        }
-
-        public SqlArg(Object value, SqlMode sqlMode, JDBCType jdbcType, Class<?> javaType, TypeHandler<?> typeHandler) {
-            this.value = value;
-            this.sqlMode = sqlMode;
-            this.typeHandler = typeHandler;
-            this.jdbcType = jdbcType;
-            this.javaType = javaType;
-        }
-
-        public Object getValue() {
-            return this.value;
-        }
-
-        public void setValue(Object value) {
-            this.value = value;
-        }
-
-        public SqlMode getSqlMode() {
-            return this.sqlMode;
-        }
-
-        public void setSqlMode(SqlMode sqlMode) {
-            this.sqlMode = sqlMode;
-        }
-
-        public JDBCType getJdbcType() {
-            return this.jdbcType;
-        }
-
-        public void setJdbcType(JDBCType jdbcType) {
-            this.jdbcType = jdbcType;
-        }
-
-        public Class<?> getJavaType() {
-            return this.javaType;
-        }
-
-        public void setJavaType(Class<?> javaType) {
-            this.javaType = javaType;
-        }
-
-        public TypeHandler<?> getTypeHandler() {
-            return this.typeHandler;
-        }
-
-        public void setTypeHandler(TypeHandler<?> typeHandler) {
-            this.typeHandler = typeHandler;
-        }
-
-        @Override
-        public String toString() {
-            return "SqlArg{" + "value=" + value + '}';
-        }
     }
 }

@@ -11,8 +11,8 @@
             <bindFragmentSet>
                 <!-- @@sql -->
                 <bindFragment name="sql">net.hasor.dataql.fx.db.runsql.SqlFragment</bindFragment>
-                <!-- 2020-05-18 新增@@mybatis -->
-                <bindFragment name="mybatis">net.hasor.dataql.fx.db.likemybatis.MybatisFragment</bindFragment>
+                <!-- 2021-07-23 @@sql 支持 mybatis 模式 -->
+                <bindFragment name="mybatis">net.hasor.dataql.fx.db.runsql.SqlFragment</bindFragment>
             </bindFragmentSet>
         </dataqlFx>
 

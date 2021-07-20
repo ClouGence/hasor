@@ -37,7 +37,6 @@ public interface DataQL extends Hints {
         /** 代码行号的编译模式 */
         CODE_LOCATION("codeLocation"),
         ;
-        //
         private final String configName;
 
         public String getConfigName() {

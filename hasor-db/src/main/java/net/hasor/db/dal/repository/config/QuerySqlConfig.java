@@ -26,7 +26,6 @@ import org.w3c.dom.Node;
  */
 public class QuerySqlConfig extends DmlSqlConfig {
     private String              resultMap;
-    //
     private String              resultType;
     private int                 fetchSize;
     private ResultSetType       resultSetType;

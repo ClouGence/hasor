@@ -20,6 +20,7 @@ import net.hasor.core.binder.ApiBinderCreator;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.dataql.DataQL;
 import net.hasor.dataql.DataQL.ConfigOption;
+import net.hasor.dataql.Finder;
 import net.hasor.dataql.FragmentProcess;
 import net.hasor.dataql.Udf;
 import net.hasor.dataql.service.DataQLContext;
@@ -52,6 +53,7 @@ public class QueryApiBinderCreator implements ApiBinderCreator<QueryApiBinder> {
             apiBinder.bindType(DataQLContext.class).toInstance(this.dqlConfig);
             apiBinder.bindType(DataQL.class).toInstance(this.dqlConfig);
             apiBinder.lazyLoad(appContext -> {
+                appContext.getInstance(Finder.class);
                 List<BindInfo<FragmentProcess>> fragmentInfos = appContext.findBindingRegister(FragmentProcess.class);
                 for (BindInfo<FragmentProcess> fragmentInfo : fragmentInfos) {
                     Supplier<? extends FragmentProcess> fragmentProcess = appContext.getProvider(fragmentInfo);
@@ -110,6 +112,11 @@ public class QueryApiBinderCreator implements ApiBinderCreator<QueryApiBinder> {
         public <T extends FragmentProcess> QueryApiBinder bindFragment(String fragmentType, Supplier<T> provider) {
             this.defaultFinder.addFragmentProcess(fragmentType, provider);
             return this;
+        }
+
+        @Override
+        public void applyFinder(Finder parent) {
+            this.defaultFinder.setParent(parent);
         }
     }
 }

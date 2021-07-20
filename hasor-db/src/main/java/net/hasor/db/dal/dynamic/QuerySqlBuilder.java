@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.dal.dynamic;
-import net.hasor.db.dal.dynamic.rule.ParameterSqlBuildRule.SqlArg;
-import net.hasor.db.types.TypeHandler;
-
-import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,21 +52,16 @@ public class QuerySqlBuilder implements DalBoundSql {
     public void appendBuilder(DalBoundSql dalBoundSql) {
         if (dalBoundSql instanceof QuerySqlBuilder) {
             this.queryString.append(((QuerySqlBuilder) dalBoundSql).queryString);
-            this.argList.addAll(((QuerySqlBuilder) dalBoundSql).originalArgList());
+            this.argList.addAll(dalBoundSql.getSqlArg());
         } else {
             this.queryString.append(dalBoundSql.getSqlString());
-            Object[] argValues = dalBoundSql.getArgs();
-            SqlMode[] argModes = dalBoundSql.getSqlModes();
-            JDBCType[] argJdbcTypes = dalBoundSql.getJdbcType();
-            Class<?>[] argJavaTypes = dalBoundSql.getJavaType();
-            TypeHandler<?>[] argTypeHandlers = dalBoundSql.getTypeHandlers();
-            for (int i = 0; i < argValues.length; i++) {
-                this.argList.add(new SqlArg(argValues, argModes[i], argJdbcTypes[i], argJavaTypes[i], argTypeHandlers[i]));
-            }
+            List<SqlArg> sqlArgs = dalBoundSql.getSqlArg();
+            this.argList.addAll(sqlArgs);
         }
     }
 
-    public List<SqlArg> originalArgList() {
+    @Override
+    public List<SqlArg> getSqlArg() {
         return this.argList;
     }
 
@@ -82,25 +73,5 @@ public class QuerySqlBuilder implements DalBoundSql {
     @Override
     public Object[] getArgs() {
         return this.argList.stream().map(SqlArg::getValue).toArray();
-    }
-
-    @Override
-    public SqlMode[] getSqlModes() {
-        return this.argList.stream().map(SqlArg::getSqlMode).toArray(SqlMode[]::new);
-    }
-
-    @Override
-    public JDBCType[] getJdbcType() {
-        return this.argList.stream().map(SqlArg::getJdbcType).toArray(JDBCType[]::new);
-    }
-
-    @Override
-    public Class<?>[] getJavaType() {
-        return this.argList.stream().map(SqlArg::getJavaType).toArray(Class[]::new);
-    }
-
-    @Override
-    public TypeHandler<?>[] getTypeHandlers() {
-        return this.argList.stream().map(SqlArg::getTypeHandler).toArray(TypeHandler[]::new);
     }
 }

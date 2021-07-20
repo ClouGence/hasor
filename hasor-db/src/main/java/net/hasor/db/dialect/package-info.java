@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 /**
- * 数据库操作框架，对 Spring JDBC 进行了重新设计和实现。
+ * SQL 方言。
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2017-03-23
  */
-package net.hasor.db.jdbc;
+package net.hasor.db.dialect;

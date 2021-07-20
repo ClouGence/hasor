@@ -217,4 +217,6 @@ public interface QueryApiBinder extends ApiBinder, Hints {
 
     /** 注册 FragmentProcess */
     public <T extends FragmentProcess> QueryApiBinder bindFragment(String fragmentType, Supplier<T> provider);
+
+    void applyFinder(Finder parent);
 }

@@ -100,6 +100,6 @@ public class TermDynamicSql extends ArrayDynamicSql {
             querySqlBuilder.appendSql(" " + StringUtils.defaultString(this.suffix)); // 拼接结束SQL
         }
         //
-        querySqlBuilder.appendArgs(tempQuerySqlBuilder.originalArgList());
+        querySqlBuilder.appendArgs(tempQuerySqlBuilder.getSqlArg());
     }
 }

@@ -14,25 +14,33 @@
  * limitations under the License.
  */
 package net.hasor.db.dal.repository.config;
+import java.sql.ResultSet;
+
 /**
  * FORWARD_ONLY，SCROLL_SENSITIVE, SCROLL_INSENSITIVE 或 DEFAULT（等价于 unset） 中的一个，默认值为 unset （依赖数据库驱动）。
  * @version : 2021-06-19
  * @author 赵永春 (zyc@byshell.org)
  */
 public enum ResultSetType {
-    FORWARD_ONLY("FORWARD_ONLY"),
-    SCROLL_SENSITIVE("SCROLL_SENSITIVE"),
-    SCROLL_INSENSITIVE("SCROLL_INSENSITIVE"),
-    DEFAULT("DEFAULT"),
+    FORWARD_ONLY("FORWARD_ONLY", ResultSet.TYPE_FORWARD_ONLY),
+    SCROLL_SENSITIVE("SCROLL_SENSITIVE", ResultSet.TYPE_SCROLL_SENSITIVE),
+    SCROLL_INSENSITIVE("SCROLL_INSENSITIVE", ResultSet.TYPE_SCROLL_INSENSITIVE),
+    DEFAULT("DEFAULT", null),
     ;
-    private final String typeName;
+    private final String  typeName;
+    private final Integer resultSetType;
 
-    ResultSetType(String typeName) {
+    ResultSetType(String typeName, Integer resultSetType) {
         this.typeName = typeName;
+        this.resultSetType = resultSetType;
     }
 
     public String getTypeName() {
         return this.typeName;
+    }
+
+    public Integer getResultSetType() {
+        return this.resultSetType;
     }
 
     public static ResultSetType valueOfCode(String code, ResultSetType defaultType) {

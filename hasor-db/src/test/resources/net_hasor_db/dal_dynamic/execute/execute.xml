@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.hasor.test.db.dal.Mapper1Dal">
+    <resultMap id="tb_user_resultMap" type="net.hasor.test.db.dto.TbUser2">
+        <id column="user_uuid" property="uid"/>
+        <result column="name" property="name"/>
+        <result column="login_name" property="account"/>
+        <result column="login_password" property="password"/>
+        <result column="email" property="mail"/>
+        <result column="index" property="index" javaType="int"/>
+        <result column="register_time" property="createTime"/>
+    </resultMap>
+
+    <sql id="user_do_allColumns">
+        user_uuid,
+        name,
+        login_name,
+        login_password,
+        email,
+        `index`,
+        register_time
+    </sql>
+
+    <insert id="createUser">
+        INSERT INTO test_user (
+            <include refid="user_do_allColumns"/>
+        ) VALUES (
+            #{uid},
+            #{name},
+            #{account},
+            #{password},
+            #{index},
+            #{createTime}
+        );
+    </insert>
+
+    <insert id="initUser">
+        INSERT INTO test_user (
+            <include refid="user_do_allColumns"/>
+        ) VALUES (
+            '11', '22', '33', '44', '55', 6, '2021-07-20 10:47:55'
+        );
+    </insert>
+
+
+    <select id="listUserList" parameterType="net.hasor.test.db.dto.TbUser2" resultMap="tb_user_resultMap">
+        SELECT
+            <include refid="user_do_allColumns"/>
+        FROM test_user;
+    </select>
+    <!--    where aac = #{abc}-->
+</mapper>

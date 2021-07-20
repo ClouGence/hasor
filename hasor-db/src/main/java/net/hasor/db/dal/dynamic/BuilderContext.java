@@ -16,6 +16,8 @@
 package net.hasor.db.dal.dynamic;
 import net.hasor.db.dal.dynamic.rule.RuleRegistry;
 import net.hasor.db.dal.repository.MapperRegistry;
+import net.hasor.db.mapping.MappingRegistry;
+import net.hasor.db.mapping.reader.TableReader;
 import net.hasor.db.types.TypeHandlerRegistry;
 
 import java.util.Map;
@@ -34,20 +36,20 @@ public class BuilderContext {
     private final MapperRegistry      mapperRegistry;
 
     public BuilderContext(Map<String, Object> context) {
-        this("", context, TypeHandlerRegistry.DEFAULT, RuleRegistry.DEFAULT, MapperRegistry.DEFAULT, null);
+        this("", context, RuleRegistry.DEFAULT, MapperRegistry.DEFAULT, null);
     }
 
     public BuilderContext(String namespace, Map<String, Object> context) {
-        this(namespace, context, TypeHandlerRegistry.DEFAULT, RuleRegistry.DEFAULT, MapperRegistry.DEFAULT, null);
+        this(namespace, context, RuleRegistry.DEFAULT, MapperRegistry.DEFAULT, null);
     }
 
-    public BuilderContext(String namespace, Map<String, Object> context, TypeHandlerRegistry handlerRegistry, RuleRegistry ruleRegistry, MapperRegistry mapperRegistry, ClassLoader classLoader) {
+    public BuilderContext(String namespace, Map<String, Object> context, RuleRegistry ruleRegistry, MapperRegistry mapperRegistry, ClassLoader classLoader) {
         this.namespace = namespace;
         this.context = context;
-        this.handlerRegistry = (handlerRegistry == null) ? TypeHandlerRegistry.DEFAULT : handlerRegistry;
         this.ruleRegistry = (ruleRegistry == null) ? RuleRegistry.DEFAULT : ruleRegistry;
         this.mapperRegistry = (mapperRegistry == null) ? MapperRegistry.DEFAULT : mapperRegistry;
         this.classLoader = (classLoader == null) ? Thread.currentThread().getContextClassLoader() : classLoader;
+        this.handlerRegistry = this.mapperRegistry.getMappingRegistry().getTypeRegistry();
     }
 
     public Class<?> loadClass(String typeName) throws ClassNotFoundException {
@@ -59,6 +61,17 @@ public class BuilderContext {
             return mapperRegistry.findDynamicSql(this.namespace, dynamicId);
         }
         return null;
+    }
+
+    public TableReader<?> findTableReaderById(String mapperId) {
+        if (this.mapperRegistry != null) {
+            return mapperRegistry.getMappingRegistry().getTableReader(this.namespace, mapperId);
+        }
+        return null;
+    }
+
+    public String getNamespace() {
+        return this.namespace;
     }
 
     public Map<String, Object> getContext() {
@@ -79,5 +92,12 @@ public class BuilderContext {
 
     public MapperRegistry getMapperRegistry() {
         return this.mapperRegistry;
+    }
+
+    public MappingRegistry getMappingRegistry() {
+        if (this.mapperRegistry != null) {
+            return this.mapperRegistry.getMappingRegistry();
+        }
+        return null;
     }
 }

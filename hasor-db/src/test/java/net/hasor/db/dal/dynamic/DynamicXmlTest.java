@@ -224,11 +224,11 @@ public class DynamicXmlTest {
         assert builder1.getSqlString().trim().equals(querySql1.trim());
         assert builder1.getArgs()[0].equals("123");
         assert builder1.getArgs()[1].equals("11");
-        assert builder1.getJavaType()[0] == String.class;
-        assert builder1.getJavaType()[1] == net.hasor.test.db.dto.TB_User.class;
-        assert builder1.getTypeHandlers()[0] instanceof StringTypeHandler;
-        assert builder1.getTypeHandlers()[1] instanceof UnknownTypeHandler;
-        assert builder1.getSqlModes()[0] == SqlMode.In;
-        assert builder1.getSqlModes()[1] == SqlMode.Out;
+        assert builder1.getSqlArg().get(0).getJavaType() == String.class;
+        assert builder1.getSqlArg().get(1).getJavaType() == net.hasor.test.db.dto.TB_User.class;
+        assert builder1.getSqlArg().get(0).getTypeHandler() instanceof StringTypeHandler;
+        assert builder1.getSqlArg().get(1).getTypeHandler() instanceof UnknownTypeHandler;
+        assert builder1.getSqlArg().get(0).getSqlMode() == SqlMode.In;
+        assert builder1.getSqlArg().get(1).getSqlMode() == SqlMode.Out;
     }
 }

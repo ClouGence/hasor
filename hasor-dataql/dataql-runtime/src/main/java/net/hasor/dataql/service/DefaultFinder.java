@@ -33,7 +33,7 @@ import java.util.function.Supplier;
  * @version : 2019-12-11
  */
 public class DefaultFinder implements Finder {
-    private final Finder                   parent;
+    private       Finder                   parent;
     private final ClassLoader              classLoader;
     private final Map<String, Supplier<?>> fragmentMap      = new LinkedCaseInsensitiveMap<>();
     private final Map<String, Supplier<?>> importPrepareMap = new ConcurrentHashMap<>();
@@ -50,6 +50,14 @@ public class DefaultFinder implements Finder {
     public DefaultFinder(ClassLoader classLoader, Finder parent) {
         this.classLoader = classLoader;
         this.parent = (parent != null) ? parent : Finder.DEFAULT;
+    }
+
+    public Finder getParent() {
+        return this.parent;
+    }
+
+    public void setParent(Finder parent) {
+        this.parent = parent;
     }
 
     /** 负责处理 <code>import @"/net/hasor/demo.ql" as demo;</code>方式中 ‘/net/hasor/demo.ql’ 资源的加载 */

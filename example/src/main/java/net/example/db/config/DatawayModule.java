@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.example.db.config;
-import net.hasor.utils.supplier.TypeSupplier;
-import net.hasor.dataql.Finder;
-import net.hasor.dataql.QueryApiBinder;
-import net.hasor.dataway.dal.providers.db.InformationStorage;
 import net.hasor.core.exts.jdbc.JdbcModule;
 import net.hasor.core.exts.jdbc.Level;
+import net.hasor.dataql.Finder;
+import net.hasor.dataql.binder.QueryApiBinder;
+import net.hasor.dataway.dal.providers.db.InformationStorage;
+import net.hasor.utils.supplier.TypeSupplier;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import org.springframework.context.ApplicationContext;
@@ -78,6 +78,6 @@ public class DatawayModule implements WebModule, TypeSupplier {
         apiBinder.installModule(new JdbcModule(Level.Full, "ds3", this.dataDs3));
         //
         // udf/udfSource/import 指令 的类型创建委托给 spring
-        apiBinder.tryCast(QueryApiBinder.class).bindFinder(Finder.TYPE_SUPPLIER.apply(this));
+        apiBinder.tryCast(QueryApiBinder.class).applyFinder(Finder.TYPE_SUPPLIER.apply(this));
     }
 }
