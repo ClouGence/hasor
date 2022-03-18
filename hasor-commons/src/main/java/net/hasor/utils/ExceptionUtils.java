@@ -53,7 +53,7 @@ public class ExceptionUtils {
     public static Throwable toRuntime(Throwable proxy, Class<?>[] exceptionTypes) {
         if (exceptionTypes != null) {
             for (Class<?> e : exceptionTypes) {
-                if (e.isInstance(exceptionTypes)) {
+                if (e.isInstance(proxy)) {
                     return proxy;
                 }
             }
