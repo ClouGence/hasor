@@ -365,7 +365,7 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
-                <version>1.2.67</version>
+                <version>1.2.83</version>
             </dependency>
 
             <!-- dbs -->
